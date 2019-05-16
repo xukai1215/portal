@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Model Item</title>
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="../static/css/font-awesome/css/font-awesome.min.css"
+    />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/page/create-modelitem.css"/>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/modelItemEditor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/bootstrap-select.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/data-tables/DT_bootstrap.css"/>
+
+    <style>
+        .btn-block {
+            padding: 6px 12px;
+        }
+    </style>
+</head>
+
+<body class="scrollbar">
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+    <div class="page-container">
+        <!-- START PAGE SIDEBAR -->
+        <div id="menu" class="page-sidebar">
+            <!-- START X-NAVIGATION -->
+            <ul class="x-navigation" :style="{'min-height':ScreenMinHeight}">
+                <li class="xn-logo">
+                    <a>
+                        {{userName}}
+                    </a>
+                </li>
+                <li class="xn-profile">
+                    <div class="profile">
+                        <div class="profile-image">
+                            <a>
+                                <img src="../static/img/logo/logo.png" alt="Open GMS" style="padding:0px" />
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                <li class="xn-title">Navigation</li>
+                <li class="xn-li" :class="{active:activeIndex==1}" @click="changeOpen(1)">
+                    <a href="/user/userSpace" @click="setSession('tap','1')">
+                        <!-- <a routerLink="/userSpace/main"> -->
+                        <span class="fa fa-desktop"></span>
+                        <span class="xn-text">Dashborad</span>
+                    </a>
+                </li>
+                <li class="xn-li xn-openable" :class="{active:activeIndex==2}" @click="changeOpen(2)">
+                    <a href="javascript:void(0)">
+                        <span class="fa fa-th"></span>
+                        <span class="xn-text">Models</span>
+                    </a>
+                    <ul>
+                        <li class="active">
+                            <a href="/user/userSpace" @click="setSession('tap','2')">
+                                <!-- <a routerLink="/userSpace/modelItems"> -->
+                                <span class="fa fa-object-group"></span> Model Items</a>
+                        </li>
+                        <li>
+                            <a href="/user/userSpace" @click="setSession('tap','3')">
+                                <!-- <a routerLink="/userSpace/conceptual"> -->
+                                <span class="fa fa-image"></span> Conceptual Models</a>
+                        </li>
+
+
+                        <li>
+                            <a href="/user/userSpace" @click="setSession('tap','4')">
+                                <!-- <a routerLink="/userSpace/computable"> -->
+                                <span class="fa fa-server"></span> Computable Models</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="xn-li" :class="{active:activeIndex==3}" @click="changeOpen(3)">
+                    <a href="/user/userSpace" @click="setSession('tap','5')">
+                        <!-- <a routerLink="/userSpace/tasks"> -->
+
+                        <span class="fa fa-tasks"></span>
+                        <span class="xn-text">Tasks</span>
+                    </a>
+                </li>
+                <li class="xn-li" :class="{active:activeIndex==4}" @click="changeOpen(4)">
+                    <a href="/user/userSpace" @click="setSession('tap','6')">
+                        <span class="fa fa-map-marker"></span>
+                        <span class="xn-text">Server</span>
+                    </a>
+                </li>
+                <li class="xn-li xn-openable" :class="{active:activeIndex==5}" @click="changeOpen(5)">
+                    <a href="javascript:void(0)">
+                        <span class="fa fa-paper-plane"></span>
+                        <span class="xn-text">Deploy</span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="/user/userSpace" @click="setSession('tap','7')">
+                                <span class="fa fa-upload">Service Migration</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- END X-NAVIGATION -->
+        </div>
+        <!-- END PAGE SIDEBAR -->
+        <div class="page-content clearfix scrollbar"
+             :style="{'min-height':ScreenMaxHeight,'max-height':ScreenMaxHeight}" style="overflow-x: hidden;">
+            <ul class="x-navigation x-navigation-horizontal x-navigation-panel">
+                <li class="xn-icon-button pull-right" style="width:auto;height: 49px;">
+                    <a href="/home" class="mb-control" data-box="#mb-signout">
+                        <span class="fa fa-home" title="Home"></span>
+                    </a>
+                </li>
+            </ul>
+            <div class="page-content-wrap container-fluid">
+                <!-- START WIDGETS -->
+                <div class="row">
+
+                </div>
+                <!-- END WIDGETS -->
+
+                <div class="row">
+                    <div class="container-fluid" id="mainInfo">
+                        <div class="row">
+                            <div class="col-md-12 nopadding">
+                                <div class="panel panel-success" style="border: none">
+                                    <div class="panel-body">
+                                        <div id="step">
+                                            <div class="step-app">
+                                                <ul class="step-steps text-center">
+                                                    <li>
+                                                        <a href="#step1">Step 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#step2">Step 2</a>
+                                                    </li>
+
+                                                </ul>
+                                                <div class="step-content">
+                                                    <div class="step-tab-panel" id="step1">
+                                                        <div class="col-md-3 col-sm-4 tree" id="tree">
+                                                        </div>
+                                                        <div class="col-md-9 col-sm-8">
+                                                            <div id="RepositoryParentsPanel">
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label for="parentNode"
+                                                                               class="col-sm-2 control-label">Parent
+                                                                            Node</label>
+                                                                        <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode"
+                                                                                      readonly></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label for="nameInput"
+                                                                               class="col-sm-2 control-label">Name</label>
+                                                                        <div class="col-sm-10">
+                                                                            <input type="text" class="form-control"
+                                                                                   id="nameInput"/>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label for="tagInput"
+                                                                               class="col-sm-2 control-label">Keywords</label>
+                                                                        <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="tagInput"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label for="descInput"
+                                                                               class="col-sm-2 control-label">Overview</label>
+                                                                        <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="descInput"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label for="nameInput"
+                                                                               class="col-sm-2 control-label">Image</label>
+                                                                        <div class="col-sm-10">
+                                                                            <img id="imgShow" src=""/>
+                                                                            <div id="imgChange">
+                                                                                <i class="fa fa-plus fa-5x"></i>
+                                                                            </div>
+                                                                            <input id="imgFile" type="file"
+                                                                                   style="display: none"
+                                                                                   accept="image/*"/>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label for="parentNode"
+                                                                               class="col-sm-2 control-label">References</label>
+                                                                        <div class="col-sm-10">
+                                                                            <table class="display table table-bordered table-striped dataTable"
+                                                                                   id="dynamic-table"
+                                                                                   aria-describedby="dynamic-table_info">
+                                                                                <thead>
+                                                                                <tr role="row">
+                                                                                    <th class="sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-label="Title: activate to sort column ascending"
+                                                                                        width="200px">
+                                                                                        Title
+                                                                                    </th>
+                                                                                    <th class="sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-label="Author: activate to sort column ascending"
+                                                                                        width="200px">
+                                                                                        Author
+                                                                                    </th>
+                                                                                    <th class="sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-label="Date: activate to sort column ascending"
+                                                                                        width="100px">
+                                                                                        Date
+                                                                                    </th>
+                                                                                    <th class="hidden-phone sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-label="Journal: activate to sort column ascending"
+                                                                                        width="100px">
+                                                                                        Journal
+                                                                                    </th>
+                                                                                    <th class="hidden-phone sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-sort="descending"
+                                                                                        aria-label="Pages: activate to sort column ascending"
+                                                                                        width="100px">
+                                                                                        Pages
+                                                                                    </th>
+                                                                                    <th class="hidden-phone sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-sort="descending"
+                                                                                        aria-label="Links: activate to sort column ascending"
+                                                                                        width="100px">
+                                                                                        Links
+                                                                                    </th>
+                                                                                    <th class="hidden-phone sorting"
+                                                                                        role="columnheader" tabindex="0"
+                                                                                        aria-controls="dynamic-table"
+                                                                                        rowspan="1" colspan="1"
+                                                                                        aria-sort="descending"
+                                                                                        aria-label="CSS grade: activate to sort column ascending"
+                                                                                        width="82px">
+                                                                                        Operation
+                                                                                    </th>
+                                                                                </tr>
+                                                                                </thead>
+
+                                                                                <tbody role="alert" aria-live="polite"
+                                                                                       aria-relevant="all">
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                            <button id="addref"
+                                                                                    class="btn btn-success btn-lg btn-block"
+                                                                                    data-toggle="modal"
+                                                                                    data-target="#refinfo"
+                                                                                    type="button">Add Reference
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--<div class="form-horizontal">-->
+                                                                <!--<div class="form-group">-->
+                                                                <!--<label for="parentNode"-->
+                                                                <!--class="col-sm-2 control-label">Show On-->
+                                                                <!--Index</label>-->
+                                                                <!--<div class="col-sm-10">-->
+                                                                <!--<div class="radioPanel">-->
+                                                                <!--<input id="item1" type="radio"-->
+                                                                <!--name="item" value=1>-->
+                                                                <!--<label for="item1">-->
+                                                                <!--<span>Yes</span>-->
+                                                                <!--</label>-->
+                                                                <!--</div>-->
+                                                                <!--<div class="radioPanel">-->
+                                                                <!--<input id="item2" type="radio"-->
+                                                                <!--name="item" value=0 checked>-->
+                                                                <!--<label for="item2">-->
+                                                                <!--<span>No</span>-->
+                                                                <!--</label>-->
+                                                                <!--</div>-->
+                                                                <!--</div>-->
+                                                                <!--</div>-->
+                                                                <!--</div>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="step-tab-panel" id="step0">
+                                                        <div class="panel panel-success" style="border:none">
+
+                                                            <div class="panel-body">
+                                                                <div class="col-md-10 col-md-offset-1">
+
+                                                                    <div class="panel-group " id="accordion2">
+                                                                        <div id="providersPanel" class="panel"
+                                                                             style="border-color:#424f63">
+                                                                            <div class="panel-heading"
+                                                                                 style="background-color: #424f63">
+                                                                                <h4 class="panel-title"
+                                                                                    style="color:white">
+                                                                                    <a class="accordion-toggle"
+                                                                                       data-parent="#accordion2">
+                                                                                        Providers
+                                                                                    </a>
+                                                                                </h4>
+                                                                            </div>
+                                                                            <div id="provider_body"
+                                                                                 class="panel-collapse collapse in"
+                                                                                 style="height: auto;">
+                                                                                <div class="panel-body providers"
+                                                                                     style="border-top: #424f63; padding:0px">
+                                                                                    <div class='panel panel-primary'>
+                                                                                        <div class='panel-heading info-head'>
+                                                                                            <h4 class='panel-title'>
+                                                                                                <a class='accordion-toggle collapsed'
+                                                                                                   style="color:white"
+                                                                                                   data-toggle='collapse'
+                                                                                                   data-target='#user1'
+                                                                                                   href="javascript:;">
+                                                                                                    NEW
+                                                                                                </a>
+                                                                                            </h4>
+                                                                                            <a href="javascript:;"
+                                                                                               class="fa fa-times author_close"
+                                                                                               style="float:right;margin-top:8px;color:white"></a>
+                                                                                        </div>
+                                                                                        <div id='user1'
+                                                                                             class='panel-collapse collapse in'>
+                                                                                            <div class='panel-body user-contents'>
+
+                                                                                                <div class='user-content'
+                                                                                                     style='border:none'>
+                                                                                                    <center>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-size: 20px;padding-bottom: 10px'>
+                                                                                                            Basic Info
+                                                                                                        </lable>
+                                                                                                    </center>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Account:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="account"
+                                                                                                                   class='form-control'
+                                                                                                                   v-model="userId">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Name:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="userName"
+                                                                                                                   class='form-control username'
+                                                                                                                   v-model="userInfo.name">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Nationality:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="Country"
+                                                                                                                   class='form-control'
+                                                                                                                   v-model="userInfo.country">
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+                                                                                                <div class='user-content'>
+                                                                                                    <center>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-size: 20px;padding-bottom: 10px'>
+                                                                                                            Institution
+                                                                                                        </lable>
+                                                                                                    </center>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Name:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="insName"
+                                                                                                                   class='form-control'
+                                                                                                                   v-model="userInfo.insName">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Country:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="insCountry"
+                                                                                                                   class='form-control'>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            City:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="insCity"
+                                                                                                                   class='form-control'>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Address:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="insAddress"
+                                                                                                                   class='form-control'>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class='user-content'>
+                                                                                                    <center>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-size: 20px;padding-bottom: 10px'>
+                                                                                                            Contact
+                                                                                                        </lable>
+                                                                                                    </center>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Email:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="email"
+                                                                                                                   class='form-control'
+                                                                                                                   v-model="userInfo.email">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Fax:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="fax"
+                                                                                                                   class='form-control'>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class='user-attr col-sm-offset-2'>
+                                                                                                        <lable class='control-label'
+                                                                                                               style='font-weight: bold;'>
+                                                                                                            Phone:
+                                                                                                        </lable>
+                                                                                                        <div class='input-group col-sm-9'>
+                                                                                                            <input type='text'
+                                                                                                                   name="phone"
+                                                                                                                   class='form-control'
+                                                                                                                   v-model="userInfo.phone">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <button type="button"
+                                                                                        class="btn btn-success btn-lg btn-block user-add"
+                                                                                        style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
+                                                                                    Add
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="step-tab-panel" id="step2">
+                                                        <textarea id="myText"></textarea>
+                                                    </div>
+
+                                                </div>
+                                                <div class="step-footer text-right">
+                                                    <button class="btn btn-warning prev" data-direction="prev">
+                                                        Previous
+                                                    </button>
+                                                    <button class="btn btn-primary next" data-direction="next">Next
+                                                    </button>
+                                                    <button class="btn btn-success finish" data-direction="finish">
+                                                        Finish
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- /.panel -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="refinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: deepskyblue">
+                <h4 class="modal-title" id="myModalLabel" style="color:aliceblue">
+                    Reference Info
+                </h4>
+            </div>
+            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                <section class="panel">
+                    <header class="panel-heading custom-tab ">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
+                                    Reference</a>
+                            </li>
+                            <li class="">
+                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
+                                    Reference by DOI</a>
+                            </li>
+                        </ul>
+                    </header>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="manually">
+                                <div class="form-group">
+                                    <label for="nameInput"
+                                           class="col-sm-2 control-label">Title</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                               id="refTitle"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameInput"
+                                           class="col-sm-2 control-label">Author</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                               id="refAuthor"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameInput"
+                                           class="col-sm-2 control-label">Date</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                               id="refDate"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameInput"
+                                           class="col-sm-2 control-label">Journal</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                               id="refJournal"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameInput"
+                                           class="col-sm-2 control-label">Pages</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                               id="refPages"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameInput"
+                                           class="col-sm-2 control-label">Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                               id="refLink"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="automatically">
+                                <div class="form-group"
+                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
+                                    <lable class="control-label col-md-2">
+                                        DOI :
+                                    </lable>
+                                    <div class="input-group col-md-10">
+                                        <input id="doi_searchBox" type="text"
+                                               class="form-control">
+                                        <span class="input-group-btn">
+                                            <button id="doiSearch"
+                                                    class="btn btn-default"
+                                                    type="button">Search</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div id="doiDetails" style="display:none">
+                                    <div class="form-group">
+                                        <lable class="control-label col-md-2">Title</lable>
+                                        <div class="col-md-10">
+                                            <textarea id="doiTitle" class="form-control" style="width:100%;"
+                                                      readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameInput"
+                                               class="col-sm-2 control-label">Author</label>
+                                        <div class="col-sm-10">
+                                            <textarea id="doiAuthor" class="form-control" style="width:100%;"
+                                                      readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameInput"
+                                               class="col-sm-2 control-label">Date</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"
+                                                   id="doiDate" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameInput"
+                                               class="col-sm-2 control-label">Journal</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"
+                                                   id="doiJournal" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameInput"
+                                               class="col-sm-2 control-label">Pages</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"
+                                                   id="doiPages" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameInput"
+                                               class="col-sm-2 control-label">Link</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"
+                                                   id="doiLink" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <a href="#">
+                    <button id="modal_save" type="button" class="btn btn-success" style="font-size:15px">
+                        Save
+                    </button>
+                    <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"
+                            style="font-size:15px">
+                        Cancel
+                    </button>
+                </a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+</body>
+
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/bootstrap.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+<script type="text/javascript" src="../static/js/common/bootstrap-treeview.js"></script>
+<script type="text/javascript" src="../static/js/common/jquery-steps.js"></script>
+<script type="text/javascript" src="../static/js/common/jquery.tag-editor.js"></script>
+<script type="text/javascript" src="../static/js/common/pageEn.js"></script>
+<script type="text/javascript" src="../static/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="../static/data-tables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="../static/data-tables/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../static/data-tables/dynamic_table_init.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        // var url = location.href;
+        // var last = url.indexOf("#");
+        // var uid = "";
+        // if (url.indexOf("=") >= 0) {
+        //   if (last >= 0) {
+        //     uid = url.substring(url.indexOf("=") + 1, last);
+        //   } else {
+        //     uid = url.substring(url.indexOf("=") + 1, url.length);
+        //   }
+        // }
+
+        var uid = window.sessionStorage.getItem("editModelItem_id");
+        var tree = [];
+
+        var parentNodes = [];
+        var parentNodeIds = new Array();
+
+        if ((uid === "0") || (uid === "") || (uid === null)) {
+            //Tree
+            $.ajax({
+                url: "/classification/getTree",
+                type: "GET",
+                async: false,
+                success: (result)=> {
+
+                    tree = result.data;
+                    console.log(tree)
+                    createTree();
+                    $('#tree').on('nodeSelected', function (event, data) {
+                        if (data.nodes === undefined) {
+
+                            parentNodes.push(data.text);
+                            parentNodeIds.push(data.id);
+                            $("#parentNode").val(parentNodes);
+
+                            // $("#parentNode").val(data.text);
+                            // $("#parentNode").attr("pid", data.id);
+                        }
+                    });
+                    $('#tree').on('nodeUnselected', function (event, data) {
+                        if (data.nodes === undefined) {
+                            for (i = 0; i < parentNodes.length; i++) {
+                                if (data.text == parentNodes[i]) {
+                                    var node_temp = [];
+                                    var id_temp = [];
+                                    for (j = 0; j < parentNodes.length; j++) {
+                                        if (j != i) node_temp.push(parentNodes[j]);
+                                        if (j != i) id_temp.push(parentNodeIds[j]);
+                                    }
+                                    parentNodes = node_temp;
+                                    parentNodeIds = id_temp;
+                                    $("#parentNode").val(parentNodes);
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            tinymce.init({
+                selector: "textarea#myText",
+                height: 500,
+                theme: 'modern',
+                plugins: ['link', 'table', 'image', 'media'],
+                image_title: true,
+                // enable automatic uploads of images represented by blob or data URIs
+                automatic_uploads: true,
+                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                // images_upload_url: 'postAcceptor.php',
+                // here we add custom filepicker only to Image dialog
+                file_picker_types: 'image',
+
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.onchange = function () {
+                        var file = input.files[0];
+
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = function () {
+                            var img = reader.result.toString();
+                            cb(img, {title: file.name});
+                        }
+                    };
+                    input.click();
+                },
+                images_dataimg_filter: function (img) {
+                    return img.hasAttribute('internal-blob');
+                }
+            });
+        } else {
+            $.ajax({
+                url: "http://localhost:8081/GeoModelingNew/ModelItemInfoServlet",
+                type: "get",
+                data: {mid: uid},
+                dataType: "json",
+
+                success: (result) => {
+                    console.log(result)
+                    var basicInfo = result.basicInfo;
+                    parentNodeIds = basicInfo.parentId;
+                    if(Array.isArray(basicInfo.parentName)){
+                        parentNodes=basicInfo.parentName;
+                    }
+                    else {
+                        parentNodes.push(basicInfo.parentName);
+                    }
+                    $("#parentNode").val(parentNodes);
+                    //$("#parentNode").attr("pid", basicInfo.parentIds[0]);
+                    //$("#parentNode").val(basicInfo.parentName);
+                    $("#nameInput").val(basicInfo.name);
+                    $("#descInput").val(basicInfo.desc);
+                    //tags
+                    $('#tagInput').tagEditor('destroy');
+                    $('#tagInput').tagEditor({
+                        initialTags: basicInfo.tagsInfo,
+                        forceLowercase: false,
+                        placeholder: 'Enter keywords ...'
+                    });
+                    //image
+                    if(basicInfo.image!=""){
+                        $("#imgShow").attr("src", basicInfo.image);
+                        $('#imgShow').show();
+                    }
+                    //reference
+                    for(i=0;i<basicInfo.reference.length;i++){
+                        var ref=basicInfo.reference[i];
+                        table.row.add([
+                            ref.title,
+                            ref.author,
+                            ref.date,
+                            ref.journal,
+                            ref.pages,
+                            ref.links,
+                            "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+                    }
+                    if(basicInfo.reference.length>0){
+                        $("#dynamic-table").css("display", "block")
+                    }
+                    //providers init
+                    $("#provider_body .panel-body .panel").eq(0).remove();
+                    var providers=result.providers;
+
+                    if(providers.length==0){
+
+                        var user_num=1;
+                        var content_box = $("#provider_body .providers");
+                        var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                        str += user_num;
+                        str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+                        str += user_num;
+                        str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-content' style='border:none'> <center> <lable class='control-label' style='font-size: 20px;padding-bottom: 10px'>Basic Info</lable> </center> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Account:</lable> <div class='input-group col-sm-9'>  <input type='text' name='account' class='form-control'> </div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Name:</lable> <div class='input-group col-sm-9'> <input type='text' name='userName' class='form-control username'> </div> </div>  <div class='user-attr col-sm-offset-2'>" +
+                            "                                                                                                        <lable class='control-label'" +
+                            "                                                                                                               style='font-weight: bold;'>" +
+                            "                                                                                                            Nationality:" +
+                            "                                                                                                        </lable>" +
+                            "                                                                                                        <div class='input-group col-sm-9'>" +
+                            "                                                                                                            <input type='text'" +
+                            "                                                                                                                   name=\"Country\"" +
+                            "                                                                                                                   class='form-control'" +
+                            "                                                                                                                   >" +
+                            "                                                                                                        </div>" +
+                            "                                                                                                    </div> </div>  <div class='user-content'> <center><lable class='control-label' style='font-size: 20px;padding-bottom: 10px'>Institution</lable> </center><div class='user-attr col-sm-offset-2'><lable class='control-label' style='font-weight: bold;'>Name:</lable> <div class='input-group col-sm-9'> <input type='text' name='insName' class='form-control'> </div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Country:</lable> <div class='input-group col-sm-9'> <input type='text' name='insCountry' class='form-control'> </div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>City:</lable> <div class='input-group col-sm-9'> <input type='text' name='insCity' class='form-control'> </div></div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Address:</lable> <div class='input-group col-sm-9'> <input type='text' name='insAddress' class='form-control'> </div> </div> </div> <div class='user-content'><center><lable class='control-label' style='font-size: 20px;padding-bottom: 10px'>Contact</lable> </center> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Email:</lable>  <div class='input-group col-sm-9'> <input type='text' name='email' class='form-control'> </div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Fax:</lable> <div class='input-group col-sm-9'> <input type='text' name='fax' class='form-control'> </div> </div> <div class='user-attr col-sm-offset-2'><lable class='control-label' style='font-weight: bold;'>Phone:</lable> <div class='input-group col-sm-9'> <input type='text' name='phone' class='form-control'> </div> </div> </div> </div> </div> </div>"
+                        content_box.append(str)
+                    }
+                    else{
+                        var user_num=0;
+                        for(i=0;i<providers.length;i++)
+                        {
+                            var provider=providers[i];
+                            user_num++;
+                            var content_box = $("#provider_body .providers");
+                            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                            str += user_num;
+                            str += "' href='javascript:;'> "+provider.userName+" </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+                            str += user_num;
+                            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-content' style='border:none'> <center> <lable class='control-label' style='font-size: 20px;padding-bottom: 10px'>Basic Info</lable> </center> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Account:</lable> <div class='input-group col-sm-9'>  <input type='text' name='account' value='"+provider.account+"' class='form-control'></div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Name:</lable> <div class='input-group col-sm-9'> <input type='text' name='userName' value='"+provider.userName+"' class='form-control username'></div> </div> <div class='user-attr col-sm-offset-2'>" +
+                                "                                                                                                        <lable class='control-label'" +
+                                "                                                                                                               style='font-weight: bold;'>" +
+                                "                                                                                                            Nationality:" +
+                                "                                                                                                        </lable>" +
+                                "                                                                                                        <div class='input-group col-sm-9'>" +
+                                "                                                                                                            <input type='text'" +
+                                "                                                                                                                   name=\"Country\"" +
+                                "                                                                                                                   class='form-control'" +
+                                "                                                                                                                   >" +
+                                "                                                                                                        </div>" +
+                                "                                                                                                    </div> </div>  <div class='user-content'> <center><lable class='control-label' style='font-size: 20px;padding-bottom: 10px'>Institution</lable> </center><div class='user-attr col-sm-offset-2'><lable class='control-label' style='font-weight: bold;'>Name:</lable> <div class='input-group col-sm-9'> <input type='text' name='insName' value='"+provider.insName+"' class='form-control'></div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Country:</lable> <div class='input-group col-sm-9'> <input type='text' name='insCountry' value='"+provider.insCountry+"' class='form-control'></div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>City:</lable> <div class='input-group col-sm-9'> <input type='text' name='insCity' value='"+provider.insCity+"' class='form-control'></div></div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Address:</lable> <div class='input-group col-sm-9'> <input type='text' name='insAddress' value='"+provider.insAddress+"' class='form-control'></div> </div> </div> <div class='user-content'><center><lable class='control-label' style='font-size: 20px;padding-bottom: 10px'>Contact</lable> </center> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Email:</lable>  <div class='input-group col-sm-9'> <input type='text' name='email' value='"+provider.email+"' class='form-control'></div> </div> <div class='user-attr col-sm-offset-2'> <lable class='control-label' style='font-weight: bold;'>Fax:</lable> <div class='input-group col-sm-9'> <input type='text' name='fax' value='"+provider.fax+"' class='form-control'></div> </div> <div class='user-attr col-sm-offset-2'><lable class='control-label' style='font-weight: bold;'>Phone:</lable> <div class='input-group col-sm-9'> <input type='text' name='phone' value='"+provider.insCity+"' class='form-control'></div> </div> </div> </div> </div> </div>"
+                            content_box.append(str)
+                        }
+                    }
+
+
+                    //detail
+                    tinymce.remove("textarea#myText");
+                    $("#myText").html(basicInfo.detail);
+                    tinymce.init({
+                        selector: "textarea#myText",
+                        height: 500,
+                        theme: 'modern',
+                        plugins: ['link', 'table', 'image', 'media'],
+                        image_title: true,
+                        // enable automatic uploads of images represented by blob or data URIs
+                        automatic_uploads: true,
+                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                        // images_upload_url: 'postAcceptor.php',
+                        // here we add custom filepicker only to Image dialog
+                        file_picker_types: 'image',
+
+                        file_picker_callback: function (cb, value, meta) {
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = function () {
+                                var file = input.files[0];
+
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    var img = reader.result.toString();
+                                    cb(img, {title: file.name});
+                                }
+                            };
+                            input.click();
+                        },
+                        images_dataimg_filter: function (img) {
+                            return img.hasAttribute('internal-blob');
+                        }
+                    });
+
+                },
+                complete:()=>{
+                    //Tree
+                    $.ajax({
+                        url: "http://localhost:8081/GeoModelingNew/ModelRepositoryServlet",
+                        type: "GET",
+                        async: false,
+                        success: (result)=> {
+                            //console.log(result)
+                            result = result.replace(new RegExp("children", "gm"), "nodes");
+                            result = result.replace(new RegExp("nameEn", "gm"), "text");
+                            tree = JSON.parse(result);
+                            for(i=0;i<tree[0].nodes.length;i++)
+                            {
+                                var branch=tree[0].nodes[i];
+                                for(j=0;j<branch.nodes.length;j++)
+                                {
+                                    var expand_flag=false;
+                                    var node=branch.nodes[j];
+                                    for(k=0;k<parentNodeIds.length;k++)
+                                    {
+                                        if(node.id==parentNodeIds[k]){
+                                            expand_flag=true;
+                                            node.state={};
+                                            node.state.selected=true;
+                                            break;
+                                        }
+                                    }
+                                    if(expand_flag)
+                                    {
+                                        branch.state={};
+                                        branch.state.expanded=true;
+                                    }
+                                }
+                            }
+                            console.log(tree)
+                            createTree();
+                            $('#tree').on('nodeSelected', function (event, data) {
+                                if (data.nodes === undefined) {
+
+                                    parentNodes.push(data.text);
+                                    parentNodeIds.push(data.id);
+                                    $("#parentNode").val(parentNodes);
+
+                                    // $("#parentNode").val(data.text);
+                                    // $("#parentNode").attr("pid", data.id);
+                                }
+                            });
+                            $('#tree').on('nodeUnselected', function (event, data) {
+                                if (data.nodes === undefined) {
+                                    for (i = 0; i < parentNodes.length; i++) {
+                                        if (data.text == parentNodes[i]) {
+                                            var node_temp = [];
+                                            var id_temp = [];
+                                            for (j = 0; j < parentNodes.length; j++) {
+                                                if (j != i) node_temp.push(parentNodes[j]);
+                                                if (j != i) id_temp.push(parentNodeIds[j]);
+                                            }
+                                            parentNodes = node_temp;
+                                            parentNodeIds = id_temp;
+                                            $("#parentNode").val(parentNodes);
+                                            break;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            })
+        }
+        $("#step").steps({
+            onFinish: function () {
+                alert('Wizard Completed');
+            }
+        });
+
+
+        function createTree() {
+            $('#tree').treeview({
+                data: tree,
+                multiSelect: true,
+                //showCheckbox:true
+            })
+        }
+
+
+        $('#tagInput').tagEditor({
+            forceLowercase: false
+        });
+        $("#refAuthor").tagEditor({
+            forceLowercase: false
+        })
+
+        $("#imgChange").click(function () {
+            $("#imgFile").click();
+        });
+        $("#imgFile").change(function () {
+            //获取input file的files文件数组;
+            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+            var file = $('#imgFile').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload = function (e) {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                $('#imgShow').get(0).src = e.target.result;
+                $('#imgShow').show();
+            }
+        });
+
+        var getUserData = (UsersInfo, prop) => {
+            for (i = prop.length; i > 0; i--) {
+                prop.pop();
+            }
+            var result = "{";
+            for (i = 0; i < UsersInfo.length; i++) {
+                var Info = UsersInfo.eq(i)[0];
+                if (i % 10 == 9) {
+                    if (result) {
+                        result += "'" + Info.name + "':'" + Info.value + "'}"
+                        prop.push(eval('(' + result + ')'));
+                    }
+                    result = "{";
+                }
+                else {
+                    result += "'" + Info.name + "':'" + Info.value + "',";
+                }
+
+            }
+        }
+
+        var modelItemObj = {};
+        $(".next").click(function () {
+            modelItemObj.classifications = parentNodeIds;//[$("#parentNode").attr("pid")];
+            modelItemObj.name = $("#nameInput").val();
+            modelItemObj.keywords = $("#tagInput").val().split(",");
+            modelItemObj.description = $("#descInput").val();
+            modelItemObj.image = $('#imgShow').get(0).src;
+
+        });
+
+        $(".finish").click(function () {
+            modelItemObj.classifications = parentNodeIds;//[$("#parentNode").attr("pid")];
+            modelItemObj.name = $("#nameInput").val();
+            modelItemObj.keywords = $("#tagInput").val().split(",");
+            modelItemObj.description = $("#descInput").val();
+            modelItemObj.image = $('#imgShow').get(0).currentSrc;
+
+
+            // modelItemObj.Providers = [];
+            // getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.Providers)
+
+            modelItemObj.references = new Array();
+            var ref_lines = $("#dynamic-table tr");
+            for (i = 1; i < ref_lines.length; i++) {
+                var ref_prop = ref_lines.eq(i).children("td");
+                if (ref_prop != 0) {
+                    var ref={};
+                    ref.title=ref_prop.eq(0).text();
+                    if(ref.title=="No data available in table")
+                        break;
+                    ref.author=ref_prop.eq(1).text().split(",");
+                    ref.date=ref_prop.eq(2).text();
+                    ref.journal=ref_prop.eq(3).text();
+                    ref.pages=ref_prop.eq(4).text();
+                    ref.links=ref_prop.eq(5).text();
+                    modelItemObj.references.push(ref);
+                }
+            }
+
+            var detail = tinyMCE.activeEditor.getContent();
+            modelItemObj.detail = detail.trim();
+            console.log(modelItemObj)
+            if (parentNodeIds.length == 0) {
+                alert("Please select parent node");
+                return;
+            }
+            if ($("#nameInput").val() === "") {
+                alert("Please enter model item name");
+                return;
+            }
+            if ((uid === "0") || (uid === "") || (uid == null)) {
+                $.ajax({
+                    url: "/modelItem/add",
+                    type: "POST",
+                    async: true,
+                    contentType: "application/json",
+                    data: JSON.stringify(modelItemObj),
+                    success: function (result) {
+
+                        if (result.code == "0") {
+                            alert("Create Success");
+
+                            window.location.href="/modelItem/"+result.data;
+                            //window.location.reload();
+                        }
+                    }
+                })
+            } else {
+                modelItemObj["mid"] = uid;
+                $.ajax({
+                    url: "http://localhost:8081/GeoModelingNew/UpdateModelItemInfoServlet",
+                    type: "POST",
+                    async: true,
+                    data: {modelItem: JSON.stringify(modelItemObj)},
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.result === "success") {
+                            alert("Update Success");
+                            window.location.href="/GeoModelingNew/new/page/model-item-info/model-item-info.html?"+result.mid;
+                            //window.location.reload();
+                        }
+                    }
+                })
+            }
+        });
+    });
+</script>
+<script src="../static/js/common/bootstrap-select.js"></script>
+<script src="../static/js/page/create-modelitem.js"></script>
+
+</html>

@@ -1,0 +1,79 @@
+.step-app > .step-steps {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+  counter-reset:step
+}
+.step-app > .step-steps > li {
+  list-style: none;
+  flex: 1;
+  position: relative;
+  /*z-index: 10;*/
+  background: #f5f5f5;
+  padding: 10px;
+}
+.step-app > .step-steps > li:last-child a {
+  border: none;
+}
+.step-app > .step-steps > li > a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  background-color: #f5f5f5;
+  text-decoration: none;
+  border-right: 1px solid #fff;
+}
+.step-app > .step-steps > li > a > .number {
+  background: #fff;
+  padding: 0 8px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 15px;
+  border-radius: 3px;
+  color: #333;
+}
+.step-app > .step-steps > li > a:hover {
+  /* background-color: #fff; */
+  color: #333;
+}
+.step-app > .step-steps > li.active a {
+  /* background-color: #32c5d2; */
+  color: #333;
+}
+.step-app > .step-steps > li.error a {
+  /* background-color: #e7505a; */
+  color: #e7505a;
+}
+.step-app > .step-steps > li.done a {
+  /* background-color: #3cb371; */
+  color: #3cb371;
+}
+.step-app > .step-content {
+  /* border: 1px solid #e5e5e5; */
+  padding: 10px;
+  /* border-top: 0; */
+}
+.step-app > .step-content > .step-tab-panel {
+  display: none;
+  /*min-height: 400px;*/
+}
+.step-app > .step-content > .step-tab-panel.active {
+  display: block;
+}
+.step-app > .step-footer {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.step-app > .step-footer > .step-btn {
+  padding: 4px 16px;
+  color: #333;
+  text-decoration: none;
+  background: #e5e5e5;
+  border-radius: 3px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+/*# sourceMappingURL=jquery-steps.css.map */

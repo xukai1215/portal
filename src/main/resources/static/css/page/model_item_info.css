@@ -1,0 +1,23 @@
+
+.list_panel{
+     border:#e6e6e6 1px solid;
+     border-style:none none solid none;
+     /*margin: 0 15px;*/
+     padding: 15px;
+ }
+
+.list_panel:last-child{
+    border:#e6e6e6 1px none;
+    /*margin: 0 15px;*/
+    padding: 15px;
+    margin-bottom:-15px;
+}
+
+.list_panel:first-child{
+    border:#e6e6e6 1px none;
+    border-style:none none solid none;
+    /*margin: 0 15px;*/
+    padding: 15px;
+    margin-top:-10px;
+}
+

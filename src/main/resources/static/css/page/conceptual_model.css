@@ -1,0 +1,70 @@
+h2,h3{
+    margin: 0;
+}
+h5{
+    text-align: center;
+}
+.list h5{
+    font-weight: bold;
+}
+hr{
+    border-color: #e0e0e0;
+}
+/*h4{*/
+    /*padding-top:5px;*/
+/*}*/
+.detail_block{
+
+    padding:10px 10px;
+}
+
+.left-panel{
+    padding:15px;
+    display: table-cell;
+    border-right: #adadad solid 1px
+}
+.right-panel{
+    display: table-cell;
+    padding:15px;
+}
+.page-title{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #adadad;
+}
+.tabs{
+    background-color: #F7F7F7;
+    margin-top:10px;
+}
+
+
+.detail_option a{
+    color:#404040;
+    font-size: 18px
+}
+
+.switch{
+    padding:10px;
+}
+
+.list{
+    padding:10px 6%;
+}
+.list hr{
+    margin:10px 0px;
+}
+
+#container_top{
+    width: 100%;
+    height: 100%;
+    top:0px;
+    border: none
+}
+
+.geFooterContainer {
+    height: 0 !important;
+}
+
+.geDiagramContainer, .geSidebarContainer {
+
+    bottom: 0 !important;
+}

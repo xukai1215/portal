@@ -1,0 +1,106 @@
+h2,h3{
+    font-weight: bold!important;
+}
+a,a:hover,a:link{
+    text-decoration:none;
+}
+.detail{
+    margin: 10px 0 5px 0;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 0 30px 15px;
+    min-height: 300px;
+}
+.detail .title>p{
+    margin-top: 10px;
+    color: #666666
+}
+.detail .info{
+    color: #333333
+}
+.detail .info h3{
+    margin-bottom: 15px
+}
+.detail .info ol{
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+.detail .info ol li{
+    list-style: decimal;
+    margin: 5px 0;
+}
+.detail .info ol li a {
+    text-decoration: none;
+    font-size: 15px
+}
+.detail .info ol li a {
+    background: 0 0;
+}
+.detail .info ol li a:visited {
+    color: #00c0ff;
+}
+.detail .info ol li a:link {
+    color: #00c0ff;
+}
+.detail .info p{
+    font-size: 15px
+}
+.detail .info ul li{
+    margin: 5px 0;
+}
+.detail .info ul li a{
+    text-decoration: none;
+    font-size: 15px
+}
+.detail .info a{
+    color: #00c0ff;
+}
+
+.detail .download{
+    margin-top: 20px
+}
+.detail .serverInfo{
+    padding: 10px 10px;
+    min-height: 72px;
+    box-sizing: border-box;
+    transition: all .3s ease-in-out;
+    position: relative;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.detail .serverInfo .serverName{
+    font-size: 14px;
+    color: #333333;
+    line-height: 24px;
+    font-weight: bold
+}
+.detail .serverInfo .serverDesc{
+    font-size: 14px;
+    color: #999999;
+    line-height: 24px;
+}
+.detail .serverInfo i{
+    position: absolute;
+    right: 12px;
+    top: 30px;
+    opacity: 1;
+    color: #25d4c1;
+    font-size: 16px;
+}
+.detail .serverInfo .progressBar{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    /* width: 50%; */
+    background: #25d4c1
+}
+.detail .serverInfo .progressBar.bad{
+    background: #d9534f
+}
+.detail .serverInfo:hover{
+    background: #eee;
+	box-shadow: 0 0 8px 0 rgba(0,0,0,.15)
+}

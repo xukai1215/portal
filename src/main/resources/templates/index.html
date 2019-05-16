@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>OpenGMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/css/index/element_ui/index.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/css/index/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/universal.css" />
+</head>
+
+<style>
+.el-col-1{
+width:4.75%
+}
+
+</style>
+
+<body>
+    <div id="app">
+        <!-- <div class="loading" :style="loadingStyle()"> </div> -->
+        <!-- new banner -->
+        <div th:replace="fragments/navbar :: unlog"></div>
+
+        <section>
+            <div class="carousel_container el-row">
+                <el-carousel indicator-position="none" height="500px" arrow="never">
+                    <el-carousel-item>
+                        <div type="flex" align="middle" class="contain-bg1 el-row">
+                            <div class="el-col el-col-10 el-col-offset-2">
+                                <el-container>
+                                    <el-header style="height: 70px;margin-top: 70px;text-align: left">
+                                        <h1>Open Geographic Modeling and Simulation</h1>
+                                    </el-header>
+                                    <el-main style="margin-top: 38px;">
+
+                                        <p style="margin-top: 32px; text-align:left">A platform where you can explore
+                                            and share resources about geographic modeling and simulation. A community
+                                            where researchers from every disciplines can working collaboratively to
+                                            construct a better world and build knowledge libraries as valuable legacies
+                                            for our generations.</p>
+                                        <el-button type="warning" style="margin-top: 5px;float: left"
+                                            @click="window.open('/modelItem/repository')">Explore more</el-button>
+                                        <el-button type="warning" style="margin-top: 5px;float: left"
+                                            @click="window.open('/user/login')">Join us</el-button>
+                                    </el-main>
+                                    <el-footer style="height: 140px"></el-footer>
+                                </el-container>
+                            </div>
+                            <div :span="10">
+                                <div class="el-col el-col-12">
+                                    <img src="../static/img/carousels/el04.svg" style="width: 440px; height: 440px; ">
+
+                                </div>
+                                <!--<div class="el-col el-col-12">-->
+                                <!--<img src="../static/img/carousels/el03.svg" style="width: 440px; height: 440px;  ">-->
+
+                                <!--</div>-->
+
+
+                            </div>
+
+
+                        </div>
+                        <!-- <img src="../static/img/carousels/undraw_map_1r69.svg" style="position: absolute; top: -400px; left: 580px; width: 60%; height: 60%">
+                        <img src="../static/img/carousels/banner1.png" style="height: 500px">
+                        <div class="carousel-img-mask"></div>                -->
+                    </el-carousel-item>
+
+                </el-carousel>
+            </div>
+        </section>
+
+        <!-- one sentence summary the web gate  -->
+        <section style="height: 90px;">
+            <div class="el-row" style="height: 90px;">
+                <div class="aftcarheight el-col el-col-14 el-col-offset-5">
+                    <div>
+                        <!--<p style="font-size: 1vw; font-weight: 100; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">-->
+                        <!--Hydrology, Geomorphology, Geology,-->
+                        <!--Glaciology, Biogeography, Meteorology, Climatology, Pedology, Oceanography, Coastal, Landscape-->
+                        <!--Ecology,-->
+                        <!--Ecosystem, Paleogeography, Quaternary Science, Environmental Management,-->
+                        <!--Agriculture, Industrial, Traffic, Tourism, Population, Regional, Urban, Rural,-->
+                        <!--Historical,Cultural,-->
+                        <!--Social, Economic, Political, Health, Development, Behavioral <strong>. . .</strong></p></div>-->
+                        <!--<p></p>-->
+                        <img src="../static/img/manyModels.png" style="height: 89px;width:100%;">
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!--Platform Functionalities-->
+        <section class="section-content">
+            <div class="title">
+                <!-- <div class="icon">
+                <i class="fa fa-cloud"></i>
+            </div> -->
+                <!-- <h4>-💡-</h4> -->
+                <h2>&nbsp;Platform Basic Functionalities</h2>
+
+            </div>
+
+            <div class="item el-row" type="flex" justify="center">
+                <div class="el-col el-col-8 content">
+                    <el-card shadow="hover">
+                        <div class="icon" style="color:#F3C24F;font-size:7em">
+                            <i class="fa fa-globe"></i>
+                        </div>
+                        <h3>SHARING</h3>
+                        <p>Sharing models, data and computers as resuable resources. </p>
+                    </el-card>
+                </div>
+                <div class="el-col el-col-8  content">
+                    <el-card shadow="hover">
+                        <div class="icon" style="color:rgb(64, 151, 222);font-size:7em">
+                            <i class="fa fa-cube"></i>
+                        </div>
+                        <h3>REUSING</h3>
+                        <p>Using models, data and computers as services in web environment.</p>
+                    </el-card>
+                </div>
+                <div class="el-col el-col-8 content">
+                    <el-card shadow="hover">
+                        <div class="icon" style="color:rgb(78, 214, 0);font-size:7em">
+                            <i class="fa fa-share-alt-square"></i>
+                        </div>
+                        <h3>INTEGRATING</h3>
+                        <p>Integrating different models, data and computers to solve real world problems.</p>
+                    </el-card>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- <section>
+            <div class="title"> -->
+        <!-- <div class="icon">
+        <i class="fa fa-cloud"></i>
+    </div> -->
+        <!-- <h4>-🔩-</h4>
+    <h2>&nbsp;Feature-rich system</h2>
+
+</div>
+</section> -->
+
+
+        <!-- System Show -->
+        <section class="icon-add section_bk_1">
+            <div class="section-content" style="text-align: left;">
+                <div :gutter="40" class="system-content el-row">
+                    <div class="el-col el-col-12">
+                        <div class="content-title">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <span>Model Repository</span>
+                        </div>
+                        <p class="content-content">Collecting model resources to build a dictionary where all models
+                            (also
+                            include related tools, algorithms, ect.) be organized in a formal way.
+                            Users can discover a model to find its detailed descriptive information, conceptual
+                            description,
+                            logical description, computable resources, evolution history, application scenarios and so
+                            forth.
+                            We only publish users' resources under their clear permission.</p>
+                        <el-button type="warning" style="margin-top: 32px"
+                            @click="window.open('/modelItem/repository')">Discover
+                        </el-button>
+                    </div>
+                    <div class="el-col el-col-12">
+                        <img src="../static/img/rep/model.png"
+                            style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="foresty">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="icon-add">
+            <div class="section-content" style="text-align: right;">
+                <div :gutter="40" class="system-content el-row">
+                    <div class="el-col el-col-12">
+
+
+                        <img src="../static/img/rep/data.png"
+                            style="width:100%;height: 320px;border-radius:20px;border: solid 1px" alt="">
+                        <!--<el-carousel indicator-position="outside" arrow="always" class="thematic">-->
+
+                        <!--<el-carousel-item>-->
+                        <!--<img src="/../static/img/data_rep/01.png" style="height: 320px;border-radius:20px" alt="">-->
+                        <!--</el-carousel-item>-->
+                        <!--<el-carousel-item>-->
+                        <!--<img src="/../static/img/data_rep/02.png" style="height: 320px;border-radius:20px" alt="">-->
+                        <!--</el-carousel-item>-->
+
+                        <!--<el-carousel-item>-->
+                        <!--<img src="/../static/img/data_rep/03.png" style="height: 320px;border-radius:20px" alt="">-->
+                        <!--</el-carousel-item>-->
+
+
+                        <!--</el-carousel>-->
+                    </div>
+                    <div class="el-col el-col-12">
+                        <div class="content-title">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <span>Data Repository</span>
+                        </div>
+                        <p class="content-content">Collecting data resources to build a harbor where users can explore
+                            modeling-related data through an universal center.
+                            Data resources can be from the sharing of users with their public option. And various data
+                            sharing sites are linked to help users search interested data without go here and there.
+                            We only publish users' resources under their clear permission.</p>
+                        <el-button type="warning" style="margin-top: 32px"
+                            @click="window.open('/dataItem/repository')">Discover
+                        </el-button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="icon-add section_bk_1">
+            <div class="section-content">
+                <div :gutter="40" class="system-content el-row">
+                    <div class="el-col el-col-12">
+                        <div class="content-title">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <span>Using Models as Services</span>
+                        </div>
+                        <p class="content-content" style="text-align: left;">Model as a Service, Data as a Service and
+                            Computer as a Service in an open web environment.
+                            Users can setup input data and run a model via a web client, and the related model would be
+                            executed in a remote computer node.
+                            A user can invoke a model service before boarding and obtain results when get off.
+                            And a set of solutions are offered to help users convert original models as reusable
+                            services,
+                            publish data files as resuable services and share computers as available services.
+                        </p>
+                        <el-button type="warning" style="margin-top: 32px"
+                            @click="window.open('/modelItem/3f6857ba-c2d2-4e27-b220-6e5367803a12')">
+                            SWAT
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px"
+                            @click="window.open('/modelItem/5738ef7c-a5ac-46b5-a347-3c823f71b3a7')">
+                            FVCOME
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px"
+                            @click="window.open('/modelItem/b3a88af1-3568-4219-99c4-aa8fbce3227d')">
+                            SWMM
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                            @click="window.open('/modelItem/repository')">Explore More
+                        </el-button>
+                    </div>
+                    <div class="el-col el-col-12">
+                        <img src="/../static/img/models.png"
+                            style="width:100%;height: 320px;border-radius:20px;border: solid 1px" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="icon-add">
+            <div class="section-content" style="text-align: right;">
+                <div :gutter="40" class="system-content el-row">
+                    <div class="el-col el-col-12">
+                        <el-carousel indicator-position="outside" arrow="always" class="thematic"
+                            style="border-radius:20px;">
+
+                            <el-carousel-item>
+                                <img src="/../static/img/thematci_center/swmm1.png"
+                                    style="height: 300px;border-radius:20px;border: solid 1px; " alt="">
+                            </el-carousel-item>
+                            <el-carousel-item>
+                                <img src="/../static/img/thematci_center/TrafficNoise.jpg"
+                                    style="height: 300px;border-radius:20px;border: solid 1px" alt="">
+                            </el-carousel-item>
+
+                            <el-carousel-item>
+                                <img src="/../static/img/thematci_center/saga.jpg"
+                                    style="height: 300px;border-radius:20px;border: solid 1px; " alt="">
+                            </el-carousel-item>
+
+                            <el-carousel-item>
+                                <img src="/../static/img/thematci_center/Foresty.png"
+                                    style="height: 300px;border-radius:20px; border: solid 1px;" alt="">
+                            </el-carousel-item>
+
+                            <el-carousel-item>
+                                <img src="/../static/img/thematci_center/Atmosphere.png"
+                                    style="height: 300px;border-radius:20px;border: solid 1px; " alt="">
+                            </el-carousel-item>
+
+                        </el-carousel>
+
+
+                    </div>
+                    <div class="el-col el-col-12">
+                        <div class="content-title">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <span>Thematic Center</span>
+                        </div>
+                        <p class="content-content">Regarding a research topic or a specific problem, multi-disciplinary
+                            knowledge could be involved.
+                            Several thematic centers are constructed to help researchers collect models, data and other
+                            related resources.
+                            Topic-related or problem-related resources could be easily discovered within a thematic
+                            center.
+                            And various web applications would be offered in certain centers.</p>
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                            @click="window.open('http://94.191.49.160:8000/Online_Saga/saga-tools')">Saga
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/hydro-model-integration/main')">SWMM
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/FGM-theme/')">Forest Growth
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                        @click="window.open('http://geomodeling.njnu.edu.cn/TrafficNoiseTheme/')">Traffic Noise
+                        </el-button>
+                        <!--<el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open()">-->
+                            <!--Meteorological-->
+                        <!--</el-button>-->
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                            @click="window.open('/modelItem/repository')">Explore More
+                        </el-button>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="icon-add section_bk_1">
+            <div class="section-content">
+                <div :gutter="40" class="system-content el-row">
+                    <div class="el-col el-col-12">
+                        <div class="content-title">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <span>Participatory Modeling Platform</span>
+                        </div>
+                        <p class="content-content" style="text-align: left;">To solve a complex problem, single human's
+                            expertise may be not enough.
+                            Collaboration is important. Participants from different areas can contribute resources and
+                            ideas
+                            which would largely benefit the problem-solving.
+                            With the Participatory Modeling Platform, dispersal participants can build a team, construct
+                            a
+                            project, upload various resources,
+                            communicate with other, propose solutions, building new models and take other
+                            responsibilities
+                            which can help solving the target problem.</p>
+                        <el-button type="warning" style="margin-top: 32px"
+                            @click="window.open('http://94.191.49.160:8080/GeoProblemSolving/home')">Discover
+                        </el-button>
+                    </div>
+                    <div class="el-col el-col-12">
+                        <img src="/../static/img/particpate_plat.png"
+                            style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="icon-add">
+            <div class="section-content" style="text-align: right;">
+                <div :gutter="40" class="system-content el-row">
+                    <div class="el-col el-col-12">
+                        <img src="../static/img/model_reproduce_jpg.jpg"
+                            style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="">
+                    </div>
+                    <div class="el-col el-col-12">
+                        <div class="content-title">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <span>Web Of Reproducible Science</span>
+                        </div>
+                        <p class="content-content">Collecting data resources to build a harbor where users can explore
+                            modeling-related data through an universal center.
+                            Data resources can be from the sharing of users with their public option. And various data
+                            sharing sites are linked to help users search interested data without go here and there.
+                            We only publish users' resources under their clear permission.</p>
+                        <el-button type="warning" @click="window.open('http://223.2.45.142:1111')"
+                            style="margin-top: 32px">Discover</el-button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Tools -->
+        <section class="section_bk_1">
+            <div class="section-content ">
+                <div class="title">
+                    <!-- <div class="icon">
+                    <i class="fa fa-cube"></i>
+                </div> -->
+                    <!-- <h4>-⚙️-</h4> -->
+                    <h2>Supportive Tools</h2>
+
+                </div>
+                <div style="margin-top: 72px" class="el-row">
+                    <div class="el-col el-col-24">
+                        <!-- <el-menu class="themtic-menu">
+                        <el-menu-item index="thematicchoose(SAGA)">
+                            <i class="fa fa-paper-plane" style="color:#d48806;"></i>
+                           
+                            <span  >SAGA</span>
+                        </el-menu-item>
+                        <el-menu-item index="thematicchoose(Swat)"  style="color:#389e0d;"  >
+                            <i class="fa fa-plug" style="color:#389e0d;"></i>
+                            <span   >Swat</span>
+                        </el-menu-item>
+                        <el-menu-item index="3" style="color:#d4380d;">
+                            <i class="fa fa-tachometer" style="color:#d4380d;"></i>
+                            <span   @click="thematicchoose(TauDEM)">TauDEM</span>
+                        </el-menu-item>
+                        <el-menu-item index="4" style="color:#531dab;">
+                            <i class="fa fa-truck" style="color:#531dab;"></i>
+                            <span  >FVcome</span>
+                        </el-menu-item>
+                        <el-menu-item index="5" style="color:#d46b08;">
+                            <i class="fa fa-github-alt" style="color:#d46b08;"></i>
+                            <span  >Plant</span>
+                        </el-menu-item>
+                    </el-menu> -->
+
+
+                        <el-tabs tab-position=left style="height: 400px;">
+
+                            <el-tab-pane label="Model Service Container" style="text-align:left;margin-left: 30px;">
+                                <div class="el-row">
+                                    <div class="content-title">
+                                        <i class="fa fa-globe"></i>
+                                        <span>Model Service container</span>
+                                    </div>
+                                </div>
+
+                                <div class="el-row">
+                                    <div class="el-col el-col-10">
+                                        <div>
+                                            <div class="el-col el-col-24" style="word-wrap:break-word;">
+                                                <p class="content-content">Model Service Container is developed based on the open source NodeJS, and it mainly provides tools/functions for users to deploy a model as a reusable model-service which can also be managed in the model service container. It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <el-button type="warning" style="margin-top: 16px"
+                                                @click="window.open('http://172.21.212.85:8060/index')">Use Now
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                    <div class="el-col el-col-4">
+                                    </div>
+
+                                    <div class="el-col el-col-8">
+                                        <img src="/../static/img/container_service.png"
+                                            style="width:500px; height: 320px;border-radius:20px;border: solid 1px"
+                                            alt="">
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+
+                            <el-tab-pane label="Data Service Container" style="text-align:left;margin-left: 30px;">
+                                <div class="el-row">
+                                    <div class="content-title">
+                                        <i class="fa fa-globe"></i>
+                                        <span>Data Service Container</span>
+                                    </div>
+                                </div>
+
+                                <div class="el-row">
+                                    <div class="el-col el-col-10">
+                                        <div class="el-row">
+                                            <div class="el-col el-col-24" style="word-wrap:break-word;">
+                                                <p class="content-content">Data Service Container is developed based on the open source NodeJS project, and it mainly provides tools/functions for users to publish data as reusable data-services. It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <el-button type="warning" style="margin-top: 16px"
+                                                @click="window.open('http://172.21.212.85:8899/')">Use Now
+                                            </el-button>
+                                        </div>
+                                    </div>
+                                    <div class="el-col el-col-4">
+                                    </div>
+
+                                    <div clas="el-col el-col-8">
+                                        <img src="/../static/img/datacontainer.png"
+                                            style="width:500px; height: 320px;border-radius:20px;border: solid 1px"
+                                            alt="">
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+
+
+                            <el-tab-pane label="Model Wrapping Tools" style="text-align:left;margin-left: 30px;">
+                                <div class="el-row">
+                                    <div class="content-title">
+                                        <i class="fa fa-globe"></i>
+                                        <span>Model Wrapping Tools</span>
+                                    </div>
+                                </div>
+
+                                <div class="el-row">
+                                    <div class="el-col el-col-10">
+                                        <div class="el-row">
+                                            <div class="el-col el-col-24" style="word-wrap:break-word;">
+                                                <p class="content-content">Model Wrapping Tools are some tools that help
+                                                    users to wrap their own models as services.
+                                                    Tools include Programming Libraries for converting original program
+                                                    as
+                                                    service-enabled program (currently supporting C++, C#, Java and
+                                                    Python)
+                                                    and Model Service Packaging tool for packaging model execution
+                                                    related
+                                                    files as one zip file.</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <el-button type="warning" style="margin-top: 16px">Use Now</el-button>
+                                        </div>
+                                    </div>
+                                    <div class="el-col el-col-4">
+                                    </div>
+
+                                    <div class="el-col el-col-8">
+                                        <img src="/../static/img/wraptools.jpg"
+                                            style="width:500px; height: 320px;border-radius:20px;border: solid 1px"
+                                            alt="">
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+
+
+                        </el-tabs>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </section>
+        <!-- collaborate people -->
+        <section class="icon-add  ">
+            <div class="section-content" style="text-align: left;">
+                <div class="title">
+                    <!-- <div class="icon">
+                    <i class="fa fa-cube"></i>
+                </div> -->
+                    <!-- <h4>-👬-</h4> -->
+                    <h2>Some Collaborators</h2>
+                </div>
+
+                <div style="border-radius: 20px" class="el-row">
+
+                    <!-- <el-carousel :interval="100000" type="card" arrow="always" class="partent"  >
+                        <el-carousel-item >
+                                <center><img src="../static/img/producer/HuangBo.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center> <img src="../static/img/producer/ljz.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>  <img src="../static/img/producer/nzt.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center><img src="../static/img/producer/lixia.jpg" style="width: 80px" class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>  <img src="../static/img/producer/zhangdong.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>  <img src="../static/img/producer/wch.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>  <img src="../static/img/producer/szy.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>   <img src="../static/img/producer/dq.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>    <img src="../static/img/producer/ls.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>    <img src="../static/img/producer/yuanwp.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+                        <el-carousel-item >
+                                <center>   <img src="../static/img/producer/llh.jpg" style="width: 80px"class="colreacherimg"></center>
+                                <br/><center><p>name:xxx</p></center>
+                                <center><p>major:xxx</p></center>
+                        </el-carousel-item>
+
+
+
+
+                </el-carousel> -->
+
+                    <center>
+                        <marquee direction="left" onmouseover="this.stop()" onmouseout="this.start()" scrollamount="6"
+                            loop='-1'>
+
+
+                            <div class="marcontent el-row">
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/cm.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Cao Min">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/dq.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Dai Qiang">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/GuoFei.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Guo Fei">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/HuangBo.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Huang Bo">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/Liujunz.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Liu Junzhi">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/lixia.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Li Xia">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/llh.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Li Longhui">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/ls.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Li Shuo">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/ningliang.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Ning Liang">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/nzt.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Nan ZhuoTong">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/Songzhiy.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Song ZhiYao">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/wch.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Wang Chuanhai">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/xinyueye.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Ye Xinyue">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/XunShi.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Shi Xun">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/YuanLW.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Yuan Linwang">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/yuanwp.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Yuan Wenping">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/yuetianxiang.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Yue Tianxiang">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/Zhangjingb.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Zhang Jinbo">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/zhangjs.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Zhang Jinshan">
+                                </div>
+                                <div class="el-col el-col-1">
+                                    <img src="../static/img/producer/members/Zhangshul.jpg" style="width: 80px"
+                                        class="colreacherimg" title="Zhang Shuliang">
+                                </div>								
+
+                            </div>
+
+                        </marquee>
+                    </center>
+
+
+                </div>
+                <br>
+
+                <center><q>Not limited to these avatars. Please <a href="" style="color:blue">contact us</a> if you
+                        would
+                        like to shown in this banner.</q>
+                </center>
+
+
+            </div>
+        </section>
+
+
+        <div id="partner">
+            <div class="el-row">
+                <div class="title">
+                    <!-- <div class="icon">
+                    <i class="fa fa-cube"></i>
+                </div> -->
+                    <!-- <h4>-🤝-</h4> -->
+                    <h2>Our Important Accompanies</h2>
+                    <!-- <p>Multi-disciplinary knowledge provided by dispersal modeling researchers. knowledge provided by dispersal modeling researchers.</p> -->
+                </div>
+            </div>
+            <div style="width:100%" class="el-row">
+                <div class="el-col el-col-6">
+                    <a href="https://csdms.colorado.edu/wiki/Model_download_portal" target="_blank">
+                        <img src="../static/img/team/CSDMS.png" style="width: 80%;height: 50px;margin-top:20px">
+                    </a>
+
+                </div>
+                <div class="el-col el-col-6">
+                    <a href="https://www.openmi.org/" target="_blank">
+                        <img src="../static/img/team/openMI.png" style="width:180px;height:70px">
+                    </a>
+                </div>
+                <div class="el-col el-col-6">
+                    <a href="http://www.opengeospatial.org/" target="_blank">
+                        <img src="../static/img/team/ogc.png" style="width:140px;height: 80px">
+                    </a>
+
+
+                </div>
+                <div class="el-col el-col-6">
+                    <a href="www.njnu.edu.cn" target="_blank">
+                        <img src="../static/img/team/NJNU.jpg" style="width: 100px;height: 80px">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments/footer :: footer"></div>
+
+        <el-button v-if="showToTopBtn" type="info" plain circle @click="toTop()" class="to-top">
+            <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </el-button>
+    </div>
+
+</body>
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/index/bootstrap.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/css/index/element_ui/index.js"></script>
+<!-- <script src="plugins/echarts.min.js"></script>
+<script src="plugins/echarts-gl.min.js"></script>
+<script src="plugins/swiper/js/swiper.min.js"></script> -->
+
+<script src="../static/js/index/main.js"></script>
+<!-- <script src="js/globe.js"></script> -->
+<script src="../static/js/common/loadUser.js"></script>
+<!-- <script src="page/navigation/navbar/navbar.js"></script> -->
+
+</html>

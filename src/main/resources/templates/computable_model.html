@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Computable Model | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
+    <link rel="stylesheet" th:href="@{../static/css/base/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{../static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{../static/css/base/style.css}">
+    <link rel="stylesheet" th:href="@{../static/css/base/universal.css}">
+    <link rel="stylesheet" th:href="@{../static/css/base/itemInfo.css}">
+    <link rel="stylesheet" th:href="@{../static/css/components/file-manager.css}">
+    <link rel="stylesheet" th:href="@{../static/css/page/model_item_info.css}">
+    <link rel="stylesheet" type="text/css" href="../static/js/conceptModelEditor/styles/grapheditor.css">
+
+    <style>
+        .img img {
+            width: 90px;
+            height: 90px;
+        }
+
+        .el-dialog__header {
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+
+        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #d2d2d2 solid 1px">
+            <div class="detail">
+                <div class="detail_title">
+                    <a th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
+                       class="el-icon-arrow-left" style="font-size: 20px"></a>
+                    <h2 th:utext="${modelInfo.name}"
+                        style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
+
+                    <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'></a>-->
+                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                </div>
+                <div class="detail_overview">
+
+                    <div th:switch="${modelInfo.image}" class="img">
+                        <img th:case="''" src="../static/img/model/calcModel.png">
+                        <img th:case="null" src="../static/img/model/calcModel.png">
+                        <img th:case="*" th:src="'../static/img'+${modelInfo.image}">
+                    </div>
+
+                    <div class="info" style="padding-top:0px">
+                        <p th:text="${modelInfo.description}"></p>
+                        <div class="tags">
+                            <span class="label label-warning">
+                                Computable Model
+                            </span>
+                            <span th:utext="${modelInfo.contentType}" class="label label-info"
+                                  style="margin-left: 10px">Primary</span>
+                        </div>
+                    </div>
+
+                    <div class="detail_option">
+                        <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
+                        <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
+                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
+                        <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="Resource" class="detail_block" style="padding: 10px 20px 0;"
+                 th:if="${modelInfo.contentType=='Package'||modelInfo.contentType=='Code'||modelInfo.contentType=='Library'}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Resource</h4>
+                    </div>
+                    <span class="pull-right" style="margin:-10px 0 0;" th:if="${modelInfo.contentType=='Package'}">
+                            <el-button th:unless="${modelInfo.deploy==true}" type="primary"
+                                       @click="dialogVisible = true">Deploy
+                            </el-button>
+                            <el-button th:if="${modelInfo.deploy==true}" type="success" @click="invoke()">
+                                Invoke
+                            </el-button>
+                        </span>
+                </div>
+                <div class="block_content" style="margin-right: 0;">
+
+                    <el-card :body-style="{ padding:'9px'}">
+                        <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>
+                    </el-card>
+
+
+                    <el-card style="height: 300px;overflow-y:auto" id="browsercont" class="filecontent">
+
+
+                        <!--</el-row>-->
+                        <el-card th:each="data:${resources}"
+                                 th:title="${data.name}" class="dataitemisol" shadow="never" th:id="${data.id}"
+                                 th:key="${data.id}" @click.native="getid(id)">
+
+                            <el-row>
+                                <el-col :span="6">&nbsp</el-col>
+                                <el-col :span="12"><a th:href="'../static/upload/computableModel/'+${modelInfo.contentType}+${data.path}"><img th:src="'../static/img/filebrowser/'+${data.suffix}+'.svg'"
+                                                        style="height: 60%;width:100%"></a></el-col>
+                                <el-col :span="6">&nbsp</el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="2">&nbsp</el-col>
+                                <el-col :span="20">
+
+                                    <p style="word-wrap: break-word;word-break: break-all;text-align: center" th:text="${data.name}"></p>
+                                </el-col>
+                                <el-col :span="2">&nbsp</el-col>
+
+                            </el-row>
+
+                            <!--menu item -->
+
+
+                        </el-card>
+                    </el-card>
+
+
+                    <el-card class="browsermenu">
+                        <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download
+                        </el-button>
+                        <br>
+                        <el-button id="sbtn" icon="el-icon-share" @click="share" type="text">share</el-button>
+                    </el-card>
+                    <!--refresh 白板刷新和全选功能，待进一步完善-->
+
+                    <!--<el-card class="browser">-->
+                    <!--<el-button icon="el-icon-refresh" type="text">refresh</el-button><br>-->
+                    <!--<el-button icon="el-icon-check" type="text">selectAll</el-button>-->
+                    <!--</el-card>-->
+
+
+                </div>
+            </div>
+            <div id="link" class="detail_block"
+                 th:if="${modelInfo.contentType=='Link'||modelInfo.contentType=='Service'}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Link</h4>
+                    </div>
+                </div>
+                <div class="block_content flex">
+                    <div id="link-text" class="width:100%">
+                        <a th:href="${modelInfo.url}" th:text="${modelInfo.url}" target="_blank">
+                            http://www.geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="description" class="detail_block" th:if="${modelInfo.detail!=null&&modelInfo.detail!=''}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div th:utext="${modelInfo.detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                </div>
+                <div class="fullPaper text-center hide">
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Text<i class="fa fa-angle-down"
+                                                                                              style="margin-left: 10px;color:red;font-weight: bold"
+                                                                                              aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+            <div id="cite" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>How to cite</h4>
+                    </div>
+                </div>
+                <div class="block_content flex">
+                    <div id="cite-text" class="width:100%">
+                            <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
+                            Tom Marvolo Riddle.(2018).Integrated stand growth model data,
+                            </span>
+                        <a th:href="'http://www.geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
+                           th:text="'http://www.geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
+                            http://www.geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        </a>
+                    </div>
+                    <div id="copy" class="btn btn-info">
+                        Copy
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel el-col el-col-5" style="border-left: #d2d2d2 solid 1px;margin-left:-1px">
+                <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
+                    <div class="block_head">
+                        <div class="head_text" style="padding-left: 10px;">
+                            <h4>Contributor</h4>
+                        </div>
+                    </div>
+                    <div class="block_content">
+                        <div class="el-row"
+                             style="height: 40px; display: flex; justify-content: center; align-items: center;">
+                            <div class="el-col el-col-4 el-col-offset-3">
+                                <img th:src="${user.image}==''?'../static/img/icon/default.png':${user.image}"
+                                     class="round_icon" style="width:40px;height: 40px;float:left;">
+                            </div>
+                            <div class="el-col el-col-20">
+                                <div class="pull-left" style="display: block;margin-left: 25px;">
+                                    <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo
+                                        Riddle</h4></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="el-row el-col-offset-3">
+                            <div class="text-center">
+                                <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Authorship" class="detail_block" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+                    <div class="block_head">
+                        <div class="head_text" style="padding-left: 10px;">
+                            <h4>Authorship</h4>
+                        </div>
+                    </div>
+                    <div class="block_content text-center" style="padding-left:10px">
+
+                        <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                        <span role="button" tabindex="0" class="ab" style="float: right;"><a
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true">[Expand]</a></span>
+                            <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</div>
+                            <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true" style="">
+                                <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                    <dl>
+                                        <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
+                                        <dd th:if="${author.ins!=''}" th:text="${author.ins}"></dd>
+                                        <dt th:if="${author.email!=''}">Email: &nbsp</dt>
+                                        <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
+                                        <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
+                                        <dd th:if="${author.homepage!=''}" ><a th:href="${author.homepage}" target="_blank">View</a></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="QR" class="detail_block">
+                    <div class="block_head">
+                        <div class="head_text" style="padding-left: 10px;">
+                            <h4>QR Code</h4>
+                        </div>
+                    </div>
+                    <div class="block_content">
+
+                        <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                    </div>
+                </div>
+
+        </div>
+
+    </div>
+
+
+    <el-dialog
+            title=""
+            :visible.sync="dialogVisible"
+            width="30%"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            :show-close="dialogShowClose">
+        <span v-if="contentBeforeDeploy">
+            <h4>This computable model has not been deployed, do you want to deploy it now?</h4>
+        </span>
+        <span v-if="contentDeploying">
+            <h4 style="padding-bottom: 15px;">Deploying...</h4>
+            <div class="progress progress-striped active progress-sm">
+                <div style="width: 100%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" role="progressbar"
+                     class="progress-bar progress-bar-info">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+        </span>
+        <span v-if="contentAfterDeploy_suc">
+            <h4>Deploy successfully!</h4>
+        </span>
+        <span v-if="contentAfterDeploy_fail">
+            <h4>Deploy failed! Please try again.</h4>
+        </span>
+        <span v-if="footerBeforeDeploy" slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="deploy">OK</el-button>
+        </span>
+        <span v-if="footerAfterDeploy" slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="window.location.reload();">OK</el-button>
+        </span>
+    </el-dialog>
+
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<script src="../static/element-ui/index.js"></script>
+<script src="../static/js/common/qrcode.min.js"></script>
+<script src="../static/js/page/computable_model.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+<script src="../static/js/common/copy.js"></script>
+<script src="../static/js/common/bootstrap.min.js"></script>
+</html>

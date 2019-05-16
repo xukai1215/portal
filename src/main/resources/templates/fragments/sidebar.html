@@ -1,0 +1,415 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar">
+    <!-- START PAGE SIDEBAR -->
+    <div class="page-sidebar">
+        <!-- START X-NAVIGATION -->
+        <ul class="x-navigation" :style="{'min-height':ScreenMinHeight}">
+            <li class="xn-logo">
+                <a>
+                    {{userName}}
+                </a>
+            </li>
+            <li class="xn-profile">
+                <div class="profile">
+                    <div class="profile-image">
+                        <a href="/home">
+                            <img src="../static/img/logo/logo.png" alt="Open GMS" />
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="xn-title">Navigation</li>
+            <li class="xn-li" :class="{active:activeIndex==1}" @click="changeOpen(1)">
+                <a href="javascript:void(0)" @click="menuClick(1)">
+                    <!-- <a routerLink="/userSpace/main"> -->
+                    <span class="fa fa-desktop"></span>
+                    <span class="xn-text">Dashborad</span>
+                </a>
+            </li>
+
+            <li class="xn-li xn-openable" :class="{active:activeIndex==2}" @click="changeOpen(2)">
+                <a href="javascript:void(0)">
+                    <span class="fa fa-th"></span>
+                    <span class="xn-text">Models</span>
+                </a>
+                <ul>
+                    <li :class="{active:childIndex==1}">
+                        <a href="javascript:void(0)" @click="menuClick(2)">
+                            <!-- <a routerLink="/userSpace/modelItems"> -->
+                            <span class="fa fa-object-group"></span> Model Items</a>
+                    </li>
+                    <li :class="{active:childIndex==2}">
+                        <a href="javascript:void(0)" @click="menuClick(3)">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Conceptual Models</a>
+                    </li>
+
+                    <li :class="{active:childIndex==3}">
+                        <a href="javascript:void(0)" @click="menuClick(4)">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Logical Models</a>
+                    </li>
+
+
+                    <li :class="{active:childIndex==4}">
+                        <a href="javascript:void(0)" @click="menuClick(5)">
+                            <!-- <a routerLink="/userSpace/computable"> -->
+                            <span class="fa fa-server"></span> Computable Models</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--data todo 个人空间中的数据服务，目前只想到了两个：可视化和服务配置-->
+            <li class="xn-li xn-openable" :class="{active:activeIndex==6}" @click="changeOpen(6)">
+                <a href="javascript:void(0)">
+                    <span class="fa fa-th"></span>
+                    <span class="xn-text">Data</span>
+                </a>
+                <ul>
+                    <li :class="{active:childIndex==6}">
+                        <a href="javascript:void(0)" @click="menuClick(8)">
+                            <!-- <a routerLink="/userSpace/modelItems"> -->
+                            <span class="fa fa-object-group"></span> Data Visualization</a>
+                    </li>
+                    <li :class="{active:childIndex==7}">
+                        <a href="javascript:void(0)" @click="menuClick(9)">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Service Configuration</a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+
+            <li class="xn-li" :class="{active:activeIndex==3}" @click="changeOpen(3)">
+                <a href="javascript:void(0)" @click="menuClick(6)">
+                    <!-- <a routerLink="/userSpace/tasks"> -->
+
+                    <span class="fa fa-tasks"></span>
+                    <span class="xn-text">Tasks</span>
+                </a>
+            </li>
+
+        </ul>
+        <!-- END X-NAVIGATION -->
+    </div>
+    <!-- END PAGE SIDEBAR -->
+</div>
+<div th:fragment="create1">
+    <div id="menu" class="page-sidebar">
+        <!-- START X-NAVIGATION -->
+        <ul class="x-navigation" :style="{'min-height':ScreenMinHeight}">
+            <li class="xn-logo">
+                <a style="width: 195px;height:20px">
+                    {{userName}}
+                </a>
+            </li>
+            <li class="xn-profile">
+                <div class="profile" style="width: 200px;height: 47.391px">
+                    <div class="profile-image">
+                        <a href="/home">
+                            <img src="../static/img/logo/logo.png" alt="Open GMS" style="padding:0px" />
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="xn-title" style="width:195px">Navigation</li>
+            <li class="xn-li" :class="{active:activeIndex==1}" @click="changeOpen(1)">
+                <a href="/user/userSpace" @click="setSession('tap','1')" style="width:195px">
+                    <!-- <a routerLink="/userSpace/main"> -->
+                    <span class="fa fa-desktop"></span>
+                    <span class="xn-text">Dashborad</span>
+                </a>
+            </li>
+            <li class="xn-li xn-openable" :class="{active:activeIndex==2}" @click="changeOpen(2)">
+                <a href="javascript:void(0)" style="width:195px">
+                    <span class="fa fa-th"></span>
+                    <span class="xn-text">Models</span>
+                </a>
+                <ul>
+                    <li :class="{active:childIndex==1}">
+                        <a href="/user/userSpace" @click="setSession('tap','2')">
+                            <!-- <a routerLink="/userSpace/modelItems"> -->
+                            <span class="fa fa-object-group"></span> Model Items</a>
+                    </li>
+                    <li :class="{active:childIndex==2}">
+                        <a href="/user/userSpace" @click="setSession('tap','3')">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Conceptual Models</a>
+                    </li>
+                    <li :class="{active:childIndex==3}">
+                        <a href="/user/userSpace" @click="setSession('tap','4')">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Logical Models</a>
+                    </li>
+
+                    <li :class="{active:childIndex==4}">
+                        <a href="/user/userSpace" @click="setSession('tap','5')">
+                            <!-- <a routerLink="/userSpace/computable"> -->
+                            <span class="fa fa-server"></span> Computable Models</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="xn-li xn-openable" :class="{active:activeIndex==6}" @click="changeOpen(6)">
+                <a href="javascript:void(0)"  style="width:195px">
+                    <span class="fa fa-th"></span>
+                    <span class="xn-text">Data</span>
+                </a>
+                <ul>
+                    <li :class="{active:childIndex==6}">
+                        <a href="javascript:void(0)" @click="setSession('tap','8')">
+                            <!-- <a routerLink="/userSpace/modelItems"> -->
+                            <span class="fa fa-object-group"></span> Data Visualization</a>
+                    </li>
+                    <li :class="{active:childIndex==7}">
+                        <a href="javascript:void(0)" @click="setSession('tap','9')">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Service Configuration</a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+            <li class="xn-li" :class="{active:activeIndex==3}" @click="changeOpen(3)">
+                <a href="/user/userSpace" @click="setSession('tap','6')" style="width:195px">
+                    <!-- <a routerLink="/userSpace/tasks"> -->
+
+                    <span class="fa fa-tasks"></span>
+                    <span class="xn-text">Tasks</span>
+                </a>
+            </li>
+        </ul>
+        <!-- END X-NAVIGATION -->
+    </div>
+</div>
+<div th:fragment="create">
+    <div id="menu" class="page-sidebar">
+        <!-- START X-NAVIGATION -->
+        <ul class="x-navigation" :style="{'min-height':ScreenMinHeight}">
+            <li class="xn-logo">
+                <a>
+                    {{userName}}
+                </a>
+            </li>
+            <li class="xn-profile">
+                <div class="profile">
+                    <div class="profile-image">
+                        <a href="/home">
+                            <img src="../static/img/logo/logo.png" alt="Open GMS" style="padding:0px" />
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="xn-title">Navigation</li>
+            <li class="xn-li" :class="{active:activeIndex==1}" @click="changeOpen(1)">
+                <a href="/user/userSpace" @click="setSession('tap','1')">
+                    <!-- <a routerLink="/userSpace/main"> -->
+                    <span class="fa fa-desktop"></span>
+                    <span class="xn-text">Dashborad</span>
+                </a>
+            </li>
+            <li class="xn-li xn-openable" :class="{active:activeIndex==2}" @click="changeOpen(2)">
+                <a href="javascript:void(0)">
+                    <span class="fa fa-th"></span>
+                    <span class="xn-text">Models</span>
+                </a>
+                <ul>
+                    <li :class="{active:childIndex==1}">
+                        <a href="/user/userSpace" @click="setSession('tap','2')">
+                            <!-- <a routerLink="/userSpace/modelItems"> -->
+                            <span class="fa fa-object-group"></span> Model Items</a>
+                    </li>
+                    <li :class="{active:childIndex==2}">
+                        <a href="/user/userSpace" @click="setSession('tap','3')">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Conceptual Models</a>
+                    </li>
+                    <li :class="{active:childIndex==3}">
+                        <a href="/user/userSpace" @click="setSession('tap','4')">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Logical Models</a>
+                    </li>
+
+                    <li :class="{active:childIndex==4}">
+                        <a href="/user/userSpace" @click="setSession('tap','5')">
+                            <!-- <a routerLink="/userSpace/computable"> -->
+                            <span class="fa fa-server"></span> Computable Models</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="xn-li xn-openable" :class="{active:activeIndex==6}" @click="changeOpen(6)">
+                <a href="javascript:void(0)"  style="width:195px">
+                    <span class="fa fa-th"></span>
+                    <span class="xn-text">Data</span>
+                </a>
+                <ul>
+                    <li :class="{active:childIndex==6}">
+                        <a href="javascript:void(0)" @click="setSession('tap','8')">
+                            <!-- <a routerLink="/userSpace/modelItems"> -->
+                            <span class="fa fa-object-group"></span> Data Visualization</a>
+                    </li>
+                    <li :class="{active:childIndex==7}">
+                        <a href="javascript:void(0)" @click="setSession('tap','9')">
+                            <!-- <a routerLink="/userSpace/conceptual"> -->
+                            <span class="fa fa-image"></span> Service Configuration</a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+            <li class="xn-li" :class="{active:activeIndex==3}" @click="changeOpen(3)">
+                <a href="/user/userSpace" @click="setSession('tap','6')" style="width:195px">
+                    <!-- <a routerLink="/userSpace/tasks"> -->
+
+                    <span class="fa fa-tasks"></span>
+                    <span class="xn-text">Tasks</span>
+                </a>
+            </li>
+        </ul>
+        <!-- END X-NAVIGATION -->
+    </div>
+</div>
+
+<div th:fragment="side">
+    <div class="el-col-lg-3 el-col-md-4">
+        <div class="logo" style="float:none;margin:auto;height: 50px;cursor:pointer" onclick="window.location.href='/home'"> </div>
+
+        <el-menu
+                :default-active="defaultActive"
+                ref="menu"
+                class="el-menu-vertical-demo"
+                @select="handleSelect"
+                background-color="#1b1e24"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+            <el-menu-item index="1">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>Dashboard</span>
+                </template>
+            </el-menu-item>
+            <el-submenu index="2">
+                <template slot="title">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">Model</span>
+                </template>
+                <el-menu-item index="2-1">Model Items</el-menu-item>
+                <el-menu-item index="2-2">Conceptual Models</el-menu-item>
+                <el-menu-item index="2-3">Logical Models</el-menu-item>
+                <el-menu-item index="2-4">Computable Models</el-menu-item>
+            </el-submenu>
+            <el-submenu index="3">
+                <template slot="title">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">Data</span>
+                </template>
+                <el-menu-item index="3-1">Data Items</el-menu-item>
+                <el-menu-item index="3-3">My Data</el-menu-item>
+            </el-submenu>
+            <!--<el-submenu index="4">-->
+                <!--<template slot="title">-->
+                    <!--<i class="el-icon-menu"></i>-->
+                    <!--<span slot="title">Community</span>-->
+                <!--</template>-->
+                <!--<el-menu-item index="4-1">Concept & Semantic</el-menu-item>-->
+                <!--<el-menu-item index="4-2">Spatial Reference</el-menu-item>-->
+                <!--<el-menu-item index="4-3">Data Template</el-menu-item>-->
+                <!--<el-menu-item index="4-4">Unit & Metric</el-menu-item>-->
+            <!--</el-submenu>-->
+
+            <el-menu-item index="5">
+                <i class="el-icon-setting"></i>
+                <span slot="title">Task</span>
+            </el-menu-item>
+
+
+        </el-menu>
+    </div>
+</div>
+
+<div th:fragment="top">
+    <div class="text-center" style="background-color: #1b1e24;padding-top:7px;height: 50px;">
+        <div style="display:inline-block;color:white;font-size:25px;">User Space</div>
+
+        <li class="navbar-right dropdown" style="display: inline-block;float: right;height: 50px">
+            <a style="padding:5px 25px 0;cursor:pointer" class="fa fa-bars fa-2x" id="dLabel" type="button" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
+            </a>
+            <ul class="dropdown-menu" style="margin-top:-8px;" aria-labelledby="dLabel">
+                <li><a href="/modelItem/repository">Model Repository</a></li>
+                <li><a href="/dataitems">Data Repository</a></li>
+                <li><a href="/user/out" >Log Out</a></li>
+            </ul>
+        </li>
+    </div>
+</div>
+
+<div th:fragment="top1">
+    <div class="text-center" style="background-color: #1b1e24;padding-top:7px;height: 50px;">
+        <div style="display:inline-block;color:white;font-size:25px;">Create Model Item</div>
+
+        <li class="navbar-right dropdown" style="display: inline-block;float: right;height: 50px">
+            <a style="padding:5px 25px 0;cursor:pointer" class="fa fa-bars fa-2x" id="dLabel" type="button" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
+            </a>
+            <ul class="dropdown-menu" style="margin-top:-8px;" aria-labelledby="dLabel">
+                <li><a href="/modelItem/repository">Model Repository</a></li>
+                <li><a href="/dataitems">Data Repository</a></li>
+                <li><a href="/user/out" >Log Out</a></li>
+            </ul>
+        </li>
+    </div>
+</div>
+
+<div th:fragment="top2">
+    <div class="text-center" style="background-color: #1b1e24;padding-top:7px;height: 50px;">
+        <div style="display:inline-block;color:white;font-size:25px;">Create Conceptual Model</div>
+
+        <li class="navbar-right dropdown" style="display: inline-block;float: right;height: 50px">
+            <a style="padding:5px 25px 0;cursor:pointer" class="fa fa-bars fa-2x" id="dLabel" type="button" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
+            </a>
+            <ul class="dropdown-menu" style="margin-top:-8px;" aria-labelledby="dLabel">
+                <li><a href="/modelItem/repository">Model Repository</a></li>
+                <li><a href="/dataitems">Data Repository</a></li>
+                <li><a href="/user/out" >Log Out</a></li>
+            </ul>
+        </li>
+    </div>
+</div>
+
+<div th:fragment="top3">
+    <div class="text-center" style="background-color: #1b1e24;padding-top:7px;height: 50px;">
+        <div style="display:inline-block;color:white;font-size:25px;">Create Logical Model</div>
+
+        <li class="navbar-right dropdown" style="display: inline-block;float: right;height: 50px">
+            <a style="padding:5px 25px 0;cursor:pointer" class="fa fa-bars fa-2x" id="dLabel" type="button" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
+            </a>
+            <ul class="dropdown-menu" style="margin-top:-8px;" aria-labelledby="dLabel">
+                <li><a href="/modelItem/repository">Model Repository</a></li>
+                <li><a href="/dataitems">Data Repository</a></li>
+                <li><a href="/user/out" >Log Out</a></li>
+            </ul>
+        </li>
+    </div>
+</div>
+
+<div th:fragment="top4">
+    <div class="text-center" style="background-color: #1b1e24;padding-top:7px;height: 50px;">
+        <div style="display:inline-block;color:white;font-size:25px;">Create Computable Model</div>
+
+        <li class="navbar-right dropdown" style="display: inline-block;float: right;height: 50px">
+            <a style="padding:5px 25px 0;cursor:pointer" class="fa fa-bars fa-2x" id="dLabel" type="button" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
+            </a>
+            <ul class="dropdown-menu" style="margin-top:-8px;" aria-labelledby="dLabel">
+                <li><a href="/modelItem/repository">Model Repository</a></li>
+                <li><a href="/dataitems">Data Repository</a></li>
+                <li><a href="/user/out" >Log Out</a></li>
+            </ul>
+        </li>
+    </div>
+</div>
+</body>
+</html>

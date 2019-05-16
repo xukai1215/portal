@@ -1,0 +1,175 @@
+body{
+  min-width: 1200px;
+}
+.main {
+  /*min-width: 1200px;*/
+}
+.main .slider {
+  border-right: solid 2px rgb(156, 154, 154);
+  min-height: 700px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  padding: 10px 10px;
+}
+
+
+
+.main .content {
+  overflow: hidden;
+
+  padding: 10px 10px 10px 30px;
+}
+
+.image {
+  max-width: 90%;
+  max-height: 45%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.image > img {
+  max-width: 100%;
+  overflow: hidden;
+}
+.slider > p {
+  font-size: 16px;
+}
+.btn-list {
+  margin: 0px;
+  padding: 0px;
+}
+.btn-list .el-button{
+  display: block;
+  margin: 1rem 0;
+  min-width: 12rem;
+}
+.el-button {
+  margin: 5px 0px;
+  padding: 1rem;
+}
+.main .content > .title {
+  font-size: 18px;
+  padding: 0px 0px 30px 0px;
+}
+
+
+._main {
+  position: relative;
+}
+._title {
+  position: relative;
+  font-size: 18px;
+  padding: 2rem 0;
+}
+._title i {
+  font-size: 30px !important;
+}
+
+._btn-group {
+  margin:0.5rem 0 0 1.5rem;
+}
+
+._btn-group .el-button{
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+
+}
+._params-group {
+  position: relative;
+  padding-bottom: 1rem;
+
+}
+.state-container{
+  border-top: double 4px #999;
+  padding: 2rem 0;
+}
+.state-container:last-child{
+  border-bottom: double 4px #999;
+}
+
+._params-group > ._title {
+  font-style: italic;
+  font-size: 16px;
+  padding-bottom: 10px;
+  border-bottom: solid 2px #999;
+}
+._params-group > ._items {
+  padding: 10px 0px 6px 50px;
+}
+._params-group > ._items > ._item {
+  padding: 7px 0;
+  border-bottom: dotted 1px #999999;
+}
+._save-btn {
+  margin-top: 20px;
+}
+._state-desc {
+  margin: 0px 0px 35px 0px;
+  padding: 4px 0px;
+  line-height: 2;
+  background-color: #f3f3f3;
+  font-size: 16px;
+  font-style: italic;
+}
+.desc{
+  padding: 1rem 0;
+}
+
+.model_title{
+  margin: 3rem 0 3rem;
+}
+model_date{
+  font-size: 0.6rem;
+  color: #777777;
+
+}
+.desc-title{
+  font-size: 2rem;
+  margin: 2rem 0;
+}
+.state-name{
+    font-size: 1.6rem;
+
+}
+.state-desc{
+  font-style: italic;
+  margin:2rem 0;
+}
+
+.event-name{
+  display: inline-block;
+  font-size: 1.8rem;
+  white-space: nowrap;
+  line-height: 2.6;
+}
+.event-desc{
+  font-style: italic;
+  padding:0.5rem 1rem 0;
+}
+.model-input{
+  margin: 0.8rem 0;
+}
+.model-input .el-input__inner{
+  height: 32px;
+}
+._event-desc{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.my-pagination{
+ text-align: center;
+}
+.user{
+  display: inline-block;
+  text-align: center;
+}
+.user-name{
+  text-align: center;
+}
+.image i{
+  font-size: 10rem;
+  margin-left: 4rem;
+  margin-top: 4rem;
+  color: #3DA0DB;
+}

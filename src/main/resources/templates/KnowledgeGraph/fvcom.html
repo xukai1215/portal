@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" />
+    <title>FVCOM Knowledge Graph</title>
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
+    <link
+      rel="stylesheet"
+      th:href="@{/static/KnowledgeGraph/css/amaze/extension/datetimepicker/css/amazeui.datetimepicker.css}"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.css}"
+    />
+	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
+    <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
+    <style>
+      .am-g.am-datatable-footer {
+        display: flex;
+      }
+      .am-g.am-datatable-footer .am-u-sm-5 {
+        width: 0 !important;
+      }
+      .am-g.am-datatable-footer .am-u-sm-7 {
+        width: 100% !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="app">
+      <div class="aside">
+        <div>
+          <i class="fa fa-globe fa-3x" style="color:#98df8a"></i>
+          <h4>FVCOM</h4>
+        </div>
+        <div class="tags">
+          <span class="tag">Triangulation Network</span>
+          <span class="tag">Hydrologic Model</span>
+        </div>
+        <div class="desc">
+          FVCOM is a prognostic, unstructured grid, finite-volume, free-surface,
+          three-dimensional (3-D) primitive equations ocean model developed by
+          Chen et al. (2003a). The original version of FVCOM consists of
+          momentum, continuity, temperature, salinity and density equations and
+          is closed physically and mathematically using the Mellor and Yamada
+          level 2.5 turbulent closure scheme for vertical mixing and the
+          Smagorinsky turbulent closure scheme for horizontal mixing. The
+          irregular bottom topography is represented using a σ-coordinate
+          transformation, and the horizontal grids are comprised of unstructured
+          triangular cells. FVCOM solves the governing equations in integral
+          form by computing fluxes between non-overlapping horizontal triangular
+          control volumes. This finite-volume approach combines the best of
+          finite-element methods (FEM) for geometric flexibility and
+          finite-difference methods (FDM) for simple discrete structures and
+          computational efficiency. This numerical approach also provides a much
+          better representation of mass, momentum, salt, and heat conservation
+          in coastal and estuarine regions with complex geometry. The
+          conservative nature of FVCOM in addition to its flexible grid topology
+          and code simplicity make FVCOM ideally suited for interdisciplinary
+          application in the coastal ocean.
+        </div>
+        <ul class="menu">
+          <li v-bind:class="{active:active===0}" @click="indexChange(0)">
+            index
+          </li>
+          <li v-bind:class="{active:active===1}" @click="indexChange(1)">
+            History
+          </li>
+          <li v-bind:class="{active:active===2}" @click="indexChange(2)">
+            Map
+          </li>
+          <li v-bind:class="{active:active===3}" @click="indexChange(3)">
+            Keywords
+          </li>
+        </ul>
+      </div>
+      <div class="main">
+        <div class="graphPanel" v-show="active===0">
+          <div id="searchPanel">
+            <p>请选择年份</p>
+            <input
+              type="text"
+              value="2018"
+              id="datetimepicker"
+              class="am-form-field"
+            />
+          </div>
+          <ul class="legend"></ul>
+          <div id="d3Canvas"></div>
+          <div
+            class="am-panel am-panel-default am-animation-slide-right"
+            id="infoPanel"
+            v-if="infoPanelShow"
+          >
+            <div class="am-panel-hd">
+              {{ nodeName }}
+              <a href="#" class="am-close pull-right">&times;</a>
+            </div>
+            <div class="am-panel-bd">
+              <table
+                class="am-table am-table-striped am-table-bordered am-table-compact"
+                id="linkTable"
+              >
+                <thead>
+                  <tr>
+                    <th style="text-align: center">Name</th>
+                    <th style="text-align: center">Type</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="historyPanel" v-show="active===1">
+          <div class="btn-group">
+            <button
+              type="button"
+              class="am-btn am-round"
+              v-bind:class="{'am-btn-default':histroyActive===1,'am-btn-primary':histroyActive===0}"
+              @click="historyChange(0)"
+            >
+              Research trend
+            </button>
+            <button
+              type="button"
+              class="am-btn am-round"
+              v-bind:class="{'am-btn-default':histroyActive===0,'am-btn-primary':histroyActive===1}"
+              @click="historyChange(1)"
+            >
+              Research Country
+            </button>
+          </div>
+          <div
+            v-show="histroyActive===0"
+            style="width:100%;height:100%;display: flex"
+          >
+            <div id="historyGraph"></div>
+            <div class="orderPanel">
+              <h5>Researcher Order</h5>
+              <ul>
+                <li
+                  v-for="item of researcherOrder"
+                  :key="item.id"
+                  :id="item.id"
+                >
+                  <i class="fa fa-user-circle fa-fw"></i>
+                  {{ item.name.trim() }}
+                </li>
+              </ul>
+              <h5>Agency Order</h5>
+              <ul>
+                <li v-for="item of agencyOrder" :key="item.id" :id="item.id">
+                  <i class="fa fa-institution fa-fw"></i>
+                  {{ item.name }}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="countryGraph" v-show="histroyActive===1"></div>
+        </div>
+        <div class="mapPanel" v-show="active===2">
+          <div id="leadletMap"></div>
+        </div>
+        <div class="keywordsPanel" v-show="active===3">
+          <div id="keywordChart"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/css/amaze/js/amazeui.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/css/amaze/extension/datetimepicker/js/amazeui.datetimepicker.min.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/js/echarts/echarts.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/js/leaflet/leaflet.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/js/geojsonhint.js}"></script>
+  <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
+  <!-- <script src="js/echarts//extension/modularity.js"></script> -->
+  <script th:src="@{/static/KnowledgeGraph/js/fvcom.js}"></script>
+</html>

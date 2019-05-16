@@ -1,0 +1,165 @@
+h1,h2,h3{
+    font-weight: bold;
+}
+
+a:hover{
+    text-decoration:none;
+}
+
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    /* background: #e1eaf3!important; */
+    background: #f3f3f3!important;
+    /* overflow-x: hidden */
+  }
+
+/*scrollbar样式*/
+.scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 5px;
+    background-color: #F5F5F5;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: #666666;
+}
+
+
+
+/*修改bootstrap按钮颜色*/
+.btn-primary {
+    background-color: #00c0ff;
+    border-color: transparent!important;
+}
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:hover {
+    border-color: transparent!important;
+    background-color: #25d4c1!important;
+    outline: none!important;
+}
+
+.btn-success {
+    /*background-color: #00b04f!important;*/
+    border-color: transparent!important;
+}
+
+.btn-file.btn-primary,
+.btn-file.btn-primary:hover,
+.btn-file.btn-primary:focus,
+.btn-file.btn-primary:active {
+    background-color: #009e71!important;
+}
+
+.btn-success:active,
+.btn-success:focus,
+.btn-success:hover {
+    border-color: transparent!important;
+    outline: none!important;
+}
+
+.btn-transparent {
+    border-radius: 0!important;
+    color: #101010!important;
+    font-size: 16px;
+    background-color: transparent!important;
+    border-color: #1ac7c7!important;
+}
+
+/*.btn-info {*/
+    /*border-radius: 0!important;*/
+    /*color: #FFFFFF!important;*/
+    /*font-size: 16px;*/
+    /*background-color: transparent!important;*/
+    /*border-color: #25d4c1!important;*/
+/*}*/
+/*.btn-info:active,*/
+/*.btn-info:focus,*/
+/*.btn-info:hover {*/
+    /*color: #fff!important;*/
+    /*border-color: #039be5!important;*/
+    /*background-color: #25d4c1!important;*/
+    /*outline: none!important;*/
+/*}*/
+
+.btn-transparent:active,
+.btn-transparent:focus,
+.btn-transparent:hover {
+    color: #fff!important;
+    border-color: #039be5!important;
+    background-color: #0097e6!important;
+    outline: none!important;
+}
+
+.panel-default >.panel-heading > .panel-title {
+    text-align: center;
+}
+
+.panel-default:not(.default-style) >.panel-heading{
+    /*  display: inline-block;
+        padding: 4px 0;*/
+    height: 51px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.panel-default:not(.default-style) >.panel-heading > .panel-title {
+    height: 51px;
+    line-height: 51px;
+    margin: auto;
+    vertical-align: middle;
+    display: block;
+}
+.panel-default >.panel-heading > .panel-title > span:first-child {
+    font-weight: normal!important;
+}
+
+.nav-tabs {
+    border-bottom-color: #bbb;
+    margin-top: 0px;
+}
+
+.nav-tabs.default-style:not(.highlight) > li.active > a {
+    border-color: #bbb!important;
+    border-bottom-color: transparent!important;
+}
+
+
+.nav.nav-tabs:not(.default-style) > li > a {
+    border-radius: 0!important;
+    margin-right: 0!important;
+    border: 1px solid #bbb!important;
+    color: #000!important;
+}
+
+.nav.nav-tabs:not(.default-style) > li:not(.active):not(:last-child) > a {
+    /*border-right-color: transparent!important;*/
+}
+.nav.nav-tabs:not(.default-style) > li.active + li:not(.active) > a {
+    border-left-color: transparent!important;
+}
+.nav.nav-tabs:not(.default-style) > li.active > a {
+    border-color: #25d4c1!important;
+    border-bottom-color: transparent!important;
+    color: #039be5!important;
+}
+
+.nav.nav-tabs:not(.default-style) > li.acive:first-child > a {
+    border-left-color: #25d4c1!important;
+}
+.nav.nav-tabs:not(.default-style) > li:first-child > a {
+    border-left: 1px solid #bbb!important;
+}
+
+.nav.nav-tabs:not(.default-style) + .tab-content {
+    border: 1px solid #bbb;
+    border-top: none;
+}

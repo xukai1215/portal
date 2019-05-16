@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OpenGMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="../static/homePage/images/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/homePage/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/homePage/plugins/swiper/css/swiper.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/homePage/css/style.css" />
+    <link rel="stylesheet" th:href="@{../static/css/base/universal.css}">
+    <style>
+        .el-carousel{
+            overflow-x: inherit;
+        }
+    </style>
+</head>
+
+<body style="overflow-x: hidden">
+    <div id="app">
+
+        <div th:replace="fragments/navbar :: unlog"></div>
+
+        <div class="loading" :style="loadingStyle()"> </div>
+        <!--banner-->
+        <el-row class="carousel_container">
+            <div>
+                <el-carousel :interval="5000" arrow="always" :height="carouselHeight">
+                    <el-carousel-item>
+                        <img src="../static/homePage/images/carousels/_1.jpg">
+                        <div class="carousel-img-mask"></div>
+                    </el-carousel-item>
+                    <el-carousel-item>
+                        <img src="../static/homePage/images/carousels/_2.jpg">
+                        <div class="carousel-img-mask"></div>
+                    </el-carousel-item>
+                    <el-carousel-item>
+                        <img src="../static/homePage/images/carousels/_3.jpg">
+                        <div class="carousel-img-mask"></div>
+                    </el-carousel-item>
+                    <el-carousel-item>
+                        <img src="../static/homePage/images/carousels/_4.jpg">
+                        <div class="carousel-img-mask"></div>
+                    </el-carousel-item>
+                </el-carousel>
+            </div>
+        </el-row>
+
+        <!--Platform Functionalities-->
+        <section class="block block-visited">
+            <div class="title">Platform Functionalities</div>
+            <el-row class="item" type="flex" justify="center">
+                <el-col :span="8" class="content">
+                    <el-card>
+                        <div class="icon" style="color:#33ccff">
+                            <i class="fa fa-globe"></i>
+                        </div>
+                        <h3>Collecting Modeling Resources</h3>
+                        <p>Multi-disciplinary knowledge provided by dispersal modeling researchers</p>
+                    </el-card>
+                </el-col>
+                <el-col :span="8" class="content">
+                    <el-card>
+                        <div class="icon" style="color:#33cccc">
+                            <i class="fa fa-file-text"></i>
+                        </div>
+                        <h3>Describing Modeling Resources</h3>
+
+                        <p>A geo-analysis model dictionary with clear and structured explanation</p>
+                    </el-card>
+                </el-col>
+                <el-col :span="8" class="content">
+                    <el-card>
+                        <div class="icon" style="color:#33cc99">
+                            <i class="fa fa-share-alt-square"></i>
+                        </div>
+                        <h3>Reusing Modeling Resources</h3>
+
+                        <p>Model &amp; Data services that can be accessed via online-style and offline-style</p>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </section>
+
+        <!--Thematic Models-->
+        <section class="block">
+            <el-row class="title">Thematic Models</el-row>
+            <el-row class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-for="(thematic,index) in Thematics" :key="index">
+                        <div class="swiper-content" :style="'background-image: url('+thematic.img+')'"></div>
+                        <a class="to-link" @click="goToThematicModel(thematic.mid)">
+                            <span>{{thematic.name}}
+                                <svg version="1.1" width="30px" height="15px">
+                                    <line fill="none" stroke="#000000" stroke-linecap="round" stroke-miterlimit="10" x1="3" y1="7.5" x2="26" y2="7.5"></line>
+                                    <g class="late_line">
+                                        <line fill="none" stroke="#000000" stroke-linecap="round" stroke-miterlimit="10" x1="26.487" y1="7.402" x2="20.207" y2="1.797"></line>
+                                        <line fill="none" stroke="#000000" stroke-linecap="round" stroke-miterlimit="10" x1="26.488" y1="7.402" x2="20.208" y2="13.254"></line>
+                                    </g>
+                                </svg>
+                            </span>
+                            <i style="  color: rgba(0,0,0,.5);
+                            font-style: italic;">{{thematic.des}}</i>
+                        </a>
+                    </div>
+                </div>
+            </el-row>
+        </section>
+
+        <!--Easy To Use-->
+        <section class="block">
+            <div class="title">
+                Easy To Use
+            </div>
+            <el-row class="to-use" type="flex" justify="center">
+                <el-col :span="8" class="use-item">
+                    <el-row class="use-item-content">
+                        <el-col :span="7" class="content-head">
+                            1
+                        </el-col>
+                        <el-col :span="17" class="content-body">
+                            <span>
+                                <i class="fa fa-server" style="color:#33cc99"></i> Choosing Nodes
+                            </span>
+                            <p>Selecting an appropriate computing node from the computation resources pool</p>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="8" class="use-item">
+                    <el-row class="use-item-content">
+                        <el-col :span="7" class="content-head">
+                            2
+                        </el-col>
+                        <el-col :span="17" class="content-body">
+                            <span>
+                                <i class="fa fa-object-ungroup" style="color:#33cccc"></i>Running Model
+                            </span>
+                            <p>Executing a model as a remote computable service synchronizely/aynchronizely</p>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="8" class="use-item">
+                    <el-row class="use-item-content">
+                        <el-col :span="7" class="content-head">
+                            3
+                        </el-col>
+                        <el-col :span="17" class="content-body">
+
+                            <span>
+                                <i class="fa fa-hdd-o" style="color:#33ccff"></i>Checking Results
+                            </span>
+                            <p>Donwloading, processing, visualizing and analyzing result data</p>
+                        </el-col>
+                    </el-row>
+                </el-col>
+            </el-row>
+        </section>
+
+
+        <!--Willing To Share-->
+        <section class="block light-dark">
+            <div class="title">Willing To Share</div>
+            <el-row class="share-content" type="flex" justify="center">
+                <el-col :span="6" class="share-left">
+                    <h1>SHARING RESOURCES </h1>
+                    <p>Making your achievement more popular
+                        <br>Discovering deep value for geo-analysis modeling
+                        <br>
+                    </p>
+                </el-col>
+                <el-col :span="8" :offset="2">
+                    <el-row class="share-item">
+                        <el-col :span="4" class="icon">
+                            <i class="fa fa-sitemap" aria-hidden="true" style="color:#33cccc"></i>
+                        </el-col>
+                        <el-col :span="17" :offset="3">
+                            <el-row class="head">Model repository</el-row>
+                            <el-row class="des">A universal dictionary for all geo-analysis models</el-row>
+                        </el-col>
+                    </el-row>
+                    <el-row class="share-item">
+                        <el-col :span="4" class="icon">
+                            <i class="fa fa-cogs" aria-hidden="true" style="color:#33cccc"></i>
+                        </el-col>
+                        <el-col :span="17" :offset="3">
+                            <el-row class="head">Model description</el-row>
+                            <el-row class="des">Conceptual model, logical model and computational model</el-row>
+                        </el-col>
+                    </el-row>
+                    <el-row class="share-item">
+                        <el-col :span="4" class="icon">
+                            <i class="fa fa-archive" aria-hidden="true" style="color:#33cccc"></i>
+                        </el-col>
+                        <el-col :span="17" :offset="3">
+                            <el-row class="head">Model service</el-row>
+                            <el-row class="des">Publishing local models as reusable and widely-accessible web services</el-row>
+                        </el-col>
+                    </el-row>
+                </el-col>
+            </el-row>
+
+        </section>
+
+        
+        <!-- <section class="block light-dark">
+            <div class="title">Specific Domain</div>
+            <div class="gallery-container">
+                <a class="gallery-item" v-for="(gallery,index) in galleries" :style="getGalleryStyle(gallery,index,galleries.length)">
+                    <div class="inner">
+                        <div class="gallery-title">{{gallery.name}}</div>
+                        <div class="gallery-content">Learn More</div>
+                    </div>
+                </a>
+            </div>
+        </section> -->
+
+
+
+        <section class="block" role="contributors">
+            <el-row class="title" type="flex" justify="center">
+                Contributors
+            </el-row>
+
+            <div class="contributors">
+                <div id="container_globe" style="width: 45%;height:700px;"></div>
+                <div id="container_contributors" style="width: 50%;height:700px;"></div>
+
+            </div>
+
+        </section>
+
+
+        <div id="partner">
+            <div id="inner">
+                <a href="" target="_blank">
+                    <img src="../static/homePage/images/team/NJNU.jpg" style="width: 100px">
+                </a>
+                <a href="" target="_blank">
+                    <img src="../static/homePage/images/team/openMI.jpg" style="width: 150px">
+                </a>
+                <a href="" target="_blank">
+                    <img src="../static/homePage/images/team/CSDMS.jpg" style="width: 250px">
+                </a>
+
+                <a href="" target="_blank">
+                    <img src="../static/homePage/images/team/NNSFC.jpg" style="width: 350px">
+                </a>
+            </div>
+        </div>
+
+        <el-row class="footer">
+            <el-row type="flex" justify="center" class="footer-content">
+                <el-col :span="6">
+                    <h3 class="list-title">Documents</h3>
+                    <ul>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">Document</a>
+                        </li>
+                    </ul>
+                </el-col>
+
+                <el-col :span="6">
+                    <h3 class="list-title">Platforms</h3>
+                    <ul>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">数据容器</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">模型容器</a>
+
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">可视化平台</a>
+                        </li>
+
+                        <li class="list-item">
+                            <a href="javascript:void(0)">问题解决平台</a>
+                        </li>
+
+                        <li class="list-item">
+                            <a href="javascript:void(0)">模型比较平台</a>
+                        </li>
+                    </ul>
+                </el-col>
+
+
+                <el-col :span="6">
+
+                    <h3 class="list-title">About</h3>
+                    <ul>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">关于OpenGMS</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">加入我们</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0)">意见和建议</a>
+                        </li>
+                    </ul>
+                </el-col>
+
+                <el-col :span="6">
+                    <h3 class="list-title">
+                        Contact
+                    </h3>
+                    <ul>
+                        <li class="list-line">
+                            <a href="mailto:nj_gis@163.com">
+                                <i class="fa fa-envelope-o fa-fw"></i> &nbsp;nj_gis@163.com</a>
+                        </li>
+                        <li class="list-line">
+                            <a>
+                                <i class="fa fa-wechat"></i>&nbsp;&nbsp;VGETeam</a>
+                        </li>
+                    </ul>
+                </el-col>
+            </el-row>
+            <el-row class="footer-content copyright">
+                <h2 class="copyright-title">Open Geographic Modeling and Simulation</h2>
+
+                <span>Copyright © 2013-2018 OpenGMS. All Rights Reserved.</span>
+            </el-row>
+        </el-row>
+        <el-button v-if="showToTopBtn" type="info" plain circle @click="toTop()" class="to-top">
+            <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </el-button>
+    </div>
+
+
+
+</body>
+<script src="../static/homePage/plugins/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/bootstrap.min.js"></script>
+<script src="../static/homePage/plugins/vue.min.js"></script>
+<script src="../static/element-ui/index.js"></script>
+<script src="../static/homePage/plugins/echarts.min.js"></script>
+<script src="../static/homePage/plugins/echarts-gl.min.js"></script>
+<script src="../static/homePage/plugins/swiper/js/swiper.min.js"></script>
+
+<script src="../static/homePage/js/main.js"></script>
+<script src="../static/homePage/js/tree.js"></script>
+<script src="../static/homePage/js/globe.js"></script>
+
+<script src="../static/js/common/loadUser.js"></script>
+
+</html>

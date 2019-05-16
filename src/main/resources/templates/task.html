@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Task | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/other/computable-test.css">
+    <link rel="stylesheet" href="../static/css/other/jquery.gritter.css">
+    <link rel="stylesheet" href="../static/css/page/logical_model.css">
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+    <input id="IP" style="display: none;" th:value="${IP}"/>
+    <input id="Port" style="display: none;" th:value="${Port}"/>
+    <input id="pid" style="display: none;" th:value="${pid}"/>
+    <input id="dxIP" style="display: none;" th:value="${dxIP}"/>
+    <input id="dxPort" style="display: none;" th:value="${dxPort}"/>
+    <input id="dxType" style="display: none;" th:value="${dxType}"/>
+    <input id="mdlJson" style="display: none;" th:value="${mdlJson}"/>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <el-row>
+            <el-col class="left-panel" :offset="2" :span="5" style="border-right: #adadad solid 1px">
+                <div class="page-title" th:content="${uid}">
+                    <h3 th:utext="${modelInfo.name}" style="display: inline-block">BDS</h3>
+                    <a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>
+                </div>
+                <div class="tabs" style="padding:10px 10px 0px 10px;min-height: 550px;">
+                    <div class="tab1">
+                        <div id="owner" style="padding:5px">
+                            <div class="block_content">
+                                <img th:src="${user.image}==''?'../../static/img/icon/default.png':${user.image}"
+                                     class="round_icon" style="width:50px;height: 50px;float:left;margin-left:10px">
+                                <div class="text-center" style="margin-left: 55px;display: block;">
+                                    <a href="javascript:void(0)">
+                                        <h4 th:text="${user.name}" style="padding-top:5px;">NNU_Group</h4>
+                                    </a>
+                                </div>
+                                <div class="text-center">
+                                    <h5 th:text="'contributed at '+${#dates.format(modelInfo.createTime, 'yyyy-MM-dd HH:mm:ss')}">
+                                        contributed at 2018-01-02 10:15:37 </h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="margin:7px 10px;">
+
+                        <div id="Description" class="detail_block">
+                            <div class="block_head">
+                                <div class="head_text">
+                                    <h4 style="margin-top:0px;">Description</h4>
+                                </div>
+                            </div>
+                            <div class="block_content">
+                                <p th:text="${modelInfo.description}">
+                                    系统实现了在线可视化建模，需求方案的可定制，计算成果在线查询分析、动态显示的等功能。
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </el-col>
+            <el-col class="right-panel right-content" :span="15">
+                <el-card class="box-card">
+                    <div id="invoke">
+                        <div>
+                            <div class='action-group'>
+                                <span class='btn-block action-btn text-center' data-bind='click: invoke'>
+                                    <i class="fa fa-play" style="margin-right: 10px;"></i>Invoke
+                                </span>
+
+                            </div>
+                            <div class='scroll-section' style='display: flex; flex-flow: row nowrap'>
+                                <div id="stateList">
+                                    <ul data-bind='foreach: states'>
+                                        <li class="ogms-state"
+                                            data-bind='css: {selected: $root.selectedStateId() === $index()}, text: name,click: $root.selectedStateId.bind($root, $index())'></li>
+                                    </ul>
+                                </div>
+                                <div id='state-detail' style='flex: 1;'>
+                                    <div data-bind='if: states().length'>
+                                        <p class='ogms-sub-header'>
+                                            <i data-bind='text: states()[$root.selectedStateId()].name'></i>
+                                        </p>
+                                        <div class="list-group" id="eventsall">
+                                            <section data-bind='if: states()[$root.selectedStateId()].inputs.length'>
+                                                <div class='events-title'>
+                                                    <i>Inputs</i>
+                                                </div>
+                                                <div data-bind='foreach: states()[$root.selectedStateId()].inputs'>
+                                                    <div class='ogms-event'>
+                                                            <span class="event-optional"
+                                                                  data-bind='style: {visibility: !!optional? "hidden" : "visible"}'>*</span>
+                                                        <span data-bind='text: name, click: $root.jump.bind($root, $data.id, $root.states()[$root.selectedStateId()].id)'
+                                                              class="ogms-event-name"></span>
+                                                        <span style='flex:1;'></span>
+                                                        <span class='ogms-file-uploader'>
+                                                            <div>
+                                                                <input class='event-value' style='display: none;'
+                                                                       data-bind='value: value()'>
+                                                                <input class='event-id' style='display: none;'
+                                                                       data-bind='value: id'>
+                                                                <input class='state-id' style='display: none;'
+                                                                       data-bind='value: $root.states()[$root.selectedStateId()].id'>
+                                                                <input class='ogms-file-label form-control'
+                                                                       data-bind='value: fname'>
+                                                                <span class='ogms-file-progress'></span>
+                                                            </div>
+                                                            <input data-bind='event: {change: function(data,e){$root.onFileChange(e)}}'
+                                                                   type='file' class='file-uploader'
+                                                                   style='display: none;'>
+                                                        </span>
+                                                        <span data-bind='click: function(data, e) {$root.download(e)}, style: {visibility: !!value()?"visible": "hidden"}'
+                                                              class='ogms-file-btn download'>
+                                                            <i class="fa fa-download"></i>
+                                                        </span>
+                                                        <span data-bind='click: function(data, e) {$(e.target).parents(".ogms-event").find(".file-uploader").click();}, style: {visibility: $root.progress()!==0? "hidden": "visible"}'
+                                                              class='ogms-file-btn upload'>
+                                                            <i class="fa fa-upload"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section data-bind='if: states()[$root.selectedStateId()].outputs.length'>
+                                                <div class='events-title'>
+                                                    <i>Outputs</i>
+                                                </div>
+                                                <div data-bind='foreach: states()[$root.selectedStateId()].outputs'>
+                                                    <div class='ogms-event'>
+                                                        <input class='event-value' style='display: none;'
+                                                               data-bind='value: $data.value()'>
+                                                        <input class='event-id' style='display: none;'
+                                                               data-bind='value: id'>
+                                                        <span class="event-optional" style='visibility: hidden'>*</span>
+                                                        <span data-bind='text: name, click: $root.jump.bind($root, $data.id, $root.states()[$root.selectedStateId()].id)'
+                                                              class="ogms-event-name"></span>
+                                                        <span style='flex:1;'></span>
+                                                        <input class='ogms-file-label form-control'
+                                                               data-bind='value: fname'>
+                                                        <span data-bind='click: function(data, e) {$root.download(e)}, style: {visibility: !!value()?"visible": "hidden"}'
+                                                              class='ogms-file-btn download'>
+                                                            <i class="fa fa-download"></i>
+                                                        </span>
+                                                        <span class='ogms-file-btn upload' style='visibility: hidden'>
+                                                            <i class="fa fa-upload"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div data-bind='if: !states().length'>
+                                        No States
+                                    </div>
+                                    <i class="fa fa-spinner fa-spin"></i>
+                                    <section data-bind='style: {display: $root.progress()===0? "none": "block"}'>
+                                        <p class='ogms-sub-header'>
+                                            <i>Progress</i>
+                                        </p>
+                                        <!-- <div class='run-progress' data-bind='css: {"run-succeed": $root.progress()===100, "run-failed": $root.progress()===-1, "running": $root.progress()!==100&&$root.progress()!==-1&&$root.progress()!==0}'></div> -->
+                                        <div class='run-progress-div'
+                                             data-bind='css: {"run-succeed": $root.progress()===100, "run-failed": $root.progress()===-1}'>
+                                            <div class='run-progress-pipe'>
+                                                <div class='run-progress-kernel'
+                                                     data-bind='style: {display: ($root.progress()!==100&&$root.progress()!==-1)?"block": "none"}'></div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-card>
+
+
+            </el-col>
+        </el-row>
+
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+</body>
+
+<script src="../static/js/common/knockout-3.4.2.js"></script>
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/jquery.gritter.min.js"></script>
+<script src="../static/js/common/lodash.js"></script>
+<script src="../static/js/common/bootstrap.js"></script>
+<script src="../static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript">
+    mxBasePath = '../static/MxGraph/'
+</script>
+<script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="../static/js/common/computableEditorTest.js"></script>
+
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<script src="../static/element-ui/index.js"></script>
+<script src="../static/js/page/task.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+
+</html>

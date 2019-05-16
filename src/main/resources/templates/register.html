@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    
+    <style>
+        /*org*/
+        .el-tag {
+            height:auto;
+            margin-right: 10px;
+            white-space: normal;
+        }
+        .button-new-tag {
+            /*margin-left: 10px;*/
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-left: 10px;
+            padding-bottom: 0;
+        }
+        .input-new-tag {
+            width: 185px;
+            /*margin-left: 10px;*/
+            vertical-align: bottom;
+        }
+
+
+        .el-button+.el-button{
+            margin:0px;
+        }
+    </style>
+</head>
+<body>
+    <!--<h1 th:text="${name}">Hello World</h1>-->
+    <div id="app">
+        <div th:replace="fragments/navbar :: unlog"></div>
+        <el-row style="margin-top:30px;margin-bottom: 30px;">
+            <el-col :span="10" :offset="7">
+                <el-card>
+                    <div slot="header" class="clearfix" style="text-align: center;">
+                        <span style="font-weight: bold;font-size: 20px">Sign Up</span>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <el-col :span="20" :offset="1">
+                            <el-form label-position="right" :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="150px" class="demo-ruleForm" size="medium">
+                                <el-form-item label="Email" prop="email">
+                                    <el-input type="text" v-model="ruleForm2.email" autocomplete="off" placeholder="Please enter your email address"></el-input>
+                                </el-form-item>
+                                <!--<el-form-item label="Code" prop="code">-->
+                                    <!--<el-input type="text" v-model="ruleForm2.code" autocomplete="off"></el-input>-->
+                                <!--</el-form-item>-->
+                                <el-form-item label="Password" prop="password">
+                                    <el-input type="password" v-model="ruleForm2.password" autocomplete="off" placeholder="Please enter your password"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Confirm Password" prop="checkPass">
+                                    <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off" placeholder="Please enter your password again"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Name" prop="name">
+                                    <el-input type="text" v-model="ruleForm2.name" autocomplete="off" placeholder="Please enter your name"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Affiliation" prop="org">
+                                    <el-input type="text" v-model="ruleForm2.org" autocomplete="off" placeholder="Please enter your affiliation"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" @click="submitForm('ruleForm2')">Join OpenGMS</el-button>
+                                    <el-button class="pull-left" style="margin-right: 10px;" @click="resetForm('ruleForm2')">Reset</el-button>
+
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</body>
+    <script src="../static/js/common/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/common/vue.min.js"></script>
+    <script src="../static/js/common/axios.min.js"></script>
+    <script src="../static/element-ui/index.js"></script>
+    <script src="../static/js/page/register.js"></script>
+</html>

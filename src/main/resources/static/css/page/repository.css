@@ -1,0 +1,499 @@
+/*pagination*/
+.page{
+    list-style: none;
+    text-align: center;
+    padding: 0
+}
+.page>li{
+    float: none;
+    display: inline-block;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.page .pageItem{
+    border: solid thin #DDDDDD;
+    background: #ffffff;
+    margin: 5px;
+}
+.page .pageItemActive{
+    border: solid thin #00c0ff;
+    margin: 5px;
+    background-color: #00c0ff;
+    color:white;
+}
+.page .pageItem:hover{
+    border: solid thin #00c0ff;
+    background-color: #00c0ff;
+    color:white;
+}
+.page .pageItemDisable{
+    border: solid thin #DDDDDD;
+    margin: 5px;
+    background-color: #DDDDDD;
+    cursor: not-allowed;
+}
+
+/*repository-tree*/
+ul, li {
+    list-style: none
+}
+
+ul {
+    margin: 0;
+    padding-left: 15px;
+}
+
+ul li ul {
+    padding-left: 20px;
+}
+
+.treeNode {
+    padding-left: 16px;
+    line-height: 40px;
+    height: 40px;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    
+    color: #222222;
+    max-width: 251px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.treeNode span {
+    cursor: pointer
+}
+
+.treeNode span:hover {
+    color: #1890ff;
+}
+
+.treeNode i {
+    font-size: 14px
+}
+
+.leafNode {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 8px 16px;
+    position: relative;
+    max-width: 230px;
+    color: #222222;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.leafNode a {
+    font-size: 14px;
+    color: #333333;
+    text-decoration: none;
+    cursor: pointer
+}
+
+.leafNode a:hover {
+    color: #1890ff;
+    text-decoration: none;
+}
+
+.leafNode.active a {
+    color: #1890ff;
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+li span {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+li span i {
+    font-size: 14px;
+}
+
+/*li a {*/
+    /*font-size: 16px;*/
+    /*text-decoration: none;*/
+    /*color: #0886E9;*/
+/*}*/
+
+li a i {
+    font-size: 14px;
+}
+
+/*modelItems*/
+a{
+    text-decoration: none;
+    cursor: pointer
+}
+
+.treePanel,.rightPanel{
+    margin:15px 0 20px 0
+}
+
+.panel-default>.panel-heading{
+    padding: 0%;
+}
+
+.panel-default>.panel-heading>.panel-title {
+    text-align: center;
+    height: 51px;
+    line-height: 51px;
+    margin: auto;
+    vertical-align: middle;
+    display: block;
+}
+
+.rightPanel{
+    width: 100%;
+    padding-left:350px;
+    padding-right: 15px;
+}
+
+.searcherPanel .searcherInputPanel {
+    display: inline-flex;
+    width: 100%;
+}
+.searcherPanel .searcherInputPanel input{
+    font-size: 14px;
+    line-height: 28px;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    padding: 5px 10px;
+    color: #999;
+    border: 1px solid #2277da;
+}
+
+.searcherPanel .searcherInputPanel button{
+    background: #008af1;
+    border: none;
+    height: 40px;
+    color: #fff;
+    text-align: center;
+    width: 92px;
+    font-size: 14px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.searcherPanel .searcherInputPanel button:hover,.searcherPanel .searcherInputPanel button:active{
+    background: #0070cc;
+}
+
+.searcherPanel .searcherKeywords{
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+}
+.searcherPanel .searcherKeywords a {
+    margin-right: 20px;
+    line-height: 3;
+    color: #999;
+    text-decoration: none;
+}
+.searcherPanel .searcherKeywords a:hover{
+    color: #108ee9;
+}
+
+.searchTagPanel{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #d2d2d2;
+    width: 100%;
+}
+.searchTagPanel .searchTagList{
+    background: #f5f5f5;
+    padding: 10px 20px;
+    height: auto;
+    min-height: 60px;
+    position: relative;
+}
+.searchTagPanel .searchTagList .searchTagListTitle{
+    position: absolute;
+    left: 20px;
+    line-height: 3.33;
+    font-size: 14px;
+    width: 80px;
+}
+.searchTagPanel .searchTagList .searchTagListPanel{
+    padding-left: 50px;
+}
+.searchTagPanel .searchTagList .searchTagListPanel span{
+    font-size: 14px;
+    color: #333333;
+    margin: 5px 10px 5px 0;
+    padding: 0 20px 0 20px;
+    line-height: 2.5;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+.searchTagPanel .searchTagList .searchTagListPanel span.active{
+    font-size: 14px;
+    color: #fff;
+    background: #4c5a7c;
+    padding: 0 20px 0 20px;
+    line-height: 2.5;
+    display: inline-block;
+    position: relative;
+    margin: 5px 10px 5px 0;
+}
+.searchTagPanel .searchTagList .searchTagListPanel span i{
+    font-size: 14px;
+    position: absolute;
+    right: 7px;
+    top: 10px;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.progressPanel .barControl{
+    width: 30%;
+    margin: 0 auto;
+}
+.progressPanel .barControl .barContro_space{
+    border-radius: 5px;
+}
+.progressPanel .barControl .barContro_space .progress_line{
+    height: 3px;
+    width: 0%;
+    border-radius: 2px;
+    background: #008af1;
+    display: block;
+}
+.progressPanel .barControl .barContro_space .progress_line.active{
+    -webkit-animation:progressbar 0.75s; 
+    animation:progressbar 0.75s;
+    animation-fill-mode:forwards;
+}
+/* Chrome, Safari, Opera */
+ @-webkit-keyframes progressbar {
+    from {
+        width:0
+    }
+    to {
+        width:70%
+    }
+} 
+ /* Standard syntax */
+ @keyframes progressbar {
+    from {
+        width:0
+    }
+    to {
+        width:70%
+    }
+}
+
+/* .modelRightPanel.modelAuthor.modelAuthorTitle.btn-primary:hover{
+    background-color: #25d4c1!important
+} */
+
+.modelsPanel{
+    border: 1px solid #d2d2d2;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+
+.modelsPanel .modelListTop {
+    font-size: 14px;
+    background: #f5f5f5;
+    height: 43px;
+    border-bottom: 1px solid #d2d2d2;
+    line-height: 43px;
+    position: relative;
+    overflow: hidden;
+}
+.modelsPanel .modelListTop ul{
+    padding: 0
+}
+.modelsPanel .modelListTop ul li{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    float: left;
+    padding: 0 18px;
+    text-align: center;
+    list-style: none;
+    border-right: 1px solid #d2d2d2;
+    cursor: pointer;
+}
+.modelsPanel .modelListTop ul li.active{
+    color: #008af1;
+}
+.modelsPanel .modelListTop ul li span{
+    float: left
+}
+
+.modelsPanel .modelListTop .modelListCount{
+    position: absolute;
+    top: 0;
+    right: 20px;
+}
+.modelsPanel .modelListTop .modelListCount span{
+    color: #008af1;
+}
+
+.modelsPanel .modelPanel{
+    margin:0px;
+    padding: 5px 15px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    border-bottom: 1px solid #d2d2d2;
+    list-style: none;
+    background: #fff;
+}
+.modelPanel .modelLeftPanel{
+    padding: 20px 0 10px 0;
+    width: 112px;
+    text-align: center;
+}
+.modelPanel .modelMiddlePanel{
+    padding: 20px;
+    width: calc(100% - 310px);
+    padding-bottom: 10px;
+}
+.modelPanel .modelRightPanel{
+    padding: 20px 0;
+    padding-bottom: 10px;
+    width: 198px;
+    text-align: center;
+    border-left: 1px solid #d2d2d2;
+}
+.modelMiddlePanel .modelTitle{
+    font-size: 16px;
+    color: #333;
+}
+.modelMiddlePanel .modelTitle a{
+    float: left;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333;
+    padding-right: 30px;
+    position: relative;
+}
+
+.modelMiddlePanel .modelTitle a:hover{
+    color: #008af1;
+}
+.modelMiddlePanel .modelTitle span{
+    font-size: 14px;
+    line-height: 1.67;
+    float: right;
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.modelMiddlePanel .modelTitle span i{
+    font-size: 14px;
+    color: #777;
+    font-style: normal;
+}
+.modelMiddlePanel .modelInfo p{
+    font-size: 14px;
+    color: #777;
+    line-height: 1.33;
+    margin-top: 15px;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.modelMiddlePanel .modelRomoterUrl{
+    font-size: 14px;
+    color: #333;
+    margin-top: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.modelMiddlePanel .modelRomoterUrl span{
+    margin-right: 30px;
+}
+.modelMiddlePanel .modelRomoterUrl span i{
+    font-size: 14px;
+    color: #777;
+    font-style: normal;
+}
+.modelMiddlePanel .modelTags{
+    margin-top: 10px;
+}
+.modelMiddlePanel .modelTags span{
+    border-radius: 20px;
+    padding: 0 9px;
+    color: #fff;
+    font-size: 12px;
+    margin-right: 10px;
+    background: #95a0ba;
+    line-height: 2.08;
+    display: inline-block;
+    cursor: default;
+}
+
+.modelRightPanel .modelAuthor{
+    color:  #f16c00;
+    font-size: 18px;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.modelRightPanel .modelAuthorTitle{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #a0a0a0;
+    font-size: 12px;
+}
+
+.modelRightPanel a .ButtonToInfo{
+    width: 110px;
+    margin: 0 auto;
+    border-radius: 0px;
+}
+
+.tree{
+    padding-left: 0px;
+    max-height: 1080px;
+    overflow-y: hidden;
+}
+.tree:hover{
+    overflow: auto
+}
+
+@media (max-width: 1000px) {
+    .treePanel,.rightPanel{
+        margin:105px 0 0 0
+    }
+}
+@media (max-width: 950px){
+    .treePanel{
+        display: none;
+    }
+    .rightPanel{
+        padding-left: 15px
+    }
+}
+
+@media (max-width: 767px){
+    .treePanel,.rightPanel{
+        margin:75px 0 0 0
+    }
+}
+

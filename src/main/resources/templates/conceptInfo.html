@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Concept & Semantic | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="../../static/img/logo/favicon.ico">
+    <link href="../../static/css/base/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="../../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" th:href="@{../../static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{../../static/css/base/style.css}">
+    <link rel="stylesheet" th:href="@{../../static/css/base/universal.css}">
+    <link rel="stylesheet" th:href="@{../../static/css/base/itemInfo.css}">
+    <link rel="stylesheet" th:href="@{../../static/css/page/model_item_info.css}">
+    <link rel="stylesheet" th:href="@{../../static/css/page/repositoryInfo.css}">
+    <style>
+        #description h1{
+            font-size: 24px;
+        }
+        #description h2{
+            font-size: 22px;
+        }
+        #description h3{
+            font-size: 20px;
+        }
+        #description h4{
+            font-size: 18px;
+        }
+
+        .fullPaper{
+            position:relative;
+            padding-top:100px;
+            margin-top:-110px;
+            background-image: -webkit-gradient(linear,left top, left bottom,from(rgba(255,255,255,0)),color-stop(90%, #fff));
+            background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,#fff 90%);
+            margin-bottom:20px;
+        }
+
+        .el-tabs--border-card{
+            box-shadow:none;
+            -webkit-box-shadow:none;
+        }
+
+        .modal-content{
+            border-radius: 0!important;
+        }
+
+        .form-control{
+            border-radius: 0!important;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
+            <div class="detail">
+                <div class="detail_title">
+                    <h2 th:utext="${info.description_EN==''?info.name_ZH:info.name_EN}+'&nbsp&nbsp'" style="display: inline-block"></h2>
+                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                </div>
+                <div class="detail_overview">
+
+                    <div class="img">
+                        <!--<avatar th:case="''" th:username="${info.name_EN}" :size="90" :rounded="false" ></avatar>-->
+                        <!--<img class="calcImg" src="../../static/img/repository/semantics.png">-->
+                        <avatar th:username="${info.description_EN==''?info.name_ZH:info.name_EN}" :size="90" :rounded="false"></avatar>
+                    </div>
+
+                    <div class="info">
+                        <p th:text="${info.description_EN==''?info.description_ZH:info.description_EN}" style="word-break: break-word;"></p>
+                    </div>
+
+                    <div class="detail_option">
+                        <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
+                        <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
+                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
+                        <div th:utext="'&nbsp&nbsp'+${info.loadCount}">&nbsp&nbsp341</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="classification" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Classification(s)</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-top:20px;">
+                    <div>
+                        <span style="font-size:24px;margin-right: 8px">●</span>
+
+                        <el-breadcrumb separator-class="el-icon-arrow-right">
+                            <el-breadcrumb-item th:each="classS:${classifications}" th:text="${classS}" :to="{ path: '/' }">Earth System Classification</el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
+                </div>
+            </div>
+
+            <div id="description" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="thMain" th:text="${localization.language}"></th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <table class="table table-bordered">
+                            <colgroup>
+                                <col width="25%">
+                                <col width="75%">
+                            </colgroup>
+                            <tr th:if="${localization.name!=''}">
+                                <td>Name</td>
+                                <td class="enName" th:text="${localization.name}"></td>
+                            </tr>
+                            <tr th:if="${localization.desc!=''}">
+                                <td>Description</td>
+                                <td class="enDesc" th:text="${localization.desc}"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="text-center" >
+                <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
+            </div>
+
+            <div id="cite" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>How to cite</h4>
+                    </div>
+                </div>
+                <div class="block_content flex">
+                    <div id="cite-text">
+                        <span th:text="NNU_Group+'.('+${year}+').'+${info.name_EN}+','">
+                        Tom Marvolo Riddle.(2018).Integrated stand growth model data,
+                        </span>
+                        <a th:href="'http://www.geomodeling.njnu.edu.cn/repository/concept/'+${info.oid}"
+                           th:text="'http://www.geomodeling.njnu.edu.cn/repository/concept/'+${info.oid}">
+                            http://www.geomodeling.njnu.edu.cn/modelitem/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        </a>
+                    </div>
+                    <div id="copy" class="btn btn-info">
+                        Copy
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="right-panel el-col el-col-5">
+            <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Contributor</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img src="../../static/img/icon/default.png"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-20">
+                            <div class="pull-left" style="display: block;margin-left: 25px;">
+                                <a href="/user/42"><h4 th:text="NNU_Group">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row el-col-offset-3">
+                        <div class="text-center">
+                            <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="Related_Concepts" class="detail_block" th:if="${#lists.size(related)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Related Concept(s)</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <span class="el-tag" style="margin:0 0px 10px 10px" th:each="item:${related}" >
+                        <a th:href="'/repository/concept/'+${item.id}" th:text="${item.name}" style="display: block"></a>
+                    </span>
+                </div>
+            </div>
+
+            <div id="QR" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Add Localization</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addConceptLocalizationForm" role="form" method="post">
+                        <div class="form-group hidden">
+                            <input type="text" name="id" class="form-control" th:value="${info.oid}">
+                        </div>
+                        <div class="form-group">
+                            <label>Language</label>
+                            <input type="text" name="language" class="form-control" placeholder="Please Input Language">
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Please Input Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="desc" class="form-control" placeholder="Please Input Description"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">cancle</button>
+                    <button type="button" class="btn btn-primary" onclick="submitFrom()">Ok</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/common/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common/bootstrap.min.js"></script>
+<script src="../../static/js/common/vue.min.js"></script>
+<script src="../../static/element-ui/index.js"></script>
+<script src="../../static/js/common/vue-avatar.min.js"></script>
+<script src="../../static/js/common/qrcode.min.js"></script>
+<script type="text/javascript" src="../../static/js/page/repositoryInfo.js"></script>
+<script>
+    function submitFrom() {
+        var arry = $("#addConceptLocalizationForm").serializeArray();
+        var object = {};
+        for(var i =0;i<arry.length;i++){
+            var item = arry[i];
+            object[item["name"]] = item["value"];
+            if(item["name"]==="language"&&item["value"].trim().length<1){
+                alert("Please enter language");
+                return;
+            }
+            if(item["name"]==="name"&&item["value"].trim().length<1){
+                alert("Please enter name");
+                return;
+            }
+        }
+
+        $.ajax({
+            url:"/repository/addConceptLocalization",
+            data:object,
+            type:"post",
+            success:function (result) {
+                if(result.data==="ok"){
+                    window.location.reload();
+                }
+            }
+        })
+    }
+</script>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Conceptual Model | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/page/conceptual_model.css">
+    <link rel="stylesheet" type="text/css" href="../static/js/conceptModelEditor/styles/grapheditor.css">
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <el-col class="left-panel" :offset="2" :span="5" >
+            <div class="page-title">
+                <h3 th:utext="${modelInfo.name}" style="display: inline-block">water recycle</h3>
+                <a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>
+            </div>
+            <div class="tabs" style="padding:10px 10px 0px 10px;min-height: 550px;">
+                <div class="tab1">
+                    <div id="owner" style="padding:5px">
+                        <div class="block_content">
+                            <img src="../static/img/icon/default.png" class="round_icon" style="width:50px;height: 50px;float:left;margin-left:10px">
+                            <div class="text-center" style="margin-left: 55px;display: block;">
+                                <a href="javascript:void(0)">
+                                    <h4 th:text="${modelInfo.author.toUpperCase()}" style="padding-top:5px;">LUYUCHEN</h4>
+                                </a>
+                            </div>
+                            <div class="text-center">
+                                <h5 th:text="'contributed at '+${date}">contributed at 2017-08-02 09:37:51 </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin:7px 10px;">
+
+                    <div id="Description" class="detail_block">
+                        <div class="block_head">
+                            <div class="head_text">
+                                <h4 style="margin-top:0px;">Description</h4>
+                            </div>
+                        </div>
+                        <div class="block_content" style="height: 360px;overflow-y: auto;">
+                            <p th:text="${modelInfo.description}">
+                                Water circulation refers to the water on different parts of the earth, by absorbing the energy of the sun,
+                                changing the state to another place on earth. For example, the ground water is evaporated by the sun into
+                                the water vapor in the air. While water in the state of the earth includes solid, liquid and gaseous. The
+                                majority of the earth's water is present in the atmosphere, the ground, the ground, the lakes, the rivers
+                                and the oceans. The water will move from one place to another through some physical action, such as
+                                evaporation, precipitation, infiltration, surface flow and floor flow. Such as water flowing from the river
+                                to the ocean.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="detail_option text-center" style="display: flex; justify-content:center;padding-bottom: 10px;">
+                        <a style="" class="fa fa-share-square-o" aria-hidden="true  "></a><div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>
+                        <a style="margin-left:10%;" class="fa fa-eye" aria-hidden="true"></a><div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
+                        <a style="margin-left:10%;" href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a><div th:utext="'&nbsp&nbsp'+${modelInfo.thumbsUpCount}">&nbsp&nbsp101</div>
+                    </div>
+                </div>
+
+                <div class="tab2" style="display: none;">
+                    <h4 class="list-title text-center">Related Model Item</h4>
+                    <div class="list">
+                        <div >
+                            <h5>
+                                OVERALL
+                            </h5>
+                            <ul th:each="modelItem:${modelItems}" >
+                                <a th:href="'/modelItem/'+${modelItem.oid}" th:utext="${modelItem.name}"></a>
+                                <hr>
+                            </ul>
+
+                        </div>
+                        <div style="margin-top:30px">
+                            <h5>
+                                LOCAL
+                            </h5>
+                            <ul>
+                                BDS
+                                <hr>
+                            </ul>
+                            <ul>
+                                MaskDEM
+                                <hr>
+                            </ul>
+                            <ul>
+                                ComputeDInf
+                                <hr>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="switch" style="position:relative;bottom:0px;background-color: #f7f7f7">
+                <span class="text-center" style="display: inline-block;width:50%; border-right: 1px solid #adadad;">
+                    <a class="fa fa-file-text switch-btn" style="font-size:20px;color:#428bca"  href="javascript:void(0)" @click="switchClick(1)"></a>
+                </span>
+                <span class="text-center" style="display: inline-block;width:48%;">
+                    <a class="fa fa-th-large switch-btn" style="font-size:20px;color:#636363" href="javascript:void(0)" @click="switchClick(2)"></a>
+                </span>
+            </div>
+        </el-col>
+        <el-col class="right-panel" :span="16">
+            <div id="container_top" style="min-height:639px;position:relative;border: 2px solid rgb(223, 223, 223);border-width: 0 1px" >
+                <div id="container" class="geEditor" style="left: 0; top:0;right: 0;bottom: 0;position: absolute;" th:content="${modelInfo.cXml}"></div>
+            </div>
+        </el-col>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+</body>
+
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+
+<script type="text/javascript">
+    // Parses URL parameters. Supported parameters are:
+    // - lang=xy: Specifies the language of the user interface.
+    // - touch=1: Enables a touch-style user interface.
+    // - storage=local: Enables HTML5 local storage.
+    // - chrome=0: Chromeless mode.
+    var urlParams = (function (url) {
+        var result = new Object();
+        var idx = url.lastIndexOf('?');
+
+        if (idx > 0) {
+            var params = url.substring(idx + 1).split('&');
+
+            for (var i = 0; i < params.length; i++) {
+                idx = params[i].indexOf('=');
+
+                if (idx > 0) {
+                    result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+                }
+            }
+        }
+
+        return result;
+    })(window.location.href);
+
+    // Default resources are included in grapheditor resources
+    mxLoadResources = false;
+    mxBasePath = "../static/MxGraph/";
+    window.STYLE_PATH = "../static/js/conceptModelEditor/styles";
+    window.RESOURCES_PATH = "../static/js/conceptModelEditor/resources";
+    window.IMAGE_PATH = "../static/js/conceptModelEditor/images";
+    window.STENCIL_PATH = "../static/js/conceptModelEditor/stencils";
+    EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+
+    editMode = false;
+</script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Init.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/sanitizer/sanitizer.min.js"></script>
+<script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/EditorUi.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Editor.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Sidebar.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Graph.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Shapes.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Actions.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Menus.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Format.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Toolbar.js"></script>
+<script type="text/javascript" src="../static/js/conceptModelEditor/js/Dialogs.js"></script>
+<script type="text/javascript">
+    // Extends EditorUi to update I/O action states based on availability of backend
+    (function () {
+        // var url = location.href;
+        // var first = url.indexOf("=");
+        // var last = url.indexOf("#");
+        // var uid = "";
+        // if (first > 0) {
+        //     if (last > 0) {
+        //         uid = url.substring(url.indexOf("=") + 1, last);
+        //     } else {
+        //         uid = url.substring(url.indexOf("=") + 1, url.length);
+        //     }
+        // }
+
+        //uid = "OGU0YTA1YWYtZTc4ZS00NDViLTg5ZGQtODcyODFjODcwNWM2MTY=";//window.sessionStorage.getItem("conceptualModelInfo_id")
+
+        var editorUiInit = EditorUi.prototype.init;
+
+        EditorUi.prototype.init = function () {
+            editorUiInit.apply(this, arguments);
+
+            // Updates action states which require a backend
+            if (!Editor.useLocalStorage) {
+                mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function (req) {
+                    var enabled = req.getStatus() != 404;
+                    this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
+                    this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
+                    this.actions.get('save').setEnabled(enabled);
+                    this.actions.get('saveAs').setEnabled(enabled);
+                    this.actions.get('export').setEnabled(enabled);
+                }));
+            }
+            else {
+                var enabled = true;
+                //					this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
+                //					this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
+                //					this.actions.get('save').setEnabled(enabled);
+                //					this.actions.get('saveAs').setEnabled(enabled);
+                //					this.actions.get('export').setEnabled(enabled);
+            }
+        };
+
+        // Adds required resources (disables loading of fallback properties, this can only
+        // be used if we know that all keys are defined in the language specific file)
+        mxResources.loadDefaultBundle = false;
+        var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
+            mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+
+        // Fixes possible asynchronous requests
+        mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
+            // Adds bundle text to resources
+            mxResources.parse(xhr[0].getText());
+
+            // Configures the default graph theme
+            var themes = new Object();
+            themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+
+            // Main
+            mainUI = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.getElementById("container"));
+            mainUI.setPageVisible(false);
+
+            mainUI.editor.graph.setCellsLocked(true);
+            mainUI.editor.graph.setCellsEditable(false);
+            mainUI.editor.graph.setCellsResizable(false);
+            mainUI.editor.graph.setCellsDeletable(false);
+            mainUI.editor.graph.setCellsMovable(false);
+            mainUI.editor.graph.setCellsBendable(false);
+            mainUI.editor.graph.setCellsCloneable(false);
+            mainUI.editor.graph.setCellsDisconnectable(false);
+
+            //mainUI.editor.graph.setEnabled(false);
+            mainUI.editor.graph.setCellsSelectable(true);
+            mainUI.editor.graph.connectionArrowsEnabled = false;
+            mainUI.editor.graph.connectionHandler.setEnabled(false);
+
+            //  mainUI.setStatusText("Load OK");
+            // $.ajax({
+            //     url: "http://geomodeling.njnu.edu.cn/GeoModelingNew/ConceptModelInfoServlet",
+            //     type: "get",
+            //     data: { "mid": uid },
+            //     success: function (result) {
+            //         $(".showbox").hide();
+            //         var data = JSON.parse(result);
+
+                    var xml_doc = mxUtils.parseXml($("#container").attr("content"));
+                    xml_doc.documentElement.setAttribute("page", 0);
+                    mainUI.editor.setGraphXml(xml_doc.documentElement);
+                    window.onbeforeunload = null;
+            //     }
+            // })
+        }, function () {
+            document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
+        });
+    })();
+</script>
+
+
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<script src="../static/element-ui/index.js"></script>
+<script src="../static/js/page/conceptual_model.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+
+</html>

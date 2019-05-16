@@ -1,0 +1,139 @@
+body{
+    margin:0px;
+    /*font-family: 'Lato', sans-serif;*/
+}
+h2{
+    margin-top:10px;
+}
+a{
+    text-decoration: none;
+}
+
+li a{
+    color:white;
+}
+li a:focus,li a:active,li a:hover,h3:hover{
+    color:#00c0ff !important;
+    text-decoration:none;
+    outline:0;
+    -webkit-transition:all .3s;
+    -moz-transition:all .3s;
+    transition:all .3s
+}
+dl{
+    margin-bottom:0;
+}
+dt{
+    float: left;
+}
+
+.el-menu{
+    border:none;
+}
+
+.el-menu-item{
+    padding:0px;
+}
+
+.el-menu-item a{
+    padding:0 20px;
+    display: -webkit-box;
+}
+
+.el-breadcrumb{
+    display: inline-block;
+}
+
+.el-breadcrumb__item:last-child .el-breadcrumb__inner,
+.el-breadcrumb__item:last-child .el-breadcrumb__inner a
+{
+    font-weight: 700;
+    color: #303133;
+    cursor: auto;
+}
+
+.el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover,
+.el-breadcrumb__item:last-child .el-breadcrumb__inner:hover,
+.el-breadcrumb__item:last-child .el-breadcrumb__inner a:active,
+.el-breadcrumb__item:last-child .el-breadcrumb__inner:active{
+    font-weight: 700;
+    color: #409EFF;
+    cursor: pointer;
+}
+
+.badge{
+    padding:5px 7px;
+    margin-right: 5px;
+    margin-bottom:5px;
+}
+.badge .badge-info{
+    background-color: #95a0ba;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+.clearfix:after {
+    clear: both
+}
+
+.logo{
+    float: left;
+    background-image: url('../../img/logo/logo.png');
+    background-size:auto 45px;
+    background-repeat: no-repeat;
+    width:156px;
+    height:60px;
+
+    margin-left: 20px;
+    margin-right: 60px;
+}
+
+.footer a {
+    color: #c8c8ca;
+}
+
+.round_icon{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#cite #cite-text{
+    border:1px solid #dcdfe6;
+    padding:10px;
+    width:100%;
+    display: table-cell;
+    min-height: 30px;
+    font-family: 'Lato', sans-serif;
+}
+#cite .btn{
+    display: table-cell;
+    border-radius: 0px;
+    background-color: #339fff;
+    border-color: #339fff;
+}
+/*#cite .block_head{*/
+    /*background-image: url("../../img/paraTitle-line_c5e6d61.png");*/
+    /*border-left: solid 10px #339fff;*/
+/*}*/
+
+
+.list_panel img{
+    height: 90px;
+    width:90px;
+}
+
+.detail .detail_overview img{
+    height: 90px;
+    width: 90px;
+}
+
+
+

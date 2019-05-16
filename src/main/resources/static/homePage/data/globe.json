@@ -1,0 +1,214 @@
+{
+    "fields": [
+        "name",
+        "des",
+        "link",
+        "longitude",
+        "latitude",
+        "height",
+        "position",
+        "distance",
+        "img",
+        "agency"
+    ],
+    "points": [
+        [
+            "Tianxiang Yue",
+            "Bei Jing",
+            "http://www.sysu.edu.cn/2012/en/academics/academics03/289.html",
+            116.430,
+            39.920,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/yuetianxiang.jpg",
+            "Chinese Academy of Sciences"
+        ],
+        [
+            "Dong Zhang",
+            "Shang Hai",
+            "http://dky.njnu.edu.cn/info/1223/1703.htm",
+            118.762,
+            32.052,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/zhangdong.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Mi Yan",
+            "Nan Jing",
+            "http://dky.njnu.edu.cn/info/1213/2195.htm",
+            118.762,
+            32.052,
+            0,
+            "top",
+            "rect",
+            "Nanjing Normal University"
+        ],
+        [
+            "Xia Li",
+            "Shang Hai",
+            "http://www.sysu.edu.cn/2012/en/academics/academics03/289.html",
+            121.406,
+            31.227,
+            0,
+            "bottom",
+            "image://../static/homePage/images/producer/lixia.jpg",
+            "East China Normal University"
+        ],
+        [
+            "Chuanhai Wang",
+            "Nan Jing",
+            "http://gs.hhu.edu.cn/s/11/t/359/fd/4a/info64842.html",
+            118.756,
+            32.054,
+            0,
+            "left",
+            "image://../static/homePage/images/producer/wch.jpg",
+            "Hohai University"
+        ],
+        [
+            "Bo Huang",
+            "Hong Kong",
+            "http://www.grm.cuhk.edu.hk/eng/people/ppl/fac_HuangBo.html",
+            114.210,
+            22.416,
+            0,
+            "right",
+            "image://../static/homePage/images/producer/HuangBo.jpg",
+            "Chinese University of  \nHong Kong"
+        ],
+        [
+            "Wenping Yuan",
+            "Guang Zhou",
+            "http://atmos.sysu.edu.cn/User/146.html",
+            113.298,
+            23.096,
+            0,
+            "left",
+            "image://../static/homePage/images/producer/yuanwp.jpg",
+            "Sun Yat-sen University"
+        ],
+        [
+            "Zhuotong Nan",
+            "Nan Jing",
+            "http://schools.njnu.edu.cn/geog/person/zhuotong-nan",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/nzt.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Jinshan Zhang",
+            "Nan Jing",
+            "http://www.nhri.cn/art/2014/9/3/art_79_344.html",
+            118.762,
+            32.052,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/zhangjs.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Zhiyao Song",
+            "Nan Jing",
+            "http://schools.njnu.edu.cn/geog/person/zhiyao-song",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/szy.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Longhui Li",
+            "Nan Jing",
+            "",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/llh.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Junzhi Liu",
+            "Nan Jing",
+            "http://dky.njnu.edu.cn/Index.php/teacher/info/id/100.html",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/ljz.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Liang Ning",
+            "Nan Jing",
+            "http://dky.njnu.edu.cn/Index.php/teacher/info/id/101.html",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/ningliang.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Shuo Li",
+            "Nan Jing",
+            "",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/ls.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Qiang Dai",
+            "Nan Jing",
+            "http://schools.njnu.edu.cn/geog/person/qiang-dai-1",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/dq.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Fei Guo",
+            "Nan Jing",
+            "http://schools.njnu.edu.cn/geog/person/fei-guo-1",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/gf.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Min Cao",
+            "Nan Jing",
+            "http://schools.njnu.edu.cn/geog/person/min-cao",
+            118.916,
+            32.114,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/cm.jpg",
+            "Nanjing Normal University"
+        ],
+        [
+            "Xinyue Ye",
+            "Kent State",
+            "https://www.kent.edu/geography/profile/xinyue-ye",
+            -81.341,
+            41.148,
+            0,
+            "top",
+            "image://../static/homePage/images/producer/xinyueye.jpg",
+            "Kent State University"
+        ]
+    ]
+}

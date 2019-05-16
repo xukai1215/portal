@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Task | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <!--<link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">-->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/other/computable-test.css">
+    <link rel="stylesheet" href="../static/css/other/jquery.gritter.css">
+    <link rel="stylesheet" href="../static/css/page/logical_model.css">
+    <link rel="stylesheet" href="../static/haha/css/style.css">
+    <style>
+
+        input[type=file] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+    <div class="main">
+        <el-row type="flex" justify="center">
+            <el-col :span="4">
+                <div class="slider scrollbar">
+                    <div class="image">
+                        <i class="fa fa-database"></i>
+                        <!--<img src="../static/haha/img/default.png">-->
+                    </div>
+                    <h3 class="model_title"> {{info.modelInfo.name}}</h3>
+                    <span  @click="goPersonCenter(info.userInfo.compute_model_user_oid)">Owner by {{info.userInfo.compute_model_user_name}}</span>
+                    <br>
+                    <span class="model_date">Created at {{dateFormat(info.modelInfo.date)}}</span>
+                    <h4 class="desc-title">Overview</h4>
+                    <p class="desc">{{info.modelInfo.des}}</p>
+                    <div class="btn-list">
+                        <el-button plain round type="primary" @click="loadTest('1')"
+                                   :disabled="!info.modelInfo.hasTest">Load Test Data
+                        </el-button>
+
+                        <el-button plain round type="primary" @click="invoke()">
+                            <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
+                        </el-button>
+                    </div>
+
+
+
+
+
+                </div>
+            </el-col>
+            <el-col :span="16">
+                <div class="content">
+                    <div class="_main">
+                        <el-row class="_title">
+                            <el-col>
+                                <i class="fa fa-cogs"></i>
+                                {{info.modelInfo.name}} Model Configure
+                            </el-col>
+
+                        </el-row>
+
+                        <el-row>
+                            <el-row class="state-container" v-for="(state,index) in info.modelInfo.states" :key="index">
+                                <el-col :span="6">
+                                    <div class="state-name"> {{state.name}}</div>
+                                    <div class="state-desc"> {{state.desc}}</div>
+
+
+                                </el-col>
+                                <el-col :span="18">
+                                    <div class="_params-group">
+                                        <el-row v-if="inEventList(state).length!==0" class="_title">Input</el-row>
+                                        <div class="_items">
+                                            <el-row v-for="(modelInEvent,inEventIndex) in inEventList(state)"
+                                                    :key="inEventIndex" class="_item">
+                                                <el-row>
+
+
+                                                    <el-col :span="9" class="_event-desc">
+
+                                                    <span class="event-name" title="modelInEvent.eventName">
+                                                        <span
+                                                                v-show="!modelInEvent.optional"
+                                                                style="color:red">*</span>
+                                                        {{modelInEvent.eventName}}
+                                                    </span>
+
+                                                    </el-col>
+                                                    <el-col :span="6" :offset="1">
+                                                        <el-input class="model-input" :value="modelInEvent.tag"
+                                                                  readonly>
+                                                        </el-input>
+                                                    </el-col>
+                                                    <el-col :span="8">
+                                                        <div class="_btn-group">
+                                                            <el-button plain round type="primary"
+                                                                       @click="upload(modelInEvent)">
+                                                                <i class="fa fa-cloud-upload"></i>
+                                                            </el-button>
+                                                            <el-button plain round type="success"
+                                                                       @click="check(modelInEvent)">
+                                                                <i class="fa fa-folder-open"></i>
+                                                            </el-button>
+                                                            <el-button plain round type="warning"
+                                                                       @click="download(modelInEvent)">
+                                                                <i class="fa fa-download"></i>
+                                                            </el-button>
+
+                                                        </div>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-row>
+                                                    <p class="event-desc" :title="modelInEvent.eventDesc">
+                                                        {{modelInEvent.eventDesc}}</p>
+                                                </el-row>
+                                            </el-row>
+                                        </div>
+                                    </div>
+
+                                    <div class="_params-group">
+                                        <el-row v-if="outEventList(state).length!==0" class="_title">Output</el-row>
+                                        <div class="_items">
+                                            <el-row v-for="(modelOutEvent,outEventIndex) in outEventList(state)"
+                                                    :key="outEventIndex" class="_item">
+                                                <el-row>
+                                                    <el-col :span="9" class="_event-desc">
+                                                      <span class="event-name" title="modelOutEvent.eventName">
+                                                        {{modelOutEvent.eventName}}
+                                                    </span>
+                                                    </el-col>
+                                                    <el-col :span="6" :offset="1">
+                                                        <el-input class="model-input" :value="modelOutEvent.tag"
+                                                                  readonly>
+                                                        </el-input>
+                                                    </el-col>
+                                                    <el-col :span="5" v-show="modelOutEvent.url!=null">
+                                                        <div class="_btn-group">
+                                                            <el-button plain round type="warning"
+                                                                       @click="download(modelOutEvent)">
+                                                                <i class="fa fa-download"></i>
+                                                            </el-button>
+                                                        </div>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-row>
+                                                    <p class="event-desc" :title="modelOutEvent.eventDesc">
+                                                        {{modelOutEvent.eventDesc}}</p>
+                                                </el-row>
+
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </el-col>
+
+                            </el-row>
+
+                        </el-row>
+
+
+                        <!-- <el-tabs v-model="activeTab" tab-position="left">
+                            <el-tab-pane v-for="(state,index) in modelInfo.states" :key="index" :label="state.name"
+                                :name="state.name">
+                                <div class="_state-desc">
+                                    {{state.des}}
+                                </div>
+                                <div class="_params-group">
+                                    <el-row v-if="inEventList(state).length!==0" class="_title">Input</el-row>
+                                    <div class="_items">
+                                        <el-row v-for="(modelInEvent,inEventIndex) in inEventList(state)" :key="inEventIndex"
+                                            class="_item">
+                                            <el-col :span="16" class="_event-desc"><span v-show="!modelInEvent.isOptional" style="color:red">*</span> {{modelInEvent.name}}
+
+                                                    <br>
+                                                    {{modelInEvent.des}}</el-col>
+                                            <el-col :span="3" :offset="1">
+                                                <el-input :value="modelInEvent.tag" readonly>
+                                                </el-input>
+                                            </el-col>
+                                            <el-col :span="4">
+                                                <div class="_btn-group">
+                                                    <el-button plain round type="primary" @click="check(modelInEvent)">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </el-button>
+                                                    <el-button plain round type="warning" @click="upload(modelInEvent)">
+                                                        <i class="fa fa-download"></i>
+                                                    </el-button>
+                                                    <el-button plain round type="success" @click="download(modelInEvent)"
+                                                        v-if="modelInEvent.singleVSservice">
+                                                        <i class="fa fa-area-chart"></i>
+                                                    </el-button>
+                                                </div>
+                                            </el-col>
+
+
+
+                                        </el-row>
+                                    </div>
+                                </div>
+
+                                <div class="_params-group">
+                                    <el-row v-if="outEventList(state).length!==0" class="_title">Output</el-row>
+                                    <div class="_items">
+                                        <el-row v-for="(modelOutEvent,outEventIndex) in outEventList(state)"
+                                            :key="outEventIndex" class="_item">
+                                            <el-col :span="16" class="_event-desc">{{modelOutEvent.des}}</el-col>
+                                        </el-row>
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+
+                        </el-tabs> -->
+
+                        <!--item-->
+
+                        <el-col :span="3" :offset="21" class="_save-btn">
+                            <el-button plain type="primary" @click="invoke()">
+                                <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
+                            </el-button>
+                        </el-col>
+
+                        <el-dialog title="Upload" :visible.sync="showUpload" width="30%">
+                            <el-upload ref="upload" drag action="/dispatchRequest/upload" :data="uploadData()"
+                                       :before-remove="beforeRemove"
+                                       :on-success="onSuccess">
+                                <el-button slot="trigger" size="small" type="primary">Select File</el-button>
+                            </el-upload>
+                        </el-dialog>
+
+                        <el-dialog title="Personal Data" :visible.sync="showDataChose">
+                            <el-table :data="dataFromDataContainer" stripe v-loading="tableLoading">
+                                <el-table-column property="createDate" label="Date" width="150">
+                                    <template slot-scope="scope">
+                                        {{dateFormat(scope.row.createDate)}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column property="type" label="Type" width="200"></el-table-column>
+
+                                <el-table-column
+                                        label="Name"
+                                >
+                                    <template slot-scope="scope">
+                                        {{scope.row.fileName+"."+scope.row.suffix}}
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column
+                                        prop="fromWhere"
+                                        label="Source"
+                                        width="200"
+                                        :filters="[{ text: 'Portal', value: 'PORTAL' }, { text: 'Model Compute', value: 'MODELCONTAINER' },{ text: 'Saga', value: 'ONLINESAGA ' }]"
+                                        :filter-method="filterTag"
+                                        filter-placement="bottom-end">
+                                    <template slot-scope="scope">
+                                        <el-tag
+                                                :type="scope.row.fromWhere === 'PORTAL' ? 'primary' : 'success'"
+                                                disable-transitions>{{scope.row.fromWhere}}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column
+                                        label="Operation"
+                                >
+                                    <template slot-scope="scope">
+                                        <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">
+                                            Download
+                                        </el-button>
+                                        <el-button @click="handleDataChooseClick(scope.row)" type="primary"
+                                                   size="small">Select
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+
+                            <el-pagination
+                                    class="my-pagination"
+                                    small
+                                    layout="prev, pager, next"
+                                    @current-change="handleCurrentChange"
+                                    :total="total">
+                            </el-pagination>
+                        </el-dialog>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+</body>
+
+<script src="../static/js/common/knockout-3.4.2.js"></script>
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/jquery.gritter.min.js"></script>
+<script src="../static/js/common/lodash.js"></script>
+<script src="../static/js/common/bootstrap.js"></script>
+<script src="../static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript">
+    mxBasePath = '../static/MxGraph/'
+</script>
+<script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>
+<!--<script type="text/javascript" src="../static/js/common/computableEditorTest.js"></script>-->
+
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<!--<script src="../static/element-ui/index.js"></script>-->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="../static/js/page/task.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+
+</html>

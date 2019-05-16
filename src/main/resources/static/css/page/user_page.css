@@ -1,0 +1,63 @@
+body{
+    background-color:#ceeaff;
+}
+div{
+    vertical-align:top;
+}
+
+.fs-16{
+    font-size: 16px;
+    font-family: Arial;
+}
+.content{
+    border:solid 1px #dadada;
+    background-color:white;
+    margin-bottom: 10px;
+}
+.content-head{
+    background-color: #F3F3F3;
+    text-align: center;
+    margin:0px;
+    padding:10px 0px 10px 0px;
+}
+.content-body{
+    padding:20px;
+    background-color: white;
+}
+.user_header{
+    font-family: 'Lato', sans-serif;
+    height:200px;
+    padding:30px;
+    padding-left:40px;
+}
+.user_img{
+    height:130px;
+    width:130px;
+    float:left;
+}
+.user_info{
+    margin-left: 180px;
+    display: block;
+}
+.user_info h4{
+    font-size: 15px;
+}
+
+.main_left{
+
+}
+.model_block{
+    border-right:solid 1px #BBBBBB;
+}
+.model_row{
+    padding:10px 0px 10px 0px;
+    border-bottom: solid 1px #BBBBBB;
+}
+.model_row h4{
+    margin-bottom:5px;
+}
+.model_row:not(:first-child) h4{
+    margin-top: 5px;
+}
+
+

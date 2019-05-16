@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Space | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">-->
+
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">-->
+
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="../static/css/common/fileinput-rtl.min.css">
+
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="../static/css/page/user_space.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery.tag-editor.css"/>
+
+    <style>
+        /*scrollbar样式*/
+
+        .scrollbar::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #F5F5F5;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 5px;
+            background-color: #F5F5F5;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background-color: #666666;
+        }
+
+        .profile-pic img {
+            border: 5px solid #F1F2F7;
+            border-radius: 50%;
+            -webkit-border-radius: 50%;
+            height: 120px;
+            margin: 10px 0;
+            width: 120px;
+        }
+
+        ul.p-info{
+            list-style-type: none;
+        }
+        ul.p-info .title {
+            width: 40%;
+        }
+        ul.p-info .title, ul.p-info .desk {
+            float: left;
+        }
+
+        ul.p-info .desk {
+            width: 60%;
+            color: #65cea7;
+        }
+
+        ul.p-info li {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        ul.p-info li:last-child {
+            margin-bottom: 0;
+        }
+        .el-card__body {
+            padding: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+    <div class="page-container" style="height: 2000px;">
+
+        <div th:replace="fragments/sidebar :: side"></div>
+
+        <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20"
+             :style="{'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}" id="pageContent">
+            <!-- top-tool -->
+            <div th:replace="fragments/sidebar :: top"></div>
+            <!--end top-tool -->
+
+            <!-- start main -->
+            <div class="page-content-wrap container-fluid" :style="{display:curIndex=='1'?'block':'none'}">
+                <div class="col-md-4" style="margin-top: 15px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="profile-pic text-center">
+                                        <img :src="userInfo.image==''?'../static/img/icon/default.png':userInfo.image">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <ul class="p-info">
+                                        <li>
+                                            <div class="title">Name</div>
+                                            <div class="desk">{{userInfo.name}}</div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Email</div>
+                                            <div class="desk">{{userInfo.email}}</div>
+                                        </li>
+                                        <li v-if="userInfo.phone!=''">
+                                            <div class="title">Phone</div>
+                                            <div class="desk">{{userInfo.phone}}</div>
+                                        </li>
+                                        <li v-if="userInfo.wiki!=''">
+                                            <div class="title">Home Page</div>
+                                            <div class="desk">{{userInfo.wiki}}</div>
+                                        </li>
+                                        <li v-if="userInfo.orgStr!=''">
+                                            <div class="title">Organizations</div>
+                                            <div class="desk">{{userInfo.orgStr}}</div>
+                                        </li>
+                                        <li v-if="userInfo.saStr!=''">
+                                            <div class="title">Subject Areas</div>
+                                            <div class="desk">{{userInfo.saStr}}</div>
+                                        </li>
+                                        <li v-if="userInfo.description!=''">
+                                            <div class="title">Description</div>
+                                            <div class="desk">{{userInfo.description}}</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <button id="edit" class="btn btn-default btn-block btn-lg">Edit Infomation</button>
+                                    <br/>
+                                    <button id="changePass" class="btn btn-default btn-block btn-lg">Change Password</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="col-md-8">
+
+                    <div class="row" style="margin-top:15px">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title-box">
+                                        <h3>
+                                            <i class="fa fa-bar-chart-o fa-fw"></i>Create</h3>
+                                    </div>
+                                </div>
+                                <div class="panel-body padding-0 text-center">
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/user/createModelItem">
+                                                <img src="../static/img/model/model.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">
+                                                Model Item
+
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="javascript:void(0);" @click="toDataItem">
+                                                <img src="../static/img/model/data.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">
+                                                Data Item
+
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/user/createConceptualModel">
+                                                <img src="../static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">
+                                                Conceptual Model
+
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/user/createLogicalModel">
+                                                <img src="../static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">
+                                                Logical Model
+
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/user/createComputableModel">
+                                                <img src="../static/img/model/calcModel.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">
+                                                Computable Model
+
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:15px">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title-box">
+                                        <h3>
+                                            <i class="fa fa-bar-chart-o fa-fw"></i>Task Info</h3>
+                                    </div>
+                                </div>
+                                <div class="panel-body padding-0">
+                                    <div class="col-md-4">
+                                        <div class="widget widget-info widget-item-icon">
+                                            <div class="widget-item-left">
+                                                <span class="fa fa-spinner"></span>
+                                            </div>
+                                            <div class="widget-data">
+                                                <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
+                                                <div class="widget-title">On Going Calculations</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="widget widget-success widget-item-icon">
+                                            <div class="widget-item-left">
+                                                <span class="fa fa-tasks"></span>
+                                            </div>
+                                            <div class="widget-data">
+                                                <div class="widget-int num-count">{{statisticsInfo.success}}</div>
+                                                <div class="widget-title">Success Calculations</div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="widget widget-danger widget-item-icon">
+                                            <div class="widget-item-left">
+                                                <span class="fa fa-support"></span>
+                                            </div>
+                                            <div class="widget-data">
+                                                <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
+                                                <div class="widget-title">Fail Calculations</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:15px">
+                        <div class="col-md-12">
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title-box">
+                                        <h3>
+                                            <i class="fa fa-bar-chart-o fa-fw"></i>Resource Chart</h3>
+                                    </div>
+                                </div>
+                                <div class="panel-body padding-0">
+                                    <div id="chartRes" style="height:400px;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!--modal-->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #65cea7;color:white">
+                                <button id="modal-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title" style="font-weight: bold;">User Information</h4>
+                            </div>
+                            <div class="modal-body text-center">
+                                <form class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label for="inputName" class="col-lg-3 col-sm-3 control-label">Image</label>
+                                        <div class="col-lg-9">
+                                            <img id="photo" src="../static/img/icon/default.png" width="120px" height="120px" style="display: block;cursor:pointer;border:1px solid #ccc" @click="imgFile()"/>
+                                            <input type="file" name="imgOne" id="imgOne" @change="preImg()" style="display: none" accept="image/*"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="inputName" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPhone" class="col-lg-3 col-sm-3 control-label">Phone</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="inputPhone" placeholder="Phone">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputHomePage" class="col-lg-3 col-sm-3 control-label">Home Page</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="inputHomePage" placeholder="Home Page">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputOrganizations" class="col-lg-3 col-sm-3 control-label">Organizations</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="inputOrganizations" placeholder="Organizations">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSubjectAreas" class="col-lg-3 col-sm-3 control-label">Subject Areas</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="inputSubjectAreas" placeholder="Subject Areas">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputDescription" class="col-lg-3 col-sm-3 control-label">Description</label>
+                                        <div class="col-lg-9">
+                                            <textarea type="text" class="form-control" id="inputDescription" placeholder="Description"></textarea>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button id="saveUser" type="button" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--modal-->
+                <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #65cea7;color:white">
+                                <button id="modal-close1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title" style="font-weight: bold;">User Information</h4>
+                            </div>
+                            <div class="modal-body text-center">
+                                <form class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label for="inputName" class="col-sm-4 control-label">Old Password</label>
+                                        <div class="col-lg-8">
+                                            <input type="password" class="form-control" id="inputOldPass" placeholder="Old password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPhone" class="col-sm-4 control-label">New Password</label>
+                                        <div class="col-lg-8">
+                                            <input type="password" class="form-control" id="inputPassword" placeholder="New password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputHomePage" class="col-sm-4 control-label">Confirm Password</label>
+                                        <div class="col-lg-8">
+                                            <input type="password" class="form-control" id="inputPassAgain" placeholder="New password again">
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button id="submitPass" type="button" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end modal-->
+            </div>
+            <!-- end main -->
+
+            <!-- start model-items -->
+            <div :style="{display:curIndex=='2-1'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Model</a>
+                    </li>
+                    <li class="active">Model Items</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/user/createModelItem">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create ModelItem
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" v-for="modelItem in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/modelItem/'+modelItem.oid" target="_blank"
+                                       @click="setSession('modelItemInfo_id',modelItem.model_oid)">
+                                        {{modelItem.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a href="/user/createModelItem"
+                                           @click="setSession('editModelItem_id',modelItem.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteModel(modelItem.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(modelItem.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{modelItem.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model items</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end model-items -->
+
+            <!-- start conceptual-models -->
+            <div :style="{display:curIndex=='2-2'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Model</a>
+                    </li>
+                    <li class="active">Conceptual Models</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/user/createConceptualModel">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Conceputal Model
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" v-for="conceptual in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/conceptualModel/'+conceptual.oid" target="_blank"
+                                       @click="setSession('conceptualModelInfo_id',conceptual.model_id)">
+                                        {{conceptual.name}}
+                                    </a>
+                                    <div class="pull-right" :attr.uid="conceptual.model_id" style="margin-top: -3px;">
+                                        <!--<a href="../create-conceptual-model/create-conceptual-model.html"-->
+                                        <!--@click="setSession('editConceptualModel_id',conceptual.model_id)">-->
+                                        <!--<button class="btn btn-default editBtn">Edit</button>-->
+                                        <!--</a>-->
+                                        <!-- [routerLink]="['/userSpace/editConceptualModel', conceptual.model_id]" -->
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteModel(conceptual.model_id)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(conceptual.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{conceptual.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No conceptual
+                            models</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- end conceptual-models -->
+
+            <!-- start logical-models -->
+            <div :style="{display:curIndex=='2-3'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Model</a>
+                    </li>
+                    <li class="active">Logical Models</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/user/createLogicalModel">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Logical Model
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" v-for="logical in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/logicalModel/'+logical.oid" target="_blank"
+                                       @click="setSession('logicalModelInfo_id',logical.model_id)">
+                                        {{logical.name}}
+                                    </a>
+                                    <div class="pull-right" :attr.uid="logical.model_id" style="margin-top: -3px;">
+                                        <!--<a href="../create-conceptual-model/create-conceptual-model.html"-->
+                                        <!--@click="setSession('editLogicalModel_id',logical.model_id)">-->
+                                        <!--<button class="btn btn-default editBtn">Edit</button>-->
+                                        <!--</a>-->
+                                        <!-- [routerLink]="['/userSpace/editConceptualModel', conceptual.model_id]" -->
+                                        <button class="btn btn-danger deleteBtn" @click="deleteModel(logical.model_id)">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(logical.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{logical.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No logical
+                            models</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList"
+                                    :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- end logical-models -->
+
+            <!-- start computable-models -->
+            <div :style="{display:curIndex=='2-4'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Model</a>
+                    </li>
+                    <li class="active">Computable Models</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/user/createComputableModel">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Computable Model
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" v-for="computable in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/computableModel/'+computable.oid" target="_blank"
+                                       @click="setSession('computableModelInfo_id',computable.model_id)">
+                                        {{computable.name}}
+                                    </a>
+                                    <div class="pull-right" :attr.uid="computable.model_id" style="margin-top: -3px;">
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteModel(computable.model_id)">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(computable.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{computable.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No computable models</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList"
+                                    :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- end computable-models -->
+
+            <!-- start task -->
+            <div :style="{display:curIndex=='5'?'block':'none'}">
+                <div class="page-content-wrap container-fluid" style="margin-top:10px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-4">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="searchModels()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" v-for="task in searchResult">
+                            <div class="panel"
+                                 :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" style="font-weight: bold">
+                                        {{task.computableName}}
+                                    </h3>
+                                    <div class="pull-right" :attr.uid="task.msr_id" style="margin-top: -3px;">
+                                            <span style="margin-right:20px">
+                                                <b>Create Time:</b>{{formatDate(task.runTime)}}
+                                            </span>
+                                        <button class="btn btn-primary downloadAll"
+                                                @click="downloadAll(task.id,task.name,task.runTime)"
+                                                v-if="task.status==2">
+                                            Download All Files
+                                        </button>
+                                        <button class="btn btn-danger delete" click="deleteModel(task.id)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <h5 v-if="task.status==0||task.status==1">
+                                        Calculating
+                                    </h5>
+                                    <h5 v-if="task.status==-1">
+                                        Calculation Failure
+                                    </h5>
+                                    <ul v-if="task.status==1">
+                                        <li class="flagcontent clearfix" v-for="data in task.data">
+                                                <span style="margin-top: 5px; display: inline-block;">
+                                                    {{output.event}}
+                                                </span>
+                                            <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                                    @click="downloadSingle(output.url)">Download File
+                                            </button>
+
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No calculation
+                            tasks</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList"
+                                    :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- end task -->
+
+
+            <!-- start server-nodes -->
+            <div :style="{display:servers_show?'block':'none'}">
+                <div class="page-content-wrap container-fluid">
+                    <div class="row">
+                        <div id="graphic" class="col-md-12" style="padding:0">
+                            <div id="echartMap" style="height: 490px"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="computerNodePanel" class="col-sm-12">
+                            <div class="col-md-10 col-md-offset-1 col-sm-12"
+                                 v-for="computerNodeCity in computerNodesInfos"
+                                 :id="computerNodeCity.name">
+                                <div class="headTitle">
+                                    <h3 style="font-weight:normal">
+                                        <span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>
+                                    </h3>
+                                </div>
+                                <div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">
+                                    <div class="serverNodeInfo">
+                                        <h3>{{computerNodeInfo.name}}</h3>
+                                        <span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>
+                                        <a href="../computer-node-info/computer-node-info.html"
+                                           v-if="computerNodeInfo.status"
+                                           @click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end server-nodes -->
+
+            <!-- start data-item-upload-->
+            <div :style="{display:curIndex=='3-2'?'block':'none'}" id="data_item">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Data</a>
+                    </li>
+                    <li class="active">Create DataItem</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+
+                    <div class="col-md-12 col-sm-12">
+                        <div class="panel panel-success" style="border: none;height: 680px">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Create a dataitem,input all information below.
+                                </h3>
+                            </div>
+
+
+                            <div class="panel-body">
+                                <div class="step2">
+                                    <div class="step-app" >
+                                        <ul class="step-steps text-center">
+                                            <li><a id="start_step" href="#step21">Basic Info</a></li>
+                                            <li><a href="#step22">Description&Detail</a></li>
+                                            <li><a href="#step23">Authorship</a></li>
+                                        </ul>
+                                        <div class="step-content">
+
+                                            <div class="step-tab-panel" id="step21">
+                                                <!--<div class="col-md-3 col-sm-4 tree" id="tree">-->
+                                                <!--</div>-->
+                                                <div class="col-md-3 col-sm-4" style="overflow-y: scroll;height: 450px;">
+                                                    <el-collapse >
+
+                                                        <el-collapse-item v-for="(item,index) in categoryTree"  :title=item.key :name=index :key="index">
+
+                                                            <el-button v-for="it in item.value" type="text" @click="chooseCate(it,$event)">{{it.category}}</el-button>
+
+                                                        </el-collapse-item>
+                                                    </el-collapse>
+                                                </div>
+                                                <div class="col-md-9 col-sm-8">
+                                                    <div class="form-group">
+                                                        <!--classificaation-->
+                                                        <label for="classification"><font color="red">*</font>Category:</label>
+                                                        <input type="text" class="form-control" placeholder="Please choose the catgory of the data which you are ready to upload"  id="classification" required="required" readonly/>
+                                                        <!--<small id="catgoryHelp" class="form-text text-muted">Please choose the catgory of the data which you are ready to upload.</small>-->
+
+                                                        <!--name-->
+                                                        <label for="dataname"><font color="red">*</font>Name:</label>
+                                                        <input type="text" class="form-control"  id="dataname" aria-describedby="emailHelp" placeholder="Please input the name of the data which you are ready to upload."  required="required"/>
+                                                        <!--<small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+
+                                                        <!--keywords-->
+                                                        <label for="keywords"><font color="red">*</font>Keywords:</label><br>
+                                                        <!--<div class="bootstrap-tagsinput" >-->
+                                                        <input type="text"    data-role="tagsinput" id="keywords" placeholder="input key words.." size="1" required="required" />
+                                                        <!--<small id="keywordsHelp" class="form-text text-muted">Please input  keywords of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+
+                                                        <!--img type--><br>
+                                                        <!--todo 依据类型选择图片-->
+                                                        <label for="dataname">Type:</label>
+
+                                                        <label class="radio-inline">
+                                                            <input type="radio" name="imgradio" id="optionsRadios1" value="option1"
+                                                                   checked>
+                                                            online data
+                                                        </label>
+
+                                                        <label class="radio-inline">
+                                                            <input type="radio" name="imgradio" id="optionsRadios2" value="option2"> private data
+                                                        </label>
+                                                        <!--<small   class="form-text text-muted">Please choose your data type.</small>-->
+
+
+                                                        <!--data resources url--><br>
+                                                        <label for="author">Data Resource Url:</label>
+                                                        <input type="text" class="form-control"  id="dataresoureurl"/>
+                                                        <!--<small   class="form-text text-muted">Please input the url of online data.</small>-->
+
+                                                        <div class="row">
+                                                            <div class="col-md-6" >
+                                                                <!--author-->
+                                                                <label for="author">Author:</label>
+
+                                                                <input type="text" class="form-control"  id="author"  readonly/>
+                                                                <!--<small   class="form-text text-muted">Here is your name.</small>-->
+
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <!--other contibutors-->
+                                                                <label for="contributers">Other Contributers:</label><br/>
+
+                                                                <!--<div class="bootstrap-tagsinput" >-->
+                                                                <input type="text"   data-role="tagsinput" id="contributers" size="1"  />
+                                                                <!--<small id="contributersHelp" class="form-text text-muted">Please input other contributers of the data which you are ready to upload.</small>-->
+
+                                                            </div>
+                                                        </div>
+                                                        <!--</div>-->
+
+                                                        <!--todo displaysÕ¹Ê¾Í¼Æ¬-->
+                                                        <label for="imgFile">Displays:</label>
+                                                        <!--<input type="file"     id="displays" size="1"  />-->
+
+                                                        <img id="imgShow" src=""/>
+                                                        <div id="imgChange">
+
+                                                            <i class="fa fa-plus fa-5x"></i>
+                                                        </div>
+                                                        <input id="imgFile" type="file"
+                                                               style="display: none"
+                                                               accept="image/*"/>
+                                                        <br>
+
+                                                        <small id="displaysHelp" class="form-text text-muted">Please upload pictures of the data which you are ready to upload.</small>
+
+
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="step-tab-panel" id="step22">
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <!--description-->
+                                                        <label for="description"><font color="red">*</font>Description:</label>
+                                                        <!--<small id="descriptionHelp" class="form-text text-muted">Please input the brief description of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+
+                                                        <textarea class="form-control"    id="description"  placeholder="Input description about the data here." required="required"></textarea>
+
+                                                        <!--<div class="form-group">--><br/>
+                                                        <label for="detail"><font color="red">*</font>Detail Description:</label>
+                                                        <!--<small id="detailHelp" class="form-text text-muted">Please input the detail of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+
+                                                        <!--<textarea class="form-control"    id="detail"  placeholder="Input detail about the data here."></textarea>-->
+                                                        <textarea id="detail"  placeholder="Input detail about the data here." ></textarea>
+
+                                                        <!--</div>-->
+                                                        <!--meta data-->
+
+
+                                                        <!--<label for="coordinateSystem">coordinateSystem:</label>-->
+                                                        <!--<input type="text" class="form-control" placeholder="Please input coordinate system of the data to be uploaded." id="coordinateSystem" />-->
+                                                        <!--<small  class="form-text text-muted">Please input the coordinate system of the data which you are ready to upload.</small>-->
+
+                                                        <!--<label for="geographicProjection">geographicProjection:</label>-->
+                                                        <!--<input type="text" class="form-control" placeholder="Please input geographic projection of the data to be uploaded."  id="geographicProjection" />-->
+                                                        <!--<small  class="form-text text-muted">Please input the geographic projection  of the data which you are ready to upload.</small>-->
+
+                                                        <!--<label for="coordinateUnits">coordinateUnits:</label>-->
+                                                        <!--<input type="text" class="form-control"   placeholder="Please input coordinateUnits of the data to be uploaded." id="coordinateUnits" />-->
+                                                        <!--<small class="form-text text-muted">Please input the coordinateUnits of the data which you are ready to upload.</small>-->
+
+
+                                                    </div>
+
+                                                </div><br/>
+                                                <!--<div class="col-md-12">-->
+                                                <!--<div class="form-group">-->
+                                                <!--<label for="upperleftx">Upper left X:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded."  id="upperleftx" />-->
+
+
+                                                <!--<label for="upperlefty">Upper left Y:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="upperlefty" />-->
+
+
+                                                <!--<label for="bottomrightx">Bottom right  X:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrightx" />-->
+
+
+                                                <!--<label for="bottomrighty">Bottom right  Y:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrighty" />-->
+
+
+                                                <!--</div><br>-->
+                                                <!--</div>-->
+
+                                                <!--<div class="col-md-6">-->
+                                                <!--<div class="form-group">-->
+                                                <!--<label for="upperleftx">Upper left X:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded."  id="upperleftx" />-->
+
+                                                <!--<label for="upperlefty">Upper left Y:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="upperlefty" />-->
+                                                <!--</div>-->
+                                                <!--</div>-->
+                                                <!--<div class="col-md-6">-->
+
+                                                <!--<div class="form-group">-->
+                                                <!--<label for="bottomrightx">Bottom right  X:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrightx" />-->
+
+                                                <!--<label for="bottomrighty">Bottom right  Y:</label>-->
+                                                <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrighty" />-->
+
+                                                <!--</div>-->
+                                                <!--</div>-->
+                                            </div>
+
+                                            <div class="step-tab-panel" id="step23">
+                                                <!--detail-->
+                                                <div class="form-group">
+                                                    <!--description-->
+                                                    <label for="au_name"><font color="red">*</font>Name:</label>
+                                                    <input type="text" class="form-control"    placeholder="Please input name.."  id="au_name"/>
+                                                    <br/>
+                                                    <label for="email"><font color="red">*</font>Email:</label>
+                                                    <input type="text" class="form-control"    placeholder="Please input email.."  id="email"/><br/>
+
+                                                    <label for="home_page"><font color="red">*</font>Home Page::</label>
+                                                    <input type="text" class="form-control"    placeholder="Please input email.."  id="home_page"/>
+
+
+
+
+                                                </div>
+
+                                            </div>
+
+
+
+                                        </div>
+                                        <div class="step-footer">
+                                            <!--data-direction="next"-->
+                                            <button id="next" class="btn btn-primary next pull-right"    data-direction="next"   >Next</button>
+
+                                            <button  class="btn btn-warning prev pull-left"  data-direction="prev">Previous</button>
+                                            <button class="btn btn-danger finish pull-right" data-direction="finish" @click="createdataitem()"><strong>Create DataItem</strong></button>
+
+                                        </div>
+                                        <!--<button type="button" class="btn btn-success btn-primary pull-right" @click="createdataitem()">Create DataItem</button>-->
+
+
+
+                                    </div>
+
+
+
+
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end -->
+            <!--data items-->
+            <div :style="{display:curIndex=='3-1'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Data</a>
+                    </li>
+                    <li class="active">Data Items</li>
+                </ul>
+                <!--TODO 搜索-->
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body" style="height: 61px;">
+                            <div class="form-group">
+                                <div class="col-md-4">
+
+                                    <button class="btn btn-warning" @click="menuClick(7)">
+                                        <i class="fa fa-globe fa-fw"></i>Create DataItem
+                                    </button>
+
+                                </div>
+                                <div class="col-md-8  ">
+                                    <div class="input-group" @keydown.enter="searchDataItem()">
+                                        <input type="text" class="form-control" name="searchText" placeholder="please enter data item name" v-model="searchText">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary" @click="searchDataItem()">Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="page-content-wrap container-fluid">
+
+
+
+                    <div class="row">
+                        <div class="col-sm-12" v-for="dataItem in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <!--setSession('modelItemInfo_id',modelItem.model_oid)-->
+                                    <a :href="'/dataItem/'+dataItem.id" target="_blank" @click="">
+                                        {{dataItem.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <!--todo 数据条目管理，增删改查-->
+                                        <!--todo 先不要edit，只有个delete-->
+                                        <!--<a href="" @click="setSession('editModelItem_id',modelItem.oid)">-->
+                                        <!--<button class="btn btn-default editBtn">Edit</button>-->
+                                        <!--</a>-->
+                                        <button class="btn btn-danger deleteBtn" @click="deleteDataitems(dataItem.id)">
+                                            Delete
+                                        </button>
+
+
+                                        <!-- 按钮触发模态框 -->
+                                        <!--<button class="btn btn-primary btn-md" @click="upload_data(dataItem)">Data upload</button>-->
+
+                                        <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#Modal"
+                                                @click="upload_data(dataItem)">Data upload
+                                        </button>
+
+
+                                    </div>
+                                </div>
+
+
+
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(dataItem.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{dataItem.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="text-center" v-if="searchResult.length==0&&resourceLoad==false">No data items</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" style="z-index: 2041">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="ModalLabel">Upload Data</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+
+                            </div>
+                            <div class="modal-body">
+
+
+                                <!--<div class="file-loading">-->
+
+                                <!--<input id="file-1"   type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-theme="fas">-->
+                                <!--</div>-->
+                                <form action="http://localhost:8081/file/apk_upload" method="post"
+                                      enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <div class="file-loading">
+                                            <input id="file-1" type="file" multiple class="file"
+                                                   data-overwrite-initial="false" data-min-file-count="1"
+                                                   data-theme="fas">
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="uploaded">
+
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="data-author">author:</label>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Please input coordinate system of the data to be uploaded."
+                                                   id="data-author" disabled/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fileName">fileName:</label>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Please input coordinate system of the data to be uploaded."
+                                                   id="fileName" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="suffix">suffix:</label>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Please input coordinate system of the data to be uploaded."
+                                                   id="suffix" required/>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label for="keywords">tags:</label><br>
+                                            <div class="bootstrap-tagsinput">
+
+                                                <input type="text" data-role="tagsinput" id="datatags" size="1"
+                                                       required/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <!--TODO 上传数据类型，有OTHER，SHAPEFILE等-->
+                                            <label for="other">type:</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="data_upload_type" id="other" value="OTHER"
+                                                       checked> Other
+                                            </label>
+
+
+                                            <label class="radio-inline">
+                                                <input type="radio" name="data_upload_type" id="shapefile" value="OTHER"
+                                                       disabled> Shapefile
+                                            </label>
+
+                                        </div>
+                                    </form>
+                                    <!--<button class="btn btn-success pull-right" @click="uploadD">upload</button>-->
+
+                                </div>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" @click="uploadD">upload</button>
+
+                                <button type="button" class="btn btn-default" data-dismiss="modal" @click="close()">
+                                    close
+                                </button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+
+
+            </div>
+
+            <div :style="{display:curIndex=='3-3'?'block':'none'}" id="mydata">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Data</a>
+                    </li>
+                    <li class="active">My Data</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+
+                    <div class="col-md-12 col-sm-12">
+                        <div class="panel panel-success" style="border: none;height: 680px">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Manager my data below.
+                                </h3>
+                            </div>
+                            <div>
+                                <el-upload ref="upload" drag action="/dispatchRequest/uploadToDataContainer" :data="uploadData()"
+                                           :on-success="onzzzSuccess">
+                                    <el-button slot="trigger" size="small" type="primary">Select File</el-button>
+                                </el-upload>
+
+                                <el-table :data="dataFromDataContainer" stripe >
+                                    <el-table-column property="createDate" label="Date" width="150">
+                                        <template slot-scope="scope">
+                                            {{dateFormat(scope.row.createDate)}}
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column property="type" label="Type" width="200"></el-table-column>
+
+                                    <el-table-column
+                                            label="Name"
+                                    >
+                                        <template slot-scope="scope">
+                                            {{scope.row.fileName+"."+scope.row.suffix}}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            prop="fromWhere"
+                                            label="Source"
+                                            width="200"
+                                            :filters="[{ text: 'Portal', value: 'PORTAL' }, { text: 'Model Compute', value: 'MODELCONTAINER' },{ text: 'Saga', value: 'ONLINESAGA ' }]"
+                                            :filter-method="filterTag"
+                                            filter-placement="bottom-end">
+                                        <template slot-scope="scope">
+                                            <el-tag
+                                                    :type="scope.row.fromWhere === 'PORTAL' ? 'primary' : 'success'"
+                                                    disable-transitions>{{scope.row.fromWhere}}
+                                            </el-tag>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            label="Operation"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">
+                                                Download
+                                            </el-button>
+
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+
+                                <el-pagination
+                                        class="my-pagination"
+                                        small
+                                        layout="prev, pager, next"
+                                        @current-change="panye"
+                                        :total="total">
+                                </el-pagination>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="../static/js/common/jquery-3.3.1.js"></script>
+<script src="../static/js/common/bootstrap.min.js"></script>
+<script src="../static/js/common/piexif.min.js"></script>
+<script src="../static/js/common/fileinput.js"></script>
+<script src="../static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript" src="../static/js/tinymce/tinymce.min.js"></script>
+
+
+<script src="../static/js/common/echarts.min.js"></script>
+<script src="../static/js/common/world.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+<script type="text/javascript" src="../static/js/common/jquery-steps.js"></script>
+<script src="../static/element-ui/index.js"></script>
+
+<script type="text/javascript" src="../static/js/common/jquery.tag-editor.js"></script>
+<script src="../static/js/common/bootstrap-tagsinput.js"></script>
+
+<script src="../static/js/page/user_space.js"></script>
+
+</html>

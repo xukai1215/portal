@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Logical Model Repository | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/base/list.css">
+    <link rel="stylesheet" href="../static/css/base/tree.css">
+    <link rel="stylesheet" href="../static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="../static/css/page/model_items.css">
+    <style>
+        .info {
+            padding-top: 0px;
+            margin-left: 115px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <el-col :span="20" :offset="2" style="min-width: 1250px;">
+            <el-row>
+                <h2 class="main-title">Logical Model Repository</h2>
+                <h5 class="sub-title">The repository of geographic models.</h5>
+                <hr>
+            </el-row>
+
+            <el-col :span="8" style="margin-top:29px;">
+                <el-card class="box-card" style="margin-right:20px">
+                    <div slot="header" class="clearfix text-center">
+                        <span style="font-size: 20px;color:#444">Classification</span>
+                    </div>
+                    <el-tree
+                            ref="tree"
+                            :data="treeData"
+                            show-checkbox
+                            node-key="id"
+                            :default-expanded-keys="[1, 2, 3]"
+                            @check-change="handleCheckChange"
+                            :props="defaultProps">
+                    </el-tree>
+                </el-card>
+            </el-col>
+
+            <el-col :span="16">
+                <div class="searcherPanel">
+                    <div class="searcherInputPanel" @keydown.enter="search()">
+                        <input id="searchBox" type="text" placeholder="Conceptual Model Name..." v-model="searchText">
+                        <button @click="search()">Search</button>
+                        <a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x" aria-hidden="true"></a>
+                    </div>
+                </div>
+
+                <div class="advancedSearch" style="margin-top:30px;position:relative;min-height:1px;display: none;">
+                    <div class="criteriaPanel">
+                        <label class="col-md-12" style="padding-left:0px;"><Strong>Please Enter Search
+                            Criteria:</Strong></label>
+                        <div class="lines">
+                            <div class="line">
+                            <span class="tools col-md-1 pull-left" style="padding:0px">
+                                 <a class="fa fa-plus" style="" href="javascript:;"></a>
+                                 <a class="fa fa-minus" style="" href="javascript:;"></a>
+                            </span>
+
+                                <div class="input-group col-md-5 pull-left">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle prop"
+                                                data-toggle="dropdown">Model Name<span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="propName" href="javascript:void(0);">Model Name</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Keyword</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Overview</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Provider</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control value">
+                                </div>
+                                <div class="input-group col-md-1 pull-left">
+                                    <select class="form-control connect">
+                                        <option>AND</option>
+                                        <option>OR</option>
+                                        <option>NOT</option>
+                                    </select>
+                                </div>
+                                <div class="input-group col-md-5 pull-left">
+                                    <input type="text" class="form-control value">
+                                </div>
+
+                            </div>
+                            <div class="line">
+                                <div class="input-group col-md-1 pull-left">
+                                    <select class="form-control connect">
+                                        <option>AND</option>
+                                        <option>OR</option>
+                                        <option>NOT</option>
+                                    </select>
+
+                                </div>
+                                <div class="input-group col-md-5 pull-left">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle prop"
+                                                data-toggle="dropdown">Keyword<span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="propName" href="javascript:void(0);">Model Name</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Keyword</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Overview</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Provider</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control value">
+                                </div>
+                                <div class="input-group col-md-1 pull-left">
+                                    <select class="form-control connect">
+                                        <option>AND</option>
+                                        <option>OR</option>
+                                        <option>NOT</option>
+                                    </select>
+                                </div>
+                                <div class="input-group col-md-5 pull-left">
+
+                                    <input type="text" class="form-control value">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="line pull-right">
+
+                            <a id="drawback" href="javascript:void(0)" class="fa fa-angle-double-up fa-3x" style="display:inline-block"></a>
+                            <button id="query" class="" style="display: inline-block;margin-top:-18px;margin-right:4px;" type="button" @click="search()">Search</button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progressPanel">
+                    <span class="barControl">
+                        <div class="barContro_space">
+                            <span class="progress_line" :class="{active:pageOption.progressBar}"></span>
+                        </div>
+                    </span>
+                </div>
+
+                <div class="modelPanel">
+                    <div class="content-body">
+                        <div class="list-item" v-for="logicalModel in pageOption.searchResult">
+                            <div class="detail_title">
+                                <a :class="logicalModel.viewCount>500?'hot':''" :href="'/logicalModel/'+logicalModel.oid" target="_blank">{{logicalModel.name}}&nbsp&nbsp</a>
+                            </div>
+                            <div class="detail_overview">
+                                <a class="img" :href="'/logicalModel/'+logicalModel.oid" target="_blank">
+                                    <img :src="logicalModel.image==null?'../static/img/model/logical.png':logicalModel.image">
+                                </a>
+
+                                <div class="info">
+                                    <p>{{logicalModel.description}}</p>
+                                    <div class="tags" v-if="logicalModel.keywords!=null">
+                                        <span class="badge badge-info" v-for="keyword in logicalModel.keywords">{{keyword.toUpperCase()}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="detail_bottom">
+                                <div style="display:inline-block;float: left;">
+                                    <img src="../static/img/icon/default.png" class="round_icon" style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                    <a href="javascript:void(0)" style="display: inline-block;margin-left: 5px;"><h4>{{logicalModel.author.toUpperCase()}}</h4></a>
+                                    <h4 style="display: inline-block;margin-left: 10px">contributed at {{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}} </h4>
+                                </div>
+                                <div class="detail_option">
+
+
+                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.viewCount}}
+                                    <a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.thumbsUpCount}}
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+
+                    </div>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                            @current-change="handleCurrentChange"
+                            :current-page="pageOption.currentPage"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pageOption.total">
+                    </el-pagination>
+                </div>
+            </el-col>
+        </el-col>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<script src="../static/js/common/bootstrap.js"></script>
+<script src="../static/js/common/bootstrap-select.js"></script>
+<script src="../static/element-ui/index.js"></script>
+<script src="../static/element-ui/umd/locale/en.js"></script>
+<script>
+    ELEMENT.locale(ELEMENT.lang.en);
+</script>
+<script src="../static/js/page/logical_models.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+
+</html>

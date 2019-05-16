@@ -1,0 +1,91 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="unlog">
+    <style>
+        .el-menu-item{
+            padding:0px;
+        }
+    </style>
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#00001e"
+             text-color="#fff"
+             active-text-color="#00c0ff"
+             style="padding-top:10px;">
+        <div>
+            <a class="logo" href="/home"></a>
+        </div>
+        <el-menu-item index="1"><a href="/home">Home</a></el-menu-item>
+        <el-menu-item index="2"><a href="/modelItem/repository">Model</a></el-menu-item>
+        <el-menu-item index="3">
+            <a href="/dataItem/repository">Data</a>
+        </el-menu-item>
+        <el-submenu index="8">
+            <template slot="title">Community</template>
+            <el-menu-item index="8-1"><a href="/repository/concept">Concept & Semantic</a></el-menu-item>
+            <el-menu-item index="8-2"><a href="/repository/spatialReference">Spatial Reference</a></el-menu-item>
+            <el-menu-item index="8-3"><a href="/repository/template">Data Template</a></el-menu-item>
+            <el-menu-item index="8-4"><a href="/repository/unit">Unit & Metric</a></el-menu-item>
+            <!--<el-menu-item index="8-5"><a href="/repository/contributors">Contributors  & Participants</a></el-menu-item>-->
+            <el-menu-item index="8-6"><a href="/repository/thematic">Thematic Center</a></el-menu-item>
+            <!--<el-menu-item index="4-4">Supportive</el-menu-item>-->
+        </el-submenu>
+
+        <el-submenu index="4">
+            <template slot="title">Help</template>
+            <el-menu-item index="4-1"><a href="/help/demo">Demo</a></el-menu-item>
+            <el-menu-item index="4-2"><a href="/help/manual">Manual</a></el-menu-item>
+            <el-menu-item index="4-3"><a href="/help/document">Document</a></el-menu-item>
+            <!--<el-menu-item index="4-4">Supportive</el-menu-item>-->
+        </el-submenu>
+
+        <el-menu-item index="5"><a href="http://opengmsteam.com" target="_blank">About Us</a></el-menu-item>
+        <el-menu-item index="7" style="float:right"><a href="/user/register">Sign Up</a></el-menu-item>
+        <el-menu-item index="6" style="float:right"><a href="/user/login">Log In</a></el-menu-item>
+
+    </el-menu>
+
+</div>
+
+<div th:fragment="login">
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#00001e"
+             text-color="#fff"
+             active-text-color="#00c0ff"
+             style="padding-top:10px;">
+        <div>
+            <a class="logo" href="/"></a>
+        </div>
+        <el-menu-item index="1"><a href="/">Home</a></el-menu-item>
+        <el-submenu index="2">
+            <template slot="title">Item</template>
+            <el-menu-item index="2-1"><a href="/modelItem/repository">Model Item</a></el-menu-item>
+            <el-menu-item index="2-2"><a href="/dataItem/repository">Data Item</a></el-menu-item>
+
+        </el-submenu>
+        <el-submenu index="3">
+            <template slot="title">Model</template>
+            <el-menu-item index="3-1"><a href="/conceptualModel/repository">Conceptual Model</a></el-menu-item>
+            <el-menu-item index="3-2"><a href="/logicalModel/repository">Logical Model</a></el-menu-item>
+            <el-menu-item index="3-3"><a href="/computableModel/repository">Computable Model</a></el-menu-item>
+        </el-submenu>
+        <el-submenu index="4">
+            <template slot="title">Help</template>
+            <el-menu-item index="4-1">Demo</el-menu-item>
+            <el-menu-item index="4-2">Manual</el-menu-item>
+            <el-menu-item index="4-3">Document</el-menu-item>
+            <el-menu-item index="4-4">Supportive</el-menu-item>
+        </el-submenu>
+        <el-menu-item index="5">About Us</el-menu-item>
+        <el-menu-item index="7" style="float:right"><a href="/user/out">Log Out</a></el-menu-item>
+        <el-menu-item index="6" style="float:right">
+            <a href="/user/1">
+                <img class="round_icon" src="../../static/img/icon/default.png" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
+                <span>NNU_Group</span>
+            </a>
+        </el-menu-item>
+
+    </el-menu>
+
+</div>
+</body>
+</html>

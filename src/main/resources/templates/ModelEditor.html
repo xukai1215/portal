@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="../static/css/other/page.css">
+    <link rel="stylesheet" href="../static/css/conceptModelEditor/ownCss/treeView-Bootstrap.css">
+    <link rel="stylesheet" href="../static/css/conceptModelEditor/conceptBuild.css">
+
+    <script type="text/javascript">
+        // Parses URL parameters. Supported parameters are:
+        // - lang=xy: Specifies the language of the user interface.
+        // - touch=1: Enables a touch-style user interface.
+        // - storage=local: Enables HTML5 local storage.
+        // - chrome=0: Chromeless mode.
+        var urlParams = (function (url) {
+            var result = new Object();
+            var idx = url.lastIndexOf('?');
+            console.log(idx);
+
+            if (idx > 0) {
+                var params = url.substring(idx + 1).split('&');
+
+                for (var i = 0; i < params.length; i++) {
+                    idx = params[i].indexOf('=');
+
+                    if (idx > 0) {
+                        result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+                    }
+                }
+            }
+
+            return result;
+        })(window.location.href);
+
+        // Default resources are included in grapheditor resources
+        mxLoadResources = false;
+        mxBasePath = "../static/MxGraph/";
+        window.STYLE_PATH = "../static/js/conceptModelEditor2/styles";
+        window.RESOURCES_PATH = "../static/js/conceptModelEditor2/resources";
+        window.IMAGE_PATH = "../static/js/conceptModelEditor2/images";
+        window.STENCIL_PATH = "../static/js/conceptModelEditor2/stencils";
+        EXPORT_URL = "http://localhost:8081/GeoModelingNew/MyTestServlet";
+        SAVE_URL = "http://localhost:8081/GeoModelingNew/MyTestServlet";
+
+        editMode = true;
+    </script>
+    <link rel="stylesheet" type="text/css" href="../static/js/conceptModelEditor2/styles/grapheditor.css">
+
+    <script type="text/javascript">var language = "en";</script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Init.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/jscolor/jscolor.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/sanitizer/sanitizer.min.js"></script>
+    <script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/EditorUi.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Editor.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Sidebar.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Graph.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Shapes.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Actions.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Menus.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Format.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Toolbar.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/Dialogs.js"></script>
+
+    <script src="../static/js/common/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/common/bootstrap.js"></script>
+    <script type="text/javascript" src="../static/js/common/bootstrap-treeview.js"></script>
+    <script type="text/javascript" src="../static/js/common/pageEn.js"></script>
+    <script type="text/javascript" src="../static/js/common/resetTree.js"></script>
+    <script type="text/javascript" src="../static/js/conceptModelEditor2/js/conceptualEditorPlugin.js"></script>
+</head>
+<body>
+
+<!-- START WIDGETS -->
+<div class="row">
+
+</div>
+<!-- END WIDGETS -->
+
+<div class="row">
+    <div width="100%" :style="{height:IframeHeight}" style="border:none">
+        <script type="text/javascript">
+            // Extends EditorUi to update I/O action states based on availability of backend
+            (function () {
+                // var url = location.href;
+                // var first = url.indexOf("=");
+                // var last = url.indexOf("#");
+                // var uid = "";
+                // if (url.indexOf("=") >= 0) {
+                //     if (first > 0) {
+                //         if (last > 0) {
+                //             uid = url.substring(url.indexOf("=") + 1, last);
+                //         } else {
+                //             uid = url.substring(url.indexOf("=") + 1, url.length);
+                //         }
+                //     }
+                // }
+
+                var uid = window.sessionStorage.getItem("editConceptualModel_id");
+
+                var editorUiInit = EditorUi.prototype.init;
+
+                EditorUi.prototype.init = function () {
+                    editorUiInit.apply(this, arguments);
+
+                    // Updates action states which require a backend
+                    if (!Editor.useLocalStorage) {
+                        mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function (req) {
+                            var enabled = req.getStatus() != 404;
+                            this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
+                            this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
+                            this.actions.get('save').setEnabled(enabled);
+                            this.actions.get('saveAs').setEnabled(enabled);
+                            this.actions.get('export').setEnabled(enabled);
+                        }));
+                    }
+                    else {
+                        var enabled = true;
+                        //					this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
+                        //					this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
+                        //					this.actions.get('save').setEnabled(enabled);
+                        //					this.actions.get('saveAs').setEnabled(enabled);
+                        //					this.actions.get('export').setEnabled(enabled);
+                    }
+                };
+
+                // Adds required resources (disables loading of fallback properties, this can only
+                // be used if we know that all keys are defined in the language specific file)
+                mxResources.loadDefaultBundle = false;
+                var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
+                    mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+
+                // Fixes possible asynchronous requests
+                mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
+                    // Adds bundle text to resources
+                    mxResources.parse(xhr[0].getText());
+
+                    // Configures the default graph theme
+                    var themes = new Object();
+                    themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+
+                    // Main
+                    var mainUI = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.getElementById("container"));
+                    /*				mainUI.editor.graph.connectionArrowsEnabled=false;
+                                    mainUI.editor.graph.connectionHandler.setEnabled(false);*/
+
+                    mainUI.setPageVisible(false);
+
+                    /*
+                    mainUI.editor.graph.setCellsLocked(true);
+                    mainUI.editor.graph.setCellsEditable(false);
+                    mainUI.editor.graph.setCellsResizable(false);
+                    mainUI.editor.graph.setCellsDeletable(false);
+                    mainUI.editor.graph.setCellsMovable(false);
+                    mainUI.editor.graph.setCellsBendable(false);
+                    mainUI.editor.graph.setCellsCloneable(false);
+                    mainUI.editor.graph.setCellsDisconnectable(false);
+                    */
+
+                    //mainUI.editor.graph.setEnabled(false);
+                    mainUI.editor.graph.setCellsSelectable(true);
+                    mainUI.editor.graph.connectionArrowsEnabled = false;
+                    mainUI.editor.graph.connectionHandler.setEnabled(false);
+
+                    //  mainUI.setStatusText("Load OK");
+                    if (uid != null && uid != "" && uid != "0") {
+                        $.ajax({
+                            url: "/GeoModeling/ConceptModelInfoServlet",
+                            type: "get",
+                            data: { "mid": uid },
+                            success: function (result) {
+                                var data = JSON.parse(result);
+                                console.log(data)
+                                var xml_doc = mxUtils.parseXml(data.cxml);
+                                xml_doc.documentElement.setAttribute("page", 0);
+                                mainUI.editor.setGraphXml(xml_doc.documentElement);
+                                window.onbeforeunload = null;
+                            }
+                        })
+                    }
+                }, function () {
+                    document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
+                });
+            })();
+        </script>
+        <!--导航条开始-->
+        <iframe id="myIfm" name="myIfm" style="display: none"></iframe>
+        <!--导航条结束-->
+        <div id="container" class="geEditor" style="left: 0px; top:0px; "></div>
+        <button id="returnUI" onclick="returnValue()" style="display: none"></button>
+        <input id="graph_text" style="display: none">
+        <input id="w" style="display: none">
+        <input id="h" style="display: none">
+    </div>
+</div>
+
+</body>
+<script>
+    function returnValue(){
+        $('#graph_text').val(ui.editor.getGraphXml().outerHTML);
+        new PrintDialog(ui,'save').container;
+        let gb = graph.getGraphBounds();
+        let w = Math.ceil(gb.width*scale);
+        let h = Math.ceil(gb.height*scale);
+        $("#w").val(w);
+        $("#h").val(h);
+    }
+</script>
+</html>

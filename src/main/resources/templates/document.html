@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Document | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/page/demo.css">
+
+</head>
+<body style="background: #f3f3f3">
+    <!--<h1 th:text="${name}">Hello World</h1>-->
+    <div id="app">
+        <div th:replace="fragments/navbar :: unlog"></div>
+
+        <div class="container-fluid" id="main" style="position: relative;" :style="{'min-height':ScreenMinHeight}">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 col-md-12">
+                    <div class="detail">
+                        <hr>
+                        <div class="title">
+                            <h2 style="text-align: left;">Documents</h2>
+                        </div>
+                        <div class="info">
+                            <p>Model Classification Standard</p>
+                            <p>
+                                <a href="../static/doc/classification.pdf" target="_blank">Download
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </a>
+                            </p>
+                            <p>Model Metadata Standard</p>
+                            <p>
+                                <a href="../static/doc/Model_Metadata_Standard.pdf" target="_blank">Download
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</body>
+    <script src="../static/js/common/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/common/vue.min.js"></script>
+    <script src="../static/js/common/axios.min.js"></script>
+    <script src="../static/element-ui/index.js"></script>
+    <script src="../static/js/page/document.js"></script>
+</html>

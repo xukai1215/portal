@@ -1,0 +1,145 @@
+h2{
+    margin: 0;
+}
+h4{
+    margin:0px;
+    padding-right:10px;
+    font-size: 20px;
+}
+
+.detail_block{
+    margin:8px 15px;
+}
+.block_head{
+    background-image: url("../../img/paraTitle-line_c5e6d61.png");
+    border-left: solid 10px #339fff;
+}
+.head_text{
+    color:#525C8E;
+    display: inline-block;
+    background-color: white;
+    padding-left: 10px;
+}
+
+.right-panel > .block_head{
+    background-image: url("../../img/paraTitle-line_c5e6d61.png");
+}
+.right-panel > .head_text{
+    color:#525C8E;
+    display: inline-block;
+    background-color: white;
+}
+
+.block_content{
+
+    margin:20px 20px;
+}
+
+.detail{
+    padding:15px;
+    padding-bottom: 10px;
+}
+
+.detail_option{
+    float:right;
+}
+.detail_option a{
+    margin-left: 20px;
+}
+.detail_option div{
+    display: inline-block;
+}
+.img{
+    float:left;
+}
+.info{
+    margin-left: 110px;
+    display: block;
+    padding-top:5px;
+    min-height: 77px;
+}
+.info a{
+    font-size:18px;
+}
+.info .tags{
+    margin-bottom:5px;
+}
+
+.user{
+    margin: 20px 0px;
+}
+
+.detail_option a{
+    color:#404040;
+    font-size: 18px
+}
+
+.detail_overview{
+    padding:20px;
+    min-height: 117px;
+}
+
+.detailIntroduceDetail{
+    border: 1px solid #ebebeb;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 22px 40px 0;
+    min-height: 300px;
+}
+
+.detailIntroducePanel h2{
+    font-size: 14px;
+    line-height: 28px;
+    padding: 0 0 11px 9px;
+    color: #000;
+    font-weight: 700;
+    position: relative;
+    border-bottom: 1px solid #ebebeb;
+    margin: 0px
+}
+.detailIntroducePanel h2::before{
+    content: "";
+    display: block;
+    width: 2px;
+    height: 15px;
+    background-color: #0b83e1;
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 7px;
+}
+.detailIntroducePanel{
+    padding: 10px 0 0 0;
+    overflow: hidden;
+}
+.detailIntroducePanel h1{
+    font-size: 14px;
+    font-weight: bold;
+}
+.detailIntroduceInfoPanel>p{
+    padding-left: 0px;
+    padding-bottom: 15px;
+}
+.detailIntroduceInfoPanel p .detailIntroduceInfoTitle{
+    color: #0b83e1;
+    padding: 5px;
+    border-bottom: 2px solid;
+}
+
+.p-info{
+    font-size:16px;
+}
+.p-info .name{
+    vertical-align: top;
+    font-weight: bold;
+    display: inline-block;
+    font-size:16px;
+    width:40%;
+}
+.p-info .content{
+    vertical-align: top;
+    display: inline-block;
+    font-size:16px;
+    width:55%;
+}

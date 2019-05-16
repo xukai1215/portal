@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/page/demo.css">
+
+</head>
+<body style="background: #f3f3f3">
+    <!--<h1 th:text="${name}">Hello World</h1>-->
+    <div id="app">
+        <div th:replace="fragments/navbar :: unlog"></div>
+
+        <div id="main" class="container-fluid" :style="{'min-height':ScreenMinHeight}" style="position:relative">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 col-md-12">
+                    <div class="detail">
+                        <hr>
+                        <div class="title">
+                            <h2 style="text-align: left;">Demo</h2>
+                            <p style="font-size:14px;text-align: left;">Create Time : 2018/01/23</p>
+                        </div>
+
+                        <div class="info">
+                            <h3>Demo Process</h3>
+                            <ol>
+                                <li>
+                                    <a>Download Data</a>
+                                </li>
+                                <li>
+                                    <a>Choose Server and Node</a>
+                                </li>
+                                <li>
+                                    <a>Use the computable model according to the workflow</a>
+                                </li>
+                            </ol>
+
+                            <h3>Demo Purpose</h3>
+                            <p>Through this demo, we want to show you the computational power of our platform. The demo includes
+                                simple test data and a TouchAir model developed by our team.</p>
+
+                            <h3>Demo Apply to</h3>
+                            <p>As an example of computable model usage, this demo serves users who have:</p>
+                            <ul>
+                                <li>
+                                    <a>A definite understanding of the computable model to be used</a>
+                                </li>
+                                <li>
+                                    <a>Executable data for the computable model</a>
+                                </li>
+                            </ul>
+                            <!--
+                            <p>This document is only for computable models, more operations refer to:
+                                <a href="javascript:void(0)">Manual</a>
+                            </p>
+                            <p>An introductory video(2 minutes) about how to use computable models on our platform.</p>
+
+                                <vg-player>
+                                    <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls>
+                                        <source src="http://static.videogular.com/assets/videos/videogular.mp4" type="video/mp4">
+                                    </video>
+                                </vg-player> -->
+
+                            <div class="download">
+                                <h3>Demo Data Download</h3>
+                                <button class="btn btn-primary" @click="downloadData()">Download Data</button>
+
+                                <h3>Demo Service Requirements</h3>
+                                <div class="clearfix"></div>
+                                <div class="row">
+                                    <div class="col-sm-4 col-xs-6">
+                                        <a href="/computableModel/34bb603c-080c-4963-aba0-00a2e7abaacf" target="_blank">
+                                            <div class="serverInfo">
+                                                <!-- onclick="window.open('/server/task/NzE2NzA4OTQtOTA4OC00OWM5LWExNjAtNGVmNjI2NjhkOTk3LWQ3NjgxMDBhLTczNjMtNDYxNi05YmJhLTI5YTk4NWNkY2JiYg%3D%3D')" -->
+                                                <div class="serverName">
+                                                    Demo Service
+                                                </div>
+                                                <div class="serverDesc">
+                                                    <b>System:</b>Windows</div>
+                                                <i class="fa fa-thumbs-o-up"></i>
+                                                <div class="progressBar" style="width:50%"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3>Movies</h3>
+                            <video src="http://222.192.7.75/GeoModeling/movie/Demo for OpenGMS.mp4" controls="controls" preload="preload"
+                                   :height="videoHeight" :width="videoWidth">
+                                Your browser does not support the video tag.
+                            </video>
+                            <video src="http://222.192.7.75/GeoModeling/movie/ModelUsing.mp4" controls="controls" preload="preload" :height="videoHeight"
+                                   :width="videoWidth">
+                                Your browser does not support the video tag.
+                            </video>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments/footer :: footer"></div>
+
+    </div>
+</body>
+    <script src="../static/js/common/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/common/vue.min.js"></script>
+    <script src="../static/js/common/axios.min.js"></script>
+    <script src="../static/element-ui/index.js"></script>
+    <script src="../static/js/page/demo.js"></script>
+</html>

@@ -1,0 +1,312 @@
+{
+    "name": "OpenGMS",
+    "value": "",
+    "label": {
+        "position": "right",
+        "align": "right",
+        "fontStyle": "oblique",
+        "fontWeight": "bolder",
+        "fontSize": 30
+    },
+    "children": [
+        {
+            "name": "Solar-Earth Sytem",
+            "value": "",
+            "children": []
+        },
+        {
+            "name": "Earth Land System",
+            "value": "",
+            "children": [
+                {
+                    "name": "Zhuotong Nan",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://schools.njnu.edu.cn/geog/person/zhuotong-nan",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Junzhi Liu",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://dky.njnu.edu.cn/Index.php/teacher/info/id/100.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Min Cao",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://schools.njnu.edu.cn/geog/person/min-cao",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Qiang Dai",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://schools.njnu.edu.cn/geog/person/qiang-dai-0",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                }
+            ]
+        },
+        {
+            "name": "Earth Ocean System",
+            "value": "",
+            "children": [
+                {
+                    "name": "Zhiyao Song",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://schools.njnu.edu.cn/geog/person/zhiyao-song",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Dong Zhang",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://dky.njnu.edu.cn/info/1223/1703.htm",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                }
+            ]
+        },
+        {
+            "name": "Geosphere Circle",
+            "value": "",
+            "children": [
+                {
+                    "name": "Tianxiang Yue",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://sourcedb.igsnrr.cas.cn/zw/zjrck/200906/t20090626_1842564.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                }
+            ]
+        },
+        {
+            "name": "Atmosphere Circle",
+            "value": "",
+            "children": [
+                {
+                    "name": "Liang Ning",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://dky.njnu.edu.cn/Index.php/teacher/info/id/101.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Mi Yan",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://dky.njnu.edu.cn/info/1213/2195.htm",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Bo Huang",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://www.grm.cuhk.edu.hk/eng/people/ppl/fac_HuangBo.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 1
+                }
+            ]
+        },
+        {
+            "name": "Water Circle",
+            "value": "",
+            "children": [
+                {
+                    "name": "Jinshan Zhang",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://www.nhri.cn/art/2014/9/3/art_79_344.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Chuanhai Wang",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://gs.hhu.edu.cn/s/11/t/359/fd/4a/info64842.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Fei Guo",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://schools.njnu.edu.cn/geog/person/fei-guo-0",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Shuo Li",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                }
+            ]
+        },
+        {
+            "name": "Biology Circle",
+            "value": "",
+            "children": [
+                {
+                    "name": "Longhui Li",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                },
+                {
+                    "name": "Wenping Yuan",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://atmos.sysu.edu.cn/User/146.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 1
+                }
+            ]
+        },
+        {
+            "name": "Human Intelligence Circle",
+            "value": "",
+            "children": [
+                {
+                    "name": "Xinyue Ye",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "https://www.kent.edu/geography/profile/xinyue-ye",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 0
+                },
+                {
+                    "name": "Xia Li",
+                    "symbol": "diamond",
+                    "symbolSize": 10,
+                    "value": "http://www.sysu.edu.cn/2012/en/academics/academics03/289.html",
+                    "itemStyle": {
+                        "borderColor": "#330000",
+                        "borderWidth": 0.2,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                        "shadowBlur": 10,
+                        "shadowOffsetY": 1
+                    },
+                    "region": 2
+                }
+            ]
+        }
+    ]
+}

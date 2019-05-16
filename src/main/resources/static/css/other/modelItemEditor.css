@@ -1,0 +1,142 @@
+.nopadding {
+    padding: 0;
+}
+
+
+#mainInfo {
+    overflow: auto;
+    /*padding-top: 10px*/
+}
+
+#modelServiceList .panel {
+    /*border-color: rgb(2, 207, 214);*/
+}
+
+#modelServiceList .panel .panel-heading {
+    padding: 10px 15px;
+    height: auto;
+}
+
+#modelServiceList .panel .panel-heading .pull-right {
+    margin-top: -5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 5px;
+    background-color: #F5F5F5;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: #333333;
+}
+
+#step .step-steps li.active:before, #step .step-steps li.active:after, #step .step-steps li.done:before, #step .step-steps li.done:after {
+    background: #27AE60!important;
+    color: white;
+}
+
+#step .step-steps li:before {
+    content: counter(step);
+    counter-increment: step;
+    width: 20px;
+    line-height: 20px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+    background: white;
+    border-radius: 3px;
+    margin: 0 auto 5px auto;
+}
+
+#step .step-steps li:not(:first-child):after, #step .step-steps li:not(:first-child):after {
+    content: '';
+    width: 90%;
+    height: 2px;
+    background: white;
+    position: absolute;
+    left: -45%;
+    top: 18px;
+}
+
+.form-control {
+    border-radius: 0;
+}
+
+#imgShow {
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    display: none;
+    float: left;
+    margin-right: 10px;
+}
+
+#imgChange {
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 150px;
+    vertical-align: middle;
+    color: #ccc;
+    float: left;
+}
+
+.radioPanel {
+    position: relative;
+    line-height: 20px;
+    float: left;
+    margin-right: 50px
+}
+
+.radioPanel input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    opacity: 0;
+}
+
+.radioPanel label {
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #999;
+    margin-right: 5px
+}
+
+/*设置选中的input的样式*/
+/* + 是兄弟选择器,获取选中后的label元素*/
+.radioPanel input:checked+label {
+    background-color: #fe6d32;
+    border: 1px solid #fe6d32;
+}
+
+.radioPanel input:checked+label::after {
+    position: absolute;
+    content: "";
+    width: 5px;
+    height: 10px;
+    top: 3px;
+    left: 6px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg)
+}
+
+.radioPanel span{
+    margin-left: 25px
+}
+
+label{
+    font-weight: normal!important;
+}

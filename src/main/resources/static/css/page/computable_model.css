@@ -1,0 +1,57 @@
+
+
+
+
+.list_panel{
+    border-bottom:#e6e6e6 1px solid;
+    margin: 0 15px;
+    padding-bottom: 10px;
+}
+
+
+ .serverInfo{
+    padding: 10px 10px;
+    min-height: 72px;
+    box-sizing: border-box;
+    transition: all .3s ease-in-out;
+    position: relative;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+ .serverInfo .serverName{
+    font-size: 14px;
+    color: #333333;
+    line-height: 24px;
+    font-weight: bold
+}
+ .serverInfo .serverDesc{
+    font-size: 14px;
+    color: #999999;
+    line-height: 24px;
+}
+ .serverInfo i{
+    position: absolute;
+    right: 12px;
+    top: 30px;
+    opacity: 1;
+    color: #25d4c1;
+    font-size: 16px;
+}
+ .serverInfo .progressBar{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    /* width: 50%; */
+    background: #25d4c1
+}
+ .serverInfo .progressBar.bad{
+    background: #d9534f
+}
+ .serverInfo:hover{
+    background: #eee;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,.15)
+}
+

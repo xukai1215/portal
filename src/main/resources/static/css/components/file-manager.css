@@ -1,0 +1,52 @@
+
+.filebrowserfunction{
+    background: -webkit-linear-gradient(#ffffff, #e4e4e4); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#ffffff, #e4e4e4); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#ffffff, #e4e4e4); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#ffffff, #e4e4e4); /* 标准的语法（必须放在最后） */
+}
+.dataitemisol{
+    width: 18%;
+    height: 120px ;
+    margin-right:9px;
+    margin-top:5px;
+    float:left;
+    border: none;
+
+}
+.dataitemisol:hover{
+    cursor: pointer;
+}
+.clickdataitem{
+    border: 2px solid #72d600eb;
+    background-color: #acff9c3d;
+
+}
+.browsermenu{
+    width: 120px;
+    position: absolute;
+    z-index: 99;
+
+    display: none;
+
+}
+.browser{
+    width: 120px;
+    position: absolute;
+    z-index: 99;
+
+    display: none;
+}
+.filebrowserfunction{
+    height: 80px;
+}
+.filebrowser .el-button{
+    /*background-color:transparent;*/
+}
+.dall {
+    margin-top:10px ;
+    background: -webkit-linear-gradient(#ffffff, #e4e4e4); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#ffffff, #e4e4e4); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#ffffff, #e4e4e4); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#ffffff, #e4e4e4); /* 标准的语法（必须放在最后） */
+}

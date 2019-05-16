@@ -1,0 +1,71 @@
+ul,li{
+    list-style: none;
+}
+#model_scene_description,#model_description{
+    resize: none;
+}
+/*.tabList ul,.tabList li{list-style:none;}*/
+.tabList ul{
+    display: inline-flex;
+    width: 100%;
+    padding-left: 0px;
+    margin: 0px;
+}
+.tabList ul li{
+    background:#fefefe;
+    background:-moz-linear-gradient(top, #fefefe, #ededed);
+    background:-webkit-gradient(linear,left top,left bottom, from(#fefefe), to(#ededed));
+    border:1px solid #ccc;
+    padding:5px 0;
+    width:100px;
+    text-align:center;
+    position:relative;
+    cursor:pointer;
+}
+.tabList li.cur{
+    border-bottom:none;
+    background:#fff;
+}
+.tabCon{
+    width: 100%;
+    border: 1px solid #ccc;
+    margin-top: -1px;
+    margin-bottom: 10px;
+}
+
+.tabCon >div{
+    display: none;
+}
+.tabCon >div.cur{
+    display: block;
+}
+
+.timeTag{
+    background: #0ecf5e;
+    padding: 2px;
+    border-radius: 4px;
+    color: #fff;
+}
+.ItemTag{
+    background: #0ecf5e;
+    border-radius: 4px;
+    color: #fff;
+}
+
+@media (max-width: 1000px){
+    .geSidebarContainer,geDiagramContainer{
+        top: 125px!important;
+    }
+    .geToolbarContainer{
+        top: 90px !important;
+    }
+
+}
+@media (max-width: 767px){
+    .geSidebarContainer,geDiagramContainer{
+        top: 95px!important;
+    }
+    .geToolbarContainer{
+        top: 60px !important;
+    }
+}

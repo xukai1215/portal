@@ -1,0 +1,152 @@
+html,body{
+  /*height: 100%;*/
+}
+.leftMenu{
+  overflow:hidden;
+  position:absolute;
+  cursor:default;
+  left: 0px;
+  top: 0px;
+  width: 260px;
+  bottom: 0px;
+  background-color: #f5f5f5;
+  border-right: 1px solid #ebebeb
+}
+.leftMenu h1 {
+  color: #666;
+  font-size: 18px;
+  height: 45px;
+  line-height: 45px;
+  border-bottom: 1px solid #ebebeb;
+  padding-left: 35px;
+  font-weight: 900;
+  margin: 0;
+}
+.toc {
+  width: 260px;
+  padding-top: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.toc:hover{
+  overflow-y: auto;
+}
+.toc ul{
+  margin: 0;
+  padding-left:10px;
+}
+.toc .level1 li {
+  padding: 0 0 0 10px;
+}
+.toc .leaf {
+  font-size: 14px;
+  border-bottom: none;
+  background: none;
+}
+
+.toc .leaf ul{
+  margin-top: 10px;
+}
+
+.toc li {
+  margin-bottom: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.toc a {
+  color: #333;
+  text-decoration: none;
+  padding: 0;
+}
+
+.toc a:hover{
+  color: #0886e9;
+}
+
+.toc a span{
+  padding-left: 3px;
+}
+
+
+.mainContainer{
+  overflow:auto;
+  position:absolute;
+  cursor:default;
+  left: 260px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background: #f9f9f9;
+}
+
+.mainContainer .topBar{
+  height:45px;
+  width: 100%;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.mainContainer .documentPanel{
+  width: 100%;
+  padding: 5px 30px 20px 30px;
+}
+.documentPanel h1 {
+  font-size: 25px;
+  min-height: 40px;
+  line-height: 40px;
+  color: #333;
+}
+.documentPanel h2 {
+  font-size: 23px;
+  min-height: 30px;
+  line-height: 30px;
+  color: #333;
+}
+.documentPanel h3 {
+  font-size: 20px;
+  min-height: 30px;
+  line-height: 30px;
+  color: #333;
+}
+.documentPanel p, .documentPanel pre {
+  margin: 14px 0;
+  word-wrap: break-word;
+}
+.geFooterContainer{
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 10004;
+  height: 28px;
+  background:#e5e5e5;
+  border-top:1px solid #c0c0c0;
+  overflow:hidden;
+}
+.geFooterContainer p {
+  font-size:14px;
+  line-height: 28px;
+  color:#333;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+@media screen and (max-width: 1000px) {
+  .leftMenu{
+    top: 90px;
+  }
+  .mainContainer{
+    top: 90px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .leftMenu{
+    top: 60px;
+  }
+  .mainContainer{
+    top: 60px;
+  }
+}
