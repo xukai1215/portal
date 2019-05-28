@@ -35,7 +35,7 @@ width:4.75%
                 <el-carousel indicator-position="none" height="500px" arrow="never">
                     <el-carousel-item>
                         <div type="flex" align="middle" class="contain-bg1 el-row">
-                            <div class="el-col el-col-10 el-col-offset-2">
+                            <div class="col-md-5 col-md-offset-1">
                                 <el-container>
                                     <el-header style="height: 70px;margin-top: 70px;text-align: left">
                                         <h1>Open Geographic Modeling and Simulation</h1>
@@ -55,8 +55,8 @@ width:4.75%
                                     <el-footer style="height: 140px"></el-footer>
                                 </el-container>
                             </div>
-                            <div :span="10">
-                                <div class="el-col el-col-12">
+
+                                <div class="col-md-6">
                                     <img src="../static/img/carousels/el04.svg" style="width: 440px; height: 440px; ">
 
                                 </div>
@@ -66,7 +66,7 @@ width:4.75%
                                 <!--</div>-->
 
 
-                            </div>
+
 
 
                         </div>
@@ -386,7 +386,7 @@ width:4.75%
                             Data resources can be from the sharing of users with their public option. And various data
                             sharing sites are linked to help users search interested data without go here and there.
                             We only publish users' resources under their clear permission.</p>
-                        <el-button type="warning" @click="window.open('http://223.2.45.142:1111')"
+                        <el-button type="warning"
                             style="margin-top: 32px">Discover</el-button>
                     </div>
                 </div>
@@ -452,7 +452,7 @@ width:4.75%
 
                                         <div>
                                             <el-button type="warning" style="margin-top: 16px"
-                                                @click="window.open('http://172.21.212.85:8060/index')">Use Now
+                                                @click="window.open('http://106.14.78.235:8060/index')">Use Now
                                             </el-button>
                                         </div>
                                     </div>
@@ -486,7 +486,7 @@ width:4.75%
 
                                         <div>
                                             <el-button type="warning" style="margin-top: 16px"
-                                                @click="window.open('http://172.21.212.85:8899/')">Use Now
+                                                @click="window.open('http://106.14.78.235:8899/')">Use Now
                                             </el-button>
                                         </div>
                                     </div>
@@ -781,9 +781,9 @@ width:4.75%
 
         <div th:replace="fragments/footer :: footer"></div>
 
-        <el-button v-if="showToTopBtn" type="info" plain circle @click="toTop()" class="to-top">
-            <i class="fa fa-arrow-up" aria-hidden="true"></i>
-        </el-button>
+        <!--<el-button v-if="showToTopBtn" type="info" plain circle @click="toTop()" class="to-top">-->
+            <!--<i class="fa fa-arrow-up" aria-hidden="true"></i>-->
+        <!--</el-button>-->
     </div>
 
 </body>
