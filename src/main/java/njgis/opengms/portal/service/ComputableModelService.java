@@ -20,6 +20,7 @@ import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.ZipUtils;
 import njgis.opengms.portal.utils.deCode;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
@@ -46,7 +47,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static njgis.opengms.portal.utils.Utils.saveFiles;
-import static njgis.opengms.portal.utils.Utils.unZip;
 
 /**
  * @ClassName ModelItemService
@@ -309,7 +309,7 @@ public class ComputableModelService {
                     String mdlPath=null;
                     String testDataDirectoryPath = null;
                     String destDirPath = path + "/unZip/" + computableModel.getOid();
-                    unZip(new File(filePath), destDirPath);
+                    ZipUtils.unZip(new File(filePath),destDirPath);
                     File unZipDir = new File(destDirPath);
                     if (unZipDir.exists()) {
                         LinkedList<File> list = new LinkedList<File>();
