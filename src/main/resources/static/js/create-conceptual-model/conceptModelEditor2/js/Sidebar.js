@@ -1259,7 +1259,7 @@ Sidebar.prototype.addMiscPalette = function(expand)
 	 	{
 	 		var cell = new mxCell('Link', new mxGeometry(0, 0, 60, 40), 'text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=center;verticalAlign=middle;fontColor=#0000EE;fontStyle=4;');
 	 		cell.vertex = true;
-	 		this.graph.setLinkForCell(cell, 'https://geomodeling.njnu.edu.cn');
+	 		this.graph.setLinkForCell(cell, 'https://opengms.cityfun.com.cn');
 
 	 		return this.createVertexTemplateFromCells([cell], cell.geometry.width, cell.geometry.height, 'Link');
 	 	})),

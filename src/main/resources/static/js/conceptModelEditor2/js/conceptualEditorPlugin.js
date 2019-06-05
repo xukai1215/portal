@@ -29,7 +29,7 @@ function createIcon(array,id) {
         div.style.marginTop = "6px";
         var img = document.createElement("img");
         img.id = array[i].icon_id;
-        img.src = "http://222.192.7.75/GeoModelingNew/showIconServlet?uid="+array[i].icon_id;
+        img.src = "http://localhost/GeoModelingNew/showIconServlet?uid="+array[i].icon_id;
         img.width = "100";
         img.height = "100";
         div.appendChild(img);

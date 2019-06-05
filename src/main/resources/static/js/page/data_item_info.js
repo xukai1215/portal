@@ -497,8 +497,8 @@ var  data_item_info= new Vue({
         var url=currenturl.split("/")
 
         var cite=document.getElementById("citeurl");
-        cite.src='http://www.geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
-        cite.innerText='<http://www.geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
+        cite.src='http://opengms.cityfun.com.cn/'+url[url.length-2]+'/'+url[url.length-1];
+        cite.innerText='<http://opengms.cityfun.com.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
 
 
 

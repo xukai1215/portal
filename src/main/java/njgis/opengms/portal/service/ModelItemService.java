@@ -21,6 +21,7 @@ import njgis.opengms.portal.utils.ResultUtils;
 import org.bson.Document;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -71,6 +72,12 @@ public class ModelItemService {
     @Autowired
     ComputableModelDao computableModelDao;
 
+    @Value("${resourcePath}")
+    private String resourcePath;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
+
     public ModelAndView getPage(String id){
         //条目信息
         ModelItem modelInfo=getByOid(id);
@@ -104,13 +111,16 @@ public class ModelItemService {
         //详情页面
         String detailResult;
         String model_detailDesc=modelInfo.getDetail();
-        int num=model_detailDesc.indexOf("/upload/document/");
+        int num=model_detailDesc.indexOf("upload/document/");
         if(num==-1||num>20){
             detailResult=model_detailDesc;
         }
         else {
-            model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-            String filePath = ModelItemService.class.getClassLoader().getResource("").getPath() + "static/" + model_detailDesc;
+            if(model_detailDesc.indexOf("/")==0){
+                model_detailDesc.substring(1);
+            }
+            //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
+            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
             try {
                 filePath = java.net.URLDecoder.decode(filePath, "utf-8");
             } catch (UnsupportedEncodingException e) {
@@ -206,6 +216,12 @@ public class ModelItemService {
         userJson.put("oid", user.getOid());
         userJson.put("image", user.getImage());
 
+        //图片路径
+        String image=modelInfo.getImage();
+        if(!image.equals("")){
+            modelInfo.setImage(htmlLoadPath+image);
+        }
+
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("model_item_info");
         modelAndView.addObject("modelInfo",modelInfo);
@@ -234,8 +250,11 @@ public class ModelItemService {
                 detailResult=model_detailDesc;
             }
             else {
-                model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-                String filePath = ModelItemService.class.getClassLoader().getResource("").getPath() + "static/" + model_detailDesc;
+                if(model_detailDesc.indexOf("/")==0){
+                    model_detailDesc.substring(1);
+                }
+                //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
+                String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
                 try {
                     filePath = java.net.URLDecoder.decode(filePath, "utf-8");
                 } catch (UnsupportedEncodingException e) {
@@ -406,6 +425,17 @@ public class ModelItemService {
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
+        Classification classification=classificationService.getByOid(classes.get(0));
+        if(classification!=null) {
+            List<String> children = classification.getChildrenId();
+            if (children.size() > 0) {
+                for (String child : children
+                        ) {
+                    classes.add(child);
+                }
+            }
+        }
+
         Page<ModelItemResultDTO> modelItemPage = null;
 
         if (searchText.equals("")&&classes.get(0).equals("all")) {
@@ -421,10 +451,16 @@ public class ModelItemService {
         List<ModelItemResultDTO> modelItems=modelItemPage.getContent();
         JSONArray users=new JSONArray();
         for(int i=0;i<modelItems.size();i++){
+            ModelItemResultDTO modelItem=modelItems.get(i);
+            String image=modelItem.getImage();
+            if(!image.equals("")) {
+                modelItem.setImage(htmlLoadPath + image);
+            }
+
             JSONObject userObj=new JSONObject();
             User user=userDao.findFirstByUserName(modelItems.get(i).getAuthor());
             userObj.put("oid",user.getOid());
-            userObj.put("image",user.getImage());
+            userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
             userObj.put("name",user.getName());
             users.add(userObj);
         }

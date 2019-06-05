@@ -18,10 +18,12 @@ import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.deCode;
 import org.bson.Document;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +66,13 @@ public class LogicalModelService {
 
     @Autowired
     UserService userService;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
+
 
     public ModelAndView getPage(String id){
         //条目信息
@@ -121,6 +130,7 @@ public class LogicalModelService {
         modelAndView.addObject("date",dateResult);
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
         modelAndView.addObject("user",userJson);
+        modelAndView.addObject("loadPath",htmlLoadPath);
 
         return modelAndView;
     }
@@ -138,7 +148,7 @@ public class LogicalModelService {
         JSONObject result=new JSONObject();
         LogicalModel logicalModel = new LogicalModel();
 
-        String path=LogicalModelService.class.getClassLoader().getResource("").getPath()+"static/img/logicalModel";
+        String path=resourcePath+"/logicalModel";
         List<String> images=saveFiles(files,path,uid,"/logicalModel");
         if(images==null){
             result.put("code",-1);
@@ -207,6 +217,13 @@ public class LogicalModelService {
     public int delete(String oid,String userName){
         LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
         if(logicalModel!=null){
+            //图片删除
+            List<String> images=logicalModel.getImage();
+            for(int i=0;i<images.size();i++){
+                String path=resourcePath+images.get(i);
+                Utils.deleteFile(path);
+            }
+            //条目删除
             logicalModelDao.delete(logicalModel);
             userService.logicalModelMinusMinus(userName);
 

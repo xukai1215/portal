@@ -60,6 +60,9 @@ public class TaskService {
     @Value ("${managerServerIpAndPort}")
     private String managerServer;
 
+    @Value("${resourcePath}")
+    private String resourcePath;
+
     public ModelAndView getPage(String id, String username) {
         //条目信息
         ComputableModel modelInfo = computableModelService.getByOid(id);
@@ -163,7 +166,7 @@ public class TaskService {
     //根据post请求的信息得到数据存储的路径
     public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO){
         String oid = testDataUploadDTO.getOid();
-        String parentDirectory = TaskService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/testify/" + oid;
+        String parentDirectory = resourcePath + "/computableModel/testify/" + oid;
         String configPath = parentDirectory + File.separator + "config.xml";
         JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory);
         if(configInfoArray == null){
@@ -281,7 +284,7 @@ public class TaskService {
 
     public JSONObject getServiceTask(String md5) {
 
-        String urlStr = "http://222.192.7.75:8084/GeoModeling/taskNode/getServiceTask/" + md5;
+        String urlStr = "http://localhost:8084/GeoModeling/taskNode/getServiceTask/" + md5;
         JSONObject result = connentURL(Utils.Method.GET, urlStr);
 
         return result;
@@ -289,7 +292,7 @@ public class TaskService {
 
     public JSONObject createTask(String id, String md5, String ip, int port, String username) {
 
-        String urlStr = "http://222.192.7.75:8084/GeoModeling/computableModel/createTask";
+        String urlStr = "http://localhost:8084/GeoModeling/computableModel/createTask";
 //        Map<String, Object> paramMap = new HashMap<String, Object>();
 //        paramMap.put("ip", ip);
 //        paramMap.put("port", port);
@@ -308,7 +311,7 @@ public class TaskService {
 
     public String invoke(JSONObject lists){
 
-        JSONObject result=postJSON("http://222.192.7.75:8084/GeoModeling/computableModel/invoke",lists);
+        JSONObject result=postJSON("http://localhost:8084/GeoModeling/computableModel/invoke",lists);
 
         if(result.getInteger("code")==1){
 
@@ -422,7 +425,7 @@ public class TaskService {
     public JSONObject getTaskResult(JSONObject data){
         JSONObject out = new JSONObject();
 
-        JSONObject result = Utils.postJSON("http://222.192.7.75:8084/GeoModeling/computableModel/refreshTaskRecord", data);
+        JSONObject result = Utils.postJSON("http://localhost:8084/GeoModeling/computableModel/refreshTaskRecord", data);
 
         ////update model status to Started, Started: 1, Finished: 2, Inited: 0, Error: -1
         Task task = findByTaskId(data.getString("tid"));

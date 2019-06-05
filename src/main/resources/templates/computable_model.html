@@ -104,7 +104,7 @@
 
                             <el-row>
                                 <el-col :span="6">&nbsp</el-col>
-                                <el-col :span="12"><a th:href="'../static/upload/computableModel/'+${modelInfo.contentType}+${data.path}"><img th:src="'../static/img/filebrowser/'+${data.suffix}+'.svg'"
+                                <el-col :span="12"><a th:href="${loadPath}+'/computableModel/'+${modelInfo.contentType}+${data.path}"><img th:src="'../static/img/filebrowser/'+${data.suffix}+'.svg'"
                                                         style="height: 60%;width:100%"></a></el-col>
                                 <el-col :span="6">&nbsp</el-col>
                             </el-row>
@@ -151,7 +151,7 @@
                 <div class="block_content flex">
                     <div id="link-text" class="width:100%">
                         <a th:href="${modelInfo.url}" th:text="${modelInfo.url}" target="_blank">
-                            http://www.geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                            http://opengms.cityfun.com.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                 </div>
@@ -185,9 +185,9 @@
                             <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
-                        <a th:href="'http://www.geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
-                           th:text="'http://www.geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
-                            http://www.geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        <a th:href="'http://opengms.cityfun.com.cn/conceptualmodel/'+${modelInfo.oid}"
+                           th:text="'http://opengms.cityfun.com.cn/conceptualmodel/'+${modelInfo.oid}">
+                            http://opengms.cityfun.com.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">

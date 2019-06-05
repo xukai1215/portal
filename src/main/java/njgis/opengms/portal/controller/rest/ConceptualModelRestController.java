@@ -12,6 +12,7 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -45,8 +46,6 @@ public class ConceptualModelRestController {
 
     @Autowired
     UserService userService;
-
-
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
     public ModelAndView getModelItems() {

@@ -13,6 +13,7 @@ import njgis.opengms.portal.exception.MyException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ public class UserService {
 
     @Autowired
     CommonService commonService;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
 
     public String resetPassword(String email){
@@ -225,7 +229,7 @@ public class UserService {
     }
 
     public String getImage(String oid){
-        return userDao.findFirstByOid(oid).getImage();
+        return htmlLoadPath+userDao.findFirstByOid(oid).getImage();
     }
 
     public JSONObject getUserInfo(String userId){

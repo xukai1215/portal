@@ -9,6 +9,7 @@ import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,9 @@ public class UserRestController {
 
     @Autowired
     DataItemService dataItemService;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
     @ResponseBody
     @RequestMapping(value = "/add",method = RequestMethod.POST)
@@ -164,6 +168,7 @@ public class UserRestController {
 
             modelAndView.setViewName("user_page");
             modelAndView.addObject("userInfo", userInfo);
+            modelAndView.addObject("loadPath",htmlLoadPath);
             JSONArray array=userInfo.getJSONArray("subjectAreas");
             String areas="";
             if(array!=null) {
