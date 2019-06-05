@@ -28,16 +28,19 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.IOUtils;
 
+import javax.rmi.CORBA.Util;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -75,6 +78,12 @@ public class ComputableModelService {
     UserService userService;
 
     ModelDao modelDao = new ModelDao();
+
+    @Value ("${resourcePath}")
+    private String resourcePath;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
     public ModelAndView getPage(String id) {
         //条目信息
@@ -152,6 +161,7 @@ public class ComputableModelService {
         modelAndView.addObject("year", calendar.get(Calendar.YEAR));
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("resources", resourceArray);
+        modelAndView.addObject("loadPath",htmlLoadPath);
 
         return modelAndView;
     }
@@ -164,8 +174,6 @@ public class ComputableModelService {
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }
-
-
 
     public JSONObject doPostWithDeployPackage(String url, String savefileName, String fileName, String param) {
 
@@ -255,10 +263,13 @@ public class ComputableModelService {
         return null;
     }
 
+    @Value("${managerServerIpAndPort}")
+    private String managerServer;
+
     public String deploy(String id) {
         //获取可以将部署包进行部署的任务服务器信息
         JSONObject result = new JSONObject();
-        String urlStr = "http://222.192.7.75:8084/GeoModeling/taskNode/getTaskForMicroService";
+        String urlStr = "http://"+managerServer+"/GeoModeling/taskNode/getTaskForMicroService";
         JSONObject serviceTaskResult = Utils.connentURL(Utils.Method.GET, urlStr);
         if (serviceTaskResult != null && serviceTaskResult.getInteger("code") == 1) {
             //task服务器API，部署包通过task server进行部署
@@ -286,7 +297,7 @@ public class ComputableModelService {
         JSONObject result = new JSONObject();
         ComputableModel computableModel = new ComputableModel();
 
-        String path = ConceptualModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/" + jsonObject.getString("contentType");
+        String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
         List<String> resources = saveFiles(files, path, uid, "");
         if (resources == null) {
             result.put("code", -1);
@@ -376,6 +387,7 @@ public class ComputableModelService {
                             while ((str = in.readLine()) != null) {
                                 content+=str;
                             }
+                            in.close();
                             System.out.println(content);
                         } catch (IOException e) {
                             System.out.println(e);
@@ -386,9 +398,13 @@ public class ComputableModelService {
                     else{
                         System.out.println("mdl文件未找到!");
                     }
+
+                    Utils.deleteDirectory(destDirPath);
                 }
 
                 computableModel.setMd5(md5);
+
+
 
                 JSONArray jsonArray=jsonObject.getJSONArray("authorship");
                 List<AuthorInfo> authorship=new ArrayList<>();
@@ -504,6 +520,13 @@ public class ComputableModelService {
         ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
 
         if(computableModel!=null){
+            //删除资源
+            String path = resourcePath + "/computableModel/" + computableModel.getContentType();
+            List<String> resources=computableModel.getResources();
+            for(int i=0;i<resources.size();i++){
+                Utils.delete(path+resources.get(i));
+            }
+
             //计算模型删除
             computableModelDao.delete(computableModel);
             userService.computableModelMinusMinus(userName);

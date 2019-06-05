@@ -7,6 +7,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 
 
 import java.io.*;
@@ -24,12 +25,12 @@ import static org.springframework.util.StreamUtils.BUFFER_SIZE;
 
 public class Utils {
 
-    public static class Method{
-        public static String POST="POST";
-        public static String GET="GET";
+    public static class Method {
+        public static String POST = "POST";
+        public static String GET = "GET";
     }
 
-    public static JSONObject postJSON(String urlStr,JSONObject jsonParam){
+    public static JSONObject postJSON(String urlStr, JSONObject jsonParam) {
         try {
 
             //System.out.println(obj);
@@ -62,7 +63,7 @@ public class Utils {
 
             // 开始连接请求
             conn.connect();
-            OutputStream  out = conn.getOutputStream();
+            OutputStream out = conn.getOutputStream();
             // 写入请求的字符串
             out.write(data);
             out.flush();
@@ -101,7 +102,7 @@ public class Utils {
 
     }
 
-    public static JSONObject connentURL(String method,String urlStr){
+    public static JSONObject connentURL(String method, String urlStr) {
         try {
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -115,7 +116,7 @@ public class Utils {
             while ((lines = reader.readLine()) != null) {
                 strResponse += lines;
             }
-            JSONObject jsonResponse=JSONObject.parseObject(strResponse);
+            JSONObject jsonResponse = JSONObject.parseObject(strResponse);
 
             reader.close();
 
@@ -134,14 +135,14 @@ public class Utils {
 
     }
 
-    public static List<String> saveFiles(List<MultipartFile> files, String path, String uid, String suffix){
+    public static List<String> saveFiles(List<MultipartFile> files, String path, String uid, String suffix) {
         new File(path).mkdirs();
 
-        List<String> result=new ArrayList<>();
+        List<String> result = new ArrayList<>();
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
-            fileName = "/"+uid+"/"+new Date().getTime()+"_"+fileName;
-            result.add(suffix+fileName);
+            fileName = "/" + uid + "/" + new Date().getTime() + "_" + fileName;
+            result.add(suffix + fileName);
             int size = (int) file.getSize();
             System.out.println(fileName + "-->" + size);
 
@@ -164,64 +165,82 @@ public class Utils {
         return result;
     }
 
+
     /**
-     * zip解压
-     * @param srcFile        zip源文件
-     * @param destDirPath     解压后的目标文件夹
-     * @throws RuntimeException 解压失败会抛出运行时异常
+     * 根据路径删除指定的目录或文件，无论存在与否
+     *
+     * @param sPath 要删除的目录或文件
+     * @return 删除成功返回 true，否则返回 false。
      */
-    public static void unZip(File srcFile, String destDirPath) throws RuntimeException {
-        long start = System.currentTimeMillis();
-        // 判断源文件是否存在
-        if (!srcFile.exists()) {
-            throw new RuntimeException(srcFile.getPath() + "所指文件不存在");
+    public static boolean delete(String sPath) {
+        boolean flag = false;
+        File file = new File(sPath);
+        // 判断目录或文件是否存在
+        if (!file.exists()) {  // 不存在返回 false
+            return flag;
+        } else {
+            // 判断是否为文件
+            if (file.isFile()) {  // 为文件时调用删除文件方法
+                return deleteFile(sPath);
+            } else {  // 为目录时调用删除目录方法
+                return deleteDirectory(sPath);
+            }
         }
-        // 开始解压
-        ZipFile zipFile = null;
-        try {
-            zipFile = new ZipFile(srcFile);
-            Enumeration<?> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry) entries.nextElement();
-                System.out.println("解压" + entry.getName());
-                // 如果是文件夹，就创建个文件夹
-                if (entry.isDirectory()) {
-                    String dirPath = destDirPath + "/" + entry.getName();
-                    File dir = new File(dirPath);
-                    dir.mkdirs();
-                } else {
-                    // 如果是文件，就先创建一个文件，然后用io流把内容copy过去
-                    File targetFile = new File(destDirPath + "/" + entry.getName());
-                    // 保证这个文件的父文件夹必须要存在
-                    if(!targetFile.getParentFile().exists()){
-                        targetFile.getParentFile().mkdirs();
-                    }
-                    targetFile.createNewFile();
-                    // 将压缩文件内容写入到这个文件中
-                    InputStream is = zipFile.getInputStream(entry);
-                    FileOutputStream fos = new FileOutputStream(targetFile);
-                    int len;
-                    byte[] buf = new byte[BUFFER_SIZE];
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                    }
-                    // 关流顺序，先打开的后关闭
-                    fos.close();
-                    is.close();
-                }
+    }
+
+    /**
+     * 删除单个文件
+     *
+     * @param sPath 被删除文件的文件名
+     * @return 单个文件删除成功返回true，否则返回false
+     */
+    public static boolean deleteFile(String sPath) {
+        Boolean flag = false;
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (file.isFile() && file.exists()) {
+            file.delete();
+            flag = true;
+        }
+        return flag;
+    }
+
+    /**
+     * 删除目录（文件夹）以及目录下的文件
+     *
+     * @param sPath 被删除目录的文件路径
+     * @return 目录删除成功返回true，否则返回false
+     */
+    public static boolean deleteDirectory(String sPath) {
+        //如果sPath不以文件分隔符结尾，自动添加文件分隔符
+        if (!sPath.endsWith(File.separator)) {
+            sPath = sPath + File.separator;
+        }
+        File dirFile = new File(sPath);
+        //如果dir对应的文件不存在，或者不是一个目录，则退出
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
+            return false;
+        }
+        boolean flag = true;
+        //删除文件夹下的所有文件(包括子目录)
+        File[] files = dirFile.listFiles();
+        for (int i = files.length - 1; i >= 0; i--) {
+            //删除子文件
+            if (files[i].isFile()) {
+                flag = deleteFile(files[i].getAbsolutePath());
+                if (!flag) break;
+            } //删除子目录
+            else {
+                flag = deleteDirectory(files[i].getAbsolutePath());
+                if (!flag) break;
             }
-            long end = System.currentTimeMillis();
-            System.out.println("解压完成，耗时：" + (end - start) +" ms");
-        } catch (Exception e) {
-            throw new RuntimeException("unzip error from ZipUtils", e);
-        } finally {
-            if(zipFile != null){
-                try {
-                    zipFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        }
+        if (!flag) return false;
+        //删除当前目录
+        if (dirFile.delete()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -230,29 +249,29 @@ public class Utils {
         try {
             Document mdlDoc = DocumentHelper.parseText(mdl);
             Element rootElement = mdlDoc.getRootElement();
-            mdlObj.put("name",rootElement.attributeValue("name"));
+            mdlObj.put("name", rootElement.attributeValue("name"));
 
             Element AttributeSet = rootElement.element("AttributeSet");
             Element Behavior = rootElement.element("Behavior");
 
             //基本属性开始
             Element Category = AttributeSet.element("Categories").element("Category");
-            mdlObj.put("principle",Category.attributeValue("principle"));
-            mdlObj.put("path",Category.attributeValue("path"));
+            mdlObj.put("principle", Category.attributeValue("principle"));
+            mdlObj.put("path", Category.attributeValue("path"));
 
             List<Element> LocalAttributes = AttributeSet.element("LocalAttributes").elements();
-            if(LocalAttributes.size()>0){
-                for(Element LocalAttribute:LocalAttributes){
+            if (LocalAttributes.size() > 0) {
+                for (Element LocalAttribute : LocalAttributes) {
                     JSONObject local = new JSONObject();
-                    local.put("localName",LocalAttribute.attributeValue("localName"));
+                    local.put("localName", LocalAttribute.attributeValue("localName"));
                     Element Keywords = LocalAttribute.element("Keywords");
-                    local.put("keywords",Keywords.getText());
+                    local.put("keywords", Keywords.getText());
                     Element Abstract = LocalAttribute.element("Abstract");
-                    local.put("abstract",Abstract.getText());
-                    if(LocalAttribute.attributeValue("local").equals("EN_US")){
-                        mdlObj.put("enAttr",local);
-                    }else{
-                        mdlObj.put("cnAttr",local);
+                    local.put("abstract", Abstract.getText());
+                    if (LocalAttribute.attributeValue("local").equals("EN_US")) {
+                        mdlObj.put("enAttr", local);
+                    } else {
+                        mdlObj.put("cnAttr", local);
                     }
                 }
             }
@@ -260,159 +279,159 @@ public class Utils {
 
             //相关数据开始
             Element RelatedDatasets = Behavior.element("RelatedDatasets");
-            if(RelatedDatasets==null){
+            if (RelatedDatasets == null) {
                 RelatedDatasets = Behavior.element("DatasetDeclarations");
             }
             List<Element> DatasetItems = RelatedDatasets.elements();
-            if(DatasetItems.size()>0){
+            if (DatasetItems.size() > 0) {
                 JSONArray DatasetItemArray = new JSONArray();
-                for (Element DatasetDeclaration:DatasetItems){
+                for (Element DatasetDeclaration : DatasetItems) {
                     JSONArray dataset = new JSONArray();
                     JSONObject root = new JSONObject();
-                    root.put("text",DatasetDeclaration.attributeValue("name"));
-                    if(DatasetDeclaration.attribute("description")!=null){
-                        root.put("desc",DatasetDeclaration.attributeValue("description"));
-                    }else{
-                        root.put("desc","");
+                    root.put("text", DatasetDeclaration.attributeValue("name"));
+                    if (DatasetDeclaration.attribute("description") != null) {
+                        root.put("desc", DatasetDeclaration.attributeValue("description"));
+                    } else {
+                        root.put("desc", "");
                     }
-                    root.put("dataType",DatasetDeclaration.attributeValue("type"));
-                    if(DatasetDeclaration.attributeValue("type").equals("external")){
+                    root.put("dataType", DatasetDeclaration.attributeValue("type"));
+                    if (DatasetDeclaration.attributeValue("type").equals("external")) {
                         String external = "";
-                        if(DatasetDeclaration.attribute("externalId")!=null){
+                        if (DatasetDeclaration.attribute("externalId") != null) {
                             external = DatasetDeclaration.attributeValue("externalId");
-                            root.put("externalId",external);
-                        }else if(DatasetDeclaration.attribute("external")!=null){
+                            root.put("externalId", external);
+                        } else if (DatasetDeclaration.attribute("external") != null) {
                             external = DatasetDeclaration.attributeValue("external");
-                            root.put("externalId",external);
+                            root.put("externalId", external);
                         }
-                        root.put("parentId","null");
+                        root.put("parentId", "null");
                         dataset.add(root);
-                    }else {
+                    } else {
                         Element UDXDeclaration;
-                        if(DatasetDeclaration.element("UdxDeclaration")!=null){
+                        if (DatasetDeclaration.element("UdxDeclaration") != null) {
                             UDXDeclaration = DatasetDeclaration.element("UdxDeclaration");
-                        }else{
+                        } else {
                             UDXDeclaration = DatasetDeclaration.element("UDXDeclaration");
                         }
                         String rootId = "";
-                        if(UDXDeclaration .attribute("id")!=null){
-                            rootId = "root"+UDXDeclaration .attributeValue("id");
-                        }else {
-                            rootId = "root"+ UUID.randomUUID().toString();
+                        if (UDXDeclaration.attribute("id") != null) {
+                            rootId = "root" + UDXDeclaration.attributeValue("id");
+                        } else {
+                            rootId = "root" + UUID.randomUUID().toString();
                         }
-                        root.put("Id",rootId);
-                        root.put("parentId","null");
+                        root.put("Id", rootId);
+                        root.put("parentId", "null");
 
                         Element udxNode;
-                        if(UDXDeclaration.element("UDXNode")!=null){
-                            udxNode=UDXDeclaration.element("UDXNode");
-                        }else {
-                            udxNode=UDXDeclaration.element("UdxNode");
+                        if (UDXDeclaration.element("UDXNode") != null) {
+                            udxNode = UDXDeclaration.element("UDXNode");
+                        } else {
+                            udxNode = UDXDeclaration.element("UdxNode");
                         }
-                        List<Element>UdxNodes = udxNode.elements();
-                        if(UdxNodes.size()>0){
-                            root.put("nodes",new JSONArray());
-                            convertData(UdxNodes,root);
+                        List<Element> UdxNodes = udxNode.elements();
+                        if (UdxNodes.size() > 0) {
+                            root.put("nodes", new JSONArray());
+                            convertData(UdxNodes, root);
                         }
                         dataset.add(root);
                     }
                     DatasetItemArray.add(dataset);
                 }
-                mdlObj.put("DataItems",DatasetItemArray);
+                mdlObj.put("DataItems", DatasetItemArray);
             }
             //相关数据结束
 
             //State开始
             Element States = Behavior.element("StateGroup").element("States");
-            List<Element>StateList = States.elements();
+            List<Element> StateList = States.elements();
             JSONArray states = new JSONArray();
-            if(StateList.size()>0){
-                for (Element State:StateList){
+            if (StateList.size() > 0) {
+                for (Element State : StateList) {
                     JSONObject stateObj = new JSONObject();
-                    stateObj.put("name",State.attributeValue("name"));
-                    stateObj.put("type",State.attributeValue("type"));
-                    stateObj.put("desc",State.attributeValue("description"));
-                    stateObj.put("Id",State.attributeValue("id"));
-                    List<Element>EventList = State.elements();
+                    stateObj.put("name", State.attributeValue("name"));
+                    stateObj.put("type", State.attributeValue("type"));
+                    stateObj.put("desc", State.attributeValue("description"));
+                    stateObj.put("Id", State.attributeValue("id"));
+                    List<Element> EventList = State.elements();
                     JSONArray event = new JSONArray();
-                    for (Element Event :EventList){
+                    for (Element Event : EventList) {
                         JSONObject eventObj = new JSONObject();
-                        eventObj.put("eventId",UUID.randomUUID().toString());
-                        eventObj.put("eventName",Event.attributeValue("name"));
-                        eventObj.put("eventType",Event.attributeValue("type"));
-                        eventObj.put("eventDesc",Event.attributeValue("description"));
+                        eventObj.put("eventId", UUID.randomUUID().toString());
+                        eventObj.put("eventName", Event.attributeValue("name"));
+                        eventObj.put("eventType", Event.attributeValue("type"));
+                        eventObj.put("eventDesc", Event.attributeValue("description"));
                         Element Parameter = null;
-                        if(Event.attributeValue("type").equals("response")){
+                        if (Event.attributeValue("type").equals("response")) {
                             Parameter = Event.element("ResponseParameter");
-                            if(Event.attribute("optional")!=null){
-                                if(Event.attributeValue("optional").equalsIgnoreCase("True")){
-                                    if(Event.element("ControlParameter") != null){
+                            if (Event.attribute("optional") != null) {
+                                if (Event.attributeValue("optional").equalsIgnoreCase("True")) {
+                                    if (Event.element("ControlParameter") != null) {
                                         Parameter = Event.element("ControlParameter");
                                     }
-                                    eventObj.put("optional",true);
-                                }else{
-                                    eventObj.put("optional",false);
+                                    eventObj.put("optional", true);
+                                } else {
+                                    eventObj.put("optional", false);
                                 }
                             }
-                        }else{
+                        } else {
                             Parameter = Event.element("DispatchParameter");
-                            if(Event.attribute("optional")!=null){
-                                if(Event.attributeValue("optional").equalsIgnoreCase("True")){
-                                    if(Event.element("ControlParameter") != null){
+                            if (Event.attribute("optional") != null) {
+                                if (Event.attributeValue("optional").equalsIgnoreCase("True")) {
+                                    if (Event.element("ControlParameter") != null) {
                                         Parameter = Event.element("ControlParameter");
                                     }
-                                    eventObj.put("optional",true);
-                                }else{
-                                    eventObj.put("optional",false);
+                                    eventObj.put("optional", true);
+                                } else {
+                                    eventObj.put("optional", false);
                                 }
                             }
                         }
 
-                        for (int i=0;i<mdlObj.getJSONArray("DataItems").size();i++){
+                        for (int i = 0; i < mdlObj.getJSONArray("DataItems").size(); i++) {
                             JSONArray currentDataSet = mdlObj.getJSONArray("DataItems").getJSONArray(i);
                             JSONObject rootData = currentDataSet.getJSONObject(0);
-                            if(Parameter==null){
+                            if (Parameter == null) {
                                 break;
                             }
-                            if(rootData.getString("text").equals(Parameter.attributeValue("datasetReference"))){
-                                eventObj.put("data",currentDataSet);
+                            if (rootData.getString("text").equals(Parameter.attributeValue("datasetReference"))) {
+                                eventObj.put("data", currentDataSet);
                             }
                         }
                         event.add(eventObj);
                     }
-                    stateObj.put("event",event);
+                    stateObj.put("event", event);
                     states.add(stateObj);
                 }
             }
-            mdlObj.put("states",states);
+            mdlObj.put("states", states);
             //State结束
         } catch (DocumentException e) {
             e.printStackTrace();
         }
-        JSONObject result=new JSONObject();
-        result.put("mdl",mdlObj);
-        return  result;
+        JSONObject result = new JSONObject();
+        result.put("mdl", mdlObj);
+        return result;
     }
 
     public static void convertData(List<Element> udxNodes, JSONObject root) {
-        if(udxNodes.size()>0){
-            for(Element udxNode:udxNodes){
+        if (udxNodes.size() > 0) {
+            for (Element udxNode : udxNodes) {
                 JSONObject node = new JSONObject();
-                node.put("text",udxNode.attributeValue("name"));
-                node.put("dataType",udxNode.attributeValue("type"));
-                node.put("desc",udxNode.attributeValue("description"));
-                if(udxNode.attributeValue("type").equals("external")){
-                    node.put("externalId",udxNode.attributeValue("externalId"));
+                node.put("text", udxNode.attributeValue("name"));
+                node.put("dataType", udxNode.attributeValue("type"));
+                node.put("desc", udxNode.attributeValue("description"));
+                if (udxNode.attributeValue("type").equals("external")) {
+                    node.put("externalId", udxNode.attributeValue("externalId"));
                 }
                 List<Element> nodeChildren = udxNode.elements();
-                if(nodeChildren.size()>0){
-                    node.put("nodes",new JSONArray());
-                    convertData(nodeChildren,node);
+                if (nodeChildren.size() > 0) {
+                    node.put("nodes", new JSONArray());
+                    convertData(nodeChildren, node);
                 }
                 JSONArray nodes = root.getJSONArray("nodes");
                 nodes.add(node);
             }
-        }else{
+        } else {
             return;
         }
     }
@@ -426,5 +445,34 @@ public class Utils {
             flg = true;
 
         return flg;
+    }
+
+    //base64字符串转化成图片
+    public static boolean base64StrToImage(String imgStr, String path) {
+        if (imgStr == null)
+            return false;
+        BASE64Decoder decoder = new BASE64Decoder();
+        try {
+            // 解密
+            byte[] b = decoder.decodeBuffer(imgStr);
+            // 处理数据
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] < 0) {
+                    b[i] += 256;
+                }
+            }
+            //文件夹不存在则自动创建
+            File tempFile = new File(path);
+            if (!tempFile.getParentFile().exists()) {
+                tempFile.getParentFile().mkdirs();
+            }
+            OutputStream out = new FileOutputStream(tempFile);
+            out.write(b);
+            out.flush();
+            out.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

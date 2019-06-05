@@ -82,7 +82,7 @@ public class CommonRestController {
              ) {
             try {
                 Date time = modelItem.getCreateTime();
-                if(modelItem.getImage().contains("geomodeling.njnu.edu.cn")){
+                if(modelItem.getImage().contains("opengms.cityfun.com.cn")){
                     modelItem.setImage("");
                     modelItemDao.save(modelItem);
                 }

@@ -16,8 +16,10 @@ import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +63,12 @@ public class ConceptualModelService {
 
     @Autowired
     UserService userService;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
     public ModelAndView getPage(String id){
         //条目信息
@@ -114,6 +122,7 @@ public class ConceptualModelService {
         modelAndView.addObject("date",dateResult);
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
         modelAndView.addObject("user",userJson);
+        modelAndView.addObject("loadPath",htmlLoadPath);
 
 
         return modelAndView;
@@ -132,7 +141,7 @@ public class ConceptualModelService {
         JSONObject result=new JSONObject();
         ConceptualModel conceptualModel = new ConceptualModel();
 
-        String path=ConceptualModelService.class.getClassLoader().getResource("").getPath()+"static/img/conceptualModel";
+        String path=resourcePath+"/conceptualModel";
         List<String> images=saveFiles(files,path,uid,"/conceptualModel");
         if(images==null){
             result.put("code",-1);
@@ -198,6 +207,13 @@ public class ConceptualModelService {
     public int delete(String oid,String userName){
         ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
         if(conceptualModel!=null){
+            //图片删除
+            List<String> images=conceptualModel.getImage();
+            for(int i=0;i<images.size();i++){
+                String path=resourcePath+images.get(i);
+                Utils.deleteFile(path);
+            }
+            //条目删除
             conceptualModelDao.delete(conceptualModel);
             userService.conceptualModelMinusMinus(userName);
 

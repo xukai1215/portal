@@ -557,17 +557,17 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <a :href="'/conceptualModel/'+conceptual.oid" target="_blank"
-                                       @click="setSession('conceptualModelInfo_id',conceptual.model_id)">
+                                       @click="setSession('conceptualModelInfo_id',conceptual.oid)">
                                         {{conceptual.name}}
                                     </a>
-                                    <div class="pull-right" :attr.uid="conceptual.model_id" style="margin-top: -3px;">
+                                    <div class="pull-right" :attr.uid="conceptual.oid" style="margin-top: -3px;">
                                         <!--<a href="../create-conceptual-model/create-conceptual-model.html"-->
                                         <!--@click="setSession('editConceptualModel_id',conceptual.model_id)">-->
                                         <!--<button class="btn btn-default editBtn">Edit</button>-->
                                         <!--</a>-->
                                         <!-- [routerLink]="['/userSpace/editConceptualModel', conceptual.model_id]" -->
                                         <button class="btn btn-danger deleteBtn"
-                                                @click="deleteModel(conceptual.model_id)">Delete
+                                                @click="deleteModel(conceptual.oid)">Delete
                                         </button>
                                     </div>
                                 </div>
@@ -655,7 +655,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <a :href="'/logicalModel/'+logical.oid" target="_blank"
-                                       @click="setSession('logicalModelInfo_id',logical.model_id)">
+                                       @click="setSession('logicalModelInfo_id',logical.oid)">
                                         {{logical.name}}
                                     </a>
                                     <div class="pull-right" :attr.uid="logical.model_id" style="margin-top: -3px;">
@@ -664,7 +664,7 @@
                                         <!--<button class="btn btn-default editBtn">Edit</button>-->
                                         <!--</a>-->
                                         <!-- [routerLink]="['/userSpace/editConceptualModel', conceptual.model_id]" -->
-                                        <button class="btn btn-danger deleteBtn" @click="deleteModel(logical.model_id)">
+                                        <button class="btn btn-danger deleteBtn" @click="deleteModel(logical.oid)">
                                             Delete
                                         </button>
                                     </div>
@@ -754,12 +754,12 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <a :href="'/computableModel/'+computable.oid" target="_blank"
-                                       @click="setSession('computableModelInfo_id',computable.model_id)">
+                                       @click="setSession('computableModelInfo_id',computable.oid)">
                                         {{computable.name}}
                                     </a>
                                     <div class="pull-right" :attr.uid="computable.model_id" style="margin-top: -3px;">
                                         <button class="btn btn-danger deleteBtn"
-                                                @click="deleteModel(computable.model_id)">
+                                                @click="deleteModel(computable.oid)">
                                             Delete
                                         </button>
                                     </div>

@@ -849,7 +849,7 @@ getModels() {
         this.sortAsc=-1;
     }
     // else if(this.deploys_show){
-    //     url = "http://222.192.7.75/GeoModelingNew/ComputableModelsForDeployServlet";
+    //     url = "http://localhost/GeoModelingNew/ComputableModelsForDeployServlet";
     //     name = "computableModels";
 
     // }
@@ -914,7 +914,7 @@ searchModels() {
         name = "tasks";
     }
     // else if(this.deploys_show){
-    //     url= "http://222.192.7.75/GeoModelingNew/SearchComputableModelsForDeployServlet";
+    //     url= "http://localhost/GeoModelingNew/SearchComputableModelsForDeployServlet";
     //     name= "computableModels";
     // }
 
@@ -1017,7 +1017,7 @@ updateModels() {
 
     $.ajax({
         type: "Get",
-        url: "http://222.192.7.75/GeoModelingNew/UpdateRecordsServlet",
+        url: "http://localhost/GeoModelingNew/UpdateRecordsServlet",
         data: {},
         cache: false,
         async: true,
@@ -1049,7 +1049,7 @@ downloadSingle(url) {
     //
     // form.setAttribute("target", "");
     // form.setAttribute('method', 'get');
-    // form.setAttribute('action', "http://222.192.7.75/GeoModelingNew/DownloadSingleDataServlet");
+    // form.setAttribute('action', "http://localhost/GeoModelingNew/DownloadSingleDataServlet");
     //
     // var input1 = document.createElement("input");
     // input1.setAttribute('type', 'hidden');
@@ -1077,7 +1077,7 @@ downloadAll(recordId, name, time) {
 
     form.setAttribute("target", "");
     form.setAttribute('method', 'get');
-    form.setAttribute('action', "http://222.192.7.75/GeoModelingNew/DownloadAllDataServlet");
+    form.setAttribute('action', "http://localhost/GeoModelingNew/DownloadAllDataServlet");
 
     var input1 = document.createElement("input");
     input1.setAttribute('type', 'hidden');

@@ -43,7 +43,7 @@
 
                     <div th:switch="${#lists.size(modelInfo.image)}" class="img">
                         <img th:case="0" src="../static/img/model/conceptual.png">
-                        <img th:case="*" th:src="'../static/img'+${modelInfo.image[0]}">
+                        <img th:case="*" th:src="${loadPath}+${modelInfo.image[0]}">
                     </div>
 
                     <div class="info" style="padding-top:0px">
@@ -79,14 +79,14 @@
                 <div class="block_content" style="margin-top:20px;">
                     <el-tabs class="right-content" v-model="activeNameGraph" type="border-card" stretch="true">
                         <el-tab-pane label="Image" name="Image" th:if="${modelInfo.contentType}!='MxGraph'">
-                            <center th:each="image:${modelInfo.image}"><img th:src="'../static/img'+${image}">
+                            <center th:each="image:${modelInfo.image}"><img th:src="${loadPath}+${image}">
                             </center>
                         </el-tab-pane>
                         <el-tab-pane label="Image" name="Image" th:if="${modelInfo.contentType}=='MxGraph'">
                             <center>
                                 <div th:if="${modelInfo.svg!=null}" th:utext="${modelInfo.svg}"></div>
                                 <div th:if="${modelInfo.svg==null}">
-                                    <img th:src="'../static/img'+${modelInfo.image[0]}">
+                                    <img th:src="${loadPath}+${modelInfo.image[0]}">
 
                                 </div>
                             </center>
@@ -131,9 +131,9 @@
                             <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
-                        <a th:href="'http://www.geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
-                           th:text="'http://www.geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
-                            http://www.geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        <a th:href="'http://opengms.cityfun.com.cn/conceptualmodel/'+${modelInfo.oid}"
+                           th:text="'http://opengms.cityfun.com.cn/conceptualmodel/'+${modelInfo.oid}">
+                            http://opengms.cityfun.com.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">
@@ -269,8 +269,8 @@
     window.RESOURCES_PATH = "../static/js/conceptModelEditor/resources";
     window.IMAGE_PATH = "../static/js/conceptModelEditor/images";
     window.STENCIL_PATH = "../static/js/conceptModelEditor/stencils";
-    EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
-    SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    EXPORT_URL = "http://opengms.cityfun.com.cn/GeoModelingNew/MyTestServlet";
+    SAVE_URL = "http://opengms.cityfun.com.cn/GeoModelingNew/MyTestServlet";
 
     editMode = false;
 </script>
@@ -367,7 +367,7 @@
 
                 //  mainUI.setStatusText("Load OK");
                 // $.ajax({
-                //     url: "http://geomodeling.njnu.edu.cn/GeoModelingNew/ConceptModelInfoServlet",
+                //     url: "http://opengms.cityfun.com.cn/GeoModelingNew/ConceptModelInfoServlet",
                 //     type: "get",
                 //     data: { "mid": uid },
                 //     success: function (result) {

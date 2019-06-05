@@ -30,7 +30,7 @@
     <div class="clearfix" style="margin:40px 0px;height: auto;">
 
         <div class="user_header container content" >
-            <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${userInfo.image}">
+            <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
             <div class="user_info">
                 <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
                 <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>

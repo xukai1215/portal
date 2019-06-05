@@ -785,7 +785,7 @@ var AddIconDialog = function(editorUi)
     this.init = function()
     {
     	$.ajax({
-            url:"http://222.192.7.75/GeoModelingNew/getIconRelationServlet",
+            url:"http://localhost/GeoModelingNew/getIconRelationServlet",
             type:"get",
 			success:function (result) {
 				var info = JSON.parse(result);
@@ -796,7 +796,7 @@ var AddIconDialog = function(editorUi)
 					select.appendChild(option);
 				}
                 $.ajax({
-                    url:"http://222.192.7.75/GeoModelingNew/geoIconListServlet",
+                    url:"http://localhost/GeoModelingNew/geoIconListServlet",
                     type:"get",
                     data:{"uid":tempNameId,"page":"1","sortType":"name"},
                     success:function (data) {

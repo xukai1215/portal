@@ -1,9 +1,9 @@
 /**
  * Created by wang ming on 2018/5/22.
  */
-let host = '222.192.7.75';
+let host = 'localhost';
 let port = '80';
-let domain = `http://222.192.7.75/GeoModelingNew`;
+let domain = `http://localhost/GeoModelingNew`;
 let testUrl = `${domain}/TestFileServlet`;
 let mdlUrl = `${domain}/TaskInfoServlet`;
 // let fileUploadUrl = `${domain}/UploadDataServlet`;
@@ -16,7 +16,7 @@ let dxIP = $("#dxIP").val();
 let dxPort = $("#dxPort").val();
 let dxType = $("#dxType").val();
 
-let fileUploadUrl = "http://222.192.7.75:8084/GeoModeling/computableModel/uploadData";
+let fileUploadUrl = "http://localhost:8084/GeoModeling/computableModel/uploadData";
 let invokeUrl = "/task/invoke";
 let recordUrl = "/task/getResult"
 
