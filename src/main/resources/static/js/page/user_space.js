@@ -1606,6 +1606,7 @@ mounted() {
 })
 
     $("#saveUser").click(() => {
+        $("#saveUser").attr("disabled","disabled");
         let userUpdate = {};
     userUpdate.oid = this.userId;
     userUpdate.name = $("#inputName").val().trim();
@@ -1614,7 +1615,7 @@ mounted() {
     userUpdate.description = $("#inputDescription").val().trim();
     userUpdate.organizations = $("#inputOrganizations").val().split(",");
     userUpdate.subjectAreas = $("#inputSubjectAreas").val().split(",");
-    userUpdate.image=$("#photo").get(0).src;
+    userUpdate.uploadImage=$("#photo").get(0).src;
 
     $.ajax({
         url: "/user/update",
@@ -1623,6 +1624,7 @@ mounted() {
         contentType: "application/json",
         data: JSON.stringify(userUpdate),
         success: function (result) {
+            $("#saveUser").removeAttr("disabled");
             alert("update successfully!")
             window.location.reload();
         }

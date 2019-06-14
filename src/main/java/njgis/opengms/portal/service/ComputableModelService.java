@@ -123,12 +123,7 @@ public class ComputableModelService {
         String dateResult = simpleDateFormat.format(date);
 
         //用户信息
-        User user = userDao.findFirstByUserName(modelInfo.getAuthor());
-        JSONObject userJson = new JSONObject();
-        userJson.put("name", user.getName());
-        userJson.put("oid", user.getOid());
-        userJson.put("image", user.getImage());
-
+        JSONObject userJson=userService.getItemUserInfo(modelInfo.getAuthor());
         //资源信息
         JSONArray resourceArray = new JSONArray();
         List<String> resources = modelInfo.getResources();

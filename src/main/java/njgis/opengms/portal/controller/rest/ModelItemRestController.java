@@ -17,6 +17,7 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,9 @@ public class ModelItemRestController {
 
     @Autowired
     UserService userService;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
@@ -99,7 +103,9 @@ public class ModelItemRestController {
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
     JsonResult getInfo(@PathVariable ("id") String id){
-        return ResultUtils.success(modelItemService.getByOid(id));
+        ModelItem modelItem=modelItemService.getByOid(id);
+        modelItem.setImage(htmlLoadPath+modelItem.getImage());
+        return ResultUtils.success(modelItem);
     }
 
     @RequestMapping (value="/list",method = RequestMethod.POST)

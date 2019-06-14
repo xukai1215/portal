@@ -10,16 +10,15 @@ import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.dto.UserAddDTO;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.io.File;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -32,6 +31,9 @@ public class UserService {
 
     @Autowired
     CommonService commonService;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -204,7 +206,21 @@ public class UserService {
     public int updateUser(UserUpdateDTO userUpdateDTO){
 
         User user=userDao.findFirstByOid(userUpdateDTO.getOid());
+
         BeanUtils.copyProperties(userUpdateDTO,user);
+        //判断是否为新图片
+        String uploadImage=userUpdateDTO.getUploadImage();
+        if(!uploadImage.contains("/user/")) {
+            //删除旧图片
+            File file=new File(resourcePath+user.getImage());
+            if(file.exists()&&file.isFile())
+                file.delete();
+            //添加新图片
+            String path = "/user/" + UUID.randomUUID().toString() + ".jpg";
+            String imgStr = uploadImage.split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            user.setImage(path);
+        }
         userDao.save(user);
 
         return 1;
@@ -245,13 +261,32 @@ public class UserService {
         taskStatistic.put("calculating",calculating);
         result.put("record",taskStatistic);
 
-        User user = userDao.findFirstByUserName(userId);
-        result.put("userInfo",user);
+
+        result.put("userInfo",getUser(userId));
         return result;
     }
 
-    public User getUser(String userName){
-        return userDao.findFirstByUserName(userName);
+    public JSONObject getUser(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        JSONObject userInfo=new JSONObject();
+        userInfo.put("organizations",user.getOrganizations());
+        userInfo.put("subjectAreas",user.getSubjectAreas());
+        userInfo.put("name",user.getName());
+        userInfo.put("email",user.getEmail());
+        userInfo.put("phone",user.getPhone());
+        userInfo.put("wiki",user.getWiki());
+        userInfo.put("description",user.getDescription());
+        userInfo.put("image",htmlLoadPath+user.getImage());
+        return userInfo;
+    }
+
+    public JSONObject getItemUserInfo(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        JSONObject userJson = new JSONObject();
+        userJson.put("name", user.getName());
+        userJson.put("oid", user.getOid());
+        userJson.put("image", htmlLoadPath+user.getImage());
+        return userJson;
     }
 
 
