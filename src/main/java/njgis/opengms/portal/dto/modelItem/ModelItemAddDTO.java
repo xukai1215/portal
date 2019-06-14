@@ -25,7 +25,7 @@ import java.util.List;
 public class ModelItemAddDTO {
 
     String name;
-    String image;
+    String uploadImage;
     String description;
     String detail;
 //    String author;

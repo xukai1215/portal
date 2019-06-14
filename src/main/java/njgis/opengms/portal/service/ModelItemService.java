@@ -18,6 +18,7 @@ import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.bson.Document;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,11 +211,8 @@ public class ModelItemService {
         }
 
         //用户信息
-        User user = userDao.findFirstByUserName(modelInfo.getAuthor());
-        JSONObject userJson = new JSONObject();
-        userJson.put("name", user.getName());
-        userJson.put("oid", user.getOid());
-        userJson.put("image", user.getImage());
+        JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
+
 
         //图片路径
         String image=modelInfo.getImage();
@@ -295,6 +293,7 @@ public class ModelItemService {
                 }
             }
             modelItem.setDetail(detailResult);
+            modelItem.setImage(modelItem.getImage());
             return modelItem;
         } catch (Exception e) {
             System.out.println("有人乱查数据库！！该ID不存在Model Item对象");
@@ -312,6 +311,12 @@ public class ModelItemService {
         modelItem.setStatus("public");
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
+
+        String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
+        String imgStr = modelItemAddDTO.getUploadImage().split(",")[1];
+        Utils.base64StrToImage(imgStr, resourcePath + path);
+        modelItem.setImage(path);
+
         ModelItemRelate modelItemRelate=new ModelItemRelate();
 
         modelItem.setRelate(new ModelItemRelate());
@@ -321,6 +326,15 @@ public class ModelItemService {
     public int delete(String oid,String userName){
         ModelItem modelItem=modelItemDao.findFirstByOid(oid);
         if(modelItem!=null){
+            //删除图片
+            String image=modelItem.getImage();
+            if(image.contains("/modelItem/")) {
+                //删除旧图片
+                File file=new File(resourcePath+modelItem.getImage());
+                if(file.exists()&&file.isFile())
+                    file.delete();
+            }
+
             modelItemDao.delete(modelItem);
             userService.modelItemMinusMinus(userName);
             return 1;
@@ -333,6 +347,19 @@ public class ModelItemService {
     public String update(ModelItemUpdateDTO modelItemUpdateDTO){
         ModelItem modelItem=modelItemDao.findFirstByOid(modelItemUpdateDTO.getOid());
         BeanUtils.copyProperties(modelItemUpdateDTO,modelItem);
+        //判断是否为新图片
+        String uploadImage=modelItemUpdateDTO.getUploadImage();
+        if(!uploadImage.contains("/modelItem/")) {
+            //删除旧图片
+            File file=new File(resourcePath+modelItem.getImage());
+            if(file.exists()&&file.isFile())
+                file.delete();
+            //添加新图片
+            String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
+            String imgStr = uploadImage.split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            modelItem.setImage(path);
+        }
         modelItem.setLastModifyTime(new Date());
         modelItemDao.save(modelItem);
 

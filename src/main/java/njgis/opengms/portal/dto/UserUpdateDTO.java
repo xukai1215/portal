@@ -12,7 +12,7 @@ import java.util.List;
 public class UserUpdateDTO {
 
     String oid;
-    String image;
+    String uploadImage;
     String name;
     String description;
     String phone;

@@ -783,7 +783,7 @@ var vue = new Vue({
             modelItemObj.name = $("#nameInput").val();
             modelItemObj.keywords = $("#tagInput").val().split(",");
             modelItemObj.description = $("#descInput").val();
-            modelItemObj.image = $('#imgShow').get(0).currentSrc;
+            modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
             modelItemObj.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 

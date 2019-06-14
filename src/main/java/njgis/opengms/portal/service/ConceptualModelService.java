@@ -109,11 +109,7 @@ public class ConceptualModelService {
         String dateResult=simpleDateFormat.format(date);
 
         //用户信息
-        User user = userDao.findFirstByUserName(modelInfo.getAuthor());
-        JSONObject userJson=new JSONObject();
-        userJson.put("name",user.getName());
-        userJson.put("oid",user.getOid());
-        userJson.put("image",user.getImage());
+        JSONObject userJson=userService.getItemUserInfo(modelInfo.getAuthor());
 
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("conceptual_model");
