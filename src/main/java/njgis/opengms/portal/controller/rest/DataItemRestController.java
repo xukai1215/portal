@@ -357,7 +357,7 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.getCategory(id));
     }
 
-    //拿到viewcount
+    //
 
 
 

@@ -1658,23 +1658,30 @@ ul,li{
    margin-right:9px;
    margin-top:5px;
    float:left;
-   border: none;
+   /*border: none;*/
 
  }
  .dataitemisol:hover{
    cursor: pointer;
  }
+ .dataitemhover{
+   /*border: 2px solid #72d600eb;*/
+   /*background-color: #acff9c3d;*/
+
+   border: 2px solid rgba(118, 122, 109, 0.92);
+   background-color: rgba(231, 231, 231, 0.24);
+
+ }
  .clickdataitem{
    border: 2px solid #72d600eb;
    background-color: #acff9c3d;
-
  }
  .browsermenu{
    width: 120px;
    position: absolute;
    z-index: 99;
 
-   display: none;
+   display: block;
 
  }
  .browser{
@@ -1685,7 +1692,7 @@ ul,li{
    display: none;
  }
  .filebrowserfunction{
-   height: 80px;
+   height: 60px;
  }
  .filebrowser .el-button{
    background-color:transparent;
@@ -1697,3 +1704,6 @@ ul,li{
    background: -moz-linear-gradient(#ffffff, #e4e4e4); /* Firefox 3.6 - 15 */
    background: linear-gradient(#ffffff, #e4e4e4); /* 标准的语法（必须放在最后） */
  }
+.managerAsideBtn .el-button{
+  width: 100%;
+}

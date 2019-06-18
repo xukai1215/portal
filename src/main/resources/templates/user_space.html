@@ -1402,75 +1402,194 @@
                     <li>
                         <a>Data</a>
                     </li>
-                    <li class="active">My Data</li>
+                    <li class="active">Manager My Data</li>
                 </ul>
                 <div class="page-content-wrap container-fluid">
 
                     <div class="col-md-12 col-sm-12">
                         <div class="panel panel-success" style="border: none;height: 680px">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
-                                    Manager my data below.
-                                </h3>
-                            </div>
+                            <!--<div class="panel-heading">-->
+                                <!--<h3 class="panel-title">-->
+                                    <!--Manager my data below.-->
+                                <!--</h3>-->
+                            <!--</div>-->
                             <div>
-                                <el-upload ref="upload" drag action="/dispatchRequest/uploadToDataContainer" :data="uploadData()"
-                                           :on-success="onzzzSuccess">
-                                    <el-button slot="trigger" size="small" type="primary">Select File</el-button>
-                                </el-upload>
+                                <el-card class="filebrowserfunction">
 
-                                <el-table :data="dataFromDataContainer" stripe >
-                                    <el-table-column property="createDate" label="Date" width="150">
-                                        <template slot-scope="scope">
-                                            {{dateFormat(scope.row.createDate)}}
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column property="type" label="Type" width="200"></el-table-column>
-
-                                    <el-table-column
-                                            label="Name"
-                                    >
-                                        <template slot-scope="scope">
-                                            {{scope.row.fileName+"."+scope.row.suffix}}
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column
-                                            prop="fromWhere"
-                                            label="Source"
-                                            width="200"
-                                            :filters="[{ text: 'Portal', value: 'PORTAL' }, { text: 'Model Compute', value: 'MODELCONTAINER' },{ text: 'Saga', value: 'ONLINESAGA ' }]"
-                                            :filter-method="filterTag"
-                                            filter-placement="bottom-end">
-                                        <template slot-scope="scope">
-                                            <el-tag
-                                                    :type="scope.row.fromWhere === 'PORTAL' ? 'primary' : 'success'"
-                                                    disable-transitions>{{scope.row.fromWhere}}
-                                            </el-tag>
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column
-                                            label="Operation"
-                                    >
-                                        <template slot-scope="scope">
-                                            <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">
-                                                Download
-                                            </el-button>
-
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-
-                                <el-pagination
-                                        class="my-pagination"
-                                        small
-                                        layout="prev, pager, next"
-                                        @current-change="panye"
-                                        :total="total">
-                                </el-pagination>
+                                    <el-row id="" class="filebrowser">
+                                        <el-col :span="15">
+                                            <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
+                                            <!--//todo upload-->
+                                            <button class="dwload btn btn-primary btn-md"     data-toggle="modal" data-target="#managerUpload"    >
+                                                <i class="glyphicon glyphicon-upload">&nbsp;upload</i>
+                                            </button>
 
 
+
+
+                                            <button class="dwload btn btn-primary btn-md"   @click="userDownload" >
+                                                <i class="glyphicon glyphicon-download">&nbsp;download</i>
+                                            </button>
+
+                                            <!--//todo share-->
+                                            <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
+                                                <!--<i class="glyphicon glyphicon-share">&nbsp;share</i>-->
+                                            <!--</button>-->
+
+
+                                        </el-col>
+                                        <el-col :span="9">
+                                            <el-input id="searchinput"
+                                                      placeholder="search input "
+                                                      suffix-icon="el-icon-search"
+                                                      v-model="searchcontent"
+                                            >
+                                            </el-input>
+                                        </el-col>
+                                    </el-row>
+                                </el-card>
+                                <el-card :body-style="{ padding:'9px'}">
+
+                                    <el-alert class="alert-success" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>&nbsp;&nbsp;&nbsp;<span>{{downloadDataSetName.length!=0?downloadDataSetName:"select no data.."}}</span></el-alert>
+                                </el-card>
+
+                                <el-row>
+                                    <el-col :span="3">
+                                        <el-card style="height:560px " class="managerAsideBtn">
+                                            <el-button @click="findAllFiles()">All Files</el-button><br>
+                                            <el-button @click="findPics()" >pictures</el-button><br>
+                                            <el-button  @click="findDocs()">doc</el-button><br>
+                                            <el-button @click="findVideo()" >video</el-button><br>
+                                            <el-button @click="findOtherFiles()" >other</el-button><br>
+
+                                        </el-card>
+                                    </el-col>
+
+                                    <el-col :span="21">
+                                        <el-card style="height: 560px;overflow-y:auto;width:100%" id="browsercont" v-loading="managerloading" >
+
+                                            <!--</el-row>-->
+
+                                                <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never" :id="generateId(key)"
+                                                     v-for="(item,key) in databrowser"
+                                                     :key="key"
+                                                     @click="getid($event,item)"
+                                                     @mouseover="addDataClass($event,item)"
+                                                     @mouseout="removeClass($event,item)"
+                                                     @click.right="rightMenu($event)">
+
+                                                        <el-row>
+                                                            <el-col :span="6">&nbsp</el-col>
+                                                            <el-col :span="12"><img :src="getImg(item)" style="height: 60%;width:100%"></el-col>
+                                                            <el-col :span="6">&nbsp</el-col>
+                                                        </el-row>
+                                                        <el-row>
+                                                            <el-col :span="2">&nbsp</el-col>
+                                                            <el-col :span="20">
+
+                                                                <p> {{item.fileName}}.{{item.suffix}} </p>
+                                                            </el-col>
+                                                            <el-col :span="2">&nbsp</el-col>
+
+                                                        </el-row>
+
+                                                <!--menu item -->
+
+
+                                            </div>
+
+
+                                        </el-card>
+                                    </el-col>
+                                </el-row>
+                                <!--<el-button icon="el-icon-sold-out" class="dall" @click="dall()">download selected all files-->
+                                <!--</el-button>-->
+
+
+                                <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu"  >
+                                    <el-button id="dbtn"  @click="download_data_dataManager()" type="text">download
+                                    </el-button>
+                                    <br>
+                                    <el-button id="dbtn"  @click="delete_data_dataManager()" type="text">delete
+                                    </el-button>
+                                    <br>
+                                    <el-button id="sbtn"   @click="share" type="text">share</el-button>
+                                </el-card>
+
+
+                            </div>
+
+
+                            <div class="modal fade" id="managerUpload" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" style="z-index: 2041">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="ModalLabel3">Upload Data</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                            </button>
+
+                                        </div>
+                                        <div class="modal-body">
+
+
+                                            <!--<div class="file-loading">-->
+
+                                            <!--<input id="file-1"   type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-theme="fas">-->
+                                            <!--</div>-->
+                                            <form action="http://localhost:8081/file/apk_upload" method="post"
+                                                  enctype="multipart/form-data">
+                                                <div class="form-group">
+                                                    <div class="file-loading">
+                                                        <input id="manager-upload" type="file" multiple class="file"
+                                                               data-overwrite-initial="false" data-min-file-count="1"
+                                                               data-theme="fas">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <div class="uploaded">
+
+                                                <form>
+
+                                                    <div class="form-group">
+                                                        <label for="fileName">fileName:</label>
+                                                        <input type="text" class="form-control"
+                                                               placeholder="Please input coordinate system of the data to be uploaded."
+                                                               id="managerFileName" required/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="suffix">suffix:</label>
+                                                        <input type="text" class="form-control"
+                                                               placeholder="Please input coordinate system of the data to be uploaded."
+                                                               id="managerFileSuffix" required/>
+                                                    </div>
+
+                                                    <div class="form-group">
+
+                                                        <label for="keywords">tags:</label><br>
+                                                        <div class="bootstrap-tagsinput">
+
+                                                            <input type="text" data-role="tagsinput" id="managerFileTags" size="1"
+                                                                   required/>
+                                                        </div>
+                                                    </div>
+
+                                                </form>
+                                                <!--<button class="btn btn-success pull-right" @click="uploadD">upload</button>-->
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" @click="upload_data_dataManager">upload</button>
+
+                                            <button type="button" class="btn btn-default" data-dismiss="modal" @click="close()">
+                                                close
+                                            </button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal -->
                             </div>
 
 
@@ -1480,9 +1599,17 @@
             </div>
 
 
+
+
         </div>
     </div>
+
+
 </div>
+
+
+
+
 </body>
 
 <script src="../static/js/common/jquery-3.3.1.js"></script>

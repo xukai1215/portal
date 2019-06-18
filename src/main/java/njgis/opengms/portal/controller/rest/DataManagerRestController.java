@@ -1,0 +1,170 @@
+package njgis.opengms.portal.controller.rest;
+
+
+import com.alibaba.fastjson.JSONObject;
+import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.ResultUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping(value = "/dataManager")
+public class DataManagerRestController {
+
+    //远程数据容器地址
+    @Value("${dataContainerIpAndPort}")
+    String dataContainerIpAndPort;
+
+
+    /**
+     * 展示所有数据条目
+     * @param author
+     * @param type
+     * @return
+     */
+
+    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    JsonResult listData(@RequestParam("author") String author,@RequestParam("type") String type) {
+
+        String url="http://172.21.212.64:8081/dataResource/listByCondition?value={author}&type={type}";
+        RestTemplate restTemplate=new RestTemplate();
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,author,type);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody().getJSONArray("data"));
+
+
+
+
+    }
+
+    /**
+     * 单下载数据资源文件
+     * @param sourceStoreId
+     * @return
+     */
+    @RequestMapping (value = "/downloadRemote", method = RequestMethod.GET)
+    ResponseEntity downloadRemote(@RequestParam ("sourceStoreId") String sourceStoreId) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(
+                new ByteArrayHttpMessageConverter());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+
+        Map<String, String> map = new HashMap<>();
+        map.put("sourceStoreId", sourceStoreId);
+
+
+        ResponseEntity<byte[]> response = restTemplate.exchange(
+                "http://" + dataContainerIpAndPort + "/dataResource/getResources?sourceStoreId={sourceStoreId}",
+                HttpMethod.GET, entity, byte[].class, map);
+
+        return response;
+    };
+
+    /**
+     * 批量下载数据资源文件
+     * @param sourceStoreId
+     * @return
+     */
+    @RequestMapping (value = "/downloadSomeRemote", method = RequestMethod.GET)
+    ResponseEntity downloadSomeRemote(@RequestParam ("sourceStoreId") ArrayList<String> sourceStoreId) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(
+                new ByteArrayHttpMessageConverter());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String keys="";
+
+        for(int i=0;i<sourceStoreId.size();i++){
+            keys+="sourceStoreId="+sourceStoreId.get(i)+"&";
+        }
+
+
+
+        Map<String, String> map = new HashMap<>();
+        map.put("sourceStoreId", keys);
+
+
+        ResponseEntity<byte[]> response = restTemplate.exchange(
+                "http://" + dataContainerIpAndPort + "/dataResource/getResources?"+keys,
+                HttpMethod.GET, entity, byte[].class, map);
+
+        return response;
+    };
+
+
+
+
+
+
+    /***
+     * 上传数据
+     * @param file
+     * @param author
+     * @return
+     */
+    @RequestMapping(value = "/upload")
+    JsonResult dataManagerUpload(@RequestParam("file") MultipartFile file,
+                                 @RequestParam("author") String author) {
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+
+        part.add("file", file.getResource());
+
+
+
+        JSONObject jsonObject = restTemplate.postForObject("http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files",
+                        part,
+                        JSONObject.class);
+
+        return ResultUtils.success(jsonObject);
+
+
+
+    }
+
+
+
+    @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
+    JsonResult deleteData(@RequestParam("id") String id) {
+
+        String url="http://172.21.212.64:8081/dataResource/"+id;
+        RestTemplate restTemplate=new RestTemplate();
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.DELETE,null,JSONObject.class);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody());
+
+
+
+
+    }
+
+
+
+}
