@@ -68,10 +68,10 @@
 
                     <div class="detail_option" th:object="${datainfo}">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>&nbsp&nbsp<span-->
-                            <!--th:text="${datainfo.data.shareCount}">scount</span>-->
+                        <!--th:text="${datainfo.data.shareCount}">scount</span>-->
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp<span>{{viewCount}}</span>
                         <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp<span-->
-                            <!--th:text="${datainfo.data.thumbsUpCount}">thumbsUpCount</span>-->
+                        <!--th:text="${datainfo.data.thumbsUpCount}">thumbsUpCount</span>-->
                     </div>
 
                 </div>
@@ -87,12 +87,12 @@
                 <div class="block_content" style="margin-top:20px;">
                     <!--<span style="font-size:24px;margin-right: 8px">●</span>-->
                     <!--<el-breadcrumb separator-class="el-icon-arrow-right">-->
-                        <!--<el-breadcrumb-item :to="{ path: '/' }" th:each="key,iter : ${datainfo.data.classifications}"-->
-                                            <!--th:text="${iter.current}">current-->
-                        <!--</el-breadcrumb-item>-->
+                    <!--<el-breadcrumb-item :to="{ path: '/' }" th:each="key,iter : ${datainfo.data.classifications}"-->
+                    <!--th:text="${iter.current}">current-->
+                    <!--</el-breadcrumb-item>-->
                     <!--</el-breadcrumb>-->
                     <!--<span class="label label-primary" style="margin-left: 10px" th:each="key,iter : ${datainfo.data.classifications}"-->
-                          <!--th:text="${iter.current}">current</span>-->
+                    <!--th:text="${iter.current}">current</span>-->
 
                     <!--<span class="label label-primary" v-for="iter in dataCategory">{{iter}}</span>&nbsp;&nbsp;-->
                     <el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>
@@ -134,84 +134,84 @@
 
 
             <!--<div id="display" class="detail_block">-->
-                <!--<div class="block_head">-->
-                    <!--<div class="head_text">-->
-                        <!--<h4>Display</h4>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="block_content flex" th:object="${datainfo}">-->
-                    <!--<el-carousel :interval="4000" type="card" height="200px">-->
-                        <!--<el-carousel-item th:each="key,iter : ${datainfo.data.displays}">-->
-                            <!--<img th:src="${iter.current}" style="height: 100%;"> </img>-->
-                        <!--</el-carousel-item>-->
-                    <!--</el-carousel>-->
+            <!--<div class="block_head">-->
+            <!--<div class="head_text">-->
+            <!--<h4>Display</h4>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="block_content flex" th:object="${datainfo}">-->
+            <!--<el-carousel :interval="4000" type="card" height="200px">-->
+            <!--<el-carousel-item th:each="key,iter : ${datainfo.data.displays}">-->
+            <!--<img th:src="${iter.current}" style="height: 100%;"> </img>-->
+            <!--</el-carousel-item>-->
+            <!--</el-carousel>-->
 
 
-                <!--</div>-->
+            <!--</div>-->
             <!--</div>-->
 
-            <div id="coverage" class="detail_block" th:if="${datainfo.data.meta!=null  }" style="display: none">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Coverage</h4>
-                    </div>
-                </div>
-                <div class="block_content">
-                    <div class="coverage-top clearfix" style="margin:20px 0px">
-                        <div class="el-col el-col-12" style="border-right:1px solid #bbbbbb">
-                            <div class="line">
-                                <span class="col-md-6 align-right">Coordinate System:</span>
-                                <span th:if="${datainfo.data.meta!=null}" class="col-md-5"
-                                      th:text="${datainfo.data.meta.coordinateSystem}"> </span>
-                                <span th:if="${datainfo.data.meta.coordinateSystem==null}" class="col-md-5">none</span>
+            <!--<div id="coverage" class="detail_block" th:if="${datainfo.data.meta!=null  }" style="display: none">-->
+            <!--<div class="block_head">-->
+            <!--<div class="head_text">-->
+            <!--<h4>Coverage</h4>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="block_content">-->
+            <!--<div class="coverage-top clearfix" style="margin:20px 0px">-->
+            <!--<div class="el-col el-col-12" style="border-right:1px solid #bbbbbb">-->
+            <!--<div class="line">-->
+            <!--<span class="col-md-6 align-right">Coordinate System:</span>-->
+            <!--<span th:if="${datainfo.data.meta!=null}" class="col-md-5"-->
+            <!--th:text="${datainfo.data.meta.coordinateSystem}"> </span>-->
+            <!--<span th:if="${datainfo.data.meta.coordinateSystem==null}" class="col-md-5">none</span>-->
 
 
-                            </div>
-                            <div class="line">
-                                <span class="col-md-6 align-right">Geographic Proj:</span>
-                                <span th:if="${datainfo.data.meta!=null}" class="col-md-5"
-                                      th:text="${datainfo.data.meta.geographicProjection}"></span>
-                                <span th:if="${datainfo.data.meta.geographicProjection==null}"
-                                      class="col-md-5">none</span>
+            <!--</div>-->
+            <!--<div class="line">-->
+            <!--<span class="col-md-6 align-right">Geographic Proj:</span>-->
+            <!--<span th:if="${datainfo.data.meta!=null}" class="col-md-5"-->
+            <!--th:text="${datainfo.data.meta.geographicProjection}"></span>-->
+            <!--<span th:if="${datainfo.data.meta.geographicProjection==null}"-->
+            <!--class="col-md-5">none</span>-->
 
-                            </div>
-                            <div class="line">
-                                <span class="col-md-6 align-right">Coordinate Units:</span>
-                                <span th:if="${datainfo.data.meta!=null}" class="col-md-5"
-                                      th:text="${datainfo.data.meta.coordinateUnits}"></span>
-                                <span th:if="${datainfo.data.meta.coordinateUnits==null}" class="col-md-5">none</span>
+            <!--</div>-->
+            <!--<div class="line">-->
+            <!--<span class="col-md-6 align-right">Coordinate Units:</span>-->
+            <!--<span th:if="${datainfo.data.meta!=null}" class="col-md-5"-->
+            <!--th:text="${datainfo.data.meta.coordinateUnits}"></span>-->
+            <!--<span th:if="${datainfo.data.meta.coordinateUnits==null}" class="col-md-5">none</span>-->
 
-                            </div>
-                        </div>
-                        <div class="el-col el-col-12" style="padding:15px 0px" th:if="${datainfo.data.meta!=null}">
-                            <div class="col-md-offset-2" style="display: inline-block;width: 41.667%;"
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="el-col el-col-12" style="padding:15px 0px" th:if="${datainfo.data.meta!=null}">-->
+            <!--<div class="col-md-offset-2" style="display: inline-block;width: 41.667%;"-->
 
-                                 th:each="el,key : ${datainfo.data.meta.boundingRectangle}">
-
-
-                                <el-row style="font-weight: bold;" th:if="${key.index==0}">Upper left X:
-                                    &nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.x}"></span></el-row>
-                                <el-row style="font-weight: bold;" th:if="${key.index==1}">Bottom right
-                                    X:&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.x}"></span></el-row>
+            <!--th:each="el,key : ${datainfo.data.meta.boundingRectangle}">-->
 
 
-                                <el-row style="font-weight: bold;" th:if="${key.index==0}">Upper left Y:
-                                    &nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.y}"></span></el-row>
-                                <el-row style="font-weight: bold;" th:if="${key.index==1}">Bottom right Y:
-                                    &nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.y}"></span></el-row>
-
-                                <br>
+            <!--<el-row style="font-weight: bold;" th:if="${key.index==0}">Upper left X:-->
+            <!--&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.x}"></span></el-row>-->
+            <!--<el-row style="font-weight: bold;" th:if="${key.index==1}">Bottom right-->
+            <!--X:&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.x}"></span></el-row>-->
 
 
-                            </div>
+            <!--<el-row style="font-weight: bold;" th:if="${key.index==0}">Upper left Y:-->
+            <!--&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.y}"></span></el-row>-->
+            <!--<el-row style="font-weight: bold;" th:if="${key.index==1}">Bottom right Y:-->
+            <!--&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.y}"></span></el-row>-->
 
-                        </div>
-                    </div>
-                    <div class="map-container" style="margin:20px 0px">
-                        <div id="map"></div>
-                    </div>
-                </div>
-            </div>
+            <!--<br>-->
+
+
+            <!--</div>-->
+
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="map-container" style="margin:20px 0px">-->
+            <!--<div id="map"></div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
 
             <!--file manager,has been ignored-->
 
@@ -277,24 +277,24 @@
                                 <div class="el-col el-col-10"     >
 
 
-                                <div  class="el-col el-col-10 el-col-offset-4"  >
+                                    <div  class="el-col el-col-10 el-col-offset-4"  >
 
-                                    <img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">
+                                        <img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">
 
 
-                                    <div  style="margin-left: 55px;display: block;" th:object="${datainfo}">
+                                        <div  style="margin-left: 55px;display: block;" th:object="${datainfo}">
 
-                                        <!--//todo 每项数据绑定作者，这里每个评论绑定作者-->
-                                        <!--<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>-->
-                                        <a href="javascript:void(0)"><h5>{{item.author}}</h5></a>
+                                            <!--//todo 每项数据绑定作者，这里每个评论绑定作者-->
+                                            <!--<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>-->
+                                            <a href="javascript:void(0)"><h5>{{item.author}}</h5></a>
 
-                                        <!--<h5 th:text="${datainfo.data.lastModifyTime}"></h5>-->
-                                        <span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>
+                                            <!--<h5 th:text="${datainfo.data.lastModifyTime}"></h5>-->
+                                            <span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>
+
+                                        </div>
+
 
                                     </div>
-
-
-                                </div>
                                 </div>
                             </el-row>
                         </div>
@@ -386,26 +386,26 @@
                 </div>
             </div>
             <!--<div id="Contributer" class="detail_block">-->
-                <!--<div class="block_head">-->
-                    <!--<div class="head_text" style="padding-left: 10px;">-->
-                        <!--<h4>Contributer(s)</h4>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="block_content">-->
-                    <!--<div class="user">-->
-                        <!--<img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon"-->
-                             <!--style="width:50px;height: 50px;float:left;">-->
-                        <!--<div class="text-center"-->
-                             <!--style="margin-left: 55px;display: block;height: 50px;padding-top:13px;">-->
-                            <!--<a href="javascript:void(0)"><h4 th:each="el,iter : ${datainfo.data.contributers}"-->
-                                                             <!--th:text="${iter.current}">current</h4></a>-->
-                        <!--</div>-->
-                    <!--</div>-->
-
-                <!--</div>-->
+            <!--<div class="block_head">-->
+            <!--<div class="head_text" style="padding-left: 10px;">-->
+            <!--<h4>Contributer(s)</h4>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="block_content">-->
+            <!--<div class="user">-->
+            <!--<img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon"-->
+            <!--style="width:50px;height: 50px;float:left;">-->
+            <!--<div class="text-center"-->
+            <!--style="margin-left: 55px;display: block;height: 50px;padding-top:13px;">-->
+            <!--<a href="javascript:void(0)"><h4 th:each="el,iter : ${datainfo.data.contributers}"-->
+            <!--th:text="${iter.current}">current</h4></a>-->
+            <!--</div>-->
             <!--</div>-->
 
-            <div id="Authorship" class="detail_block" th:if="${datainfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+            <!--</div>-->
+            <!--</div>-->
+
+            <div id="Authorship" class="detail_block" th:if="${datainfo.data.authorship!=null&&#lists.size(datainfo.data.authorship)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -413,7 +413,7 @@
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
 
-                    <div style="text-align: left;" th:each="author:${datainfo.authorship}">
+                    <div style="text-align: left;" th:each="author:${datainfo.data.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"><a
                                 href
                                 data-toggle="collapse" class="detail-toggle"

@@ -163,16 +163,21 @@ public class DataItemService {
 
     }
 
+    long dataCount(){
+        return dataItemDao.count();
+    }
 
-    public List<String> generatehtmls(){
-        List<DataItem> alldata=dataItemDao.findAll();
 
-        List<String> id=new ArrayList<>();
+    public List<DataItem> generatehtmls(int page){
 
-        for (int i = 0; i <alldata.size() ; i++) {
-            id.add(alldata.get(i).getId());
-        }
-        return id;
+
+//        PageRequest pageRequest=new PageRequest(0,10);
+        PageRequest pageRequest=new PageRequest(page,10);
+
+        Page<DataItem> alldata=dataItemDao.findAll(pageRequest);
+
+//        long allcount=dataItemDao.count();
+        return alldata.getContent();
 
     }
 

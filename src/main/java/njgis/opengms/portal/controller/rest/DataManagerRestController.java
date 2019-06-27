@@ -148,7 +148,11 @@ public class DataManagerRestController {
     }
 
 
-
+    /***
+     * 删除
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
     JsonResult deleteData(@RequestParam("id") String id) {
 
@@ -164,6 +168,99 @@ public class DataManagerRestController {
 
 
     }
+
+    /***
+     * 按关键字查询
+     * @param id
+     * @param words
+     * @return
+     */
+    @RequestMapping(value = "/keywordsSearch",method = RequestMethod.GET)
+    JsonResult searchKeyords(@RequestParam("id") String id,
+                             @RequestParam("words") String words) {
+
+        String url="http://localhost:8081/dataResource/MangerS?searchContent={words}&id={id}";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,words,id);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody());
+
+
+
+
+    }
+
+
+    /***
+     * 分类：图片
+     * @param id
+
+     * @return
+     */
+    @RequestMapping(value = "/managerPics",method = RequestMethod.GET)
+    JsonResult managerpics(@RequestParam("id") String id
+                            ) {
+
+        String url="http://localhost:8081/dataResource/managerPics?id={id}";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody());
+
+    }
+
+
+    /***
+     * 分类：文档
+     * @param id
+
+     * @return
+     */
+    @RequestMapping(value = "/managerDoc",method = RequestMethod.GET)
+    JsonResult managerdoc(@RequestParam("id") String id
+    ) {
+
+        String url="http://localhost:8081/dataResource/managerDoc?id={id}";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody());
+
+    }
+
+    /***
+     * 分类：其他
+     * @param id
+
+     * @return
+     */
+    @RequestMapping(value = "/managerOhr",method = RequestMethod.GET)
+    JsonResult managerOther(@RequestParam("id") String id
+    ) {
+
+        String url="http://localhost:8081/dataResource/managerOhr?id={id}";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody());
+
+    }
+
+
+
+
 
 
 

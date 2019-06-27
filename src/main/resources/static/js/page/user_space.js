@@ -1458,20 +1458,6 @@ close(){
 },
 uploadD(){
 
-    // $("#file-1").fileinput().on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
-    //     var form = data.form, files = data.files, extra = data.extra,
-    //         response = data.response, reader = data.reader;
-    //     if(response!=null){
-    //         alert("数据上传成功")
-    //     }
-    //     //get dataResource add sourceStoreId
-    //     this.sourceStoreId=response.data;
-    //     console.log(response);//打印出返回的json
-    //     console.log(response.status);//打印出路径
-    // })
-
-
-
 
 
     if(this.sourceStoreId===''){
@@ -1624,7 +1610,7 @@ addAllData(){
                 $event.currentTarget.className="el-card dataitemisol dataitemhover"
             }
 
-            this.dataid=item
+            this.dataid=item.id
 
 
         },
@@ -1709,23 +1695,6 @@ addAllData(){
         },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //下载
 download_data_dataManager(){
 
@@ -1757,39 +1726,35 @@ download_data_dataManager(){
         //删除
 delete_data_dataManager(){
 
-    // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    // }).then(() => {
-    //     this.$message({
-    //         type: 'success',
-    //         message: '删除成功!'
-    //     });
-    // }).catch(() => {
-    //     this.$message({
-    //         type: 'info',
-    //         message: '已取消删除'
-    //     });
-    // });
-    let tha=this
-    axios.delete("/dataManager/delete",{
-        params:{
-            id:this.dataid
-        }
-    }).then((res)=>{
-        console.log(res)
+     if(confirm("are u sure to delete?")){
+         let tha=this
+         axios.delete("/dataManager/delete",{
+             params:{
+                 id:tha.dataid
+             }
+         }).then((res)=>{
 
-        if(res.data.msg==="成功"){
-            //删除双向绑定的数组
-                tha.rightMenuShow=false
-                tha.databrowser=[]
-                tha.addAllData()
-        }
 
-    })
+             if(res.data.msg==="成功"){
+                 //删除双向绑定的数组
+                 tha.rightMenuShow=false
+                 tha.databrowser=[]
+                 tha.addAllData()
+                 alert("delete successful")
+
+             }
+
+         })
+     }else{
+         alert("ok")
+     }
+
+
+
+
 
 },
+
 
         showsearchresult(data){
 
@@ -1906,7 +1871,7 @@ delete_data_dataManager(){
                     //     this.dataid=i;
                     // });
                     searchresultcard.click(function () {
-                        this.dataid=i;
+                        this.dataid=this.databrowser[i].id;
                     })
 
                 }
@@ -2027,7 +1992,7 @@ delete_data_dataManager(){
                         //     this.dataid=i;
                         // });
                         searchresultcard.click(function () {
-                            this.dataid=i;
+                            this.dataid=this.databrowser[i].id;
                         })
 
                     }
@@ -2058,21 +2023,38 @@ share(){
         this.$message('please select file first!!');
     }
 },
+        keywordsSearch(){
+           if(this.searchcontent===""){
+               this.addAllData()
+           }else{
+               this.dataManagerSe(this.searchcontent)
+
+           }
 
 
+
+        },
+        dataManagerSe(val){
+            let that=this
+            this.loading=true
+            axios.get("/dataManager/keywordsSearch",{
+                params:{
+                    id:that.userId,
+                    words:val
+
+                }
+            })
+                .then((res)=>{
+                    if(res.status===200){
+                        that.databrowser=res.data.data.data
+                        that.loading=false
+                    }
+                })
+
+        },
         findAllFiles(){
 
-            //不显示之前的数据项
-            let itemnode0 = document.getElementsByClassName("dataitemisol");
-            for (let i = 0; i < itemnode0.length; i++) {
-                itemnode0[i].style.display = 'none';
-            }
             this.addAllData()
-            //显示的数据项
-            let itemnode = document.getElementsByClassName("dataitemisol");
-            for (let i = 0; i < this.alllen; i++) {
-                itemnode[i].style.display = 'block';
-            }
 
 
         },
@@ -2081,74 +2063,65 @@ share(){
 
 
 
-            //不显示之前的数据项
-            let itemnode = document.getElementsByClassName("dataitemisol");
-            for (let i = 0; i < itemnode.length; i++) {
-                itemnode[i].style.display = 'none';
-            }
-            var data=["jpg","png"]
-            this.category(data)
+            let that=this
+            this.loading=true
+            axios.get("/dataManager/managerPics",{
+                params:{
+                    id:that.userId,
 
+
+                }
+            })
+                .then((res)=>{
+                    if(res.status===200){
+                        that.databrowser=res.data.data.data
+                        that.loading=false
+                    }
+                })
         },
         findDocs(){
-            //不显示之前的数据项
-            let itemnode = document.getElementsByClassName("dataitemisol");
-            for (let i = 0; i < itemnode.length; i++) {
-                itemnode[i].style.display = 'none';
-            }
-            var data=["txt","xls"]
-            this.category(data)
-        },
-        findVideo(){
+
+
+            let that=this
+            this.loading=true
+            axios.get("/dataManager/managerDoc",{
+                params:{
+                    id:that.userId,
+
+
+                }
+            })
+                .then((res)=>{
+                    if(res.status===200){
+                        that.databrowser=res.data.data.data
+                        that.loading=false
+                    }
+                })
 
         },
+
         findOtherFiles(){
 
+            let that=this
+            this.loading=true
+            axios.get("/dataManager/managerOhr",{
+                params:{
+                    id:that.userId,
+
+
+                }
+            })
+                .then((res)=>{
+                    if(res.status===200){
+                        that.databrowser=res.data.data.data
+                        that.loading=false
+                    }
+                })
         }
 
 
 },
-    watch:{
-        //通过与input节点的双向绑定，进行input输入值的监听
-        searchcontent: {
-            handler: function (val) {
-                if (val.length>0) {
 
-
-                    let itemnode = document.getElementsByClassName("dataitemisol");
-                    for (let i = 0; i < itemnode.length; i++) {
-                        itemnode[i].style.display = 'none';
-                    }
-
-                    this.showsearchresult(val);
-
-                } else if(val.length==0) {
-
-                    //删除搜索时添加的card
-                    let itemnodechild = document.getElementsByClassName("el-card dataitemisol is-never-shadow sresult");
-                    //符合查询条件的查询结果长度
-
-                    // console.log();
-                    for (let j = 0; j < itemnodechild.length; ) {
-                        // itemnodeparent.removeChild(itemnodechild[j]);
-                        if(itemnodechild.length>0){
-                            itemnodechild[j].parentNode.removeChild(itemnodechild[0])
-                        }else {
-                            break;
-                        }
-                    }
-
-                    //输入为空时显示默认数据条目
-                    let itemnode2 = document.getElementsByClassName("dataitemisol");
-                    for (let k = 0; k < itemnode2.length; k++) {
-                        itemnode2[k].style.display = 'block';
-
-                    }
-
-                }
-            }
-        }
-    },
 created(){
 
 

@@ -1,6 +1,7 @@
 package njgis.opengms.portal.service;
 
 import njgis.opengms.portal.PortalApplication;
+import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -28,6 +29,7 @@ public class staticCreated implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
+//
 //        //生成静态html
 //        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
 //        resolver.setPrefix("templates/");
@@ -37,7 +39,7 @@ public class staticCreated implements ApplicationRunner {
 //        TemplateEngine templateEngine = new TemplateEngine();
 //        templateEngine.setTemplateResolver(resolver);
 //
-//        List<String> allId=dataItemService.generatehtmls();
+//
 //
 //        String path;
 //        path = PortalApplication.class.getClassLoader().getResource("").getPath();
@@ -48,21 +50,43 @@ public class staticCreated implements ApplicationRunner {
 //            dataitemfile.mkdir();
 //        }
 //
+//        long dataCount=dataItemService.dataCount();
 //
-//        for (int i = 0; i <allId.size() ; i++) {
-//            Context context=new Context();
-//            context.setVariable("datainfo",ResultUtils.success(dataItemService.getById(allId.get(i))));
+//        int all=(int)dataCount;
+//        int allData=-1;
+//
+//        if((all/10)==0){
+//            allData=all/10;
+//        }else{
+//            allData=all/10+1;
+//        }
 //
 //
-//            FileWriter writer=new FileWriter(path+"/templates/dataItems/"+allId.get(i)+".html");
-//            templateEngine.process("data_item_info",context,writer);
 //
-//            writer.flush();
-//            writer.close();
 //
+//        for (int j = 0; j <allData ; j++) {
+//
+//            List<DataItem> allId=dataItemService.generatehtmls(j);
+//
+//            for (int i = 0; i <allId.size() ; i++) {
+//                Context context=new Context();
+//                context.setVariable("datainfo",ResultUtils.success(dataItemService.getById(allId.get(i).getId())));
+//
+//
+//                FileWriter writer=new FileWriter(path+"/templates/dataItems/"+allId.get(i).getId()+".html");
+//                templateEngine.process("data_item_info",context,writer);
+//
+//                writer.flush();
+//                writer.close();
+//
+//
+//            }
+//            System.out.println("generate static html:"+j);
 //
 //        }
-//        System.out.println("static data item html ");
 //
+//
+//
+//        System.out.println("static data item html ");
     }
 }

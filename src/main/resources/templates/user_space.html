@@ -1443,6 +1443,7 @@
                                                       placeholder="search input "
                                                       suffix-icon="el-icon-search"
                                                       v-model="searchcontent"
+                                                      @keyup.enter.native="keywordsSearch()"
                                             >
                                             </el-input>
                                         </el-col>
@@ -1459,7 +1460,7 @@
                                             <el-button @click="findAllFiles()">All Files</el-button><br>
                                             <el-button @click="findPics()" >pictures</el-button><br>
                                             <el-button  @click="findDocs()">doc</el-button><br>
-                                            <el-button @click="findVideo()" >video</el-button><br>
+                                            <!--<el-button @click="findVideo()" >video</el-button><br>-->
                                             <el-button @click="findOtherFiles()" >other</el-button><br>
 
                                         </el-card>
