@@ -25,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class DataItem   {
-    @Id
+   @Id
     String id;
     String name;
     String type;
@@ -41,6 +41,8 @@ public class DataItem   {
     List<String> classifications;
     List<String> displays;
     List<AuthorInfo> authorship;
+
+    List<String> relatedModels;
 
     Date createTime;
     Date lastModifyTime;

@@ -3,6 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.models.auth.In;
 import njgis.opengms.portal.PortalApplication;
+import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.comments.CommentInfo;
@@ -50,6 +51,9 @@ public class DataItemService {
     DataItemDao dataItemDao;
 
     @Autowired
+    ModelItemDao modelItemDao;
+
+    @Autowired
     CategoryDao categoryDao;
 
     @Autowired
@@ -57,6 +61,11 @@ public class DataItemService {
 
     @Autowired
     UserDao userDao;
+
+
+
+
+
 
     public void update(String id, DataItemUpdateDTO dataItemUpdateDTO) {
         DataItem dataItem=dataItemDao.findById(id).orElseGet(()->{
@@ -162,6 +171,26 @@ public class DataItemService {
 
 
     }
+
+    public ModelItem getModelById(String id) {
+
+
+
+        return modelItemDao.findById(id).orElseGet(() -> {
+
+            System.out.println("有人乱查数据库！！该ID不存在对象:"+id);
+
+            throw new MyException(ResultEnum.NO_OBJECT);
+
+        });
+
+
+
+
+
+    }
+
+
 
     long dataCount(){
         return dataItemDao.count();
@@ -791,14 +820,122 @@ public class DataItemService {
             infoCategory.put("cateContent",ca.getCategory());
 
             re.add(infoCategory);
-//            re.add(ca.getCategory());
+
         }
 
         return re;
 
     }
 
+    //get related models
+    public List<Map<String,String>> getRelatedModels(String id){
 
+
+//            DataItem dataItem=getById(id);
+           DataItem dataItem=getById(id);
+
+           List<String> relatedModels=dataItem.getRelatedModels();
+
+
+            List<Map<String,String>> data=new ArrayList<>();
+
+            ModelItem modelItem;
+
+            Map<String,String> modelsInfo;
+
+            for (int i = 0; i < relatedModels.size(); i++) {
+                 //只取三个
+                if(i==3){
+                     break;
+                 }
+
+                modelItem=new ModelItem();
+
+                modelItem=getModelById(relatedModels.get(i));
+
+                modelsInfo=new HashMap<>();
+                modelsInfo.put("name",modelItem.getName());
+                modelsInfo.put("oid",modelItem.getOid());
+                modelsInfo.put("description",modelItem.getDescription());
+
+                data.add(modelsInfo);
+
+            }
+
+
+
+
+        return  data;
+
+    }
+//getAllRelatedModels
+public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
+
+
+//            DataItem dataItem=getById(id);
+    DataItem dataItem=getById(id);
+
+    List<String> relatedModels=dataItem.getRelatedModels();
+
+
+    List<Map<String,String>> data=new ArrayList<>();
+
+    ModelItem modelItem;
+
+    Map<String,String> modelsInfo;
+
+    if(more-5 >relatedModels.size()||more-5 == relatedModels.size()){
+        modelsInfo=new HashMap<>();
+        modelsInfo.put("all","all");
+        data.add(modelsInfo);
+        return data;
+    }
+
+    for (int i = more-5; i <more&&i<relatedModels.size(); i++) {
+        //只取三个
+
+        modelItem=new ModelItem();
+
+        modelItem=getModelById(relatedModels.get(i));
+
+        modelsInfo=new HashMap<>();
+        modelsInfo.put("name",modelItem.getName());
+        modelsInfo.put("oid",modelItem.getOid());
+        modelsInfo.put("description",modelItem.getDescription());
+
+        data.add(modelsInfo);
+
+    }
+    return  data;
+
+}
+
+    public boolean addRelatedModels(String id,List<String> relatedModels){
+
+
+        DataItem dataItem=getById(id);
+        ModelItem modelItem;
+
+        List<String> models=new ArrayList<>();
+
+        for (int i = 0; i < relatedModels.size(); i++) {
+            modelItem=new ModelItem();
+            modelItem=modelItemDao.findFirstByOid(relatedModels.get(i));
+            models.add(modelItem.getId());
+        }
+
+        List<String> re=new ArrayList<>();
+        re=dataItem.getRelatedModels();
+
+        for (int j = 0; j <models.size() ; j++) {
+            re.add(models.get(j));
+        }
+
+
+        dataItemDao.save(dataItem);
+
+        return true;
+    }
 
 
 

@@ -19,6 +19,10 @@ public class DataItemFindDTO {
     List<String> classifications;
     String categoryId;
     List<String> searchContent;
+
+    String dataId;
+    List<String> relatedModels;
+
     //用做多条件查询
     //private List<String> properties;
 

@@ -393,7 +393,6 @@ new Vue({
                 case "normal":
                     data.searchText = this.searchText.trim();
                     data.classifications = this.classifications1.length == 0 ? ["all"] : this.classifications1
-                    break;
                 case "advanced":
                     var connects = $(".connect");
                     var props = $(".prop");

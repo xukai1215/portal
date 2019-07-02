@@ -2023,6 +2023,13 @@ share(){
         this.$message('please select file first!!');
     }
 },
+        //todo 数据找模型
+relatedModels_dataManager(){
+
+
+
+
+},
         keywordsSearch(){
            if(this.searchcontent===""){
                this.addAllData()

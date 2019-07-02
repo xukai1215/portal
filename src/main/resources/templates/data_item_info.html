@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Data Item Info | OpenGMS</title>
 
-    <link rel="stylesheet"  th:href="@{../../static/OpenLayer/ol.css}"/>
-    <script  th:src="@{../../static/OpenLayer/ol.js}"></script>
+
 
     <link rel="icon" type="image/x-icon"  th:href="@{../../static/img/logo/favicon.ico}">
     <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
@@ -67,40 +66,16 @@
                     </div>
 
                     <div class="detail_option" th:object="${datainfo}">
-                        <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>&nbsp&nbsp<span-->
-                        <!--th:text="${datainfo.data.shareCount}">scount</span>-->
+
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp<span>{{viewCount}}</span>
-                        <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp<span-->
-                        <!--th:text="${datainfo.data.thumbsUpCount}">thumbsUpCount</span>-->
+
                     </div>
 
                 </div>
 
             </div>
 
-            <div id="classification" class="detail_block">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Category Tags</h4>
-                    </div>
-                </div>
-                <div class="block_content" style="margin-top:20px;">
-                    <!--<span style="font-size:24px;margin-right: 8px">●</span>-->
-                    <!--<el-breadcrumb separator-class="el-icon-arrow-right">-->
-                    <!--<el-breadcrumb-item :to="{ path: '/' }" th:each="key,iter : ${datainfo.data.classifications}"-->
-                    <!--th:text="${iter.current}">current-->
-                    <!--</el-breadcrumb-item>-->
-                    <!--</el-breadcrumb>-->
-                    <!--<span class="label label-primary" style="margin-left: 10px" th:each="key,iter : ${datainfo.data.classifications}"-->
-                    <!--th:text="${iter.current}">current</span>-->
-
-                    <!--<span class="label label-primary" v-for="iter in dataCategory">{{iter}}</span>&nbsp;&nbsp;-->
-                    <el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>
-
-
-                </div>
-            </div>
-
+            <!--data resource url-->
             <div id="data_url" class="detail_block" th:if="${datainfo.data.reference!=''}">
                 <div class="block_head">
                     <div class="head_text">
@@ -116,7 +91,7 @@
                 </div>
 
             </div>
-
+            <!--description-->
             <div id="description" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -125,7 +100,11 @@
                 </div>
                 <div class="block_content">
                     <div id="detail" class="detailIntroducePanel" th:utext="${datainfo.data.detail}" style="overflow:auto"></div>
-                    <!--<a th:href="${datainfo.data.detail}" th:text="${datainfo.data.detail}"></a>-->
+                </div>
+                <div class="fullPaper text-center hide">
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Text<i class="fa fa-angle-down"
+                                                                                              style="margin-left: 10px;color:red;font-weight: bold"
+                                                                                              aria-hidden="true"></i></a>
                 </div>
 
             </div>
@@ -133,87 +112,181 @@
 
 
 
-            <!--<div id="display" class="detail_block">-->
-            <!--<div class="block_head">-->
-            <!--<div class="head_text">-->
-            <!--<h4>Display</h4>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="block_content flex" th:object="${datainfo}">-->
-            <!--<el-carousel :interval="4000" type="card" height="200px">-->
-            <!--<el-carousel-item th:each="key,iter : ${datainfo.data.displays}">-->
-            <!--<img th:src="${iter.current}" style="height: 100%;"> </img>-->
-            <!--</el-carousel-item>-->
-            <!--</el-carousel>-->
+            <!--related models-->
+            <div id="relatedmodels" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Models</h4>
+                    </div>
+                </div>
+                <div class="block_content flex"  >
 
 
-            <!--</div>-->
-            <!--</div>-->
 
-            <!--<div id="coverage" class="detail_block" th:if="${datainfo.data.meta!=null  }" style="display: none">-->
-            <!--<div class="block_head">-->
-            <!--<div class="head_text">-->
-            <!--<h4>Coverage</h4>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="block_content">-->
-            <!--<div class="coverage-top clearfix" style="margin:20px 0px">-->
-            <!--<div class="el-col el-col-12" style="border-right:1px solid #bbbbbb">-->
-            <!--<div class="line">-->
-            <!--<span class="col-md-6 align-right">Coordinate System:</span>-->
-            <!--<span th:if="${datainfo.data.meta!=null}" class="col-md-5"-->
-            <!--th:text="${datainfo.data.meta.coordinateSystem}"> </span>-->
-            <!--<span th:if="${datainfo.data.meta.coordinateSystem==null}" class="col-md-5">none</span>-->
+                    <el-tabs value="first" >
+                        <el-tab-pane label="Related Models List" name="first" style="width: 100%;height:320px;">
+
+                            <el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
+                                <div > <strong>Modle: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>
+                                    <br><strong>Description:</strong><span>{{item.description}}</span>
+
+                                </div>
+
+                            </el-card>
+                            <el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary" icon="el-icon-star-off" style="width: 100%">
+
+                                More...
+                            </el-button>
+                            <el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo" style="margin-top: 10px;margin-bottom: 10px"  >
+                                <div style="
+                                    text-align: center;
+                                    font-weight: 600;
+                                    margin-top: 30px;
+                                    margin-bottom: 20px;">
+                                    <strong>There are no related models for this data, you can add one!</strong>
+
+                                </div>
+
+                                <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">
+                                    add the first model for this data
+                                </el-button>
+                            </el-card>
+
+                        </el-tab-pane>
+
+                        <el-tab-pane label="Search From Related Models" name="second">
+                            <div style="
+                                    text-align: center;
+                                    font-weight: 600;
+                                    margin-top: 30px;
+                                    margin-bottom: 20px;
+                                "><span>Search the models from the current data related models</span></div>
+
+                            <el-button type="success" @click="showRelatedModels" icon="el-icon-search" style="width: 100%">
+
+                                search related
+                            </el-button>
+
+                        </el-tab-pane>
+
+                        <!--search related model dialog-->
+                        <el-dialog
+                                title="Related Models of current Data"
+                                :visible.sync="searchRelatedModelsDialogVisible"
+                                width="30%"
+                                height="50%"
+                                :before-close="handleClose"
+                                style="overflow-y: scroll"
+                        >
 
 
-            <!--</div>-->
-            <!--<div class="line">-->
-            <!--<span class="col-md-6 align-right">Geographic Proj:</span>-->
-            <!--<span th:if="${datainfo.data.meta!=null}" class="col-md-5"-->
-            <!--th:text="${datainfo.data.meta.geographicProjection}"></span>-->
-            <!--<span th:if="${datainfo.data.meta.geographicProjection==null}"-->
-            <!--class="col-md-5">none</span>-->
+                            <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
+                            <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
 
-            <!--</div>-->
-            <!--<div class="line">-->
-            <!--<span class="col-md-6 align-right">Coordinate Units:</span>-->
-            <!--<span th:if="${datainfo.data.meta!=null}" class="col-md-5"-->
-            <!--th:text="${datainfo.data.meta.coordinateUnits}"></span>-->
-            <!--<span th:if="${datainfo.data.meta.coordinateUnits==null}" class="col-md-5">none</span>-->
+                                <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
+                                    <div > <strong>Modle: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>
+                                        <br><strong>Description:</strong><span>{{item.description}}</span>
 
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="el-col el-col-12" style="padding:15px 0px" th:if="${datainfo.data.meta!=null}">-->
-            <!--<div class="col-md-offset-2" style="display: inline-block;width: 41.667%;"-->
-
-            <!--th:each="el,key : ${datainfo.data.meta.boundingRectangle}">-->
+                                    </div>
+                                </div>
+                                <div v-if="nomore!=''" style="text-align: center">
+                                    <span  >no more data</span>
+                                </div>
 
 
-            <!--<el-row style="font-weight: bold;" th:if="${key.index==0}">Upper left X:-->
-            <!--&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.x}"></span></el-row>-->
-            <!--<el-row style="font-weight: bold;" th:if="${key.index==1}">Bottom right-->
-            <!--X:&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.x}"></span></el-row>-->
+                            </el-card>
 
 
-            <!--<el-row style="font-weight: bold;" th:if="${key.index==0}">Upper left Y:-->
-            <!--&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.y}"></span></el-row>-->
-            <!--<el-row style="font-weight: bold;" th:if="${key.index==1}">Bottom right Y:-->
-            <!--&nbsp&nbsp&nbsp&nbsp<span th:text="${key.current.y}"></span></el-row>-->
+                            <span slot="footer" class="dialog-footer">
+                            <el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>
+                            <el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
+                          </span>
+                        </el-dialog>
 
-            <!--<br>-->
+                        <el-tab-pane label="Add Models" name="third">
+                            <div style="
+                                    text-align: center;
+                                    font-weight: 600;
+                                    margin-top: 30px;
+                                    margin-bottom: 20px;
+                                "><span>Add the models into the current data related models</span></div>
+                            <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">
+                                add models
+                            </el-button></br>
+                        </el-tab-pane>
+
+                        <!--add related model dialog-->
+                        <el-dialog
+                                title="Add Models for current data"
+                                :visible.sync="addRelatedModelsDialogVisible"
+                                width="30%"
+                                :before-close="handleClose">
 
 
-            <!--</div>-->
+                            <el-form :inline="true"  class="demo-form-inline">
+                                <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created models</el-radio>
+                                <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all models</el-radio>
+                            </el-form>
 
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="map-container" style="margin:20px 0px">-->
-            <!--<div id="map"></div>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
+                            <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
 
-            <!--file manager,has been ignored-->
+                            <el-alert
+                                    title=""
+                                    type="success"
+                                    :closable="false">
+                                {{selectedModels}}
+
+                            </el-alert>
+
+
+                            <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
+
+                                <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
+                                    <div > <strong>Modle: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>
+                                        <br><strong>Description:</strong><span>{{item.description}}</span>
+
+                                    </div>
+                                </el-card>
+                                <div v-if="nomore!=''" style="text-align: center">
+                                    <span  >no more data</span>
+                                </div>
+
+
+                            </el-card>
+
+
+
+
+
+
+
+                            <span slot="footer" class="dialog-footer">
+                            <el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>
+                            <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
+                          </span>
+                        </el-dialog>
+
+
+
+                    </el-tabs>
+                </div>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             <!--how to cite-->
@@ -241,6 +314,9 @@
 
                 </div>
             </div>
+
+
+
 
             <!--comment-->
             <div id="comment" class="detail_block">
@@ -358,6 +434,21 @@
 
 
         <div class="right-panel el-col el-col-5">
+            <!--categorys-->
+            <div id="classification" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Category Tags</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-top:20px;">
+
+                    <el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>
+
+
+                </div>
+            </div>
+
             <div id="Owner" class="detail_block" style="margin-bottom: 30px">
 
                 <div class="block_head">
@@ -385,25 +476,7 @@
                     </div><br/>
                 </div>
             </div>
-            <!--<div id="Contributer" class="detail_block">-->
-            <!--<div class="block_head">-->
-            <!--<div class="head_text" style="padding-left: 10px;">-->
-            <!--<h4>Contributer(s)</h4>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="block_content">-->
-            <!--<div class="user">-->
-            <!--<img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon"-->
-            <!--style="width:50px;height: 50px;float:left;">-->
-            <!--<div class="text-center"-->
-            <!--style="margin-left: 55px;display: block;height: 50px;padding-top:13px;">-->
-            <!--<a href="javascript:void(0)"><h4 th:each="el,iter : ${datainfo.data.contributers}"-->
-            <!--th:text="${iter.current}">current</h4></a>-->
-            <!--</div>-->
-            <!--</div>-->
 
-            <!--</div>-->
-            <!--</div>-->
 
             <div id="Authorship" class="detail_block" th:if="${datainfo.data.authorship!=null&&#lists.size(datainfo.data.authorship)!=0}">
                 <div class="block_head">
@@ -447,6 +520,7 @@
 
                 </div>
             </div>
+
         </div>
 
 

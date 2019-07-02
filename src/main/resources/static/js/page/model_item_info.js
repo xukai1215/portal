@@ -20,6 +20,27 @@ new Vue({
                 journal: 'Physical Review Letters',
                 pages: "4365-4368"
             }],
+
+            loading:false,
+            related3Models:[],
+            value1:'1',
+            relatedModelNotNull:false,
+            relatedModelIsNull:false,
+            searchRelatedModelsDialogVisible:false,
+            addRelatedModelsDialogVisible:false,
+            allRelatedModels:[],
+            dataNums:5,
+            timer:false,
+            nomore:"",
+            nomoreflag:false,
+
+            relatedModelsSearchText:'',
+            addModelsSearchText:'',
+            searchAddRelatedModels:[],
+            searchAddModelPage:0,
+
+            selectedModels:[],
+            selectedModelsOid:[]
         }
     },
     methods: {
@@ -119,8 +140,306 @@ new Vue({
                 }
             })
         },
+
+
+
+        checkRelatedModels(item){
+            let curentId=document.location.href.split("/");
+            return curentId[0]+"//"+curentId[2]+"/modelItem/"+item.oid;
+        },
+        handleClose(done) {
+            this.$confirm('are u sure close this dialog？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {});
+        },
+        //add related models
+
+        addRelatedModel(){
+
+            if(this.useroid==''){
+                alert("Please login");
+                window.location.href = "/user/login";
+            }else{
+                this.searchAddModelPage=0
+                this.searchAddRelatedModels=[]
+                this.addModelsSearchText=""
+                this.selectedModels=[]
+                this.selectedModelsOid=[]
+
+
+                this.addRelatedModelsDialogVisible=true
+
+
+
+
+
+
+            }
+
+
+
+        },
+
+
+
+
+        searchRelatedModels(){
+
+
+
+            this.nomoreflag=false
+            if(this.value1==='1'){
+
+                this.addSearchFromUser()
+            }else if(this.value1==='2'){
+
+                this.addSearchFromAll()
+            }
+        },
+        clearSearchResult(){
+            this.searchAddRelatedModels=[]
+        },
+        loadAddMore(e){
+
+            let that=this
+            if ( e.target.scrollHeight - e.target.clientHeight-e.target.scrollTop <10) { //到达底部100px时,加载新内容
+
+                clearTimeout(this.timer);
+
+                this.timer=setTimeout(()=>{
+                        that.searchAddModelPage+=1// 这里加载数据..
+
+
+
+                        if(this.value1==='1'){
+                            that.addSearchFromUser()
+                        }else if(this.value1==='2'){
+                            that.addSearchFromAll()
+                        }
+
+
+                    },
+                    500)
+
+            }
+
+
+        },
+        addSearchFromUser() {
+
+            let data={
+                searchText:this.addModelsSearchText,
+                page:this.searchAddModelPage,
+                sortType:"default",
+                asc:1
+            }
+            let that=this
+            this.loading=true
+            axios.get("/modelItem/searchModelItemsByUserId",{
+                params:data
+            })
+                .then((res)=>{
+
+                    if(res.status===200){
+                        that.loading=false
+                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.modelItems)
+                    }
+
+
+
+                })
+
+        },
+        addSearchFromAll(){
+            let data=new FormData()
+            data.append('searchText',this.addModelsSearchText)
+            data.append('page',this.searchAddModelPage)
+            data.append('sortType','default')
+            data.append('asc',false)
+            data.append('pageSize',10)
+            data.append('classifications[]','all')
+
+
+
+            let that=this
+            this.loading=true
+            axios.post("/modelItem/list",data)
+                .then((res)=>{
+
+                    if(res.status===200){
+                        that.loading=false
+                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.list)
+                    }
+
+
+
+                })
+
+        },
+        selectRelatedModel(item,e){
+
+            if(this.selectedModels.indexOf(item.name)>-1){
+                e.currentTarget.className="is-hover-shadow models_margin_style"
+
+                this.getRidOf(item.name,this.selectedModels)
+                this.getRidOf(item.oid,this.selectedModelsOid)
+            }else{
+                e.currentTarget.className="is-hover-shadow models_margin_style selectedModels"
+
+                this.selectedModels.push(item.name)
+                this.selectedModelsOid.push(item.oid)
+            }
+
+
+
+        },
+        getRidOf(e,arr){
+            arr.splice(arr.indexOf(e),1)
+        },
+        relatedToCurrentData(){
+
+            if(this.selectedModelsOid.length===0){
+                alert("pleasa select model first!")
+            }else{
+
+                let curentId=document.location.href.split("/");
+
+                let dataItemFindDTO={
+                    dataId:curentId[curentId.length-1],
+                    relatedModels:this.selectedModelsOid
+                }
+
+                axios.post("/dataItem/models",dataItemFindDTO)
+
+
+                    .then((res)=>{
+                        if(res.status===200){
+                            alert("Cgts,related models successfully!")
+
+                        }
+
+                    })
+
+
+
+            }
+
+        },
+
+
+        showRelatedModels(){
+            this.dataNums=5
+            this.searchAddRelatedModels=[]
+            this.searchRelatedModelsDialogVisible=true
+            relatedModelsSearchText=""
+            this.RelatedModels(this.dataNums)
+
+
+
+
+        },
+        searchFromRelatedModels(){
+            //todo search from show related models
+        },
+        //函数节流防抖
+        loadMore(e){
+
+            if(!this.nomoreflag){
+                if ( e.target.scrollHeight - e.target.clientHeight-e.target.scrollTop <10) { //到达底部100px时,加载新内容
+
+                    clearTimeout(this.timer);
+
+                    this.timer=setTimeout(()=>{
+                            this.dataNums+=5// 这里加载数据..
+                            this.RelatedModels(this.dataNums)
+                        },
+                        500)
+
+                }
+            }
+
+        },
+
+        RelatedModels(more){
+            let curentId=document.location.href.split("/");
+            let that=this
+            this.loading=true
+            this.nomore=false
+            axios.get("/dataItem/allrelatedmodels",{
+                params:{
+                    id:curentId[curentId.length-1],
+                    more:more
+                }
+            })
+                .then((res)=>{
+                    if(res.status==200){
+                        that.loading=false
+                        //todo 传回来数组为空时
+                        if(res.data.data[0].all==="all"){
+                            that.nomore="no more"
+                            that.nomore=true
+                            that.loading=false
+
+                        }else{
+                            that.allRelatedModels=that.allRelatedModels.concat(res.data.data)
+                            that.loading=false
+                        }
+
+                    }
+
+                })
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     },
     mounted(){
+        let currenturl=window.location.href;
+        let dataitemid=currenturl.split("/");
+
+        let that=this
+        axios.get("/dataItem/briefrelatedmodels",{
+            params:{
+                id:dataitemid[dataitemid.length-1]
+            }
+        })
+            .then((res)=>{
+                that.related3Models=res.data.data
+
+                if(that.related3Models.length===0){
+                    that.relatedModelIsNull=true;
+                    that.relatedModelNotNull=false
+                }else {
+                    that.relatedModelNotNull=true
+                    that.relatedModelIsNull=false;
+                }
+            })
+
+
+
+
+
+
+
+
+
 
         $(document).on("click", ".detail-toggle", function () {
             if ($(this).text() == "[Collapse]") {

@@ -143,34 +143,6 @@ public class DataItemRestController {
     }
 
 
-
-
-    //测试接口用的，之后可删
-    @GetMapping(value = "/a")
-    public ModelAndView gen() throws IOException {
-        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-        resolver.setPrefix("templates/");//模板所在目录，相对于当前classloader的classpath。
-        resolver.setSuffix(".html");//模板后缀
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(resolver);
-
-        Context context=new Context();
-        context.setVariable("datainfo",ResultUtils.success(dataItemService.getById("5c682c7dc56d4c3f08dbd89a")));
-
-        String path=PortalApplication.class.getClassLoader().getResource("").getPath();
-        System.out.println(path);
-
-        FileWriter writer=new FileWriter(path+"templates/r.html");
-
-        templateEngine.process("data_item_info",context,writer);
-        writer.flush();
-        writer.close();
-        ModelAndView view =new ModelAndView();
-        view.setViewName("r");
-        return  view;
-    }
-
-
     @RequestMapping (value = "/del", method = RequestMethod.GET)
     JsonResult delete(@RequestParam(value="id") String id) {
         dataItemService.delete(id);
@@ -357,7 +329,37 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.getCategory(id));
     }
 
-    //
+
+
+    //getRelated modelsList
+    @RequestMapping(value = "/briefrelatedmodels",method = RequestMethod.GET)
+    JsonResult getBriefRelatedModels(@RequestParam(value = "id") String id){
+        return ResultUtils.success(dataItemService.getRelatedModels(id));
+    }
+    @RequestMapping(value = "/allrelatedmodels",method = RequestMethod.GET)
+    JsonResult getRelatedModels(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
+        return ResultUtils.success(dataItemService.getAllRelatedModels(id,more));
+    }
+    //addRelated Models
+    @RequestMapping(value = "/models",method = RequestMethod.POST)
+    JsonResult addRelatedModels(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.addRelatedModels(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
+    }
+
+    //getRelated data sList
+    @RequestMapping(value = "/briefrelateddata",method = RequestMethod.GET)
+    JsonResult getBriefRelatedDatas(@RequestParam(value = "id") String id){
+        return ResultUtils.success(dataItemService.getRelatedModels(id));
+    }
+    @RequestMapping(value = "/allrelateddata",method = RequestMethod.GET)
+    JsonResult getRelatedDatas(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
+        return ResultUtils.success(dataItemService.getAllRelatedModels(id,more));
+    }
+    //addRelated Data
+    @RequestMapping(value = "/data",method = RequestMethod.POST)
+    JsonResult addRelatedDatas(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.addRelatedModels(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
+    }
 
 
 

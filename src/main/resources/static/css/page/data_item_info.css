@@ -92,6 +92,37 @@ p{
 .el-carousel__item:nth-child(2n+1) {
     background-color: #d3dce6;
 }
+/*full-text*/
+.fullPaper {
+    position: relative;
+    padding-top: 100px;
+    margin-top: -110px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), color-stop(90%, #fff));
+    background-image: linear-gradient(-180deg, rgba(255, 255, 255, 0) 0%, #fff 90%);
+    margin-bottom: 20px;
+}
+/*related models*/
+.relatedModelsInfo{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+#tab-first,#tab-second,#tab-third{
+    font-size: larger;
+    font-weight: bolder
+}
+/*每一项related model 的card*/
+.models_margin_style{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* 挑到related模型*/
+.selectedModels{
+    border: orange 2px solid;
+}
+
 
 /*.filebrowserfunction{*/
     /*background: -webkit-linear-gradient(#ffffff, #e4e4e4); !* Safari 5.1 - 6.0 *!*/
