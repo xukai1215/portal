@@ -131,9 +131,9 @@
                             <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
-                        <a th:href="'http://opengms.cityfun.com.cn/conceptualmodel/'+${modelInfo.oid}"
-                           th:text="'http://opengms.cityfun.com.cn/conceptualmodel/'+${modelInfo.oid}">
-                            http://opengms.cityfun.com.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        <a th:href="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
+                           th:text="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
+                            http://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">
@@ -269,8 +269,8 @@
     window.RESOURCES_PATH = "../static/js/conceptModelEditor/resources";
     window.IMAGE_PATH = "../static/js/conceptModelEditor/images";
     window.STENCIL_PATH = "../static/js/conceptModelEditor/stencils";
-    EXPORT_URL = "http://opengms.cityfun.com.cn/GeoModelingNew/MyTestServlet";
-    SAVE_URL = "http://opengms.cityfun.com.cn/GeoModelingNew/MyTestServlet";
+    EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
     editMode = false;
 </script>
@@ -367,7 +367,7 @@
 
                 //  mainUI.setStatusText("Load OK");
                 // $.ajax({
-                //     url: "http://opengms.cityfun.com.cn/GeoModelingNew/ConceptModelInfoServlet",
+                //     url: "http://geomodeling.njnu.edu.cn/GeoModelingNew/ConceptModelInfoServlet",
                 //     type: "get",
                 //     data: { "mid": uid },
                 //     success: function (result) {

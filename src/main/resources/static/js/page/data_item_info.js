@@ -720,8 +720,8 @@ var  data_item_info= new Vue({
         this.currentDataId=url[url.length-1]
 
         var cite=document.getElementById("citeurl");
-        cite.src='http://opengms.cityfun.com.cn/'+url[url.length-2]+'/'+url[url.length-1];
-        cite.innerText='<http://opengms.cityfun.com.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
+        cite.src='http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
+        cite.innerText='<http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
 
 
 
