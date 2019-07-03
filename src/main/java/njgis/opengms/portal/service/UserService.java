@@ -245,7 +245,8 @@ public class UserService {
     }
 
     public String getImage(String oid){
-        return htmlLoadPath+userDao.findFirstByOid(oid).getImage();
+        String imgStr=userDao.findFirstByOid(oid).getImage();
+        return imgStr.equals("")?"":htmlLoadPath+userDao.findFirstByOid(oid).getImage();
     }
 
     public JSONObject getUserInfo(String userId){
@@ -276,7 +277,8 @@ public class UserService {
         userInfo.put("phone",user.getPhone());
         userInfo.put("wiki",user.getWiki());
         userInfo.put("description",user.getDescription());
-        userInfo.put("image",htmlLoadPath+user.getImage());
+        userInfo.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
+
         return userInfo;
     }
 
@@ -285,7 +287,7 @@ public class UserService {
         JSONObject userJson = new JSONObject();
         userJson.put("name", user.getName());
         userJson.put("oid", user.getOid());
-        userJson.put("image", htmlLoadPath+user.getImage());
+        userJson.put("image", user.getImage().equals("")?"":htmlLoadPath+user.getImage());
         return userJson;
     }
 

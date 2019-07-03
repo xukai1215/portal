@@ -248,6 +248,16 @@ var vue = new Vue({
                         let url = el.url;
                         if (el.eventType == "response") {
                             if (el.optional) {
+                                if(url === null || url === undefined){
+
+                                }else{
+                                    json.inputs.push({
+                                        statename,
+                                        event,
+                                        url,
+                                        tag
+                                    });
+                                }
                             } else {
                                 if (url === null || url === undefined) {
                                     this.$message.error("部分输入数据未配置");

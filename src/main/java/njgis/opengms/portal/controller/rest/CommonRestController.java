@@ -2,18 +2,14 @@ package njgis.opengms.portal.controller.rest;
 
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.dto.UserAddDTO;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.service.CommonService;
-import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionFailedException;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -82,7 +78,7 @@ public class CommonRestController {
              ) {
             try {
                 Date time = modelItem.getCreateTime();
-                if(modelItem.getImage().contains("opengms.cityfun.com.cn")){
+                if(modelItem.getImage().contains("geomodeling.njnu.edu.cn")){
                     modelItem.setImage("");
                     modelItemDao.save(modelItem);
                 }

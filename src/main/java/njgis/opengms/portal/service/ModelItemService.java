@@ -10,33 +10,30 @@ import com.mongodb.client.MongoCursor;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-
 import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.bson.Document;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.print.Doc;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -313,9 +310,15 @@ public class ModelItemService {
         modelItem.setOid(UUID.randomUUID().toString());
 
         String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
-        String imgStr = modelItemAddDTO.getUploadImage().split(",")[1];
-        Utils.base64StrToImage(imgStr, resourcePath + path);
-        modelItem.setImage(path);
+        String[] strs=modelItemAddDTO.getUploadImage().split(",");
+        if(strs.length>1) {
+            String imgStr = modelItemAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            modelItem.setImage(path);
+        }
+        else {
+            modelItem.setImage("");
+        }
 
         ModelItemRelate modelItemRelate=new ModelItemRelate();
 
@@ -349,7 +352,7 @@ public class ModelItemService {
         BeanUtils.copyProperties(modelItemUpdateDTO,modelItem);
         //判断是否为新图片
         String uploadImage=modelItemUpdateDTO.getUploadImage();
-        if(!uploadImage.contains("/modelItem/")) {
+        if(!uploadImage.contains("/modelItem/")&&uploadImage!="") {
             //删除旧图片
             File file=new File(resourcePath+modelItem.getImage());
             if(file.exists()&&file.isFile())
