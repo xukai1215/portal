@@ -87,78 +87,88 @@ public class ComputableModelService {
 
     public ModelAndView getPage(String id) {
         //条目信息
-        ComputableModel modelInfo = getByOid(id);
-        modelInfo.setViewCount(modelInfo.getViewCount() + 1);
-        computableModelDao.save(modelInfo);
-        //类
-        JSONArray classResult = new JSONArray();
+        try{
+            System.out.println("1");
+            ComputableModel modelInfo = getByOid(id);
+            modelInfo.setViewCount(modelInfo.getViewCount() + 1);
+            computableModelDao.save(modelInfo);
+            //类
+            JSONArray classResult = new JSONArray();
 
-        List<String> classifications = modelInfo.getClassifications();
-        if (classifications != null) {
-            for (int i = 0; i < classifications.size(); i++) {
+            List<String> classifications = modelInfo.getClassifications();
+            if (classifications != null) {
+                for (int i = 0; i < classifications.size(); i++) {
 
-                JSONArray array = new JSONArray();
-                String classId = classifications.get(i);
+                    JSONArray array = new JSONArray();
+                    String classId = classifications.get(i);
 
-                do {
-                    Classification classification = classificationService.getByOid(classId);
-                    array.add(classification.getNameEn());
-                    classId = classification.getParentId();
-                } while (classId != null);
+                    do {
+                        Classification classification = classificationService.getByOid(classId);
+                        array.add(classification.getNameEn());
+                        classId = classification.getParentId();
+                    } while (classId != null);
 
-                JSONArray array1 = new JSONArray();
-                for (int j = array.size() - 1; j >= 0; j--) {
-                    array1.add(array.getString(j));
+                    JSONArray array1 = new JSONArray();
+                    for (int j = array.size() - 1; j >= 0; j--) {
+                        array1.add(array.getString(j));
+                    }
+                    classResult.add(array1);
+                }
+            }
+            System.out.println("2");
+            //时间
+            Date date = modelInfo.getCreateTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateResult = simpleDateFormat.format(date);
+
+            //用户信息
+            JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
+            //资源信息
+            JSONArray resourceArray = new JSONArray();
+            List<String> resources = modelInfo.getResources();
+            System.out.println("3");
+            if (resources != null) {
+                for (int i = 0; i < resources.size(); i++) {
+
+                    String path = resources.get(i);
+
+                    String[] arr = path.split("\\.");
+                    String suffix = arr[arr.length - 1];
+
+                    arr = path.split("/");
+                    String name = arr[arr.length - 1].substring(14);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", i);
+                    jsonObject.put("name", name);
+                    jsonObject.put("suffix", suffix);
+                    jsonObject.put("path",resources.get(i));
+                    resourceArray.add(jsonObject);
+
                 }
 
-                classResult.add(array1);
-
             }
+            System.out.println("4");
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("computable_model");
+            modelAndView.addObject("modelInfo", modelInfo);
+            modelAndView.addObject("classifications", classResult);
+            modelAndView.addObject("date", dateResult);
+            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+            modelAndView.addObject("user", userJson);
+            modelAndView.addObject("resources", resourceArray);
+            modelAndView.addObject("loadPath",htmlLoadPath);
+
+            System.out.println("5");
+            return modelAndView;
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new MyException(e.getMessage());
         }
-        //时间
-        Date date = modelInfo.getCreateTime();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateResult = simpleDateFormat.format(date);
 
-        //用户信息
-        JSONObject userJson=userService.getItemUserInfo(modelInfo.getAuthor());
-        //资源信息
-        JSONArray resourceArray = new JSONArray();
-        List<String> resources = modelInfo.getResources();
-        if (resources != null) {
-            for (int i = 0; i < resources.size(); i++) {
-
-                String path = resources.get(i);
-
-                String[] arr = path.split("\\.");
-                String suffix = arr[arr.length - 1];
-
-                arr = path.split("/");
-                String name = arr[arr.length - 1].substring(14);
-
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", i);
-                jsonObject.put("name", name);
-                jsonObject.put("suffix", suffix);
-                jsonObject.put("path",resources.get(i));
-                resourceArray.add(jsonObject);
-
-            }
-
-        }
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("computable_model");
-        modelAndView.addObject("modelInfo", modelInfo);
-        modelAndView.addObject("classifications", classResult);
-        modelAndView.addObject("date", dateResult);
-        modelAndView.addObject("year", calendar.get(Calendar.YEAR));
-        modelAndView.addObject("user", userJson);
-        modelAndView.addObject("resources", resourceArray);
-        modelAndView.addObject("loadPath",htmlLoadPath);
-
-        return modelAndView;
     }
 
     public ComputableModel getByOid(String id) {
@@ -270,7 +280,8 @@ public class ComputableModelService {
             //task服务器API，部署包通过task server进行部署
             String deployUrl = "http://" + serviceTaskResult.getJSONObject("data").getString("host") + ":" + serviceTaskResult.getJSONObject("data").getString("port") + "/server/modelser/deploy";
             ComputableModel computableModel = computableModelDao.findFirstByOid(id);
-            String saveFilePath = ConceptualModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/Package" + computableModel.getResources().get(0);
+            //String saveFilePath = ConceptualModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/Package" + computableModel.getResources().get(0);
+            String saveFilePath = resourcePath + "/computableModel/Package" + computableModel.getResources().get(0);
             String[] paths = computableModel.getResources().get(0).split("/");
             String fileName = paths[paths.length - 1];
             JSONObject deployResult = doPostWithDeployPackage(deployUrl, saveFilePath, fileName, "0");
@@ -325,7 +336,7 @@ public class ComputableModelService {
                                 //我为了节省时间就直接复用许凯的代码了
                                 if(file2.getName().equals("testify")){
                                     testDataDirectoryPath = file2.getAbsolutePath();
-                                }else{
+                                }else if(file2.getName().equals("model")){
                                     list.add(file2);
                                 }
                             } else {
@@ -343,12 +354,7 @@ public class ComputableModelService {
                             dirFiles = temp_file.listFiles();
                             for (File file2 : dirFiles) {
                                 if (file2.isDirectory()) {
-                                    //我为了节省时间就直接复用许凯的代码了
-                                    if(file2.getName().equals("testify")){
-                                        testDataDirectoryPath = file2.getAbsolutePath();
-                                    }else{
-                                        list.add(file2);
-                                    }
+                                    continue;
                                 } else {
                                     String name=file2.getName();
                                     if(name.substring(name.length()-3,name.length()).equals("mdl")){
@@ -472,7 +478,8 @@ public class ComputableModelService {
                     return "";
                 }
                 //拷贝文件
-                String destPath = ComputableModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/testify/" + oid;
+                //String destPath = ComputableModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/testify/" + oid;
+                String destPath = resourcePath + "/computableModel/testify/" + oid;
                 FileUtils.copyDirectory(defaultTest.getAbsoluteFile(),new File(destPath));
                 String returnPath = oid + File.separator + "config.xml";
                 return returnPath;

@@ -1,35 +1,23 @@
 package njgis.opengms.portal.controller.rest;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
-import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.ModelItemRelate;
-import njgis.opengms.portal.service.ClassificationService;
-import njgis.opengms.portal.service.ConceptualModelService;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.xml.transform.Result;
-import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -104,7 +92,7 @@ public class ModelItemRestController {
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
     JsonResult getInfo(@PathVariable ("id") String id){
         ModelItem modelItem=modelItemService.getByOid(id);
-        modelItem.setImage(htmlLoadPath+modelItem.getImage());
+        modelItem.setImage(modelItem.getImage().equals("")?"":htmlLoadPath+modelItem.getImage());
         return ResultUtils.success(modelItem);
     }
 

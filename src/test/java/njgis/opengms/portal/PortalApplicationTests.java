@@ -54,24 +54,25 @@ public class PortalApplicationTests {
         for(int i=0;i<modelItems.size();i++){
             ModelItem modelItem=modelItems.get(i);
             String imgStr=modelItem.getImage();
-            if(imgStr.indexOf("data:image")!=-1) {
-                String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
-                imgStr = imgStr.split(",")[1];
-                Utils.base64StrToImage(imgStr, resourcePath + path);
-                try {
-                    Thumbnails.of("原图文件的路径")
-                            .scale(1f)
-                            .outputQuality(0.5f)
-                            .toFile("压缩后文件的路径");
-
-                }
-                catch (IOException e){
-                    System.out.println(e);
-                }
-
-                modelItem.setImage(path);
-                modelItemDao.save(modelItem);
-                System.out.println(modelItem.getOid()+modelItem.getName()+modelItem.getImage());
+            if(imgStr.indexOf("modelItem")!=-1) {
+                System.out.println(modelItem.getName()+" "+modelItem.getImage());
+//                String path="/modelItem/" + modelItem.getName() + ".jpg";
+//                imgStr = imgStr.split(",")[1];
+//                Utils.base64StrToImage(imgStr, resourcePath + path);
+////                try {
+////                    Thumbnails.of("原图文件的路径")
+////                            .scale(1f)
+////                            .outputQuality(0.5f)
+////                            .toFile("压缩后文件的路径");
+////
+////                }
+////                catch (IOException e){
+////                    System.out.println(e);
+////                }
+//
+////                modelItem.setImage(path);
+////                modelItemDao.save(modelItem);
+//                System.out.println(modelItem.getOid()+modelItem.getName()+modelItem.getImage());
             }
         }
 

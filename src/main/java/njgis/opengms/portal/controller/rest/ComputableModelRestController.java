@@ -1,11 +1,8 @@
 package njgis.opengms.portal.controller.rest;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.service.ClassificationService;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -18,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -83,7 +78,9 @@ public class ComputableModelRestController {
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
     ModelAndView get(@PathVariable ("id") String id){
+        System.out.println("enter it");
         return computableModelService.getPage(id);
+
     }
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
