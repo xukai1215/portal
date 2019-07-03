@@ -324,9 +324,13 @@ public class DataItemService {
     }
 
     //获得用户创建条目的总数
-    public Integer getAmountOfData(String author){
+    public Integer getAmountOfData(String userOid){
+
+
+
+
         List<DataItem> resultList= new ArrayList<DataItem>();
-        resultList=dataItemDao.findAllByAuthor(author);
+        resultList=dataItemDao.findAllByAuthor(userOid);
         return resultList.size();
     }
 
@@ -451,27 +455,28 @@ public class DataItemService {
             keywords=dataItemDao.findByKeywordsLike(content.get(k));
             categories=dataItemDao.findByClassificationsLike(content.get(k));
 
-            if(name!=null){
+            if(name!=null&&!hasDataItem(result,name)){
+
                 result.addAll(name);
             }
 
-            if(description!=null){
+            if(description!=null&&!hasDataItem(result,description)){
                 result.addAll(description);
             }
 
-            if(detail!=null){
+            if(detail!=null&&!hasDataItem(result,detail)){
                 result.addAll(detail);
             }
 
-            if(author!=null){
+            if(author!=null&&!hasDataItem(result,author)){
                 result.addAll(author);
             }
 
-            if(keywords!=null){
+            if(keywords!=null&&!hasDataItem(result,keywords)){
                 result.addAll(keywords);
             }
 
-            if(categories!=null){
+            if(categories!=null&&!hasDataItem(result,categories)){
                 result.addAll(categories);
             }
         }
@@ -511,6 +516,23 @@ public class DataItemService {
 
         return pageResult;
     }
+    public  boolean hasDataItem(List<DataItem> arr,List<DataItem> el){
+
+
+        for (int i = 0; i <arr.size() ; i++) {
+            for (int j = 0; j <el.size() ; j++) {
+                if(arr.get(i).getId().equals(el.get(j).getId())){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+
+    }
+
+
 
     //按分类查询
     public Page<Map<String,Object>>findByCateg(DataItemFindDTO dataItemFindDTO){
@@ -827,6 +849,60 @@ public class DataItemService {
 
     }
 
+
+    public Page<DataItem> searchDataByUserId(String userOid,Integer page,Integer pagesize,Integer asc,String searchText){
+
+        List<DataItem> resultList= new ArrayList<DataItem>();
+        List<DataItem> allDList= new ArrayList<DataItem>();
+        allDList=dataItemDao.findAllByAuthor(userOid);
+
+        for (int k = 0; k <allDList.size() ; k++) {
+            if(allDList.get(k).getName().indexOf(searchText)>-1||allDList.get(k).getDescription().indexOf(searchText)>-1){
+                resultList.add(allDList.get(k));
+            }
+        }
+
+
+        //分页
+        List<DataItem> flist=new ArrayList<>();
+
+        Integer ind=(page+1)*pagesize-pagesize;
+
+        if(resultList.size()<=pagesize){
+            flist=resultList;
+        }else {
+            if(ind+pagesize>resultList.size()){
+                int exp=resultList.size()%pagesize-1;
+
+
+                if((ind%pagesize)==exp){
+                    flist.add(resultList.get(ind)) ;
+
+                }else{
+                    flist=resultList.subList(ind,ind+resultList.size()%pagesize);
+                }
+
+            }else {
+                flist=resultList.subList(ind,ind+pagesize);
+            }
+
+        }
+
+//        List<DataItem> userdata=dataItemDao.findByAuthor(useroid);
+
+        //默认以创建时间排序
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
+        Page pageResult =new PageImpl(flist,new PageRequest(page, pagesize,sort),resultList.size());
+
+
+
+        return pageResult;
+
+    }
+
+
+
+
     //get related models
     public List<Map<String,String>> getRelatedModels(String id){
 
@@ -937,11 +1013,117 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
         return true;
     }
 
+    //todo related data to models 3 apis getRelatedData
+
+    public List<Map<String,String>> getRelatedData(String id){
+
+        ModelItem modelItem=modelItemDao.findFirstByOid(id);
+
+        List<String> relatedData=modelItem.getRelatedData();
+
+
+        List<Map<String,String>> data=new ArrayList<>();
+
+        DataItem dataItem;
+
+        Map<String,String> dataInfo;
+
+        for (int i = 0; i < relatedData.size(); i++) {
+            //只取三个
+            if(i==3){
+                break;
+            }
+
+            modelItem=new ModelItem();
+
+            dataItem=getById(relatedData.get(i));
+
+            dataInfo=new HashMap<>();
+            dataInfo.put("name",dataItem.getName());
+            dataInfo.put("oid",dataItem.getId());
+            dataInfo.put("description",dataItem.getDescription());
+
+            data.add(dataInfo);
+
+        }
+
+
+        return  data;
 
 
 
+    }
+
+    //getAllRelatedData
+    public List<Map<String,String>> getAllRelatedData(String id,Integer more){
 
 
+
+        ModelItem modelItem=modelItemDao.findFirstByOid(id);
+
+        List<String> relatedData=modelItem.getRelatedData();
+
+
+        List<Map<String,String>> data=new ArrayList<>();
+
+        DataItem dataItem;
+
+        Map<String,String> dataInfo;
+
+        if(more-5 >relatedData.size()||more-5 == relatedData.size()){
+
+            dataInfo=new HashMap<>();
+            dataInfo.put("all","all");
+            data.add(dataInfo);
+
+            return data;
+        }
+
+        for (int i = more-5; i <more&&i<relatedData.size(); i++) {
+            //只取三个
+
+            dataItem=new DataItem();
+
+            dataItem=getById(relatedData.get(i));
+
+            dataInfo=new HashMap<>();
+            dataInfo.put("name",dataItem.getName());
+            dataInfo.put("oid",dataItem.getId());
+            dataInfo.put("description",dataItem.getDescription());
+
+            data.add(dataInfo);
+
+        }
+        return  data;
+
+    }
+
+    public boolean addRelatedData(String id,List<String> relatedData){
+
+
+        ModelItem modelItem=modelItemDao.findFirstByOid(id);
+        DataItem dataItem;
+
+        List<String> data=new ArrayList<>();
+
+        for (int i = 0; i < relatedData.size(); i++) {
+            dataItem=new DataItem();
+            dataItem=getById(relatedData.get(i));
+            data.add(dataItem.getId());
+        }
+
+        List<String> re=new ArrayList<>();
+        re=modelItem.getRelatedData();
+
+        for (int j = 0; j <data.size() ; j++) {
+            re.add(data.get(j));
+        }
+
+
+        modelItemDao.save(modelItem);
+
+        return true;
+    }
 
 
 

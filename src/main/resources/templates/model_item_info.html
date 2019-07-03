@@ -238,10 +238,10 @@
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
-                    <el-tab-pane label="Related Data Items" name="Related Data Items" style="width: 100%;height:320px;">
+                    <el-tab-pane label="Related Data Items" name="Related Data Items" style="width: 100%;height:430px;">
 
                         <el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
-                            <div > <strong>Modle: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>
+                            <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
                                 <br><strong>Description:</strong><span>{{item.description}}</span>
 
                             </div>
@@ -285,7 +285,7 @@
                     </el-tab-pane>
                         <!--search related model dialog-->
                         <el-dialog
-                                title="Related Models of current Data"
+                                title="Related Data of current Model"
                                 :visible.sync="searchRelatedModelsDialogVisible"
                                 width="30%"
                                 height="50%"
@@ -298,7 +298,7 @@
                             <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
 
                                 <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
-                                    <div > <strong>Modle: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>
+                                    <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
                                         <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                     </div>
@@ -333,15 +333,15 @@
 
                         <!--add related model dialog-->
                         <el-dialog
-                                title="Add Models for current data"
+                                title="Add Data for current Model"
                                 :visible.sync="addRelatedModelsDialogVisible"
                                 width="30%"
                                 :before-close="handleClose">
 
 
                             <el-form :inline="true"  class="demo-form-inline">
-                                <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created models</el-radio>
-                                <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all models</el-radio>
+                                <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
+                                <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
                             </el-form>
 
                             <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
@@ -358,7 +358,7 @@
                             <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
 
                                 <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
-                                    <div > <strong>Modle: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>
+                                    <div > <strong>Modle: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
                                         <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                     </div>

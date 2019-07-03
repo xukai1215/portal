@@ -1,6 +1,7 @@
 package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.models.auth.In;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.datacontainer.AddDataResource;
@@ -125,9 +126,9 @@ public class DataItemRestController {
     //用户中心数据条目总数
 
     @RequestMapping(value="/amountofuserdata",method = RequestMethod.GET)
-    Integer userDataAmount(@RequestParam(value="author") String author){
+    Integer userDataAmount(@RequestParam(value="userOid") String userOid){
 
-        return dataItemService.getAmountOfData(author);
+        return dataItemService.getAmountOfData(userOid);
     }
     //viewCount
     @RequestMapping(value="/viewplus",method = RequestMethod.GET)
@@ -156,6 +157,8 @@ public class DataItemRestController {
         dataItemService.update(id, dataItemUpdateDTO);
         return ResultUtils.success();
     }
+
+
 
 
 
@@ -293,6 +296,22 @@ public class DataItemRestController {
     JsonResult listByName(@RequestBody DataItemFindDTO dataItemFindDTO){
         return ResultUtils.success(dataItemService.listBySearch(dataItemFindDTO));
     }
+
+    //用户中心查找
+
+    @RequestMapping(value="/searchDataByUserId",method = RequestMethod.GET)
+    JsonResult searchDataByUserId(
+            @RequestParam(value="userOid") String userOid,
+            @RequestParam(value="page") Integer page,
+            @RequestParam(value="pagesize") Integer pagesize,
+            @RequestParam(value="asc") Integer asc,
+            @RequestParam(value="searchText") String searchText
+
+                                  ){
+        return ResultUtils.success(dataItemService.searchDataByUserId(userOid,page,pagesize,asc,searchText));
+    }
+
+
     //按分级查询
     @RequestMapping(value = "/categorys",method = RequestMethod.POST)
     JsonResult listByClassification(@RequestBody DataItemFindDTO dataItemFindDTO){
@@ -349,16 +368,18 @@ public class DataItemRestController {
     //getRelated data sList
     @RequestMapping(value = "/briefrelateddata",method = RequestMethod.GET)
     JsonResult getBriefRelatedDatas(@RequestParam(value = "id") String id){
-        return ResultUtils.success(dataItemService.getRelatedModels(id));
+        return ResultUtils.success(dataItemService.getRelatedData(id));
     }
+
     @RequestMapping(value = "/allrelateddata",method = RequestMethod.GET)
     JsonResult getRelatedDatas(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
-        return ResultUtils.success(dataItemService.getAllRelatedModels(id,more));
+        return ResultUtils.success(dataItemService.getAllRelatedData(id,more));
     }
+
     //addRelated Data
     @RequestMapping(value = "/data",method = RequestMethod.POST)
     JsonResult addRelatedDatas(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.addRelatedModels(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
+        return ResultUtils.success(dataItemService.addRelatedData(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
     }
 
 

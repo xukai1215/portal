@@ -21,6 +21,7 @@ new Vue({
                 pages: "4365-4368"
             }],
 
+            useroid:'',
             loading:false,
             related3Models:[],
             value1:'1',
@@ -143,9 +144,9 @@ new Vue({
 
 
 
-        checkRelatedModels(item){
+        checkRelatedData(item){
             let curentId=document.location.href.split("/");
-            return curentId[0]+"//"+curentId[2]+"/modelItem/"+item.oid;
+            return curentId[0]+"//"+curentId[2]+"/dataItem/"+item.id;
         },
         handleClose(done) {
             this.$confirm('are u sure close this dialog？')
@@ -232,19 +233,22 @@ new Vue({
             let data={
                 searchText:this.addModelsSearchText,
                 page:this.searchAddModelPage,
-                sortType:"default",
-                asc:1
+                asc:1,
+                pagesize:5,
+                userOid:this.useroid
+
+
             }
             let that=this
             this.loading=true
-            axios.get("/modelItem/searchModelItemsByUserId",{
+            axios.get("/dataItem/searchDataByUserId/",{
                 params:data
             })
                 .then((res)=>{
 
                     if(res.status===200){
                         that.loading=false
-                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.modelItems)
+                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.content)
                     }
 
 
@@ -253,24 +257,34 @@ new Vue({
 
         },
         addSearchFromAll(){
-            let data=new FormData()
-            data.append('searchText',this.addModelsSearchText)
-            data.append('page',this.searchAddModelPage)
-            data.append('sortType','default')
-            data.append('asc',false)
-            data.append('pageSize',10)
-            data.append('classifications[]','all')
+            // let data=new FormData()
+            // data.append('searchText',this.addModelsSearchText)
+            // data.append('page',this.searchAddModelPage)
+            // data.append('sortType','default')
+            // data.append('asc',false)
+            // data.append('pageSize',10)
+            // data.append('classifications[]','all')
+
+            let arr=[]
+            arr.push(this.addModelsSearchText)
+            let data={
+                page:this.searchAddModelPage,
+                asc:1,
+                pageSize:5,
+                searchContent:arr
+
+            }
 
 
 
             let that=this
             this.loading=true
-            axios.post("/modelItem/list",data)
+            axios.post("/dataItem/listBySearch",data)
                 .then((res)=>{
 
                     if(res.status===200){
                         that.loading=false
-                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.list)
+                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.content)
                     }
 
 
@@ -284,12 +298,12 @@ new Vue({
                 e.currentTarget.className="is-hover-shadow models_margin_style"
 
                 this.getRidOf(item.name,this.selectedModels)
-                this.getRidOf(item.oid,this.selectedModelsOid)
+                this.getRidOf(item.id,this.selectedModelsOid)
             }else{
                 e.currentTarget.className="is-hover-shadow models_margin_style selectedModels"
 
                 this.selectedModels.push(item.name)
-                this.selectedModelsOid.push(item.oid)
+                this.selectedModelsOid.push(item.id)
             }
 
 
@@ -311,7 +325,7 @@ new Vue({
                     relatedModels:this.selectedModelsOid
                 }
 
-                axios.post("/dataItem/models",dataItemFindDTO)
+                axios.post("/dataItem/data",dataItemFindDTO)
 
 
                     .then((res)=>{
@@ -367,7 +381,7 @@ new Vue({
             let that=this
             this.loading=true
             this.nomore=false
-            axios.get("/dataItem/allrelatedmodels",{
+            axios.get("/dataItem/allrelateddata",{
                 params:{
                     id:curentId[curentId.length-1],
                     more:more
@@ -415,7 +429,7 @@ new Vue({
         let dataitemid=currenturl.split("/");
 
         let that=this
-        axios.get("/dataItem/briefrelatedmodels",{
+        axios.get("/dataItem/briefrelateddata",{
             params:{
                 id:dataitemid[dataitemid.length-1]
             }
@@ -429,6 +443,16 @@ new Vue({
                 }else {
                     that.relatedModelNotNull=true
                     that.relatedModelIsNull=false;
+                }
+            })
+
+        axios.get("/user/load")
+            .then((res)=>{
+                if(res.status=200){
+                    if(res.data.oid!=''){
+                        that.useroid=res.data.oid
+                    }
+
                 }
             })
 
