@@ -21,3 +21,13 @@
     margin-top:-10px;
 }
 
+/*每一项related model 的card*/
+.models_margin_style{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* 挑到related模型*/
+.selectedModels{
+    border: orange 2px solid;
+}

@@ -312,12 +312,12 @@ public class UserRestController {
 
     //get data items table
     @RequestMapping(value = "/getDataItems",method = RequestMethod.GET)
-    JsonResult getUserUploadData(@RequestParam (value = "username", required = false) String name,
+    JsonResult getUserUploadData(@RequestParam (value = "userOid", required = false) String userOid,
                        @RequestParam (value = "page", required = false) Integer page,
                        @RequestParam (value = "pagesize", required = false) Integer pagesize,
                        @RequestParam (value = "asc", required = false) Integer asc
                        ){
-        return ResultUtils.success(dataItemService.getUsersUploadData(name,page-1,pagesize,asc));
+        return ResultUtils.success(dataItemService.getUsersUploadData(userOid,page-1,pagesize,asc));
     }
     //get oid
 

@@ -237,8 +237,12 @@ var data_items = new Vue({
             axios.post('/dataItem/categorys',this.findDto)
                 .then(res=>{
                     setTimeout(()=>{
-                        that.list=res.data.data.content;
-                        that.datacount=res.data.data.totalElements;
+
+                        if(res.data.data!=null){
+                            that.list=res.data.data.content;
+                            that.datacount=res.data.data.totalElements;
+                        }
+
 
                         that.classclick=true;
                         that.progressBar=false

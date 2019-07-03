@@ -30,6 +30,7 @@ public class ModelItem {
     List<Reference> references;
     List<String> contributors;
     List<AuthorInfo> authorship;
+    List<String> relatedData;
 
     ModelItemRelate relate;
 

@@ -629,10 +629,33 @@ search() {
 },
 searchDataItem() {
     var that = this;
-    axios.get("/dataItem/listByName/" + this.searchText)
+
+
+
+
+    var da={
+        userOid:this.userId,
+        page:this.page,
+        pagesize:this.pageSize,
+        asc:this.sortAsc,
+        searchText:this.searchText
+
+    }
+
+    axios.get("/dataItem/searchDataByUserId/",{
+        params:da
+    } )
         .then((res) => {
         setTimeout(() => {
-        that.searchResult = res.data.data;
+            if(res.status==200){
+                if(res.data.data!=null){
+                    that.searchResult = res.data.data.content;
+                }else{
+                    alert("no result")
+                }
+            }
+
+
 
     }, 500)
 
@@ -1241,7 +1264,7 @@ createdataitem() {
 
     //用户名
     // this.dataItemAddDTO.author=this.userId;
-    this.dataItemAddDTO.author = this.userName;
+    this.dataItemAddDTO.author = this.userId;
     this.dataItemAddDTO.contributers = $("#contributers").tagsinput('items');
 
     this.dataItemAddDTO.comments = new Array();
@@ -1252,31 +1275,6 @@ createdataitem() {
 
     this.dataItemAddDTO.meta.boundingRectangle=[];
 
-
-
-
-    // var point1={
-    //     x:$("#upperleftx").val(),
-    //     y:$("#upperlefty").val()
-    // };
-    //
-    //
-    //
-    //
-    // if($("#upperleftx").val().length!=0&&$("#upperlefty").val().length!=0){
-    //     this.dataItemAddDTO.meta.boundingRectangle.push(point1);
-    // }
-    //
-    //
-    // var point2={
-    //     x:$("#bottomrightx").val(),
-    //     y:$("#bottomrighty").val()
-    // }
-    //
-    // if($("#bottomrightx").val().length!=0&&$("#bottomrighty").val().length!=0){
-    //     this.dataItemAddDTO.meta.boundingRectangle.push(point2);
-    //
-    // }
 
 
 
@@ -1384,7 +1382,7 @@ getDataItems(){
 
 
     var da={
-        username:this.userName,
+        userOid:this.userId,
         page:this.page,
         pagesize:this.pageSize,
         asc:this.sortAsc
@@ -1399,8 +1397,7 @@ getDataItems(){
         params:da
     }).then(res=>{
 
-
-        this.searchResult=res.data.data.content
+    this.searchResult=res.data.data.content
     this.resourceLoad = false;
     this.totalNum=res.data.data.totalElements;
     if(this.page == 1){
@@ -2365,16 +2362,19 @@ mounted() {
     }
     else {
         this.userId = data.oid;
-        // this.userName = data.name;
+         this.userName = data.name;
         console.log(this.userId)
         // this.addAllData()
 
 
 
 
+
+
+
         axios.get("/dataItem/amountofuserdata",{
             params:{
-                author:data.name
+                userOid:this.userId
             }
         }).then(res=>{
             that.dcount=res.data

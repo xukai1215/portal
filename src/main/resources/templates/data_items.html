@@ -186,7 +186,7 @@
 
 
                     <div class="input-group">
-                        <input type="text" placeholder="Search data here..." data-role="tagsinput" class="form-control"  id="searchBox" @keydown.enter="search()"   >
+                        <input type="text" placeholder="Search data here..." data-role="tagsinput" class="form-control"  id="searchBox" @keyup.enter.native="search()"   >
 
                         <span class="input-group-btn">
 						<button class="btn btn-primary" @click="search()" type="button">
