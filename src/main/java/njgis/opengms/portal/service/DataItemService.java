@@ -589,7 +589,7 @@ public class DataItemService {
             everyData.put("createTime",it.getCreateTime());
             everyData.put("viewCount",it.getViewCount());
 
-            User user=userDao.findFirstByUserName(getById(category.get(i)).getAuthor());
+            User user=userDao.findFirstByOid(getById(category.get(i)).getAuthor());
             everyData.put("author",user.getName());
             everyData.put("image",user.getImage());
                 resultList.add( everyData);
@@ -913,6 +913,11 @@ public class DataItemService {
            List<String> relatedModels=dataItem.getRelatedModels();
 
 
+           if(relatedModels==null){
+               List<Map<String,String>> list=new ArrayList<>();
+               return list;
+
+           }
             List<Map<String,String>> data=new ArrayList<>();
 
             ModelItem modelItem;

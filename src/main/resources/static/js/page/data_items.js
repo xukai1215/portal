@@ -151,6 +151,8 @@ var data_items = new Vue({
             this.classlist=val;
         },
         chooseCate(item){
+
+
             // console.log(e)
             var this_button=$('#'+item)
             // console.log($('#'+item))
@@ -197,6 +199,7 @@ var data_items = new Vue({
             if(this.ca==="Hubs"){
                 this.hubs();
             }else {
+
                 axios.post('/dataItem/categorys',this.findDto)
                     .then(res=>{
                         setTimeout(()=>{
