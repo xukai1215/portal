@@ -31,15 +31,21 @@ public class DataItemController {
     DataItemService dataItemService;
 
     //todo 待优化：在请求一次接口生成缓存html后，下次访问不在重新生成，减少本接口压力
-    @RequestMapping("/dataItem/repository")
-    public ModelAndView getModelItems(DataItemFindDTO dataItemFindDTO) throws IOException {
+    @RequestMapping("/dataItem/{cateid}&{page}")
+    public ModelAndView getModelItems(DataItemFindDTO dataItemFindDTO,
+                                      @PathVariable String cateid,
+                                      @PathVariable String page
+                                      ) throws IOException {
 
         System.out.println("data items");
         Page<DataItem> dataItems=dataItemService.list(dataItemFindDTO);
+
         ModelAndView modelAndView = new ModelAndView();
+
         modelAndView.setViewName("data_items");
-        modelAndView.addObject("name","OpenGMS");
-        modelAndView.addObject("data",dataItems);
+
+//        modelAndView.addObject("name","OpenGMS");
+//        modelAndView.addObject("data",dataItems);
 
 
 

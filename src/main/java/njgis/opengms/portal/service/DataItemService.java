@@ -535,12 +535,12 @@ public class DataItemService {
 
 
     //按分类查询
-    public Page<Map<String,Object>>findByCateg(DataItemFindDTO dataItemFindDTO){
+    public Page<Map<String,Object>>findByCateg(String categorysId,Integer page,boolean asc,Integer pageSize){
 
 
         List<String> category= new ArrayList<>();
         //从category拿到dataItemid
-        category=findByCa(dataItemFindDTO);
+        category=findByCa(categorysId);
 
 
         List<Map<String,Object>> resultList=new ArrayList<>();
@@ -552,7 +552,7 @@ public class DataItemService {
 
         Map<String,Object> everyData;
 
-        Integer start=(dataItemFindDTO.getPage()-1)*10;
+        Integer start=(page-1)*10;
         Integer end=-1;
         Integer p;
         if(category.size()<10){
@@ -565,7 +565,7 @@ public class DataItemService {
 
             }else if(category.size()%10!=0){
                 p=category.size()/10+1;
-                if(dataItemFindDTO.getPage().equals(p)){
+                if(page.equals(p)){
                     end=start+category.size()%10;
                 }else{
                     end=start+10;
@@ -599,18 +599,18 @@ public class DataItemService {
 
 
         //后端分页
-        Integer ind=(dataItemFindDTO.getPage())*dataItemFindDTO.getPageSize()-dataItemFindDTO.getPageSize();
+        Integer ind=(page)*pageSize-pageSize;
 
 
-        if(resultList.size()<=dataItemFindDTO.getPageSize()){
+        if(resultList.size()<=pageSize){
             flist=resultList;
         }else {
 
-            if(ind+dataItemFindDTO.getPageSize()>resultList.size()){
-                int exp=resultList.size()%dataItemFindDTO.getPageSize();
+            if(ind+pageSize>resultList.size()){
+                int exp=resultList.size()%pageSize;
 
 
-                if((ind%dataItemFindDTO.getPageSize())==exp){
+                if((ind%pageSize)==exp){
                     flist.add(resultList.get(ind)) ;
 
                 }else{
@@ -618,31 +618,27 @@ public class DataItemService {
                 }
 
             }else {
-                flist=resultList.subList(ind,ind+dataItemFindDTO.getPageSize());
+                flist=resultList.subList(ind,ind+pageSize);
             }
 
     }
 
 
-        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
 
-        Page pageResult =new PageImpl(flist,new PageRequest(dataItemFindDTO.getPage()-1,dataItemFindDTO.getPageSize(),sort),category.size());
+        Page pageResult =new PageImpl(flist,new PageRequest(page-1,pageSize,sort),category.size());
 
 
         return pageResult ;
     };
 
 
-    public  List<String> findByCa(DataItemFindDTO dataItemFindDTO){
+    public  List<String> findByCa(String categorysId){
 
         Categorys resultList= new Categorys();
-        String  dtoList;
-//        dtoList=dataItemFindDTO.getCategory();
-        dtoList=dataItemFindDTO.getCategoryId();
 
 
-        resultList=getCategoryById(dtoList);
-
+        resultList=getCategoryById(categorysId);
 
 
         return resultList.getDataItem();

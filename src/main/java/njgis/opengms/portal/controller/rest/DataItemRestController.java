@@ -312,10 +312,16 @@ public class DataItemRestController {
     }
 
 
-    //按分级查询
-    @RequestMapping(value = "/categorys",method = RequestMethod.POST)
-    JsonResult listByClassification(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.findByCateg(dataItemFindDTO));
+    //按分级查询  /category/{categorysId}&{page}&{asc}&{pageSize}
+    @RequestMapping(value = "/{categorysId}&{page}",method = RequestMethod.GET)
+    JsonResult listByClassification(
+                                    @PathVariable  String categorysId,
+                                    @PathVariable Integer page
+
+
+                                     ){
+        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10));
+
     }
 
     //用户创建分类数据条目id入库

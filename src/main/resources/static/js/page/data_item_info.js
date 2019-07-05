@@ -785,7 +785,7 @@ var  data_item_info= new Vue({
                 that.related3Models=res.data.data
 
                 if(that.related3Models.length===0){
-                    that.relatedModelIsNull=true;
+                    that. =true;
                     that.relatedModelNotNull=false
                 }else {
                     that.relatedModelNotNull=true

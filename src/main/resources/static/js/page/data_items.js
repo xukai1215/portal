@@ -105,7 +105,7 @@ var data_items = new Vue({
 
             var that=this
             if(this.ca!=''){
-                axios.post('/dataItem/categorys',this.findDto)
+                axios.get("/dataItem/"+this.theDefaultCate+"&"+this.findDto.page)
                     .then(res=>{
                         setTimeout(()=>{
                             that.list=res.data.data.content;
@@ -133,17 +133,6 @@ var data_items = new Vue({
             }
 
 
-                // axios.get("/dataItem",
-                //     {
-                //         params:this.findDto
-                //     }
-                // ).then((res)=>{
-                //     //取得当前页码的内容
-                //     this.list=res.data.data.content;
-                //     this.progressBar=false
-                //     // console.log(res.data.data.content)
-                // })
-
         },
 
 
@@ -153,9 +142,13 @@ var data_items = new Vue({
         chooseCate(item){
 
 
-            // console.log(e)
+
+            window.history.pushState(null,null,"/dataItem/"+this.theDefaultCate+"&"+this.findDto.page)
+
+
+            this.getParams()
+
             var this_button=$('#'+item)
-            // console.log($('#'+item))
 
             this.datacount=-1
             this.loading=true
@@ -179,10 +172,7 @@ var data_items = new Vue({
                 }
             }
 
-            // console.log($('.el-button'))
 
-
-            // this.ca=e.target.innerText;
             this.ca=this_button[0].innerText;
 
 
@@ -194,17 +184,23 @@ var data_items = new Vue({
             }
 
             this.progressBar=true;
+            this.theDefaultCate=item
 
             var that=this
             if(this.ca==="Hubs"){
                 this.hubs();
             }else {
 
-                axios.post('/dataItem/categorys',this.findDto)
+                axios.get("/dataItem/"+this.theDefaultCate+"&"+this.findDto.page)
                     .then(res=>{
                         setTimeout(()=>{
+
+
                             that.list=res.data.data.content;
                             that.datacount=res.data.data.totalElements;
+
+
+
 
                             that.classclick=true;
                             that.progressBar=false
@@ -237,7 +233,7 @@ var data_items = new Vue({
                 asc:true
             }
             var that=this
-            axios.post('/dataItem/categorys',this.findDto)
+            axios.get("/dataItem/categoryitems/"+this.theDefaultCate+"&"+this.findDto.page)
                 .then(res=>{
                     setTimeout(()=>{
 
@@ -339,6 +335,18 @@ var data_items = new Vue({
                 window.location.href="user/userSpace";
 
             }
+        },
+        getParams(){
+
+            let url=window.location.href.split("/")
+
+            let par=url[url.length-1]
+            let p=par.split("&")
+            let id=p[0]
+            let page=p[1]
+
+            this.theDefaultCate=id
+            this.findDto.page=page
         }
 
     },
@@ -350,6 +358,7 @@ var data_items = new Vue({
         this.defaultlist();
         var tha=this;
 
+        this.getParams();
 
         axios.get("/user/load")
             .then((res)=>{
@@ -384,50 +393,7 @@ var data_items = new Vue({
 
 
 
-        // $('.el-collapse-item .el-button:not(.el-collapse-item__header,.hubs)').on('click',function (e) {
-        //
-        //     $('.manyhub').css('display','none');
-        //     $('.maincontnt').css('display','block');
-        //
-        //
-        //     $('.el-collapse-item .el-button').css('color','#2b305b')
-        //         $(this).css('color','green')
-        //
-        //         that.ca=$(this)[0].innerText
-        //
-        //         // console.log(cate)
-        //
-        //
-        //     that.findDto={
-        //         category:that.ca,
-        //         asc:true,
-        //         page:1
-        //     }
-        //
-        //     this.progressBar=true;
-        //
-        //     if($(this)[0].innerText==="Hubs"){
-        //         that.hubs();
-        //     }else {
-        //         axios.post('/dataItem/categorys',that.findDto)
-        //             .then(res=>{
-        //                 setTimeout(()=>{
-        //                     that.list=res.data.data.content;
-        //                     that.datacount=res.data.data.totalElements;
-        //
-        //                     that.classclick=true;
-        //                     that.progressBar=false
-        //                 },500)
-        //
-        //             });
-        //     }
-        //
-        //
-        //
-        //
-        //
-        //
-        // });
+
 
 
         $('.el-collapse-item .el-button').on('hover',function () {
