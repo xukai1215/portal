@@ -35,10 +35,11 @@ var data_items = new Vue({
             hubnbm:'',
             tObj:new Object(),
             categoryTree:[],
-            theDefaultCate:'5cb83fd0ea3cba3224b6e24e',
-            loading:false,
-            useroid:''
 
+            loading:false,
+            useroid:'',
+
+            categoryId:' '
 
         }
     },
@@ -133,17 +134,6 @@ var data_items = new Vue({
             }
 
 
-                // axios.get("/dataItem",
-                //     {
-                //         params:this.findDto
-                //     }
-                // ).then((res)=>{
-                //     //取得当前页码的内容
-                //     this.list=res.data.data.content;
-                //     this.progressBar=false
-                //     // console.log(res.data.data.content)
-                // })
-
         },
 
 
@@ -151,6 +141,15 @@ var data_items = new Vue({
             this.classlist=val;
         },
         chooseCate(item){
+            this.categoryId=item
+            window.location.href="/dataItem/items/"+this.categoryId+"&page=0.html";
+
+
+            let that=this
+
+
+
+
             // console.log(e)
             var this_button=$('#'+item)
             // console.log($('#'+item))
@@ -177,43 +176,38 @@ var data_items = new Vue({
                 }
             }
 
-            // console.log($('.el-button'))
 
-
-            // this.ca=e.target.innerText;
             this.ca=this_button[0].innerText;
 
 
 
-            this.findDto={
-                categoryId:item,
-                asc:true,
-                page:1
-            }
+
 
             this.progressBar=true;
 
-            var that=this
-            if(this.ca==="Hubs"){
-                this.hubs();
-            }else {
-                axios.post('/dataItem/categorys',this.findDto)
-                    .then(res=>{
-                        setTimeout(()=>{
-                            that.list=res.data.data.content;
-                            that.datacount=res.data.data.totalElements;
-
-                            that.classclick=true;
-                            that.progressBar=false
-                            that.loading=false;
-                        },100)
-
-                    });
-            }
 
 
+            // var that=this
+            // if(this.ca==="Hubs"){
+            //     this.hubs();
+            // }else {
+            //     axios.get('/dataItem/categorys',{
+            //         params:{
+            //             categoryId:this.categoryId
+            //         }
+            //     })
+            //         .then(res=>{
+            //             setTimeout(()=>{
+            //
+            //
+            //                 that.classclick=true;
+            //                 that.progressBar=false
+            //                 that.loading=false;
+            //             },100)
+            //
+            //         });
+            // }
 
-            // console.log(e)
 
         },
         defaultlist(){
@@ -221,26 +215,29 @@ var data_items = new Vue({
             this.loading=true;
 
 
+            // if(this.categoryId==='5cb83fd0ea3cba3224b6e24e'){
+            //     //todo 默认第一个按钮被选中
+            //     $('.el-collapse-item .el-button:first').css('color','green');
+            //
+            //     this.ca="Hydrosphere";
+            // }
 
-            //todo 默认第一个按钮被选中
-            $('.el-collapse-item .el-button:first').css('color','green');
-
-            this.ca="Hydrosphere";
 
 
-            this.findDto={
-                categoryId:this.theDefaultCate,
-                page:1,
-                asc:true
-            }
+
+
             var that=this
-            axios.post('/dataItem/categorys',this.findDto)
+            axios.get('/dataItem/dataCount',{
+                params:{
+                    categoryId:this.categoryId
+                }
+            })
                 .then(res=>{
                     setTimeout(()=>{
 
-                        if(res.data.data!=null){
-                            that.list=res.data.data.content;
-                            that.datacount=res.data.data.totalElements;
+                        if(res.data!=null){
+
+                            that.datacount=res.data.data
                         }
 
 
@@ -251,13 +248,10 @@ var data_items = new Vue({
 
                 });
 
+
+
         },
-        goto(id){
 
-
-
-            return "/dataItem/"+id;
-        },
         view(id){
             axios.get("/dataItem/viewplus",{
                 params:{
@@ -265,12 +259,7 @@ var data_items = new Vue({
                 }
             })
         },
-        //格式化时间
-        formatDate(date){
-            var dateee=new Date(date).toJSON();
-            var da = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
-            return da
-        },
+
         hubs(){
 
             this.progressBar=false;
@@ -328,6 +317,7 @@ var data_items = new Vue({
                 })
 
         },
+
         contribute(){
             if(this.useroid==''){
                 alert("Please login");
@@ -344,8 +334,32 @@ var data_items = new Vue({
     },
 
     mounted(){
+        //获得category类id
+        let  url=window.location.href
+        let cateid=url.split("/")
+        let id=cateid[cateid.length-1].split("&")
+        this.categoryId=id[0]
+
+
+        //当前类按钮样式
+        let this_button=$('#'+this.categoryId)
+        this_button[0].style.color="green";
+        this_button[0].style.fontWeight="bold";
+        let all_button=$('.el-button')
+        for (let i = 0; i < all_button.length; i++) {
+            if(all_button[i]!=this_button[0]){
+                all_button[i].style.color="";
+                all_button[i].style.fontWeight="";
+            }
+        }
+
+
+        //拿到总数
         this.defaultlist();
+
         var tha=this;
+
+
 
 
         axios.get("/user/load")
@@ -353,22 +367,7 @@ var data_items = new Vue({
                 that.userName=res.data.name;
                 that.useroid=res.data.oid;
             })
-        // axios.get("/dataItem/createTree")
-        //     .then(res=>{
-        //         tha.tObj=res.data;
-        //         for(var e in tha.tObj){
-        //             var a={
-        //                 key:e,
-        //                 value:tha.tObj[e]
-        //             }
-        //             tha.categoryTree.push(a);
-        //
-        //         }
-        //         tha.theDefaultCate=tha.categoryTree[0].value[0].id;
-        //     })
-        //     .then(()=>{
-        //     that.defaultlist();
-        // });
+
 
 
         $('.manyhub').css('display','none');
@@ -381,50 +380,6 @@ var data_items = new Vue({
 
 
 
-        // $('.el-collapse-item .el-button:not(.el-collapse-item__header,.hubs)').on('click',function (e) {
-        //
-        //     $('.manyhub').css('display','none');
-        //     $('.maincontnt').css('display','block');
-        //
-        //
-        //     $('.el-collapse-item .el-button').css('color','#2b305b')
-        //         $(this).css('color','green')
-        //
-        //         that.ca=$(this)[0].innerText
-        //
-        //         // console.log(cate)
-        //
-        //
-        //     that.findDto={
-        //         category:that.ca,
-        //         asc:true,
-        //         page:1
-        //     }
-        //
-        //     this.progressBar=true;
-        //
-        //     if($(this)[0].innerText==="Hubs"){
-        //         that.hubs();
-        //     }else {
-        //         axios.post('/dataItem/categorys',that.findDto)
-        //             .then(res=>{
-        //                 setTimeout(()=>{
-        //                     that.list=res.data.data.content;
-        //                     that.datacount=res.data.data.totalElements;
-        //
-        //                     that.classclick=true;
-        //                     that.progressBar=false
-        //                 },500)
-        //
-        //             });
-        //     }
-        //
-        //
-        //
-        //
-        //
-        //
-        // });
 
 
         $('.el-collapse-item .el-button').on('hover',function () {
@@ -448,8 +403,3 @@ var data_items = new Vue({
 
     }
 });
-// $(function () {
-//     $('.el-collapse-item .el-button').click(function () {
-//         $(this).css('color','green')
-//     })
-// })

@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.swing.text.html.HTMLDocument;
 import javax.xml.crypto.Data;
@@ -197,7 +198,7 @@ public class DataItemService {
     }
 
 
-    public List<DataItem> generatehtmls(int page){
+    public List<DataItem> generateDataItemInfoHtmls(int page){
 
 
 //        PageRequest pageRequest=new PageRequest(0,10);
@@ -209,6 +210,25 @@ public class DataItemService {
         return alldata.getContent();
 
     }
+
+
+    public List<DataItem> generateDataItemsHtmls(int page){
+
+
+//        PageRequest pageRequest=new PageRequest(0,10);
+        PageRequest pageRequest=new PageRequest(page,10);
+
+        Page<DataItem> alldata=dataItemDao.findAll(pageRequest);
+
+//        long allcount=dataItemDao.count();
+
+
+
+        return alldata.getContent();
+
+    }
+
+
 
     //对评论的评论
     public void reply(CommentsAddDTO commentsAddDTO){
@@ -534,110 +554,120 @@ public class DataItemService {
 
 
 
-    //按分类查询
-    public Page<Map<String,Object>>findByCateg(DataItemFindDTO dataItemFindDTO){
+    //按分类查询,ajax
+//    public Page<Map<String,Object>>findByCateg(DataItemFindDTO dataItemFindDTO){
+//
+//
+//        List<String> category= new ArrayList<>();
+//        //从category拿到dataItemid
+//        category=findByCa(dataItemFindDTO);
+//
+//
+//        List<Map<String,Object>> resultList=new ArrayList<>();
+//
+//
+//        List<Map<String,Object>> flist=new ArrayList<>();
+//
+//        DataItem it=new DataItem();
+//
+//        Map<String,Object> everyData;
+//
+//        Integer start=(dataItemFindDTO.getPage()-1)*10;
+//        Integer end=-1;
+//        Integer p;
+//        if(category.size()<10){
+//            end=category.size();
+//        }else{
+//
+//            if(category.size()%10==0){
+//                p=category.size()/10;
+//                end=start+10;
+//
+//            }else if(category.size()%10!=0){
+//                p=category.size()/10+1;
+//                if(dataItemFindDTO.getPage().equals(p)){
+//                    end=start+category.size()%10;
+//                }else{
+//                    end=start+10;
+//                }
+//
+//
+//            }
+//
+//        }
+//
+//
+//        //从dataItem中取得项
+//        for(int i=start;i<end;i++){
+//
+//            everyData=new HashMap<>();
+//            it=getById(category.get(i));
+//            everyData.put("name",it.getName());
+//            everyData.put("id",it.getId());
+//            everyData.put("description",it.getDescription());
+//            everyData.put("keywords",it.getKeywords());
+//            everyData.put("createTime",it.getCreateTime());
+//            everyData.put("viewCount",it.getViewCount());
+//
+//            User user=userDao.findFirstByUserName(getById(category.get(i)).getAuthor());
+//            everyData.put("author",user.getName());
+//            everyData.put("image",user.getImage());
+//                resultList.add( everyData);
+//
+//
+//        }
+//
+//
+//        //后端分页
+//        Integer ind=(dataItemFindDTO.getPage())*dataItemFindDTO.getPageSize()-dataItemFindDTO.getPageSize();
+//
+//
+//        if(resultList.size()<=dataItemFindDTO.getPageSize()){
+//            flist=resultList;
+//        }else {
+//
+//            if(ind+dataItemFindDTO.getPageSize()>resultList.size()){
+//                int exp=resultList.size()%dataItemFindDTO.getPageSize();
+//
+//
+//                if((ind%dataItemFindDTO.getPageSize())==exp){
+//                    flist.add(resultList.get(ind)) ;
+//
+//                }else{
+//                    flist=resultList.subList(ind,ind+exp);
+//                }
+//
+//            }else {
+//                flist=resultList.subList(ind,ind+dataItemFindDTO.getPageSize());
+//            }
+//
+//    }
+//
+//
+//        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
+//
+//        Page pageResult =new PageImpl(flist,new PageRequest(dataItemFindDTO.getPage()-1,dataItemFindDTO.getPageSize(),sort),category.size());
+//
+//
+//        return pageResult ;
+//    };
 
 
-        List<String> category= new ArrayList<>();
-        //从category拿到dataItemid
-        category=findByCa(dataItemFindDTO);
+    public Integer dataCount(String categoryId){
+         Categorys categorys=new Categorys();
 
+         categorys= getCategoryById( categoryId);
 
-        List<Map<String,Object>> resultList=new ArrayList<>();
-
-
-        List<Map<String,Object>> flist=new ArrayList<>();
-
-        DataItem it=new DataItem();
-
-        Map<String,Object> everyData;
-
-        Integer start=(dataItemFindDTO.getPage()-1)*10;
-        Integer end=-1;
-        Integer p;
-        if(category.size()<10){
-            end=category.size();
-        }else{
-
-            if(category.size()%10==0){
-                p=category.size()/10;
-                end=start+10;
-
-            }else if(category.size()%10!=0){
-                p=category.size()/10+1;
-                if(dataItemFindDTO.getPage().equals(p)){
-                    end=start+category.size()%10;
-                }else{
-                    end=start+10;
-                }
-
-
-            }
-
-        }
-
-
-        //从dataItem中取得项
-        for(int i=start;i<end;i++){
-
-            everyData=new HashMap<>();
-            it=getById(category.get(i));
-            everyData.put("name",it.getName());
-            everyData.put("id",it.getId());
-            everyData.put("description",it.getDescription());
-            everyData.put("keywords",it.getKeywords());
-            everyData.put("createTime",it.getCreateTime());
-            everyData.put("viewCount",it.getViewCount());
-
-            User user=userDao.findFirstByUserName(getById(category.get(i)).getAuthor());
-            everyData.put("author",user.getName());
-            everyData.put("image",user.getImage());
-                resultList.add( everyData);
-
-
-        }
-
-
-        //后端分页
-        Integer ind=(dataItemFindDTO.getPage())*dataItemFindDTO.getPageSize()-dataItemFindDTO.getPageSize();
-
-
-        if(resultList.size()<=dataItemFindDTO.getPageSize()){
-            flist=resultList;
-        }else {
-
-            if(ind+dataItemFindDTO.getPageSize()>resultList.size()){
-                int exp=resultList.size()%dataItemFindDTO.getPageSize();
-
-
-                if((ind%dataItemFindDTO.getPageSize())==exp){
-                    flist.add(resultList.get(ind)) ;
-
-                }else{
-                    flist=resultList.subList(ind,ind+exp);
-                }
-
-            }else {
-                flist=resultList.subList(ind,ind+dataItemFindDTO.getPageSize());
-            }
+         return  categorys.getDataItem().size();
 
     }
-
-
-        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
-
-        Page pageResult =new PageImpl(flist,new PageRequest(dataItemFindDTO.getPage()-1,dataItemFindDTO.getPageSize(),sort),category.size());
-
-
-        return pageResult ;
-    };
 
 
     public  List<String> findByCa(DataItemFindDTO dataItemFindDTO){
 
         Categorys resultList= new Categorys();
         String  dtoList;
-//        dtoList=dataItemFindDTO.getCategory();
+
         dtoList=dataItemFindDTO.getCategoryId();
 
 

@@ -70,15 +70,21 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.insert(dataItemAddDTO));
     }
 
-
+//由dataitems跳转到dataiteminfo
     @RequestMapping (value = "/{id}", method = RequestMethod.GET)
     ModelAndView get(@PathVariable ("id") String id){
 
         ModelAndView view = new ModelAndView();
 //        view.addObject("datainfo",ResultUtils.success(dataItemService.getById(id)));
-        view.setViewName("/dataItems/"+id);
+        view.setViewName("/dataItemsInfo/"+id);
         return view;
     }
+
+
+
+
+
+
 
     //取得数据项单元内容
     @RequestMapping(value="/getcomment/{id}",method = RequestMethod.GET)
@@ -312,10 +318,21 @@ public class DataItemRestController {
     }
 
 
-    //按分级查询
-    @RequestMapping(value = "/categorys",method = RequestMethod.POST)
-    JsonResult listByClassification(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.findByCateg(dataItemFindDTO));
+    @RequestMapping(value = "/items/{categoryId}&page={page}.html",method = RequestMethod.GET)
+     ModelAndView categoryHomePage(@PathVariable(value = "categoryId")String categoryId,
+                                   @PathVariable(value = "page")String page
+
+                                   ){
+        ModelAndView view = new ModelAndView();
+
+        view.setViewName("/dataItems/"+categoryId+"&page="+page);
+        return view;
+    }
+
+    //获得酶类的总数分页信息
+    @RequestMapping(value = "/dataCount",method = RequestMethod.GET)
+    JsonResult listByClassification(@RequestParam(value = "categoryId")String categoryId){
+        return ResultUtils.success(dataItemService.dataCount(categoryId));
     }
 
     //用户创建分类数据条目id入库

@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Data Item Repository | OpenGMS</title>
-    <script src="../static/js/common/vue.min.js"></script>
-    <script src="../static/js/common/vue-avatar.min.js"></script>
+    <script src="../../static/js/common/vue.min.js"></script>
+    <script src="../../static/js/common/vue-avatar.min.js"></script>
 
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="icon" type="image/x-icon" href="../../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../../static/element-ui/theme-chalk/index.css">
 
     <!--<link rel="stylesheet" href="../static/css/element-ui-index.css"-->
           <!--th:href="@{/static/css/element-ui-index.css}">-->
 
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/css/base/style.css">
-    <link rel="stylesheet" href="../static/css/base/universal.css">
-    <link rel="stylesheet" href="../static/css/base/list.css">
-    <link rel="stylesheet" href="../static/css/base/tree.css">
-    <link rel="stylesheet" href="../static/css/other/bootstrap-select.css">
-    <link rel="stylesheet" href="../static/css/page/model_items.css">
-    <link rel="stylesheet" href="../static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="../../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/css/base/style.css">
+    <link rel="stylesheet" href="../../static/css/base/universal.css">
+    <link rel="stylesheet" href="../../static/css/base/list.css">
+    <link rel="stylesheet" href="../../static/css/base/tree.css">
+    <link rel="stylesheet" href="../../static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="../../static/css/page/model_items.css">
+    <link rel="stylesheet" href="../../static/css/base/bootstrap-tagsinput.css">
 
     <style>
         .content-body .list-item:not(:first-child) {
@@ -31,6 +31,10 @@
 </head>
 <body>
 <div id="data_items">
+
+
+
+
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
@@ -199,45 +203,44 @@
 
 
 
-                <div class="progressPanel">
-                    <span class="barControl">
-                        <div class="barContro_space">
-                            <span class="progress_line" :class="{active:progressBar}"></span>
-                        </div>
-                    </span>
-                </div>
+                <!--<div class="progressPanel">-->
+                    <!--<span class="barControl">-->
+                        <!--<div class="barContro_space">-->
+                            <!--<span class="progress_line" :class="{active:progressBar}"></span>-->
+                        <!--</div>-->
+                    <!--</span>-->
+                <!--</div>-->
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
 
                     <span > <strong>{{this.ca!=''&&this.searchText.length==0?( this.ca=="We collect data from public hubs.."?"We collect data from public hubs..":"Current Category: "+this.ca):''}} </strong> <strong>{{this.searchText.length!=0&&this.ca==''?"Current Keywords: "+this.searchText:''}} </strong>  <strong style="float: right">{{this.datacount!=0 ?(this.datacount===-1?'loading...':this.datacount+' items'):'no data'}}</strong></span><br>
-                    <span>  </span>
-                    <span></span>
 
                 </div>
 
-                <div class="maincontnt"  v-loading="loading">
+
+
+
+                <div class="maincontnt"   >
                         <div class="modelPanel" >
 
-                            <div  class="content-body">
-                                <div class="list-item" v-for="(item,index) in list" :key="index">
+                            <div  class="content-body" th:each="items:${dataitems}">
+                                <div class="list-item"  >
                                     <div class="detail_title">
 
-                                        <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
-                                        <a :class="item.viewCount>100?'hot':''" :href="goto(item.id)" target="_blank" @click="view(item.id)" >{{item.name}}&nbsp&nbsp</a>
-        <!---->
-
+                                        <a th:href="'/dataItemsInfo/'+${items.id}"  th:text="${items.name}"> </a>&nbsp&nbsp
+                                        <!--<a :class="item.viewCount>100?'hot':''" :href="goto(item.id)" target="_blank" @click="view(item.id)" >{{item.name}}&nbsp&nbsp</a>-->
                                     </div>
                                     <div class="detail_overview">
-                                        <a class="img" :href="'/dataItem/'+ item.id" target="_blank">
-                                            <avatar  :username="item.name" :size="90"
+                                        <!--:href="'/dataItem/'+ items.id" -->
+                                        <a class="img" th:href="'/dataItemsInfo/'+${items.id}"  target="_blank">
+                                            <avatar  th:username="${items.name}" :size="90"
                                                     :rounded="false"></avatar>
-
 
                                         </a>
 
                                         <div class="info">
-                                            <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
-                                            <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="float: left">
-                                                <span class="badge badge-info" >{{tagitem}}</span>
+                                            <p style="height:40px;-webkit-line-clamp:2;" th:text="${items.description}"></p>
+                                            <div class="tags" th:each="keywords:${items.keywords}" style="float: left">
+                                                <span class="badge badge-info" th:text="${keywords}"></span>
 
                                             </div>
                                         </div>
@@ -246,17 +249,18 @@
 
                                     <div class="detail_bottom">
                                         <div style="display:inline-block;float: left;">
-                                            <img :src="item.image==''?'../static/img/icon/default.png':item.image" class="round_icon"
+                                            <!--item.image==''?'../static/img/icon/default.png':item.image-->
+                                            <img src="../../static/img/icon/default.png" class="round_icon"
                                                  style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
-                                            <a href="javascript:void(0)" style="display: inline-block;margin-left: 5px;"><h4>{{item.author}}</h4></a>
+                                            <a href="javascript:void(0)" style="display: inline-block;margin-left: 5px;"><h4 th:text="${items.author}"></h4></a>
 
 
-                                            <h4 style="display: inline-block;margin-left: 10px">contributed at {{formatDate(item.createTime)}}</h4>
+                                            contributed at:<h4 style="display: inline-block;margin-left: 10px" th:text="${#dates.format(items.createTime,'dd/MMM/yyyy')}">  </h4>
                                         </div>
                                         <div class="detail_option">
 
 
-                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
+                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true">&nbsp&nbsp<span th:text="${items.viewCount}"></span></a>
                                             <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
                                         </div>
                                         <br>
@@ -276,57 +280,60 @@
                         </el-pagination>
                 </div>
 
+
+
                 <div class="manyhub" >
-                    <div>
-                        <el-card class="hub_items" v-for="(item,index) in list" :key="index" style="width:20%;height: 140px;float: left;margin-top: 10px">
-                            <!--<img src="../static/img/hubs.jpg" style="width:70%;margin-left:15%">-->
-                            <div class="el-row" >
-                                <a   :href="item.url" target="_blank"  >
-                                      <avatar  :username="item.title"  :size="100"
-                                               class="center-block" ></avatar>
+                        <div>
+                            <el-card class="hub_items" v-for="(item,index) in list" :key="index" style="width:20%;height: 140px;float: left;margin-top: 10px">
+                                <!--<img src="../static/img/hubs.jpg" style="width:70%;margin-left:15%">-->
+                                <div class="el-row" >
+                                    <a   :href="item.url" target="_blank"  >
+                                          <avatar  :username="item.title"  :size="100"
+                                                   class="center-block" ></avatar>
 
 
-                                </a>
-                            </div>
-                            <center><a :href=item.url target="_blank" :title=item.url><h5>{{item.title}}</h5></a></center>
+                                    </a>
+                                </div>
+                                <center><a :href=item.url target="_blank" :title=item.url><h5>{{item.title}}</h5></a></center>
 
-                        </el-card>
-                    </div>
-                    <br>
-                    <div class="el-row" ><br>
-                        <center><el-button  v-loading="loading" id="addmore" @click="addmorehubs">View More</el-button></center>
-                    </div>
+                            </el-card>
+                        </div>
+                        <br>
+                        <div class="el-row" ><br>
+                            <center><el-button  v-loading="loading" id="addmore" @click="addmorehubs">View More</el-button></center>
+                        </div>
 
                 </div>
+
+
+
 
             </div>
         </div>
     </div>
-    <el-card th:object="${dataitems}">
-        <p th:text="${dataitems}"></p>
-    </el-card>
+
 
     <div th:replace="fragments/footer :: footer"></div>
+
+
+
+
 
 </div>
 
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.js"></script>
+<script src="../../static/js/common/jquery-3.3.1.js"></script>
 
-
-
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/js/common/bootstrap.js"></script>
-<script src="../static/js/common/bootstrap-select.js"></script>
-<script src="../static/element-ui/index.js"></script>
+<script src="../../static/js/common/axios.min.js"></script>
+<script src="../../static/js/common/bootstrap.js"></script>
+<script src="../../static/js/common/bootstrap-select.js"></script>
+<script src="../../static/element-ui/index.js"></script>
 <!--<script src="../static/js/element-ui-index.js" th:src="@{/static/js/element-ui-index.js}"></script>-->
 
-<script src="../static/js/common/bootstrap-tagsinput.js"></script>
+<script src="../../static/js/common/bootstrap-tagsinput.js"></script>
 
-
-
-<script src="../static/js/page/data_items.js"></script>
-<script  async src="../static/js/common/loadUser.js" ></script>
+<script src="../../static/js/page/data_items.js"></script>
+<script  async src="../../static/js/common/loadUser.js" ></script>
 
 </html>
