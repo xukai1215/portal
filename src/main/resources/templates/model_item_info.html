@@ -237,8 +237,8 @@
                         <h4>Related Data</h4>
                     </div>
                 </div>
-                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
-                    <el-tab-pane label="Related Data Items" name="Related Data Items" style="width: 100%;height:430px;">
+                <el-tabs class="block_content" v-model="activeRelatedDataName" type="border-card" stretch="true">
+                    <el-tab-pane label="Related Data Items" name="Related Data Items" style="width: 100%;height:100%px;">
 
                         <el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
                             <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
@@ -358,7 +358,7 @@
                             <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
 
                                 <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
-                                    <div > <strong>Modle: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                                    <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
                                         <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                     </div>

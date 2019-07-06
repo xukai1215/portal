@@ -172,6 +172,17 @@ public class DataItemService {
 
     }
 
+
+    public Categorys getCateId(String id){
+        return categoryDao.findById(id).orElseGet(() -> {
+
+            System.out.println("有人乱查数据库！！该ID不存在对象:"+id);
+
+            throw new MyException(ResultEnum.NO_OBJECT);
+
+        });
+    }
+
     public ModelItem getModelById(String id) {
 
 
@@ -285,42 +296,17 @@ public class DataItemService {
     //用户拿到上传的所有条目
     public Page<DataItem> getUsersUploadData(String author,Integer page,Integer pagesize,Integer asc){
 
-        List<DataItem> resultList= new ArrayList<DataItem>();
-        resultList=dataItemDao.findAllByAuthor(author);
-        //分页
-        List<DataItem> flist=new ArrayList<>();
-
-        Integer ind=(page+1)*pagesize-pagesize;
-
-        if(resultList.size()<=pagesize){
-            flist=resultList;
-        }else {
-            if(ind+pagesize>resultList.size()){
-                int exp=resultList.size()%pagesize-1;
-
-
-                if((ind%pagesize)==exp){
-                    flist.add(resultList.get(ind)) ;
-
-                }else{
-                    flist=resultList.subList(ind,ind+resultList.size()%pagesize);
-                }
-
-            }else {
-                flist=resultList.subList(ind,ind+pagesize);
-            }
-
+        boolean as=false;
+        if(asc==1){
+            as=true;
+        }else{
+            as=false;
         }
 
-//        List<DataItem> userdata=dataItemDao.findByAuthor(useroid);
+        Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
+        Pageable pageable = PageRequest.of(page, pagesize, sort);
+        return dataItemDao.findByAuthor(pageable,author);
 
-        //默认以创建时间排序
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
-        Page pageResult =new PageImpl(flist,new PageRequest(page, pagesize,sort),resultList.size());
-
-
-
-        return pageResult;
     }
 
     //获得用户创建条目的总数
@@ -419,69 +405,52 @@ public class DataItemService {
         return dataItemDao.count();
     }
 
-    //高级搜索查询
+
+
+    public Page<DataItem> test(DataItemFindDTO dataItemFindDTO){
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
+        Pageable pageable = PageRequest.of(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort);
+
+        return  dataItemDao.findByClassificationsIsIn(pageable,dataItemFindDTO.getCategoryId());
+
+    }
+
+    public Page<DataItem> searchFromAllData(DataItemFindDTO dataItemFindDTO){
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
+        Pageable pageable = PageRequest.of(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort);
+        String se=dataItemFindDTO.getSearchContent().get(0);
+
+        return  dataItemDao.findByNameContainingOrDescriptionContainingOrKeywordsContaining(pageable,se,se,se);
+
+    }
+
+
+
+    //分类加关键字
     public Page<DataItem> listBySearch(DataItemFindDTO dataItemFindDTO){
 
-        //todo 首先找到分类下的条目，然后进行全局查询
 
-//        List<DataItem> alldata=new ArrayList<>();
-//        alldata=dataItemDao.findAll();
+        List<String> dataItemsId=new ArrayList<>();
+        dataItemsId=getCateId(dataItemFindDTO.getCategoryId()).getDataItem();
 
-        List<String> content =new ArrayList<>();
-        content=dataItemFindDTO.getSearchContent();
-
-
-        List<DataItem> name=new ArrayList<>();
-        List<DataItem> description=new ArrayList<>();
-        List<DataItem> detail=new ArrayList<>();
-        List<DataItem> author=new ArrayList<>();
-
-        List<DataItem> keywords=new ArrayList<>();
-        List<DataItem> categories=new ArrayList<>();
-
-
+        DataItem dataItem=new DataItem();
 
         List<DataItem> result=new ArrayList<>();
-        List<DataItem> flist=new ArrayList<>();
 
 
-        for (int k = 0; k <content.size() ; k++) {
-            name=dataItemDao.findByNameLike(content.get(k));
-            description=dataItemDao.findByDescriptionLike(content.get(k));
-//            detail=dataItemDao.findByDetailLike(content.get(k));
-//            detail=dataItemDao.findByDetailLike(content.get(k));
-            author=dataItemDao.findByAuthorLike(content.get(k));
+        for (int i = 0; i <dataItemsId.size() ; i++) {
+            dataItem=getById(dataItemsId.get(i));
 
-            keywords=dataItemDao.findByKeywordsLike(content.get(k));
-            categories=dataItemDao.findByClassificationsLike(content.get(k));
 
-            if(name!=null&&!hasDataItem(result,name)){
+            for (int j = 0; j < dataItemFindDTO.getSearchContent().size(); j++) {
+                if(dataItem.getName().contains(dataItemFindDTO.getSearchContent().get(j)) || dataItem.getDescription().contains(dataItemFindDTO.getSearchContent().get(j))){
+                    result.add(dataItem);
 
-                result.addAll(name);
+                }
             }
 
-            if(description!=null&&!hasDataItem(result,description)){
-                result.addAll(description);
-            }
-
-            if(detail!=null&&!hasDataItem(result,detail)){
-                result.addAll(detail);
-            }
-
-            if(author!=null&&!hasDataItem(result,author)){
-                result.addAll(author);
-            }
-
-            if(keywords!=null&&!hasDataItem(result,keywords)){
-                result.addAll(keywords);
-            }
-
-            if(categories!=null&&!hasDataItem(result,categories)){
-                result.addAll(categories);
-            }
         }
-
-
+        List<DataItem> flist=new ArrayList<>();
 
         Integer ind=(dataItemFindDTO.getPage())*dataItemFindDTO.getPageSize()-dataItemFindDTO.getPageSize();
 
@@ -515,26 +484,16 @@ public class DataItemService {
 
 
         return pageResult;
-    }
-    public  boolean hasDataItem(List<DataItem> arr,List<DataItem> el){
 
-
-        for (int i = 0; i <arr.size() ; i++) {
-            for (int j = 0; j <el.size() ; j++) {
-                if(arr.get(i).getId().equals(el.get(j).getId())){
-                    return true;
-                }
-            }
-        }
-
-        return false;
 
 
     }
 
 
 
-    //按分类查询
+    //分类
+
+
     public Page<Map<String,Object>>findByCateg(String categorysId,Integer page,boolean asc,Integer pageSize){
 
 
@@ -846,53 +805,59 @@ public class DataItemService {
     }
 
 
-    public Page<DataItem> searchDataByUserId(String userOid,Integer page,Integer pagesize,Integer asc,String searchText){
-
-        List<DataItem> resultList= new ArrayList<DataItem>();
-        List<DataItem> allDList= new ArrayList<DataItem>();
-        allDList=dataItemDao.findAllByAuthor(userOid);
-
-        for (int k = 0; k <allDList.size() ; k++) {
-            if(allDList.get(k).getName().indexOf(searchText)>-1||allDList.get(k).getDescription().indexOf(searchText)>-1){
-                resultList.add(allDList.get(k));
-            }
-        }
-
-
-        //分页
-        List<DataItem> flist=new ArrayList<>();
-
-        Integer ind=(page+1)*pagesize-pagesize;
-
-        if(resultList.size()<=pagesize){
-            flist=resultList;
-        }else {
-            if(ind+pagesize>resultList.size()){
-                int exp=resultList.size()%pagesize-1;
-
-
-                if((ind%pagesize)==exp){
-                    flist.add(resultList.get(ind)) ;
-
-                }else{
-                    flist=resultList.subList(ind,ind+resultList.size()%pagesize);
-                }
-
-            }else {
-                flist=resultList.subList(ind,ind+pagesize);
-            }
-
-        }
-
-//        List<DataItem> userdata=dataItemDao.findByAuthor(useroid);
-
-        //默认以创建时间排序
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
-        Page pageResult =new PageImpl(flist,new PageRequest(page, pagesize,sort),resultList.size());
+    public Page<DataItem> searchDataByUserId(String userOid,Integer page,Integer pageSize,boolean asc,String searchText){
 
 
 
-        return pageResult;
+        //todo 超出堆内存解决办法
+
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+//        searchText= '%' + searchText + '%';
+
+        return dataItemDao.findByAuthorAndNameContaining(pageable,userOid,searchText);
+
+
+
+
+//        for (int k = 0; k <allDList.size() ; k++) {
+//            if(allDList.get(k).getName().indexOf(searchText)>-1||allDList.get(k).getDescription().indexOf(searchText)>-1){
+//                resultList.add(allDList.get(k));
+//            }
+//        }
+//
+//
+//
+//
+//        //分页
+//        List<DataItem> flist=new ArrayList<>();
+//
+//        Integer ind=(page+1)*pagesize-pagesize;
+//
+//        if(resultList.size()<=pagesize){
+//            flist=resultList;
+//        }else {
+//            if(ind+pagesize>resultList.size()){
+//                int exp=resultList.size()%pagesize-1;
+//
+//
+//                if((ind%pagesize)==exp){
+//                    flist.add(resultList.get(ind)) ;
+//
+//                }else{
+//                    flist=resultList.subList(ind,ind+resultList.size()%pagesize);
+//                }
+//
+//            }else {
+//                flist=resultList.subList(ind,ind+pagesize);
+//            }
+//
+//        }
+
+
+
+
 
     }
 
@@ -951,15 +916,21 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
 
 //            DataItem dataItem=getById(id);
     DataItem dataItem=getById(id);
-
-    List<String> relatedModels=dataItem.getRelatedModels();
-
-
     List<Map<String,String>> data=new ArrayList<>();
-
+    List<String> relatedModels=dataItem.getRelatedModels();
     ModelItem modelItem;
-
     Map<String,String> modelsInfo;
+    if(relatedModels==null){
+        modelsInfo=new HashMap<>();
+        modelsInfo.put("all","all");
+        data.add(modelsInfo);
+        return data;
+    }
+
+
+
+
+
 
     if(more-5 >relatedModels.size()||more-5 == relatedModels.size()){
         modelsInfo=new HashMap<>();
@@ -1004,9 +975,20 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
         List<String> re=new ArrayList<>();
         re=dataItem.getRelatedModels();
 
-        for (int j = 0; j <models.size() ; j++) {
-            re.add(models.get(j));
+        if(re==null){
+            List<String> li=new ArrayList<>();
+            for (int m = 0; m <models.size() ; m++) {
+                li.add(models.get(m));
+            }
+
+            dataItem.setRelatedModels(li);
+
+        }else{
+            for (int j = 0; j <models.size() ; j++) {
+                re.add(models.get(j));
+            }
         }
+
 
 
         dataItemDao.save(dataItem);
@@ -1022,12 +1004,17 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
 
         List<String> relatedData=modelItem.getRelatedData();
 
+        if(relatedData==null){
+            List<Map<String,String>> list=new ArrayList<>();
+            return list;
+
+        }
 
         List<Map<String,String>> data=new ArrayList<>();
-
+        Map<String,String> dataInfo;
         DataItem dataItem;
 
-        Map<String,String> dataInfo;
+
 
         for (int i = 0; i < relatedData.size(); i++) {
             //只取三个
@@ -1070,6 +1057,13 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
         DataItem dataItem;
 
         Map<String,String> dataInfo;
+        if(relatedData==null){
+            dataInfo=new HashMap<>();
+            dataInfo.put("all","all");
+            data.add(dataInfo);
+            return data;
+        }
+
 
         if(more-5 >relatedData.size()||more-5 == relatedData.size()){
 
@@ -1116,9 +1110,21 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
         List<String> re=new ArrayList<>();
         re=modelItem.getRelatedData();
 
-        for (int j = 0; j <data.size() ; j++) {
-            re.add(data.get(j));
+
+        if(re==null){
+            List<String> li=new ArrayList<>();
+            for (int m = 0; m <data.size() ; m++) {
+                li.add(data.get(m));
+            }
+
+            modelItem.setRelatedData(li);
+
+        }else{
+            for (int j = 0; j <data.size() ; j++) {
+                re.add(data.get(j));
+            }
         }
+
 
 
         modelItemDao.save(modelItem);

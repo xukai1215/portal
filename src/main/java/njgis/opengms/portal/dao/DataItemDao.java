@@ -1,7 +1,11 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.entity.DataItem;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +19,23 @@ import java.util.Optional;
  */
 public interface DataItemDao extends MongoRepository<DataItem,String> {
 
-    List<DataItem> findByName(String name);
+
+
+
+
+    Page<DataItem> findByAuthorAndNameContaining(Pageable pageable, String author, String name);
+
+
+
+    //test
+    Page<DataItem>  findByClassificationsIsIn(Pageable pageable,String classification);
+
+    //page dataitems search
+    Page<DataItem>  findByNameContainingOrDescriptionContainingOrKeywordsContaining(Pageable pageable,String name,String description,String keywords);
+
+    //用户中心所有用户上传的数据条目列表
+    Page<DataItem> findByAuthor(Pageable pageable,String author);
+
 
 
 

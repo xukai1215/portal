@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns:v-on="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Data Item Repository | OpenGMS</title>
@@ -10,7 +11,7 @@
     <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
 
     <!--<link rel="stylesheet" href="../static/css/element-ui-index.css"-->
-          <!--th:href="@{/static/css/element-ui-index.css}">-->
+    <!--th:href="@{/static/css/element-ui-index.css}">-->
 
     <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
@@ -31,15 +32,57 @@
 </head>
 <body>
 <div id="data_items">
-    <div th:replace="fragments/navbar :: unlog"></div>
+    <div>
+        <style>
+            .el-menu-item{
+                padding:0px;
+            }
+        </style>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#00001e"
+                 text-color="#fff"
+                 active-text-color="#00c0ff"
+                 style="padding-top:10px;">
+            <div>
+                <a class="logo" href="/home"></a>
+            </div>
+            <el-menu-item index="1"><a href="/home">Home</a></el-menu-item>
+            <el-menu-item index="2"><a href="/modelItem/repository">Model</a></el-menu-item>
+            <el-menu-item index="3"><a href="/dataItem/repository">Data</a>
+            </el-menu-item>
+            <el-submenu index="8">
+                <template slot="title">Community</template>
+                <el-menu-item index="8-1"><a href="/repository/concept">Concept & Semantic</a></el-menu-item>
+                <el-menu-item index="8-2"><a href="/repository/spatialReference">Spatial Reference</a></el-menu-item>
+                <el-menu-item index="8-3"><a href="/repository/template">Data Template</a></el-menu-item>
+                <el-menu-item index="8-4"><a href="/repository/unit">Unit & Metric</a></el-menu-item>
+                <!--<el-menu-item index="8-5"><a href="/repository/contributors">Contributors  & Participants</a></el-menu-item>-->
+                <el-menu-item index="8-6"><a href="/repository/thematic">Thematic Center</a></el-menu-item>
+                <!--<el-menu-item index="4-4">Supportive</el-menu-item>-->
+            </el-submenu>
+
+            <el-submenu index="4">
+                <template slot="title">Help</template>
+                <el-menu-item index="4-1"><a href="/help/demo">Demo</a></el-menu-item>
+                <el-menu-item index="4-2"><a href="/help/manual">Manual</a></el-menu-item>
+                <el-menu-item index="4-3"><a href="/help/document">Document</a></el-menu-item>
+                <!--<el-menu-item index="4-4">Supportive</el-menu-item>-->
+            </el-submenu>
+
+            <el-menu-item index="5"><a href="http://opengmsteam.com" target="_blank">About Us</a></el-menu-item>
+            <el-menu-item index="7" style="float:right"><a href="/user/register">Sign Up</a></el-menu-item>
+            <el-menu-item index="6" style="float:right"><a href="/user/login">Log In</a></el-menu-item>
+
+        </el-menu>
+
+    </div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
         <div class="el-col el-col-20 el-col-offset-2" :offset="2">
             <div class="el-row">
                 <div class="data-top">
-                <h2 class="main-title">Data Item Repository</h2>
-                <h4 class="sub-title">The repository of data (one-stop hub with public shared data resources)
-                </h4>
+                    <h2 class="main-title">Data Item Repository</h2>
+                    <h4 class="sub-title">The repository of data (one-stop hub with public shared data resources)
+                    </h4>
                     <button class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
@@ -55,10 +98,10 @@
                         <!--动态生成category,遍历数据库拿到数据，组装成category,显示在前端-->
 
                         <!--<el-collapse-item v-for="(item,index) in categoryTree" :title=item.key :name=index :key="index">-->
-                            <!--<hr>-->
-                            <!--<el-button v-for="it in item.value" type="text" @click="chooseCate(it,$event)">{{it.category}}</el-button>-->
+                        <!--<hr>-->
+                        <!--<el-button v-for="it in item.value" type="text" @click="chooseCate(it,$event)">{{it.category}}</el-button>-->
 
-                           <!---->
+                        <!---->
 
                         <!--</el-collapse-item>-->
 
@@ -213,68 +256,67 @@
                     <span></span>
 
                 </div>
-                <!--v-loading-->
 
                 <div class="maincontnt"  v-loading="loading">
-                        <div class="modelPanel" >
+                    <div class="modelPanel" >
 
-                            <div  class="content-body">
-                                <div class="list-item" v-for="(item,index) in list" :key="index">
-                                    <div class="detail_title">
+                        <div  class="content-body">
+                            <div class="list-item" v-for="(item,index) in list" :key="index">
+                                <div class="detail_title">
 
-                                        <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
-                                        <a :class="item.viewCount>100?'hot':''" :href="goto(item.id)" target="_blank" @click="view(item.id)" >{{item.name}}&nbsp&nbsp</a>
-        <!---->
+                                    <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
+                                    <a :class="item.viewCount>100?'hot':''" :href="goto(item.id)" target="_blank" @click="view(item.id)" >{{item.name}}&nbsp&nbsp</a>
+                                    <!---->
 
-                                    </div>
-                                    <div class="detail_overview">
-                                        <a class="img" :href="'/dataItem/'+ item.id" target="_blank">
-                                            <avatar  :username="item.name" :size="90"
-                                                    :rounded="false"></avatar>
+                                </div>
+                                <div class="detail_overview">
+                                    <a class="img" :href="'/dataItem/'+ item.id" target="_blank">
+                                        <avatar  :username="item.name" :size="90"
+                                                 :rounded="false"></avatar>
 
 
-                                        </a>
+                                    </a>
 
-                                        <div class="info">
-                                            <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
-                                            <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="float: left">
-                                                <span class="badge badge-info" >{{tagitem}}</span>
+                                    <div class="info">
+                                        <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
+                                        <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="float: left">
+                                            <span class="badge badge-info" >{{tagitem}}</span>
 
-                                            </div>
                                         </div>
-                                    </div>
-                                    <hr>
-
-                                    <div class="detail_bottom">
-                                        <div style="display:inline-block;float: left;">
-                                            <img :src="item.image==''?'../static/img/icon/default.png':item.image" class="round_icon"
-                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
-                                            <a href="javascript:void(0)" style="display: inline-block;margin-left: 5px;"><h4>{{item.author}}</h4></a>
-
-
-                                            <h4 style="display: inline-block;margin-left: 10px">contributed at {{formatDate(item.createTime)}}</h4>
-                                        </div>
-                                        <div class="detail_option">
-
-
-                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
-                                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
-                                        </div>
-                                        <br>
                                     </div>
                                 </div>
-                            </div>
+                                <hr>
 
+                                <div class="detail_bottom">
+                                    <div style="display:inline-block;float: left;">
+                                        <img :src="item.image==''?'../static/img/icon/default.png':item.image" class="round_icon"
+                                             style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                        <a href="javascript:void(0)" style="display: inline-block;margin-left: 5px;"><h4>{{item.author}}</h4></a>
+
+
+                                        <h4 style="display: inline-block;margin-left: 10px">contributed at {{formatDate(item.createTime)}}</h4>
+                                    </div>
+                                    <div class="detail_option">
+
+
+                                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
+                                        <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
                         </div>
 
-                        <el-pagination style="text-align: center;margin-top:20px"
-                                       @current-change="handleCurrentChange"
+                    </div>
 
-                                       :page-size="findDto.pageSize"
-                                       :current-page="findDto.page"
-                                       layout="total,prev, pager, next, jumper"
-                                       :total="datacount">
-                        </el-pagination>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handleCurrentChange"
+
+                                   :page-size="findDto.pageSize"
+                                   :current-page="findDto.page"
+                                   layout="total,prev, pager, next, jumper"
+                                   :total="datacount">
+                    </el-pagination>
                 </div>
 
                 <div class="manyhub" >
@@ -283,8 +325,8 @@
                             <!--<img src="../static/img/hubs.jpg" style="width:70%;margin-left:15%">-->
                             <div class="el-row" >
                                 <a   :href="item.url" target="_blank"  >
-                                      <avatar  :username="item.title"  :size="100"
-                                               class="center-block" ></avatar>
+                                    <avatar  :username="item.title"  :size="100"
+                                             class="center-block" ></avatar>
 
 
                                 </a>
@@ -303,11 +345,93 @@
             </div>
         </div>
     </div>
-    <el-card th:object="${dataitems}">
-        <p th:text="${dataitems}"></p>
+    <el-card>
+        <p></p>
     </el-card>
 
-    <div th:replace="fragments/footer :: footer"></div>
+    <div>
+        <!--以下为公共部分-->
+        <div class="footer el-row">
+            <div class="footer-content el-row is-justify-center el-row--flex">
+                <div class="el-col el-col-6">
+                    <h3 class="list-title">Documents</h3>
+                    <ul>
+                        <li class="list-item">
+                            <a href="/help/document">Document</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="el-col el-col-6">
+                    <h3 class="list-title">Platforms</h3>
+                    <ul>
+
+
+
+                        <li class="list-item">
+                            <a href="javascript:void(0)" target="_blank">Data Service Container</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0)" target="_blank">Model Service Container</a>
+
+                        </li>
+
+                        <li class="list-item">
+                            <a href="javascript:void(0)" target="_blank">Visualization Platform</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="http://94.191.49.160:8080/GeoProblemSolving/home" target="_blank">Problem Solving Platform</a>
+                        </li>
+
+                        <li class="list-item">
+                            <a href="http://geomodeling.njnu.edu.cn/CMIP/home" target="_blank">Model Comparison Platform</a>
+                        </li>
+
+
+                    </ul>
+                </div>
+
+
+                <div class="el-col el-col-6">
+
+                    <h3 class="list-title">About</h3>
+                    <ul>
+                        <li class="list-item">
+                            <a href="http://opengmsteam.com/">About OpenGMS</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="/user/register">Join us</a>
+                        </li>
+                        <li class="list-item">
+                            <a href="mailto:nj_gis@163.com">Suggestions</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="el-col el-col-6">
+                    <h3 class="list-title">
+                        Contact
+                    </h3>
+                    <ul>
+                        <li class="list-item">
+                            <i class="fa fa-envelope-o fa-fw"></i> <a href="mailto:nj_gis@163.com">
+                            &nbsp;nj_gis@163.com</a>
+                        </li>
+                        <li class="list-item">
+                            <i class="fa fa-wechat"></i><a>
+                            &nbsp;&nbsp;VGETeam</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-content copyright el-row">
+                <h2 class="copyright-title">Open Geographic Modeling and Simulation</h2>
+
+                <span>Copyright © 2013-2019 OpenGMS. All Rights Reserved.</span>
+            </div>
+        </div>
+
+    </div>
 
 </div>
 

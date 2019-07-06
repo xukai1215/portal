@@ -297,14 +297,26 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.listBySearch(dataItemFindDTO));
     }
 
+    //模型info关联的data,从全部里搜索
+    @RequestMapping(value="/searchFromAll",method = RequestMethod.POST)
+    JsonResult relatedModelsFromAll(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.searchFromAllData(dataItemFindDTO));
+    }
+
+    @RequestMapping(value="/test",method = RequestMethod.POST)
+    JsonResult test(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.test(dataItemFindDTO));
+    }
+
+
     //用户中心查找
 
     @RequestMapping(value="/searchDataByUserId",method = RequestMethod.GET)
     JsonResult searchDataByUserId(
             @RequestParam(value="userOid") String userOid,
             @RequestParam(value="page") Integer page,
-            @RequestParam(value="pagesize") Integer pagesize,
-            @RequestParam(value="asc") Integer asc,
+            @RequestParam(value="pageSize") Integer pagesize,
+            @RequestParam(value="asc") boolean asc,
             @RequestParam(value="searchText") String searchText
 
                                   ){
@@ -313,7 +325,7 @@ public class DataItemRestController {
 
 
     //按分级查询  /category/{categorysId}&{page}&{asc}&{pageSize}
-    @RequestMapping(value = "/{categorysId}&{page}",method = RequestMethod.GET)
+    @RequestMapping(value = "/items/{categorysId}&{page}",method = RequestMethod.GET)
     JsonResult listByClassification(
                                     @PathVariable  String categorysId,
                                     @PathVariable Integer page

@@ -637,7 +637,7 @@ searchDataItem() {
         userOid:this.userId,
         page:this.page,
         pagesize:this.pageSize,
-        asc:this.sortAsc,
+        asc:false,
         searchText:this.searchText
 
     }

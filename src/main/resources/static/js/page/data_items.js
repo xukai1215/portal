@@ -105,9 +105,12 @@ var data_items = new Vue({
 
             var that=this
             if(this.ca!=''){
-                axios.get("/dataItem/"+this.theDefaultCate+"&"+this.findDto.page)
+                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page)
                     .then(res=>{
                         setTimeout(()=>{
+                            window.history.pushState(null,null,"?dataItem/items/"+that.theDefaultCate+"&"+that.findDto.page)
+
+
                             that.list=res.data.data.content;
                             that.datacount=res.data.data.totalElements;
 
@@ -141,9 +144,9 @@ var data_items = new Vue({
         },
         chooseCate(item){
 
-
-
-            window.history.pushState(null,null,"/dataItem/"+this.theDefaultCate+"&"+this.findDto.page)
+            this.theDefaultCate=item
+            this.findDto.page=1
+            window.history.pushState(null,null,"?dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page)
 
 
             this.getParams()
@@ -184,14 +187,14 @@ var data_items = new Vue({
             }
 
             this.progressBar=true;
-            this.theDefaultCate=item
+
 
             var that=this
             if(this.ca==="Hubs"){
                 this.hubs();
             }else {
 
-                axios.get("/dataItem/"+this.theDefaultCate+"&"+this.findDto.page)
+                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page)
                     .then(res=>{
                         setTimeout(()=>{
 
@@ -221,19 +224,30 @@ var data_items = new Vue({
 
 
 
-            //todo 默认第一个按钮被选中
-            $('.el-collapse-item .el-button:first').css('color','green');
+            // //todo 默认第一个按钮被选中
+            // $('.el-collapse-item .el-button:first').css('color','green');
+            //
+            // this.ca="Hydrosphere";
 
-            this.ca="Hydrosphere";
 
+            var this_button=$('#'+this.theDefaultCate)
 
-            this.findDto={
-                categoryId:this.theDefaultCate,
-                page:1,
-                asc:true
+            // e.target.style.color="green";
+            this_button[0].style.color="green";
+            this_button[0].style.fontWeight="bold";
+
+            var all_button=$('.el-button')
+
+            for (let i = 0; i < all_button.length; i++) {
+                if(all_button[i]!=this_button[0]){
+                    all_button[i].style.color="";
+                    all_button[i].style.fontWeight="";
+                }
             }
+            this.ca=this_button[0].innerText
+
             var that=this
-            axios.get("/dataItem/categoryitems/"+this.theDefaultCate+"&"+this.findDto.page)
+            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page)
                 .then(res=>{
                     setTimeout(()=>{
 
@@ -340,13 +354,21 @@ var data_items = new Vue({
 
             let url=window.location.href.split("/")
 
-            let par=url[url.length-1]
-            let p=par.split("&")
-            let id=p[0]
-            let page=p[1]
+            if(url[url.length-1].indexOf("&")<0){
+                // this.theDefaultCate="5cb83fd0ea3cba3224b6e24e"
+                // this.findDto.page=1
 
-            this.theDefaultCate=id
-            this.findDto.page=page
+
+            }else {
+                let par=url[url.length-1]
+                let p=par.split("&")
+                let id=p[0]
+                let page=p[1]
+
+                this.theDefaultCate=id
+                this.findDto.page=page
+            }
+
         }
 
     },
@@ -355,10 +377,14 @@ var data_items = new Vue({
     },
 
     mounted(){
-        this.defaultlist();
-        var tha=this;
+
+
 
         this.getParams();
+        this.defaultlist();
+        // this.chooseCate(this.theDefaultCate)
+
+        var tha=this;
 
         axios.get("/user/load")
             .then((res)=>{

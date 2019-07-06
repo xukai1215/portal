@@ -7,6 +7,7 @@ new Vue({
         return {
             activeIndex:'2',
             activeName: 'Computable Model',
+            activeRelatedDataName:'Add Data Items',
             tableData6: [{
                 title: 'Anisotropic magnetotransport and exotic longitudinal linear magnetoresistance in WT e2 crystals',
                 authors: 'Zhao Y.,Liu H.,Yan J.,An W.,Liu J.,Zhang X.,Wang H.,Liu Y.,Jiang H.,Li Q.,Wang Y.,Li X.-Z.,Mandrus D.,Xie X.~C.,Pan M.,Wang J.',
@@ -38,7 +39,7 @@ new Vue({
             relatedModelsSearchText:'',
             addModelsSearchText:'',
             searchAddRelatedModels:[],
-            searchAddModelPage:0,
+            searchAddModelPage:1,
 
             selectedModels:[],
             selectedModelsOid:[]
@@ -163,13 +164,14 @@ new Vue({
                 alert("Please login");
                 window.location.href = "/user/login";
             }else{
-                this.searchAddModelPage=0
+                this.searchAddModelPage=1
                 this.searchAddRelatedModels=[]
                 this.addModelsSearchText=""
                 this.selectedModels=[]
                 this.selectedModelsOid=[]
 
 
+                this.nomore=''
                 this.addRelatedModelsDialogVisible=true
 
 
@@ -201,11 +203,12 @@ new Vue({
         },
         clearSearchResult(){
             this.searchAddRelatedModels=[]
+            this.nomore=''
         },
         loadAddMore(e){
 
             let that=this
-            if ( e.target.scrollHeight - e.target.clientHeight-e.target.scrollTop <10) { //到达底部100px时,加载新内容
+            if ( e.target.scrollHeight - e.target.clientHeight-e.target.scrollTop <10&&this.nomore==='') { //到达底部100px时,加载新内容
 
                 clearTimeout(this.timer);
 
@@ -233,37 +236,40 @@ new Vue({
             let data={
                 searchText:this.addModelsSearchText,
                 page:this.searchAddModelPage,
-                asc:1,
-                pagesize:5,
+                asc:false,
+                pageSize:5,
                 userOid:this.useroid
 
 
             }
             let that=this
             this.loading=true
-            axios.get("/dataItem/searchDataByUserId/",{
-                params:data
-            })
-                .then((res)=>{
-
-                    if(res.status===200){
-                        that.loading=false
-                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.content)
-                    }
-
-
-
+            if(this.nomore===''){
+                axios.get("/dataItem/searchDataByUserId/",{
+                    params:data
                 })
+                    .then((res)=>{
+
+                        if(res.status===200){
+                            if(res.data.data.content.length===0){
+                                that.nomore="nomore"
+                                that.loading=false
+                            }else{
+                                that.loading=false
+                                that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.content)
+                            }
+
+                        }
+
+
+
+                    })
+            }
+
 
         },
         addSearchFromAll(){
-            // let data=new FormData()
-            // data.append('searchText',this.addModelsSearchText)
-            // data.append('page',this.searchAddModelPage)
-            // data.append('sortType','default')
-            // data.append('asc',false)
-            // data.append('pageSize',10)
-            // data.append('classifications[]','all')
+
 
             let arr=[]
             arr.push(this.addModelsSearchText)
@@ -279,10 +285,12 @@ new Vue({
 
             let that=this
             this.loading=true
-            axios.post("/dataItem/listBySearch",data)
+            //searchFromAll
+            axios.post("/dataItem/searchFromAll",data)
                 .then((res)=>{
 
                     if(res.status===200){
+
                         that.loading=false
                         that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.content)
                     }
