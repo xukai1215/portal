@@ -56,38 +56,104 @@ public class DataItemRestController {
     @Value ("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
-    @RequestMapping (value = "", method = RequestMethod.GET)
-    JsonResult list(DataItemFindDTO dataItemFindDTO) {
 
-        return ResultUtils.success(dataItemService.list(dataItemFindDTO));
+//data item start
+
+
+    /**
+     * 通过导航栏，打开dataItems首页，即数据条目页面
+     * @author lan
+     * @return modelAndView
+     */
+    @RequestMapping("/repository")
+    public ModelAndView getModelItems( ){
+
+        System.out.println("data-items-page");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("data_items");
+
+        return modelAndView;
+    }
+
+
+    /**
+     * dataitems页面中的搜索
+     * @param dataItemFindDTO
+     * @return
+     */
+    @RequestMapping(value="/listBySearch",method = RequestMethod.POST)
+    JsonResult listByName(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.listBySearch(dataItemFindDTO));
+    }
+
+
+
+    /**
+     * dataItems页面，分页和分类的唯一标识
+     * @param categorysId
+     * @param page
+     * @return
+     */
+    @RequestMapping(value = "/items/{categorysId}&{page}",method = RequestMethod.GET)
+    JsonResult listByClassification(
+            @PathVariable  String categorysId,
+            @PathVariable Integer page
+
+
+    ){
+        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10));
 
     }
 
 
-// 新加一个dataitem
-    @RequestMapping (value = "", method = RequestMethod.POST)
-    JsonResult add(@RequestBody DataItemAddDTO dataItemAddDTO) {
-        return ResultUtils.success(dataItemService.insert(dataItemAddDTO));
+    /**
+     * dataitem页面，获取hubs内容
+     * @param hubnbm
+     * @return
+     */
+    @RequestMapping(value = "/hubs",method = RequestMethod.GET)
+    JsonResult getHubs(@RequestParam(value = "hubnbm")Integer hubnbm){
+        return ResultUtils.success(dataItemService.getHubs(hubnbm));
     }
 
 
+
+//data item end
+
+
+
+
+
+//data info start
+
+
+    /**
+     * 通过数据条目页面，打开dataInfo页面，即数据详情页面
+     * @param id
+     * @return
+     */
     @RequestMapping (value = "/{id}", method = RequestMethod.GET)
     ModelAndView get(@PathVariable ("id") String id){
 
         ModelAndView view = new ModelAndView();
-//        view.addObject("datainfo",ResultUtils.success(dataItemService.getById(id)));
+
         view.setViewName("/dataItems/"+id);
         return view;
     }
 
-    //取得数据项单元内容
+    /**
+     * 依据id，获取datainfo详情页面对应数据的评论
+     * @param id
+     * @return
+     */
     @RequestMapping(value="/getcomment/{id}",method = RequestMethod.GET)
     JsonResult getComment(@PathVariable ("id") String id){
         return ResultUtils.success(dataItemService.getById(id));
     }
 
     /**
-     *
+     *对datainfo评论回复
      * @author lan
      * @param commentsAddDTO 数据条目id,评论id,对评论的评论内容及作者
      *
@@ -99,6 +165,7 @@ public class DataItemRestController {
     }
 
     /***
+     * 为datainfo特定数据添加评论
      * @author lan
      * @param commentsAddDTO 数据内容
      * @return
@@ -110,33 +177,35 @@ public class DataItemRestController {
     }
 
 
-    //点赞
+    /**
+     * 为datainfo特定数据进行点赞
+     * @param commentsUpdateDTO
+     * @return
+     */
     @RequestMapping(value="/thumbsup",method = RequestMethod.POST)
     Integer putcomment(@RequestBody CommentsUpdateDTO commentsUpdateDTO){
 
         return dataItemService.thumbsUp(commentsUpdateDTO);
     }
 
-    //用户中心创建dataitem
-    @RequestMapping(value="/adddataitembyuser",method = RequestMethod.GET)
-    Integer addUserData(@RequestParam(value="id") String id) throws IOException{
 
-        return dataItemService.addDataItemByUser(id);
-    }
-    //用户中心数据条目总数
 
-    @RequestMapping(value="/amountofuserdata",method = RequestMethod.GET)
-    Integer userDataAmount(@RequestParam(value="userOid") String userOid){
-
-        return dataItemService.getAmountOfData(userOid);
-    }
-    //viewCount
+    /**
+     * 查看datainfo详情页面，浏览量加1
+     * @param id
+     * @return
+     */
     @RequestMapping(value="/viewplus",method = RequestMethod.GET)
     Integer viewCountPlus(@RequestParam(value="id") String id){
 
         return dataItemService.viewCountPlus(id);
     }
-    //getViewCount
+
+    /**
+     * 获得datainfo当前数据项的浏览量
+     * @param id
+     * @return
+     */
     @RequestMapping(value="/viewcount",method = RequestMethod.GET)
     Integer getViewCount(@RequestParam(value="id") String id){
 
@@ -144,6 +213,167 @@ public class DataItemRestController {
     }
 
 
+
+
+    /**
+     * 模型详情页面中的RelatedData，模型关联数据搜索，搜索范围是全部的选项
+     * @param dataItemFindDTO
+     * @return
+     */
+    @RequestMapping(value="/searchFromAll",method = RequestMethod.POST)
+    JsonResult relatedModelsFromAll(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.searchFromAllData(dataItemFindDTO));
+    }
+
+
+
+
+
+    /**
+     * datainfo数据详情页面中的category，依据id去找到对应分类
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/category",method = RequestMethod.GET)
+    JsonResult getCategory(@RequestParam(value = "id") String id){
+        return ResultUtils.success(dataItemService.getCategory(id));
+    }
+
+
+
+
+    /**
+     * 数据详情页面RelatedModels，数据关联的3个模型
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/briefrelatedmodels",method = RequestMethod.GET)
+    JsonResult getBriefRelatedModels(@RequestParam(value = "id") String id){
+        return ResultUtils.success(dataItemService.getRelatedModels(id));
+    }
+
+
+
+
+    /**
+     * 数据详情页面RelatedModels，数据关联的所有模型
+     * @param id
+     * @param more
+     * @return
+     */
+    @RequestMapping(value = "/allrelatedmodels",method = RequestMethod.GET)
+    JsonResult getRelatedModels(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
+        return ResultUtils.success(dataItemService.getAllRelatedModels(id,more));
+    }
+
+
+
+
+    /**
+     * 数据详情页面RelatedModels，为数据添加关联的模型
+     * @param dataItemFindDTO
+     * @return
+     */
+    @RequestMapping(value = "/models",method = RequestMethod.POST)
+    JsonResult addRelatedModels(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.addRelatedModels(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
+    }
+
+
+    /**
+     * 模型详情页面RelatedData，模型关联的3个数据
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/briefrelateddata",method = RequestMethod.GET)
+    JsonResult getBriefRelatedDatas(@RequestParam(value = "id") String id){
+        return ResultUtils.success(dataItemService.getRelatedData(id));
+    }
+
+    /**
+     * 模型详情页面RelatedData，模型关联的所有数据
+     * @param id
+     * @param more
+     * @return
+     */
+    @RequestMapping(value = "/allrelateddata",method = RequestMethod.GET)
+    JsonResult getRelatedDatas(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
+        return ResultUtils.success(dataItemService.getAllRelatedData(id,more));
+    }
+
+
+    /**
+     * 模型详情页面RelatedData，为模型添加关联的数据
+     * @param dataItemFindDTO
+     * @return
+     */
+    @RequestMapping(value = "/data",method = RequestMethod.POST)
+    JsonResult addRelatedDatas(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.addRelatedData(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
+    }
+
+//data info end
+
+
+
+
+
+//user space start
+
+
+    /**
+     * 个人中心，用户创建条目的搜索
+     * @param userOid
+     * @param page
+     * @param pagesize
+     * @param asc
+     * @param searchText
+     * @return
+     */
+    @RequestMapping(value="/searchDataByUserId",method = RequestMethod.GET)
+    JsonResult searchDataByUserId(
+            @RequestParam(value="userOid") String userOid,
+            @RequestParam(value="page") Integer page,
+            @RequestParam(value="pageSize") Integer pagesize,
+            @RequestParam(value="asc") boolean asc,
+            @RequestParam(value="searchText") String searchText
+
+    ){
+        return ResultUtils.success(dataItemService.searchDataByUserId(userOid,page,pagesize,asc,searchText));
+    }
+
+
+    /**
+     * 个人中心创建数据条目
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value="/adddataitembyuser",method = RequestMethod.GET)
+    Integer addUserData(@RequestParam(value="id") String id) throws IOException{
+
+        return dataItemService.addDataItemByUser(id);
+    }
+
+
+    /**
+     * 个人中心，创建dataitem同时，将创建的dataItem的id入到分类数据库对应类document下
+     * @param categoryAddDTO
+     * @return
+     */
+    @RequestMapping(value="/addcate",method = RequestMethod.POST)
+    JsonResult addUserCreateDataItemId(@RequestBody CategoryAddDTO categoryAddDTO){
+
+        return ResultUtils.success(dataItemService.addCateId(categoryAddDTO));
+
+    }
+
+
+    /**
+     * 个人中心删除数据条目操作
+     * @param id
+     * @return
+     */
     @RequestMapping (value = "/del", method = RequestMethod.GET)
     JsonResult delete(@RequestParam(value="id") String id) {
         dataItemService.delete(id);
@@ -152,20 +382,23 @@ public class DataItemRestController {
 
 
 
-    @RequestMapping (value = "/{id}", method = RequestMethod.PUT)
-    JsonResult update(@PathVariable ("id") String id, @RequestBody DataItemUpdateDTO dataItemUpdateDTO) {
-        dataItemService.update(id, dataItemUpdateDTO);
-        return ResultUtils.success();
+
+
+    /**
+     * 个人中心动态创建分类树
+     * @return
+     */
+    @RequestMapping(value = "/createTree",method = RequestMethod.GET)
+    Map<String,List<Map<String,String >>> createTree(){
+        return dataItemService.createTree();
     }
 
+    //user space end
 
 
 
 
-
-    /*******/
-    // 数据条目中包含的数据资源（涉及到数据资源描述信息和数据资源实体）存储在数据容器中，因此需要调用数据容器的部分接口
-    /*******/
+    //dataResource start
 
     /**
      * 根据用户或者数据条目Id，获取其文件管理器中的数据资源
@@ -191,6 +424,9 @@ public class DataItemRestController {
         return ResultUtils.success(null);
     }
 
+
+
+
     /**
      * 获取指定数据资源的详细信息
      * @param id
@@ -202,6 +438,8 @@ public class DataItemRestController {
         JSONObject jsonObject = restTemplate.getForObject("http://" + dataContainerIpAndPort + "/dataResource/{id}", JSONObject.class, id);
         return ResultUtils.success(jsonObject);
     }
+
+
 
     /**
      * 上传数据资源的文件到数据容器
@@ -219,17 +457,15 @@ public class DataItemRestController {
         part.add("file", file.getResource());
 
 
-
-        JSONObject jsonObject =
-                restTemplate.postForObject("http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files",
-                        part,
-                        JSONObject.class);
+        JSONObject jsonObject = restTemplate.postForObject("http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files", part, JSONObject.class);
 
         return ResultUtils.success(jsonObject);
 
 
 
     }
+
+
 
     /**
      * 添加数据资源，在上传数据资源文件到数据容器后，我们还需要对其进行字段补充，再添加到数据库
@@ -246,6 +482,9 @@ public class DataItemRestController {
         return ResultUtils.success(jsonObject);
     }
 
+
+
+
     /**
      * 根据ID 删除数据资源
      * @param id
@@ -257,6 +496,9 @@ public class DataItemRestController {
         restTemplate.delete("http://" + dataContainerIpAndPort + "/dataResource/" + id);
         return ResultUtils.success();
     }
+
+
+
 
     /**
      * 下载数据资源文件
@@ -285,126 +527,46 @@ public class DataItemRestController {
     };
 
 
-    //获得数据量count
-    @RequestMapping (value = "/count", method = RequestMethod.GET)
-    JsonResult count() {
-        return ResultUtils.success(dataItemService.count());
+    //dataResource end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //test api
+
+    /**
+     * //todo 待用接口
+     * 更新
+     * @param id
+     * @param dataItemUpdateDTO
+     * @return
+     */
+    @RequestMapping (value = "/{id}", method = RequestMethod.PUT)
+    JsonResult update(@PathVariable ("id") String id, @RequestBody DataItemUpdateDTO dataItemUpdateDTO) {
+        dataItemService.update(id, dataItemUpdateDTO);
+        return ResultUtils.success();
     }
 
-    //按名查询
-    @RequestMapping(value="/listBySearch",method = RequestMethod.POST)
-    JsonResult listByName(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.listBySearch(dataItemFindDTO));
-    }
 
-    //模型info关联的data,从全部里搜索
-    @RequestMapping(value="/searchFromAll",method = RequestMethod.POST)
-    JsonResult relatedModelsFromAll(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.searchFromAllData(dataItemFindDTO));
-    }
-
+    /**
+     * //todo 测试接口
+     * @param dataItemFindDTO
+     * @return
+     */
     @RequestMapping(value="/test",method = RequestMethod.POST)
     JsonResult test(@RequestBody DataItemFindDTO dataItemFindDTO){
         return ResultUtils.success(dataItemService.test(dataItemFindDTO));
     }
-
-
-    //用户中心查找
-
-    @RequestMapping(value="/searchDataByUserId",method = RequestMethod.GET)
-    JsonResult searchDataByUserId(
-            @RequestParam(value="userOid") String userOid,
-            @RequestParam(value="page") Integer page,
-            @RequestParam(value="pageSize") Integer pagesize,
-            @RequestParam(value="asc") boolean asc,
-            @RequestParam(value="searchText") String searchText
-
-                                  ){
-        return ResultUtils.success(dataItemService.searchDataByUserId(userOid,page,pagesize,asc,searchText));
-    }
-
-
-    //按分级查询  /category/{categorysId}&{page}&{asc}&{pageSize}
-    @RequestMapping(value = "/items/{categorysId}&{page}",method = RequestMethod.GET)
-    JsonResult listByClassification(
-                                    @PathVariable  String categorysId,
-                                    @PathVariable Integer page
-
-
-                                     ){
-        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10));
-
-    }
-
-    //用户创建分类数据条目id入库
-    @RequestMapping(value="/addcate",method = RequestMethod.POST)
-    JsonResult addUserCreateDataItemId(@RequestBody CategoryAddDTO categoryAddDTO){
-
-        return ResultUtils.success(dataItemService.addCateId(categoryAddDTO));
-
-    }
-
-
-    //取得hubs
-    @RequestMapping(value = "/hubs",method = RequestMethod.GET)
-    JsonResult getHubs(@RequestParam(value = "hubnbm")Integer hubnbm){
-        return ResultUtils.success(dataItemService.getHubs(hubnbm));
-    }
-
-
-
-    //动态生成树
-    @RequestMapping(value = "/createTree",method = RequestMethod.GET)
-    Map<String,List<Map<String,String >>> createTree(){
-        return dataItemService.createTree();
-    }
-    //动态拿到data_item_info页面中的category
-
-    //data_item_info中的category
-    @RequestMapping(value = "/category",method = RequestMethod.GET)
-    JsonResult getCategory(@RequestParam(value = "id") String id){
-        return ResultUtils.success(dataItemService.getCategory(id));
-    }
-
-
-
-    //getRelated modelsList
-    @RequestMapping(value = "/briefrelatedmodels",method = RequestMethod.GET)
-    JsonResult getBriefRelatedModels(@RequestParam(value = "id") String id){
-        return ResultUtils.success(dataItemService.getRelatedModels(id));
-    }
-    @RequestMapping(value = "/allrelatedmodels",method = RequestMethod.GET)
-    JsonResult getRelatedModels(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
-        return ResultUtils.success(dataItemService.getAllRelatedModels(id,more));
-    }
-    //addRelated Models
-    @RequestMapping(value = "/models",method = RequestMethod.POST)
-    JsonResult addRelatedModels(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.addRelatedModels(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
-    }
-
-    //getRelated data sList
-    @RequestMapping(value = "/briefrelateddata",method = RequestMethod.GET)
-    JsonResult getBriefRelatedDatas(@RequestParam(value = "id") String id){
-        return ResultUtils.success(dataItemService.getRelatedData(id));
-    }
-
-    @RequestMapping(value = "/allrelateddata",method = RequestMethod.GET)
-    JsonResult getRelatedDatas(@RequestParam(value = "id") String id,@RequestParam(value = "more") Integer more){
-        return ResultUtils.success(dataItemService.getAllRelatedData(id,more));
-    }
-
-    //addRelated Data
-    @RequestMapping(value = "/data",method = RequestMethod.POST)
-    JsonResult addRelatedDatas(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.addRelatedData(dataItemFindDTO.getDataId(),dataItemFindDTO.getRelatedModels()));
-    }
-
-
-
-
-
-
 
 
 }

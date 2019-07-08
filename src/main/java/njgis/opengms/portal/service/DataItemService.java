@@ -385,25 +385,7 @@ public class DataItemService {
         return dataItemDao.insert(dataItem);
     }
 
-    public Page<DataItem> list(DataItemFindDTO dataItemFindDTO) {
-        //TODO Sort是可以设置排序字段的
-        int page;
-        if(dataItemFindDTO.getPage()==0){
-            page=dataItemFindDTO.getPage();
-        }else{
-            page=dataItemFindDTO.getPage()-1;
-        }
-//        int page = dataItemFindDTO.getPage();
-        int pageSize = dataItemFindDTO.getPageSize();
-        //默认以创建时间排序
-        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
-        return dataItemDao.findAll(PageRequest.of(page, pageSize,sort));
-    }
 
-    //list条目总数
-    public long count() {
-        return dataItemDao.count();
-    }
 
 
 
