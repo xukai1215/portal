@@ -41,8 +41,8 @@ public class DataItemController {
 
         ModelAndView modelAndView = new ModelAndView();
 
-//        modelAndView.setViewName("data_items");
-        modelAndView.setViewName("data_items_static_homePage");
+        modelAndView.setViewName("data_items");
+//        modelAndView.setViewName("data_items_static_homePage");
 
 //        modelAndView.addObject("name","OpenGMS");
 //        modelAndView.addObject("data",dataItems);
