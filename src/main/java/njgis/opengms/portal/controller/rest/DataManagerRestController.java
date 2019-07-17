@@ -42,7 +42,7 @@ public class DataManagerRestController {
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     JsonResult listData(@RequestParam("author") String author,@RequestParam("type") String type) {
 
-        String url="http://172.21.212.64:8081/dataResource/listByCondition?value={author}&type={type}";
+        String url=dataContainerIpAndPort+"dataResource/listByCondition?value={author}&type={type}";
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,author,type);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
@@ -156,7 +156,7 @@ public class DataManagerRestController {
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
     JsonResult deleteData(@RequestParam("id") String id) {
 
-        String url="http://172.21.212.64:8081/dataResource/"+id;
+        String url=dataContainerIpAndPort+"dataResource/"+id;
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.DELETE,null,JSONObject.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {

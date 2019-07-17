@@ -48,6 +48,8 @@
                                    :disabled="!info.modelInfo.hasTest">Load test data
                         </el-button>
 
+
+
                         <el-button plain round type="primary" @click="invoke()">
                             <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                         </el-button>
@@ -98,12 +100,56 @@
 
                                                     </el-col>
                                                     <el-col :span="6" :offset="1">
-                                                        <el-input class="model-input" :value="modelInEvent.tag"
+                                                        <!--:value="modelInEvent.tag"-->
+                                                        <el-input class="model-input"
+                                                                  :value="modelInEvent.tag"
+                                                                  :id="'datainput'+inEventIndex"
                                                                   readonly>
                                                         </el-input>
                                                     </el-col>
+
                                                     <el-col :span="8">
                                                         <div class="_btn-group">
+
+                                                            <el-button plain round type="primary"
+                                                                       @click="selectFromMyData(inEventIndex,modelInEvent)"
+                                                            icon="el-icon-user-solid"
+                                                            circle>
+                                                                <i class="el-icon-menu"></i>
+                                                            </el-button>&nbsp;
+
+                                                            <el-dialog
+                                                                    title="Select From My Data"
+                                                                    :visible.sync="selectDataDialog"
+                                                                    width="30%"
+                                                                    height="50%"
+
+                                                                    style="overflow-y: scroll"
+                                                            >
+
+                                                                <!--<el-input   placeholder="search user data.."  @keyup.native=""></el-input>-->
+
+                                                                <el-card   class="is-never-shadow" id="selectUserData" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
+
+                                                                    <el-card class="is-hover-shadow"    v-for="item in userData"  :id="item.id"  style="margin-top: 10px;margin-bottom: 10px;" @click.native="selectUserData(item,$event)">
+
+                                                                            <strong>Name</strong><span>{{item.fileName}}</span>&nbsp;&nbsp;&nbsp;<strong>Suffix:</strong><span>{{item.suffix}}</span>
+
+
+                                                                    </el-card>
+
+
+                                                                </el-card>
+
+
+
+                                                                <span slot="footer" class="dialog-footer">
+                                                                <el-button @click="confirmSelect()">Confirm</el-button>
+                                                                <el-button @click="selectDataDialog = false">Cancel</el-button>
+                                                                </span>
+                                                            </el-dialog>
+
+
                                                             <el-button plain round type="primary"
                                                                        @click="upload(modelInEvent)">
                                                                 <i class="fa fa-cloud-upload"></i>
@@ -303,6 +349,8 @@
 
 <!--<script src="../static/js/common/knockout-3.4.2.js"></script>-->
 <script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+
 <!--<script src="../static/js/common/jquery.gritter.min.js"></script>-->
 <!--<script src="../static/js/common/lodash.js"></script>-->
 <script src="../static/js/common/bootstrap.js"></script>
@@ -314,9 +362,8 @@
 <!--<script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>-->
 <!--<script type="text/javascript" src="../static/js/common/computableEditorTest.js"></script>-->
 
-
+<script src="../static/js/common/axios.min.js"></script>
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
 <script src="../static/js/page/task.js"></script>
-<script src="../static/js/common/loadUser.js"></script>
 
 </html>

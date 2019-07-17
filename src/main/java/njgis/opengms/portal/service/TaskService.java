@@ -284,7 +284,7 @@ public class TaskService {
 
     public JSONObject getServiceTask(String md5) {
 
-        String urlStr = "http://localhost:8084/GeoModeling/taskNode/getServiceTask/" + md5;
+        String urlStr = "http://222.192.7.75:8084/GeoModeling/taskNode/getServiceTask/" + md5;
         JSONObject result = connentURL(Utils.Method.GET, urlStr);
 
         return result;
@@ -292,7 +292,7 @@ public class TaskService {
 
     public JSONObject createTask(String id, String md5, String ip, int port, String username) {
 
-        String urlStr = "http://localhost:8084/GeoModeling/computableModel/createTask";
+        String urlStr = "http://222.192.7.75:8084/GeoModeling/computableModel/createTask";
 //        Map<String, Object> paramMap = new HashMap<String, Object>();
 //        paramMap.put("ip", ip);
 //        paramMap.put("port", port);
