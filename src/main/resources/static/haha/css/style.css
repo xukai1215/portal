@@ -173,3 +173,7 @@ model_date{
   margin-top: 4rem;
   color: #3DA0DB;
 }
+
+.selectData{
+  border: orange 2px solid;
+}
