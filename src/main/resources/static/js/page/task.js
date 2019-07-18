@@ -37,7 +37,21 @@ var vue = new Vue({
         ],
         inEvent: [],
         outEvent: [],
-        oid: null
+        oid: null,
+
+        //select data from user
+        selectDataDialog:false,
+        userOid:'',
+        loading:false,
+        userData:[],
+        totalNum:'',
+        page:1,
+        pageSize:10,
+        sortAsc:false,
+        selectData:[],
+        keyInput:'',
+        modelInEvent:{}
+
     },
     computed: {},
     methods: {
@@ -225,6 +239,7 @@ var vue = new Vue({
 
         async invoke() {
 
+            console.log(this.modelInEvent)
             const loading = this.$loading({
                 lock: true,
                 text: "Loading",
@@ -345,7 +360,101 @@ var vue = new Vue({
                 } else {
                 }
             }, 3000);
+        },
+
+
+        selectFromMyData(key,modelInEvent) {
+            this.selectDataDialog = true
+            this.selectData=[]
+            this.keyInput=key
+
+            let that=this
+            axios.get("/dataManager/list",{
+                params:{
+                    author:this.useroid,
+                    type:"author"
+                }
+
+            })
+                .then((res)=>{
+
+                    // console.log("oid datas",this.userId,res.data.data)
+                    that.userData=res.data.data
+                    that.totalNum = res.data.data.totalElements;
+                    that.loading = false
+                })
+
+
+            this.modelInEvent=modelInEvent
+
+
+        },
+        currentPage(){
+
+        },
+
+        loadMore(e){
+
+        },
+        selectUserData(item,e){
+            // console.log(e)
+            this.$message("you have selected:  "+item.fileName+'.'+item.suffix);
+            if(this.selectData.length===0){
+                let d={e,item}
+                this.selectData.push(d)
+                e.target.style.background='aliceblue'
+
+            }else{
+                let e2=this.selectData.pop();
+
+                if(e2.e!=e){
+
+                    let d={e,item}
+                    e2.e.target.style.background='';
+                    e.target.style.background='aliceblue';
+                    this.selectData.push(d)
+
+                }
+
+            }
+
+
+
+
+
+        },
+        confirmSelect(){
+            if(this.selectData.length==0){
+                this.$message("you slected no data")
+            }else{
+                let da=this.selectData.pop()
+
+                let key=this.keyInput
+                // $('#datainput'+key)[0].value=da.item.fileName
+
+                this.selectDataDialog = false
+
+                //todo 拼接url
+                this.modelInEvent.url="http://172.21.212.64:8081/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
+                this.modelInEvent.tag=da.item.fileName
+
+
+
+
+
+
+
+
+            }
+
+
+            this.selectData=[]
+
+
+
+
         }
+
     },
     async mounted() {
         let ids = window.location.href.split("/");
@@ -357,5 +466,20 @@ var vue = new Vue({
         }
         this.info = data;
         console.log(this.info);
+
+
+        //get login user info
+        let that=this
+        axios.get("/user/load")
+            .then((res)=>{
+                if(res.status==200){
+                    that.useroid=res.data.oid
+                }
+
+            })
+
+
+
+
     }
 });
