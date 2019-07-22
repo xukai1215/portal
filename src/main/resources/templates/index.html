@@ -7,8 +7,8 @@
     <meta name="viewport"
         content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>OpenGMS</title>
-    <meta name="keywords" content="opengms,geographic model,geographic data">
-    <meta name="description" content="OpenGMS can help you explore and share resources about geographic modeling and simulation.">
+    <meta name="keywords" content="opengms, geographic model, geographic data"/>
+    <meta name="description" content="OpenGMS supports to share your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
     <link rel="stylesheet" href="../static/css/index/element_ui/index.css">
@@ -23,6 +23,17 @@
 .el-col-1{
     width:4.75%
 }
+    .content-content{
+        text-align: justify;
+
+    }
+    .margin-left-30{
+        margin-left: 30px;
+    }
+    .margin-right-30{
+        margin-right: 30px;
+    }
+
 
 </style>
 
@@ -39,15 +50,17 @@
                         <div type="flex" align="middle" class="contain-bg1 el-row">
                             <div class="col-md-5 col-md-offset-1">
                                 <el-container>
-                                    <el-header style="height: 70px;margin-top: 70px;text-align: left">
-                                        <h1>Open Geographic Modeling and Simulation</h1>
+                                    <el-header style="height: 70px;margin-top: 60px;text-align: left">
+                                        <h1>Open Geographic Modeling and Simulation (OpenGMS)</h1>
                                     </el-header>
                                     <el-main style="margin-top: 38px;">
 
-                                        <p style="margin-top: 32px; text-align:left">A platform where you can explore and share resources about
-                                            geographic modeling and simulation. A community where researchers from
-                                            every discipline can work collaboratively to construct a better world
-                                            and build knowledge libraries as valuable legacies for the next generations.</p>
+                                        <p style="margin-top: 12px; text-align:justify">This platform supports to share your resources in geographic
+                                            modeling and simulation. Also, this platform provides a community for
+                                            collaboration works among researchers in various disciplines. Through the
+                                            sharing and collaboration works, this platform contributes to building
+                                            resource libraries, leaving them for the next generation, and ultimately
+                                            advance in knowledge. </p>
                                         <el-button type="warning" style="margin-top: 5px;float: left"
                                             @click="window.open('/modelItem/repository')">Explore more</el-button>
                                         <el-button type="warning" style="margin-top: 5px;float: left"
@@ -109,7 +122,7 @@
                 <i class="fa fa-cloud"></i>
             </div> -->
                 <!-- <h4>-💡-</h4> -->
-                <h2>&nbsp;Platform Basic Functionalities</h2>
+                <h2>&nbsp;Main Functionalities</h2>
 
             </div>
 
@@ -120,7 +133,7 @@
                             <i class="fa fa-globe"></i>
                         </div>
                         <h3>SHARING</h3>
-                        <p>Sharing models, data and computers as resuable resources. </p>
+                        <p>Sharing models, data and computing resources as reusable resources. </p>
                     </el-card>
                 </div>
                 <div class="el-col el-col-8  content">
@@ -129,7 +142,7 @@
                             <i class="fa fa-cube"></i>
                         </div>
                         <h3>REUSING</h3>
-                        <p>Using models, data and computers as services in web environment.</p>
+                        <p>Reusing models, data and computing resources as services in web environment.</p>
                     </el-card>
                 </div>
                 <div class="el-col el-col-8 content">
@@ -138,7 +151,7 @@
                             <i class="fa fa-share-alt-square"></i>
                         </div>
                         <h3>INTEGRATING</h3>
-                        <p>Integrating different models, data and computers to solve real world problems.</p>
+                        <p>Integrating different models, data and computing resources to solve real world problems.</p>
                     </el-card>
                 </div>
             </div>
@@ -166,14 +179,7 @@
                             <!-- <i class="fa fa-globe"></i> -->
                             <span>Model Repository</span>
                         </div>
-                        <p class="content-content">Collecting model resources to build a dictionary where all models
-                            (also
-                            include related tools, algorithms, ect.) be organized in a formal way.
-                            Users can discover a model to find its detailed descriptive information, conceptual
-                            description,
-                            logical description, computable resources, evolution history, application scenarios and so
-                            forth.
-                            We only publish users' resources under their clear permission.</p>
+                        <p class="content-content margin-right-30">The model repository collects model resources to build a dictionary where all models (also include related tools, algorithms, etc.) are organized in a formal way. Users can find a model with its detailed information, conceptual and logical descriptions, computable resources, developing history, and applications. This repository publishes  model resources under the permission of the author.</p>
                         <el-button type="warning" style="margin-top: 32px"
                             @click="window.open('/modelItem/repository')">Discover
                         </el-button>
@@ -215,11 +221,7 @@
                             <!-- <i class="fa fa-globe"></i> -->
                             <span>Data Repository</span>
                         </div>
-                        <p class="content-content">Collecting data resources to build a harbor where users can explore
-                            modeling-related data through an universal center.
-                            Data resources can be from the sharing of users with their public option. And various data
-                            sharing sites are linked to help users search interested data without go here and there.
-                            We only publish users' resources under their clear permission.</p>
+                        <p class="content-content margin-left-30">The data repository collects data resources to build a community where users can explore modeling-related data through a universal center. Users can share their data resources to the data repository. Various data sharing sites can be also linked to support users so that they do not visit individual sites.  This data repository publishes data and their related information under the permission of the author.</p>
                         <el-button type="warning" style="margin-top: 32px"
                             @click="window.open('/dataItem/repository')">Discover
                         </el-button>
@@ -236,14 +238,7 @@
                             <!-- <i class="fa fa-globe"></i> -->
                             <span>Using Models as Services</span>
                         </div>
-                        <p class="content-content" style="text-align: left;">Model as a Service, Data as a Service and
-                            Computer as a Service in an open web environment.
-                            Users can setup input data and run a model via a web client, and the related model would be
-                            executed in a remote computer node.
-                            A user can invoke a model service before boarding and obtain results when get off.
-                            And a set of solutions are offered to help users convert original models as reusable
-                            services,
-                            publish data files as resuable services and share computers as available services.
+                        <p class="content-content margin-right-30">This platform provides model, data, and computing resources as corresponding services in an open web environment. Users can setup input data and run a model via a web client, and the related model will be executed in a remote computer node. Users can invoke a model service before boarding and obtain results when get off. A set of alternative solutions are available to convert original models as reusable services, to publish data files as reusable services and to share computers as available services.
                         </p>
                         <el-button type="warning" style="margin-top: 32px"
                             @click="window.open('/modelItem/3f6857ba-c2d2-4e27-b220-6e5367803a12')">
@@ -310,7 +305,7 @@
                             <!-- <i class="fa fa-globe"></i> -->
                             <span>Thematic Center</span>
                         </div>
-                        <p class="content-content">Regarding a research topic or a specific problem, multi-disciplinary
+                        <p class="content-content margin-left-30">Regarding a research topic or a specific problem, multi-disciplinary
                             knowledge could be involved.
                             Several thematic centers are constructed to help researchers collect models, data and other
                             related resources.
@@ -456,7 +451,7 @@
                                     <div class="el-col el-col-10">
                                         <div>
                                             <div class="el-col el-col-24" style="word-wrap:break-word;">
-                                                <p class="content-content">Model Service Container is developed based on the open source NodeJS, and it mainly provides tools/functions for users to deploy a model as a reusable model-service which can also be managed in the model service container. It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).</p>
+                                                <p class="content-content margin-right-30">Model Service Container is developed based on the open source NodeJS, and it mainly provides tools/functions for users to deploy a model as a reusable model-service which can also be managed in the model service container. It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).</p>
                                             </div>
                                         </div>
 
@@ -489,7 +484,7 @@
                                     <div class="el-col el-col-10">
                                         <div class="el-row">
                                             <div class="el-col el-col-24" style="word-wrap:break-word;">
-                                                <p class="content-content">Data Service Container is developed based on the open source NodeJS project, and it mainly provides tools/functions for users to publish data as reusable data-services. It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).
+                                                <p class="content-content margin-right-30">Data Service Container is developed based on the open source NodeJS project, and it mainly provides tools/functions for users to publish data as reusable data-services. It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).
                                                 </p>
                                             </div>
                                         </div>
@@ -524,15 +519,7 @@
                                     <div class="el-col el-col-10">
                                         <div class="el-row">
                                             <div class="el-col el-col-24" style="word-wrap:break-word;">
-                                                <p class="content-content">Model Wrapping Tools are some tools that help
-                                                    users to wrap their own models as services.
-                                                    Tools include Programming Libraries for converting original program
-                                                    as
-                                                    service-enabled program (currently supporting C++, C#, Java and
-                                                    Python)
-                                                    and Model Service Packaging tool for packaging model execution
-                                                    related
-                                                    files as one zip file.</p>
+                                                <p class="content-content margin-right-30">Model Wrapping Tools help users to wrap their own models as services. The tools include programming libraries for converting original program as service-enabled program (currently supporting C++, C#, Java and Python), and the Model Service Packaging tool for packaging model execution related files as one zip file.</p>
                                             </div>
                                         </div>
 
@@ -568,7 +555,7 @@
                     <i class="fa fa-cube"></i>
                 </div> -->
                     <!-- <h4>-👬-</h4> -->
-                    <h2>Some Collaborators</h2>
+                    <h2>Collaborators</h2>
                 </div>
 
                 <div style="border-radius: 20px" class="el-row">
@@ -741,9 +728,9 @@
                 </div>
                 <br>
 
-                <center><q>Not limited to these avatars. Please <a href="" style="color:blue">contact us</a> if you
+                <center><q>We are looking for more collaborators. Please <a href="mailto:nj_gis@163.com" style="color:blue">contact us</a> if you
                         would
-                        like to shown in this banner.</q>
+                        like to be shown in this banner.</q>
                 </center>
 
 
@@ -758,7 +745,7 @@
                     <i class="fa fa-cube"></i>
                 </div> -->
                     <!-- <h4>-🤝-</h4> -->
-                    <h2>Our Important Accompanies</h2>
+                    <h2>Accompanies</h2>
                     <!-- <p>Multi-disciplinary knowledge provided by dispersal modeling researchers. knowledge provided by dispersal modeling researchers.</p> -->
                 </div>
             </div>
@@ -782,7 +769,7 @@
 
                 </div>
                 <div class="el-col el-col-6">
-                    <a href="www.njnu.edu.cn" target="_blank">
+                    <a href="http://www.njnu.edu.cn" target="_blank">
                         <img src="../static/img/team/NJNU.jpg" style="width: 100px;height: 80px">
                     </a>
                 </div>

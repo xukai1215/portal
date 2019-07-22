@@ -180,7 +180,7 @@ public class ModelItemService {
             conceptualJson.put("name",conceptualModel.getName());
             conceptualJson.put("oid",conceptualModel.getOid());
             conceptualJson.put("description",conceptualModel.getDescription());
-            conceptualJson.put("image",conceptualModel.getImage().size()==0?null:conceptualModel.getImage().get(0));
+            conceptualJson.put("image",conceptualModel.getImage().size()==0?null:htmlLoadPath+conceptualModel.getImage().get(0));
             conceptualArray.add(conceptualJson);
         }
 
@@ -192,7 +192,7 @@ public class ModelItemService {
             logicalJson.put("name",logicalModel.getName());
             logicalJson.put("oid",logicalModel.getOid());
             logicalJson.put("description",logicalModel.getDescription());
-            logicalJson.put("image",logicalModel.getImage().size()==0?null:logicalModel.getImage().get(0));
+            logicalJson.put("image",logicalModel.getImage().size()==0?null:htmlLoadPath+logicalModel.getImage().get(0));
             logicalArray.add(logicalJson);
         }
 
@@ -217,9 +217,19 @@ public class ModelItemService {
             modelInfo.setImage(htmlLoadPath+image);
         }
 
+        //meta keywords
+        List<String> keywords=modelInfo.getKeywords();
+        String meta_keywords="";
+        if(keywords.size()!=0) {
+            meta_keywords = keywords.toString().replace("[", ", ").replace("]", "");
+        }
+
+
+
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("model_item_info");
         modelAndView.addObject("modelInfo",modelInfo);
+        modelAndView.addObject("metaKeywords",meta_keywords);
         modelAndView.addObject("classifications",classResult);
         modelAndView.addObject("detail",detailResult);
         modelAndView.addObject("date",dateResult);
