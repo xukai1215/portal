@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Model Item Info | OpenGMS</title>
-
+    <title th:text="${modelInfo.name}+' | OpenGMS'">Model Item Info | OpenGMS</title>
+    <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
+    <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
     <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
     <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
     <link rel="stylesheet" th:href="@{../static/css/base/bootstrap.min.css}">
@@ -136,7 +137,7 @@
                                 <div class="img" th:switch="${model.image}">
                                     <img th:case="''" src="../static/img/model/conceptual.png">
                                     <img th:case="null" src="../static/img/model/conceptual.png">
-                                    <img th:case="*" th:src="'../static/img'+${model.image}">
+                                    <img th:case="*" th:src="${model.image}">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/conceptualModel/'+${model.oid}" target="_blank"
@@ -169,7 +170,7 @@
                                 <div th:switch="${model.image}" class="img">
                                     <img th:case="''" src="../static/img/model/logical.png">
                                     <img th:case="null" src="../static/img/model/logical.png">
-                                    <img th:case="*" th:src="'../static/img'+${model.image}">
+                                    <img th:case="*" th:src="${model.image}">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/logicalModel/'+${model.oid}" target="_blank" th:text="${model.name}">Ground
@@ -553,6 +554,7 @@
 
                     <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
 
+
                 </div>
             </div>
         </div>
@@ -565,6 +567,7 @@
 </div>
 
 </body>
+
 
 <script src="../static/js/common/jquery-3.3.1.min.js"></script>
 <script src="../static/js/common/vue.min.js"></script>

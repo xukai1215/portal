@@ -2,18 +2,10 @@ package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.service.ModelItemService;
-import org.springframework.cglib.core.Predicate;
-import org.springframework.data.domain.*;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import org.springframework.data.repository.query.Param;
-
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +29,7 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
     Page<ModelItemResultDTO> findAllByNameContains(String name,Pageable pageable);
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCase(String name,Pageable pageable);
+
     Page<ModelItem> findByNameLikeIgnoreCase(String name,Pageable pageable);
 
     Page<ModelItemResultDTO> findByClassificationsIn(List<String> classes,Pageable pageable);
@@ -46,7 +39,6 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
     Page<ModelItemResultDTO> findByAuthor(String author,Pageable pageable);
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
-
 
     List<ModelItem> findAllByClassificationsIn(String cla);
 

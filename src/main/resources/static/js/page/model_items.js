@@ -11,7 +11,7 @@ new Vue({
             classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
             classifications2: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
 
-            currentClass: "Hydrosphere",
+            currentClass: "",
 
             pageOption: {
                 paginationShow:false,
@@ -21,7 +21,7 @@ new Vue({
                 pageSize: 10,
 
                 total: 264,
-                searchResult: [{"oid":"3f6857ba-c2d2-4e27-b220-6e5367803a12","name":"SWAT_Model","image":"","description":"The Soil & Water Assessment Tool is a small watershed to river basin-scale model used to simulate the quality and quantity of surface and ground water and predict the environmental impact of land use, land management practices, and climate change. SWAT is widely used in assessing soil erosion prevention and control, non-point source pollution control and regional management in watersheds.","author":"njgis","status":"public","keywords":["SWAT","Hydrology"],"createTime":"2018-06-13T06:19:16.079+0000","viewCount":807},{"oid":"29c36489-6039-467d-9561-6d0b600d7d05","name":"TaiHu_Fvcom","image":"","description":"FVCOM is a prognostic, unstructured-grid, finite-volume, free-surface, 3-D primitive equation coastal ocean circulation model developed by UMASSD-WHOI joint efforts.","author":"njgis","status":"public","keywords":["Fvcome","TaiHu","Hydrology"],"createTime":"2018-06-21T09:12:23.784+0000","viewCount":425},{"oid":"75fd5cca-0bfc-480b-a354-42a826739a02","name":"DCBAH","image":"","description":"DCBAH模型是一个以栅格为模拟单元的分布式水文模型，模型以VC++6.0为开发工具，集成的GIS平台为MapObjects 2.1。 ","author":"KingW","status":"public","keywords":["DCBAH","Hydrology"],"createTime":"2018-09-25T07:03:53.742+0000","viewCount":359},{"oid":"b38ae888-629c-4ef3-a97e-984133f622a9","name":"Groundwater model of fractured karst aquifer","image":"","description":"地下水数值模型是刻画、表征和再现地下水系统的一种有效工具和常用手段，它能够模拟地下水系统特征，以及解决在复杂水文地质条件和地下水开发利用条件下的地下水资源评价问题。","author":"luyuchen","status":"public","keywords":["Groundwater","Hydrology"],"createTime":"2018-09-10T06:11:22.750+0000","viewCount":319},{"oid":"5738ef7c-a5ac-46b5-a347-3c823f71b3a7","name":"FVCOM","image":"/upload/modelItem/552bbfcb-9001-4b8b-b941-65e99cec0b9e.jpg","description":"FVCOM is a prognostic, unstructured-grid, finite-volume, free-surface, 3-D primitive equation coastal ocean circulation model developed by UMASSD-WHOI joint efforts.","author":"njgis","status":"public","keywords":["Fvcom"],"createTime":"2018-07-07T14:22:20.671+0000","viewCount":301},{"oid":"7c6b2b63-8e63-4928-947b-bf4530aa04b8","name":"BDS","image":"","description":"系统实现了在线可视化建模，需求方案的可定制，计算成果在线查询分析、动态显示的等功能。","author":"njgis","status":"public","keywords":["Hydrology"],"createTime":"2018-01-02T10:15:37.411+0000","viewCount":300},{"oid":"b3a88af1-3568-4219-99c4-aa8fbce3227d","name":"SWMM","image":"/upload/modelItem/f9212425-210d-4b92-b0ef-59bcff0e62a9.jpg","description":"The EPA Storm Water Management Model (SWMM) is a dynamic rainfall-runoff simulation model used for single event or long-term (continuous) simulation of runoff quantity and quality from primarily urban areas(EPA SWMM Help).","author":"njgis","status":"public","keywords":["Strom","Water","Hydrology"],"createTime":"2018-10-15T03:23:36.150+0000","viewCount":277},{"oid":"f1539402-d6d4-4b6d-a3a4-f332568f51bc","name":"SEIMS","image":"","description":"The Spatially Explicit Integrated Modeling System (SEIMS), is an integrated, modular, parallelized, fully-distributed watershed modeling and scenario analysis system.","author":"SongJ","status":"public","keywords":["SEIMS","SWAT","Water","BMPs","scenario analysis"],"createTime":"2018-08-11T09:41:46.393+0000","viewCount":270},{"oid":"ac980fc8-bf6a-4753-905f-d517fb9dd439","name":"Jiangsu Coastal Storm Surge Mathematical Model","image":"","description":"This model uses Adcirc model to simulate the storm surge along the coast of Jiangsu province.","author":"wxc627684875","status":"public","keywords":["Jiangsu Province","Storm Surge"],"createTime":"2018-08-13T12:15:06.311+0000","viewCount":269},{"oid":"2101af9f-f26d-49ed-8faa-9f017ed2b62f","name":"Yangtze Estuary&Hangzhou Bay Model","image":"","description":"This model uses FVCOM to simulate the surface of Yangtze Estuary-Hangzhou Bay.","author":"wxc627684875","status":"public","keywords":["Yangtze Estuary","Hangzhou Bay"],"createTime":"2018-08-14T07:12:41.256+0000","viewCount":254}],"users":[{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"KingW","oid":"3"},{"image":"","name":"芦宇辰","oid":"11"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"songjie","oid":"25"},{"image":"/upload/user/ffcd99e4-68e2-4c3c-b9cb-a1dae632b263.jpg","name":"WangXinchang","oid":"49"},{"image":"/upload/user/ffcd99e4-68e2-4c3c-b9cb-a1dae632b263.jpg","name":"WangXinchang","oid":"49"}],
+                searchResult: [],
             },
 
             treeData: [{
@@ -393,6 +393,7 @@ new Vue({
                 case "normal":
                     data.searchText = this.searchText.trim();
                     data.classifications = this.classifications1.length == 0 ? ["all"] : this.classifications1
+                    break;
                 case "advanced":
                     var connects = $(".connect");
                     var props = $(".prop");
@@ -440,6 +441,7 @@ new Vue({
                             timeoutTime=450-responseTimeMs;
                         }
                         setTimeout(() => {
+
                             this.pageOption.total = data.total;
                             this.pageOption.pages = data.pages;
                             this.pageOption.searchResult = data.list;
@@ -447,6 +449,7 @@ new Vue({
                             this.pageOption.progressBar = false;
                             this.pageOption.paginationShow=true;
                         }, timeoutTime);
+
                     }
                     else {
                         console.log("query error!")
@@ -490,6 +493,7 @@ new Vue({
                         if(category==children[j].oid){
                             find=true;
                             this.$refs.tree1.setCurrentKey(children[j].id);
+                            this.currentClass=children[j].label;
                             $(".el-tree-node__expand-icon").eq(i).click();
                             break;
                         }
@@ -510,8 +514,23 @@ new Vue({
             this.pageOption.currentPage=page;
         }
 
-        // this.getModels();
-        this.pageOption.progressBar = false;
+        if(category!=null||page!=null){
+            this.getModels();
+        }
+        else{
+            setTimeout(() => {
+                this.currentClass="Hydrosphere";
+                this.pageOption.total = 264;
+                this.pageOption.pages = 27;
+                this.pageOption.searchResult=[{"oid":"3f6857ba-c2d2-4e27-b220-6e5367803a12","name":"SWAT_Model","image":"","description":"The Soil & Water Assessment Tool is a small watershed to river basin-scale model used to simulate the quality and quantity of surface and ground water and predict the environmental impact of land use, land management practices, and climate change. SWAT is widely used in assessing soil erosion prevention and control, non-point source pollution control and regional management in watersheds.","author":"njgis","status":"public","keywords":["SWAT","Hydrology"],"createTime":"2018-06-13T06:19:16.079+0000","viewCount":807},{"oid":"29c36489-6039-467d-9561-6d0b600d7d05","name":"TaiHu_Fvcom","image":"","description":"FVCOM is a prognostic, unstructured-grid, finite-volume, free-surface, 3-D primitive equation coastal ocean circulation model developed by UMASSD-WHOI joint efforts.","author":"njgis","status":"public","keywords":["Fvcome","TaiHu","Hydrology"],"createTime":"2018-06-21T09:12:23.784+0000","viewCount":425},{"oid":"75fd5cca-0bfc-480b-a354-42a826739a02","name":"DCBAH","image":"","description":"DCBAH模型是一个以栅格为模拟单元的分布式水文模型，模型以VC++6.0为开发工具，集成的GIS平台为MapObjects 2.1。 ","author":"KingW","status":"public","keywords":["DCBAH","Hydrology"],"createTime":"2018-09-25T07:03:53.742+0000","viewCount":359},{"oid":"b38ae888-629c-4ef3-a97e-984133f622a9","name":"Groundwater model of fractured karst aquifer","image":"","description":"地下水数值模型是刻画、表征和再现地下水系统的一种有效工具和常用手段，它能够模拟地下水系统特征，以及解决在复杂水文地质条件和地下水开发利用条件下的地下水资源评价问题。","author":"luyuchen","status":"public","keywords":["Groundwater","Hydrology"],"createTime":"2018-09-10T06:11:22.750+0000","viewCount":319},{"oid":"5738ef7c-a5ac-46b5-a347-3c823f71b3a7","name":"FVCOM","image":"/upload/modelItem/552bbfcb-9001-4b8b-b941-65e99cec0b9e.jpg","description":"FVCOM is a prognostic, unstructured-grid, finite-volume, free-surface, 3-D primitive equation coastal ocean circulation model developed by UMASSD-WHOI joint efforts.","author":"njgis","status":"public","keywords":["Fvcom"],"createTime":"2018-07-07T14:22:20.671+0000","viewCount":301},{"oid":"7c6b2b63-8e63-4928-947b-bf4530aa04b8","name":"BDS","image":"","description":"系统实现了在线可视化建模，需求方案的可定制，计算成果在线查询分析、动态显示的等功能。","author":"njgis","status":"public","keywords":["Hydrology"],"createTime":"2018-01-02T10:15:37.411+0000","viewCount":300},{"oid":"b3a88af1-3568-4219-99c4-aa8fbce3227d","name":"SWMM","image":"/upload/modelItem/f9212425-210d-4b92-b0ef-59bcff0e62a9.jpg","description":"The EPA Storm Water Management Model (SWMM) is a dynamic rainfall-runoff simulation model used for single event or long-term (continuous) simulation of runoff quantity and quality from primarily urban areas(EPA SWMM Help).","author":"njgis","status":"public","keywords":["Strom","Water","Hydrology"],"createTime":"2018-10-15T03:23:36.150+0000","viewCount":277},{"oid":"f1539402-d6d4-4b6d-a3a4-f332568f51bc","name":"SEIMS","image":"","description":"The Spatially Explicit Integrated Modeling System (SEIMS), is an integrated, modular, parallelized, fully-distributed watershed modeling and scenario analysis system.","author":"SongJ","status":"public","keywords":["SEIMS","SWAT","Water","BMPs","scenario analysis"],"createTime":"2018-08-11T09:41:46.393+0000","viewCount":270},{"oid":"ac980fc8-bf6a-4753-905f-d517fb9dd439","name":"Jiangsu Coastal Storm Surge Mathematical Model","image":"","description":"This model uses Adcirc model to simulate the storm surge along the coast of Jiangsu province.","author":"wxc627684875","status":"public","keywords":["Jiangsu Province","Storm Surge"],"createTime":"2018-08-13T12:15:06.311+0000","viewCount":269},{"oid":"2101af9f-f26d-49ed-8faa-9f017ed2b62f","name":"Yangtze Estuary&Hangzhou Bay Model","image":"","description":"This model uses FVCOM to simulate the surface of Yangtze Estuary-Hangzhou Bay.","author":"wxc627684875","status":"public","keywords":["Yangtze Estuary","Hangzhou Bay"],"createTime":"2018-08-14T07:12:41.256+0000","viewCount":254}];
+                this.pageOption.users=[{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"KingW","oid":"3"},{"image":"","name":"芦宇辰","oid":"11"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"NNU_Group","oid":"42"},{"image":"","name":"songjie","oid":"25"},{"image":"/upload/user/ffcd99e4-68e2-4c3c-b9cb-a1dae632b263.jpg","name":"WangXinchang","oid":"49"},{"image":"/upload/user/ffcd99e4-68e2-4c3c-b9cb-a1dae632b263.jpg","name":"WangXinchang","oid":"49"}]
+                this.pageOption.progressBar = false;
+                this.pageOption.paginationShow=true;
+            }, 450);
+        }
+
+
+
 
         //expend
         $("#expend").click(() => {

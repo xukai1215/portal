@@ -3,7 +3,6 @@
     $.ajax({
         url: '/user/load',
         type: 'get',
-        // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
         // dataType : 'json',
         success: function (result) {
             var json = JSON.parse(result);
@@ -31,16 +30,3 @@
         }
     });
 
-    // fetch("/user/load", {
-    //     credentials: 'include',
-    // })
-    //     .then((res) => {
-    //         return res.json()
-    //     })
-    //     .then((json) => {
-    //         if (json.oid == '') {
-    //             var menuitem=$(".el-menu-item");
-    //             var count=menuitem.length;
-    //             menuitem.eq(count-2).innerHTML("<a href='/user/out'>Log Out</a>")
-    //         }
-    //     })
