@@ -8,7 +8,7 @@
         content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>OpenGMS</title>
     <meta name="keywords" content="opengms, geographic model, geographic data"/>
-    <meta name="description" content="OpenGMS supports to share your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
+    <meta name="description" content="OpenGMS supports sharing your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
     <link rel="stylesheet" href="../static/css/index/element_ui/index.css">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/swiper.min.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/style.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/universal.css" />
+
 </head>
 
 <style>
@@ -34,8 +35,22 @@
         margin-right: 30px;
     }
 
+/*--------- tooltip */
+.tooltip {
+    display: none;
+    /*background:url(images/tooltip_bg_up.png) no-repeat;*/
+    width:431px;
+    height:225px;
+    padding:10px 12px 23px 10px;
+    z-index:200}
+
+.tooltip.bottom {
+    /*background:url(images/tooltip_bg_bot.png) no-repeat;*/
+    padding:23px 12px 10px 10px;}
+
 
 </style>
+
 
 <body>
     <div id="app">
@@ -55,7 +70,7 @@
                                     </el-header>
                                     <el-main style="margin-top: 38px;">
 
-                                        <p style="margin-top: 12px; text-align:justify">This platform supports to share your resources in geographic
+                                        <p style="margin-top: 12px; text-align:justify">This platform supports sharing your resources in geographic
                                             modeling and simulation. Also, this platform provides a community for
                                             collaboration works among researchers in various disciplines. Through the
                                             sharing and collaboration works, this platform contributes to building
@@ -796,5 +811,13 @@
 <!-- <script src="js/globe.js"></script> -->
 <script src="../static/js/common/loadUser.js"></script>
 <!-- <script src="page/navigation/navbar/navbar.js"></script> -->
+<script>
+    $("#wx").mouseover(function(){
+        $("#wxqrcode").fadeIn();
+    });
+    $("#wx").mouseout(function(){
+        $("#wxqrcode").fadeOut();
+    });
+</script>
 
 </html>
