@@ -12,7 +12,7 @@ a{
 li a{
     color:white;
 }
-li a:focus,li a:active,li a:hover,h3:hover{
+li a:focus,li a:active,li a:hover{
     color:#00c0ff !important;
     text-decoration:none;
     outline:0;

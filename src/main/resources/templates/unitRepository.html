@@ -21,6 +21,9 @@
         .el-card__body {
             padding: 15px 10px;
         }
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -92,7 +95,7 @@
 
                 <div class="modelPanel">
                     <div class="content-body">
-                        <div class="list-item" v-for="(unit,key) in pageOption.searchResult">
+                        <div v-cloak class="list-item" v-for="(unit,key) in pageOption.searchResult">
                             <div class="detail_title">
                                 <a :class="unit.viewCount>500?'hot':''" :href="'/repository/unit/'+ unit.oid" target="_blank">{{unit.name}}&nbsp&nbsp</a>
                             </div>
