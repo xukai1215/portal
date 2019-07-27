@@ -2368,18 +2368,6 @@ mounted() {
 
 
 
-
-
-
-
-        axios.get("/dataItem/amountofuserdata",{
-            params:{
-                userOid:this.userId
-            }
-        }).then(res=>{
-            that.dcount=res.data
-    });
-
         $("#author").val(this.userName);
 
         var index=window.sessionStorage.getItem("index");
