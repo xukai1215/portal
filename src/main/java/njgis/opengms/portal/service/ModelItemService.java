@@ -62,6 +62,9 @@ public class ModelItemService {
     ModelItemDao modelItemDao;
 
     @Autowired
+    ModelItemVersionDao modelItemVersionDao;
+
+    @Autowired
     ConceptualModelDao conceptualModelDao;
 
     @Autowired
@@ -239,6 +242,283 @@ public class ModelItemService {
         modelAndView.addObject("computableModels",computableArray);
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelInfo.getReferences())));
+
+        return modelAndView;
+    }
+
+    public ModelAndView getPage4Compare(String id){
+        //条目信息
+        ModelItem modelInfo=getByOid(id);
+
+        Sort sort = new Sort(Sort.Direction.DESC, "version");
+        Pageable pageable = PageRequest.of(0, 5, sort);
+        List<ModelItemVersion> modelItemVersionList = modelItemVersionDao.findAllByOid(id,pageable);
+        ModelItemVersion modelItemVersion=modelItemVersionList.get(0);
+        //类
+        JSONArray classResult=new JSONArray();
+
+        List<String> classifications = modelInfo.getClassifications();
+        for(int i=0;i<classifications.size();i++){
+
+            JSONArray array=new JSONArray();
+            String classId=classifications.get(i);
+
+            do{
+                Classification classification=classificationService.getByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
+            }while(classId!=null);
+
+            JSONArray array1=new JSONArray();
+            for(int j=array.size()-1;j>=0;j--){
+                array1.add(array.getString(j));
+            }
+
+            classResult.add(array1);
+
+        }
+
+        JSONArray classResult1=new JSONArray();
+
+        List<String> classifications1 = modelItemVersion.getClassifications();
+        for(int i=0;i<classifications.size();i++){
+
+            JSONArray array=new JSONArray();
+            String classId=classifications.get(i);
+
+            do{
+                Classification classification=classificationService.getByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
+            }while(classId!=null);
+
+            JSONArray array1=new JSONArray();
+            for(int j=array.size()-1;j>=0;j--){
+                array1.add(array.getString(j));
+            }
+
+            classResult1.add(array1);
+
+        }
+
+
+        //详情页面
+        String detailResult;
+        String model_detailDesc=modelInfo.getDetail();
+        int num=model_detailDesc.indexOf("upload/document/");
+        if(num==-1||num>20){
+            detailResult=model_detailDesc;
+        }
+        else {
+            if(model_detailDesc.indexOf("/")==0){
+                model_detailDesc.substring(1);
+            }
+            //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
+            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
+            try {
+                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            if (model_detailDesc.length() > 0) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    StringBuilder detail = new StringBuilder();
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(file);
+                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+                        BufferedReader br = new BufferedReader(inputStreamReader);
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
+                            detail.append(line);
+                        }
+                        br.close();
+                        inputStreamReader.close();
+                        fileInputStream.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    detailResult = detail.toString();
+                } else {
+                    detailResult = model_detailDesc;
+                }
+            } else {
+                detailResult = model_detailDesc;
+            }
+        }
+
+        String detailResult1;
+        String model_detailDesc1=modelItemVersion.getDetail();
+        int num1=model_detailDesc1.indexOf("upload/document/");
+        if(num1==-1||num1>20){
+            detailResult1=model_detailDesc1;
+        }
+        else {
+            if(model_detailDesc1.indexOf("/")==0){
+                model_detailDesc1.substring(1);
+            }
+            //model_detailDesc1 = model_detailDesc1.length() > 0 ? model_detailDesc1.substring(1) : model_detailDesc1;
+            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc1;
+            try {
+                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            if (model_detailDesc1.length() > 0) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    StringBuilder detail = new StringBuilder();
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(file);
+                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+                        BufferedReader br = new BufferedReader(inputStreamReader);
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
+                            detail.append(line);
+                        }
+                        br.close();
+                        inputStreamReader.close();
+                        fileInputStream.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    detailResult1 = detail.toString();
+                } else {
+                    detailResult1 = model_detailDesc1;
+                }
+            } else {
+                detailResult1 = model_detailDesc1;
+            }
+        }
+
+        //relate
+        ModelItemRelate modelItemRelate=modelInfo.getRelate();
+        List<String> conceptual=modelItemRelate.getConceptualModels();
+        List<String> computable=modelItemRelate.getComputableModels();
+        List<String> logical=modelItemRelate.getLogicalModels();
+
+        JSONArray conceptualArray=new JSONArray();
+        for(int i=0;i<conceptual.size();i++){
+            String oid=conceptual.get(i);
+            ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+            JSONObject conceptualJson = new JSONObject();
+            conceptualJson.put("name",conceptualModel.getName());
+            conceptualJson.put("oid",conceptualModel.getOid());
+            conceptualJson.put("description",conceptualModel.getDescription());
+            conceptualJson.put("image",conceptualModel.getImage().size()==0?null:htmlLoadPath+conceptualModel.getImage().get(0));
+            conceptualArray.add(conceptualJson);
+        }
+
+        JSONArray logicalArray=new JSONArray();
+        for(int i=0;i<logical.size();i++){
+            String oid=logical.get(i);
+            LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+            JSONObject logicalJson = new JSONObject();
+            logicalJson.put("name",logicalModel.getName());
+            logicalJson.put("oid",logicalModel.getOid());
+            logicalJson.put("description",logicalModel.getDescription());
+            logicalJson.put("image",logicalModel.getImage().size()==0?null:htmlLoadPath+logicalModel.getImage().get(0));
+            logicalArray.add(logicalJson);
+        }
+
+        JSONArray computableArray=new JSONArray();
+        for(int i=0;i<computable.size();i++){
+            String oid=computable.get(i);
+            ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+            JSONObject computableJson = new JSONObject();
+            computableJson.put("name",computableModel.getName());
+            computableJson.put("oid",computableModel.getOid());
+            computableJson.put("description",computableModel.getDescription());
+            computableArray.add(computableJson);
+        }
+
+        ModelItemRelate modelItemRelate1=modelItemVersion.getRelate();
+        List<String> conceptual1=modelItemRelate1.getConceptualModels();
+        List<String> computable1=modelItemRelate1.getComputableModels();
+        List<String> logical1=modelItemRelate1.getLogicalModels();
+
+        JSONArray conceptualArray1=new JSONArray();
+        for(int i=0;i<conceptual1.size();i++){
+            String oid=conceptual1.get(i);
+            ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+            JSONObject conceptualJson = new JSONObject();
+            conceptualJson.put("name",conceptualModel.getName());
+            conceptualJson.put("oid",conceptualModel.getOid());
+            conceptualJson.put("description",conceptualModel.getDescription());
+            conceptualJson.put("image",conceptualModel.getImage().size()==0?null:htmlLoadPath+conceptualModel.getImage().get(0));
+            conceptualArray1.add(conceptualJson);
+        }
+
+        JSONArray logicalArray1=new JSONArray();
+        for(int i=0;i<logical1.size();i++){
+            String oid=logical1.get(i);
+            LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+            JSONObject logicalJson = new JSONObject();
+            logicalJson.put("name",logicalModel.getName());
+            logicalJson.put("oid",logicalModel.getOid());
+            logicalJson.put("description",logicalModel.getDescription());
+            logicalJson.put("image",logicalModel.getImage().size()==0?null:htmlLoadPath+logicalModel.getImage().get(0));
+            logicalArray1.add(logicalJson);
+        }
+
+        JSONArray computableArray1=new JSONArray();
+        for(int i=0;i<computable1.size();i++){
+            String oid=computable1.get(i);
+            ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+            JSONObject computableJson = new JSONObject();
+            computableJson.put("name",computableModel.getName());
+            computableJson.put("oid",computableModel.getOid());
+            computableJson.put("description",computableModel.getDescription());
+            computableArray1.add(computableJson);
+        }
+
+
+
+        //图片路径
+        String image=modelInfo.getImage();
+        if(!image.equals("")){
+            modelInfo.setImage(htmlLoadPath+image);
+        }
+
+        String image1=modelItemVersion.getImage();
+        if(!image1.equals("")){
+            modelItemVersion.setImage(htmlLoadPath+image1);
+        }
+
+
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("modelItemCompare");
+        modelAndView.addObject("modelInfo",modelInfo);
+        modelAndView.addObject("classifications",classResult);
+        modelAndView.addObject("detail",detailResult);
+        modelAndView.addObject("conceptualModels",conceptualArray);
+        modelAndView.addObject("logicalModels",logicalArray);
+        modelAndView.addObject("computableModels",computableArray);
+        modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelInfo.getReferences())));
+
+        modelAndView.addObject("modelInfo2",modelItemVersion);
+        modelAndView.addObject("classifications2",classResult1);
+        modelAndView.addObject("detail2",detailResult1);
+        modelAndView.addObject("conceptualModels2",conceptualArray1);
+        modelAndView.addObject("logicalModels2",logicalArray1);
+        modelAndView.addObject("computableModels2",computableArray1);
+        modelAndView.addObject("references2", JSONArray.parseArray(JSON.toJSONString(modelItemVersion.getReferences())));
 
         return modelAndView;
     }

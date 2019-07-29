@@ -52,6 +52,14 @@ public class ModelItemRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value="/compare/{id}",method = RequestMethod.GET)
+    public ModelAndView getCompare(@PathVariable ("id") String id) {
+        System.out.println("model item compare");
+
+        return modelItemService.getPage4Compare(id);
+    }
+
+
     @RequestMapping(value="/add",method = RequestMethod.POST)
     public JsonResult addModelItem(@RequestBody ModelItemAddDTO modelItemAddDTO,HttpServletRequest request) {
         HttpSession session=request.getSession();

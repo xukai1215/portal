@@ -22,7 +22,7 @@
             }
             else {
                 menuitem.get(count - 2).innerHTML = "<a href=\"/user/register\">Sign Up</a>"
-                menuitem.get(count - 1).innerHTML = "<a href=\"/user/login\">Log In</a>"
+                menuitem.get(count - 1).innerHTML = "<a href=\"/user/login\"  onclick=\"window.sessionStorage.setItem('history',window.location.href)\">Log In</a>"
             }
         },
         error: function (e) {

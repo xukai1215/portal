@@ -80,13 +80,13 @@ new Vue({
                             },
                             crossDomain: true,
                             success: (json) => {
-                                // if(json.data==data.oid){
+                                if(json.data==data.oid){
                                     window.sessionStorage.setItem("editModelItem_id",oid)
                                     window.location.href="/user/createModelItem";
-                                // }
-                                // else{
-                                //     alert("You are not the model item's author, please contact to the author to modify the model item.")
-                                // }
+                                }
+                                else{
+                                    alert("You are not the model item's author, please contact to the author to modify the model item.")
+                                }
                             }
                         });
                     }
@@ -413,30 +413,20 @@ new Vue({
 
                 })
 
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     },
     mounted(){
+        let titleArr=$(".detail_title");
+        CompareTxt(titleArr[0],titleArr[1]);
+        let detailArr=$(".detail_overview .info p");
+        CompareTxt(detailArr[0],detailArr[1])
+        CompareTxt($("#detail")[0],$("#detail2")[0]);
+
         let currenturl=window.location.href;
         let dataitemid=currenturl.split("/");
 
-        let that=this
+        let that=this;
         axios.get("/dataItem/briefrelateddata",{
             params:{
                 id:dataitemid[dataitemid.length-1]
@@ -464,34 +454,8 @@ new Vue({
                 }
             })
 
-
-
-
-
-
-
-
-
-
-        $(document).on("click", ".detail-toggle", function () {
-            if ($(this).text() == "[Collapse]") {
-                $(this).text("[Expand]");
-            }
-            else {
-                $(this).text("[Collapse]")
-            }
-
-        })
-
         $('html, body').animate({scrollTop:0}, 'slow');
 
-        let descHeight=$("#description .block_content").height();
-        if(descHeight>300){
-            $("#description .block_content").css("overflow","hidden")
-            $("#description .block_content").css("height","250px")
-
-            $(".fullPaper").removeClass("hide");
-        }
 
         let refs=$("#ref").val();
         if(refs!=null) {
@@ -512,20 +476,14 @@ new Vue({
             this.jump(3);
         })
 
-        $("#fullPaper").click(function(){
-            $("#description .block_content").css("overflow","inherit");
-            $("#description .block_content").css("height","auto");
-            $(".fullPaper").remove();
+
+        $("#accept").click(function(){
+
         })
 
-        new QRCode(document.getElementById("qrcode"), {
-            text: window.location.href,
-            width: 200,
-            height: 200,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
+        $("#reject").click(function(){
+
+        })
 
     }
 })
