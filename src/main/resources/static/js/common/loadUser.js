@@ -35,7 +35,7 @@
                     var image = (json.image == "" || json.image == null) ? "../static/img/icon/default.png" : json.image;
                     $(".userIcon").attr("src", image)
 
-                    $("#userPageDir").attr("href", "/user/" + json.oid);
+                    $("#phoneUserPageDir").attr("href", "/user/" + json.oid);
                 }
 
 

@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+
     <title>OpenGMS</title>
     <meta name="keywords" content="opengms,geographic model,geographic data">
     <meta name="description" content="OpenGMS can help you explore and share resources about geographic modeling and simulation.">
@@ -15,7 +16,7 @@
     <link rel="stylesheet" href="../static/css/index/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/swiper.min.css" />
 <!--    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/style.css" />-->
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index.css" />
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index.css" />-->
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/element_ui/index.css">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/style.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/universal.css" />
@@ -1102,7 +1103,7 @@
 
                 </div>
                 <div class="el-col el-col-6">
-                    <a href="www.njnu.edu.cn" target="_blank">
+                    <a href="http://www.njnu.edu.cn/" target="_blank">
                         <img src="../static/img/team/NJNU.jpg" style="width: 100px;height: 80px;margin-top: 10px">
                     </a>
                 </div>
@@ -1140,4 +1141,14 @@
 
 <script src="../static/js/common/navbarJquery.js/"></script>
 <script src="../static/js/common/backTop.js/"></script>
+
+<script>
+    $("#wx").mouseover(function(){
+        $("#wxqrcode").fadeIn();
+    });
+    $("#wx").mouseout(function(){
+        $("#wxqrcode").fadeOut();
+    });
+</script>
+
 </html>
