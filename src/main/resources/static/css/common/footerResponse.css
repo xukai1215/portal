@@ -1,0 +1,59 @@
+
+.wzhfooter{
+    display: inline-block;
+}
+
+#phoneFooterContent{
+    display: none;
+}
+
+@media only screen and (max-width:750px){
+    #pcFooter{
+        display: none;
+    }
+
+    #phoneFooterContent{
+        display: block;
+    }
+
+    .footer{
+        height: 100%;
+        padding-left: 4%;
+    }
+
+}
+
+
+@media only screen and (max-width:730px){
+    #partner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #partnerContainer div{
+        width: 50%;
+
+    }
+}
+
+@media only screen and (max-width: 501px){
+    #partnerContainer div {
+        width: 100%;
+        margin-bottom:15px ;
+    }
+
+    #partnerTitle{
+        height: 60px;
+    }
+}
+
+
+@media only screen and (max-width: 1000px){
+    #photoWall{
+        width: 100%;
+    }
+
+    #blackPic{
+        display: none;
+    }
+}

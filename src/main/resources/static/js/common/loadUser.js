@@ -1,28 +1,46 @@
 
-
+    //
     $.ajax({
         url: '/user/load',
         type: 'get',
         // dataType : 'json',
         success: function (result) {
             var json = JSON.parse(result);
-            var menuitem = $(".el-menu-item");
-            console.log(menuitem)
-            var count = menuitem.length;
+            var windowWidth=$(window).width();
+
             if (json.oid != '') {
-                var image = (json.image == ""||json.image == null) ? "../static/img/icon/default.png" : json.image;
-                //console.log(menuitem)
-                menuitem.get(count - 2).innerHTML = "<a href='/user/out'>Log Out</a>"
-                menuitem.get(count - 1).innerHTML = "            <a href='/user/userSpace' style='display: -webkit-box;'>\n" +
-                    "                <img class='round_icon' src='" + image + "' style='width:30px;height: 30px;display: inline-block;margin-right:10px'>\n" +
-                    "                <div style='display: inline-block;'>" + json.name + "</div>\n" +
-                    "            </a>"
-                window.sessionStorage.setItem("name",json.name);
-                window.sessionStorage.setItem("oid",json.oid);
-            }
-            else {
-                menuitem.get(count - 2).innerHTML = "<a href=\"/user/register\">Sign Up</a>"
-                menuitem.get(count - 1).innerHTML = "<a href=\"/user/login\"  onclick=\"window.sessionStorage.setItem('history',window.location.href)\">Log In</a>"
+                $(".login").css("display", "none");
+                $(".login2").css("display", "none");
+                $("#phoneLogin").css("display", "none");
+
+                //小屏适配和大屏均获取用户姓名
+                $("#userName").text(json.name);
+                $("#userAloha").text(json.name);
+                // if (windowWidth > 956)  {
+                //     $(".loged").css("display", "block");
+                // }
+                // else if(windowWidth > 826) {
+                //大屏加载
+                if(windowWidth>501) {
+                    $(".loged").css("display", "block");
+
+                    var image = (json.image == "" || json.image == null) ? "../static/img/icon/default.png" : json.image;
+                    $(".userIcon").attr("src", image)
+
+                    $("#userPageDir").attr("href", "/user/" + json.oid);
+                }
+                //小屏加载
+                else {
+                    $(".phoneLoged").css("display", "block");
+                    var image = (json.image == "" || json.image == null) ? "../static/img/icon/default.png" : json.image;
+                    $(".userIcon").attr("src", image)
+
+                    $("#phoneUserPageDir").attr("href", "/user/" + json.oid);
+                }
+
+
+                window.sessionStorage.setItem("name", json.name);
+                window.sessionStorage.setItem("oid", json.oid);
             }
         },
         error: function (e) {

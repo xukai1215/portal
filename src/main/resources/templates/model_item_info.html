@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title th:text="${modelInfo.name}+' | OpenGMS'">Model Item Info | OpenGMS</title>
     <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
     <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
@@ -13,6 +14,7 @@
     <link rel="stylesheet" th:href="@{../static/css/base/universal.css}">
     <link rel="stylesheet" th:href="@{../static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{../static/css/page/model_item_info.css}">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
     <style>
         #description h1 {
             font-size: 24px;

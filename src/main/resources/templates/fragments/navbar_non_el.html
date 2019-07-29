@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        .wrap{
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        ul {
+            /*width:100%;*/
+            /*height: 55px;*/
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #080a0e;
+        }
+
+        .logo{
+
+        }
+
+        .main>li{
+            float: left;
+            width: 10%;
+            height: 100%;
+            transition:.5s;
+        }
+
+        .sub{
+            display: none;
+            position: absolute;
+            top: 53px;
+            /*left: 30%;*/
+            /*padding-top:1px;*/
+            /*z-index: 2057;*/
+            /*background-color: blanchedalmond;*/
+        }
+
+        .sub>ul{
+            background-color: rgba(0, 0, 0, 0.85) !important;
+            margin-top: 1px !important;
+            box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.25) ;
+        }
+
+        .sub li{
+            display: block;
+            width: 200px;
+            height: 53px;
+            transition:.5s;
+
+        }
+
+        .sub li a{
+            display: block;
+            color: whitesmoke;
+            text-align: left;
+            width: 160px;
+            padding:16px 18px;
+            text-decoration: none;
+            overflow: hidden;
+            transition:.5s;
+        }
+
+        .main>li a,.login>li a{
+            display: block;
+            color: whitesmoke;
+            text-align: center;
+            padding:16px 2px;
+            text-decoration: none;
+            overflow: hidden;
+            transition: .5s;
+            /*background-color: #080a0e;*/
+        }
+
+        .login{
+            display: block;
+        }
+        .login>li{
+            display: block;
+            float: right;
+            width: 10%;
+            height: 100%;
+            background-color: #00c1de;
+            transition:.5s;
+        }
+
+        /*设置悬停样式，除了命名为.login组件*/
+        /*.main>li:hover:not(.login){*/
+        /*    background-color: #6a5a8c;*/
+
+        /*}*/
+
+        /*.main>li:hover .sub{*/
+        /*    display: block;*/
+        /*}*/
+
+        .main a:hover{
+
+            color: rgb(0,192,255);
+        }
+
+        .sub a:hover{
+            color: rgb(0,192,255);;
+        }
+
+
+        .login a:hover{
+            /*background-color: #0AD15D;*/
+            color: #0070cc;
+
+        }
+        .login>a:hover{
+            font-size: 18px;
+            /*padding:anto 17px;*/
+
+        }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div>
+        <ul role="menubar" class="main">
+            <div tabindex="0">
+                <a href="/home" class="logo"><img src=".../img/logo.png"/></a>
+            </div>
+            <li style="margin-left: 10%"><a href="/home">Home</a></li>
+            <li><a href="/modelItem/repository">Model</a></li>
+            <li><a href="/dataItem/repository">Data</a></li>
+
+            <li id="drop1"><a href="">Community</a></li>
+            <li id="drop2"><a href="">Help</a></li>
+
+            <li><a href="">About us</a></li>
+            <div class="login">
+                <li><a href="">Log In</a></li>
+                <li><a href="">Sign Up</a></li>
+            </div>
+        </ul>
+    </div>
+    <div class="sub" id="subcommunity" style="left:40%">
+        <ul>
+            <li><a href="/repository/concept">Concept & Semantic</a></li>
+            <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+            <li><a href="/repository/unit">Unit & Metric</a></li>
+            <li><a href="/repository/thematic">Thematic Center</a></li>
+        </ul>
+    </div>
+    <div class="sub" id="subhome" style="left:50%">
+        <ul>
+            <li><a href="/help/demo">Demo</a></li>
+            <li><a href="/help/manual">Manual</a></li>
+            <li><a href="/help/document">Document</a></li>
+        </ul>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    var dropm1=document.getElementById('drop1');
+    var dropm2=document.getElementById('drop2');
+    var submenu1=document.getElementById('subcommunity');
+    var submenu2=document.getElementById('subhome');
+    // var menu=bar.children;
+    var sub1=document.getElementsByClassName('sub')[0];
+    var sub2=document.getElementsByClassName('sub')[1];
+
+    console.log(sub1);
+    // var login=document.getElementsByClassName('login')[0];
+
+    // var msx,msy;//找到鼠标位置
+    // var mouseLocate=(e)=>{
+    //     e=e||windows.events;
+    //     if(e.pageX||e.pageY)
+    //     {
+    //         msx=e.pageX;
+    //         msy=e.pageY;
+    //     }
+    // }
+
+    dropm1.onmouseover = function () {
+        sub1.style.display = 'block';
+    };
+    dropm1.onmouseout = function () {
+        sub1.style.display = 'none';
+    };
+    submenu1.onmouseover = function () {
+        sub1.style.display = 'block';
+    };
+    submenu1.onmouseout = function () {
+        sub1.style.display = 'none';
+    }
+
+
+
+    dropm2.onmouseover = function () {
+        sub2.style.display = 'block';
+    };
+    dropm2.onmouseout = function () {
+        sub2.style.display = 'none';
+    };
+    submenu2.onmouseover = function () {
+        sub2.style.display = 'block';
+    };
+    submenu2.onmouseout = function () {
+        sub2.style.display = 'none';
+    }
+
+
+
+</script>
+</body>
+</html>

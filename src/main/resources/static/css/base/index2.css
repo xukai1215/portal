@@ -1,0 +1,489 @@
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.headContainer{
+    height: 500px;
+}
+
+#headFuntionSection{
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 80%;
+}
+
+.wzhHeader{
+    width:100%;
+    height:185px ;
+    padding-top: 50px;
+}
+
+.headBackPic{
+    background-image: url(../../../static/img/carousels/Banner.jpg);
+    background-position: center;
+    -webkit-background-size: cover;
+    height: 100%;
+
+
+}
+
+#headerSentence{
+    left: 0;
+    right: 0;
+    margin:  auto auto;
+    width: 100%;
+    text-align: left;
+    font-size: 33px;
+    color: #ffffff;
+}
+
+#headerSentenceBig{
+    display: none;
+    left: 0;
+    right: 0;
+    margin:  auto auto;
+    width: 100%;
+    text-align: left;
+    font-size: 40px;
+    color: #ffffff;
+}
+
+#headerSection{
+    color: #d9d9d9;
+    font-size: 3vw;
+    min-font-size: 16px;
+    max-font-size: 20px !important;
+
+}
+
+.wzhFilter{
+    border-radius: 3px;
+    position: absolute;
+    width: 80%;
+    max-width: 500px;
+    height:55px;
+    z-index: 2;
+    box-shadow: 0px 3px 6px 0 rgba(0, 0, 0, 0.6) ;
+    border-width: 1em;
+    overflow: hidden;
+}
+
+.wzhFilter::before{
+    filter: blur(6px);
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: -12px;
+    /*width: 102%;*/
+    /*height: 60px;*/
+    position: absolute;
+    background-color: rgba(255,255,255,0.9);
+    z-index:-1;
+    background-image: url("../../../static/img/carousels/banner.jpg");
+    background-position: center;
+    /*background-size: cover;*/
+    /*background-attachment: fixed;*/
+    background-position-x:50%;
+    background-position-y: 955px;
+}
+
+.wzhFilter3{
+    display: inline-block;
+    border-radius: 2px;
+    position: absolute;
+
+    width:  100px;
+    height: 40px;
+    /*box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.6) ;*/
+    z-index: 2;
+    box-shadow: 1px 1px 1.5px 0 rgba(0, 0, 0, 0.5) ;
+    /*border-width: 0em;*/
+    overflow: hidden;
+}
+
+.wzhFilter3::before{
+    filter: blur(9px);
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /*width:  120px;*/
+    /*height: 50px;*/
+    margin: -15px;
+    position: absolute;
+    /*background-color: rgba(255,255,255,0.9);*/
+    z-index:-1;
+    background-image: url("../../../static/img/carousels/kd.jpg");
+    /*background-color: rgb(0, 150, 225);*/
+    background-position: center;
+    /*background-size: cover;*/
+    /*background-attachment: fixed;*/
+    background-position-x:80%;
+    background-position-y: 1680px;
+}
+
+.wzhSectionBack{
+    /* background: url(../../../static/img/index_section/labs-bg.jpg) no-repeat; */
+    background-size: cover;
+    background-color: rgba(234, 221, 216, 0.42);
+}
+
+.wzhSectionContainer{
+    display:none;
+    border-top: 1px solid #dedede;
+    position: relative;
+}
+
+.content-title>h3{
+    font-weight: 600;
+
+}
+
+.wzhButton{
+    width: 50%;
+    background-color: rgba(255,255,255,0);
+    border-width: 0 ;
+    height: 55px;
+    color:white;
+    font-size: 18px;
+    z-index: 999999;
+}
+
+.lMoreButton{
+    display: inline-block;
+    float: left;
+    width: 100px;
+    height: 50px;
+    margin-left: 15%;
+    padding-top: 15px;
+    color: black;
+    font-size: 16px;
+    border-width: 0px 0px 2.5px 0px;
+    border-color: #000;
+    border-radius: 3px;
+    background-color: unset;
+
+}
+
+.discoverButton{
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    margin-right: 15%;
+    /*margin-left: 10px;*/
+    color: white;
+    font-size: 15.6px;
+    border-width: 0px;
+    border-radius: 15px;
+    background-color: unset;
+}
+
+.mutiButton{
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    /*margin-left: 10px;*/
+    color: white;
+    font-size: 15.6px;
+    border-width: 0px;
+    border-radius: 3px;
+    background-color: unset;
+}
+
+#phoneFunctionSection{
+    display: none;
+}
+
+.phoneFuncExpress{
+    /*margin-top: 15px;*/
+    padding-top: 10px;
+    text-align: center;
+}
+
+#functionsTable p{
+    font-size: 15px;
+
+}
+
+#functionSection{
+    /*background-image: url('../../../static/img/carousels/bannert1.jpg');*/
+    height: 500px;
+
+}
+
+.functionLi{
+    margin-left: 0.5%;
+    margin-right: 1%;
+    width: 99%;
+    height: 120px;
+    border-radius: 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background-color:#f8fbede0
+    /*background-image: url("../../../static/img/carousels/KenDing.jpg");*/
+
+}
+
+.phoneSystShow{
+
+}
+
+.phoneSectionContent{
+    width: 100%;
+    padding: 15px 0px;
+    text-align: center;
+
+}
+
+.sentenceContainer{
+    /*display: none;*/
+    width: 100%;
+    height: 211px;
+    background-color:#a9a9a9 ;
+    padding: 5px 0;
+}
+
+.phoneSentenceContent{
+    font-size: 3.6vw;
+    width: 90%;
+    margin-left: 5%;
+
+}
+
+#phoneSupportTools{
+    display: none;
+}
+
+.arrowBig{
+    display: inline-block;
+    position: absolute;
+
+    margin-top:18px;
+    margin-left: 13px;
+    border-top: 2px solid;
+    border-right: 2px solid;
+    width: 15px;
+    height: 15px;
+    color: white;
+    transform: rotate(315deg);
+    z-index: 5;
+}
+
+.backTop{
+    display: none;
+    position: fixed;
+    border-radius: 3px;
+    margin: auto;
+    left: 0;
+    right:0;
+    bottom: 70px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 5;
+}
+
+.feedBack{
+    display: none;
+    position: fixed;
+    padding-top: 5px;
+    left:0;
+    bottom: 150px;
+    border-radius: 0 0 9px 0;
+    width: 16px;
+    height: 90px;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 5;
+
+}
+
+.feedBackSentence{
+    color:white;
+    font-size: 13.5px;
+    transform: rotate(90deg);
+
+}
+
+#rightHeaderPic{
+    float: right; width:440px;top: 0px;margin-right: 50px
+}
+
+#headerContentContainer{
+    width: 600px;height: 480px;margin-right: 0px;float:left
+}
+
+@media only screen and (max-width: 1385px){
+    #rightHeaderPic{
+        margin-right: 0;
+    }
+
+    #rightHeaderPic{
+        display: none;
+    }
+
+    #headerContentContainer{
+        width: 100%;
+    }
+
+}
+
+@media only screen and (max-width:501px){
+    #headerSentence{
+        margin-top:0px ;
+        text-align: center !important;
+    }
+    #headerSection{
+        margin-top:0px ;
+        font-size: 19px;
+        text-align: center !important;
+        width: 98.5%;
+    }
+
+    .headContainer{
+        height: 600px;
+    }
+
+    .wzhHeader{
+        height: 190px;
+    }
+
+    .wzhFilter{
+        margin-top: 15px;
+    }
+
+    #headButtomPic{
+        display: none;
+    }
+
+    #funcSection{
+        display: none;
+    }
+
+    #phoneFunctionSection{
+        display: block;
+    }
+
+    .systemShow{
+        display: none;
+    }
+
+    #supptiveTools{
+        display: none;
+    }
+
+    #phoneSupportTools{
+        display: inline-block;
+    }
+
+    .wzhSectionContainer {
+        display: inline-block;
+    }
+
+    #partner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #partnerContainer div{
+        width: 100%;
+
+    }
+
+    #headerSection{
+        text-align: justify;
+        color: #f8f8f8;
+    }
+
+
+}
+
+@media only screen and (max-width:453px){
+    #headerSection{
+
+        text-align: center !important;
+        width: 98.5%;
+    }
+    #headerSentence{
+        font-size:7vw;
+        width: 98.5%;
+    }
+
+    .wzhHeader{
+        height: 160px;
+    }
+
+    .phoneSentenceContent{
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width:400px) {
+    .wzhFilter::before{
+        background-position-y: 930px;
+    }
+
+    .footer-content{
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media only screen and (max-width:321px) {
+    #headerSection {
+        font-size: 16px;
+    }
+
+    .copyright-title{
+        font-size: 18px;
+    }
+
+    .footer-content{
+        min-width: 100%;
+    }
+}
+
+
+@media only screen and (min-width:650px){
+    #headerSection{
+        font-size: 18.5px;
+        width:580px;
+        text-align: justify;
+    }
+
+
+}
+
+@media only screen and (min-width: 841px){
+    #headerSentence{
+        display: none;
+    }
+
+    #headerSentenceBig{
+        margin-top: 30px;
+        display: block;
+    }
+
+    #headerSection{
+        width:700px;
+        text-align: justify;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -35,10 +35,7 @@ div{
     width:130px;
     float:left;
 }
-.user_info{
-    margin-left: 180px;
-    display: block;
-}
+
 .user_info h4{
     font-size: 15px;
 }

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" />
     <title>SWAT Knowledge Graph</title>
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
@@ -17,6 +17,9 @@
 	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
     <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index2.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
     <style>
       .am-g.am-datatable-footer {
         display: flex;
@@ -178,4 +181,6 @@
   <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
   <!-- <script src="js/echarts//extension/modularity.js"></script> -->
   <script th:src="@{/static/KnowledgeGraph/js/swat.js}"></script>
+  <script src="../static/js/index/bootstrap.min.js"></script>
+  <script src="../static/js/common/backTop.js/"></script>
 </html>
