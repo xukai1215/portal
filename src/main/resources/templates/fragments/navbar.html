@@ -8,41 +8,210 @@
             padding:0px;
         }
     </style>
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#00001e"
-             text-color="#fff"
-             active-text-color="#00c0ff"
-             style="padding-top:10px;">
-        <div>
-            <a class="logo" href="/home"></a>
+<!--    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#00001e"-->
+<!--             text-color="#fff"-->
+<!--             active-text-color="#00c0ff"-->
+<!--             style="padding-top:10px;">-->
+<!--        <div>-->
+<!--            <a class="logo" href="/home"></a>-->
+<!--        </div>-->
+<!--        <el-menu-item index="1"><a href="/home">Home</a></el-menu-item>-->
+<!--        <el-menu-item index="2"><a href="/modelItem/repository">Model</a></el-menu-item>-->
+<!--        <el-menu-item index="3"><a href="/dataItem/repository">Data</a>-->
+<!--        </el-menu-item>-->
+<!--        <el-submenu index="8">-->
+<!--            <template slot="title">Community</template>-->
+<!--            <el-menu-item index="8-1"><a href="/repository/concept">Concept & Semantic</a></el-menu-item>-->
+<!--            <el-menu-item index="8-2"><a href="/repository/spatialReference">Spatial Reference</a></el-menu-item>-->
+<!--            <el-menu-item index="8-3"><a href="/repository/template">Data Template</a></el-menu-item>-->
+<!--            <el-menu-item index="8-4"><a href="/repository/unit">Unit & Metric</a></el-menu-item>-->
+<!--            &lt;!&ndash;<el-menu-item index="8-5"><a href="/repository/contributors">Contributors  & Participants</a></el-menu-item>&ndash;&gt;-->
+<!--            <el-menu-item index="8-6"><a href="/repository/thematic">Thematic Center</a></el-menu-item>-->
+<!--            &lt;!&ndash;<el-menu-item index="4-4">Supportive</el-menu-item>&ndash;&gt;-->
+<!--        </el-submenu>-->
+
+<!--        <el-submenu index="4">-->
+<!--            <template slot="title">Help</template>-->
+<!--            <el-menu-item index="4-1"><a href="/help/demo">Demo</a></el-menu-item>-->
+<!--            <el-menu-item index="4-2"><a href="/help/manual">Manual</a></el-menu-item>-->
+<!--            <el-menu-item index="4-3"><a href="/help/document">Document</a></el-menu-item>-->
+<!--            &lt;!&ndash;<el-menu-item index="4-4">Supportive</el-menu-item>&ndash;&gt;-->
+<!--        </el-submenu>-->
+
+<!--        <el-menu-item index="5"><a href="http://opengmsteam.com" target="_blank">About Us</a></el-menu-item>-->
+<!--        <el-menu-item index="7" style="float:right"><a href="/user/register">Sign Up</a></el-menu-item>-->
+<!--        <el-menu-item index="6" style="float:right"><a href="/user/login">Log In</a></el-menu-item>-->
+
+<!--    </el-menu>-->
+
+
+    <div class="wrap">
+        <div id="mainBar" role="mainBar">
+            <ul role="menubar" class="main">
+                <!--            <div tabindex="0">-->
+                <div class="strip" style="float: left;margin-left: 5%">
+                    <li id="dropstrip" style="width: 25px"><a id="phoneStrip" href="###">≡≡</a></li>
+                </div>
+                <li class="mainBarLogo" style="width: 230px;"><a href="/home" style="padding:20px 2px"></a></li>
+                <!--        </div>-->
+                <div class="mainmenu">
+                    <li id="menuHome" style="width: 77px" ><a href="/home">Home</a></li>
+                    <li id="menuModel" style="width: 78px"><a href="/modelItem/repository">Model</a></li>
+                    <li id="menuData" style="width: 70px"><a href="/dataItem/repository">Data</a></li>
+                    <li id="drop1" style="width: 130px">
+                        <a href="###" style="text-align: left; padding-left: 17px">Community <div id="arrow1" class="arrow"></div></a>
+                    </li>
+                    <li id="drop2" style="width: 77px">
+                        <a href="###" style="text-align: left; padding-left: 15px">Help <div class="arrow" style="border-top: 1.4px solid;"></div></a>
+                </li>
+                    <li id="menuAbout" style="width: 90px"><a href="http://opengmsteam.com">About us</a></li>
+                </div>
+                <div class="indentmenu">
+                    <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a >:::</a></li>
+                </div>
+                <div class="login">
+                    <li><a class="login" href="/user/login">Log In</a></li>
+                    <li><a class="login" href="/user/register">Sign Up</a></li>
+                </div>
+                <div class="login2">
+                    <li id="dropls"><a class="login2" href="">L/S</a></li>
+                </div>
+                <div class="loged" >
+                    <li id="userLoged" style="float: right">
+                        <a class="" href="/user/userSpace">
+                            <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
+                            <div id="userName" style="display: inline-block">Hello!!!!!!!!!</div>
+                        </a>
+                    </li>
+                </div>
+                <div class="phoneLoged">
+                    <li id="phoneUserDrop" style="float: right;width: 35px; margin-right: 5%;">
+                    <a href="###" style="padding-top: 10px;">
+                        <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
+                    </a>
+                    </li>
+                </div>
+
+                <!--               -->
+                <!--      小屏适配 -->
+
+                <!--               -->
+            </ul>
         </div>
-        <el-menu-item index="1"><a href="/home">Home</a></el-menu-item>
-        <el-menu-item index="2"><a href="/modelItem/repository">Model</a></el-menu-item>
-        <el-menu-item index="3"><a href="/dataItem/repository">Data</a>
-        </el-menu-item>
-        <el-submenu index="8">
-            <template slot="title">Community</template>
-            <el-menu-item index="8-1"><a href="/repository/concept">Concept & Semantic</a></el-menu-item>
-            <el-menu-item index="8-2"><a href="/repository/spatialReference">Spatial Reference</a></el-menu-item>
-            <el-menu-item index="8-3"><a href="/repository/template">Data Template</a></el-menu-item>
-            <el-menu-item index="8-4"><a href="/repository/unit">Unit & Metric</a></el-menu-item>
-            <!--<el-menu-item index="8-5"><a href="/repository/contributors">Contributors  & Participants</a></el-menu-item>-->
-            <el-menu-item index="8-6"><a href="/repository/thematic">Thematic Center</a></el-menu-item>
-            <!--<el-menu-item index="4-4">Supportive</el-menu-item>-->
-        </el-submenu>
 
-        <el-submenu index="4">
-            <template slot="title">Help</template>
-            <el-menu-item index="4-1"><a href="/help/demo">Demo</a></el-menu-item>
-            <el-menu-item index="4-2"><a href="/help/manual">Manual</a></el-menu-item>
-            <el-menu-item index="4-3"><a href="/help/document">Document</a></el-menu-item>
-            <!--<el-menu-item index="4-4">Supportive</el-menu-item>-->
-        </el-submenu>
+        <!--    各种下拉菜单-->
+        <div class="sub zmax" id="subCommunity" style="left: 453px">
+            <ul>
+                <li><a href="/repository/concept">Concept & Semantic</a></li>
+                <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                <li><a href="/repository/unit">Unit & Metric</a></li>
+                <li><a href="/repository/thematic">Thematic Center</a></li>
+            </ul>
+        </div>
+        <div class="sub zmax" id="subHelp" style="left:585px">
+            <ul style="width: 180px">
+                <li style="width: 180px;"><a href="/help/demo" style="margin-left: 25px">Demo</a></li>
+                <li style="width: 180px;"><a href="/help/manual" style="margin-left: 25px">Manual</a></li>
+                <li style="width: 180px;"><a href="/help/document" style="margin-left: 25px">Document</a></li>
+            </ul>
+        </div>
+        <div id="subls" class="sub" style="right:0px;z-index:1000">
+            <ul style="width: 120px">
+                <li><a href="/user/login">Log In</a></li>
+                <li><a href="/user/register">Sign Up</a></li>
+            </ul>
+        </div>
 
-        <el-menu-item index="5"><a href="http://opengmsteam.com" target="_blank">About Us</a></el-menu-item>
-        <el-menu-item index="7" style="float:right"><a href="/user/register">Sign Up</a></el-menu-item>
-        <el-menu-item index="6" style="float:right"><a href="/user/login">Log In</a></el-menu-item>
 
-    </el-menu>
+        <!--        用户登录后的下拉-->
+<!--        大屏幕-->
+        <div class="subLog zmax" id="logedSub" style="right: 0px">
+            <ul>
+                <li><a id="userSpaceDir" href="/user/userSpace">User Space</a></li>
+                <li><a id="userPageDir" href="">User Page</a></li>
+                <li><a href="/user/out">Log Out</a></li>
+                <!--                        <li><a href="">Thematic Center</a></li>-->
+            </ul>
+        </div>
+<!--        小屏幕-->
+        <div id="phoneUserSub" class="fullSub" style="display: none">
+            <ul>
+                <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p href="###" style="text-align: center;font-size: 15.2px;color: white">Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;"></span></p></li>
+                <li><a href="/user/userSpace">User Space</a></li>
+                <li><a id="phoneUserPageDir" href="">User Page</a></li>
+                <li style="background-color: rgb(0,192,255)"><a href="/user/out">Log Out</a></li>
+                <!--                        <li><a href="">Thematic Center</a></li>-->
+            </ul>
+        </div>
+
+
+        <!-- 左侧边栏 -->
+        <div id="submenu" class="sub zmax" style="left:0px">
+            <ul style="width:210px">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/modelItem/repository">Model</a></li>
+                <li><a href="/dataItem/repository">Data</a></li>
+                <li id="leftcommunity"><a class="show" href="###" style="width: 190px">Community</a></li>
+                <!-- <div class="lsub" id="leftsubc">
+                    <li><a href="/repository/concept">Concept & Semantic</a></li>
+                    <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                    <li><a href="/repository/unit">Unit & Metric</a></li>
+                    <li><a href="/repository/thematic">Thematic Center</a></li>
+                </div> -->
+                <li id="lefthelp" ><a class="show" href="###" style="width: 190px">Help</a></li>
+                <!-- <div class="lsub" id="leftsubh">
+                    <li><a href="/help/demo">Demo</a></li>
+                    <li><a href="/help/manual">Manual</a></li>
+                    <li><a href="/help/document">Document</a></li>
+                </div> -->
+                <li><a href="http://opengmsteam.com/">About us</a></li>
+            </ul>
+        </div>
+        <!-- 左侧边栏的子菜单 -->
+        <div class="sub zmax" id="leftCommunitySub" style="top: 216px;left: 208px">
+            <ul style="margin-left: 4px">
+                <li><a href="/repository/concept" class="subsub">Concept & Semantic</a></li>
+                <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                <li><a href="/repository/unit">Unit & Metric</a></li>
+                <li><a href="/repository/thematic">Thematic Center</a></li>
+            </ul>
+        </div>
+        <div class="sub zmax" id="leftHelpSub" style="top: 266px;left: 209px">
+            <ul style="margin-left: 3px">
+                <li><a href="/help/demo" class="subsub">Demo</a></li>
+                <li><a href="/help/manual">Manual</a></li>
+                <li><a href="/help/document">Document</a></li>
+            </ul>
+        </div>
+
+        <!-- 小屏适配下拉菜单-- -->
+        <div class="fullSub zmax" id="phonesub" style="display: none; left:0px" >
+            <ul style="width: 100%;" >
+                <li><a href="/modelItem/repository">Model</a></li>
+                <li><a href="/dataItem/repository">Data</a></li>
+                <li id="phoneCommunity"><a type="button" data-toggle="collapse" data-target="#phoneSubCom" href="###">Community <div class="arrow"></div></a></li>
+                <div id="phoneSubCom" class="phoneSubSUb collapse" >
+                    <li><a href="/repository/concept">Concept & Semantic</a></li>
+                    <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                    <li><a href="/repository/unit">Unit & Metric</a></li>
+                    <li><a href="/repository/thematic">Thematic Center</a></li>
+                </div>
+                <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" href="###">Help <div class="arrow"></div></a></li>
+                <div id="phoneSubHelp" class="phoneSubSUb collapse">
+                    <li><a href="/help/demo" class="subsub">Demo</a></li>
+                    <li><a href="/help/manual">Manual</a></li>
+                    <li><a href="/help/document">Document</a></li>
+                </div>
+                <li><a href="http://opengmsteam.com/">About us</a></li>
+                <li id="phoneLogin" style="background-color: rgb(0,192,255)">
+<!--                    <a href="###" style="padding: 0px">-->
+                    <button style="float: left;width: 50%;height:50px; background-color: rgb(0,192,255);border-width: 0;color: white" onclick="window.location.href = '/user/login'">Log In</button><button style="float: left;width: 50%;height:50px; background-color: rgb(0,192,255);border-width: 0;color: white" onclick="window.location.href = '/user/regiester'">Sigh Up</button>
+<!--                </a>-->
+                </li>
+            </ul>
+        </div>
+
+    </div>
 
 </div>
 

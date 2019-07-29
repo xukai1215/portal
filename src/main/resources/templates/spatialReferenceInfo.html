@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Spatial Reference | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="../../static/img/logo/favicon.ico">
     <link href="../../static/css/base/bootstrap.min.css" rel="stylesheet">
@@ -14,6 +15,8 @@
     <link rel="stylesheet" th:href="@{../../static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{../../static/css/page/model_item_info.css}">
     <link rel="stylesheet" th:href="@{../../static/css/page/repositoryInfo.css}">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
     <style>
         #description h1{
             font-size: 24px;
@@ -277,6 +280,7 @@
     var projcs = [[${info.wkt}]];
     var proj_name = [[${info.name}]];
 </script>
+<script src="../static/js/common/navbar.js"></script>
 <script>
     function submitFrom() {
         var arry = $("#addConceptLocalizationForm").serializeArray();

@@ -4,53 +4,48 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport"
-        content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+
     <title>OpenGMS</title>
-    <meta name="keywords" content="opengms, geographic model, geographic data"/>
-    <meta name="description" content="OpenGMS supports sharing your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
+    <meta name="keywords" content="opengms,geographic model,geographic data">
+    <meta name="description" content="OpenGMS can help you explore and share resources about geographic modeling and simulation.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" href="../static/css/index/element_ui/index.css">
+<!--    <link rel="stylesheet" href="../static/css/index/element_ui/index.css">-->
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/bootstrap.min.css" />
     <link rel="stylesheet" href="../static/css/index/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/swiper.min.css" />
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/style.css" />-->
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index.css" />-->
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/element_ui/index.css">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/style.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/universal.css" />
 
+
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index2.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
+    <style>
+        .content-content{
+            text-align: justify;
+
+        }
+        .margin-left-30{
+            margin-left: 30px;
+        }
+        .margin-right-30{
+            margin-right: 30px;
+        }
+
+        </style>
 </head>
 
 <style>
 .el-col-1{
     width:4.75%
 }
-    .content-content{
-        text-align: justify;
-
-    }
-    .margin-left-30{
-        margin-left: 30px;
-    }
-    .margin-right-30{
-        margin-right: 30px;
-    }
-
-/*--------- tooltip */
-.tooltip {
-    display: none;
-    /*background:url(images/tooltip_bg_up.png) no-repeat;*/
-    width:431px;
-    height:225px;
-    padding:10px 12px 23px 10px;
-    z-index:200}
-
-.tooltip.bottom {
-    /*background:url(images/tooltip_bg_bot.png) no-repeat;*/
-    padding:23px 12px 10px 10px;}
-
 
 </style>
-
 
 <body>
     <div id="app">
@@ -58,58 +53,45 @@
         <!-- new banner -->
         <div th:replace="fragments/navbar :: unlog"></div>
 
-        <section>
-            <div class="carousel_container el-row">
-                <el-carousel indicator-position="none" height="500px" arrow="never">
-                    <el-carousel-item>
-                        <div type="flex" align="middle" class="contain-bg1 el-row">
-                            <div class="col-md-5 col-md-offset-1">
-                                <el-container>
-                                    <el-header style="height: 70px;margin-top: 60px;text-align: left">
-                                        <h1>Open Geographic Modeling and Simulation (OpenGMS)</h1>
-                                    </el-header>
-                                    <el-main style="margin-top: 38px;">
+        <section role="header" style="top:62px;margin-top:0">
+            <div class="headContainer">
+                <div class="headBackPic">
+                    <section id="headFuntionSection">
+                        <div id="headerContentContainer" style="">
+                        <header class="wzhHeader" >
+                            <h1 id="headerSentence" >Open Geographic</br>Modeling and Simulation</br>(Open GMS)</h1>
+                            <h1 id="headerSentenceBig" >Open Geographic Modeling and</br> Simulation(Open GMS)</h1>
+                        </header>
+                        <main style="margin-top: 1px;">
+                            <p id="headerSection"style="">This platform supports to share your resources in geographic
+                            modeling and simulation. Also, this platform provides a community for
+                            collaboration works among researchers in various disciplines. Through the
+                            sharing and collaboration works, this platform contributes to building
+                            resource libraries, leaving them for the next generation, and ultimately
+                            advance in knowledge. </p>
+                        </main>
+                        <div class="wzhFilter">
+                            <button class="wzhButton" style="margin-top: 1px; float: left;width: 38%;padding-left: 4px;" onclick="window.location.href='/modelItem/repository'">
+                                <span style="font-size: 17px">Explore more</span>
+                            </button>
+                            <button class="wzhButton" style="margin-top: 1px; float: right;width: 35%;padding-right: 5%;" onclick="window.location.href='/user/login'">
+                                <span style="font-size: 18px">Join us</span>
+                            </button>
+                        </div>
+                        </div>
 
-                                        <p style="margin-top: 12px; text-align:justify">This platform supports sharing your resources in geographic
-                                            modeling and simulation. Also, this platform provides a community for
-                                            collaboration works among researchers in various disciplines. Through the
-                                            sharing and collaboration works, this platform contributes to building
-                                            resource libraries, leaving them for the next generation, and ultimately
-                                            advance in knowledge. </p>
-                                        <el-button type="warning" style="margin-top: 5px;float: left"
-                                            @click="window.open('/modelItem/repository')">Explore more</el-button>
-                                        <el-button type="warning" style="margin-top: 5px;float: left"
-                                            @click="window.open('/user/login')">Join us</el-button>
-                                    </el-main>
-                                    <el-footer style="height: 140px"></el-footer>
-                                </el-container>
-                            </div>
-
-                                <div class="col-md-6">
-                                    <img src="../static/img/carousels/el04.svg" style="width: 440px; height: 440px; ">
-
-                                </div>
-                                <!--<div class="el-col el-col-12">-->
-                                <!--<img src="../static/img/carousels/el03.svg" style="width: 440px; height: 440px;  ">-->
-
-                                <!--</div>-->
-
-
-
-
+                        <div id="rightHeaderPic" class="col-md-6">
+                            <img src="../static/img/carousels/el04.svg" style="width: 440px; height: 440px; ">
 
                         </div>
-                        <!-- <img src="../static/img/carousels/undraw_map_1r69.svg" style="position: absolute; top: -400px; left: 580px; width: 60%; height: 60%">
-                        <img src="../static/img/carousels/banner1.png" style="height: 500px">
-                        <div class="carousel-img-mask"></div>                -->
-                    </el-carousel-item>
 
-                </el-carousel>
+                    </section>
+                </div>
             </div>
         </section>
 
         <!-- one sentence summary the web gate  -->
-        <section style="height: 90px;">
+        <section id="blackPic" style="height: 90px;">
             <div class="el-row" style="height: 90px;">
                 <div class="aftcarheight el-col el-col-14 el-col-offset-5">
                     <div>
@@ -131,7 +113,7 @@
 
 
         <!--Platform Functionalities-->
-        <section class="section-content">
+        <section id="funcSection" class="section-content">
             <div class="title">
                 <!-- <div class="icon">
                 <i class="fa fa-cloud"></i>
@@ -151,7 +133,7 @@
                         <p>Sharing models, data and computing resources as reusable resources. </p>
                     </el-card>
                 </div>
-                <div class="el-col el-col-8  content">
+                <div class="el-col el-col-8  content" >
                     <el-card shadow="hover">
                         <div class="icon" style="color:rgb(64, 151, 222);font-size:7em">
                             <i class="fa fa-cube"></i>
@@ -160,7 +142,7 @@
                         <p>Reusing models, data and computing resources as services in web environment.</p>
                     </el-card>
                 </div>
-                <div class="el-col el-col-8 content">
+                <div class="el-col el-col-8 content" >
                     <el-card shadow="hover">
                         <div class="icon" style="color:rgb(78, 214, 0);font-size:7em">
                             <i class="fa fa-share-alt-square"></i>
@@ -173,6 +155,50 @@
 
         </section>
 
+        <!-- Platform Functionalities -->
+        <!--        小屏适配-->
+        <section id="phoneFunctionSection" style="height: 500px">
+            <div class="wzhFilter2" role="phone Platform Functionalities"  style="margin-top: 10px;padding-bottom: 10px; ">
+            <div class="phoneFuncExpress">
+                <div>
+                    <h2>Main Functionalities</h2>
+                </div>
+                <div class="col-lg-6">
+                </div>
+                <div >
+                    <ul id="functionsTable" style="height: 390px">
+                        <li  class="col-lg-6 functionLi" style="margin-top: 5px;height: 130px" >
+                            <div class="icon" style="color:#F3C24F;font-size:6.6em;float: left;margin-left: 8%;">
+                                <i class="fa fa-globe"></i>
+                            </div>
+                            <div>
+                            <h3>SHARING</h3>
+                            <p style="margin-bottom: 8px">Sharing models, data and computers as resuable</br>
+                                resources.</p>
+                            </div>
+                        </li>
+                        <li class="col-lg-6 functionLi" style="margin-top: 10px;height: 130px">
+                            <div class="icon" style="color:rgb(64, 151, 222);font-size:6.6em;float: left;margin-left: 8%;">
+                                <i class="fa fa-cube"></i>
+                            </div>
+                            <h3>REUSING</h3>
+                            <p>Using models, data and computers as services in </br>
+                                 web environment.</p>
+                        </li>
+                        <li class="col-lg-6 functionLi" style="margin-top: 10px;height: 130px">
+                            <div class="icon" style="color:rgb(78, 214, 0);font-size:6.6em;float: left;margin-left: 8%;">
+                                <i class="fa fa-share-alt-square"></i>
+                            </div>
+                            <h3>INTEGRATING</h3>
+                            <p>Integrating different models, data and computers to solve
+                                </br>real world problems.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+        </section>
+
         <!-- <section>
             <div class="title"> -->
         <!-- <div class="icon">
@@ -183,10 +209,9 @@
 
 </div>
 </section> -->
-
-
         <!-- System Show -->
-        <section class="icon-add section_bk_1">
+        <!-- System Show -->
+        <section class="icon-add section_bk_1 systemShow">
             <div class="section-content" style="text-align: left;">
                 <div :gutter="40" class="system-content el-row">
                     <div class="el-col el-col-12">
@@ -196,18 +221,18 @@
                         </div>
                         <p class="content-content margin-right-30">The model repository collects model resources to build a dictionary where all models (also include related tools, algorithms, etc.) are organized in a formal way. Users can find a model with its detailed information, conceptual and logical descriptions, computable resources, developing history, and applications. This repository publishes  model resources under the permission of the author.</p>
                         <el-button type="warning" style="margin-top: 32px"
-                            @click="window.open('/modelItem/repository')">Discover
+                                   @click="window.open('/modelItem/repository')">Discover
                         </el-button>
                     </div>
                     <div class="el-col el-col-12">
                         <img src="../static/img/rep/model.png"
-                            style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="foresty">
+                             style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="foresty">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="icon-add">
+        <section class="icon-add systemShow">
             <div class="section-content" style="text-align: right;">
                 <div :gutter="40" class="system-content el-row">
                     <div class="el-col el-col-12">
@@ -236,7 +261,11 @@
                             <!-- <i class="fa fa-globe"></i> -->
                             <span>Data Repository</span>
                         </div>
-                        <p class="content-content margin-left-30">The data repository collects data resources to build a community where users can explore modeling-related data through a universal center. Users can share their data resources to the data repository. Various data sharing sites can be also linked to support users so that they do not visit individual sites.  This data repository publishes data and their related information under the permission of the author.</p>
+                        <p class="content-content margin-left-30">
+                            The data repository collects data resources to build a community where users can explore modeling-related data through a universal center.
+                            Users can share their data resources to the data repository.
+                            Various data sharing sites can be also linked to support users so that they do not visit individual sites.
+                            This data repository publishes data and their related information under the permission of the author.</p>
                         <el-button type="warning" style="margin-top: 32px"
                             @click="window.open('/dataItem/repository')">Discover
                         </el-button>
@@ -245,7 +274,7 @@
             </div>
         </section>
 
-        <section class="icon-add section_bk_1">
+        <section class="icon-add section_bk_1 Container systemShow">
             <div class="section-content">
                 <div :gutter="40" class="system-content el-row">
                     <div class="el-col el-col-12">
@@ -253,7 +282,12 @@
                             <!-- <i class="fa fa-globe"></i> -->
                             <span>Using Models as Services</span>
                         </div>
-                        <p class="content-content margin-right-30">This platform provides model, data, and computing resources as corresponding services in an open web environment. Users can setup input data and run a model via a web client, and the related model will be executed in a remote computer node. Users can invoke a model service before boarding and obtain results when get off. A set of alternative solutions are available to convert original models as reusable services, to publish data files as reusable services and to share computers as available services.
+                        <p class="content-content margin-right-30" style="text-align: left;">
+                            This platform provides model, data, and computing resources as corresponding services in an open web environment.
+                            Users can setup input data and run a model via a web client, and the related model will be executed in a remote computer node.
+                            Users can invoke a model service before boarding and obtain results when get off.
+                            A set of alternative solutions are available to convert original models as reusable services,
+                            to publish data files as reusable services and to share computers as available services.
                         </p>
                         <el-button type="warning" style="margin-top: 32px"
                             @click="window.open('/modelItem/3f6857ba-c2d2-4e27-b220-6e5367803a12')">
@@ -280,7 +314,7 @@
         </section>
 
 
-        <section class="icon-add">
+        <section class="icon-add systemShow">
             <div class="section-content" style="text-align: right;">
                 <div :gutter="40" class="system-content el-row">
                     <div class="el-col el-col-12">
@@ -358,64 +392,338 @@
             </div>
         </section>
 
-        <!--<section class="icon-add section_bk_1">-->
-            <!--<div class="section-content">-->
-                <!--<div :gutter="40" class="system-content el-row">-->
-                    <!--<div class="el-col el-col-12">-->
-                        <!--<div class="content-title">-->
-                            <!--&lt;!&ndash; <i class="fa fa-globe"></i> &ndash;&gt;-->
-                            <!--<span>Participatory Modeling Platform</span>-->
-                        <!--</div>-->
-                        <!--<p class="content-content" style="text-align: left;">To solve a complex problem, single human's-->
-                            <!--expertise may be not enough.-->
-                            <!--Collaboration is important. Participants from different areas can contribute resources and-->
-                            <!--ideas-->
-                            <!--which would largely benefit the problem-solving.-->
-                            <!--With the Participatory Modeling Platform, dispersal participants can build a team, construct-->
-                            <!--a-->
-                            <!--project, upload various resources,-->
-                            <!--communicate with other, propose solutions, building new models and take other-->
-                            <!--responsibilities-->
-                            <!--which can help solving the target problem.</p>-->
-                        <!--<el-button type="warning" style="margin-top: 32px"-->
-                            <!--@click="window.open('http://94.191.49.160:8080/GeoProblemSolving/home')">Discover-->
-                        <!--</el-button>-->
-                    <!--</div>-->
-                    <!--<div class="el-col el-col-12">-->
-                        <!--<img src="/../static/img/particpate_plat.png"-->
-                            <!--style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="">-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</section>-->
+        <!-- System Show -->
+        <!--小屏适配-->
+        <!--小屏适配-->
+        <!--小屏适配-->
+        <section class="wzhSectionContainer wzhSectionBack phoneSystShow" style="margin-top: 10px">
+            <div class="phoneSectionContent" style="text-align: center;">
+                <div :gutter="40" class="system-content el-row">
 
-        <!--<section class="icon-add">-->
-            <!--<div class="section-content" style="text-align: right;">-->
-                <!--<div :gutter="40" class="system-content el-row">-->
-                    <!--<div class="el-col el-col-12">-->
-                        <!--<img src="../static/img/model_reproduce_jpg.jpg"-->
-                            <!--style="width:100%; height: 320px;border-radius:20px;border: solid 1px" alt="">-->
-                    <!--</div>-->
-                    <!--<div class="el-col el-col-12">-->
-                        <!--<div class="content-title">-->
-                            <!--&lt;!&ndash; <i class="fa fa-globe"></i> &ndash;&gt;-->
-                            <!--<span>Web Of Reproducible Science</span>-->
-                        <!--</div>-->
-                        <!--<p class="content-content">Collecting data resources to build a harbor where users can explore-->
-                            <!--modeling-related data through an universal center.-->
-                            <!--Data resources can be from the sharing of users with their public option. And various data-->
-                            <!--sharing sites are linked to help users search interested data without go here and there.-->
-                            <!--We only publish users' resources under their clear permission.</p>-->
-                        <!--<el-button type="warning"-->
-                            <!--style="margin-top: 32px">Discover</el-button>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</section>-->
+                        <div class="content-title" style="margin-bottom:15px ">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <h3>Model Repository</h3>
+                        </div>
+                        <!--                        <div style="width: 100%;height: 1px;background-color: #d0c9c4">-->
+                        <div id="modelRepSentence">
+                            <p class="phoneSentenceContent">The model repository collects model resources to build a dictionary
+                                where all models (also include related tools, algorithms, etc.) are organized in a formal way.
+                                Users can find a model with its detailed information, conceptual and logical descriptions, computable resources, developing history, and applications.
+                                This repository publishes model resources under the permission of the author.</p>
+                        </div>
+                        <div style="height: 60px; margin: 10px 0px;padding-top: 5px">
+<!--                            <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                    data-target="#modelRepSentence" style="margin-left: 15%"><p-->
+<!--                                    style="font-size:17.6px">Learn More</p></button>-->
+
+                            <div class="wzhFilter3" style="left: 0;right:0;margin: auto auto 10px;">
+                                <button class="discoverButton" onclick="window.location.href='/modelItem/repository'">DISCOVER</button>
+                            </div>
+                        </div>
+
+                        <img src="../static/img/rep/model.png"
+                             style="width:100%;border-radius:3px;border: 0" alt="foresty">
+
+                </div>
+            </div>
+        </section>
+
+        <section class="wzhSectionContainer wzhSectionBack phoneSystShow" style="margin-top: 12px">
+            <div class="phoneSectionContent" style="text-align: center;">
+                <div :gutter="40" class="system-content el-row">
+
+                        <div class="content-title" style="margin-bottom:15px ">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <h3>Data Repository</h3>
+                        </div>
+                        <!--                        <div style="width: 100%;height: 1px;background-color: #d0c9c4">-->
+                        <div id="dataRepSentence">
+                            <p class="phoneSentenceContent">The data repository collects data resources to build a
+                                community where users can explore modeling-related data through a universal center.
+                                Users can share their data resources to the data repository. Various data sharing sites
+                                can be also linked to support users so that they do not visit individual sites. This
+                                data repository publishes data and their related information under the permission of the
+                                author.
+                            </p>
+                        </div>
+                        <div style="height: 60px; margin: 10px 0;padding-top: 5px">
+<!--                            <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                    data-target="#dataRepSentence" style="margin-left: 15%"><p-->
+<!--                                    style="font-size:17.6px">Learn More</p></button>-->
+
+                            <div class="wzhFilter3" style="left: 0;right:0;margin: auto auto 10px;">
+                                <button class="discoverButton" onclick="window.location.href='dataItem/repository'">
+                                    DISCOVER
+                                </button>
+                            </div>
+                        </div>
+
+                        <img src="../static/img/rep/data.png"
+                             style="width:100%;border-radius:3px;border: 0" alt="foresty">
+
+                </div>
+            </div>
+        </section>
+        <section class="wzhSectionContainer wzhSectionBack phoneSystShow" style="margin-top: 12px">
+            <div class="phoneSectionContent" style="text-align: center;">
+                <div :gutter="40" class="system-content el-row">
+                        <div class="content-title" style="margin-bottom:15px ">
+                            <!-- <i class="fa fa-globe"></i> -->
+                            <h3>Using Models as Services</h3>
+                        </div>
+                        <!--                        <div style="width: 100%;height: 1px;background-color: #d0c9c4">-->
+                        <div id="usingModel">
+                            <p class="phoneSentenceContent">This platform provides model, data, and computing resources
+                                as corresponding services in an
+                                open web environment.
+                                Users can setup input data and run a model via a web client, and the related model will
+                                be
+                                executed in a remote computer node.
+                                Users can invoke a model service before boarding and obtain results when get off. A set
+                                of
+                                alternative solutions are available to convert original models as reusable services,
+                                to publish data files as reusable services and to share computers as available services.
+                            </p>
+                        </div>
+                        <div style="height: 50px; margin: 10px 0;padding-top: 5px">
+<!--                            <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                    data-target="#usingModel" style="float: none;margin-left: 0"><p-->
+<!--                                    style="font-size:17.6px">Learn More</p></button>-->
+
+                            <div class="wzhFilter3" style="left: 1%;margin-top: 0px;width: 80px">
+                                <button class="mutiButton"
+                                        onclick="window.location.href='/modelItem/3f6857ba-c2d2-4e27-b220-6e5367803a12'">
+                                    SWAT
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left:25%;margin-top: 0px;width: 80px">
+                                <button class="mutiButton" style="float: left"
+                                        onclick="window.location.href='/modelItem/5738ef7c-a5ac-46b5-a347-3c823f71b3a7'">
+                                    FVCOME
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 50%;margin-top:0px;width: 80px">
+                                <button class="mutiButton"
+                                        onclick="window.location.href='/modelItem/b3a88af1-3568-4219-99c4-aa8fbce3227d'">
+                                    SWMM
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 75%;margin-top: 0px;width: 80px">
+                                <button class="mutiButton" onclick="window.location.href='/modelItem/repository'">Expore
+                                    More
+                                </button>
+                            </div>
+                        </div>
+
+                        <img src="/../static/img/models.png"
+                             style="width:100%;border-radius:3px;border: 0;margin-top: 10px" alt="foresty">
+
+                </div>
+            </div>
+            </section>
+
+            <section class="wzhSectionContainer wzhSectionBack phoneSystShow" style="margin-top: 12px">
+                <div class="phoneSectionContent" style="text-align: center;">
+                    <div :gutter="40" class="system-content el-row">
+                        <div class="content-title" style="margin-bottom:15px ">
+                    <!-- <i class="fa fa-globe"></i> -->
+                            <h3>Thematic center</h3>
+                        </div>
+                        <!--                        <div style="width: 100%;height: 1px;background-color: #d0c9c4">-->
+                        <div id="ThCenterSentence">
+                            <p class="phoneSentenceContent">
+                            Regarding a research topic or a specific problem, multi-disciplinary knowledge could be
+                            involved.
+                            Several thematic centers are constructed to help researchers collect models, data and other
+                            related resources.
+                            Topic-related or problem-related resources could be easily discovered within a thematic
+                            center.
+                                And various web applications would be offered in certain centers.</p>
+                        </div>
+                        <div style="height: 110px; margin: 10px 0px;padding-top: 5px">
+<!--                            <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                    data-target="#ThCenterSentence" style="float: none;margin-left: 0"><p-->
+<!--                                    style="font-size:17.6px">Learn More</p></button>-->
+                            <div class="wzhFilter3" style="left: 2%;margin-top: 0px;width: 80px">
+                                <button class="mutiButton" onclick="window.location.href='/Online_Saga/saga-tools'">
+                                    Saga
+                                </button>
+                            </div>
+                            <div class="wzhFilter3"
+                                 style="float: none;left: 26%;margin-top: 0px;width:80px;">
+                                <button class="mutiButton" style="float: left"
+                                        onclick="window.location.href='/hydro-model-integration/main'">SWMM
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 50%;margin-top: 0px;width: 80px">
+                                <button class="mutiButton" style="float: left"
+                                        onclick="window.location.href='/FGM-theme/'">Forest Growth
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 75%;margin-top: 0px;width: 80px">
+                                <button class="mutiButton" onclick="window.location.href='/TrafficNoiseTheme/'">Traffic
+                                    Noise
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 3%;margin-top: 55px">
+                                <button class="mutiButton" onclick="window.location.href='/app/geodetector.html'">
+                                    Geodetector
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 33%;margin-top: 55px;width: 110px">
+                                <button class="mutiButton" style="font-size: 15px" onclick="window.location.href='/app/B-SHADE_Sampling.html'">
+                                    B-Shade-Sampling
+                                </button>
+                            </div>
+                            <div class="wzhFilter3" style="left: 66%;margin-top: 55px;width: 110px">
+                                <button class="mutiButton" style="font-size: 15px"
+                                        onclick="window.location.href='/app/B-SHADE_Estimation.html'">B-Shade-Estimation
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="thCenterCarousel" class="carousel slide" style="margin-top: 10px">
+<!--                            轮播指标设置-->
+                            <ol class="carousel-indicators">
+                                <li data-target="#thCenterCarousel" data-slide-to="0" class="active"></li>
+                                <li data-target="#thCenterCarousel" data-slide-to="1" ></li>
+                                <li data-target="#thCenterCarousel" data-slide-to="2"></li>
+                                <li data-target="#thCenterCarousel" data-slide-to="3"></li>
+                                <li data-target="#thCenterCarousel" data-slide-to="4"></li>
+                            </ol>
+<!--                           轮播对象-->
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img alt="" style="width: 100%;height: 48vw" src="../static/img/thematci_center/swmm1.png">
+                                </div>
+                                <div class="item">
+                                    <img alt="" style="width: 100%;height: 48vw" src="../static/img/thematci_center/TrafficNoise.jpg">
+                                </div>
+                                <div class="item">
+                                    <img alt="" style="width: 100%;height: 48vw" src="../static/img/thematci_center/saga.jpg" >
+                                </div>
+                                <div class="item">
+                                    <img alt="" style="width: 100%;height: 48vw" src="../static/img/thematci_center/Foresty.png">
+                                </div>
+                                <div class="item">
+                                    <img alt="" style="width: 100%;height: 48vw" src="../static/img/thematci_center/Atmosphere.png">
+                                </div>
+                            </div>
+<!--                             轮播导航-->
+                            <a class="left carousel-control" href="#thCenterCarousel" role="button"  data-slide="prev" style="background-image: none">
+                                <span class="glyphicon glyphicon-chevron-left" ></span>
+                            </a>
+                            <a class="right carousel-control" href="#thCenterCarousel" role="button" data-slide="next" style="background-image: none">
+                                <span class="glyphicon glyphicon-chevron-right" ></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+      <!-- Supportive Tools-->
+        <!--        小屏适配-->
+        <section id="phoneSupportTools" class="section_bk_1" style="margin-top: 12px;padding-bottom:20px">
+            <div class="section-content ">
+                <div class="title">
+                    <!-- <div class="icon">
+                    <i class="fa fa-cube"></i>
+                </div> -->
+                    <!-- <h4>-⚙️-</h4> -->
+                    <h2>Supportive Tools</h2>
+
+                </div>
+               <div id="toolsCarousel" class="carousel slide">
+<!--                   <ol class="carousel-indicators">-->
+<!--                       <li data-target="#toolsCarousel" data-slide-to="0" class="active"></li>-->
+<!--                       <li data-target="#toolsCarousel" data-slide-to="1" ></li>-->
+<!--                       <li data-target="#toolsCarousel" data-slide-to="2"></li>-->
+<!--                   </ol>-->
+                   <!--                           轮播对象-->
+<!--                   <div class="carousel-inner" style="padding-bottom: 55px">-->
+                       <div class="item active">
+                              <div class="content-title" style="margin-top: 10px">
+                                  <div style="width:258px;left:0;right:0;margin-left:auto;margin-right:auto;">
+                                      <i class="fa fa-globe" style="font-size: 18px;text-align: center"></i>
+                                      <span style="font-size: 18.8px;text-align: center">Model Service Container</span>
+                                  </div>
+                              </div>
+                              <img src="/../static/img/container_service.png" style="width:100%; height: 48vw;margin-top: 12px; border-radius:1px;border: solid 0px">
+                              <div id="mscSentence" style="margin-top: 5px">
+                                 <p class="phoneSentenceContent" style="text-align: center">
+                                  Model Service Container is developed based on the open source NodeJS,
+                                  and it mainly provides tools/functions for users to deploy a model as a reusable model-service
+                                     which can also be managed in the model service container.
+                                  It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).</p>
+                              </div>
+<!--                              <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                      data-target="#mscSentence" style="float: none;margin-top: 12px"><p-->
+<!--                                      style="font-size:17.6px">Learn More</p></button>-->
+                              <div class="wzhFilter3" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
+                                  <button class="discoverButton" type="warning"  onclick="window.location.href='http://106.14.78.235:8060/index'">Use Now</button>
+                              </div>
+                       </div>
+                       <div class="item">
+                           <div class="content-title" style="margin-top: 90px;">
+                               <div style="width:243px;left:0;right:0;margin-left:auto;margin-right:auto;">
+                                   <i class="fa fa-globe" style="font-size: 18px;text-align: center"></i>
+                                   <span style="font-size: 18.8px;text-align: center">Data Service Container</span>
+                               </div>
+                           </div>
+                           <img src="/../static/img/datacontainer.png" style="width:100%; height: 48vw;margin-top: 12px; border-radius:1px;border: solid 0px">
+                           <div id="dscSentence" style="margin-top: 5px">
+                               <p class="phoneSentenceContent" style="text-align: center">
+                                   Data Service Container is developed based on the open source NodeJS project,
+                                   and it mainly provides tools/functions for users to publish data as reusable data-services.
+                                   It can be deployed in various computing platforms (e.g. Windows, Linux, MaxOSX, etc.).</p>
+                           </div>
+<!--                           <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                   data-target="#dscSentence" style="float: none;margin-top: 12px"><p-->
+<!--                                   style="font-size:17.6px">Learn More</p></button>-->
+                           <div class="wzhFilter3" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
+                               <button class="discoverButton" type="warning"  onclick="window.location.href='http://106.14.78.235:8899/'">Use Now</button>
+                           </div>
+                       </div>
+                       <div class="item">
+                           <div class="content-title" style="margin-top:90px">
+                               <div style="width:236px;left:0;right:0;margin-left:auto;margin-right:auto;">
+                               <i class="fa fa-globe" style="font-size: 18px;text-align: center"></i>
+                               <span style="font-size: 18.8px;text-align: center">Model Wrapping Tools</span>
+                               </div>
+                           </div>
+                           <img src="/../static/img/wraptools.jpg" style="width:100%; height: 48vw;margin-top: 12px; border-radius:1px;border: solid 0px">
+                           <div id="mwtSentence" style="margin-top: 5px">
+                               <p class="phoneSentenceContent" style="text-align: center">
+                                   Model Wrapping Tools help users to wrap their own models as services.
+                                   Tools include Programming Libraries for converting original program
+                                   as
+                                   service-enabled program (currently supporting C++, C#, Java and
+                                   Python)
+                                   and Model Service Packaging tool for packaging model execution
+                                   related
+                                   files as one zip file.</p>
+                           </div>
+<!--                           <button class="lMoreButton " type="button" data-toggle="collapse"-->
+<!--                                   data-target="#mwtSentence" style="float: none;margin-top: 12px"><p-->
+<!--                                   style="font-size:17.6px">Learn More</p></button>-->
+                           <div class="wzhFilter3" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
+                               <button class="discoverButton" type="warning"  onclick="window.location.href='http://106.14.78.235:8060/index'">Use Now</button>
+                           </div>
+                       </div>
+<!--                   </div>-->
+<!--                       <a class="left carousel-control" href="#toolsCarousel" role="button"  data-slide="prev">-->
+<!--                           <span class="glyphicon glyphicon-chevron-left" ></span>-->
+<!--                       </a>-->
+<!--                       <a class="right carousel-control" href="#toolsCarousel" role="button" data-slide="next">-->
+<!--                           <span class="glyphicon glyphicon-chevron-right" ></span>-->
+<!--                       </a>-->
+
+                   </div>
+            </div>
+        </section>
 
 
-        <!-- Tools -->
-        <section class="section_bk_1">
+        <section id="supptiveTools" class="section_bk_1">
             <div class="section-content ">
                 <div class="title">
                     <!-- <div class="icon">
@@ -430,7 +738,7 @@
                         <!-- <el-menu class="themtic-menu">
                         <el-menu-item index="thematicchoose(SAGA)">
                             <i class="fa fa-paper-plane" style="color:#d48806;"></i>
-                           
+
                             <span  >SAGA</span>
                         </el-menu-item>
                         <el-menu-item index="thematicchoose(Swat)"  style="color:#389e0d;"  >
@@ -534,7 +842,15 @@
                                     <div class="el-col el-col-10">
                                         <div class="el-row">
                                             <div class="el-col el-col-24" style="word-wrap:break-word;">
-                                                <p class="content-content margin-right-30">Model Wrapping Tools help users to wrap their own models as services. The tools include programming libraries for converting original program as service-enabled program (currently supporting C++, C#, Java and Python), and the Model Service Packaging tool for packaging model execution related files as one zip file.</p>
+                                                <p class="content-content margin-right-30">Model Wrapping Tools are some tools that help
+                                                    users to wrap their own models as services.
+                                                    Tools include Programming Libraries for converting original program
+                                                    as
+                                                    service-enabled program (currently supporting C++, C#, Java and
+                                                    Python)
+                                                    and Model Service Packaging tool for packaging model execution
+                                                    related
+                                                    files as one zip file.</p>
                                             </div>
                                         </div>
 
@@ -562,6 +878,9 @@
                 </div>
             </div>
         </section>
+
+
+
         <!-- collaborate people -->
         <section class="icon-add  ">
             <div class="section-content" style="text-align: left;">
@@ -570,7 +889,7 @@
                     <i class="fa fa-cube"></i>
                 </div> -->
                     <!-- <h4>-👬-</h4> -->
-                    <h2>Collaborators</h2>
+                    <h2>Some Collaborators</h2>
                 </div>
 
                 <div style="border-radius: 20px" class="el-row">
@@ -648,7 +967,7 @@
                 </el-carousel> -->
 
                     <center>
-                        <marquee direction="left" onmouseover="this.stop()" onmouseout="this.start()" scrollamount="6"
+                        <marquee id="photoWall" direction="left" onmouseover="this.stop()" onmouseout="this.start()" scrollamount="6"
                             loop='-1'>
 
 
@@ -732,7 +1051,7 @@
                                 <div class="el-col el-col-1">
                                     <img src="../static/img/producer/members/Zhangshul.jpg" style="width: 80px"
                                         class="colreacherimg" title="Zhang Shuliang">
-                                </div>								
+                                </div>
 
                             </div>
 
@@ -743,9 +1062,9 @@
                 </div>
                 <br>
 
-                <center><q>We are looking for more collaborators. Please <a href="mailto:nj_gis@163.com" style="color:blue">contact us</a> if you
+                <center><q>Not limited to these avatars. Please <a href="" style="color:blue">contact us</a> if you
                         would
-                        like to be shown in this banner.</q>
+                        like to shown in this banner.</q>
                 </center>
 
 
@@ -754,18 +1073,18 @@
 
 
         <div id="partner">
-            <div class="el-row">
+            <div id="partnerTitle" class="el-row">
                 <div class="title">
                     <!-- <div class="icon">
                     <i class="fa fa-cube"></i>
                 </div> -->
                     <!-- <h4>-🤝-</h4> -->
-                    <h2>Accompanies</h2>
+                    <h2>Our Important Accompanies</h2>
                     <!-- <p>Multi-disciplinary knowledge provided by dispersal modeling researchers. knowledge provided by dispersal modeling researchers.</p> -->
                 </div>
             </div>
-            <div style="width:100%" class="el-row">
-                <div class="el-col el-col-6">
+            <div id="partnerContainer" style="width:100%" class="el-row">
+                <div class="el-col el-col-6" >
                     <a href="https://csdms.colorado.edu/wiki/Model_download_portal" target="_blank">
                         <img src="../static/img/team/CSDMS.png" style="width: 80%;height: 50px;margin-top:20px">
                     </a>
@@ -778,18 +1097,27 @@
                 </div>
                 <div class="el-col el-col-6">
                     <a href="http://www.opengeospatial.org/" target="_blank">
-                        <img src="../static/img/team/ogc.png" style="width:140px;height: 80px">
+                        <img src="../static/img/team/ogc.png" style="width:140px;height: 80px;margin-top: 10px">
                     </a>
 
 
                 </div>
                 <div class="el-col el-col-6">
-                    <a href="http://www.njnu.edu.cn" target="_blank">
-                        <img src="../static/img/team/NJNU.jpg" style="width: 100px;height: 80px">
+                    <a href="http://www.njnu.edu.cn/" target="_blank">
+                        <img src="../static/img/team/NJNU.jpg" style="width: 100px;height: 80px;margin-top: 10px">
                     </a>
                 </div>
             </div>
         </div>
+
+        <div class="backTop">
+            <div class="arrowBig" style=""></div>
+            </div>
+
+        <div class="feedBack">
+            <a  href="mailto:nj_gis@163.com"><div class="feedBackSentence">Feed&nbsp;Back</div></a>
+        </div>
+
 
         <div th:replace="fragments/footer :: footer"></div>
 
@@ -801,16 +1129,19 @@
 </body>
 <script src="../static/js/common/jquery-3.3.1.min.js"></script>
 <script src="../static/js/index/bootstrap.min.js"></script>
+
 <script src="../static/js/common/vue.min.js"></script>
 <script src="../static/css/index/element_ui/index.js"></script>
-<!-- <script src="plugins/echarts.min.js"></script>
-<script src="plugins/echarts-gl.min.js"></script>
-<script src="plugins/swiper/js/swiper.min.js"></script> -->
+
 
 <script src="../static/js/index/main.js"></script>
-<!-- <script src="js/globe.js"></script> -->
+
 <script src="../static/js/common/loadUser.js"></script>
-<!-- <script src="page/navigation/navbar/navbar.js"></script> -->
+<script src="../static/js/common/navbar.js"></script>
+
+<script src="../static/js/common/navbarJquery.js/"></script>
+<script src="../static/js/common/backTop.js/"></script>
+
 <script>
     $("#wx").mouseover(function(){
         $("#wxqrcode").fadeIn();
