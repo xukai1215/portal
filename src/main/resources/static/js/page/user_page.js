@@ -236,3 +236,102 @@ new Vue({
         this.modelItemHandleCurrentChange(1);
     }
 })
+
+var menuChoose=document.getElementsByClassName('menuItem'),
+    contents=document.getElementsByClassName('bodyContainer'),
+    menuBorder=document.getElementsByClassName('menuBorder'),
+
+    viewMoreIntro=document.getElementById('viewMoreIntroduction'),
+    viewMoreModel=document.getElementById('viewMoreModel'),
+    viewMoreResearch=document.getElementById('viewMoreResearch');
+
+function showItem(){
+    console.log('99');
+    console.log(menuChoose);
+    console.log(contents);
+
+}
+
+(function changeContent() {
+    for(let i=0;i<menuChoose.length;i++){
+        // var menuAfter=window.getComputedStyle(menuChoose[i],':after');
+        //     console.log(menuAfter.borderBottom);
+        menuChoose[i].onmouseover=function (){
+
+            menuBorder[i].style.borderBottomColor = '#339fff';
+            menuBorder[i].style.borderBottomWidth = '3px';
+        };
+        menuChoose[i].onmouseout=function (){
+            menuBorder[i].style.borderBottomColor = 'transparent';
+            menuBorder[i].style.borderBottomWidth = '2px';
+        };
+        menuChoose[i].onclick = function show() {
+            console.log(contents);
+            for (let i = 0; i < menuChoose.length; i++) {
+
+                if (this === menuChoose[i]) {
+                    menuChoose[i].style.borderBottomColor = '#339fff';
+                    // menuChoose[i].style.borderBottomwidth = 3;
+                    contents[i].classList.add('showActive');
+                } else {
+                    menuChoose[i].style.borderBottomColor = '#adadad';
+                    // menuChoose[i].style.borderBottomWidth = 3;
+                    contents[i].classList.remove('showActive');
+                }
+            }
+
+        };
+
+    }
+
+
+    viewMoreIntro.onclick = function () {
+
+        for(let i=0;i<contents.length;i++)
+        {
+            if(i===3){
+                contents[i].classList.add('showActive');
+                menuChoose[i].style.borderBottomColor = '#339fff';
+            }else{
+                contents[i].classList.remove('showActive');
+                menuChoose[i].style.borderBottomColor = '#9b9b9b';
+            }
+
+
+        }
+
+
+    };
+
+    viewMoreModel.onclick=function (){
+        for(let i=0;i<contents.length;i++)
+        {
+            if(i===1){
+                contents[i].classList.add('showActive');
+                menuChoose[i].style.borderBottomColor = '#339fff';
+            }else{
+                contents[i].classList.remove('showActive');
+                menuChoose[i].style.borderBottomColor = '#9b9b9b';
+            }
+
+
+        }
+    };
+
+    viewMoreResearch.onclick=function (){
+        for(let i=0;i<contents.length;i++)
+        {
+            if(i===2){
+                contents[i].classList.add('showActive');
+                menuChoose[i].style.borderBottomColor = '#339fff';
+            }else{
+                contents[i].classList.remove('showActive');
+                menuChoose[i].style.borderBottomColor = '#9b9b9b';
+            }
+
+
+        }
+    };
+
+})();
+

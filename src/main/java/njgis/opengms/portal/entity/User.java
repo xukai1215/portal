@@ -1,6 +1,7 @@
 package njgis.opengms.portal.entity;
 
 import lombok.Data;
+import njgis.opengms.portal.entity.support.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,9 +26,26 @@ public class User {
     String description;
     String phone;
     String wiki;
+    String researchInterests;
+    String weChat;
+    String faceBook;
+    String twitter;
+    String weiBo;
+    String personPage;
+
 
     List<String> organizations;
     List<String> subjectAreas;
+
+    List<Article> articles;
+    List<AcademicService> academicServices;
+    List<AwardandHonor> awardsHonors;
+    List<Conference> conferences;
+    List<EducationExperience> educationExperiences;
+    List<Introduction> introductions;
+    List<Lab> labs;
+    List<ResearchProjects> researchProjects;
+
     int modelItems;
     int dataItems;
     int conceptualModels;

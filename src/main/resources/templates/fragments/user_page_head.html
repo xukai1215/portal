@@ -1,0 +1,41 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="userPageComm">
+    <div id="upperContainer" class="fullContainer">
+        <!--/*@thymesVar id="areas" type=""*/-->
+        <div class="userInfoContainer" >
+            <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
+            <div class="user_info">
+                <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
+                <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>
+
+                <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
+            </div>
+        </div>
+    </div>
+    <div id="middleContainer" class="fullContainer">
+        <div class="menuContainer" >
+            <div class="menuItem">
+                <a href="###">Overview</a>
+            </div>
+            <div class="menuItem">
+                <a href="###">Model Items</a>
+            </div>
+            <div class="menuItem">
+                <a href="###">Research</a>
+            </div>
+            <div class="menuItem">
+                <a href="###">Info</a>
+            </div>
+            <div class="menuItem">
+                <a href="###">Research you follow</a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

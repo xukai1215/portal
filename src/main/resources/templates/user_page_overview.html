@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>User Page | OpenGMS</title>
+
+    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/base/style.css">
+    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="../static/css/base/list.css">
+    <link rel="stylesheet" href="../static/css/page/user_page.css">
+    <link rel="stylesheet" href="../static/css/page/user_page2.css">
+    <link rel="stylesheet" href="../static/css/base/index2.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
+    <style>
+
+        .user-interest .content-body span{
+            margin-bottom:10px;
+            font-size: 14px;
+        }
+        .user-interest .content-body span:last-child{
+            /*margin-bottom:0px;*/
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="height: auto;background-color: #f3f3f3">
+        <div id="upperContainer" class="fullContainer">
+            <!--/*@thymesVar id="areas" type=""*/-->
+            <div class="userInfoContainer" >
+                <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
+                <div class="user_info">
+                    <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
+                    <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>
+
+                    <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
+                </div>
+            </div>
+        </div>
+        <div id="middleContainer " class="fullContainer">
+            <div class="menuContainer" >
+                <div class="menuItem">
+                    <a href="###">Overview</a>
+                    <div class="menuBorder"></div>
+                </div>
+                <div class="menuItem">
+                    <a href="###">Model Items</a>
+                    <div class="menuBorder"></div>
+                </div>
+                <div class="menuItem">
+                    <a href="###">Research</a>
+                    <div class="menuBorder"></div>
+                </div>
+                <div class="menuItem">
+                    <a href="###">Info</a>
+                    <div class="menuBorder"></div>
+                </div>
+<!--                <div class="menuItem">-->
+<!--                    <a href="###">Research you follow</a>-->
+<!--                </div>-->
+
+            </div>
+
+        </div>
+
+<!--        <div th:replace="fragments/user_page_head :: userPageComm"></div>-->
+<!--x-->
+        <div id="downerContainer" class="fullContainer" >
+        <!--       overview-->
+            <div class="bodyContainer showActive">
+                <div class="leftContentContainer" style="width: 665px">
+                   <div id="selfIntroduction" class="contentColContainer">
+                       <div class="subTitle" style="">
+                               <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
+                               <div>
+                                   <button id="viewMoreIntroduction" class="viewMoreButton" style="">View More</button>
+
+                               </div>
+                           </div>
+                       <div class="contentContainer" >
+                           <div th:text="${userInfo.description}"></div>
+                       </div>
+                   </div>
+
+                   <div id="modelItems" class="contentColContainer" >
+                       <div class="subTitle" style="">
+                           <div><h4 style="margin-top: 10px;margin-left: 10px">Model Items</h4></div>
+                           <div>
+                               <button id="viewMoreModel" class="viewMoreButton" style="" >View More</button>
+                           </div>
+                       </div>
+                       <div class="contentContainer" style="width: 96%; height: 248px;">
+
+                          <div id="modelItem" class="itemCard" style="width: 48.5%;margin-top: 3px"></div>
+                          <div id="dataItem" class="itemCard" style="width: 48.5%;margin-top: 3px" ></div>
+                          <div id="conceptualModel" class="itemCard" style="width: 32%;"></div>
+                          <div id="logicalModel" class="itemCard" style="width: 32%;"></div>
+                          <div id="computableModel" class="itemCard" style="width: 32%;"></div>
+
+                       </div>
+                   </div>
+                    <div class="splitBlock">
+                        <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">RESEARCH</h4>
+                        </div>
+                        <div class="arrowDownerBig"></div>
+                    </div>
+
+                    <div id="researchIntroduction" class="contentColContainer" style="margin-top: 0px">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Research</h4></div>
+                            <div>
+                                <button id="viewMoreResearch" class="viewMoreButton" style="" >View More</button>
+                            </div>
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rigntContentContainer" style="width: 420px">
+                    <div id="affiliation" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                    </div>
+                    <div id="contactInfo" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                </div>
+                </div>
+            </div>
+
+          <!--            model item-->
+            <div class="bodyContainer" >
+                <div id="modelStats" class="leftContentContainer" style="width: 270px">
+                    <div  class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Model Stats</h4></div>
+                        </div>
+                    </div>
+                    <div  id="modelClassification" class="contentColContainer" style="margin-top: 0px;">
+                        <ul>
+                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">
+                                <p>99999</p></div></a></li>
+                            <li><a style="display: flex;justify-content: space-between">Model Item<div class="statsNumberFullColor">
+                                <p th:text="${userInfo.modelItems}">1000</p></div></a></li>
+                            <li><a style="display: flex;justify-content: space-between">Data item <div class="statsNumberFullColor">
+                                <p th:text="${userInfo.dataItems}">1000</p></div></a></li>
+                            <li><a style="display: flex;justify-content: space-between">Conceptual Model <div class="statsNumberFullColor">
+                                <p th:text="${userInfo.conceptualModels}">1000</p></div></a></li>
+                            <li><a style="display: flex;justify-content: space-between">Logical Model <div class="statsNumberFullColor">
+                                <p th:text="${userInfo.logicalModels}">1000</p></div></a></li>
+                            <li><a style="display: flex;justify-content: space-between">Computable Model <div class="statsNumberFullColor">
+                                <p th:text="${userInfo.computableModels}">999</p></div></a></li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="rigntContentContainer" style="width:820px">
+                    <div id="modelTable" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Model Items</h4></div>
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                    </div>
+                    <div id="" class="contentColContainer">
+                        <div class="subTitle" style="">
+
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--          research-->
+                <div class="bodyContainer" >
+                    <div  class="leftContentContainer" style="width: 270px">
+                        <div  class="contentColContainer">
+                            <div class="subTitle" style="">
+                                <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Research</h4></div>
+                            </div>
+                        </div>
+                        <div   class="contentColContainer" style="margin-top: 0px;">
+                            <ul>
+                                <li><a>Articles</a></li>
+                                <li><a>Projects</a></li>
+                                <li><a>Conferences</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="rigntContentContainer" style="width:820px">
+                        <div id="" class="contentColContainer">
+                            <div class="subTitle" style="">
+                                <div><h4 style="margin-top: 10px;margin-left: 10px">Articles</h4></div>
+                            </div>
+                            <div class="contentContainer" >
+                            </div>
+                        </div>
+                        <div id="" class="contentColContainer" style="margin-top: 0px;">
+                            <div class="subTitle" style="">
+
+                            </div>
+                            <div class="contentContainer" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <!--            info-->
+            <div class="bodyContainer">
+                <div class="leftContentContainer" style="width: 665px">
+                    <div id="personalIntro" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Personal Introduction</h4></div>
+                        </div>
+                        <div class="contentContainer" >
+
+                        </div>
+                    </div>
+                    <div class="contentColContainer" >
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>
+                        </div>
+                        <div class="contentContainer" style=" height: 248px;">
+
+                        </div>
+                    </div>
+                    <div  class="contentColContainer" style="margin-top: 0px">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Awards & honors</h4></div>
+
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                    </div>
+                </div>
+                <div class="rigntContentContainer" style="width: 420px">
+                    <div id="contactInfoAll" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
+                        </div>
+                        <div class="contentContainer" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+</div>
+</body>
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+<script src="../static/js/common/axios.min.js"></script>
+<script src="../static/element-ui/index.js"></script>
+<script type="text/javascript" src="../../static/js/common/bootstrap.min.js"></script>
+<script src="../static/js/page/user_page.js"></script>
+<script src="../static/js/common/loadUser.js"></script>
+<script src="../static/js/common/navbar.js"></script>
+</html>
