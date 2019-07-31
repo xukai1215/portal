@@ -87,13 +87,13 @@ new Vue({
                         if (href.indexOf("login") == -1) {
                             window.location.href = href;
                         }
-                        else if(history!=undefined&&history.indexOf('login')==-1&&history.indexOf('register')==-1){
+                        else if(history!=undefined&&history!=''&&history.indexOf('login')==-1&&history.indexOf('register')==-1){
                             window.location.href=history;
                         }
                         else {
                             window.location.href = "/user/userSpace";
                         }
-                        window.sessionStorage.setItem('history',undefined);
+                        window.sessionStorage.setItem('history','');
                     }
                     else {
                         this.$message({

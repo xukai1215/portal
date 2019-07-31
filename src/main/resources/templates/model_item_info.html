@@ -15,6 +15,8 @@
     <link rel="stylesheet" th:href="@{../static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{../static/css/page/model_item_info.css}">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+
     <style>
         #description h1 {
             font-size: 24px;
@@ -289,39 +291,39 @@
                         </el-button>
 
                     </el-tab-pane>
-                        <!--search related model dialog-->
-                        <el-dialog
-                                title="Related Data of current Model"
-                                :visible.sync="searchRelatedModelsDialogVisible"
-                                width="30%"
-                                height="50%"
-                                :before-close="handleClose"
-                                style="overflow-y: scroll"
-                        >
+                    <!--search related model dialog-->
+                    <el-dialog
+                            title="Related Data of current Model"
+                            :visible.sync="searchRelatedModelsDialogVisible"
+                            width="30%"
+                            height="50%"
+                            :before-close="handleClose"
+                            style="overflow-y: scroll"
+                    >
 
 
-                            <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
-                            <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
+                        <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
+                        <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
 
-                                <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
-                                    <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
-                                        <br><strong>Description:</strong><span>{{item.description}}</span>
+                            <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
+                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                                    <br><strong>Description:</strong><span>{{item.description}}</span>
 
-                                    </div>
                                 </div>
-                                <div v-if="nomore!=''" style="text-align: center">
-                                    <span  >no more data</span>
-                                </div>
+                            </div>
+                            <div v-if="nomore!=''" style="text-align: center">
+                                <span  >no more data</span>
+                            </div>
 
 
-                            </el-card>
+                        </el-card>
 
 
-                            <span slot="footer" class="dialog-footer">
+                        <span slot="footer" class="dialog-footer">
                                 <el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>
                                 <el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
                               </span>
-                        </el-dialog>
+                    </el-dialog>
 
                     <el-tab-pane label="Add Data Items" name="Add Data Items">
 
@@ -337,44 +339,44 @@
 
                     </el-tab-pane>
 
-                        <!--add related model dialog-->
-                        <el-dialog
-                                title="Add Data for current Model"
-                                :visible.sync="addRelatedModelsDialogVisible"
-                                width="30%"
-                                :before-close="handleClose">
+                    <!--add related model dialog-->
+                    <el-dialog
+                            title="Add Data for current Model"
+                            :visible.sync="addRelatedModelsDialogVisible"
+                            width="30%"
+                            :before-close="handleClose">
 
 
-                            <el-form :inline="true"  class="demo-form-inline">
-                                <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
-                                <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
-                            </el-form>
+                        <el-form :inline="true"  class="demo-form-inline">
+                            <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
+                            <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
+                        </el-form>
 
-                            <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
+                        <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
 
-                            <el-alert
-                                    title=""
-                                    type="success"
-                                    :closable="false">
-                                {{selectedModels}}
+                        <el-alert
+                                title=""
+                                type="success"
+                                :closable="false">
+                            {{selectedModels}}
 
-                            </el-alert>
+                        </el-alert>
 
 
-                            <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
+                        <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
 
-                                <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
-                                    <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
-                                        <br><strong>Description:</strong><span>{{item.description}}</span>
+                            <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
+                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                                    <br><strong>Description:</strong><span>{{item.description}}</span>
 
-                                    </div>
-                                </el-card>
-                                <div v-if="nomore!=''" style="text-align: center">
-                                    <span  >no more data</span>
                                 </div>
-
-
                             </el-card>
+                            <div v-if="nomore!=''" style="text-align: center">
+                                <span  >no more data</span>
+                            </div>
+
+
+                        </el-card>
 
 
 
@@ -382,11 +384,11 @@
 
 
 
-                            <span slot="footer" class="dialog-footer">
+                        <span slot="footer" class="dialog-footer">
                                 <el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>
-                                <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
+                            <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
                               </span>
-                        </el-dialog>
+                    </el-dialog>
 
 
 
@@ -584,5 +586,6 @@
 <script src="../static/js/common/loadUser.js"></script>
 <script src="../static/js/common/copy.js"></script>
 <script src="../static/js/common/bootstrap.min.js"></script>
+<script src="../static/js/common/navbar.js"></script>
 
 </html>

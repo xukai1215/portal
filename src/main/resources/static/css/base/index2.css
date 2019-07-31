@@ -84,7 +84,7 @@
     position: absolute;
     background-color: rgba(255,255,255,0.9);
     z-index:-1;
-    background-image: url("../../../static/img/carousels/banner.jpg");
+    background-image: url("../../../static/img/carousels/Banner.jpg");
     background-position: center;
     /*background-size: cover;*/
     /*background-attachment: fixed;*/
