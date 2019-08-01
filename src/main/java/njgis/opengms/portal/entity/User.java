@@ -33,6 +33,10 @@ public class User {
     int conceptualModels;
     int logicalModels;
     int computableModels;
+    int concepts;
+    int spatials;
+    int templates;
+    int units;
 
     Date createTime;
 }
