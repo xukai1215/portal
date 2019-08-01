@@ -688,6 +688,26 @@ new Vue({
         }
     },
     methods: {
+        contribute(){
+            $.ajax({
+                url: '/user/load',
+                type: 'get',
+                // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
+                // dataType : 'json',
+                success: function (result) {
+                    var json = JSON.parse(result);
+                    if (json.oid != '') {
+                        window.location.href="/repository/createConcept";
+                    }
+                    else{
+                        window.location.href="/user/login";
+                    }
+                },
+                error: function (e) {
+                    alert("load user error");
+                }
+            });
+        },
         search() {
             this.pageOption.currentPage = 1;
             this.getModels();
@@ -802,8 +822,6 @@ new Vue({
                 }
             })
         },
-
-
     },
     mounted() {
 

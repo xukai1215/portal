@@ -3,17 +3,14 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.dto.UserUpdateDTO;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.Task;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.dto.UserAddDTO;
+import njgis.opengms.portal.dto.UserUpdateDTO;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -111,6 +108,31 @@ public class UserService {
         user.setComputableModels(++count);
         userDao.save(user);
     }
+    public void conceptPlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getConcepts();
+        user.setConcepts(++count);
+        userDao.save(user);
+    }
+    public void spatialPlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getSpatials();
+        user.setSpatials(++count);
+        userDao.save(user);
+    }
+    public void templatePlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getTemplates();
+        user.setTemplates(++count);
+        userDao.save(user);
+    }
+    public void unitPlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getUnits();
+        user.setUnits(++count);
+        userDao.save(user);
+    }
+
     //--
     public void modelItemMinusMinus(String userName){
         User user = userDao.findFirstByUserName(userName);
@@ -140,6 +162,30 @@ public class UserService {
         User user = userDao.findFirstByUserName(userName);
         int count=user.getComputableModels();
         user.setComputableModels(--count);
+        userDao.save(user);
+    }
+    public void conceptMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getConcepts();
+        user.setConcepts(--count);
+        userDao.save(user);
+    }
+    public void spatialMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getSpatials();
+        user.setSpatials(--count);
+        userDao.save(user);
+    }
+    public void templateMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getTemplates();
+        user.setTemplates(--count);
+        userDao.save(user);
+    }
+    public void unitMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getUnits();
+        user.setUnits(--count);
         userDao.save(user);
     }
 

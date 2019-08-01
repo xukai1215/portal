@@ -13,8 +13,6 @@
           href="../static/css/font-awesome/css/font-awesome.min.css"
     />
 
-
-
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/page/create-modelitem.css"/>
 
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery-steps.css"/>
@@ -49,6 +47,7 @@
             </div>
         </div>
     </div>
+
     <div class="page-container">
 
         <div th:replace="fragments/sidebar :: side"></div>
@@ -63,8 +62,8 @@
                 <div class="row">
 
                 </div>
-                <!-- END WIDGETS -->
 
+                <!-- END WIDGETS -->
                 <div class="row">
                     <div class="container-fluid" id="mainInfo">
                         <div class="row">
@@ -409,6 +408,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 <!-- 模态框（Modal） -->
@@ -597,7 +597,6 @@
         var parentNodeIds = new Array();
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
-
             tinymce.init({
                 selector: "textarea#myText",
                 height: 300,
@@ -631,8 +630,7 @@
                     return img.hasAttribute('internal-blob');
                 }
             });
-        }
-        else {
+        }else {
             $.ajax({
                 url: "/modelItem/getInfo/" + oid,
                 type: "get",

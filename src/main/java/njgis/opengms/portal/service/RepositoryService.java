@@ -2,17 +2,18 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mongodb.client.MongoCollection;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.RepositoryQueryDTO;
+import njgis.opengms.portal.dto.community.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import org.bson.Document;
+import njgis.opengms.portal.utils.Utils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 public class RepositoryService {
-    private ModelDao modelDao=new ModelDao();
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ConceptDao conceptDao;
@@ -49,6 +53,9 @@ public class RepositoryService {
 
     @Autowired
     UnitDao unitDao;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
 
     //toUpperCase
     public void toUpperCase(){
@@ -91,65 +98,87 @@ public class RepositoryService {
         modelAndView.setViewName("conceptInfo");
 
         Concept concept=conceptDao.findByOid(id);
-        Classification classification = conceptClassificationDao.findFirstByOid(concept.getParentId());
         modelAndView.addObject("info",concept);
+        concept.setLoadCount(concept.getLoadCount()+1);
+        conceptDao.save(concept);
+
+        //兼容两种格式的数据
+        Classification classification = null;
+
         JSONArray classResult=new JSONArray();
-        if(classification!=null&&classification.getParentId()!=null){
-            Classification classification2 = conceptClassificationDao.findFirstByOid(classification.getParentId());
-            classResult.add(classification2.getNameEn());
-        }
-        classResult.add(classification.getNameEn());
 
-        org.dom4j.Document d = null;
-        JSONArray localizationArray = new JSONArray();
-        try {
-            d = DocumentHelper.parseText(concept.getXml());
-            org.dom4j.Element root=d.getRootElement();
-            org.dom4j.Element Localizations = root.element("Localizations");
-            List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
-            for(org.dom4j.Element Localization:LocalizationList){
-                String language = Localization.attributeValue("Local");
-                String name = Localization.attributeValue("Name");
-                String desc = Localization.attributeValue("Description");
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("language",language);
-                jsonObject.put("name",name);
-                jsonObject.put("desc",desc);
-                localizationArray.add(jsonObject);
-            }
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+        if(concept.getParentId()!=null)
+        {
+            classification = conceptClassificationDao.findFirstByOid(concept.getParentId());
 
-        localizationArray.sort(new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                JSONObject a = (JSONObject)o1;
-                JSONObject b = (JSONObject)o2;
-                return a.getString("language").compareToIgnoreCase(b.getString("language"));
+            if(classification!=null&&classification.getParentId()!=null){
+                Classification classification2 = conceptClassificationDao.findFirstByOid(classification.getParentId());
+                classResult.add(classification2.getNameEn());
             }
-        });
+            classResult.add(classification.getNameEn());
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(concept.getXml());
+                org.dom4j.Element root=d.getRootElement();
+                org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
+                for(org.dom4j.Element Localization:LocalizationList){
+                    String language = Localization.attributeValue("Local");
+                    String name = Localization.attributeValue("Name");
+                    String desc = Localization.attributeValue("Description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language",language);
+                    jsonObject.put("name",name);
+                    jsonObject.put("desc",desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject)o1;
+                    JSONObject b = (JSONObject)o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+
+            modelAndView.addObject("localizations",localizationArray);
+
+        }else {
+            int len = concept.getClassifications().size();
+            for (int i = 0; i<len; i++){
+
+                classification = conceptClassificationDao.findFirstByOid(concept.getClassifications().get(i));
+
+                classResult.add(classification.getNameEn());
+            }
+
+        }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
 
         List<String> related = concept.getRelated();
         JSONArray relateArray = new JSONArray();
-        for(String relatedId :related){
-            Concept relatedConcept = conceptDao.findByOid(relatedId);
-            String name = relatedConcept.getName_EN();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id",relatedId);
-            jsonObject.put("name",name);
-            relateArray.add(jsonObject);
+        if(related!=null) {
+            for (String relatedId : related) {
+                Concept relatedConcept = conceptDao.findByOid(relatedId);
+                String name = relatedConcept.getName_EN();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", relatedId);
+                jsonObject.put("name", name);
+                relateArray.add(jsonObject);
+            }
         }
 
         modelAndView.addObject("classifications",classResult);
-        modelAndView.addObject("localizations",localizationArray);
         modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date",sdf.format(concept.getCreateTime()));
         modelAndView.addObject("related",relateArray);
-        concept.setLoadCount(concept.getLoadCount()+1);
-        conceptDao.save(concept);
 
         return modelAndView;
     }
@@ -192,6 +221,22 @@ public class RepositoryService {
         return result;
     }
 
+    public JSONObject getConceptsByUserId(String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<ConceptResultDTO> concepts = conceptDao.findByAuthor(userId,pageable);
+
+        JSONObject ConceptObject = new JSONObject();
+        ConceptObject.put("count",concepts.getTotalElements());
+        ConceptObject.put("concepts",concepts.getContent());
+
+        return ConceptObject;
+
+    }
+
     public String addConceptLocalization(String id,String language,String name,String desc){
         Concept concept = conceptDao.findByOid(id);
         if(concept!=null){
@@ -216,6 +261,80 @@ public class RepositoryService {
         }
     }
 
+    public Concept getConceptByOid(String oid){
+        return conceptDao.findByOid(oid);
+
+        //模型的dao层还有详情页面？？
+
+    }
+
+    public Concept insertConcept(ConceptAddDTO conceptAddDTO,String uid){
+        Concept concept = new Concept();
+        BeanUtils.copyProperties(conceptAddDTO,concept);
+
+        Date now = new Date();
+        concept.setCreateTime(now);
+        concept.setOid(UUID.randomUUID().toString());
+        concept.setAuthor(uid);
+
+        //设置图片
+        String path = "/repository/concept/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = conceptAddDTO.getUploadImage().split(",");
+        if(strs.length>1) {
+            String imgStr = conceptAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            concept.setImage(path);
+        }
+        else {
+            concept.setImage("");
+        }
+
+        return conceptDao.insert(concept);
+    }
+
+    public String updateConcept(ConceptUpdateDTO conceptUpdateDTO){
+        Concept concept = conceptDao.findByOid(conceptUpdateDTO.getOid());
+        BeanUtils.copyProperties(conceptUpdateDTO,concept);
+        //判断是否为新图片
+        String uploadImage=conceptUpdateDTO.getUploadImage();
+        if(!uploadImage.contains("/concept/") && uploadImage!="") {
+            //删除旧图片
+            File file=new File(resourcePath+concept.getImage());
+            if(file.exists()&&file.isFile())
+                file.delete();
+            //添加新图片
+            String path = "/concept/" + UUID.randomUUID().toString() + ".jpg";
+            String imgStr = uploadImage.split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            concept.setImage(path);
+        }
+        concept.setLastModifyTime(new Date());
+        conceptDao.save(concept);
+
+        return concept.getOid();
+    }
+
+    public int deleteConcept(String oid,String userName){
+        Concept concept = conceptDao.findByOid(oid);
+        if(concept!=null){
+            String image = concept.getImage();
+            if(image.contains("/concept/")){
+                File file = new File(resourcePath+concept.getImage());
+                if(file.exists() && file.isFile())
+                    file.delete();
+            }
+            conceptDao.delete(concept);
+            userService.conceptMinusMinus(userName);
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+
+
+
+
     //spatialReference
     public ModelAndView getSpatialReferencePage(String id){
         ModelAndView modelAndView = new ModelAndView();
@@ -226,49 +345,65 @@ public class RepositoryService {
         spatialReference.setLoadCount(spatialReference.getLoadCount()+1);
         spatialReferenceDao.save(spatialReference);
 
-        Classification classification = spatialReferenceClassificationDao.findFirstByOid(spatialReference.getParentId());
+
+        //兼容两种格式的数据
+        Classification classification = null;
 
         JSONArray classResult=new JSONArray();
-        if(classification!=null&&classification.getParentId()!=null){
-            Classification classification2 = spatialReferenceClassificationDao.findFirstByOid(classification.getParentId());
-            classResult.add(classification2.getNameEn());
-        }
-        classResult.add(classification.getNameEn());
 
-        org.dom4j.Document d = null;
-        JSONArray localizationArray = new JSONArray();
-        try {
-            d = DocumentHelper.parseText(spatialReference.getXml());
-            org.dom4j.Element root=d.getRootElement();
+        if(spatialReference.getParentId()!=null)
+        {
+            classification = spatialReferenceClassificationDao.findFirstByOid(spatialReference.getParentId());
+
+            if(classification!=null&&classification.getParentId()!=null){
+                Classification classification2 = spatialReferenceClassificationDao.findFirstByOid(classification.getParentId());
+                classResult.add(classification2.getNameEn());
+            }
+            classResult.add(classification.getNameEn());
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(spatialReference.getXml());
+                org.dom4j.Element root=d.getRootElement();
 //            org.dom4j.Element Localizations = root.element("Localizations");
-            List<org.dom4j.Element> LocalizationList = root.elements("Localization");
-            for(org.dom4j.Element Localization:LocalizationList){
-                String language = Localization.attributeValue("local");
-                String name = Localization.attributeValue("name");
-                String desc = Localization.attributeValue("description");
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("language",language);
-                jsonObject.put("name",name);
-                jsonObject.put("desc",desc);
-                localizationArray.add(jsonObject);
+                List<org.dom4j.Element> LocalizationList = root.elements("Localization");
+                for(org.dom4j.Element Localization:LocalizationList){
+                    String language = Localization.attributeValue("local");
+                    String name = Localization.attributeValue("name");
+                    String desc = Localization.attributeValue("description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language",language);
+                    jsonObject.put("name",name);
+                    jsonObject.put("desc",desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
             }
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
 
-        localizationArray.sort(new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                JSONObject a = (JSONObject)o1;
-                JSONObject b = (JSONObject)o2;
-                return a.getString("language").compareToIgnoreCase(b.getString("language"));
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject)o1;
+                    JSONObject b = (JSONObject)o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+            modelAndView.addObject("localizations",localizationArray);
+        }else{
+            int len = spatialReference.getClassifications().size();
+            for (int i = 0; i<len; i++){
+
+                classification = spatialReferenceClassificationDao.findFirstByOid(spatialReference.getClassifications().get(i));
+
+                classResult.add(classification.getNameEn());
             }
-        });
+        }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
 
         modelAndView.addObject("classifications",classResult);
-        modelAndView.addObject("localizations",localizationArray);
         modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date",sdf.format(spatialReference.getCreateTime()));
 
@@ -335,6 +470,293 @@ public class RepositoryService {
         return result;
     }
 
+    public JSONObject getSpatialsByUserId(String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<SpatialResultDTO> spatials = spatialReferenceDao.findByAuthor(userId,pageable);
+
+        JSONObject SpatialObject = new JSONObject();
+        SpatialObject.put("count",spatials.getTotalElements());
+        SpatialObject.put("spatials",spatials.getContent());
+
+        return SpatialObject;
+
+    }
+
+    public SpatialReference getSpatialByOid(String oid)
+    {
+        return spatialReferenceDao.findByOid(oid);
+    }
+
+    public SpatialReference insertSpatial(SpatialAddDTO spatialAddDTO,String uid){
+        SpatialReference spatial = new SpatialReference();
+        BeanUtils.copyProperties(spatialAddDTO,spatial);
+
+        Date now = new Date();
+        spatial.setCreateTime(now);
+        spatial.setOid(UUID.randomUUID().toString());
+        spatial.setAuthor(uid);
+
+        //设置图片
+        String path = "/repository/spatialReference/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = spatialAddDTO.getUploadImage().split(",");
+        if(strs.length>1) {
+            String imgStr = spatialAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            spatial.setImage(path);
+        }
+        else {
+            spatial.setImage("");
+        }
+
+        return spatialReferenceDao.insert(spatial);
+    }
+
+    public String updateSpatial(SpatialUpdateDTO spatialUpdateDTO){
+        SpatialReference spatial = spatialReferenceDao.findByOid(spatialUpdateDTO.getOid());
+        BeanUtils.copyProperties(spatialUpdateDTO,spatial);
+        //判断是否为新图片
+        String uploadImage=spatialUpdateDTO.getUploadImage();
+        if(!uploadImage.contains("/spatial/") && uploadImage!="") {
+            //删除旧图片
+            File file=new File(resourcePath+spatial.getImage());
+            if(file.exists()&&file.isFile())
+                file.delete();
+            //添加新图片
+            String path = "/spatial/" + UUID.randomUUID().toString() + ".jpg";
+            String imgStr = uploadImage.split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            spatial.setImage(path);
+        }
+        spatial.setLastModifyTime(new Date());
+        spatialReferenceDao.save(spatial);
+
+        return spatial.getOid();
+    }
+
+    public int deleteSpatial(String oid,String userName){
+        SpatialReference spatial = spatialReferenceDao.findByOid(oid);
+        if(spatial!=null){
+            String image = spatial.getImage();
+            if(image.contains("/concept/")){
+                File file = new File(resourcePath+spatial.getImage());
+                if(file.exists() && file.isFile())
+                    file.delete();
+            }
+            spatialReferenceDao.delete(spatial);
+            userService.spatialMinusMinus(userName);
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+
+
+
+
+    //Template
+    public ModelAndView getTemplatePage(String id){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("templateInfo");
+
+        Template template=templateDao.findByOid(id);
+        modelAndView.addObject("info",template);
+        template.setLoadCount(template.getLoadCount()+1);
+        templateDao.save(template);
+
+        //兼容两种格式的数据
+        Classification classification = null;
+
+        JSONArray classResult=new JSONArray();
+
+        if(template.getParentId()!=null)
+        {
+            classification = templateClassificationDao.findFirstByOid(template.getParentId());
+
+            if(classification!=null&&classification.getParentId()!=null){
+                Classification classification2 = templateClassificationDao.findFirstByOid(classification.getParentId());
+                classResult.add(classification2.getNameEn());
+            }
+            classResult.add(classification.getNameEn());
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(template.getXml());
+                org.dom4j.Element root=d.getRootElement();
+//            org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = root.elements("Localization");
+                for(org.dom4j.Element Localization:LocalizationList){
+                    String language = Localization.attributeValue("Local");
+                    String name = Localization.attributeValue("Name");
+                    String desc = Localization.attributeValue("Description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language",language);
+                    jsonObject.put("name",name);
+                    jsonObject.put("desc",desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject)o1;
+                    JSONObject b = (JSONObject)o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+            modelAndView.addObject("localizations",localizationArray);
+        }else{
+            int len = template.getClassifications().size();
+            for (int i = 0; i<len; i++){
+
+                classification = templateClassificationDao.findFirstByOid(template.getClassifications().get(i));
+
+                classResult.add(classification.getNameEn());
+            }
+        }
+
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
+
+        modelAndView.addObject("classifications",classResult);
+        modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("date",sdf.format(template.getCreateTime()));
+
+        return modelAndView;
+    }
+
+    public JSONObject searchTemplate(RepositoryQueryDTO repositoryQueryDTO){
+        Sort sort = new Sort(repositoryQueryDTO.getAsc()==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), 10, sort);
+
+        Page<Template> templates=templateDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(),pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",templates.getContent());
+        result.put("total",templates.getTotalElements());
+        return result;
+    }
+
+    public JSONObject getTemplateList(RepositoryQueryDTO repositoryQueryDTO){
+        Sort sort = new Sort(repositoryQueryDTO.getAsc()==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), 10, sort);
+
+        Page<Template> templates;
+        String classOid=repositoryQueryDTO.getOid();
+        if(classOid==""){
+            templates=templateDao.findAll(pageable);
+        }
+        else {
+            List<String> clas=new ArrayList<>();
+            clas.add(repositoryQueryDTO.getOid());
+            Classification cla= templateClassificationDao.findFirstByOid(clas.get(0));
+            for (String c:cla.getChildrenId()
+            ) {
+                clas.add(c);
+            }
+            templates=templateDao.findByParentIdIn(clas, pageable);
+        }
+
+        JSONObject result=new JSONObject();
+        result.put("list",templates.getContent());
+        result.put("total",templates.getTotalElements());
+        return result;
+    }
+
+    public JSONObject getTemplatesByUserId(String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<TemplateResultDTO> templates = templateDao.findByAuthor(userId,pageable);
+
+        JSONObject TemplateObject = new JSONObject();
+        TemplateObject.put("count",templates.getTotalElements());
+        TemplateObject.put("templates",templates.getContent());
+
+        return TemplateObject;
+
+    }
+
+    public Template getTemplateByOid(String oid)
+    {
+        return templateDao.findByOid(oid);
+    }
+
+    public Template insertTemplate(TemplateAddDTO templateAddDTO,String uid){
+        Template template = new Template();
+        BeanUtils.copyProperties(templateAddDTO,template);
+
+        Date now = new Date();
+        template.setCreateTime(now);
+        template.setOid(UUID.randomUUID().toString());
+        template.setAuthor(uid);
+
+        //设置图片
+        String path = "/repository/template/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = templateAddDTO.getUploadImage().split(",");
+        if(strs.length>1) {
+            String imgStr = templateAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            template.setImage(path);
+        }
+        else {
+            template.setImage("");
+        }
+
+        return templateDao.insert(template);
+    }
+
+    public String updateTemplate(TemplateUpdateDTO templateUpdateDTO){
+        Template template = templateDao.findByOid(templateUpdateDTO.getOid());
+        BeanUtils.copyProperties(templateUpdateDTO,template);
+        //判断是否为新图片
+        String uploadImage=templateUpdateDTO.getUploadImage();
+        if(!uploadImage.contains("/template/") && uploadImage!="") {
+            //删除旧图片
+            File file=new File(resourcePath+template.getImage());
+            if(file.exists()&&file.isFile())
+                file.delete();
+            //添加新图片
+            String path = "/template/" + UUID.randomUUID().toString() + ".jpg";
+            String imgStr = uploadImage.split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            template.setImage(path);
+        }
+        template.setLastModifyTime(new Date());
+        templateDao.save(template);
+
+        return template.getOid();
+    }
+
+    public int deleteTemplate(String oid,String userName){
+        Template template = templateDao.findByOid(oid);
+        if(template!=null){
+            String image = template.getImage();
+            if(image.contains("/concept/")){
+                File file = new File(resourcePath+template.getImage());
+                if(file.exists() && file.isFile())
+                    file.delete();
+            }
+            templateDao.delete(template);
+            userService.templateMinusMinus(userName);
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+
+
+
     //Unit
     public ModelAndView getUnitPage(String id){
         ModelAndView modelAndView = new ModelAndView();
@@ -345,49 +767,64 @@ public class RepositoryService {
         unit.setLoadCount(unit.getLoadCount()+1);
         unitDao.save(unit);
 
-        Classification classification = unitClassificationDao.findFirstByOid(unit.getParentId());
+        //兼容两种格式的数据
+        Classification classification = null;
 
         JSONArray classResult=new JSONArray();
-        if(classification!=null&&classification.getParentId()!=null){
-            Classification classification2 = unitClassificationDao.findFirstByOid(classification.getParentId());
-            classResult.add(classification2.getNameEn());
-        }
-        classResult.add(classification.getNameEn());
 
-        org.dom4j.Document d = null;
-        JSONArray localizationArray = new JSONArray();
-        try {
-            d = DocumentHelper.parseText(unit.getXml());
-            org.dom4j.Element root=d.getRootElement();
-            org.dom4j.Element Localizations = root.element("Localizations");
-            List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
-            for(org.dom4j.Element Localization:LocalizationList){
-                String language = Localization.attributeValue("Local");
-                String name = Localization.attributeValue("Name");
-                String desc = Localization.attributeValue("Description");
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("language",language);
-                jsonObject.put("name",name);
-                jsonObject.put("desc",desc);
-                localizationArray.add(jsonObject);
-            }
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+        if(unit.getParentId()!=null)
+        {
+            classification = unitClassificationDao.findFirstByOid(unit.getParentId());
 
-        localizationArray.sort(new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                JSONObject a = (JSONObject)o1;
-                JSONObject b = (JSONObject)o2;
-                return a.getString("language").compareToIgnoreCase(b.getString("language"));
+            if(classification!=null&&classification.getParentId()!=null){
+                Classification classification2 = unitClassificationDao.findFirstByOid(classification.getParentId());
+                classResult.add(classification2.getNameEn());
             }
-        });
+            classResult.add(classification.getNameEn());
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(unit.getXml());
+                org.dom4j.Element root=d.getRootElement();
+                org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
+                for(org.dom4j.Element Localization:LocalizationList){
+                    String language = Localization.attributeValue("Local");
+                    String name = Localization.attributeValue("Name");
+                    String desc = Localization.attributeValue("Description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language",language);
+                    jsonObject.put("name",name);
+                    jsonObject.put("desc",desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject)o1;
+                    JSONObject b = (JSONObject)o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+            modelAndView.addObject("localizations",localizationArray);
+        }else{
+            int len = unit.getClassifications().size();
+            for (int i = 0; i<len; i++){
+
+                classification = unitClassificationDao.findFirstByOid(unit.getClassifications().get(i));
+
+                classResult.add(classification.getNameEn());
+            }
+        }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
 
         modelAndView.addObject("classifications",classResult);
-        modelAndView.addObject("localizations",localizationArray);
         modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date",sdf.format(unit.getCreateTime()));
 
@@ -456,101 +893,88 @@ public class RepositoryService {
         }
     }
 
-    //Template
-    public ModelAndView getTemplatePage(String id){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("templateInfo");
+    public JSONObject getUnitsByUserId(String userId, int page, String sortType, int asc){
 
-        Template template=templateDao.findByOid(id);
-        modelAndView.addObject("info",template);
-        template.setLoadCount(template.getLoadCount()+1);
-        templateDao.save(template);
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
-        Classification classification = templateClassificationDao.findFirstByOid(template.getParentId());
+        Pageable pageable = PageRequest.of(page, 10, sort);
 
-        JSONArray classResult=new JSONArray();
-        if(classification!=null&&classification.getParentId()!=null){
-            Classification classification2 = templateClassificationDao.findFirstByOid(classification.getParentId());
-            classResult.add(classification2.getNameEn());
-        }
-        classResult.add(classification.getNameEn());
+        Page<UnitResultDTO> units = unitDao.findByAuthor(userId,pageable);
 
-        org.dom4j.Document d = null;
-        JSONArray localizationArray = new JSONArray();
-        try {
-            d = DocumentHelper.parseText(template.getXml());
-            org.dom4j.Element root=d.getRootElement();
-//            org.dom4j.Element Localizations = root.element("Localizations");
-            List<org.dom4j.Element> LocalizationList = root.elements("Localization");
-            for(org.dom4j.Element Localization:LocalizationList){
-                String language = Localization.attributeValue("Local");
-                String name = Localization.attributeValue("Name");
-                String desc = Localization.attributeValue("Description");
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("language",language);
-                jsonObject.put("name",name);
-                jsonObject.put("desc",desc);
-                localizationArray.add(jsonObject);
-            }
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+        JSONObject UnitObject = new JSONObject();
+        UnitObject.put("count",units.getTotalElements());
+        UnitObject.put("units",units.getContent());
 
-        localizationArray.sort(new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                JSONObject a = (JSONObject)o1;
-                JSONObject b = (JSONObject)o2;
-                return a.getString("language").compareToIgnoreCase(b.getString("language"));
-            }
-        });
+        return UnitObject;
 
-        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
-
-        modelAndView.addObject("classifications",classResult);
-        modelAndView.addObject("localizations",localizationArray);
-        modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
-        modelAndView.addObject("date",sdf.format(template.getCreateTime()));
-
-        return modelAndView;
     }
 
-    public JSONObject searchTemplate(RepositoryQueryDTO repositoryQueryDTO){
-        Sort sort = new Sort(repositoryQueryDTO.getAsc()==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
-        Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), 10, sort);
-
-        Page<Template> templates=templateDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(),pageable);
-
-        JSONObject result=new JSONObject();
-        result.put("list",templates.getContent());
-        result.put("total",templates.getTotalElements());
-        return result;
+    public Unit getUnitByOid(String oid)
+    {
+        return unitDao.findByOid(oid);
     }
 
-    public JSONObject getTemplateList(RepositoryQueryDTO repositoryQueryDTO){
-        Sort sort = new Sort(repositoryQueryDTO.getAsc()==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
-        Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), 10, sort);
+    public Unit insertUnit(UnitAddDTO unitAddDTO,String uid){
+        Unit unit = new Unit();
+        BeanUtils.copyProperties(unitAddDTO,unit);
 
-        Page<Template> templates;
-        String classOid=repositoryQueryDTO.getOid();
-        if(classOid==""){
-            templates=templateDao.findAll(pageable);
+        Date now = new Date();
+        unit.setCreateTime(now);
+        unit.setOid(UUID.randomUUID().toString());
+        unit.setAuthor(uid);
+
+        //设置图片
+        String path = "/repository/unit/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = unitAddDTO.getUploadImage().split(",");
+        if(strs.length>1) {
+            String imgStr = unitAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            unit.setImage(path);
         }
         else {
-            List<String> clas=new ArrayList<>();
-            clas.add(repositoryQueryDTO.getOid());
-            Classification cla= templateClassificationDao.findFirstByOid(clas.get(0));
-            for (String c:cla.getChildrenId()
-                    ) {
-                clas.add(c);
-            }
-            templates=templateDao.findByParentIdIn(clas, pageable);
+            unit.setImage("");
         }
 
-        JSONObject result=new JSONObject();
-        result.put("list",templates.getContent());
-        result.put("total",templates.getTotalElements());
-        return result;
+        return unitDao.insert(unit);
+    }
+
+    public String updateUnit(UnitUpdateDTO unitUpdateDTO){
+        Unit unit = unitDao.findByOid(unitUpdateDTO.getOid());
+        BeanUtils.copyProperties(unitUpdateDTO,unit);
+        //判断是否为新图片
+        String uploadImage=unitUpdateDTO.getUploadImage();
+        if(!uploadImage.contains("/unit/") && uploadImage!="") {
+            //删除旧图片
+            File file=new File(resourcePath+unit.getImage());
+            if(file.exists()&&file.isFile())
+                file.delete();
+            //添加新图片
+            String path = "/unit/" + UUID.randomUUID().toString() + ".jpg";
+            String imgStr = uploadImage.split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            unit.setImage(path);
+        }
+        unit.setLastModifyTime(new Date());
+        unitDao.save(unit);
+
+        return unit.getOid();
+    }
+
+    public int deleteUnit(String oid,String userName){
+        Unit unit = unitDao.findByOid(oid);
+        if(unit!=null){
+            String image = unit.getImage();
+            if(image.contains("/concept/")){
+                File file = new File(resourcePath+unit.getImage());
+                if(file.exists() && file.isFile())
+                    file.delete();
+            }
+            unitDao.delete(unit);
+            userService.unitMinusMinus(userName);
+            return 1;
+        }else{
+            return -1;
+        }
     }
 
 
