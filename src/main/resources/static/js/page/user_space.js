@@ -141,252 +141,269 @@ var vue = new Vue({
     this.dataFromDataContainer = d.content
     this.total=d.total;
 },
-async getTableData(page) {
+        async getTableData(page) {
 
-    let { data } = await (await fetch(
-        "/dispatchRequest/getUserRelatedDataFromDataContainer?page=" +
-        page +
-        "&pageSize=10&" +
-        "authorName=" +
-        this.userName
-    )).json();
+            let { data } = await (await fetch(
+                "/dispatchRequest/getUserRelatedDataFromDataContainer?page=" +
+                page +
+                "&pageSize=10&" +
+                "authorName=" +
+                this.userName
+            )).json();
 
-    return {
-        total:data.totalElements,
-        content:data.content
-    }
-},
-handleSelect(index,indexPath){
-    console.log(index)
-    this.curIndex=index;
-    switch (index){
-        case '1':
-            this.searchText = '';
-            this.searchResult = [];
-            this.page = 1;
-            this.getTasksInfo();
-            break;
-        case '2-1':
-        case '2-2':
-        case '2-3':
-        case '2-4':
-        case '5':
-
-            this.searchText = '';
-            this.searchResult = [];
-            this.page = 1;
-            this.getModels();
-            break;
-        case '3-1':
-            this.searchText = '';
-            this.searchResult = [];
-            this.page = 1;
-            this.getDataItems();
-            break;
-        case '3-2':
-            this.searchText = '';
-            this.searchResult = [];
-            this.page = 1;
-            this.classif=[];
-            $("#classification").val('');
-            this.data_img=[]
-            break;
-        case '3-3':
-            this.panye(1);
-            this.addAllData()
-        case '4-1':
-        case '4-2':
-        case '4-3':
-        case '4-4':
-
-            break;
-
-    }
-},
-
-imgFile(){
-    $("#imgOne").click();
-},
-getFileUrl() {
-    let sourceId="imgOne"
-    var url;
-    if (navigator.userAgent.indexOf("MSIE") >= 1) { // IE
-        url = document.getElementById(sourceId).value;
-    } else if (navigator.userAgent.indexOf("Firefox") > 0) { // Firefox
-        url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
-    } else if (navigator.userAgent.indexOf("Chrome") > 0) { // Chrome
-        url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
-    }
-    return url;
-},
-preImg() {
-
-    var file = $('#imgOne').get(0).files[0];
-    //创建用来读取此文件的对象
-    var reader = new FileReader();
-    //使用该对象读取file文件
-    reader.readAsDataURL(file);
-    //读取文件成功后执行的方法函数
-    reader.onload = function (e) {
-        //读取成功后返回的一个参数e，整个的一个进度事件
-        //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-        //的base64编码格式的地址
-        $('#photo').get(0).src = e.target.result;
-    }
-
-
-},
-
-getBase64Image(img) {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-    var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
-    var dataURL = canvas.toDataURL("image/"+ext);
-    return dataURL;
-},
-
-changeOpen(n) {
-    this.activeIndex = n;
-},
-
-getTree(){
-    return this.tree;
-},
-
-editModelItem(oid){
-    this.setSession('editModelItem_id',oid);
-    document.getElementById('modifyModelItem').contentWindow.location.reload(true)
-
-},
-
-
-getTasksInfo() {
-
-    $.ajax({
-        type: "Get",
-        url: "/user/getUserInfo",
-        data: {},
-        crossDomain: true,
-        xhrFields: {
-            withCredentials: true
-        },
-        success: (json) => {
-        data = json.data;
-    console.log(data);
-    this.statisticsInfo = data["record"];
-    var modelInfo = data["userInfo"];
-
-    this.resourceOption = {
-        color: ['#3398DB'],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            return {
+                total:data.totalElements,
+                content:data.content
             }
         },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
+
+        handleSelect(index,indexPath){
+            console.log(index)
+            this.curIndex=index;
+            switch (index){
+                case '1':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getTasksInfo();
+                    break;
+                case '2-1':
+                case '2-2':
+                case '2-3':
+                case '2-4':
+                case '5':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getModels();
+                    break;
+                case '3-1':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getDataItems();
+                    break;
+                case '3-2':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.classif=[];
+                    $("#classification").val('');
+                    this.data_img=[]
+                    break;
+                case '3-3':
+                    this.panye(1);
+                    this.addAllData()
+                case '4-1':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getConcepts();
+                    break;
+                case '4-2':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getSpatials();
+                    break;
+                case '4-3':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getTemplates();
+                    break;
+                case '4-4':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getUnits();
+                    break;
+            }
         },
-        xAxis: [
-            {
-                type: 'category',
-                data: ['Model Items', 'Data Item', 'Conceputal Model', 'Logical Model', 'Computable Model'],
-                axisTick: {
-                    alignWithLabel: true
+
+        imgFile(){
+            $("#imgOne").click();
+        },
+        getFileUrl() {
+            let sourceId="imgOne"
+            var url;
+            if (navigator.userAgent.indexOf("MSIE") >= 1) { // IE
+                url = document.getElementById(sourceId).value;
+            } else if (navigator.userAgent.indexOf("Firefox") > 0) { // Firefox
+                url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+            } else if (navigator.userAgent.indexOf("Chrome") > 0) { // Chrome
+                url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+            }
+            return url;
+        },
+        preImg() {
+
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload = function (e) {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                $('#photo').get(0).src = e.target.result;
+            }
+
+
+        },
+
+        getBase64Image(img) {
+            var canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
+            var dataURL = canvas.toDataURL("image/"+ext);
+            return dataURL;
+        },
+
+        changeOpen(n) {
+            this.activeIndex = n;
+        },
+
+        getTree(){
+            return this.tree;
+        },
+
+        editModelItem(oid){
+            this.setSession('editModelItem_id',oid);
+            document.getElementById('modifyModelItem').contentWindow.location.reload(true)
+
+        },
+
+
+        getTasksInfo() {
+
+            $.ajax({
+                type: "Get",
+                url: "/user/getUserInfo",
+                data: {},
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 },
-                axisLabel: {
-                    interval: 0,
-                    formatter: function (params) {
-                        var index = params.indexOf(" ");
-                        var start = params.substring(0, index);
-                        var end = params.substring(index + 1);
-                        var newParams = start + "\n" + end;
-                        return newParams
+                success: (json) => {
+                data = json.data;
+            console.log(data);
+            this.statisticsInfo = data["record"];
+            var modelInfo = data["userInfo"];
+
+            this.resourceOption = {
+                color: ['#3398DB'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                     }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ['Model Items', 'Data Item', 'Conceputal Model', 'Logical Model', 'Computable Model'],
+                        axisTick: {
+                            alignWithLabel: true
+                        },
+                        axisLabel: {
+                            interval: 0,
+                            formatter: function (params) {
+                                var index = params.indexOf(" ");
+                                var start = params.substring(0, index);
+                                var end = params.substring(index + 1);
+                                var newParams = start + "\n" + end;
+                                return newParams
+                            }
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: 'count',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [modelInfo["modelItems"], modelInfo["dataItems"], modelInfo["conceptualModels"], modelInfo["logicalModels"], modelInfo["computableModels"]]
+                    }
+                ]
+            }
+
+            // var chart = echarts.init(document.getElementById('chartRes'));
+            // chart.setOption(this.resourceOption);
+
+            this.userInfo = modelInfo;
+            let orgs = this.userInfo.organizations;
+            if (orgs.length != 0) {
+                this.userInfo.orgStr = orgs[0];
+                for (i = 1; i < orgs.length; i++) {
+                    this.userInfo.orgStr += ", " + orgs[i];
                 }
             }
-        ],
-        yAxis: [
-            {
-                type: 'value'
+
+            let sas = this.userInfo.subjectAreas;
+            if (sas!=null&&sas.length != 0) {
+                this.userInfo.saStr = sas[0];
+                for (i = 1; i < sas.length; i++) {
+                    this.userInfo.saStr += ", " + sas[i];
+                }
             }
-        ],
-        series: [
-            {
-                name: 'count',
-                type: 'bar',
-                barWidth: '60%',
-                data: [modelInfo["modelItems"], modelInfo["dataItems"], modelInfo["conceptualModels"], modelInfo["logicalModels"], modelInfo["computableModels"]]
-            }
-        ]
-    }
 
-    // var chart = echarts.init(document.getElementById('chartRes'));
-    // chart.setOption(this.resourceOption);
 
-    this.userInfo = modelInfo;
-    let orgs = this.userInfo.organizations;
-    if (orgs.length != 0) {
-        this.userInfo.orgStr = orgs[0];
-        for (i = 1; i < orgs.length; i++) {
-            this.userInfo.orgStr += ", " + orgs[i];
+            this.load = false;
         }
-    }
+        })
 
-    let sas = this.userInfo.subjectAreas;
-    if (sas!=null&&sas.length != 0) {
-        this.userInfo.saStr = sas[0];
-        for (i = 1; i < sas.length; i++) {
-            this.userInfo.saStr += ", " + sas[i];
+        },
+
+        getServersInfo() {
+            $.ajax({
+                type: "GET",
+                url: "/node/computerNodesByUserId",
+                data: {},
+
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                async: true,
+                success: (data) => {
+                data = JSON.parse(data);
+            console.log(data);
+            var chartInfo = this.createChartInfo(data.computerNodes);
+            this.computerNodesInfos = chartInfo.cityCount;
+            this.createChartMap(chartInfo);
         }
-    }
+        })
 
-
-    this.load = false;
-}
-})
-
-},
-
-getServersInfo() {
-    $.ajax({
-        type: "GET",
-        url: "/node/computerNodesByUserId",
-        data: {},
-
-        crossDomain: true,
-        xhrFields: {
-            withCredentials: true
         },
-        async: true,
-        success: (data) => {
-        data = JSON.parse(data);
-    console.log(data);
-    var chartInfo = this.createChartInfo(data.computerNodes);
-    this.computerNodesInfos = chartInfo.cityCount;
-    this.createChartMap(chartInfo);
-}
-})
 
-},
-
-getComputerModelsForDeploy() {
-    $.ajax({
-        type: "Get",
-        url: "/computableModel/getComputerModelsForDeployByUserId",
-        data: {
-            page: this.page,
-            sortType: this.sortType,
-            asc: this.sortAsc
-        },
-        cache: false,
-        async: true,
+        getComputerModelsForDeploy() {
+            $.ajax({
+                type: "Get",
+                url: "/computableModel/getComputerModelsForDeployByUserId",
+                data: {
+                    page: this.page,
+                    sortType: this.sortType,
+                    asc: this.sortAsc
+                },
+                cache: false,
+                async: true,
 
         xhrFields: {
             withCredentials: true

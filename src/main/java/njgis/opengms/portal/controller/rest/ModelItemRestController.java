@@ -60,7 +60,9 @@ public class ModelItemRestController {
             return ResultUtils.error(-1,"no login");
         }
         String uid=session.getAttribute("uid").toString();
+
         System.out.println("add model item");
+
         String userName=session.getAttribute("uid").toString();
 
         ModelItem modelItem= modelItemService.insert(modelItemAddDTO,userName);
