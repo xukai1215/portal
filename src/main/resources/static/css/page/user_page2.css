@@ -1,11 +1,13 @@
 
-
-
 .fullContainer{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+}
+
+.colArrange{
+    flex-direction: column;
 }
 
 #upperContainer{
@@ -87,7 +89,7 @@
     border-bottom-style:solid;
     border-bottom-color: #adadad;
     border-bottom-width: 2px;
-    transition: 0.5s;
+    transition: 0.3s;
 }
 
 .menuItem>a{
@@ -124,6 +126,12 @@
     margin-top: 7px;
     border-bottom: 2px solid transparent;
     transition: .3s;
+}
+
+.innerBorder{
+    align-self: center;
+    width: 96%;
+    border-bottom: 1px solid #e1e1e1;
 }
 
 .userInfoContainer{
@@ -187,13 +195,13 @@
     /*color: #828282;*/
 }
 
-.contentColContainer ul{
+.contentUlContainer ul{
     align-self:flex-start;
     width:260px;
 
 }
 
-.contentColContainer li{
+.contentUlContainer li{
     margin: 5px 15px;
     height: 35px;
     padding: 9px 5px 9px 16px;
@@ -209,7 +217,7 @@
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-
+    font-family: Tahoma;
     width:100% ;
     flex-grow: 1;
     /*height: 148px;*/
@@ -225,7 +233,7 @@
 }
 
 #modelItems{
-    height: 300px;
+    height: 330px;
 }
 
 #affiliation{
@@ -237,21 +245,39 @@
 }
 
 #contactInfo{
-    height: 220px;
+    height: 270px;
 }
 
 #contactInfoAll{
     height: 240px;
 }
 
-#modelTable{
-    height: 1500px;
+.modelTable{
+    /*height: 1500px;*/
+}
+
+#modelStatsTable{
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    /*background-image: url("../../../static/img/carousels/kd.jpg");*/
+    /*background-position-x: 50%;*/
+    /*background-position-y: 1750px ;*/
+
+}
+
+#contactTable{
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex: 1;
 }
 
 .statsNumberFullColor {
     display: flex;
     justify-content: center;
-    align-items:center;
+    align-items: center;
     background-color: #0f9afa;
     width: 40px;
     height: 21px;
@@ -283,14 +309,98 @@
     margin: 0;
 }
 
-.itemCard{
-    display: flex;
 
+.itemCardRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
     height: 115px;
-    background-color: #ccebf887;
-    box-shadow: 0 1px 1px    rgba(0,0,0,0.3);
+    margin: 0 10px ;
+    border-radius: 3px;
+    background-color: rgba(232, 232, 232, 0.5);
+    box-shadow: 0px 2px 2px    rgba(0,0,0,0.3);
+    font-family: sans-serif;
+    border: 1px solid #d8dbe2;
 }
 
+.itemCardCol{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    height: 115px;
+    margin: 0 8px 10px;
+    border-radius: 3px;
+    background-color: rgba(232, 232, 232, 0.5);
+    box-shadow: 0px 2px 2px    rgba(0,0,0,0.3);
+    font-family: sans-serif;
+    border: 1px solid #d8dbe2;
+}
+
+/*.upperCard{*/
+/*    width: 100%;*/
+/*    height: 65px;*/
+/*    display: flex;*/
+/*    justify-content: flex-start;*/
+/*    align-items: center;*/
+/*    border-bottom:1px solid #d2d2d2;*/
+/*}*/
+
+/*.downerCard{*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    width: 100%;*/
+/*    height: 50px;*/
+
+/*}*/
+
+
+
+.leftCard{
+    width: 100px;
+    height: 115px;
+}
+
+.rightCard{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.titleCard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 54px;
+
+}
+
+.statsCard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top:1px solid #d2d2d2;
+}
+
+.cardUpper{
+    display: flex;
+    justify-content: flex-start;
+    border-radius: 4px 4px 0 0;
+    flex: 1;
+    overflow: hidden;
+    border: 1px solid #d8dbe2;
+}
+
+.cardDowner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 4px 4px ;
+    overflow: hidden;
+}
 
 .viewMoreButton{
     display: inline-block;
@@ -316,6 +426,7 @@
     border-bottom-color: rgba(180,180,180,0.6);
     border-bottom-width: 1px;
     color: #828282;
+    font-family: Baskerville;
 }
 
 .splitBlock{
@@ -346,3 +457,44 @@
     display: flex;
 }
 
+.noneBorderButton{
+    border: transparent;
+    background-color: transparent;
+    padding: 0 8px;
+}
+
+.noneBorderButton:focus{
+    outline: none;
+
+}
+
+.list-item{
+    width: 100%;
+}
+
+.modelInfo{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-left: 15px;
+
+}
+
+.hotVisit{
+    width: 35px;
+    height: 15px;
+    border-radius: 4px;
+    background-color: #f15027;
+}
+
+.imgPallet{
+    height: 170px;
+    width: 155px;
+    background-color: white;
+}
+
+.modelImg{
+    width: 100%;
+    height: 100%;
+}

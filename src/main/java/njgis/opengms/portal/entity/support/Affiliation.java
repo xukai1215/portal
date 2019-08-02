@@ -4,15 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResearchProjects {
-    String name;
-    Date startTime;
-    Date endTime;
-    String role;
-    String fundAgency;
-    int amount;
+public class Affiliation {
+    String institutionName;
+    String department;
+    String insLocation;
+    String insPosition;
 }

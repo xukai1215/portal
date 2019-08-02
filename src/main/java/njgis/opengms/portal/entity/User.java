@@ -26,23 +26,26 @@ public class User {
     String description;
     String phone;
     String wiki;
-    String researchInterests;
     String weChat;
     String faceBook;
     String twitter;
     String weiBo;
     String personPage;
+    String institution;
 
+    Affiliation affiliation;
+    Introduction introduction;
 
     List<String> organizations;
     List<String> subjectAreas;
+    List<String> researchInterests;
 
     List<Article> articles;
     List<AcademicService> academicServices;
     List<AwardandHonor> awardsHonors;
     List<Conference> conferences;
     List<EducationExperience> educationExperiences;
-    List<Introduction> introductions;
+
     List<Lab> labs;
     List<ResearchProjects> researchProjects;
 

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.UserAddDTO;
 import njgis.opengms.portal.dto.UserUpdateDTO;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -148,7 +149,7 @@ public class UserRestController {
             modelAndView.setViewName("login");
             modelAndView.addObject("notice","You need to log in first to view another user's page.");
         }else {
-
+            User user=userService.getByOid(id);
             Object object = ResultUtils.success(userService.getByOid(id)).getData();
             JSONObject userInfo = (JSONObject) JSONObject.toJSON(object);
 
@@ -156,6 +157,7 @@ public class UserRestController {
 
             modelAndView.setViewName("user_page_overview");
             modelAndView.addObject("userInfo", userInfo);
+            System.out.println(userInfo);
             modelAndView.addObject("loadPath",htmlLoadPath);
             JSONArray array=userInfo.getJSONArray("subjectAreas");
             String areas="";

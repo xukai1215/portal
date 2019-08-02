@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../static/css/page/user_page.css">
     <link rel="stylesheet" href="../static/css/page/user_page2.css">
     <link rel="stylesheet" href="../static/css/base/index2.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link th:href="@{/static/css/common/navbar.css}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
     <style>
 
@@ -48,19 +48,19 @@
         <div id="middleContainer " class="fullContainer">
             <div class="menuContainer" >
                 <div class="menuItem">
-                    <a href="###">Overview</a>
+                    <button class="noneBorderButton" style="font-size: 16.5px" >Overview</button>
                     <div class="menuBorder"></div>
                 </div>
                 <div class="menuItem">
-                    <a href="###">Model Items</a>
+                    <button class="noneBorderButton" style="font-size: 16.5px">Model Items</button>
                     <div class="menuBorder"></div>
                 </div>
                 <div class="menuItem">
-                    <a href="###">Research</a>
+                    <button class="noneBorderButton" style="font-size: 16.5px">Research</button>
                     <div class="menuBorder"></div>
                 </div>
                 <div class="menuItem">
-                    <a href="###">Info</a>
+                    <button class="noneBorderButton" style="font-size: 16.5px;padding: 0 10px">Info</button>
                     <div class="menuBorder"></div>
                 </div>
 <!--                <div class="menuItem">-->
@@ -76,7 +76,7 @@
         <div id="downerContainer" class="fullContainer" >
         <!--       overview-->
             <div class="bodyContainer showActive">
-                <div class="leftContentContainer" style="width: 665px">
+                <div role="brief introduction" class="leftContentContainer" style="width: 665px">
                    <div id="selfIntroduction" class="contentColContainer">
                        <div class="subTitle" style="">
                                <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
@@ -85,8 +85,21 @@
 
                                </div>
                            </div>
-                       <div class="contentContainer" >
-                           <div th:text="${userInfo.description}"></div>
+                       <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0">
+                           <div class="contentContainer" style="flex-direction: column;">
+                               <h4 th:text="${userInfo.description}" style="margin: 0 15px 0"></h4>
+                           </div>
+<!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
+<!--                           <div>-->
+<!--                               <h4 style="font-style:italic;font-weight: 500;color: #999999;">Research Interests & Skills</h4>-->
+<!--                           </div>-->
+<!--                       </div>-->
+                           <div class="innerBorder"></div>
+                           <div class="contentContainer" style="flex-direction: column;height: 40px">
+                               <h4 style="margin: 0 30px 0;color:#828282 ">Research Interests & Skills</h4>
+                               <p style="margin: 0 15px 0" th:each="String : ${userInfo.researchInterests}" th:text="${String}">Geo</p>
+
+                           </div>
                        </div>
                    </div>
 
@@ -97,13 +110,40 @@
                                <button id="viewMoreModel" class="viewMoreButton" style="" >View More</button>
                            </div>
                        </div>
-                       <div class="contentContainer" style="width: 96%; height: 248px;">
+                       <div id="modelStatsTable" class="contentContainer" >
 
-                          <div id="modelItem" class="itemCard" style="width: 48.5%;margin-top: 3px"></div>
-                          <div id="dataItem" class="itemCard" style="width: 48.5%;margin-top: 3px" ></div>
-                          <div id="conceptualModel" class="itemCard" style="width: 32%;"></div>
-                          <div id="logicalModel" class="itemCard" style="width: 32%;"></div>
-                          <div id="computableModel" class="itemCard" style="width: 32%;"></div>
+                          <div id="modelItem" class="itemCardRow" style="width: 46%;margin-top: 3px">
+                              <div class="leftCard">
+                                  <div style="margin-left: 10px;margin-top: 11px">
+                                      <img src="../static/img/model/model.png"></div>
+                              </div>
+                              <div class="rightCard">
+                                  <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
+                                  <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.modelItems}">1000</h2><h5>&nbspitems</h5></div>
+                              </div>
+                          </div>
+                          <div id="dataItem" class="itemCardRow" style="width: 46%;margin-top: 3px" >
+                              <div class="leftCard">
+                                  <div style="margin-left: 10px;margin-top: 11px">
+                                      <img src="../static/img/model/model.png"></div>
+                              </div>
+                              <div class="rightCard">
+                                  <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
+                                  <div class="statsCard"><h2 style="color: #36c9ff;" th:text="${userInfo.dataItems}">1000</h2><h5>&nbspitems</h5></div>
+                              </div>
+                          </div>
+                          <div id="conceptualModel" class="itemCardCol" style="width: 30%;">
+                              <div class="titleCard"><h3 style="font-size: 21px">Conceptual Model</h3></div>
+                              <div class="statsCard"><h2 style="color: #ff9526;" th:text="${userInfo.conceptualModels}">1000</h2><h5>&nbspitems</h5></div>
+                          </div>
+                          <div id="logicalModel" class="itemCardCol" style="width: 30%;">
+                              <div class="titleCard"><h3 style="font-size: 21px">Logical Model</h3></div>
+                              <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.logicalModels}">1000</h2><h5>&nbspitems</h5></div>
+                          </div>
+                          <div id="computableModel" class="itemCardCol" style="width: 30%;">
+                              <div class="titleCard"><h3 style="font-size: 21px">Computable Model</h3></div>
+                              <div class="statsCard"><h2 style="color: #aa0b15;" th:text="${userInfo.computableModels}">1000</h2><h5>&nbspitems</h5></div>
+                          </div>
 
                        </div>
                    </div>
@@ -130,20 +170,49 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
                         </div>
-                        <div class="contentContainer" >
+                        <div class="contentContainer colArrange" >
+                            <div class="contentContainer colArrange" style="height: 120px">
+                                <h3 th:text="${userInfo.affiliation}">NNU</h3>
+<!--                                <h4 th:text="${userInfo.}">school of geo</h4>-->
+<!--                                <h4 th:text="${userInfo.}">student</h4>-->
+<!--                                <h4 th:text="${userInfo.}">nj</h4>-->
+                            </div>
+<!--                            <div class="innerBorder"></div>-->
+                            <div class="contentContainer colArrange">
+                                <div class="itemCardCol" style="height: 130px;justify-content: flex-start;">
+                                    <h3>Lab</h3>
+                                    <h4>VGE</h4>
+                                    <h4>lab leader:&nbsp<span> CM</span></h4>
+
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                     <div id="contactInfo" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
                         </div>
-                        <div class="contentContainer" >
+                        <div id="contactTable" class="contentContainer" >
+                            <div class="itemCardCol" style="width: 50%;height: 90px">
+                                <div style="width: 85px; height: 85px;background-color: white;margin-top: 2px">there will be a img</div>
+                                <p th:text="${userInfo.phone}">111</p>
+                            </div>
+                            <div class="itemCardCol" style="width: 35%;height: 90px">
+                                <p th:text="${userInfo.weChat}">111</p>
+                            </div>
+                            <div class="itemCardRow" style="width: 50%;height: 90px">
+
+                            </div>
+                            <div class="itemCardRow" style="width: 35%;height: 90px">
+
+                            </div>
                         </div>
                 </div>
                 </div>
             </div>
 
-          <!--            model item-->
+<!--                      model item-->
             <div class="bodyContainer" >
                 <div id="modelStats" class="leftContentContainer" style="width: 270px">
                     <div  class="contentColContainer">
@@ -151,19 +220,24 @@
                             <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Model Stats</h4></div>
                         </div>
                     </div>
-                    <div  id="modelClassification" class="contentColContainer" style="margin-top: 0px;">
+                    <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
                         <ul>
-                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">
-                                <p>99999</p></div></a></li>
-                            <li><a style="display: flex;justify-content: space-between">Model Item<div class="statsNumberFullColor">
+<!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
+<!--                                <p>99999</p></div></a></li>-->
+                            <li><a id="tab-Model Item" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="modelItemClick">Model Item<div class="statsNumberFullColor">
                                 <p th:text="${userInfo.modelItems}">1000</p></div></a></li>
-                            <li><a style="display: flex;justify-content: space-between">Data item <div class="statsNumberFullColor">
+                            <li><a id="tab-Data Item" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="datalItemClick">Data item <div class="statsNumberFullColor">
                                 <p th:text="${userInfo.dataItems}">1000</p></div></a></li>
-                            <li><a style="display: flex;justify-content: space-between">Conceptual Model <div class="statsNumberFullColor">
+                            <li><a id="tab-Conceptual Model" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptualModelClick">Conceptual Model <div class="statsNumberFullColor">
                                 <p th:text="${userInfo.conceptualModels}">1000</p></div></a></li>
-                            <li><a style="display: flex;justify-content: space-between">Logical Model <div class="statsNumberFullColor">
+                            <li><a id="Logical Model" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="logicalModelClick">Logical Model <div class="statsNumberFullColor">
                                 <p th:text="${userInfo.logicalModels}">1000</p></div></a></li>
-                            <li><a style="display: flex;justify-content: space-between">Computable Model <div class="statsNumberFullColor">
+                            <li><a id="Computable Model" aria-controls="pane-Computable Model" role="tab" tabindex="0" class="el-tabs__item"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="computableModelClick">Computable Model <div class="statsNumberFullColor">
                                 <p th:text="${userInfo.computableModels}">999</p></div></a></li>
                         </ul>
                     </div>
@@ -171,23 +245,285 @@
                 </div>
 
                 <div class="rigntContentContainer" style="width:820px">
-                    <div id="modelTable" class="contentColContainer">
-                        <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px">Model Items</h4></div>
+                    <div class="itemContainer">
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Model Items</h4></div>
+                            </div>
                         </div>
-                        <div class="contentContainer" >
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" v-for="(modelItem,key) in modelItems.result">
+                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                    <div class="cardUpper">
+                                        <div class="imgPallet">
+                                            <a  :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                                <img  class="modelImg" :src="dataItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            </a>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
+                                                <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4></div>
+                                                <div>
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                <div class="modelInfo">
+                                                    <p>{{modelItem.description}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <div class="tags" v-if="modelItem.keywords.length>0">
+                                            <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
+                                        </div>
+                                        <div style="padding-right: 10px">
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+<!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="modelItemHandleCurrentChange"
+                                            :current-page="modelItems.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="modelItems.total">
+                                    </el-pagination>
+                                </div>
+                            </div>
+<!--                        </div>-->
                         </div>
                     </div>
-                    <div id="" class="contentColContainer">
-                        <div class="subTitle" style="">
 
-                        </div>
-                        <div class="contentContainer" >
-                        </div>
-                    </div>
+<!--                    <div class="itemContainer">-->
+<!--                        <div  class="contentColContainer" style="margin-bottom: 0">-->
+<!--                            <div class="subTitle" >-->
+<!--                                <div><h4 style="margin-top: 10px;color: #999999;">Data Items</h4></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="contentColContainer modelTable" style="margin-top: 0">-->
+<!--                            <div class="list-item" v-for="(DataItem,key) in dataItems.result">-->
+<!--                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">-->
+<!--                                    <div class="cardUpper">-->
+<!--                                        <div class="imgPallet">-->
+<!--                                            <a  :href="'/dataItem/'+ dataItem.oid" target="_blank">-->
+<!--                                                <img  class="dataImg" :src="dataItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                        <div style="flex: 1;">-->
+<!--                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">-->
+<!--                                                <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4></div>-->
+<!--                                                <div>-->
+<!--                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{dataItem.viewCount}}-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
+<!--                                                <div class="modelInfo">-->
+<!--                                                    <p>{{dataItem.description}}</p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >-->
+<!--                                        <div class="tags" v-if="dataItem.keywords.length>0">-->
+<!--                                            <span class="badge badge-info" v-for="keyword in dataItem.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                        </div>-->
+<!--                                        <div style="padding-right: 10px">-->
+<!--                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">&ndash;&gt;-->
+<!--                            <div>-->
+<!--                                <div class="text-center" style="margin-top:15px;">-->
+<!--                                    <el-pagination-->
+<!--                                            @current-change="dataItemHandleCurrentChange"-->
+<!--                                            :current-page="dataItems.currentPage"-->
+<!--                                            :page-size="pageOption.pageSize"-->
+<!--                                            layout="total, prev, pager, next, jumper"-->
+<!--                                            :total="dataItems.total">-->
+<!--                                    </el-pagination>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </div>-->
 
+<!--                    <div class="itemContainer">-->
+<!--                        <div  class="contentColContainer" style="margin-bottom: 0">-->
+<!--                            <div class="subTitle" >-->
+<!--                                <div><h4 style="margin-top: 10px;color: #999999;">Conceptual Model</h4></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="contentColContainer modelTable" style="margin-top: 0">-->
+<!--                            <div class="list-item" v-for="(ConceptualModel,key) in ConceptualModels.result">-->
+<!--                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">-->
+<!--                                    <div class="cardUpper">-->
+<!--                                        <div class="imgPallet">-->
+<!--                                            <a  :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">-->
+<!--                                                <img  class="modelImg" :src="conceptualModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                        <div style="flex: 1;">-->
+<!--                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">-->
+<!--                                                <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{conceptualModel.name}}</h4></div>-->
+<!--                                                <div>-->
+<!--                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conceptualModel.viewCount}}-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
+<!--                                                <div class="modelInfo">-->
+<!--                                                    <p>{{conceptualModel.description}}</p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >-->
+<!--                                        <div class="tags" v-if="conceptualModel.keywords.length>0">-->
+<!--                                            <span class="badge badge-info" v-for="keyword in conceptualModel.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                        </div>-->
+<!--                                        <div style="padding-right: 10px">-->
+<!--                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)+' '+conceptualModel.createTime.substring(11,19)}}-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">&ndash;&gt;-->
+<!--                            <div>-->
+<!--                                <div class="text-center" style="margin-top:15px;">-->
+<!--                                    <el-pagination-->
+<!--                                            @current-change="DataItemHandleCurrentChange"-->
+<!--                                            :current-page="DataItems.currentPage"-->
+<!--                                            :page-size="pageOption.pageSize"-->
+<!--                                            layout="total, prev, pager, next, jumper"-->
+<!--                                            :total="DataItems.total">-->
+<!--                                    </el-pagination>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="itemContainer">-->
+<!--                        <div  class="contentColContainer" style="margin-bottom: 0">-->
+<!--                            <div class="subTitle" >-->
+<!--                                <div><h4 style="margin-top: 10px;color: #999999;">Logical Model</h4></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="contentColContainer modelTable" style="margin-top: 0">-->
+<!--                            <div class="list-item" v-for="(logicalModel,key) in logicalModels.result">-->
+<!--                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">-->
+<!--                                    <div class="cardUpper">-->
+<!--                                        <div class="imgPallet">-->
+<!--                                            <a  :href="'/logicalModel/'+ logicalModel.oid" target="_blank">-->
+<!--                                                <img  class="modelImg" :src="logicalModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                        <div style="flex: 1;">-->
+<!--                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">-->
+<!--                                                <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{logicalModel.name}}</h4></div>-->
+<!--                                                <div>-->
+<!--                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{logicalModel.viewCount}}-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
+<!--                                                <div class="modelInfo">-->
+<!--                                                    <p>{{logicalModel.description}}</p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >-->
+<!--                                        <div class="tags" v-if="logicalModel.keywords.length>0">-->
+<!--                                            <span class="badge badge-info" v-for="keyword in logicalModel.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                        </div>-->
+<!--                                        <div style="padding-right: 10px">-->
+<!--                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">&ndash;&gt;-->
+<!--                            <div>-->
+<!--                                <div class="text-center" style="margin-top:15px;">-->
+<!--                                    <el-pagination-->
+<!--                                            @current-change="logicalModelHandleCurrentChange"-->
+<!--                                            :current-page="logicalModel.currentPage"-->
+<!--                                            :page-size="pageOption.pageSize"-->
+<!--                                            layout="total, prev, pager, next, jumper"-->
+<!--                                            :total="logicalModel.total">-->
+<!--                                    </el-pagination>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="itemContainer">-->
+<!--                        <div  class="contentColContainer" style="margin-bottom: 0">-->
+<!--                            <div class="subTitle" >-->
+<!--                                <div><h4 style="margin-top: 10px;color: #999999;">Computable Model</h4></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="contentColContainer modelTable" style="margin-top: 0">-->
+<!--                            <div class="list-item" v-for="(computableModel,key) in computableModels.result">-->
+<!--                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">-->
+<!--                                    <div class="cardUpper">-->
+<!--                                        <div class="imgPallet">-->
+<!--                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">-->
+<!--                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                        <div style="flex: 1;">-->
+<!--                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">-->
+<!--                                                <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4></div>-->
+<!--                                                <div>-->
+<!--                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
+<!--                                                <div class="modelInfo">-->
+<!--                                                    <p>{{computableModel.description}}</p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >-->
+<!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+<!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                        </div>-->
+<!--                                        <div style="padding-right: 10px">-->
+<!--                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">&ndash;&gt;-->
+<!--                            <div>-->
+<!--                                <div class="text-center" style="margin-top:15px;">-->
+<!--                                    <el-pagination-->
+<!--                                            @current-change="computableModelHandleCurrentChange"-->
+<!--                                            :current-page="computableModels.currentPage"-->
+<!--                                            :page-size="pageOption.pageSize"-->
+<!--                                            layout="total, prev, pager, next, jumper"-->
+<!--                                            :total="computableModels.total">-->
+<!--                                    </el-pagination>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
+
+
+
 
             <!--          research-->
                 <div class="bodyContainer" >
@@ -197,7 +533,7 @@
                                 <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Research</h4></div>
                             </div>
                         </div>
-                        <div   class="contentColContainer" style="margin-top: 0px;">
+                        <div   class="contentColContainer contentUlContainer" style="margin-top: 0px;">
                             <ul>
                                 <li><a>Articles</a></li>
                                 <li><a>Projects</a></li>
@@ -279,4 +615,6 @@
 <script src="../static/js/page/user_page.js"></script>
 <script src="../static/js/common/loadUser.js"></script>
 <script src="../static/js/common/navbar.js"></script>
+<script src="../static/js/common/backTop.js/"></script>
+
 </html>

@@ -193,7 +193,7 @@ public class UserService {
         try {
             return userDao.findFirstByUserName(userName);
         } catch (Exception e) {
-            System.out.println("有人乱查数据库！！该ID不存在User对象");
+            System.out.println("有人乱查数据库！！该UID不存在User对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }
@@ -202,7 +202,7 @@ public class UserService {
         try {
             return userDao.findFirstByOid(id);
         } catch (Exception e) {
-            System.out.println("有人乱查数据库！！该ID不存在User对象");
+            System.out.println("有人乱查数据库！！该OID不存在User对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }

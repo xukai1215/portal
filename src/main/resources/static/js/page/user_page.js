@@ -41,33 +41,54 @@ new Vue({
         }
     },
     methods: {
-        handleClick(tab, event) {
-            switch (tab.paneName) {
-                case "Model Item":
-                    this.modelItems.currentPage=1;
-                    this.modelItemHandleCurrentChange(1);
-                    break;
-                case "Data Item":
-                    this.dataItems.currentPage=1;
-                    this.dataItemHandleCurrentChange(1);
-                    break;
-                case "Conceptual Model":
-                    this.conceptualModels.currentPage=1;
-                    this.conceptualModelHandleCurrentChange(1);
-                    break;
-                case "Logical Model":
-                    this.logicalModels.currentPage=1;
-                    this.logicalModelHandleCurrentChange(1);
-                    break;
-                case "Computable Model":
-                    this.computableModels.currentPage=1;
-                    this.computableModelHandleCurrentChange(1);
-                    break;
-            }
+        // handleClick(tab, event) {
+        //     switch (tab.paneName) {
+        //         case "Model Item":
+        //             this.modelItems.currentPage=1;
+        //             this.modelItemHandleCurrentChange(1);
+        //             break;
+        //         case "Data Item":
+        //             this.dataItems.currentPage=1;
+        //             this.dataItemHandleCurrentChange(1);
+        //             break;
+        //         case "Conceptual Model":
+        //             this.conceptualModels.currentPage=1;
+        //             this.conceptualModelHandleCurrentChange(1);
+        //             break;
+        //         case "Logical Model":
+        //             this.logicalModels.currentPage=1;
+        //             this.logicalModelHandleCurrentChange(1);
+        //             break;
+        //         case "Computable Model":
+        //             this.computableModels.currentPage=1;
+        //             this.computableModelHandleCurrentChange(1);
+        //             break;
+        //     }
+        // },
+
+        modelItemClick(){
+            this.computableModelHandleCurrentChange(1);
         },
+
+        datalItemClick(){
+            this.dataItemHandleCurrentChange(1);
+        },
+
+        conceptualModelClick(){
+            this.conceptualModelHandleCurrentChange(1);
+        },
+
+        logicalModelClick(){
+            this.logicalModelHandleCurrentChange(1);
+        },
+
+        computableModelClick(){
+            this.computableModelHandleCurrentChange(1);
+        },
+
         modelItemHandleCurrentChange(val) {
             this.modelItems.currentPage=val;
-            window.scrollTo(0,0);
+            // window.scrollTo(0,0);
             const hrefs=window.location.href.split("/");
             $.ajax({
                 type: "GET",
