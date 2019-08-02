@@ -76,9 +76,6 @@ public class UserRestController {
         return "0";
     }
 
-
-
-
     @RequestMapping(value = "/out", method = RequestMethod.GET)
     public ModelAndView logout(HttpServletRequest request) {
         System.out.println("out");

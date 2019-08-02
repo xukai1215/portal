@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div class="LanguageInfoContainer">
+                    <div th:if="${info.detail==null}" class="LanguageInfoContainer">
                         <table class="table table-bordered">
                             <colgroup>
                                 <col width="25%">
@@ -123,14 +123,15 @@
                             </tr>
                         </table>
                     </div>
-
-                    <pre lang="xml" th:text="${info.xml}"></pre>
+                    <pre th:if="${info.detail==null}" lang="xml" th:text="${info.xml}"></pre>
+                    <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
                 </div>
+
             </div>
 
-            <!--<div class="text-center" >-->
-                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
-            <!--</div>-->
+            <div th:if="${info.detail == null}" class="text-center" >
+                <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
+            </div>
 
             <div id="cite" class="detail_block">
                 <div class="block_head">

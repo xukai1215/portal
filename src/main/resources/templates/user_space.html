@@ -100,6 +100,7 @@
             </div>
         </div>
     </div>
+
     <div class="page-container" style="height: 2000px;">
 
         <div th:replace="fragments/sidebar :: side"></div>
@@ -112,6 +113,7 @@
 
             <!-- start main -->
             <div class="page-content-wrap container-fluid" :style="{display:curIndex=='1'?'block':'none'}">
+                <!--主页，左-->
                 <div class="col-md-4" style="margin-top: 15px">
                     <div class="row">
                         <div class="col-md-12">
@@ -123,6 +125,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div v-cloak class="col-md-12">
                             <div class="panel">
                                 <div class="panel-body">
@@ -169,32 +172,27 @@
                                 </div>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
+                <!--主页，右-->
                 <div class="col-md-8">
-
+                    <!--Create图标及链接-->
                     <div class="row" style="margin-top:15px">
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <div class="panel-title-box">
-                                        <h3>
-                                            <i class="fa fa-bar-chart-o fa-fw"></i>Create</h3>
+                                        <h3><i class="fa fa-bar-chart-o fa-fw"></i>Create</h3>
                                     </div>
                                 </div>
                                 <div class="panel-body padding-0 text-center">
+                                    <!--前五个-->
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/user/createModelItem">
                                                 <img src="../static/img/model/model.png" style="width:90px;height: 90px;" class="image">
                                             </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">
-                                                Model Item
-
-                                            </div>
+                                            <div style="text-align: center;padding: 10px 0 5px;"> Model Item</div>
                                         </el-card>
                                     </div>
                                     <div class="el-col pull-left text-center" style="width:20%">
@@ -241,18 +239,51 @@
                                             </div>
                                         </el-card>
                                     </div>
+
+                                    <!--后四个-->
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/repository/createConcept">
+                                                <img src="../static/img/model/model.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">Concept & Semantic</div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/repository/createSpatialReference">
+                                                <img src="../static/img/model/data.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">Spatial Reference</div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/repository/createTemplate">
+                                                <img src="../static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">Date Template</div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/repository/createUnit">
+                                                <img src="../static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">Unit & Metric</div>
+                                        </el-card>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <!--Task Info记录-->
                     <div class="row" style="margin-top:15px">
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <div class="panel-title-box">
-                                        <h3>
-                                            <i class="fa fa-bar-chart-o fa-fw"></i>Task Info</h3>
+                                        <h3><i class="fa fa-bar-chart-o fa-fw"></i>Task Info</h3>
                                     </div>
                                 </div>
                                 <div class="panel-body padding-0">
@@ -295,28 +326,9 @@
                         </div>
                     </div>
 
-                    <!--<div class="row" style="margin-top:15px">-->
-                        <!--<div class="col-md-12">-->
-
-                            <!--<div class="panel panel-default">-->
-                                <!--<div class="panel-heading">-->
-                                    <!--<div class="panel-title-box">-->
-                                        <!--<h3>-->
-                                            <!--<i class="fa fa-bar-chart-o fa-fw"></i>Resource Chart</h3>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="panel-body padding-0">-->
-                                    <!--<div id="chartRes" style="height:400px;"></div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-
-                        <!--</div>-->
-
-
-                    <!--</div>-->
                 </div>
 
-                <!--modal-->
+                <!--Edit Information modal-->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -380,8 +392,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!--modal-->
+                <!--Change Password modal-->
                 <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -424,6 +435,8 @@
             </div>
             <!-- end main -->
 
+        <!--Model-->
+
             <!-- start model-items -->
             <div :style="{display:curIndex=='2-1'?'block':'none'}">
                 <ul class="breadcrumb">
@@ -433,6 +446,7 @@
                     <li class="active">Model Items</li>
                 </ul>
                 <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
@@ -462,6 +476,7 @@
                             </div>
                         </div>
                     </div>
+                    <!--列表-->
                     <div class="row">
                         <div class="col-sm-12" v-for="modelItem in searchResult">
                             <div class="panel panel-default">
@@ -491,6 +506,7 @@
                         <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
                         <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model items</h4>
                     </div>
+                    <!--尾部按钮-->
                     <div class="row">
                         <div class="col-sm-12 text-center">
                             <ul class="page">
@@ -613,7 +629,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- end conceptual-models -->
 
             <!-- start logical-models -->
@@ -712,7 +727,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- end logical-models -->
 
             <!-- start computable-models -->
@@ -806,110 +820,8 @@
                     </div>
                 </div>
             </div>
-
             <!-- end computable-models -->
-
-            <!-- start task -->
-            <div :style="{display:curIndex=='5'?'block':'none'}">
-                <div class="page-content-wrap container-fluid" style="margin-top:10px">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-body" style="height: 61px;">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <div class="col-md-8 col-md-offset-4">
-                                                <div class="input-group" @keydown.enter="search()">
-                                                    <input type="text" class="form-control" name="searchText"
-                                                           placeholder="please enter name" v-model="searchText">
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-primary" @click="searchModels()">Search
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12" v-for="task in searchResult">
-                            <div class="panel"
-                                 :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title" style="font-weight: bold">
-                                        {{task.computableName}}
-                                    </h3>
-                                    <div class="pull-right" :attr.uid="task.msr_id" style="margin-top: -3px;">
-                                            <span style="margin-right:20px">
-                                                <b>Create Time:</b>{{formatDate(task.runTime)}}
-                                            </span>
-                                        <button class="btn btn-primary downloadAll"
-                                                @click="downloadAll(task.id,task.name,task.runTime)"
-                                                v-if="task.status==2">
-                                            Download All Files
-                                        </button>
-                                        <button class="btn btn-danger delete" click="deleteModel(task.id)">Delete
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="panel-body">
-                                    <h5 v-if="task.status==0||task.status==1">
-                                        Calculating
-                                    </h5>
-                                    <h5 v-if="task.status==-1">
-                                        Calculation Failure
-                                    </h5>
-                                    <ul v-if="task.status==1">
-                                        <li class="flagcontent clearfix" v-for="data in task.data">
-                                                <span style="margin-top: 5px; display: inline-block;">
-                                                    {{output.event}}
-                                                </span>
-                                            <button class="pull-right clearfix btn btn-primary downloadAFile"
-                                                    @click="downloadSingle(output.url)">Download File
-                                            </button>
-
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
-                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No calculation
-                            tasks</h4>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 text-center">
-                            <ul class="page">
-                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
-                                    <b>FIRST</b>
-                                </li>
-                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
-                                    <b>PRE</b>
-                                </li>
-                                <li class="pageItem" v-for="page in pageList"
-                                    :class="curPage==page?'pageItemActive':''"
-                                    @click="changePage(page)">{{page}}
-                                </li>
-                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
-                                    @click="changePage(curPage+1)">
-                                    <b>NEXT</b>
-                                </li>
-                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
-                                    @click="changePage(totalPage)">
-                                    <b>LAST</b>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- end task -->
-
+        <!--End Model-->
 
             <!-- start server-nodes -->
             <div :style="{display:servers_show?'block':'none'}">
@@ -1200,6 +1112,7 @@
                 </div>
             </div>
             <!--end -->
+
             <!--data items-->
             <div :style="{display:curIndex=='3-1'?'block':'none'}">
                 <ul class="breadcrumb">
@@ -1603,8 +1516,498 @@
                     </div>
                 </div>
             </div>
+            <!--end-->
+
+        <!--Community-->
+
+            <!-- start concept&semantic -->
+            <div :style="{display:curIndex=='4-1'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Community</a>
+                    </li>
+                    <li class="active">Concept & Semantic</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/repository/createConcept">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Concept
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--列表-->
+                    <div class="row">
+                        <div class="col-sm-12" v-for="concept in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/repository/concept/'+concept.oid" target="_blank"
+                                       @click="setSession('conceptInfo_id',concept.oid)">
+                                        {{concept.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a href="/repository/createConcept"
+                                           @click="setSession('editConcept_id',concept.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteConcept(concept.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(concept.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{concept.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No concepts</h4>
+                    </div>
+                    <!--尾部按钮-->
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- start spatial reference -->
+            <div :style="{display:curIndex=='4-2'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Community</a>
+                    </li>
+                    <li class="active">Spatial Reference</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/repository/createSpatialReference">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Spatial Reference
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--列表-->
+                    <div class="row">
+                        <div class="col-sm-12" v-for="spatial in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/repository/spatialReference/'+spatial.oid" target="_blank"
+                                       @click="setSession('spatialInfo_id',spatial.oid)">
+                                        {{spatial.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a href="/repository/createSpatialReference"
+                                           @click="setSession('editSpatial_id',spatial.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteSpatial(spatial.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(spatial.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{spatial.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No spatial references</h4>
+                    </div>
+                    <!--尾部按钮-->
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- start data template -->
+            <div :style="{display:curIndex=='4-3'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Community</a>
+                    </li>
+                    <li class="active">Data Template</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/repository/createTemplate">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Data Template
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--列表-->
+                    <div class="row">
+                        <div class="col-sm-12" v-for="template in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/repository/template/'+template.oid" target="_blank"
+                                       @click="setSession('templateInfo_id',template.oid)">
+                                        {{template.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a href="/repository/createTemplate"
+                                           @click="setSession('editTemplate_id',template.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteTemplate(template.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(template.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{template.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No data templates</h4>
+                    </div>
+                    <!--尾部按钮-->
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- start unit&metric -->
+            <div :style="{display:curIndex=='4-4'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Community</a>
+                    </li>
+                    <li class="active">Unit & Metric</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/repository/createUnit">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Unit & Metric
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--列表-->
+                    <div class="row">
+                        <div class="col-sm-12" v-for="unit in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/repository/unit/'+unit.oid" target="_blank"
+                                       @click="setSession('unitInfo_id',unit.oid)">
+                                        {{unit.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a href="/repository/createUnit"
+                                           @click="setSession('editUnit_id',unit.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteUnit(unit.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(unit.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{unit.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No units</h4>
+                    </div>
+                    <!--尾部按钮-->
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
+        <!--End Community-->
+
+
+
+            <!-- start task -->
+            <div :style="{display:curIndex=='5'?'block':'none'}">
+                <div class="page-content-wrap container-fluid" style="margin-top:10px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-4">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="searchModels()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" v-for="task in searchResult">
+                            <div class="panel"
+                                 :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" style="font-weight: bold">
+                                        {{task.computableName}}
+                                    </h3>
+                                    <div class="pull-right" :attr.uid="task.msr_id" style="margin-top: -3px;">
+                                            <span style="margin-right:20px">
+                                                <b>Create Time:</b>{{formatDate(task.runTime)}}
+                                            </span>
+                                        <button class="btn btn-primary downloadAll"
+                                                @click="downloadAll(task.id,task.name,task.runTime)"
+                                                v-if="task.status==2">
+                                            Download All Files
+                                        </button>
+                                        <button class="btn btn-danger delete" click="deleteModel(task.id)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <h5 v-if="task.status==0||task.status==1">
+                                        Calculating
+                                    </h5>
+                                    <h5 v-if="task.status==-1">
+                                        Calculation Failure
+                                    </h5>
+                                    <ul v-if="task.status==1">
+                                        <li class="flagcontent clearfix" v-for="data in task.data">
+                                                <span style="margin-top: 5px; display: inline-block;">
+                                                    {{output.event}}
+                                                </span>
+                                            <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                                    @click="downloadSingle(output.url)">Download File
+                                            </button>
+
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No calculation
+                            tasks</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList"
+                                    :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end task -->
 
 
         </div>
@@ -1612,10 +2015,6 @@
 
 
 </div>
-
-
-
-
 </body>
 
 <script src="../static/js/common/jquery-3.3.1.js"></script>

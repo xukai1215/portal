@@ -71,8 +71,7 @@ new Vue({
                         "oid": "8a189836-d563-440c-b5ea-c04778ac05f9",
                         "label": "Tabular Data Format",
                     }]
-            }
-            ],
+            }],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -80,6 +79,26 @@ new Vue({
         }
     },
     methods: {
+        contribute(){
+            $.ajax({
+                url: '/user/load',
+                type: 'get',
+                // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
+                // dataType : 'json',
+                success: function (result) {
+                    var json = JSON.parse(result);
+                    if (json.oid != '') {
+                        window.location.href="/repository/createTemplate";
+                    }
+                    else{
+                        window.location.href="/user/login";
+                    }
+                },
+                error: function (e) {
+                    alert("load user error");
+                }
+            });
+        },
         search() {
             this.pageOption.currentPage = 1;
             this.getModels();

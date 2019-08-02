@@ -63,6 +63,7 @@
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
+        //left
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
             <div class="detail">
                 <div class="detail_title">
@@ -99,7 +100,7 @@
                     <div>
                         <span style="font-size:24px;margin-right: 8px">●</span>
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="classS:${classifications}" th:text="${classS}" :to="{ path: '/' }">Earth System Classification</el-breadcrumb-item>
+                            <el-breadcrumb-item th:each="classS:${classifications}" th:text="${classS}" :to="{ path: '/' }"></el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                 </div>
@@ -112,7 +113,7 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
+                    <div th:if="${info.detail==null}" class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -135,13 +136,11 @@
                             </tr>
                         </table>
                     </div>
-
-
-
+                    <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
                 </div>
             </div>
 
-            <div class="text-center" >
+            <div th:if="${info.detail==null}"  class="text-center" >
                 <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
             </div>
 
@@ -169,9 +168,8 @@
 
         </div>
 
+        //right
         <div class="right-panel el-col el-col-5">
-
-
             <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -187,13 +185,13 @@
                         </div>
                         <div class="el-col el-col-20">
                             <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a href="/user/42"><h4 th:text="NNU_Group">Tom Marvolo Riddle</h4></a>
+                                <a href="/user/42"><h4 th:text="NNU_Group"></h4></a>
                             </div>
                         </div>
                     </div>
                     <div class="el-row el-col-offset-3">
                         <div class="text-center">
-                            <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:text="'contributed at '+${date}"></h5>
                         </div>
                     </div>
                 </div>

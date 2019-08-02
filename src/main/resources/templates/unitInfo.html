@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
+                    <div th:if="${info.detail == null}" class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -130,11 +130,12 @@
                             </tr>
                         </table>
                     </div>
-
+                    <div th:if="${info.detail != null}" th:utext="${info.detail}"></div>
                 </div>
+
             </div>
 
-            <div class="text-center" >
+            <div th:if="${info.detail == null}" class="text-center" >
                 <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
             </div>
 
