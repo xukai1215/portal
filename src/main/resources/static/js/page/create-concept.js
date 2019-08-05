@@ -1,5 +1,8 @@
 var vue = new Vue({
     el:"#app",
+    components: {
+        'avatar': VueAvatar.Avatar
+    },
     data:{
         defaultActive:'4-1',
         curIndex:'4-1',
@@ -16,12 +19,31 @@ var vue = new Vue({
         loginFlag: false,
         activeIndex: 2,
 
+
+
         userInfo:{
             //username:"",
             name:"",
             email:"",
             phone:"",
             insName:""
+        },
+
+
+        queryType: 'normal',
+        searchText: '',
+        classifications1: ["13b822a2-fecd-4af7-aeb8-0503244abe8f"],
+        classifications2: ["13b822a2-fecd-4af7-aeb8-0503244abe8f"],
+        currentClass: "Lighting and visibility",
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
+            sortType: "default",
+            total: 0,
+            searchResult: [],
         },
 
         treeData: [
@@ -688,7 +710,9 @@ var vue = new Vue({
         },
         cls:[],
         clsStr:'',
-        parId:""
+        parId:"",
+        related:[],
+        relatedOid:[]
     },
     methods:{
         handleSelect(index,indexPath){
@@ -714,6 +738,9 @@ var vue = new Vue({
             this.cls=classes;
             this.clsStr=str;
 
+        },
+        selectConcept(){
+          this.relatedStr = "hello"
         },
         changeOpen(n) {
             this.activeIndex = n;
@@ -753,6 +780,165 @@ var vue = new Vue({
 
             }
         },
+
+        search() {
+            this.pageOption.currentPage = 1;
+            this.getConcepts();
+        },
+        getConcepts() {
+            this.pageOption.progressBar = true;
+            var data = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage - 1,
+                pageSize: this.pageOption.pageSize,
+                searchText : this.searchText,
+                classifications : this.classifications1.length == 0 ? ["all"] : this.classifications1
+
+            };
+            this.Query(data, this.queryType);
+        },
+        Query(data, type) {
+            let query={ };
+            query.oid=data.classifications[0];
+            query.page=data.page;
+            query.sortType= this.pageOption.sortType;
+            if(data.asc){
+                query.asc= 0;
+            }else{
+                query.asc = 1;
+            }
+            query.searchText=data.searchText;
+
+            let url="";
+            if(query.searchText.trim()==""){
+                url="/repository/getConceptList";
+            }
+            else{
+                url="/repository/searchConcept";
+                this.classifications1=[""];
+                this.currentClass="ALL";
+                this.$refs.tree1.setCurrentKey(null);
+            }
+
+            let sendDate = (new Date()).getTime();
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify(query),
+                async: true,
+                contentType: "application/json",
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        let receiveDate = (new Date()).getTime();
+                        let responseTimeMs = receiveDate - sendDate;
+                        let timeoutTime=0;
+                        console.log(responseTimeMs)
+                        if(responseTimeMs<450){
+                            timeoutTime=450-responseTimeMs;
+                        }
+                        setTimeout(() => {
+                            this.pageOption.total = data.total;
+                            // this.pageOption.pages = data.pages;
+                            this.pageOption.searchResult = data.list;
+                            // this.pageOption.users = data.users;
+                            this.pageOption.progressBar = false;
+                            this.pageOption.paginationShow=true;
+                        }, timeoutTime);
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
+        //页码change
+        handlePageChange(val) {
+            this.pageOption.currentPage = val;
+            window.scrollTo(0, 0);
+            this.getConcepts();
+        },
+        handleCurrentChange(data, checked, indeterminate) {
+            this.pageOption.searchResult=[];
+            this.pageOption.total=0;
+            this.pageOption.paginationShow=false;
+            this.currentClass=data.label;
+            let classes = [];
+            classes.push(data.oid);
+            this.classifications1 = classes;
+            this.getChildren(data.children)
+            this.pageOption.currentPage=1;
+            this.searchText="";
+            this.getConcepts();
+        },
+        getChildren(children) {
+            if (children != null) {
+                for (let i = 0; i < children.length; i++) {
+                    let child = children[i];
+                    this.classifications1.push(child.oid);
+                    this.getChildren(child.children);
+                }
+            }
+        },
+
+        //添加related
+        addRelated(event){
+            console.log(event);
+            event.target.parentNode.childNodes[2].style.display="none";
+            event.target.parentNode.childNodes[4].style.display="block";
+            // $("#selectConcept").hide();
+            // $("#unSelectConcept").show();
+
+            con = event.target.parentNode.childNodes[0].innerText;
+            oid = event.target.parentNode.childNodes[0].attributes.oid.nodeValue;
+
+            this.related.push(con);
+            this.relatedOid.push(oid);
+
+            $('#related').tagEditor('destroy')
+            $('#related').tagEditor({
+                initialTags: this.related,
+                forceLowercase: false,
+                placeholder: 'Enter keywords ...'
+            });
+        },
+        deleteRelated(event){
+            event.target.parentNode.childNodes[4].style.display="none";
+            event.target.parentNode.childNodes[2].style.display="block";
+
+            con = event.target.parentNode.childNodes[0].innerText;
+            oid = event.target.parentNode.childNodes[0].attributes.oid.nodeValue;
+
+            this.related = this.related.filter(function (item) {
+                return item!=con;
+            });
+            this.relatedOid = this.relatedOid.filter(function (item) {
+                return item!=oid;
+            });
+
+            $('#related').tagEditor('destroy')
+            $('#related').tagEditor({
+                initialTags: this.related,
+                forceLowercase: false,
+                placeholder: 'Enter keywords ...'
+            });
+        },
+
+        // searchByOid(oid){
+        //     $.ajax({
+        //         url: "/repository/getConceptInfo/" + oid,
+        //         type:'GET',
+        //         data: {},
+        //         async:false,
+        //         success:(result)=>{
+        //             console.log(result);
+        //             var basicInfo = result.data;
+        //             var relate = basicInfo.name;
+        //             this.related.push(relate);
+        //         }
+        //     })
+        // }
     },
     mounted() {
 
@@ -802,7 +988,7 @@ var vue = new Vue({
                 data: {},
 
                 success: (result) => {
-                    console.log(result)
+                    console.log(result);
                     var basicInfo = result.data;
 
                     //cls
@@ -840,8 +1026,19 @@ var vue = new Vue({
                         $('#imgShow').show();
                     }
 
+                    //related
+                    this.relatedOid = basicInfo.related;
+                    for (var i = 0; i < this.relatedOid.length; i++) {
+                        this.searchByOid(this.relatedOid[i]);
+                    }
+                    $('#related').tagEditor('destroy')
+                    $('#related').tagEditor({
+                        initialTags: this.related,
+                        forceLowercase: false,
+                        placeholder: 'Enter keywords ...'
+                    });
+
                     //detail
-                    //tinymce.remove("textarea#myText");
                     $("#myText").html(basicInfo.detail);
                     tinymce.init({
                         selector: "textarea#myText",
@@ -877,10 +1074,19 @@ var vue = new Vue({
                         }
                     });
 
+
                 }
             })
             window.sessionStorage.setItem("editConcept_id", "");
         }
+
+        //related
+        $('#related').tagEditor({
+            initialTags: this.related,
+            forceLowercase: false,
+            placeholder: 'Enter keywords ...'
+        });
+
 
         //判断是否登录
         $.ajax({
@@ -933,6 +1139,7 @@ var vue = new Vue({
             conceptObj.name = $("#nameInput").val();
             conceptObj.uploadImage = $('#imgShow').get(0).currentSrc;
             conceptObj.description = $("#descInput").val();
+            conceptObj.related = this.relatedOid;
 
             var detail = tinyMCE.activeEditor.getContent();
             conceptObj.detail = detail.trim();

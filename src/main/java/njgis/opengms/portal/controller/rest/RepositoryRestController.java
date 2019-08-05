@@ -112,6 +112,7 @@ public class RepositoryRestController {
     public JsonResult searchConcept(@RequestBody RepositoryQueryDTO repositoryQueryDTO){
         return ResultUtils.success(repositoryService.searchConcept(repositoryQueryDTO));
     }
+
     @RequestMapping(value = "/addConceptLocalization",method = RequestMethod.POST)
     public JsonResult addConceptLocalization(@RequestParam("id")String id,
                                              @RequestParam("language")String language,
@@ -127,16 +128,33 @@ public class RepositoryRestController {
 
     @RequestMapping(value = "/getConceptsByUserId",method = RequestMethod.GET)
     public JsonResult getConceptsByUserId(HttpServletRequest request,
-                                         @RequestParam(value="page") int page,
-                                         @RequestParam(value="sortType") String sortType,
-                                         @RequestParam(value="asc") int sortAsc){
+                                          @RequestParam(value="page") int page,
+                                          @RequestParam(value="sortType") String sortType,
+                                          @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
-    }
+        }
         String uid=session.getAttribute("uid").toString();
 
         JSONObject result=repositoryService.getConceptsByUserId(uid,page,sortType,sortAsc);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/searchConceptsByUserId",method = RequestMethod.GET)
+    public JsonResult searchConceptsByUserId(HttpServletRequest request,
+                                             @RequestParam(value="searchText") String searchText,
+                                             @RequestParam(value="page") int page,
+                                             @RequestParam(value="sortType") String sortType,
+                                             @RequestParam(value="asc") int sortAsc){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String uid=session.getAttribute("uid").toString();
+
+        JSONObject result=repositoryService.searchConceptsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
     }
@@ -247,7 +265,22 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value = "/searchSpatialsByUserId",method = RequestMethod.GET)
+    public JsonResult searchSpatialsByUserId(HttpServletRequest request,
+                                             @RequestParam(value="searchText") String searchText,
+                                             @RequestParam(value="page") int page,
+                                             @RequestParam(value="sortType") String sortType,
+                                             @RequestParam(value="asc") int sortAsc){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String uid=session.getAttribute("uid").toString();
 
+        JSONObject result=repositoryService.searchSpatialsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
+
+        return ResultUtils.success(result);
+    }
 
 
     //Template
@@ -342,7 +375,22 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value = "/searchTemplatesByUserId",method = RequestMethod.GET)
+    public JsonResult searchTemplatesByUserId(HttpServletRequest request,
+                                             @RequestParam(value="searchText") String searchText,
+                                             @RequestParam(value="page") int page,
+                                             @RequestParam(value="sortType") String sortType,
+                                             @RequestParam(value="asc") int sortAsc){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String uid=session.getAttribute("uid").toString();
 
+        JSONObject result=repositoryService.searchTemplatesByUserId(searchText.trim(),uid,page,sortType,sortAsc);
+
+        return ResultUtils.success(result);
+    }
 
 
 
@@ -446,6 +494,23 @@ public class RepositoryRestController {
         String uid=session.getAttribute("uid").toString();
 
         JSONObject result=repositoryService.getUnitsByUserId(uid,page,sortType,sortAsc);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/searchUnitsByUserId",method = RequestMethod.GET)
+    public JsonResult searchUnitsByUserId(HttpServletRequest request,
+                                             @RequestParam(value="searchText") String searchText,
+                                             @RequestParam(value="page") int page,
+                                             @RequestParam(value="sortType") String sortType,
+                                             @RequestParam(value="asc") int sortAsc){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String uid=session.getAttribute("uid").toString();
+
+        JSONObject result=repositoryService.searchUnitsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
     }
