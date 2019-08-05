@@ -27,4 +27,5 @@ public interface SpatialReferenceDao extends MongoRepository<SpatialReference,St
 
     Page<SpatialResultDTO> findByAuthor(String author, Pageable pageable);
 
+    Page<SpatialResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 }
