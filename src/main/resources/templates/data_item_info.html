@@ -5,22 +5,22 @@
     <title>Data Item Info | OpenGMS</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <link rel="icon" type="image/x-icon"  th:href="@{../../static/img/logo/favicon.ico}">
-    <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
+    <link rel="icon" type="image/x-icon"  th:href="@{/static/img/logo/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
 
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css" th:href="@{../../static/css/base/bootstrap.min.css}">
-    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css"
-          th:href="@{../../static/css/font-awesome/css/font-awesome.min.css}">
-    <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.woff"
-          th:href="@{../../static/css/font-awesome/fonts/fontawesome-webfont.woff}">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css" th:href="@{/static/css/base/bootstrap.min.css}">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css"
+          th:href="@{/static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff"
+          th:href="@{/static/css/font-awesome/fonts/fontawesome-webfont.woff}">
 
-    <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{../../static/css/base/style.css}">
-    <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{../../static/css/base/universal.css}">
-    <link rel="stylesheet" href="../static/css/page/data_item_info.css" th:href="@{../../static/css/page/data_item_info.css}">
-    <link rel="stylesheet" href="../static/css/components/file-manager.css" th:href="@{../../static/css/components/file-manager.css}">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
+    <link rel="stylesheet" href="/static/css/base/style.css" th:href="@{/static/css/base/style.css}">
+    <link rel="stylesheet" href="/static/css/base/universal.css" th:href="@{/static/css/base/universal.css}">
+    <link rel="stylesheet" href="/static/css/page/data_item_info.css" th:href="@{/static/css/page/data_item_info.css}">
+    <link rel="stylesheet" href="/static/css/components/file-manager.css" th:href="@{/static/css/components/file-manager.css}">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
 
     <style type="text/css" th:inline="css">
         .col-md-5 {
@@ -52,7 +52,7 @@
                 <div class="detail_overview">
 
                     <div class="img" th:object="${datainfo}">
-                        <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{../../static/img/model/data.png}">-->
+                        <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{/static/img/model/data.png}">-->
                         <avatar   th:username="${datainfo.data.name}" :size="90" :rounded="false" ></avatar>
 
                         <!--<img th:unless="${datainfo.data.image!=Null}" th:src="${datainfo.data.image}">-->
@@ -358,7 +358,7 @@
 
                                     <div  class="el-col el-col-10 el-col-offset-4"  >
 
-                                        <img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">
+                                        <img th:src="@{/static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">
 
 
                                         <div  style="margin-left: 55px;display: block;" th:object="${datainfo}">
@@ -462,7 +462,7 @@
                 <div class="block_content">
                     <div class="el-row" style="height: 40px;display: flex;justify-content: center;align-items: Center;">
                         <div class="el-col el-col-4 el-col-offset-3">
-                            <img src="../../static/img/icon/boy.png" class="round_icon" style="width: 40px; height: 40px; float: left;">
+                            <img src="/static/img/icon/boy.png" class="round_icon" style="width: 40px; height: 40px; float: left;">
                         </div>
 
                         <div class="el-col el-col-20">
@@ -538,20 +538,20 @@
 
 </body>
 
-<script th:src="@{../../static/js/common/vue.min.js}"></script>
-<script th:src="@{../../static/element-ui/index.js}"></script>
-<script th:src="@{../../static/js/common/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/js/common/vue.min.js}"></script>
+<script th:src="@{/static/element-ui/index.js}"></script>
+<script th:src="@{/static/js/common/jquery-3.3.1.min.js}"></script>
 
 
-<script src="../static/js/common/vue-avatar.min.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
 
-<script th:src="@{../../static/js/common/axios.min.js}"></script>
+<script th:src="@{/static/js/common/axios.min.js}"></script>
 
-<script src="../static/js/common/qrcode.min.js"></script>
+<script src="/static/js/common/qrcode.min.js"></script>
 
-<script src="../static/js/page/data_item_info.js" th:src="@{../../static/js/page/data_item_info.js}"></script>
-<script src="../static/js/common/loadUser.js"></script>
-<script src="../static/js/common/copy.js"></script>
-<script src="../static/js/common/navbar.js"></script>
+<script src="/static/js/page/data_item_info.js" th:src="@{/static/js/page/data_item_info.js}"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 
 </html>

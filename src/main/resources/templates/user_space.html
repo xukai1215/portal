@@ -6,29 +6,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>User Space | OpenGMS</title>
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
 
     <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">-->
 
     <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">-->
 
-    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
 
-    <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.woff">
-    <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.ttf">
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
 
-    <link rel="stylesheet" href="../static/css/common/fileinput.min.css">
-    <link rel="stylesheet" href="../static/css/common/fileinput-rtl.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
 
-    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="../static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
-    <link rel="stylesheet" href="../static/css/page/user_space.css">
-    <link rel="stylesheet" href="../static/css/base/bootstrap-tagsinput.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery-steps.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
 
     <style>
         /*scrollbar样式*/
@@ -120,7 +120,7 @@
                             <div class="panel">
                                 <div class="panel-body">
                                     <div class="profile-pic text-center">
-                                        <img :src="userInfo.image==''?'../static/img/icon/default.png':userInfo.image">
+                                        <img :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image">
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/user/createModelItem">
-                                                <img src="../static/img/model/model.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/model.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;"> Model Item</div>
                                         </el-card>
@@ -198,7 +198,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="javascript:void(0);" @click="toDataItem">
-                                                <img src="../static/img/model/data.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/data.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">
                                                 Data Item
@@ -209,7 +209,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/user/createConceptualModel">
-                                                <img src="../static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">
                                                 Conceptual Model
@@ -220,7 +220,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/user/createLogicalModel">
-                                                <img src="../static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">
                                                 Logical Model
@@ -231,7 +231,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/user/createComputableModel">
-                                                <img src="../static/img/model/calcModel.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/calcModel.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">
                                                 Computable Model
@@ -244,7 +244,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/repository/createConcept">
-                                                <img src="../static/img/model/model.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/model.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Concept & Semantic</div>
                                         </el-card>
@@ -252,7 +252,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/repository/createSpatialReference">
-                                                <img src="../static/img/model/data.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/data.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Spatial Reference</div>
                                         </el-card>
@@ -260,7 +260,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/repository/createTemplate">
-                                                <img src="../static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Date Template</div>
                                         </el-card>
@@ -268,7 +268,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/repository/createUnit">
-                                                <img src="../static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
+                                                <img src="/static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Unit & Metric</div>
                                         </el-card>
@@ -343,7 +343,7 @@
                                     <div class="form-group">
                                         <label for="inputName" class="col-lg-3 col-sm-3 control-label">Image</label>
                                         <div class="col-lg-9">
-                                            <img id="photo" src="../static/img/icon/default.png" width="120px" height="120px" style="display: block;cursor:pointer;border:1px solid #ccc" @click="imgFile()"/>
+                                            <img id="photo" src="/static/img/icon/default.png" width="120px" height="120px" style="display: block;cursor:pointer;border:1px solid #ccc" @click="imgFile()"/>
                                             <input type="file" name="imgOne" id="imgOne" @change="preImg()" style="display: none" accept="image/*"/>
                                         </div>
                                     </div>
@@ -2017,27 +2017,27 @@
 </div>
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.js"></script>
-<script src="../static/js/common/bootstrap.min.js"></script>
-<script src="../static/js/common/piexif.min.js"></script>
-<script src="../static/js/common/fileinput.js"></script>
-<script src="../static/js/common/bootstrap-treeview.js"></script>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/piexif.min.js"></script>
+<script src="/static/js/common/fileinput.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
 
-<script type="text/javascript" src="../static/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 
 
-<script src="../static/js/common/echarts.min.js"></script>
-<script src="../static/js/common/world.js"></script>
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/world.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
 
 <!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
-<script type="text/javascript" src="../static/js/common/jquery-steps.js"></script>
-<script src="../static/element-ui/index.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script src="/static/element-ui/index.js"></script>
 
-<script type="text/javascript" src="../static/js/common/jquery.tag-editor.js"></script>
-<script src="../static/js/common/bootstrap-tagsinput.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
 
-<script src="../static/js/page/user_space.js"></script>
+<script src="/static/js/page/user_space.js"></script>
 
 </html>

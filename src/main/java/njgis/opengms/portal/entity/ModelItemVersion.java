@@ -2,7 +2,6 @@ package njgis.opengms.portal.entity;
 
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.entity.support.Reference;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,28 +14,22 @@ import java.util.List;
 public class ModelItemVersion {
     @Id
     String id;
+    String originOid;
     String oid;
-    String name;
-    String image;
-    String description;
-    String detail;
-    String author;
-    String status;
-    String knowledgeGraph;
+    String name;//
+    String image;//
+    String description;//
+    String detail;//
+    String modifier;
+    Long verNumber;
+    int status;
 
-    List<String> classifications;
-    List<String> keywords;
-    List<Reference> references;
-    List<String> contributors;
-    List<AuthorInfo> authorship;
-    List<String> relatedData;
+    List<String> classifications;//
+    List<String> keywords;//
+    List<Reference> references;//
+    List<AuthorInfo> authorship;//
 
-    ModelItemRelate relate;
+    Date modifyTime;
 
-    Date createTime;
-    Date lastModifyTime;
 
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
 }

@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <title>Logical Model | OpenGMS</title>
 
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{../static/css/font-awesome/css/font-awesome.min.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/style.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/universal.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/itemInfo.css}">
-    <link rel="stylesheet" th:href="@{../static/css/other/computable-test.css}">
-    <link rel="stylesheet" th:href="@{../static/css/page/model_item_info.css}">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/style.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/universal.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
+    <link rel="stylesheet" th:href="@{/static/css/other/computable-test.css}">
+    <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
 
     <style>
         .img img{
@@ -40,8 +40,8 @@
                         <div class="detail_overview">
 
                             <div th:switch="${#lists.size(modelInfo.image)}" class="img" >
-                                <img th:case="0" src="../static/img/model/conceptual.png">
-                                <img th:case="*" th:src="'../static/img'+${modelInfo.image[0]}">
+                                <img th:case="0" src="/static/img/model/conceptual.png">
+                                <img th:case="*" th:src="'/static/img'+${modelInfo.image[0]}">
                             </div>
 
                             <div class="info" style="padding-top:0px">
@@ -96,7 +96,7 @@
                                 </div>
                             </div>
                             <div class="block_content">
-                                <img th:src="${user.image}==''?'../static/img/icon/default.png':${user.image}" class="round_icon" style="width:50px;height: 50px;float:left;">
+                                <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}" class="round_icon" style="width:50px;height: 50px;float:left;">
                                 <div class="text-center" style="margin-left: 55px;display: block;">
                                     <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
                                 </div>
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                             <div class="block_content">
-                                <img th:src="${user.image}==''?'../static/img/icon/default.png':${user.image}" class="round_icon" style="width:50px;height: 50px;float:left;">
+                                <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}" class="round_icon" style="width:50px;height: 50px;float:left;">
                                 <div class="text-center" style="margin-left: 55px;display: block;">
                                     <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
                                 </div>
@@ -138,7 +138,7 @@
                     <div class="block_content" style="margin-top:20px;">
                         <el-tabs class="right-content" v-model="activeNameGraph" type="border-card" stretch="true">
                             <el-tab-pane label="Image" name="Image" th:if="${modelInfo.contentType}!='MxGraph'">
-                                <center th:each="image:${modelInfo.image}"><img th:src="'../static/img'+${image}"></center>
+                                <center th:each="image:${modelInfo.image}"><img th:src="'/static/img'+${image}"></center>
                             </el-tab-pane>
                             <el-tab-pane label="Image" name="Image" th:if="${modelInfo.contentType}=='MxGraph'">
                                 <center><div th:utext="${modelInfo.svg}"></div></center>
@@ -188,12 +188,12 @@
 
 </body>
 
-<script src="../static/js/common/knockout-3.4.2.js"></script>
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/jquery.gritter.min.js"></script>
-<script src="../static/js/common/lodash.js"></script>
-<script src="../static/js/common/bootstrap.js"></script>
-<script src="../static/js/common/bootstrap-treeview.js"></script>
+<script src="/static/js/common/knockout-3.4.2.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/jquery.gritter.min.js"></script>
+<script src="/static/js/common/lodash.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
 
 <script type="text/javascript">
     // Parses URL parameters. Supported parameters are:
@@ -222,30 +222,30 @@
 
     // Default resources are included in grapheditor resources
     mxLoadResources = false;
-    mxBasePath = "../static/MxGraph/";
-    window.STYLE_PATH = "../static/js/conceptModelEditor/styles";
-    window.RESOURCES_PATH = "../static/js/conceptModelEditor/resources";
-    window.IMAGE_PATH = "../static/js/conceptModelEditor/images";
-    window.STENCIL_PATH = "../static/js/conceptModelEditor/stencils";
+    mxBasePath = "/static/MxGraph/";
+    window.STYLE_PATH = "/static/js/conceptModelEditor/styles";
+    window.RESOURCES_PATH = "/static/js/conceptModelEditor/resources";
+    window.IMAGE_PATH = "/static/js/conceptModelEditor/images";
+    window.STENCIL_PATH = "/static/js/conceptModelEditor/stencils";
     EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
     SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
     editMode = false;
 </script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Init.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/jscolor/jscolor.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/sanitizer/sanitizer.min.js"></script>
-<script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/EditorUi.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Editor.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Sidebar.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Graph.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Shapes.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Actions.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Menus.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Format.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Toolbar.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Dialogs.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Init.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/sanitizer/sanitizer.min.js"></script>
+<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/EditorUi.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Editor.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Sidebar.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Graph.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Shapes.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Actions.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Menus.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Format.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Toolbar.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Dialogs.js"></script>
 <script type="text/javascript">
     // Extends EditorUi to update I/O action states based on availability of backend
     (function () {
@@ -345,11 +345,11 @@
     })();
 </script>
 
-<script src="../static/js/common/vue.min.js"></script>
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/page/logical_model.js"></script>
-<script src="../static/js/common/loadUser.js"></script>
-<script src="../static/js/common/copy.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/logical_model.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
 
 </html>

@@ -61,6 +61,7 @@ new Vue({
                     data = JSON.parse(data);
                     if (data.oid == "") {
                         alert("Please login first");
+                        this.setSession("history",window.location.href);
                         window.location.href = "/user/login";
                     }
                     else {
@@ -103,7 +104,7 @@ new Vue({
                     window.open(this.tableData6[i].links);
                 }
             }
-            console.log(event.currentTarget);
+            //console.log(event.currentTarget);
         },
         jump(num){
             $.ajax({

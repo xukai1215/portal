@@ -52,12 +52,7 @@ public class ModelItemRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value="/compare/{id}",method = RequestMethod.GET)
-    public ModelAndView getCompare(@PathVariable ("id") String id) {
-        System.out.println("model item compare");
 
-        return modelItemService.getPage4Compare(id);
-    }
 
 
     @RequestMapping(value="/add",method = RequestMethod.POST)
@@ -90,8 +85,17 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateModelItem(@RequestBody ModelItemUpdateDTO modelItemUpdateDTO){
-        return ResultUtils.success(modelItemService.update(modelItemUpdateDTO));
+    public JsonResult updateModelItem(@RequestBody ModelItemUpdateDTO modelItemUpdateDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+
+        JSONObject result=modelItemService.update(modelItemUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)

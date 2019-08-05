@@ -1,7 +1,7 @@
 package njgis.opengms.portal.dao;
 
-import org.springframework.data.domain.Pageable;
 import njgis.opengms.portal.entity.ModelItemVersion;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -16,6 +16,8 @@ import java.util.List;
  */
 public interface ModelItemVersionDao extends MongoRepository<ModelItemVersion,String> {
 
-    List<ModelItemVersion> findAllByOid(String oid,Pageable pageable);
+    List<ModelItemVersion> findAllByOriginOid(String oid,Pageable pageable);
+
+    ModelItemVersion findFirstByOid(String oid);
 
 }

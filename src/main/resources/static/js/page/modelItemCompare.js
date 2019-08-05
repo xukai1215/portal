@@ -5,10 +5,12 @@ new Vue({
     },
     data: function () {
         return {
+
+
             activeIndex:'2',
             activeName: 'Computable Model',
             activeRelatedDataName:'Add Data Items',
-            tableData6: [{
+            tableData: [{
                 title: 'Anisotropic magnetotransport and exotic longitudinal linear magnetoresistance in WT e2 crystals',
                 authors: 'Zhao Y.,Liu H.,Yan J.,An W.,Liu J.,Zhang X.,Wang H.,Liu Y.,Jiang H.,Li Q.,Wang Y.,Li X.-Z.,Mandrus D.,Xie X.~C.,Pan M.,Wang J.',
                 date: 'jul 2015',
@@ -21,6 +23,7 @@ new Vue({
                 journal: 'Physical Review Letters',
                 pages: "4365-4368"
             }],
+            tableData2:[],
 
             useroid:'',
             loading:false,
@@ -174,23 +177,11 @@ new Vue({
                 this.nomore=''
                 this.addRelatedModelsDialogVisible=true
 
-
-
-
-
-
             }
-
-
 
         },
 
-
-
-
         searchRelatedModels(){
-
-
 
             this.nomoreflag=false
             if(this.value1==='1'){
@@ -413,7 +404,46 @@ new Vue({
 
                 })
 
+        },
+        accept(event){
+
+            let data = {
+                type: "modelItem",
+                oid: $("#revise").attr("oid"),
+                originOid: $("#origin").attr("oid")
+            };
+            $.ajax({
+                type: "POST",
+                url: "/version/accept",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                async: true,
+                success: (json) => {
+                    window.location.href="/modelItem/"+$("#origin").attr("oid");
+                }
+            })
+
+
+        },
+        reject(event) {
+
+            let data = {
+                type: tableItem.type,
+                oid: $("#revise").attr("oid"),
+                originOid: $("#origin").attr("oid")
+            }
+            $.ajax({
+                type: "POST",
+                url: "/version/reject",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                async: true,
+                success: (json) => {
+                    window.location.href="/modelItem/"+$("#origin").attr("oid");
+                }
+            })
         }
+
 
     },
     mounted(){
@@ -464,8 +494,19 @@ new Vue({
                 json[i].author = json[i].author.join(", ");
             }
             console.log(json);
-            this.tableData6 = json;
+            this.tableData = json;
         }
+
+        let refs2=$("#ref2").val();
+        if(refs2!=null) {
+            let json = JSON.parse(refs2);
+            for (i = 0; i < json.length; i++) {
+                json[i].author = json[i].author.join(", ");
+            }
+            console.log(json);
+            this.tableData2 = json;
+        }
+
         $(".createConceptual").click(()=>{
             this.jump(1);
         })
@@ -477,13 +518,6 @@ new Vue({
         })
 
 
-        $("#accept").click(function(){
-
-        })
-
-        $("#reject").click(function(){
-
-        })
 
     }
 })
