@@ -6,24 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create Model Item</title>
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
 
 
     <link rel="stylesheet" type="text/css" media="screen"
-          href="../static/css/font-awesome/css/font-awesome.min.css"
+          href="/static/css/font-awesome/css/font-awesome.min.css"
     />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/page/create-modelitem.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-modelitem.css"/>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery-steps.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery.tag-editor.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/modelItemEditor.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/style.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/element-ui/theme-chalk/index.css"/>
-    <link rel="stylesheet" href="../static/css/base/universal.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/bootstrap-select.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/data-tables/DT_bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
 
     <style>
         .btn-block {
@@ -92,15 +92,15 @@
                                                                     <span style="font-size: 20px;color:#444">Model Classifications</span>
                                                                 </div>
                                                                 <el-tree style="height: 320px;overflow: auto"
-                                                                        id="tree2"
-                                                                        ref="tree2"
-                                                                        :data="treeData"
-                                                                        show-checkbox
-                                                                        node-key="id"
-                                                                        :default-expanded-keys="[]"
-                                                                        :current-node-key="100"
-                                                                        @check-change="handleCheckChange"
-                                                                        :props="defaultProps">
+                                                                         id="tree2"
+                                                                         ref="tree2"
+                                                                         :data="treeData"
+                                                                         show-checkbox
+                                                                         node-key="id"
+                                                                         :default-expanded-keys="[]"
+                                                                         :current-node-key="100"
+                                                                         @check-change="handleCheckChange"
+                                                                         :props="defaultProps">
                                                                 </el-tree>
                                                             </el-card>
                                                         </div>
@@ -574,194 +574,31 @@
 </div>
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/bootstrap.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
-<script type="text/javascript" src="../static/js/common/bootstrap-treeview.js"></script>
-<script type="text/javascript" src="../static/js/common/jquery-steps.js"></script>
-<script type="text/javascript" src="../static/js/common/jquery.tag-editor.js"></script>
-<script type="text/javascript" src="../static/js/common/pageEn.js"></script>
-<script type="text/javascript" src="../static/js/tinymce/tinymce.min.js"></script>
-<script type="text/javascript" src="../static/data-tables/jquery.dataTables.js"></script>
-<script type="text/javascript" src="../static/data-tables/DT_bootstrap.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script type="text/javascript" src="/static/js/common/pageEn.js"></script>
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/data-tables/DT_bootstrap.js"></script>
 
 
 
 <script>
     $(document).ready(function () {
 
-        var oid = window.sessionStorage.getItem("editModelItem_id");
-        var tree = [];
-
-        var parentNodes = [];
-        var parentNodeIds = new Array();
-
-        if ((oid === "0") || (oid === "") || (oid === null)) {
-            tinymce.init({
-                selector: "textarea#myText",
-                height: 300,
-                theme: 'modern',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
-
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
-        }else {
-            $.ajax({
-                url: "/modelItem/getInfo/" + oid,
-                type: "get",
-                data: {},
-
-                success: (result) => {
-                    console.log(result)
-                    var basicInfo = result.data;
-                    parentNodeIds = basicInfo.classifications;
-                    // if(Array.isArray(basicInfo.parentName)){
-                    //     parentNodes=basicInfo.parentName;
-                    // }
-                    // else {
-                    //     parentNodes.push(basicInfo.parentName);
-                    // }
-
-                    //$("#parentNode").attr("pid", basicInfo.parentIds[0]);
-                    //$("#parentNode").val(basicInfo.parentName);
-                    $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
-                    //tags
-                    $('#tagInput').tagEditor('destroy');
-                    $('#tagInput').tagEditor({
-                        initialTags: basicInfo.keywords,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
-                    //image
-                    if (basicInfo.image != "") {
-                        $("#imgShow").attr("src", basicInfo.image);
-                        $('#imgShow').show();
-                    }
-                    //reference
-                    for (i = 0; i < basicInfo.references.length; i++) {
-                        var ref = basicInfo.references[i];
-                        table.row.add([
-                            ref.title,
-                            ref.author,
-                            ref.date,
-                            ref.journal,
-                            ref.pages,
-                            ref.links,
-                            "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-                    }
-                    if (basicInfo.references.length > 0) {
-                        $("#dynamic-table").css("display", "block")
-                    }
-
-                    //detail
-                    tinymce.remove("textarea#myText");
-                    $("#myText").html(basicInfo.detail);
-                    tinymce.init({
-                        selector: "textarea#myText",
-                        height: 500,
-                        theme: 'modern',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
-
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
-
-                }
-            })
-            window.sessionStorage.setItem("editModelItem_id", "");
-        }
-        $("#step").steps({
-            onFinish: function () {
-                alert('Wizard Completed');
-            }
-        });
 
 
-        $('#tagInput').tagEditor({
-            forceLowercase: false
-        });
-        $("#refAuthor").tagEditor({
-            forceLowercase: false
-        })
-
-        $("#imgChange").click(function () {
-            $("#imgFile").click();
-        });
-        $("#imgFile").change(function () {
-            //获取input file的files文件数组;
-            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            var file = $('#imgFile').get(0).files[0];
-            //创建用来读取此文件的对象
-            var reader = new FileReader();
-            //使用该对象读取file文件
-            reader.readAsDataURL(file);
-            //读取文件成功后执行的方法函数
-            reader.onload = function (e) {
-                //读取成功后返回的一个参数e，整个的一个进度事件
-                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                //的base64编码格式的地址
-                $('#imgShow').get(0).src = e.target.result;
-                $('#imgShow').show();
-            }
-        });
 
 
 
     });
 </script>
-<script src="../static/js/common/bootstrap-select.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/page/create-modelitem.js"></script>
+<script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/create-modelitem.js"></script>
 
 </html>

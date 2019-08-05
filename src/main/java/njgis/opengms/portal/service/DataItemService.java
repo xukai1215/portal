@@ -1,9 +1,6 @@
 package njgis.opengms.portal.service;
 
-import com.alibaba.fastjson.JSONObject;
-import io.swagger.models.auth.In;
 import njgis.opengms.portal.PortalApplication;
-import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.comments.CommentInfo;
@@ -12,31 +9,22 @@ import njgis.opengms.portal.dto.comments.CommentsUpdateDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
-import njgis.opengms.portal.dto.dataItem.DataitemClassificationsDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.data.mongodb.core.aggregation.VariableOperators;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import javax.swing.text.html.HTMLDocument;
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
-
-import static javafx.scene.input.KeyCode.T;
 
 /**
  * @ClassName DataItemService
@@ -61,10 +49,6 @@ public class DataItemService {
 
     @Autowired
     UserDao userDao;
-
-
-
-
 
 
     public void update(String id, DataItemUpdateDTO dataItemUpdateDTO) {

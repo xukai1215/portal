@@ -61,6 +61,7 @@ new Vue({
                     data = JSON.parse(data);
                     if (data.oid == "") {
                         alert("Please login first");
+                        this.setSession("history",window.location.href);
                         window.location.href = "/user/login";
                     }
                     else {
@@ -80,13 +81,13 @@ new Vue({
                             },
                             crossDomain: true,
                             success: (json) => {
-                                if(json.data==data.oid){
+                                // if(json.data==data.oid){
                                     window.sessionStorage.setItem("editModelItem_id",oid)
                                     window.location.href="/user/createModelItem";
-                                }
-                                else{
-                                    alert("You are not the model item's author, please contact to the author to modify the model item.")
-                                }
+                                // }
+                                // else{
+                                //     alert("You are not the model item's author, please contact to the author to modify the model item.")
+                                // }
                             }
                         });
                     }
@@ -103,7 +104,7 @@ new Vue({
                     window.open(this.tableData6[i].links);
                 }
             }
-            console.log(event.currentTarget);
+            //console.log(event.currentTarget);
         },
         jump(num){
             $.ajax({

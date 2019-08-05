@@ -24,7 +24,7 @@
                 if(windowWidth>501) {
                     $(".loged").css("display", "block");
 
-                    var image = (json.image == "" || json.image == null) ? "../static/img/icon/default.png" : json.image;
+                    var image = (json.image == "" || json.image == null) ? "/static/img/icon/default.png" : json.image;
                     $(".userIcon").attr("src", image)
 
                     $("#userPageDir").attr("href", "/user/" + json.oid);
@@ -32,7 +32,7 @@
                 //小屏加载
                 else {
                     $(".phoneLoged").css("display", "block");
-                    var image = (json.image == "" || json.image == null) ? "../static/img/icon/default.png" : json.image;
+                    var image = (json.image == "" || json.image == null) ? "/static/img/icon/default.png" : json.image;
                     $(".userIcon").attr("src", image)
 
                     $("#phoneUserPageDir").attr("href", "/user/" + json.oid);
