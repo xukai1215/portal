@@ -268,6 +268,21 @@ public class RepositoryService {
 
     }
 
+    public JSONObject searchConceptsByUserId(String searchText,String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<ConceptResultDTO> concepts = conceptDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+
+        JSONObject conceptObject = new JSONObject();
+        conceptObject.put("count",concepts.getTotalElements());
+        conceptObject.put("concepts",concepts.getContent());
+
+        return conceptObject;
+    }
+
     public Concept insertConcept(ConceptAddDTO conceptAddDTO,String uid){
         Concept concept = new Concept();
         BeanUtils.copyProperties(conceptAddDTO,concept);
@@ -486,6 +501,21 @@ public class RepositoryService {
 
     }
 
+    public JSONObject searchSpatialsByUserId(String searchText,String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<SpatialResultDTO> spatials = spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+
+        JSONObject spatialObject = new JSONObject();
+        spatialObject.put("count",spatials.getTotalElements());
+        spatialObject.put("spatials",spatials.getContent());
+
+        return spatialObject;
+    }
+
     public SpatialReference getSpatialByOid(String oid)
     {
         return spatialReferenceDao.findByOid(oid);
@@ -684,6 +714,21 @@ public class RepositoryService {
 
         return TemplateObject;
 
+    }
+
+    public JSONObject searchTemplatesByUserId(String searchText,String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+
+        JSONObject templateObject = new JSONObject();
+        templateObject.put("count",templates.getTotalElements());
+        templateObject.put("templates",templates.getContent());
+
+        return templateObject;
     }
 
     public Template getTemplateByOid(String oid)
@@ -907,6 +952,21 @@ public class RepositoryService {
 
         return UnitObject;
 
+    }
+
+    public JSONObject searchUnitsByUserId(String searchText,String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<UnitResultDTO> units = unitDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+
+        JSONObject unitObject = new JSONObject();
+        unitObject.put("count",units.getTotalElements());
+        unitObject.put("units",units.getContent());
+
+        return unitObject;
     }
 
     public Unit getUnitByOid(String oid)

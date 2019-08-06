@@ -85,7 +85,7 @@
                     <div class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
-                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
+                        <a class="fa fa-eye" aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
                     </div>
 
@@ -137,13 +137,47 @@
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
+                    <el-tab-pane label="Model Item" name="Model Item">
+                        <div th:if="${#lists.size(modelItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${modelItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <div class="img" th:switch="${model.image}">
+                                    <img th:case="''" src="/static/img/model/conceptual.png">
+                                    <img th:case="null" src="/static/img/model/conceptual.png">
+                                    <img th:case="*" th:src="${model.image}">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/conceptualModel/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
+                                Create New ModelItem
+                            </button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(modelItems)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related model item. You can contribute a new model item.
+                            </h5>
+                            <button class="createConceptual btn btn-default" type="button"
+                                    style="display: inline-block;">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
                     <el-tab-pane label="Conceptual Model" name="Conceptual Model">
                         <div th:if="${#lists.size(conceptualModels)}!=0">
                             <div class="list_panel clearfix" th:each="model:${conceptualModels}">
                                 <!--<div th:text="${model.image}"></div>-->
                                 <div class="img" th:switch="${model.image}">
-                                    <img th:case="''" src="../static/img/model/conceptual.png">
-                                    <img th:case="null" src="../static/img/model/conceptual.png">
+                                    <img th:case="''" src="/static/img/model/conceptual.png">
+                                    <img th:case="null" src="/static/img/model/conceptual.png">
                                     <img th:case="*" th:src="${model.image}">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
@@ -175,8 +209,8 @@
                         <div th:if="${#lists.size(logicalModels)}!=0">
                             <div class="list_panel clearfix" th:each="model:${logicalModels}">
                                 <div th:switch="${model.image}" class="img">
-                                    <img th:case="''" src="../static/img/model/logical.png">
-                                    <img th:case="null" src="../static/img/model/logical.png">
+                                    <img th:case="''" src="/static/img/model/logical.png">
+                                    <img th:case="null" src="/static/img/model/logical.png">
                                     <img th:case="*" th:src="${model.image}">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
@@ -208,7 +242,7 @@
                         <div th:if="${#lists.size(computableModels)}!=0">
                             <div class="list_panel clearfix" th:each="model:${computableModels}">
                                 <div class="img">
-                                    <img src="../static/img/model/calcModel.png">
+                                    <img src="/static/img/model/calcModel.png">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/computableModel/'+${model.oid}" target="_blank"
@@ -291,39 +325,39 @@
                         </el-button>
 
                     </el-tab-pane>
-                        <!--search related model dialog-->
-                        <el-dialog
-                                title="Related Data of current Model"
-                                :visible.sync="searchRelatedModelsDialogVisible"
-                                width="30%"
-                                height="50%"
-                                :before-close="handleClose"
-                                style="overflow-y: scroll"
-                        >
+                    <!--search related model dialog-->
+                    <el-dialog
+                            title="Related Data of current Model"
+                            :visible.sync="searchRelatedModelsDialogVisible"
+                            width="30%"
+                            height="50%"
+                            :before-close="handleClose"
+                            style="overflow-y: scroll"
+                    >
 
 
-                            <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
-                            <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
+                        <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
+                        <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
 
-                                <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
-                                    <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
-                                        <br><strong>Description:</strong><span>{{item.description}}</span>
+                            <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
+                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                                    <br><strong>Description:</strong><span>{{item.description}}</span>
 
-                                    </div>
                                 </div>
-                                <div v-if="nomore!=''" style="text-align: center">
-                                    <span  >no more data</span>
-                                </div>
+                            </div>
+                            <div v-if="nomore!=''" style="text-align: center">
+                                <span  >no more data</span>
+                            </div>
 
 
-                            </el-card>
+                        </el-card>
 
 
-                            <span slot="footer" class="dialog-footer">
+                        <span slot="footer" class="dialog-footer">
                                 <el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>
                                 <el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
                               </span>
-                        </el-dialog>
+                    </el-dialog>
 
                     <el-tab-pane label="Add Data Items" name="Add Data Items">
 
@@ -339,65 +373,55 @@
 
                     </el-tab-pane>
 
-                        <!--add related model dialog-->
-                        <el-dialog
-                                title="Add Data for current Model"
-                                :visible.sync="addRelatedModelsDialogVisible"
-                                width="30%"
-                                :before-close="handleClose">
+                    <!--add related model dialog-->
+                    <el-dialog
+                            title="Add Data for current Model"
+                            :visible.sync="addRelatedModelsDialogVisible"
+                            width="30%"
+                            :before-close="handleClose">
 
 
-                            <el-form :inline="true"  class="demo-form-inline">
-                                <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
-                                <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
-                            </el-form>
+                        <el-form :inline="true"  class="demo-form-inline">
+                            <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
+                            <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
+                        </el-form>
 
-                            <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
+                        <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
 
-                            <el-alert
-                                    title=""
-                                    type="success"
-                                    :closable="false">
-                                {{selectedModels}}
+                        <el-alert
+                                title=""
+                                type="success"
+                                :closable="false">
+                            {{selectedModels}}
 
-                            </el-alert>
+                        </el-alert>
 
 
-                            <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
+                        <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
 
-                                <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
-                                    <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
-                                        <br><strong>Description:</strong><span>{{item.description}}</span>
+                            <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
+                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                                    <br><strong>Description:</strong><span>{{item.description}}</span>
 
-                                    </div>
-                                </el-card>
-                                <div v-if="nomore!=''" style="text-align: center">
-                                    <span  >no more data</span>
                                 </div>
-
-
                             </el-card>
+                            <div v-if="nomore!=''" style="text-align: center">
+                                <span  >no more data</span>
+                            </div>
 
 
+                        </el-card>
 
 
-
-
-
-                            <span slot="footer" class="dialog-footer">
+                        <span slot="footer" class="dialog-footer">
                                 <el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>
-                                <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
+                            <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
                               </span>
-                        </el-dialog>
-
-
+                    </el-dialog>
 
 
                 </el-tabs>
             </div>
-
-
-
 
 
             <div th:if="${#lists.size(references)}!=0" id="references" class="detail_block">
@@ -490,7 +514,7 @@
                     <div class="el-row"
                          style="height: 40px; display: flex; justify-content: center; align-items: center;">
                         <div class="el-col el-col-4 el-col-offset-3">
-                            <img th:src="${user.image}==''?'../static/img/icon/default.png':${user.image}"
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col el-col-20">
@@ -546,8 +570,32 @@
                 <div class="block_content text-center">
 
                     <a th:href="'/knowledgeGraph/'+${modelInfo.knowledgeGraph}">
-                        <img src="../static/img/logo/knowledgeGraph.jpg" style="text-align: center;width:100%;">
-                    </a>
+                        <img src="/static/img/logo/knowledgeGraph.jpg" style="text-align: center;width:100%;">
+                    </a>                </div>
+            </div>
+
+            <div id="Modifier" class="detail_block" th:if="${modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                            <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt>Last modifier :&nbsp </dt>
+                                    <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}" target="_blank"></a></dd>
+                                    <dt>Last modify time :&nbsp</dt>
+                                    <dd th:text="${lastModifyTime}"></dd>
+                                    <dt>Modify times :&nbsp</dt>
+                                    <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a th:href="'/version/historyList/'+${modelInfo.oid}" target="_blank">View History</a></dd>
+                                </dl>
+                            </div>
+
+                    </div>
                 </div>
             </div>
 

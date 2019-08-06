@@ -62,6 +62,9 @@ public class ModelItemService {
     ModelItemDao modelItemDao;
 
     @Autowired
+    ModelItemVersionDao modelItemVersionDao;
+
+    @Autowired
     ConceptualModelDao conceptualModelDao;
 
     @Autowired
@@ -165,13 +168,28 @@ public class ModelItemService {
         calendar.setTime(date);
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
         String dateResult=simpleDateFormat.format(date);
+        String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
 
         //relate
         ModelItemRelate modelItemRelate=modelInfo.getRelate();
+        List<String> modelItems=modelItemRelate.getModelItems();
         List<String> conceptual=modelItemRelate.getConceptualModels();
         List<String> computable=modelItemRelate.getComputableModels();
         List<String> logical=modelItemRelate.getLogicalModels();
 
+        JSONArray modelItemArray=new JSONArray();
+        if(modelItems!=null) {
+            for (int i = 0; i < modelItems.size(); i++) {
+                String oid = modelItems.get(i);
+                ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+                JSONObject modelItemJson = new JSONObject();
+                modelItemJson.put("name", modelItem.getName());
+                modelItemJson.put("oid", modelItem.getOid());
+                modelItemJson.put("description", modelItem.getDescription());
+                modelItemJson.put("image", modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+                modelItemArray.add(modelItemJson);
+            }
+        }
         JSONArray conceptualArray=new JSONArray();
         for(int i=0;i<conceptual.size();i++){
             String oid=conceptual.get(i);
@@ -210,6 +228,14 @@ public class ModelItemService {
         //用户信息
         JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
 
+        //修改者信息
+        String lastModifier=modelInfo.getLastModifier();
+        JSONObject modifierJson=null;
+        if(lastModifier!=null){
+             modifierJson = userService.getItemUserInfo(lastModifier);
+        }
+
+
 
         //图片路径
         String image=modelInfo.getImage();
@@ -234,10 +260,13 @@ public class ModelItemService {
         modelAndView.addObject("detail",detailResult);
         modelAndView.addObject("date",dateResult);
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
+        modelAndView.addObject("modelItems",modelItemArray);
         modelAndView.addObject("conceptualModels",conceptualArray);
         modelAndView.addObject("logicalModels",logicalArray);
         modelAndView.addObject("computableModels",computableArray);
         modelAndView.addObject("user", userJson);
+        modelAndView.addObject("lastModifier", modifierJson);
+        modelAndView.addObject("lastModifyTime", lastModifyTime);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelInfo.getReferences())));
 
         return modelAndView;
@@ -357,26 +386,73 @@ public class ModelItemService {
         }
     }
 
-    public String update(ModelItemUpdateDTO modelItemUpdateDTO){
+    public JSONObject update(ModelItemUpdateDTO modelItemUpdateDTO, String uid){
         ModelItem modelItem=modelItemDao.findFirstByOid(modelItemUpdateDTO.getOid());
-        BeanUtils.copyProperties(modelItemUpdateDTO,modelItem);
-        //判断是否为新图片
-        String uploadImage=modelItemUpdateDTO.getUploadImage();
-        if(!uploadImage.contains("/modelItem/")&&uploadImage!="") {
-            //删除旧图片
-            File file=new File(resourcePath+modelItem.getImage());
-            if(file.exists()&&file.isFile())
-                file.delete();
-            //添加新图片
-            String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
-            String imgStr = uploadImage.split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            modelItem.setImage(path);
-        }
-        modelItem.setLastModifyTime(new Date());
-        modelItemDao.save(modelItem);
+        String author=modelItem.getAuthor();
+        if(!modelItem.isLock()) {
+            if (author.equals(uid)) {
+                BeanUtils.copyProperties(modelItemUpdateDTO, modelItem);
+                //判断是否为新图片
+                String uploadImage = modelItemUpdateDTO.getUploadImage();
+                if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
+                    //删除旧图片
+                    File file = new File(resourcePath + modelItem.getImage());
+                    if (file.exists() && file.isFile())
+                        file.delete();
+                    //添加新图片
+                    String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String imgStr = uploadImage.split(",")[1];
+                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    modelItem.setImage(path);
+                }
+                modelItem.setLastModifyTime(new Date());
+                modelItemDao.save(modelItem);
 
-        return modelItem.getOid();
+                JSONObject result = new JSONObject();
+                result.put("method", "update");
+                result.put("oid", modelItem.getOid());
+
+                return result;
+            } else {
+
+                ModelItemVersion modelItemVersion = new ModelItemVersion();
+                BeanUtils.copyProperties(modelItemUpdateDTO, modelItemVersion);
+
+                String uploadImage = modelItemUpdateDTO.getUploadImage();
+                if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
+                    String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String imgStr = uploadImage.split(",")[1];
+                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    modelItemVersion.setImage(path);
+                }
+                else{
+                    String[] names=uploadImage.split("modelItem");
+                    modelItemVersion.setImage("/modelItem/"+names[1]);
+                }
+
+                modelItemVersion.setOriginOid(modelItem.getOid());
+                modelItemVersion.setOid(UUID.randomUUID().toString());
+                modelItemVersion.setModifier(uid);
+                Date curDate = new Date();
+                modelItemVersion.setModifyTime(curDate);
+                modelItemVersion.setVerNumber(curDate.getTime());
+                modelItemVersion.setStatus(0);
+                modelItemVersionDao.insert(modelItemVersion);
+
+                modelItem.setLock(true);
+                modelItemDao.save(modelItem);
+
+                JSONObject result = new JSONObject();
+                result.put("method", "version");
+                result.put("oid", modelItemVersion.getOid());
+
+                return result;
+            }
+        }
+        else{
+
+            return null;
+        }
     }
 
     public JSONObject bindModel(int type, String name, String oid){

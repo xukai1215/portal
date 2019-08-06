@@ -6,26 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create Concept & Semantic</title>
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
 
 
     <link rel="stylesheet" type="text/css" media="screen"
-          href="../static/css/font-awesome/css/font-awesome.min.css"
+          href="/static/css/font-awesome/css/font-awesome.min.css"
     />
 
 
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/page/create-modelitem.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-modelitem.css"/>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery-steps.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/jquery.tag-editor.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/modelItemEditor.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/style.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/element-ui/theme-chalk/index.css"/>
-    <link rel="stylesheet" href="../static/css/base/universal.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/other/bootstrap-select.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/data-tables/DT_bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
 
     <style>
         .btn-block {
@@ -36,6 +36,88 @@
             word-wrap: break-word;
             word-break: break-all;
             overflow: hidden;
+        }
+        .searcherPanel {
+            margin-top: 30px;
+        }
+        .searcherPanel .searcherInputPanel {
+            display: inline-flex;
+            width: 100%;
+        }
+        .searcherPanel .searcherInputPanel input {
+            font-size: 14px;
+            line-height: 28px;
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            height: 40px;
+            padding: 5px 10px;
+            color: #999;
+            border: 1px solid #2277da;
+        }
+        .searcherPanel .searcherInputPanel button {
+            background: #008af1;
+            border: none;
+            height: 40px;
+            color: #fff;
+            text-align: center;
+            width: 92px;
+            font-size: 14px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        .searcherPanel {
+             margin-top: 0px;
+         }
+        .content-body .list-item {
+            border: solid #d8d8d8 1px;
+            border-width: 1px 1px;
+            padding: 15px 20px;
+            padding-bottom: 13px;
+        }
+        .detail_title a {
+             font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+             position: relative;
+             padding-right: 25px;
+             font-size: 20px;
+             color: #333;
+            margin-left: 0px;
+         }
+        .detail_title {
+              margin-left: 10px;
+        }
+        .detail_overview {
+            min-height: 90px;
+            margin: 10px 0px 15px 8px;
+        }
+        .detail_option {
+            float: right;
+            margin-top: 5px;
+        }
+        .info {
+            margin-top: 10px;
+            margin-left: 105px;
+            display: block;
+            padding-top: 5px;
+        }
+        .el-col-6 {
+             width: 25%;
+         }
+        .el-col-18 {
+            width: 75%;
+        }
+        .detail_option {
+            float: right;
+        }
+        .img {
+            float: left;
+        }
+        hr {
+             border-color: #d8d8d8;
+             margin: 0px;
+         }
+        .el-col-20 {
+            width: 98%;
         }
     </style>
 </head>
@@ -163,8 +245,7 @@
                                                     </div>
 
                                                     <div class="step-tab-panel" id="step2">
-                                                        <div class="el-col el-col-20 el-col-offset-2">
-
+                                                        <div class="el-col el-col-20 ">
                                                             <div class="el-col el-col-6">
                                                                 <el-card class="box-card" >
                                                                     <div slot="header" class="clearfix text-center">
@@ -179,22 +260,88 @@
                                                                             node-key="id"
                                                                             :default-expanded-keys="[]"
                                                                             :current-node-key="100"
+                                                                            @current-change="handleCurrentChange"
                                                                             :props="defaultProps">
                                                                     </el-tree>
                                                                 </el-card>
                                                             </div>
+                                                            <div class="el-col el-col-18" style="padding-left: 20px">
 
-                                                            <div class="el-col el-col-18">
+                                                                <div class="form-horizontal" >
+                                                                    <div class="form-group" >
+                                                                        <label for="related" style="width:5%"
+                                                                               class="col-sm-2 control-label" >Related</label>
+                                                                        <div class="col-sm-10" style="padding-left: 40px;width: 94%" >
+                                                                            <textarea class="form-control"
+                                                                                      id="related"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
                                                                 <div class="searcherPanel">
-                                                                    <!--<div class="searcherInputPanel" @keydown.enter="search()">-->
-                                                                        <!--<input id="searchBox" type="text" placeholder="Please enter the name..." v-model="searchText">-->
-                                                                        <!--<button @click="search()">Search</button>-->
-                                                                    <!--</div>-->
+                                                                    <div class="searcherInputPanel" @keydown.enter="search()">
+                                                                        <input id="searchBox" type="text" placeholder="Please enter the name..." v-model="searchText">
+                                                                        <button @click="search()">Search</button>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="progressPanel">
+                                                                <span class="barControl">
+                                                                    <div class="barContro_space">
+                                                                        <span class="progress_line" :class="{active:pageOption.progressBar}"></span>
+                                                                    </div>
+                                                                </span>
+                                                                </div>
+
+                                                                <div role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong>Current Classification: {{currentClass}} </strong>
+                                                                <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
+                                                                <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
+                                                                </div>
+
+                                                                <div class="modelPanel">
+                                                                    <div class="content-body">
+                                                                        <div v-cloak class="list-item" v-for="(concept,key) in pageOption.searchResult">
+                                                                            <div class="detail_title">
+                                                                                <span :oid="concept.oid" id="conceptName" style="font-size: 18px">{{concept.description_EN==''?concept.alias:concept.name}}&nbsp&nbsp</span>
+                                                                                <button type="button" id="selectConcept" @click="addRelated($event)" style="float: right">+</button>
+                                                                                <button type="button" id="unSelectConcept" @click="deleteRelated($event)" style="float: right;display: none">-</button>
+                                                                            </div>
+                                                                            <div class="detail_overview">
+                                                                                <a class="img" :href="'/repository/concept/'+ concept.oid" target="_blank">
+                                                                                    <avatar :username="concept.description_EN==''?concept.alias:concept.name" :size="90" :rounded="false"></avatar>
+
+                                                                                </a>
+
+                                                                                <div class="info">
+                                                                                    <p>{{concept.description_EN==''?concept.description_ZH:concept.description_EN}}</p>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="detail_bottom">
+                                                                                <div style="display:inline-block;float: left;">
+                                                                                    <img src="../static/img/icon/default.png" class="round_icon" style="width: 20px; height: 20px; display: inline-block;">
+                                                                                    <a href="/user/42" target="_blank" style="display: inline-block; margin-left: 5px;"><h5>NNU_Group</h5></a>
+                                                                                    <h5 style="display: inline-block;margin-left: 20px">contributed at {{concept.createTime.substring(0,10)}} </h5>
+                                                                                </div>
+                                                                                <div class="detail_option">
+                                                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{concept.loadCount}}
+                                                                                    <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                                                                </div>
+                                                                                <br>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow"
+                                                                                   @current-change="handlePageChange"
+                                                                                   :current-page="pageOption.currentPage"
+                                                                                   layout="total, prev, pager, next, jumper"
+                                                                                   :total="pageOption.total">
+                                                                    </el-pagination>
                                                                 </div>
                                                             </div>
-
                                                         </div>
-
                                                     </div>
 
                                                     <div class="step-tab-panel" id="step3">
@@ -229,164 +376,28 @@
 </div>
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/bootstrap.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
-<script type="text/javascript" src="../static/js/common/bootstrap-treeview.js"></script>
-<script type="text/javascript" src="../static/js/common/jquery-steps.js"></script>
-<script type="text/javascript" src="../static/js/common/jquery.tag-editor.js"></script>
-<script type="text/javascript" src="../static/js/common/pageEn.js"></script>
-<script type="text/javascript" src="../static/js/tinymce/tinymce.min.js"></script>
-<script type="text/javascript" src="../static/data-tables/jquery.dataTables.js"></script>
-<script type="text/javascript" src="../static/data-tables/DT_bootstrap.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script type="text/javascript" src="/static/js/common/pageEn.js"></script>
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/data-tables/DT_bootstrap.js"></script>
 
 
 
 <script>
     $(document).ready(function () {
 
-        var oid = window.sessionStorage.getItem("editModelItem_id");
-        var tree = [];
-
-        var parentNodes = [];
-        var parentNodeIds = new Array();
-
-        if ((oid === "0") || (oid === "") || (oid === null)) {
-
-            tinymce.init({
-                selector: "textarea#myText",
-                height: 300,
-                theme: 'modern',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
-
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
-        }
-        else {
-            $.ajax({
-                url: "/modelItem/getInfo/" + oid,
-                type: "get",
-                data: {},
-
-                success: (result) => {
-                    console.log(result)
-                    var basicInfo = result.data;
-                    parentNodeIds = basicInfo.classifications;
-                    // if(Array.isArray(basicInfo.parentName)){
-                    //     parentNodes=basicInfo.parentName;
-                    // }
-                    // else {
-                    //     parentNodes.push(basicInfo.parentName);
-                    // }
-
-                    //$("#parentNode").attr("pid", basicInfo.parentIds[0]);
-                    //$("#parentNode").val(basicInfo.parentName);
-                    $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
-                    //tags
-                    $('#tagInput').tagEditor('destroy');
-                    $('#tagInput').tagEditor({
-                        initialTags: basicInfo.keywords,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
-                    //image
-                    if (basicInfo.image != "") {
-                        $("#imgShow").attr("src", basicInfo.image);
-                        $('#imgShow').show();
-                    }
-                    //reference
-                    for (i = 0; i < basicInfo.references.length; i++) {
-                        var ref = basicInfo.references[i];
-                        table.row.add([
-                            ref.title,
-                            ref.author,
-                            ref.date,
-                            ref.journal,
-                            ref.pages,
-                            ref.links,
-                            "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-                    }
-                    if (basicInfo.references.length > 0) {
-                        $("#dynamic-table").css("display", "block")
-                    }
-
-                    //detail
-                    tinymce.remove("textarea#myText");
-                    $("#myText").html(basicInfo.detail);
-                    tinymce.init({
-                        selector: "textarea#myText",
-                        height: 500,
-                        theme: 'modern',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
-
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
-
-                }
-            })
-            window.sessionStorage.setItem("editModelItem_id", "");
-        }
         $("#step").steps({
             onFinish: function () {
                 alert('Wizard Completed');
             }
         });
 
-
-        $('#tagInput').tagEditor({
-            forceLowercase: false
-        });
         $("#refAuthor").tagEditor({
             forceLowercase: false
         })
@@ -418,8 +429,9 @@
     });
 </script>
 
-<script src="../static/js/common/bootstrap-select.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/page/create-concept.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
+<script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/create-concept.js"></script>
 
 </html>

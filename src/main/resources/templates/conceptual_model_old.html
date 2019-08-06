@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <title>Conceptual Model | OpenGMS</title>
 
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/css/base/style.css">
-    <link rel="stylesheet" href="../static/css/base/universal.css">
-    <link rel="stylesheet" href="../static/css/page/conceptual_model.css">
-    <link rel="stylesheet" type="text/css" href="../static/js/conceptModelEditor/styles/grapheditor.css">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/page/conceptual_model.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/conceptModelEditor/styles/grapheditor.css">
 </head>
 <body>
 <div id="app">
@@ -27,7 +27,7 @@
                 <div class="tab1">
                     <div id="owner" style="padding:5px">
                         <div class="block_content">
-                            <img src="../static/img/icon/default.png" class="round_icon" style="width:50px;height: 50px;float:left;margin-left:10px">
+                            <img src="/static/img/icon/default.png" class="round_icon" style="width:50px;height: 50px;float:left;margin-left:10px">
                             <div class="text-center" style="margin-left: 55px;display: block;">
                                 <a href="javascript:void(0)">
                                     <h4 th:text="${modelInfo.author.toUpperCase()}" style="padding-top:5px;">LUYUCHEN</h4>
@@ -119,7 +119,7 @@
 </div>
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
 
 <script type="text/javascript">
     // Parses URL parameters. Supported parameters are:
@@ -148,30 +148,30 @@
 
     // Default resources are included in grapheditor resources
     mxLoadResources = false;
-    mxBasePath = "../static/MxGraph/";
-    window.STYLE_PATH = "../static/js/conceptModelEditor/styles";
-    window.RESOURCES_PATH = "../static/js/conceptModelEditor/resources";
-    window.IMAGE_PATH = "../static/js/conceptModelEditor/images";
-    window.STENCIL_PATH = "../static/js/conceptModelEditor/stencils";
+    mxBasePath = "/static/MxGraph/";
+    window.STYLE_PATH = "/static/js/conceptModelEditor/styles";
+    window.RESOURCES_PATH = "/static/js/conceptModelEditor/resources";
+    window.IMAGE_PATH = "/static/js/conceptModelEditor/images";
+    window.STENCIL_PATH = "/static/js/conceptModelEditor/stencils";
     EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
     SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
     editMode = false;
 </script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Init.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/jscolor/jscolor.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/sanitizer/sanitizer.min.js"></script>
-<script type="text/javascript" src="../static/MxGraph/js/mxClient.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/EditorUi.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Editor.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Sidebar.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Graph.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Shapes.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Actions.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Menus.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Format.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Toolbar.js"></script>
-<script type="text/javascript" src="../static/js/conceptModelEditor/js/Dialogs.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Init.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/sanitizer/sanitizer.min.js"></script>
+<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/EditorUi.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Editor.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Sidebar.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Graph.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Shapes.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Actions.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Menus.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Format.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Toolbar.js"></script>
+<script type="text/javascript" src="/static/js/conceptModelEditor/js/Dialogs.js"></script>
 <script type="text/javascript">
     // Extends EditorUi to update I/O action states based on availability of backend
     (function () {
@@ -270,10 +270,10 @@
 </script>
 
 
-<script src="../static/js/common/vue.min.js"></script>
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/page/conceptual_model.js"></script>
-<script src="../static/js/common/loadUser.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/conceptual_model.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
 
 </html>

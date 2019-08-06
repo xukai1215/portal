@@ -27,7 +27,7 @@
     height: 52px !important;
     margin-left: 20px;
     margin-right: auto;
-    background-image: url("../../../static/img/logo.png");
+    background-image: url("/static/img/logo.png");
     background-size: auto 45px !important;
     background-repeat: no-repeat;
     padding: 0px !important;

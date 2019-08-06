@@ -70,7 +70,7 @@
                     <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a >:::</a></li>
                 </div>
                 <div class="login">
-                    <li><a class="login" href="/user/login">Log In</a></li>
+                    <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
                     <li><a class="login" href="/user/register">Sign Up</a></li>
                 </div>
                 <div class="login2">
@@ -118,7 +118,7 @@
         </div>
         <div id="subls" class="sub" style="right:0px;z-index:1000">
             <ul style="width: 120px">
-                <li><a href="/user/login">Log In</a></li>
+                <li><a href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
                 <li><a href="/user/register">Sign Up</a></li>
             </ul>
         </div>
@@ -249,7 +249,7 @@
         <el-menu-item index="7" style="float:right"><a href="/user/out">Log Out</a></el-menu-item>
         <el-menu-item index="6" style="float:right">
             <a href="/user/1">
-                <img class="round_icon" src="../../static/img/icon/default.png" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
+                <img class="round_icon" src="/static/img/icon/default.png" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
                 <span>NNU_Group</span>
             </a>
         </el-menu-item>

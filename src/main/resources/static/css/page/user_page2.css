@@ -13,7 +13,7 @@
 #upperContainer{
     height: 180px;
     background-color: #dadada;
-    background-image: url("../../../static/img/carousels/banner.jpg");
+    background-image: url("/static/img/carousels/banner.jpg");
 
 }
 
@@ -46,7 +46,7 @@
     position: absolute;
 
     z-index:-1;
-    background-image: url("../../../static/img/carousels/banner.jpg");
+    background-image: url("/static/img/carousels/banner.jpg");
     /*background-position: center;*/
     /*background-size: cover;*/
     /*background-attachment: fixed;*/

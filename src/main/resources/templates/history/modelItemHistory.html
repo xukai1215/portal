@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title th:text="${modelInfo.name}+' | OpenGMS'">Model Item Info | OpenGMS</title>
+    <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
+    <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/itemInfo.css">
+    <link rel="stylesheet" href="/static/css/page/model_item_info.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+
+    <style>
+        #description h1 {
+            font-size: 24px;
+        }
+
+        #description h2 {
+            font-size: 22px;
+        }
+
+        #description h3 {
+            font-size: 20px;
+        }
+
+        #description h4 {
+            font-size: 18px;
+        }
+
+        .fullPaper {
+            position: relative;
+            padding-top: 100px;
+            margin-top: -110px;
+            background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), color-stop(90%, #fff));
+            background-image: linear-gradient(-180deg, rgba(255, 255, 255, 0) 0%, #fff 90%);
+            margin-bottom: 20px;
+        }
+
+        .el-tabs--border-card {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+        }
+        [class*=el-col-]{
+            float:left;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
+            <div class="detail">
+                <div class="detail_title">
+                    <h2 th:utext="${modelInfo.name}+'&nbsp&nbsp'"
+                        style="display: inline-block;word-wrap:break-word; word-break:break-all;"></h2>
+                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                </div>
+                <div class="detail_overview">
+
+                    <div th:switch="${modelInfo.image}" class="img">
+                        <avatar th:case="''" th:username="${modelInfo.name}" :size="90" :rounded="false"></avatar>
+                        <img th:case="*" th:src="${modelInfo.image}">
+                    </div>
+
+                    <div class="info">
+                        <p th:text="${modelInfo.description}"></p>
+                        <div class="tags">
+                            <span th:each="keyword:${modelInfo.keywords}" th:text="${keyword}" class="badge badge-info">
+                                DEM Characteristics
+                            </span>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div id="classification" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Classification(s)</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-top:20px;">
+                    <div th:each="classS:${classifications}">
+                        <span style="font-size:24px;margin-right: 8px">●</span>
+                        <el-breadcrumb separator-class="el-icon-arrow-right">
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class}" :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div id="description" th:if="${detail!=''}" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div th:utext="${detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                </div>
+                <div class="fullPaper text-center hide">
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Text<i class="fa fa-angle-down"
+                                                                                              style="margin-left: 10px;color:red;font-weight: bold"
+                                                                                              aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+
+            <div th:if="${#lists.size(references)}!=0" id="references" class="detail_block">
+                <input id="ref" th:value="${references}" style="display: none;">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>References</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <el-table
+                            :data="tableData6"
+                            border
+                            stripe
+                            style="width: 100%">
+                        <el-table-column
+                                prop="title"
+                                sortable
+                                label="Title"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                prop="author"
+                                sortable
+                                label="Author"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                sortable
+                                label="Date">
+                        </el-table-column>
+                        <el-table-column
+                                prop="journal"
+                                sortable
+                                label="Journal">
+                        </el-table-column>
+                        <el-table-column
+                                prop="pages"
+                                sortable
+                                label="Pages">
+                        </el-table-column>
+                        <el-table-column
+                                label="Links">
+                            <template slot-scope="scope">
+                                <el-button
+                                        class="refLink"
+                                        size="mini"
+                                        type="danger"
+                                        @click="link($event)">View
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="right-panel el-col el-col-5">
+            <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Modifier</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-20">
+                            <div class="pull-left" style="display: block;margin-left: 25px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row el-col-offset-3">
+                        <div class="text-center">
+                            <h5 th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="Authorship" class="detail_block" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                        <span role="button" tabindex="0" class="ab" style="float: right;"><a
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true">[Expand]</a></span>
+                        <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</div>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true" style="">
+                            <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
+                                    <dd th:if="${author.ins!=''}" th:text="${author.ins}"></dd>
+                                    <dt th:if="${author.email!=''}">Email: &nbsp</dt>
+                                    <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
+                                    <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
+                                    <dd th:if="${author.homepage!=''}" ><a th:href="${author.homepage}" target="_blank">View</a></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="QR" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+
+                </div>
+            </div>
+        </div>
+        <div style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/common/qrcode.min.js"></script>
+<script src="/static/js/page/model_item_info.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>History List</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <script src="/static/js/common/jquery-3.3.1.js"></script>
+    <script src="/static/js/common/loadUser.js"></script>
+    <script src="/static/js/common/navbar.js"></script>
+
+    <style>
+        .el-page-header {
+            display: flex;
+            line-height: 24px;
+        }
+        .el-page-header__left {
+            display: flex;
+            cursor: pointer;
+            margin-right: 40px;
+            position: relative;
+        }
+        .el-page-header__left .el-icon-back {
+            font-size: 18px;
+            margin-right: 6px;
+            align-self: center;
+        }
+        [class*=" el-icon-"], [class^=el-icon-] {
+            font-family: element-icons!important;
+            speak: none;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            vertical-align: baseline;
+            display: inline-block;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .el-page-header__left:after {
+            content: "";
+            position: absolute;
+            width: 1px;
+            height: 16px;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #dcdfe6;
+        }
+        .el-page-header__title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .el-page-header__content {
+            font-size: 18px;
+            color: #303133;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+
+
+    <el-card class="box-card">
+        <el-page-header @back="goBack" th:content="${name}" style="margin-bottom: 20px;">
+        </el-page-header>
+        <el-table
+                :data="tableData"
+                style="width: 100%">
+            <el-table-column
+                    fixed
+                    prop="date"
+                    label="Date"
+                    >
+            </el-table-column>
+
+            <el-table-column
+                    prop="userName"
+                    label="Modifier"
+                    >
+            </el-table-column>
+
+            <el-table-column
+                    label="View"
+
+                    width="100"
+                    >
+                <template slot-scope="scope">
+                    <el-button
+                            class="viewBtn"
+                            size="middle"
+                            type="primary"
+                            @click="view($event)">View
+                    </el-button>
+                </template>
+            </el-table-column>
+
+        </el-table>
+    </el-card>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+<script th:inline="javascript">
+    var vue = new Vue({
+        el: "#app",
+        data: {
+
+            oid:[[${oid}]],
+            name:[[${name}]],
+            type:[[${type}]],
+            tableData: [[${list}]],
+
+        },
+        methods:{
+            view(event)
+            {
+                let refLink=$(".viewBtn");
+                for(i=0;i<refLink.length;i++){
+                    if(event.currentTarget==refLink[i]){
+                        window.open("/version/history/"+this.type+"/"+this.tableData[i].oid);
+                    }
+                }
+                //console.log(event.currentTarget);
+            },
+            goBack()
+            {
+                window.location.href="/"+this.type+"/"+this.oid;
+            }
+        },
+        mounted(){
+
+        }
+    });
+</script>
+</html>
