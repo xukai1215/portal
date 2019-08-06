@@ -50,7 +50,7 @@
             <ul role="menubar" class="main">
                 <!--            <div tabindex="0">-->
                 <div class="strip" style="float: left;margin-left: 5%">
-                    <li id="dropstrip" style="width: 25px"><a id="phoneStrip" href="###">≡≡</a></li>
+                    <li id="dropstrip" style="width: 25px"><a id="phoneStrip" class="fa fa-navicon fa-2x" href="###"></a></li>
                 </div>
                 <li class="mainBarLogo" style="width: 230px;"><a href="/home" style="padding:20px 2px"></a></li>
                 <!--        </div>-->
@@ -59,15 +59,15 @@
                     <li id="menuModel" class="clickMenu" style="width: 78px"><a href="/modelItem/repository">Model</a></li>
                     <li id="menuData" class="clickMenu" style="width: 70px"><a href="/dataItem/repository">Data</a></li>
                     <li id="drop1" class="clickMenu" style="width: 130px">
-                        <a href="###" style="text-align: left; padding-left: 17px">Community <div id="arrow1" class="arrow"></div></a>
+                        <a href="###" style="text-align: left; padding-left: 17px">Community <div id="arrow1" class="fa fa-angle-down" style="margin-left:7px"></div></a>
                     </li>
                     <li id="drop2" class="clickMenu" style="width: 77px">
-                        <a href="###" style="text-align: left; padding-left: 15px">Help <div class="arrow" style="border-top: 1.4px solid;"></div></a>
+                        <a href="#" style="text-align: left; padding-left: 15px">Help <div class="fa fa-angle-down" style="border-top: 1.4px solid;"></div></a>
                 </li>
                     <li id="menuAbout" class="clickMenu" style="width: 90px"><a href="http://opengmsteam.com">About us</a></li>
                 </div>
                 <div class="indentmenu">
-                    <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a >:::</a></li>
+                    <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a class="fa fa-navicon " style="cursor: pointer;"></a></li>
                 </div>
                 <div class="login">
                     <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="phoneLoged">
                     <li id="phoneUserDrop" style="float: right;width: 35px; margin-right: 5%;">
-                    <a href="###" style="padding-top: 10px;">
+                    <a href="" style="padding-top: 10px;">
                         <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
                     </a>
                     </li>
@@ -137,7 +137,7 @@
 <!--        小屏幕-->
         <div id="phoneUserSub" class="fullSub" style="display: none">
             <ul>
-                <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p href="###" style="text-align: center;font-size: 15.2px;color: white">Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;"></span></p></li>
+                <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p href="" style="text-align: center;font-size: 15.2px;color: white">Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;"></span></p></li>
                 <li><a href="/user/userSpace">User Space</a></li>
                 <li><a id="phoneUserPageDir" href="">User Page</a></li>
                 <li style="background-color: rgb(0,192,255)"><a href="/user/out">Log Out</a></li>
@@ -152,14 +152,14 @@
                 <li><a href="/home">Home</a></li>
                 <li><a href="/modelItem/repository">Model</a></li>
                 <li><a href="/dataItem/repository">Data</a></li>
-                <li id="leftcommunity"><a class="show" href="###" style="width: 190px">Community</a></li>
+                <li id="leftcommunity"><a class="show" href="#" style="width: 190px;padding-right:20px">Community<span class="fa fa-angle-right" style="float: right;"></span></a></li>
                 <!-- <div class="lsub" id="leftsubc">
                     <li><a href="/repository/concept">Concept & Semantic</a></li>
                     <li><a href="/repository/spatialReference">Spatial Reference</a></li>
                     <li><a href="/repository/unit">Unit & Metric</a></li>
                     <li><a href="/repository/thematic">Thematic Center</a></li>
                 </div> -->
-                <li id="lefthelp" ><a class="show" href="###" style="width: 190px">Help</a></li>
+                <li id="lefthelp" ><a class="show" href="#" style="width: 190px;padding-right: 20px;">Help<span class="fa fa-angle-right" style="float: right;"></span></a></li>
                 <!-- <div class="lsub" id="leftsubh">
                     <li><a href="/help/demo">Demo</a></li>
                     <li><a href="/help/manual">Manual</a></li>
@@ -190,7 +190,7 @@
             <ul style="width: 100%;" >
                 <li><a href="/modelItem/repository">Model</a></li>
                 <li><a href="/dataItem/repository">Data</a></li>
-                <li id="phoneCommunity"><a type="button" data-toggle="collapse" data-target="#phoneSubCom" href="###">Community <div class="arrow"></div></a></li>
+                <li id="phoneCommunity"><a type="button" data-toggle="collapse" data-target="#phoneSubCom" href="#">Community <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
                 <div id="phoneSubCom" class="phoneSubSUb collapse" >
                     <li><a href="/repository/concept">Concept & Semantic</a></li>
                     <li><a href="/repository/spatialReference">Spatial Reference</a></li>
@@ -198,7 +198,7 @@
                     <li><a href="/repository/unit">Unit & Metric</a></li>
                     <li><a href="/repository/thematic">Thematic Center</a></li>
                 </div>
-                <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" href="###">Help <div class="arrow"></div></a></li>
+                <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" href="#">Help <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
                 <div id="phoneSubHelp" class="phoneSubSUb collapse">
                     <li><a href="/help/demo" class="subsub">Demo</a></li>
                     <li><a href="/help/manual">Manual</a></li>
@@ -206,7 +206,7 @@
                 </div>
                 <li><a href="http://opengmsteam.com/">About us</a></li>
                 <li id="phoneLogin" style="background-color: rgb(0,192,255)">
-<!--                    <a href="###" style="padding: 0px">-->
+<!--                    <a href="" style="padding: 0px">-->
                     <button style="float: left;width: 50%;height:50px; background-color: rgb(0,192,255);border-width: 0;color: white" onclick="window.location.href = '/user/login'">Log In</button><button style="float: left;width: 50%;height:50px; background-color: rgb(0,192,255);border-width: 0;color: white" onclick="window.location.href = '/user/regiester'">Sigh Up</button>
 <!--                </a>-->
                 </li>
