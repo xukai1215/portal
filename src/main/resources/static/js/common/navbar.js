@@ -1,4 +1,5 @@
 
+
 // 获得下拉一级菜单
 // 获得下拉二级菜单
 // var menu=bar.children;
@@ -35,6 +36,7 @@ var dropm1 = document.getElementById('drop1'), dropm2 = document.getElementById(
 
     phoneLoged = document.getElementsByClassName('phoneLoged')[0],
 
+    clickMenu=document.getElementsByClassName('clickMenu'),clickSubMenu=document.getElementsByClassName('clickSubMenu'),
 
     e = e || window.event;
 
@@ -282,10 +284,119 @@ function watchWidth() {
     //     mainBarMenu.style.display = 'none';
     //     indentMenu.style.display = 'block';
     // }
-
-
-
 }
+
+(function changeBorder (){
+    for(let i=0;i<clickMenu.length;i++){
+        clickMenu[i].onclick=function showBlueBorder(){
+            console.log(this);
+            if(i!=9&&i!=8){
+
+                console.log('11');
+                for(let i=0;i<clickMenu.length;i++ )
+                    if(clickMenu[i]===this)
+                        clickMenu[i].classList.add('clickBlue');
+                    else
+                        clickMenu[i].classList.remove('clickBlue');
+
+            }
+
+        };
+    }
+
+    for(let i=0;i<5;i++) {
+        clickSubMenu[i].onclick = function showCommunityBorder() {
+            console.log(clickSubMenu);
+            for (let i = 0; i < clickMenu.length; i++)
+                if (i == 3)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+
+
+        };
+    }
+    for(let i=5;i<8;i++) {
+
+        clickSubMenu[i].onclick = function showHelpBorder() {
+            console.log('567');
+            for (let i = 0; i < clickMenu.length; i++)
+                if (i == 4)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+
+
+        };
+
+
+
+
+    }
+})();
+
+(function(){
+    var href=window.location.pathname;
+    var hrefElement=href.split('/')[1];
+    console.log(hrefElement);
+    console.log('123');
+    switch (hrefElement) {
+        case 'home':{
+            for(let i=0;i<clickMenu.length;i++){
+                if(i==0)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+            }
+            break;
+        }
+
+
+        case 'modelItem':{
+            for(let i=0;i<clickMenu.length;i++){
+                if(i==1)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+            }
+        break;
+        }
+
+        case 'dataItem':{
+            for(let i=0;i<clickMenu.length;i++){
+                if(i==2)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+            }
+            break;
+        }
+
+        case 'repository':{
+            for(let i=0;i<clickMenu.length;i++){
+                if(i==3)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+            }
+            break;
+        }
+
+
+        case 'help':{
+            for(let i=0;i<clickMenu.length;i++){
+                if(i==4)
+                    clickMenu[i].classList.add('clickBlue');
+                else
+                    clickMenu[i].classList.remove('clickBlue');
+            }
+            break;
+        }
+
+    }
+
+
+})();
 
 // 箭头旋转
 // $('#arrow1').rotate({

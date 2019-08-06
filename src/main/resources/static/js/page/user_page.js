@@ -1,7 +1,17 @@
 new Vue({
-    el: '#app',
-    data: function () {
+    el: '#userPage',
+
+    data:
+        function () {
         return {
+            // showIndex控制model种类页面跳转
+            showIndex: 1,
+            // bodyIndex控制主要内容跳转
+            bodyIndex: 1,
+            researchIndex:1,
+            // blueIndex:1,
+            // aaa:1,
+
             activeIndex:'',
             activeName: 'Model Item',
             currentPage: 1,
@@ -9,7 +19,8 @@ new Vue({
             pageOption:{
                 progressBar:true,
                 sortAsc:false,
-                pageSize:5,
+                pageSize:6,
+                pageCount:10,
             },
 
             modelItems:{
@@ -40,6 +51,7 @@ new Vue({
 
         }
     },
+
     methods: {
         // handleClick(tab, event) {
         //     switch (tab.paneName) {
@@ -66,44 +78,86 @@ new Vue({
         //     }
         // },
 
-        modelItemClick(){
-            this.computableModelHandleCurrentChange(1);
+        modelItemClick() {
+            this.bodyIndex=2;
+            this.showIndex=1;
+            this.modelItemHandleCurrentChange(1);
+            console.log('1')
         },
 
+
+
         datalItemClick(){
+            this.bodyIndex=2;
+            this.showIndex=2;
             this.dataItemHandleCurrentChange(1);
         },
 
         conceptualModelClick(){
+            this.bodyIndex=2;
+            this.showIndex=3;
             this.conceptualModelHandleCurrentChange(1);
+
         },
 
-        logicalModelClick(){
+        logicalModelClick: function () {
+            this.bodyIndex=2;
+            this.showIndex=4;
             this.logicalModelHandleCurrentChange(1);
+
+            // console.log(this.logicalModels.result)
         },
 
         computableModelClick(){
+            this.bodyIndex=2;
+            this.showIndex=5;
             this.computableModelHandleCurrentChange(1);
+
+            // console.log(this.computableModels.total)
         },
 
-        modelItemHandleCurrentChange(val) {
-            this.modelItems.currentPage=val;
-            // window.scrollTo(0,0);
-            const hrefs=window.location.href.split("/");
+        // statsCardClick(index){
+        //     this.bodyIndex=2;
+        //     this.showIndex=index;
+        // },
+
+        menu_Click(index){
+            window.scroll(0,0);
+            this.bodyIndex=index;
+        },
+
+        // resource按钮单独做以每次都显示model item
+        menu_Click_Resource(index){
+            window.scroll(0,0);
+            this.bodyIndex=index;
+            this.showIndex=1;
+        },
+
+        researchItemClick(index){
+            this.researchIndex=index;
+        },
+
+        modelItemHandleCurrentChange: function (val) {
+            console.log('111')
+            // console.log(this.modelItems.currentPage);
+            this.modelItems.currentPage = val;
+            // console.log(this.modelItems.currentPage);
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/modelItem/listByUserOid",
                 data: {
-                    page: this.modelItems.currentPage-1,
+                    page: this.modelItems.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
-                    oid:hrefs[hrefs.length-1],
+                    oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
                 success: (json) => {
 
-                    if(json.code==0) {
-                        const data=json.data;
+                    if (json.code == 0) {
+                        const data = json.data;
 
                         setTimeout(() => {
 
@@ -112,31 +166,31 @@ new Vue({
                             this.pageOption.progressBar = false;
 
                         }, 500);
-                    }
-                    else{
+                    } else {
                         console.log("search model item failed.")
                     }
                 }
             })
+
         },
-        dataItemHandleCurrentChange(val) {
-            this.dataItems.currentPage=val;
-            window.scrollTo(0,0);
-            const hrefs=window.location.href.split("/");
+        dataItemHandleCurrentChange: function (val) {
+            this.dataItems.currentPage = val;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/dataItem/listByUserOid",
                 data: {
-                    page: this.dataItems.currentPage-1,
+                    page: this.dataItems.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
-                    oid:hrefs[hrefs.length-1],
+                    oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
                 success: (json) => {
 
-                    if(json.code==0) {
-                        const data=json.data;
+                    if (json.code == 0) {
+                        const data = json.data;
 
                         setTimeout(() => {
 
@@ -145,31 +199,30 @@ new Vue({
                             this.pageOption.progressBar = false;
 
                         }, 500);
-                    }
-                    else{
+                    } else {
                         console.log("search data item failed.")
                     }
                 }
             })
         },
-        conceptualModelHandleCurrentChange(val) {
-            this.conceptualModels.currentPage=val;
-            window.scrollTo(0,0);
-            const hrefs=window.location.href.split("/");
+        conceptualModelHandleCurrentChange: function (val) {
+            this.conceptualModels.currentPage = val;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/conceptualModel/listByUserOid",
                 data: {
-                    page: this.conceptualModels.currentPage-1,
+                    page: this.conceptualModels.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
-                    oid:hrefs[hrefs.length-1],
+                    oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
                 success: (json) => {
 
-                    if(json.code==0) {
-                        const data=json.data;
+                    if (json.code == 0) {
+                        const data = json.data;
 
                         setTimeout(() => {
 
@@ -178,31 +231,31 @@ new Vue({
                             this.pageOption.progressBar = false;
 
                         }, 500);
-                    }
-                    else{
+                    } else {
                         console.log("search conceptual model failed.")
                     }
                 }
             })
         },
-        logicalModelHandleCurrentChange(val) {
-            this.logicalModels.currentPage=val;
-            window.scrollTo(0,0);
-            const hrefs=window.location.href.split("/");
+        logicalModelHandleCurrentChange: function (val) {
+            this.logicalModels.currentPage = val;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+
+            const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/logicalModel/listByUserOid",
                 data: {
-                    page: this.logicalModels.currentPage-1,
+                    page: this.logicalModels.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
-                    oid:hrefs[hrefs.length-1],
+                    oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
                 success: (json) => {
 
-                    if(json.code==0) {
-                        const data=json.data;
+                    if (json.code == 0) {
+                        const data = json.data;
 
                         setTimeout(() => {
 
@@ -211,31 +264,30 @@ new Vue({
                             this.pageOption.progressBar = false;
 
                         }, 500);
-                    }
-                    else{
+                    } else {
                         console.log("search logical model failed.")
                     }
                 }
             })
         },
-        computableModelHandleCurrentChange(val) {
-            this.computableModels.currentPage=val;
-            window.scrollTo(0,0);
-            const hrefs=window.location.href.split("/");
+        computableModelHandleCurrentChange: function (val) {
+            this.computableModels.currentPage = val;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/computableModel/listByUserOid",
                 data: {
-                    page: this.computableModels.currentPage-1,
+                    page: this.computableModels.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
-                    oid:hrefs[hrefs.length-1],
+                    oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
                 success: (json) => {
 
-                    if(json.code==0) {
-                        const data=json.data;
+                    if (json.code == 0) {
+                        const data = json.data;
 
                         setTimeout(() => {
 
@@ -244,8 +296,7 @@ new Vue({
                             this.pageOption.progressBar = false;
 
                         }, 500);
-                    }
-                    else{
+                    } else {
                         console.log("search computable model failed.")
                     }
                 }
@@ -253,9 +304,19 @@ new Vue({
         },
 
     },
+
+
+
+
     mounted(){
         this.modelItemHandleCurrentChange(1);
+        // this.dataItemHandleCurrentChange(1);
+        this.logicalModelHandleCurrentChange(1);
+        this.conceptualModelHandleCurrentChange(1);
+        this.computableModelHandleCurrentChange(1);
     }
+
+
 })
 
 var menuChoose=document.getElementsByClassName('menuItem'),
@@ -279,7 +340,7 @@ function showItem(){
         //     console.log(menuAfter.borderBottom);
         menuChoose[i].onmouseover=function (){
 
-            menuBorder[i].style.borderBottomColor = '#339fff';
+            menuBorder[i].style.borderBottomColor = '#34acff';
             menuBorder[i].style.borderBottomWidth = '3px';
         };
         menuChoose[i].onmouseout=function (){
@@ -288,16 +349,18 @@ function showItem(){
         };
         menuChoose[i].onclick = function show() {
             console.log(contents);
+            console.log(this);
             for (let i = 0; i < menuChoose.length; i++) {
 
                 if (this === menuChoose[i]) {
-                    menuChoose[i].style.borderBottomColor = '#339fff';
+                    // menuChoose[i].style.borderBottomColor = '#339fff';
                     // menuChoose[i].style.borderBottomwidth = 3;
-                    contents[i].classList.add('showActive');
+
+                    contents[i].classList.add('flexActive');
                 } else {
-                    menuChoose[i].style.borderBottomColor = '#adadad';
+                    // menuChoose[i].style.borderBottomColor = '#adadad';
                     // menuChoose[i].style.borderBottomWidth = 3;
-                    contents[i].classList.remove('showActive');
+                    contents[i].classList.remove('flexActive');
                 }
             }
 
@@ -306,53 +369,53 @@ function showItem(){
     }
 
 
-    viewMoreIntro.onclick = function () {
-
-        for(let i=0;i<contents.length;i++)
-        {
-            if(i===3){
-                contents[i].classList.add('showActive');
-                menuChoose[i].style.borderBottomColor = '#339fff';
-            }else{
-                contents[i].classList.remove('showActive');
-                menuChoose[i].style.borderBottomColor = '#9b9b9b';
-            }
-
-
-        }
-
-
-    };
-
-    viewMoreModel.onclick=function (){
-        for(let i=0;i<contents.length;i++)
-        {
-            if(i===1){
-                contents[i].classList.add('showActive');
-                menuChoose[i].style.borderBottomColor = '#339fff';
-            }else{
-                contents[i].classList.remove('showActive');
-                menuChoose[i].style.borderBottomColor = '#9b9b9b';
-            }
-
-
-        }
-    };
-
-    viewMoreResearch.onclick=function (){
-        for(let i=0;i<contents.length;i++)
-        {
-            if(i===2){
-                contents[i].classList.add('showActive');
-                menuChoose[i].style.borderBottomColor = '#339fff';
-            }else{
-                contents[i].classList.remove('showActive');
-                menuChoose[i].style.borderBottomColor = '#9b9b9b';
-            }
-
-
-        }
-    };
+    // viewMoreIntro.onclick = function () {
+    //
+    //     for(let i=0;i<contents.length;i++)
+    //     {
+    //         if(i===3){
+    //             contents[i].classList.add('flexActive');
+    //             menuChoose[i].style.borderBottomColor = '#339fff';
+    //         }else{
+    //             contents[i].classList.remove('flexActive');
+    //             menuChoose[i].style.borderBottomColor = '#9b9b9b';
+    //         }
+    //
+    //
+    //     }
+    //
+    //
+    // };
+    //
+    // viewMoreModel.onclick=function (){
+    //     for(let i=0;i<contents.length;i++)
+    //     {
+    //         if(i===1){
+    //             contents[i].classList.add('flexActive');
+    //             menuChoose[i].style.borderBottomColor = '#339fff';
+    //         }else{
+    //             contents[i].classList.remove('flexActive');
+    //             menuChoose[i].style.borderBottomColor = '#9b9b9b';
+    //         }
+    //
+    //
+    //     }
+    // };
+    //
+    // viewMoreResearch.onclick=function (){
+    //     for(let i=0;i<contents.length;i++)
+    //     {
+    //         if(i===2){
+    //             contents[i].classList.add('flexActive');
+    //             menuChoose[i].style.borderBottomColor = '#339fff';
+    //         }else{
+    //             contents[i].classList.remove('flexActive');
+    //             menuChoose[i].style.borderBottomColor = '#9b9b9b';
+    //         }
+    //
+    //
+    //     }
+    // };
 
 })();
 

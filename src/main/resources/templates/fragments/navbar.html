@@ -45,7 +45,7 @@
 <!--    </el-menu>-->
 
 
-    <div class="wrap">
+    <div id="navBar" class="wrap">
         <div id="mainBar" role="mainBar">
             <ul role="menubar" class="main">
                 <!--            <div tabindex="0">-->
@@ -55,16 +55,16 @@
                 <li class="mainBarLogo" style="width: 230px;"><a href="/home" style="padding:20px 2px"></a></li>
                 <!--        </div>-->
                 <div class="mainmenu">
-                    <li id="menuHome" style="width: 77px" ><a href="/home">Home</a></li>
-                    <li id="menuModel" style="width: 78px"><a href="/modelItem/repository">Model</a></li>
-                    <li id="menuData" style="width: 70px"><a href="/dataItem/repository">Data</a></li>
-                    <li id="drop1" style="width: 130px">
+                    <li id="menuHome" class="clickMenu" style="width: 77px" ><a href="/home">Home</a></li>
+                    <li id="menuModel" class="clickMenu" style="width: 78px"><a href="/modelItem/repository">Model</a></li>
+                    <li id="menuData" class="clickMenu" style="width: 70px"><a href="/dataItem/repository">Data</a></li>
+                    <li id="drop1" class="clickMenu" style="width: 130px">
                         <a href="###" style="text-align: left; padding-left: 17px">Community <div id="arrow1" class="arrow"></div></a>
                     </li>
-                    <li id="drop2" style="width: 77px">
+                    <li id="drop2" class="clickMenu" style="width: 77px">
                         <a href="###" style="text-align: left; padding-left: 15px">Help <div class="arrow" style="border-top: 1.4px solid;"></div></a>
                 </li>
-                    <li id="menuAbout" style="width: 90px"><a href="http://opengmsteam.com">About us</a></li>
+                    <li id="menuAbout" class="clickMenu" style="width: 90px"><a href="http://opengmsteam.com">About us</a></li>
                 </div>
                 <div class="indentmenu">
                     <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a >:::</a></li>
@@ -102,18 +102,18 @@
         <!--    各种下拉菜单-->
         <div class="sub zmax" id="subCommunity" style="left: 453px">
             <ul>
-                <li><a href="/repository/concept">Concept & Semantic</a></li>
-                <li><a href="/repository/spatialReference">Spatial Reference</a></li>
-                <li><a href="/repository/template">Data Template</a></li>
-                <li><a href="/repository/unit">Unit & Metric</a></li>
-                <li><a href="/repository/thematic">Thematic Center</a></li>
+                <li><a href="/repository/concept" class="clickSubMenu">Concept & Semantic</a></li>
+                <li><a href="/repository/spatialReference" class="clickSubMenu">Spatial Reference</a></li>
+                <li><a href="/repository/template" class="clickSubMenu">Data Template</a></li>
+                <li><a href="/repository/unit" class="clickSubMenu">Unit & Metric</a></li>
+                <li><a href="/repository/thematic" class="clickSubMenu">Thematic Center</a></li>
             </ul>
         </div>
         <div class="sub zmax" id="subHelp" style="left:585px">
             <ul style="width: 180px">
-                <li style="width: 180px;"><a href="/help/demo" style="margin-left: 25px">Demo</a></li>
-                <li style="width: 180px;"><a href="/help/manual" style="margin-left: 25px">Manual</a></li>
-                <li style="width: 180px;"><a href="/help/document" style="margin-left: 25px">Document</a></li>
+                <li style="width: 180px;"><a href="/help/demo" style="margin-left: 25px" class="clickSubMenu">Demo</a></li>
+                <li style="width: 180px;"><a href="/help/manual" style="margin-left: 25px" class="clickSubMenu">Manual</a></li>
+                <li style="width: 180px;"><a href="/help/document" style="margin-left: 25px" class="clickSubMenu">Document</a></li>
             </ul>
         </div>
         <div id="subls" class="sub" style="right:0px;z-index:1000">
