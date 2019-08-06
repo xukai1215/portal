@@ -34,6 +34,7 @@ div{
     height:130px;
     width:130px;
     float:left;
+    margin-left: 20px;
 }
 
 .user_info h4{

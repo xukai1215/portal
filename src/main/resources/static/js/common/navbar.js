@@ -248,12 +248,12 @@ phoneUserDrop.onclick = function (e) {
 //     }
 // };
 //
-// // 点击空白，菜单收回
-// document.onclick = function (e) {
-//     submu.style.display = 'none';
-//     fullsub.style.display = 'none';
-//     console.log(windowWidth);
-// };
+// 点击空白，菜单收回
+document.onclick = function (e) {
+    submu.style.display = 'none';
+    // fullsub.style.display = 'none';
+    console.log(windowWidth);
+};
 
 var windowWidth;
 window.onresize= ()=> {
