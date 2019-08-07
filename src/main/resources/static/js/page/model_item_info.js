@@ -5,6 +5,42 @@ new Vue({
     },
     data: function () {
         return {
+            dialogTableVisible:false,
+            relateSearch:"",
+            tableData: [{
+                id: '12987122',
+                name: '好滋好味鸡蛋仔',
+                category: '江浙小吃、小吃零食',
+                desc: '荷兰优质淡奶，奶香浓而不腻',
+                address: '上海市普陀区真北路',
+                shop: '王小虎夫妻店',
+                shopId: '10333'
+            }, {
+                id: '12987123',
+                name: '好滋好味鸡蛋仔',
+                category: '江浙小吃、小吃零食',
+                desc: '荷兰优质淡奶，奶香浓而不腻',
+                address: '上海市普陀区真北路',
+                shop: '王小虎夫妻店',
+                shopId: '10333'
+            }, {
+                id: '12987125',
+                name: '好滋好味鸡蛋仔',
+                category: '江浙小吃、小吃零食',
+                desc: '荷兰优质淡奶，奶香浓而不腻',
+                address: '上海市普陀区真北路',
+                shop: '王小虎夫妻店',
+                shopId: '10333'
+            }, {
+                id: '12987126',
+                name: '好滋好味鸡蛋仔',
+                category: '江浙小吃、小吃零食',
+                desc: '荷兰优质淡奶，奶香浓而不腻',
+                address: '上海市普陀区真北路',
+                shop: '王小虎夫妻店',
+                shopId: '10333'
+            }],
+
             activeIndex:'2',
             activeName: 'Computable Model',
             activeRelatedDataName:'Add Data Items',
@@ -466,14 +502,6 @@ new Vue({
             })
 
 
-
-
-
-
-
-
-
-
         $(document).on("click", ".detail-toggle", function () {
             if ($(this).text() == "[Collapse]") {
                 $(this).text("[Expand]");
@@ -504,13 +532,16 @@ new Vue({
             this.tableData6 = json;
         }
         $(".createConceptual").click(()=>{
-            this.jump(1);
+            // this.jump(1);
+            this.dialogTableVisible=true;
         })
         $(".createLogical").click(()=>{
-            this.jump(2);
+            // this.jump(2);
+            this.dialogTableVisible=true;
         })
         $(".createComputable").click(()=>{
-            this.jump(3);
+            // this.jump(3);
+            this.dialogTableVisible=true;
         })
 
         $("#fullPaper").click(function(){

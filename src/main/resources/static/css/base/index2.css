@@ -73,7 +73,7 @@
 }
 
 .wzhFilter::before{
-    filter: blur(6px);
+    filter: blur(2px);
     content: '';
     top: 0;
     left: 0;
@@ -89,8 +89,8 @@
     background-position: center;
     /*background-size: cover;*/
     /*background-attachment: fixed;*/
-    background-position-x:50%;
-    background-position-y: 955px;
+    /*background-position-x:50%;*/
+    /*background-position-y: 955px;*/
 }
 
 .wzhFilter3{

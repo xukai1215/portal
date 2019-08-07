@@ -2,10 +2,12 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title th:text="${modelInfo.name}+' | OpenGMS'">Model Item Info | OpenGMS</title>
     <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
-    <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
+    <meta name="description"
+          th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
@@ -14,8 +16,25 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" href="/static/css/base/itemInfo.css">
     <link rel="stylesheet" href="/static/css/page/model_item_info.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+
+    <style>
+        .demo-table-expand {
+            font-size: 0;
+        }
+
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+    </style>
 
     <style>
         #description h1 {
@@ -47,16 +66,22 @@
             box-shadow: none;
             -webkit-box-shadow: none;
         }
-        [class*=el-col-]{
-            float:left;
+
+        [class*=el-col-] {
+            float: left;
         }
+
+
     </style>
 </head>
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
+
+
     <div class="clearfix" style="margin:40px 0px;height: auto;">
+
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
             <div class="detail">
                 <div class="detail_title">
@@ -157,12 +182,12 @@
                                 </div>
                             </div>
                             <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
-                                Create New ModelItem
+                                Add Related ModelItem
                             </button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(modelItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related model item. You can contribute a new model item.
+                                There is no related model item. You can add a model item.
                             </h5>
                             <button class="createConceptual btn btn-default" type="button"
                                     style="display: inline-block;">
@@ -191,12 +216,12 @@
                                 </div>
                             </div>
                             <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
-                                Create New Conceptual Model
+                                Add Related Conceptual Model
                             </button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(conceptualModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related conceptual model. You can contribute a new conceptual model.
+                                There is no related conceptual model. You can add a conceptual model.
                             </h5>
                             <button class="createConceptual btn btn-default" type="button"
                                     style="display: inline-block;">
@@ -224,12 +249,12 @@
                                 </div>
                             </div>
                             <button type="button" class="createLogical btn btn-primary btn-lg btn-block">
-                                Create New Logical Model
+                                Add Related Logical Model
                             </button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(logicalModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related logical model. You can contribute a new logical model.
+                                There is no related logical model. You can add a logical model.
                             </h5>
                             <button class="createLogical btn btn-default" type="button" style="display: inline-block;">
 
@@ -255,12 +280,12 @@
                                 </div>
                             </div>
                             <button type="button" class="createComputable btn btn-primary btn-lg btn-block">
-                                Create New Computable Model
+                                Add Related Computable Model
                             </button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can contribute a new computable model.
+                                There is no related computable model. You can add a computable model.
                             </h5>
                             <button class="createComputable btn btn-default" type="button"
                                     style="display: inline-block;">
@@ -273,6 +298,7 @@
                 </el-tabs>
             </div>
 
+
             <div id="related" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -280,20 +306,25 @@
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeRelatedDataName" type="border-card" stretch="true">
-                    <el-tab-pane label="Related Data Items" name="Related Data Items" style="width: 100%;height:100%px;">
+                    <el-tab-pane label="Related Data Items" name="Related Data Items"
+                                 style="width: 100%;height:100%px;">
 
-                        <el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
-                            <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                        <el-card v-show="relatedModelNotNull" class="is-hover-shadow relatedModelsInfo"
+                                 v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
+                            <div><strong>Data: <a :href="checkRelatedData(item)"
+                                                  target="_blank">{{item.name}}</a></strong>
                                 <br><strong>Description:</strong><span>{{item.description}}</span>
 
                             </div>
 
                         </el-card>
-                        <el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary" icon="el-icon-star-off" style="width: 100%">
+                        <el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary"
+                                   icon="el-icon-star-off" style="width: 100%">
 
                             More...
                         </el-button>
-                        <el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo" style="margin-top: 10px;margin-bottom: 10px"  >
+                        <el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo"
+                                 style="margin-top: 10px;margin-bottom: 10px">
                             <div style="
                                     text-align: center;
                                     font-weight: 600;
@@ -303,11 +334,11 @@
 
                             </div>
 
-                            <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">
+                            <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
                                 add the first model for this data
                             </el-button>
                         </el-card>
-
 
 
                     </el-tab-pane>
@@ -336,17 +367,21 @@
                     >
 
 
-                        <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
-                        <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
+                        <el-input v-model="relatedModelsSearchText" placeholder="search related models.."
+                                  @keyup.native="searchFromRelatedModels"></el-input>
+                        <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll"
+                                 v-loading="loading" @scroll.native="loadMore($event)">
 
-                            <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
-                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                            <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels"
+                                 style="margin-top: 10px;margin-bottom: 10px;">
+                                <div><strong>Data: <a :href="checkRelatedData(item)"
+                                                      target="_blank">{{item.name}}</a></strong>
                                     <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                 </div>
                             </div>
                             <div v-if="nomore!=''" style="text-align: center">
-                                <span  >no more data</span>
+                                <span>no more data</span>
                             </div>
 
 
@@ -355,7 +390,8 @@
 
                         <span slot="footer" class="dialog-footer">
                                 <el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>
-                                <el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
+                                <el-button type="primary"
+                                           @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
                               </span>
                     </el-dialog>
 
@@ -369,7 +405,8 @@
                                 "><span>Add the models into the current data related models</span></div>
                         <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">
                             add models
-                        </el-button></br>
+                        </el-button>
+                        </br>
 
                     </el-tab-pane>
 
@@ -381,12 +418,15 @@
                             :before-close="handleClose">
 
 
-                        <el-form :inline="true"  class="demo-form-inline">
-                            <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
+                        <el-form :inline="true" class="demo-form-inline">
+                            <el-radio v-model="value1" label="1" @change="clearSearchResult()">from my created data
+                            </el-radio>
                             <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
                         </el-form>
 
-                        <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
+                        <el-input v-model="addModelsSearchText" placeholder="search related models.."
+                                  @keyup.enter.native="searchRelatedModels"></el-input>
+                        </br>
 
                         <el-alert
                                 title=""
@@ -397,16 +437,20 @@
                         </el-alert>
 
 
-                        <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
+                        <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo"
+                                 style="height: 300px;overflow-y: scroll" v-loading="loading"
+                                 @scroll.native="loadAddMore($event)">
 
-                            <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
-                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                            <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"
+                                     @click.native="selectRelatedModel(item,$event)">
+                                <div><strong>Data: <a :href="checkRelatedData(item)"
+                                                      target="_blank">{{item.name}}</a></strong>
                                     <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                 </div>
                             </el-card>
                             <div v-if="nomore!=''" style="text-align: center">
-                                <span  >no more data</span>
+                                <span>no more data</span>
                             </div>
 
 
@@ -414,7 +458,8 @@
 
 
                         <span slot="footer" class="dialog-footer">
-                                <el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>
+                                <el-button @click="relatedToCurrentData()"
+                                           type="success">RelatedToCurrentData</el-button>
                             <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
                               </span>
                     </el-dialog>
@@ -532,7 +577,8 @@
 
             </div>
 
-            <div id="Authorship" class="detail_block" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+            <div id="Authorship" class="detail_block"
+                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -545,7 +591,8 @@
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
                                 aria-expanded="true">[Expand]</a></span>
                         <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</div>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true" style="">
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true"
+                             style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
                                     <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
@@ -553,7 +600,8 @@
                                     <dt th:if="${author.email!=''}">Email: &nbsp</dt>
                                     <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
                                     <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
-                                    <dd th:if="${author.homepage!=''}" ><a th:href="${author.homepage}" target="_blank">View</a></dd>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
@@ -571,10 +619,11 @@
 
                     <a th:href="'/knowledgeGraph/'+${modelInfo.knowledgeGraph}">
                         <img src="/static/img/logo/knowledgeGraph.jpg" style="text-align: center;width:100%;">
-                    </a>                </div>
+                    </a></div>
             </div>
 
-            <div id="Modifier" class="detail_block" th:if="${modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+            <div id="Modifier" class="detail_block"
+                 th:if="${modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>History</h4>
@@ -584,16 +633,19 @@
 
                     <div style="text-align: left;">
 
-                            <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
-                                <dl>
-                                    <dt>Last modifier :&nbsp </dt>
-                                    <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}" target="_blank"></a></dd>
-                                    <dt>Last modify time :&nbsp</dt>
-                                    <dd th:text="${lastModifyTime}"></dd>
-                                    <dt>Modify times :&nbsp</dt>
-                                    <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a th:href="'/version/historyList/'+${modelInfo.oid}" target="_blank">View History</a></dd>
-                                </dl>
-                            </div>
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/'+${modelInfo.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
 
                     </div>
                 </div>
@@ -617,6 +669,85 @@
 
     </div>
 
+    <el-dialog :visible.sync="dialogTableVisible" title="Add Relation" width="70%" top="64px">
+
+        <el-card class="box-card" style="width:40%;float: left;">
+            <div slot="header" class="clearfix">
+                <span>Related Items</span>
+
+            </div>
+            <el-table
+                    :data="tableData"
+                    style="float:left"
+                    max-height="500">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="Contributor">
+                                <span>{{ props.row.name }}</span>
+                            </el-form-item>
+
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Name"
+                        prop="id">
+                </el-table-column>
+
+                <el-table-column fixed="right" label="Operation">
+                    <template slot-scope="scope">
+
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+
+
+        <el-card class="box-card" style="width:60%;">
+            <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+            <el-table
+                    :data="tableData"
+                    style="float:left;margin-top:17px;"
+                    max-height="500">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="Contributor">
+                                <span>{{ props.row.name }}</span>
+                            </el-form-item>
+
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Name"
+                        prop="id">
+                </el-table-column>
+                <el-table-column
+                        label="Contributor"
+                        prop="name">
+                </el-table-column>
+                <el-table-column fixed="right" label="Operation" width="100">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+    </el-dialog>
+
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
@@ -634,6 +765,6 @@
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
-<script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
 
 </html>
