@@ -9,9 +9,11 @@ new Vue({
             // bodyIndex控制主要内容跳转
             bodyIndex: 1,
             researchIndex:1,
+            barIndex:1,
             // blueIndex:1,
             // aaa:1,
-
+            firstAuthor:'',
+            secAuthor:'',
             activeIndex:'',
             activeName: 'Model Item',
             currentPage: 1,
@@ -47,8 +49,36 @@ new Vue({
                 currentPage:1,
                 total:0,
                 result:[],
-            }
+            },
 
+            articles:{
+                currentPage:1,
+                total:0,
+                result:[],
+            },
+
+            articleAdd:{
+                title:'aa',
+                author:[],
+                journal:'ss',
+                startPage:1,
+                endPage:2,
+                date:2019,
+                link:'aa',
+            },
+
+
+            projects:{
+                currentPage:1,
+                total:0,
+                result:[],
+            },
+
+            conferences:{
+                currentPage:1,
+                total:0,
+                result:[],
+            }
         }
     },
 
@@ -82,7 +112,6 @@ new Vue({
             this.bodyIndex=2;
             this.showIndex=1;
             this.modelItemHandleCurrentChange(1);
-            console.log('1')
         },
 
 
@@ -133,12 +162,37 @@ new Vue({
             this.showIndex=1;
         },
 
-        researchItemClick(index){
+        articleClick(index){
             this.researchIndex=index;
+            this.articleHandleCurrentChange(1);
+        },
+
+        projectClick(index){
+            this.researchIndex=index;
+            this.projectHandleCurrentChange(1);
+        },
+
+        conferenceClick(index){
+            this.researchIndex=index;
+            this.conferenceHandleCurrentChange(1);
+        },
+
+        addArticleClick(){
+            this.articleAdd.title=$("#titleInput").val();
+            firstAuthor=$("#firstAuthorInput").val();
+            secAuthor=$("#secAuthorInput").val();
+            this.articleAdd.author[0]=firstAuthor;
+            this.articleAdd.author[1]=secAuthor;
+            this.articleAdd.journal=$("#journalInput").val();
+            this.articleAdd.startPage=$("#startPageInput").val();
+            this.articleAdd.endPage=$("#endPageInput").val();
+            this.articleAdd.date=$("#dateInput").val();
+            this.articleAdd.link=$("#linkInput").val();
+            console.log(this.articleAdd);
+            this.ArticleAddToBack();
         },
 
         modelItemHandleCurrentChange: function (val) {
-            console.log('111')
             // console.log(this.modelItems.currentPage);
             this.modelItems.currentPage = val;
             // console.log(this.modelItems.currentPage);
@@ -154,7 +208,7 @@ new Vue({
                     oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
-                success: (json) => {
+                success:(json) => {
 
                     if (json.code == 0) {
                         const data = json.data;
@@ -262,7 +316,6 @@ new Vue({
                             this.logicalModels.total = data.total;
                             this.logicalModels.result = data.list;
                             this.pageOption.progressBar = false;
-
                         }, 500);
                     } else {
                         console.log("search logical model failed.")
@@ -302,9 +355,140 @@ new Vue({
                 }
             })
         },
+        articleHandleCurrentChange: function (val) {
+            this.articles.currentPage=val;
+            this.barIndex=1;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split('/');
+            $.ajax({
+                type:"GET",
+                url:"/article/listByUserOid",
+                data:{
+                    page:this.articles.currentPage-1,
+                    pageSize:this.pageOption.pageSize,
+                    asc:this.articles.sortAsc,
+                    oid:hrefs[hrefs.length - 1],
+                },
+                async:true,
+                success: (json)=>{
+
+                    if (json.code == 0) {
+                        const data=json.data;
+                        setTimeout(() => {
+
+                            this.articles.total=data.total;
+                            this.articles.result=data.list;
+                            this.pageOption.progressBar=false;
+
+                        }, 500);
+                    } else {
+                        console.log("search computable model failed.")
+                    }
+
+                }
+
+            })
+
+        },
+        projectHandleCurrentChange: function (val) {
+            this.projects.currentPage=val;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split('/');
+            $.ajax({
+                type:"GET",
+                url:"/project/listByUserOid",
+                data:{
+                    page:this.projects.currentPage-1,
+                    pageSize:this.pageOption.pageSize,
+                    asc:this.projects.sortAsc,
+                    oid:hrefs[hrefs.length - 1],
+                },
+                async:true,
+                success: (json)=>{
+
+                    if (json.code == 0) {
+                        const data=json.data;
+                        setTimeout(() => {
+
+                            this.projects.total=data.total;
+                            this.projects.result=data.list;
+                            this.pageOption.progressBar=false;
+
+
+                        }, 500);
+                    } else {
+                        console.log("search computable model failed.")
+                    }
+
+                }
+
+            })
+
+        },
+
+        conferenceHandleCurrentChange(val) {
+            this.conferences.currentPage=val;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split("/");
+            $.ajax({
+                type:"GET",
+                url:"/conference/listByUserOid",
+                data:{
+                    page:this.conferences.currentPage-1,
+                    asc: this.pageOption.sortAsc,
+                    pageSize: this.pageOption.pageSize,
+                    oid:hrefs[hrefs.length-1],
+                },
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        const data=json.data;
+                        setTimeout(
+                            ()=>{
+                                this.conferences.total=data.total;
+                                this.conferences.result=data.list;
+                                this.pageOption.progressBar=false;
+                            },500)
+                    }else{
+                        console.log("search data item failed.")
+                    }
+                }
+            })
+
+        },
+
+        ArticleAddToBack(){
+            var obj=
+                    {
+                    title:this.articleAdd.title,
+                    authors:this.articleAdd.author,
+                    journal:this.articleAdd.journal,
+                    startPage:this.articleAdd.startPage,
+                    endPage:this.articleAdd.endPage,
+                    date:this.articleAdd.date,
+                    link:this.articleAdd.link,
+                }
+            $.ajax({
+                url: "/article/add",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        alert("Add Success");
+                    }
+                }
+
+            })
+
+        },
+
+
+
 
     },
-
 
 
 
@@ -314,6 +498,9 @@ new Vue({
         this.logicalModelHandleCurrentChange(1);
         this.conceptualModelHandleCurrentChange(1);
         this.computableModelHandleCurrentChange(1);
+        this.articleHandleCurrentChange(1);
+        this.projectHandleCurrentChange(1);
+        this.conferenceHandleCurrentChange(1);
     }
 
 

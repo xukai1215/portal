@@ -150,8 +150,8 @@ public class UserRestController {
             modelAndView.addObject("notice","You need to log in first to view another user's page.");
         }else {
             User user=userService.getByOid(id);
-            Object object = ResultUtils.success(userService.getByOid(id)).getData();
-            JSONObject userInfo = (JSONObject) JSONObject.toJSON(object);
+//            Object object = ResultUtils.success(userService.getByOid(id)).getData();
+            JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
 
             System.out.println("user_page");
 

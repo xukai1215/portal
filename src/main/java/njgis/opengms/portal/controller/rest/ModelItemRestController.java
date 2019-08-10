@@ -62,7 +62,6 @@ public class ModelItemRestController {
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-        String uid=session.getAttribute("uid").toString();
 
         System.out.println("add model item");
 

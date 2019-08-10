@@ -1,30 +1,25 @@
-package njgis.opengms.portal.entity.support;
+package njgis.opengms.portal.dto.article;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Article {
-    @Id
-    String id;
+public class ArticleResultDTO {
     String oid;
     String title;
     List<String> authors;
 
-    int viewCount;
     String contributor;
     String journal;
     int startPage;
     int endPage;
-    String link;
     String date;
-    Date creatDate;
+    int viewCount;
+
 
 }

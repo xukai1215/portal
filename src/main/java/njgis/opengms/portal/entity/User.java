@@ -47,7 +47,7 @@ public class User {
     List<EducationExperience> educationExperiences;
 
     List<Lab> labs;
-    List<ResearchProjects> researchProjects;
+    List<Project> projects;
 
     int modelItems;
     int dataItems;
@@ -58,6 +58,7 @@ public class User {
     int spatials;
     int templates;
     int units;
+    int articlesCount;
 
     Date createTime;
 }
