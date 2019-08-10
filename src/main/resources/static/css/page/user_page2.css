@@ -10,6 +10,10 @@
     flex-direction: column;
 }
 
+.spaceBetween{
+    justify-content: space-around !important;
+}
+
 .titlePic{
     background-image: url("../../../static/img/carousels/banner.jpg");
     /*background-image: url("../../../static/img/carousels/xiaoJuDan.jpg");*/
@@ -431,6 +435,8 @@
     background-color: rgb(16, 173, 255)
 }
 
+
+
 .subTitle{
     display: flex;
     justify-content: space-between;
@@ -466,6 +472,20 @@
     height: 10px;
     color: #555555;
     transform: rotate(135deg);
+    z-index: 5;
+}
+
+.arrowRightBig{
+    display: inline-block;
+    position: absolute;
+    margin-top:5px;
+    margin-left: 8px;
+    border-top: 3px solid;
+    border-right: 3px solid;
+    width: 13px;
+    height: 13px;
+    color: #999999;
+    transform: rotate(45deg);
     z-index: 5;
 }
 
@@ -607,3 +627,93 @@
     background-color: rgba(0,0,0,0.3);
     z-index: 5;
 }
+
+.cardHeadContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.cardHeadContainer h4{
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    color: rgb(56, 56, 56);
+    line-height: 22px;
+    max-width: 671px;
+    font-weight: 600;
+    max-height: 50px;
+}
+
+.cardContentContainer{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.cardContentContainer p{
+    margin-top: 5px;
+    margin-left: 25px;
+    font-size: 1.6rem;
+}
+
+.viewCount{
+    width: 80px;
+    margin-right: 15px;
+}
+
+.loaderBar{
+    width: 100%;
+    height: 3px;
+    background-color: #0AD15D;
+    animation: loadItems 1s 1;
+}
+
+@keyframes loadItems {
+    from {left: 0;
+        width: 0%;}
+    to {width: 100%;}
+
+}
+
+.progressPanel .barControl{
+    width: 30%;
+    margin: 0 auto;
+}
+.progressPanel .barControl .barContro_space{
+    border-radius: 5px;
+}
+.progressPanel .barControl .barContro_space .progress_line{
+    height: 3px;
+    width: 0%;
+    border-radius: 2px;
+    background: #008af1;
+    display: block;
+}
+.progressPanel .barControl .barContro_space .progress_line.active{
+    -webkit-animation:progressbar 0.75s;
+    animation:progressbar 0.75s;
+    animation-fill-mode:forwards;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes progressbar {
+    from {
+        width:0
+    }
+    to {
+        width:80%
+    }
+}
+/* Standard syntax */
+@keyframes progressbar {
+    from {
+        width:0
+    }
+    to {
+        width:80%
+    }
+}
+

@@ -116,7 +116,7 @@
                        </div>
                        <div id="modelStatsTable" class="contentContainer" >
 
-                          <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 46%;margin-top: 3px">
+                          <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer">
                               <div class="leftCard">
                                   <div style="margin-left: 10px;margin-top: 11px">
                                       <img src="../static/img/model/model.png"></div>
@@ -127,7 +127,7 @@
                                   <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.modelItems}">1000</h2><h5>&nbspitems</h5></div>
                               </div>
                           </div>
-                          <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 46%;margin-top: 3px" >
+                          <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer" >
                               <div class="leftCard">
                                   <div style="margin-left: 10px;margin-top: 11px">
                                       <img src="../static/img/model/model.png"></div>
@@ -138,17 +138,17 @@
                                   <div class="statsCard"><h2 style="color: #36c9ff;" th:text="${userInfo.dataItems}">1000</h2><h5>&nbspitems</h5></div>
                               </div>
                           </div>
-                          <div id="conceptualModel" class="itemCardCol" @click="conceptualModelClick()" style="width: 30%;">
+                          <div id="conceptualModel" class="itemCardCol" @click="conceptualModelClick()" style="width: 30%;cursor: pointer">
                               <div class="titleCard"><h3 style="font-size: 21px">Conceptual Model</h3></div>
                               <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                               <div class="statsCard"><h2 style="color: #ff9526;" th:text="${userInfo.conceptualModels}">1000</h2><h5>&nbspitems</h5></div>
                           </div>
-                          <div id="logicalModel" class="itemCardCol" @click="logicalModelClick" style="width: 30%;">
+                          <div id="logicalModel" class="itemCardCol" @click="logicalModelClick" style="width: 30%;cursor: pointer">
                               <div class="titleCard"><h3 style="font-size: 21px">Logical Model</h3></div>
                               <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                               <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.logicalModels}">1000</h2><h5>&nbspitems</h5></div>
                           </div>
-                          <div id="computableModel" class="itemCardCol" @click="computableModelClick()" style="width: 30%;">
+                          <div id="computableModel" class="itemCardCol" @click="computableModelClick()" style="width: 30%;cursor: pointer">
                               <div class="titleCard"><h3 style="font-size: 21px">Computable Model</h3></div>
                               <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                               <div class="statsCard"><h2 style="color: #aa0b15;" th:text="${userInfo.computableModels}">1000</h2><h5>&nbspitems</h5></div>
@@ -260,9 +260,17 @@
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
                                 <div><h4 style="margin-top: 10px;color: #999999;">Model Items</h4></div>
+
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="progressPanel">
+                                <span class="barControl">
+                                    <div class="barContro_space">
+                                        <span class="progress_line" :class="{active:pageOption.progressBar}"></span>
+                                    </div>
+                                </span>
+                            </div>
                             <div class="list-item" v-for="(modelItem,key) in modelItems.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
                                     <div class="cardUpper">
@@ -582,15 +590,25 @@
                                 <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
                                 <!--                                <p>99999</p></div></a></li>-->
                                 <li><a aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==1}"
-                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="researchItemClick(1)">Articles<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==1}">
-                                    <p>100</p></div></a></li>
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="articleClick(1)">Articles<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==1}">
+                                    <p th:text="${userInfo.articlesCount}">1000</p></div></a></li>
                                 <li><a aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==2}"
-                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="researchItemClick(2)">Projects<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==2}">
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="projectClick(2)">Projects<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==2}">
                                     <p>100</p></div></a></li>
                                 <li><a aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==3}"
-                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="researchItemClick(3)">Conferences<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==3}">
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conferenceClick(3)">Conferences<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==3}">
                                     <p>100</p></div></a></li>
 
+                            </ul>
+                            <ul>
+                                <button class="viewMoreButton" @click="addArticleClick()"><p style="font-weight: 700;font-size: 25px;">+</p></button>
+                                <input type="text" id="titleInput">
+                                <input type="text" id="firstAuthorInput">
+                                <input type="text" id="secAuthorInput">
+                                <input type="text" id="journalInput">
+                                <input type="text" id="startPageInput">-<input type="text" id="endPageInput">
+                                <input type="text" id="dateInput">
+                                <input type="text" id="linkInput">
                             </ul>
                         </div>
 
@@ -603,52 +621,55 @@
                                 </div>
                             </div>
                             <div class="contentColContainer modelTable" style="margin-top: 0">
-<!--                                <div class="list-item" v-for="(modelItem,key) in modelItems.result">-->
-                                    <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
-                                        <div class="cardUpper">
-<!--                                            <div class="imgPallet">-->
-<!--                                                <a  :href="'/modelItem/'+ modelItem.oid" target="_blank">-->
-<!--                                                    <img  class="modelImg" :src="modelItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
-<!--                                                </a>-->
-<!--                                            </div>-->
-<!--                                            <div style="flex: 1;">-->
-<!--                                                <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #78d3f9">-->
-<!--                                                    <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4></div>-->
-<!--                                                    <div>-->
-<!--                                                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{modelItem.viewCount}}-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
-<!--                                                    <div class="modelInfo">-->
-<!--                                                        <p>{{modelItem.description}}</p>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
+                                <div class="list-item" v-for="(article,key) in articles.result">
+                                    <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
+                                        <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                            <div class="cardHeadContainer" style="height: 72px;">
+                                                <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                    <div style="display: flex">
+
+                                                            <h4>{{article.title}}</h4>
+
+                                                        <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                    </div>
+                                                </div>
+                                                    <div class="viewCount">
+                                                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{article.viewCount}}
+                                                    </div>
+                                                </div>
+                                            <div class="cardContentContainer">
+                                                <div>
+                                                    <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
+                                                    <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
+                                                    <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
+                                                    <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
+                                                </div>
+                                            </div>
                                         </div>
+
                                         <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-<!--                                            <div style="padding-right: 10px">-->
-<!--                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}-->
-<!--                                            </div>-->
-<!--                                            <div class="tags" v-if="modelItem.keywords.length>0">-->
-<!--                                                <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>-->
-<!--                                            </div>-->
+                                            <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                         </div>
                                     </div>
+
                                 </div>
                                 <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
                                 <div>
                                     <div class="text-center" style="margin:15px 0;">
                                         <el-pagination
-<!--                                                @current-change="modelItemHandleCurrentChange"-->
-<!--                                                :current-page="modelItems.currentPage"-->
-<!--                                                :page-size="pageOption.pageSize"-->
-<!--                                                layout="total, prev, pager, next, jumper"-->
-<!--                                                :total="modelItems.total">-->
+                                            @current-change="articleHandleCurrentChange"
+                                            :current-page="articles.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="articles.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
                                         </el-pagination>
                                     </div>
                                 </div>
-                                <!--                        </div>-->
                             </div>
+                        </div>
+
                         <div class="itemContainer" :class="{showActive:researchIndex==2}" >
                             <div  class="contentColContainer" style="margin-bottom: 0">
                                 <div class="subTitle" >
@@ -656,52 +677,55 @@
                                 </div>
                             </div>
                             <div class="contentColContainer modelTable" style="margin-top: 0">
-                                <!--                                <div class="list-item" v-for="(modelItem,key) in modelItems.result">-->
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
-                                    <div class="cardUpper">
-                                        <!--                                            <div class="imgPallet">-->
-                                        <!--                                                <a  :href="'/modelItem/'+ modelItem.oid" target="_blank">-->
-                                        <!--                                                    <img  class="modelImg" :src="modelItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
-                                        <!--                                                </a>-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div style="flex: 1;">-->
-                                        <!--                                                <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #78d3f9">-->
-                                        <!--                                                    <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4></div>-->
-                                        <!--                                                    <div>-->
-                                        <!--                                                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{modelItem.viewCount}}-->
-                                        <!--                                                    </div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
-                                        <!--                                                    <div class="modelInfo">-->
-                                        <!--                                                        <p>{{modelItem.description}}</p>-->
-                                        <!--                                                    </div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                            </div>-->
+                                <div class="list-item" v-for="(project,key) in projects.result">
+                                    <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
+                                        <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                            <div class="cardHeadContainer" style="height: 72px;">
+                                                <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                    <div style="display: flex">
+
+                                                        <h4>{{project.title}}</h4>
+
+                                                        <div :class="project.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewCount">
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="cardContentContainer">
+                                                <div>
+                                                    <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
+                                                    <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
+                                                    <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
+                                                    <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                            <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                        </div>
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                            <div style="padding-right: 10px">-->
-                                        <!--                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div class="tags" v-if="modelItem.keywords.length>0">-->
-                                        <!--                                                <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                            </div>-->
+
+                                </div>
+                                <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                                <div>
+                                    <div class="text-center" style="margin:15px 0;">
+                                        <el-pagination
+                                                @current-change="projectHandleCurrentChange"
+                                                :current-page="projects.currentPage"
+                                                :page-size="pageOption.pageSize"
+                                                layout="total, prev, pager, next, jumper"
+                                                :total="projects.total"
+                                                :pager-count="pageOption.pageCount"
+                                                background>
+                                        </el-pagination>
                                     </div>
                                 </div>
                             </div>
-                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
-                            <div>
-                                <div class="text-center" style="margin:15px 0;">
-                                    <el-pagination
-<!--                                            @current-change="modelItemHandleCurrentChange"-->
-<!--                                            :current-page="modelItems.currentPage"-->
-<!--                                            :page-size="pageOption.pageSize"-->
-<!--                                            layout="total, prev, pager, next, jumper"-->
-<!--                                            :total="modelItems.total">-->
-                                    </el-pagination>
-                                </div>
-                            </div>
-                            <!--                        </div>-->
                         </div>
+
                         <div class="itemContainer" :class="{showActive:researchIndex==3}" >
                             <div  class="contentColContainer" style="margin-bottom: 0">
                                 <div class="subTitle" >
@@ -709,54 +733,57 @@
                                 </div>
                             </div>
                             <div class="contentColContainer modelTable" style="margin-top: 0">
-                                <!--                                <div class="list-item" v-for="(modelItem,key) in modelItems.result">-->
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
-                                    <div class="cardUpper">
-                                        <!--                                            <div class="imgPallet">-->
-                                        <!--                                                <a  :href="'/modelItem/'+ modelItem.oid" target="_blank">-->
-                                        <!--                                                    <img  class="modelImg" :src="modelItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">-->
-                                        <!--                                                </a>-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div style="flex: 1;">-->
-                                        <!--                                                <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #78d3f9">-->
-                                        <!--                                                    <div><h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4></div>-->
-                                        <!--                                                    <div>-->
-                                        <!--                                                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{modelItem.viewCount}}-->
-                                        <!--                                                    </div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">-->
-                                        <!--                                                    <div class="modelInfo">-->
-                                        <!--                                                        <p>{{modelItem.description}}</p>-->
-                                        <!--                                                    </div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                            </div>-->
+                                <div class="list-item" v-for="(conference,key) in conferences.result">
+                                    <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
+                                        <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                            <div class="cardHeadContainer" style="height: 72px;">
+                                                <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                    <div style="display: flex">
+
+                                                        <h4>{{conference.title}}</h4>
+
+                                                        <div :class="conference.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewCount">
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="cardContentContainer">
+                                                <div>
+                                                    <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
+                                                    <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
+                                                    <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
+                                                    <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                            <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                        </div>
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                            <div style="padding-right: 10px">-->
-                                        <!--                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div class="tags" v-if="modelItem.keywords.length>0">-->
-                                        <!--                                                <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                            </div>-->
+
+                                </div>
+<!--                                                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                                <div>
+                                    <div class="text-center" style="margin:15px 0;">
+                                        <el-pagination
+                                                @current-change="conferenceHandleCurrentChange"
+                                                :current-page="conferences.currentPage"
+                                                :page-size="pageOption.pageSize"
+                                                layout="total, prev, pager, next, jumper"
+                                                :total="conferences.total"
+                                                :pager-count="pageOption.pageCount"
+                                                background>
+                                        </el-pagination>
                                     </div>
                                 </div>
-                            </div>
-                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
-                            <div>
-                                <div class="text-center" style="margin:15px 0;">
-                                    <el-pagination
-<!--                                            @current-change="modelItemHandleCurrentChange"-->
-<!--                                            :current-page="modelItems.currentPage"-->
-<!--                                            :page-size="pageOption.pageSize"-->
-<!--                                            layout="total, prev, pager, next, jumper"-->
-<!--                                            :total="modelItems.total">-->
-                                    </el-pagination>
-                                </div>
-                            </div>
-                            <!--                        </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
-                </div>
+                    </div>
+            </div>
 
 
             <!--            info-->
