@@ -25,6 +25,8 @@ public interface ArticleDao extends MongoRepository<Article,String> {
      Page<Article> findByTitleLikeIgnoreCase(String title,Pageable pageable);
 
      Page<Article> findByJournal(String journal,Pageable pageable);
+
+     Page<Article> findByCreatDate(String creatDate,Pageable pageable);
 //
 //
      Page<ArticleResultDTO> findByContributor(String contributor,Pageable pageable);

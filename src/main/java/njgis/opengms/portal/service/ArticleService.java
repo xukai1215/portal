@@ -30,6 +30,45 @@ public class ArticleService {
     @Autowired
     UserDao userDao;
 
+    public JSONObject findNewestArticle(ArticleFindDTO articleFindDTO ,String oid ){
+        int page=articleFindDTO.getPage();
+        int pageSize = articleFindDTO.getPageSize();
+        Boolean asc = articleFindDTO.getAsc();
+
+//        根据创建时间排序
+        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, "creatDate");
+        Pageable pageable= PageRequest.of(page,pageSize,sort);
+        User user=userDao.findFirstByOid(oid);
+        Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(user.getUserName(),pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",articleResultPage.getContent());
+        result.put("total", articleResultPage.getTotalElements());
+        System.out.println(result);
+        return result;
+
+    }
+
+    public JSONObject getByUserOidBySort(ArticleFindDTO articleFindDTO ,String userName ){
+        int page=articleFindDTO.getPage();
+        int pageSize = articleFindDTO.getPageSize();
+        String sortElement=articleFindDTO.getSortElement();
+        Boolean asc = articleFindDTO.getAsc();
+
+
+//        根据创建时间排序
+        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+        Pageable pageable= PageRequest.of(page,pageSize,sort);
+        Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",articleResultPage.getContent());
+        result.put("total", articleResultPage.getTotalElements());
+        System.out.println(result);
+        return result;
+
+    }
+
     public Article addNewArticle(ArticleAddDTO articleAddDTO, String contributor){
         Article article=new Article();
         BeanUtils.copyProperties(articleAddDTO,article);
@@ -59,6 +98,7 @@ public class ArticleService {
         result.put("total", articleResultPage.getTotalElements());
 
         System.out.println("ArticleService");
+
         return result;
     }
 }

@@ -18,6 +18,23 @@ public class ArticleRestController {
     @Autowired
     ArticleService articleService;
 
+    @RequestMapping(value = "/findNewest",method = RequestMethod.GET)
+    JsonResult findNewest(ArticleFindDTO articleFindDTO, @RequestParam(value="oid") String oid){
+        return ResultUtils.success(articleService.findNewestArticle(articleFindDTO,oid));
+    }
+
+    @RequestMapping(value = "/getByUserOidBySort",method = RequestMethod.GET)
+    JsonResult getByUserOidBySort(@RequestBody ArticleFindDTO articleFindDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName=session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+
+        System.out.println("11");
+        return ResultUtils.success(articleService.getByUserOidBySort(articleFindDTO,userName));
+    }
+
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public JsonResult addNewArticle(@RequestBody ArticleAddDTO articleAddDTO, HttpServletRequest httpServletRequest){
         System.out.println(articleAddDTO);

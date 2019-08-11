@@ -57,6 +57,11 @@ new Vue({
                 result:[],
             },
 
+            newestArticle:{
+
+                result:[],
+            },
+
             articleAdd:{
                 title:'aa',
                 author:[],
@@ -457,6 +462,36 @@ new Vue({
 
         },
 
+        articleNewestLoad(){
+            const hrefs=window.location.href.split('/');
+          $.ajax({
+              data:{
+                  page:0,
+                  pageSize:1,
+                  asc:false,
+                  oid:hrefs[hrefs.length-1],
+              },
+              url:"/article/findNewest",
+              async:true,
+              success: (json)=>{
+                  if(json.code==0){
+                      const data=json.data;
+                      setTimeout(
+                          ()=>{
+                              // this.newestArticle.total=data.total;
+                              this.newestArticle.result=data.list;
+                              this.pageOption.progressBar=false;
+                          },500)
+                      console.log(this.newestArticle.result);
+                      console.log(this.newestArticle);
+                  }else{
+                      console.log("search data item failed.")
+                  }
+              }
+
+          })
+        },
+
         ArticleAddToBack(){
             var obj=
                     {
@@ -501,6 +536,7 @@ new Vue({
         this.articleHandleCurrentChange(1);
         this.projectHandleCurrentChange(1);
         this.conferenceHandleCurrentChange(1);
+        this.articleNewestLoad();
     }
 
 

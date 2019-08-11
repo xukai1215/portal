@@ -940,7 +940,8 @@ public class RepositoryService {
 
     public JSONObject getUnitsByUserId(String userId, int page, String sortType, int asc){
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        String sortElement="createTime";
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 

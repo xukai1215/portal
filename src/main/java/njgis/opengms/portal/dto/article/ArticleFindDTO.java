@@ -10,6 +10,7 @@ public class ArticleFindDTO {
     private Integer page=1;
     private Integer pageSize=10;
     private Boolean asc = false;
+    private String sortElement="a";
 
 //    private String searchText;
 //    public Integer getPage() {

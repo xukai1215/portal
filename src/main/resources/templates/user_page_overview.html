@@ -169,7 +169,146 @@
                                 <button id="viewMoreResearch" class="viewMoreButton" @click="menu_Click(3)" style="" >View More</button>
                             </div>
                         </div>
-                        <div class="contentContainer" >
+                        <div class="contentContainer" style="width: 100%;margin-top: 0px; align-items: flex-start">
+                            <div class="contentColContainer" style="width: 100%;">
+                                <div class="subTitle" style="border:1px solid #c2c2c2 ;border-radius: 4px 4px 0 0 ">
+                                    <h3 style="margin: 0 0 0 15px " >Articles</h3>
+                                    <div class="statsNumber2" style="height: 30px;margin-left: 25px;padding: 0 5px">
+                                        <h3 th:text="${userInfo.articlesCount}" style="color: #0f9afa;margin: 0">10000</h3>
+                                    </div>
+                                    <div class="innerBorder" style="border-bottom-color: #ffffff;margin: 0 5px"></div>
+                                </div>
+<!--                                <div class="innerBorder" style="border-bottom-color: #c2c2c2;"></div>-->
+                                <div class="cardDowner colArrange" style="padding-bottom: 15px;justify-content: flex-start;width: 100%">
+                                    <div class="splitBlock" style="background-color: #ffffff">
+                                        <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Hottest</h4>
+                                        </div>
+                                        <div class="arrowDownerBig"></div>
+                                    </div>
+<!--                                    此处v-for没有用但是加载速度会变快-->
+                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                         <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
+                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                                 <div class="cardHeadContainer" style="height: 72px;">
+                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                         <div style="display: flex">
+
+                                                             <h4>{{articles.result[0].title}}</h4>
+
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                                 <div class="cardContentContainer">
+                                                     <div>
+                                                         <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
+                                                         <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
+                                                         <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
+                                                         <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+                                             <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                 <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
+                                             </div>
+                                         </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="contentColContainer" style="width: 100%;">
+                                <div class="subTitle" style="border:1px solid #c2c2c2 ;border-radius: 4px 4px 0 0 ">
+                                    <h3 style="margin: 0 0 0 15px " >Projects</h3>
+                                    <div class="statsNumber2" style="height: 30px;margin-left: 25px;padding: 0 5px">
+                                        <h3 th:text="${userInfo.articlesCount}" style="color: #0f9afa;margin: 0">10000</h3>
+                                    </div>
+                                    <div class="innerBorder" style="border-bottom-color: #ffffff;margin: 0 5px"></div>
+                                </div>
+                                <!--                                <div class="innerBorder" style="border-bottom-color: #c2c2c2;"></div>-->
+                                <div class="cardDowner colArrange" style="padding-bottom: 15px;justify-content: flex-start;width: 100%">
+                                    <div class="splitBlock" style="background-color: #ffffff">
+                                        <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Newest</h4>
+                                        </div>
+                                        <div class="arrowDownerBig"></div>
+                                    </div>
+                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
+                                            <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                                <div class="cardHeadContainer" style="height: 72px;">
+                                                    <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                        <div style="display: flex">
+
+                                                            <h4>{{articles.result[0].title}}</h4>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="cardContentContainer">
+                                                    <div>
+                                                        <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
+                                                        <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
+                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
+                                                        <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="contentColContainer" style="width: 100%;">
+                                <div class="subTitle" style="border:1px solid #c2c2c2 ;border-radius: 4px 4px 0 0 ">
+                                    <h3 style="margin: 0 0 0 15px " >Conferences</h3>
+                                    <div class="statsNumber2" style="height: 30px;margin-left: 25px;padding: 0 5px">
+                                        <h3 th:text="${userInfo.articlesCount}" style="color: #0f9afa;margin: 0">10000</h3>
+                                    </div>
+                                    <div class="innerBorder" style="border-bottom-color: #ffffff;margin: 0 5px"></div>
+                                </div>
+                                <!--                                <div class="innerBorder" style="border-bottom-color: #c2c2c2;"></div>-->
+                                <div class="cardDowner colArrange" style="padding-bottom: 15px;justify-content: flex-start;width: 100%">
+                                    <div class="splitBlock" style="background-color: #ffffff">
+                                        <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Newest</h4>
+                                        </div>
+                                        <div class="arrowDownerBig"></div>
+                                    </div>
+                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
+                                            <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                                <div class="cardHeadContainer" style="height: 72px;">
+                                                    <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                        <div style="display: flex">
+
+                                                            <h4>{{articles.result[0].title}}</h4>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="cardContentContainer">
+                                                    <div>
+                                                        <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
+                                                        <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
+                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
+                                                        <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,46 +319,38 @@
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
                         </div>
                         <div class="contentContainer colArrange" >
-                            <div class="contentContainer colArrange" style="height: 120px">
-                                <h3 th:text="${userInfo.affiliation}">NNU</h3>
-<!--                                <h4 th:text="${userInfo.}">school of geo</h4>-->
-<!--                                <h4 th:text="${userInfo.}">student</h4>-->
+                            <div class="contentContainer" style="height: 80px;padding-left: 0px; ">
+                                <div class="contentColContainer" style="width: 300px;align-items: flex-start;padding-left: 10px;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                    <h3>NanJing Normal University </h3>
+                                    <h4>school of geo</h4>
+                                    <h4>student</h4>
 <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
+                                </div>
+                                <div class="institutionIcon">
+                                    <img style="width: 60px;height: 60px" src="/static/img/icon/institutionIcon.png">
+                                </div>
                             </div>
 <!--                            <div class="innerBorder"></div>-->
-                            <div class="contentContainer colArrange">
-                                <div class="itemCardCol wzhFilter_Lab" style="height: 130px;justify-content: flex-start;margin-top: -30px;margin-left: 12px;border: none">
-                                    <div class="containerWithBorder"> <h3 style="color: #f0f0f0;margin: 0">Laboratory</h3></div>
-                                    <h4 style="color: #f1f1f1">VGE</h4>
-                                    <h4 style="color: #f1f1f1">lab leader:&nbsp<span> CM</span></h4>
+                            <div class="contentContainer colArrange" style="height: 100px">
+                                <div class="itemCardCol wzhFilter_Lab" style="height: 130px;justify-content: flex-start;margin-top: 0;margin-left: 12px;border: none">
+                                    <div class="greyShade" style="padding-left: 18px">
+                                        <div class="containerWithBorder"> <h3 style="color: #f0f0f0;margin: 0">Laboratory</h3></div>
+                                        <h4 style="color: #f1f1f1;margin-left: 25px">VGE</h4>
+                                        <h4 style="color: #f1f1f1;margin-left: 25px">lab leader:&nbsp<span> CM</span></h4>
+                                    </div>
 
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div id="contactInfo" class="contentColContainer">
+                    <div id="contactInfoAll" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
                         </div>
-                        <div id="contactTable" class="contentContainer" >
-                            <div class="itemCardCol" data-target="#phoneNum" data-toggle="collapse" style="width: 50%;height: 100px;align-items: center">
-                                <div style="width: 80px; height: 80px;background-color: white;margin-top: 2px"><img class="modelImg" src="../../../static/img/carousels/phone.jpg"> </div>
-                                <div id="phoneNum" class="collapse" >
-                                    <p th:text="${userInfo.phone}">111</p>
-                                </div>
-                            </div>
-                            <div class="itemCardCol" style="width: 35%;height: 100px">
-                                <p th:text="${userInfo.weChat}">111</p>
-                            </div>
-                            <div class="itemCardRow" style="width: 50%;height: 100px">
-
-                            </div>
-                            <div class="itemCardRow" style="width: 35%;height: 100px">
-
-                            </div>
+                        <div class="contentContainer" >
                         </div>
-                </div>
+                    </div>
                 </div>
             </div>
 
@@ -648,7 +779,7 @@
                                         </div>
 
                                         <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                            <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                            <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                         </div>
                                     </div>
 
@@ -815,11 +946,46 @@
                     </div>
                 </div>
                 <div class="rigntContentContainer" style="width: 420px">
-                    <div id="contactInfoAll" class="contentColContainer">
+                    <div id="labInfo" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Lab</h4></div>
+                        </div>
+                        <div class="contentColContainer" style="flex: 1; box-shadow: none">
+                            <div class="infoContainer">
+                                <h3 style="font-weight: 600;">Key Laboratory of Virtual Geographic Environment, Ministry of Education of PRC</h3>
+                            </div>
+                            <div class="infoContainer">
+                                <p>Lab Leader</p>
+                                <h3>Min Chen</h3>
+                            </div>
+                            <div class="infoContainer">
+                                <p>Lab Member</p>
+                                <h3>...</h3>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="contactInfo" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
                         </div>
-                        <div class="contentContainer" >
+                        <div id="contactTable" class="contentContainer" >
+                            <div class="itemCardCol" data-target="#phoneNum" data-toggle="collapse" style="width: 50%;height: 100px;align-items: center">
+                                <div style="width: 80px; height: 80px;background-color: white;margin-top: 2px"><img class="modelImg" src="../../../static/img/carousels/phone.jpg"> </div>
+                                <div id="phoneNum" class="collapse" >
+                                    <p th:text="${userInfo.phone}">111</p>
+                                </div>
+                            </div>
+                            <div class="itemCardCol" style="width: 35%;height: 100px">
+                                <p th:text="${userInfo.weChat}">111</p>
+                            </div>
+                            <div class="itemCardRow" style="width: 50%;height: 100px">
+
+                            </div>
+                            <div class="itemCardRow" style="width: 35%;height: 100px">
+
+                            </div>
                         </div>
                     </div>
                 </div>
