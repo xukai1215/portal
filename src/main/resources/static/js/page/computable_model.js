@@ -360,12 +360,14 @@ new Vue({
         //     }
         // }
         console.log(behavior)
-        diagram.loadJSON(JSON.stringify(behavior).replace("\"Event\":", "\"events\":"));
+        let loadjson=JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
+        console.log(JSON.parse(loadjson))
+        diagram.loadJSON(loadjson);
 
         diagram.onStatedbClick(function(state){
             diagram.showStateWin({
                 x : 500,
-                y : $(window).scrollTop() + 100
+                y : $(window).scrollTop() + 60
             },{
                 width : 520,
                 height : 650
