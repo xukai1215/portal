@@ -180,11 +180,11 @@
                             </colgroup>
                             <tbody>
                                 <tr>
-                                    <td>Style</td>
-                                    <td th:text="${modelInfo.mdlJson.ModelClass[0].type}"></td>
+                                    <td style="font-weight: bold;">Style</td>
+                                    <td th:text="${modelInfo.mdlJson.ModelClass[0].style}"></td>
                                 </tr>
                                 <tr th:each="category,key:${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category}">
-                                    <td th:if="${key.index}==0" th:attr="rowspan=${#lists.size(modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category)}">Categories</td>
+                                    <td style="font-weight: bold;" th:if="${key.index}==0" th:attr="rowspan=${#lists.size(modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category)}">Categories</td>
                                     <td th:text="${category.principle}+' / '+${category.path}"></td>
                                 </tr>
                             </tbody>
@@ -198,23 +198,23 @@
                             </colgroup>
                             <tbody>
                             <tr>
-                                <td>Language</td>
+                                <td style="font-weight: bold;">Language</td>
                                 <td colspan="2" th:text="${local.local}"></td>
                             </tr>
                             <tr>
-                                <td>Name</td>
+                                <td style="font-weight: bold;">Name</td>
                                 <td colspan="2" th:text="${local.localName}"></td>
                             </tr>
                             <tr>
-                                <td>Keywords</td>
+                                <td style="font-weight: bold;">Keywords</td>
                                 <td colspan="2" th:text="${local.Keywords}"></td>
                             </tr>
                             <tr>
-                                <td>Abstract</td>
+                                <td style="font-weight: bold;">Abstract</td>
                                 <td colspan="2" th:text="${local.Abstract}"></td>
                             </tr>
                             <tr>
-                                <td>Wiki</td>
+                                <td style="font-weight: bold;">Wiki</td>
                                 <td colspan="2" th:text="${local.wiki}"></td>
                             </tr>
                             <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].LocalAttributes[0].LocalAttribute[key.index].Mechanism}!=null">-->
@@ -256,14 +256,14 @@
                                 </div>
                                 <div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies}!=''">
                                     <tr th:each="assembly,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies[0].Assembly}">
-                                        <td th:if="${key.index}==0" th:attr="rowspan=${key.size}">HardwareConfigures</td>
+                                        <td th:if="${key.index}==0" th:attr="rowspan=${key.size}">Assemblies</td>
                                         <td th:text="${assembly.name}"></td>
                                         <td th:text="${assembly.path}"></td>
                                     </tr>
                                 </div>
                                 <div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].SupportiveResources}!=''">
                                     <tr th:each="support,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].SupportiveResources[0].Add}">
-                                        <td th:if="${key.index}==0" th:attr="rowspan=${key.size}">HardwareConfigures</td>
+                                        <td th:if="${key.index}==0" th:attr="rowspan=${key.size}">SupportiveResources</td>
                                         <td th:text="${support.type}"></td>
                                         <td th:text="${support.name}"></td>
                                     </tr>
