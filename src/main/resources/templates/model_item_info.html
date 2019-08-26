@@ -71,13 +71,16 @@
             float: left;
         }
 
+        .demo-table-expand .el-form-item {
+            width: 100%;
+        }
+
 
     </style>
 </head>
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
-
 
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
@@ -149,7 +152,7 @@
                     </div>
                 </div>
                 <div class="fullPaper text-center hide">
-                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Text<i class="fa fa-angle-down"
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i class="fa fa-angle-down"
                                                                                               style="margin-left: 10px;color:red;font-weight: bold"
                                                                                               aria-hidden="true"></i></a>
                 </div>
@@ -158,7 +161,7 @@
             <div id="related_models" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Related Models</h4>
+                        <h4>Related Items</h4>
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
@@ -167,12 +170,12 @@
                             <div class="list_panel clearfix" th:each="model:${modelItems}">
                                 <!--<div th:text="${model.image}"></div>-->
                                 <div class="img" th:switch="${model.image}">
-                                    <img th:case="''" src="/static/img/model/conceptual.png">
-                                    <img th:case="null" src="/static/img/model/conceptual.png">
+                                    <img th:case="''" src="/static/img/model/model.png">
+                                    <img th:case="null" src="/static/img/model/model.png">
                                     <img th:case="*" th:src="${model.image}">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/conceptualModel/'+${model.oid}" target="_blank"
+                                    <a th:href="'/modelItem/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -181,16 +184,17 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
-                                Add Related ModelItem
-                            </button>
+                            <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Model Item
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(modelItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related model item. You can add a model item.
+                                There is no related model item. You can bind model items.
                             </h5>
-                            <button class="createConceptual btn btn-default" type="button"
-                                    style="display: inline-block;">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(1)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -215,16 +219,17 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
+                            <el-button @click="addRelation(2)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
                                 Add Related Conceptual Model
-                            </button>
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(conceptualModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related conceptual model. You can add a conceptual model.
+                                There is no related conceptual model. You can bind conceptual models.
                             </h5>
-                            <button class="createConceptual btn btn-default" type="button"
-                                    style="display: inline-block;">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(2)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -248,15 +253,16 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createLogical btn btn-primary btn-lg btn-block">
+                            <el-button @click="addRelation(3)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
                                 Add Related Logical Model
-                            </button>
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(logicalModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related logical model. You can add a logical model.
+                                There is no related logical model. You can bind logical models.
                             </h5>
-                            <button class="createLogical btn btn-default" type="button" style="display: inline-block;">
+                            <button class="btn btn-default" type="button" style="display: inline-block;" @click="addRelation(3)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -279,21 +285,150 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createComputable btn btn-primary btn-lg btn-block">
+                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
                                 Add Related Computable Model
-                            </button>
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can add a computable model.
+                                There is no related computable model. You can bind computable models.
                             </h5>
-                            <button class="createComputable btn btn-default" type="button"
-                                    style="display: inline-block;">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(4)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
                         </div>
 
+                    </el-tab-pane>
+                    <el-tab-pane label="Concept & Semantic" name="Concept & Semantic">
+                        <div th:if="${#lists.size(concepts)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${concepts}">
+                                <div class="img">
+                                    <img src="/static/img/model/semantics.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/concept/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(5)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Concept & Semantic
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(concepts)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related concept & semantic. You can bind concepts or semantics.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(5)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Spatial Reference" name="Spatial Reference">
+                        <div th:if="${#lists.size(spatialReferences)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${spatialReferences}">
+                                <div class="img">
+                                    <img src="/static/img/model/spatialreference.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/spatialReference/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(6)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Spatial Reference
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(spatialReferences)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related spatial reference. You can bind spatial references.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(6)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Data Template" name="Data Template">
+                        <div th:if="${#lists.size(templates)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${templates}">
+                                <div class="img">
+                                    <img src="/static/img/model/template.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/template/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.type}+' | '+${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(7)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Data Template
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(templates)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related data template. You can bind data templates.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(7)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Unit & Metric" name="Unit & Metric">
+                        <div th:if="${#lists.size(units)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${units}">
+                                <div class="img">
+                                    <img src="/static/img/model/unit.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/unit/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description_EN!=''?model.description_EN:model.description_ZH}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(8)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Unit & Metrics
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(units)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related Unit & Metric. You can bind units or metrics.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(8)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -478,7 +613,7 @@
                 </div>
                 <div class="block_content">
                     <el-table
-                            :data="tableData6"
+                            :data="refTableData"
                             border
                             stripe
                             style="width: 100%">
@@ -669,7 +804,7 @@
 
     </div>
 
-    <el-dialog :visible.sync="dialogTableVisible" title="Add Relation" width="70%" top="64px">
+    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">
 
         <el-card class="box-card" style="width:40%;float: left;">
             <div slot="header" class="clearfix">
@@ -678,30 +813,32 @@
             </div>
             <el-table
                     :data="tableData"
-                    style="float:left"
-                    max-height="500">
+                    ref="leftTable"
+                    :max-height="tableMaxHeight">
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form label-position="left" inline class="demo-table-expand">
                             <el-form-item label="Contributor">
-                                <span>{{ props.row.name }}</span>
+                                <span>{{ props.row.author }}</span>
                             </el-form-item>
 
                         </el-form>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        label="Name"
-                        prop="id">
+                        label="Name">
+                    <template slot-scope="props">
+                        <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                    </template>
                 </el-table-column>
 
-                <el-table-column fixed="right" label="Operation">
+                <el-table-column fixed="right" label="Operation" width="100">
                     <template slot-scope="scope">
 
                         <el-button
                                 size="mini"
                                 type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">删除
+                                @click="handleDelete(scope.$index, scope.row)">Delete
                         </el-button>
                     </template>
                 </el-table-column>
@@ -711,41 +848,55 @@
 
         <el-card class="box-card" style="width:60%;">
             <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
             <el-table
-                    :data="tableData"
-                    style="float:left;margin-top:17px;"
-                    max-height="500">
+                    :data="pageOption.searchResult"
+                    style="margin-top:17px;"
+                    :max-height="tableMaxHeight">
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="Contributor">
-                                <span>{{ props.row.name }}</span>
+                            <el-form-item label="Detail">
+                                <span>{{ props.row.description }}</span>
                             </el-form-item>
 
                         </el-form>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        label="Name"
-                        prop="id">
+                        label="Name">
+                    <template slot-scope="props">
+                        <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         label="Contributor"
-                        prop="name">
+                        prop="author">
                 </el-table-column>
                 <el-table-column fixed="right" label="Operation" width="100">
                     <template slot-scope="scope">
                         <el-button
                                 size="mini"
-                                @click="handleEdit(scope.$index, scope.row)">编辑
+                                @click="handleEdit(scope.$index, scope.row)">Add
                         </el-button>
 
                     </template>
                 </el-table-column>
             </el-table>
+            <el-pagination style="text-align: center;margin-top:20px"
+                           @current-change="handlePageChange"
+                           :current-page="pageOption.currentPage"
+                           layout="total, prev, pager, next, jumper"
+                           :page-size="5"
+                           :total="pageOption.total">
+            </el-pagination>
         </el-card>
+        <div slot="footer" class="dialog-footer">
+            <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+    <el-button @click="dialogTableVisible = false;">Cancel</el-button>
+    <el-button type="primary" @click="confirm()">OK</el-button>
+  </div>
     </el-dialog>
 
     <div th:replace="fragments/footer :: footer"></div>
@@ -765,6 +916,7 @@
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
-<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 
 </html>

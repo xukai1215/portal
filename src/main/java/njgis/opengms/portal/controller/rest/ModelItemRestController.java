@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
@@ -120,7 +121,24 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItemService.listByUserOid(modelItemFindDTO,oid));
     }
 
+    @RequestMapping(value="/getRelation",method = RequestMethod.GET)
+    JsonResult getRelation(@RequestParam(value = "type") String type,@RequestParam(value = "oid") String oid){
 
+        JSONArray result=modelItemService.getRelation(oid,type);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/setRelation",method = RequestMethod.POST)
+    JsonResult setRelation(@RequestParam(value="oid") String oid,
+                           @RequestParam(value="type") String type,
+                           @RequestParam(value = "relations[]") List<String> relations){
+
+        String result=modelItemService.setRelation(oid,type,relations);
+
+        return ResultUtils.success(result);
+
+    }
 
     @RequestMapping (value="/findNamesByName",method = RequestMethod.GET)
     JsonResult findNameByName(@RequestParam(value = "name") String name){

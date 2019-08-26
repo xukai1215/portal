@@ -3,11 +3,6 @@
 
 <body>
 <div th:fragment="unlog">
-    <style>
-        .el-menu-item{
-            padding:0px;
-        }
-    </style>
 <!--    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#00001e"-->
 <!--             text-color="#fff"-->
 <!--             active-text-color="#00c0ff"-->
@@ -45,12 +40,12 @@
 <!--    </el-menu>-->
 
 
-    <div class="wrap">
+    <div class="wrap" >
         <div id="mainBar" role="mainBar">
             <ul role="menubar" class="main">
                 <!--            <div tabindex="0">-->
                 <div class="strip" style="float: left;margin-left: 5%">
-                    <li id="dropstrip" style="width: 25px"><a id="phoneStrip" class="fa fa-navicon fa-2x" href="###"></a></li>
+                    <li id="dropstrip" style="width: 25px"><a id="phoneStrip" class="fa fa-navicon fa-2x" href="#"></a></li>
                 </div>
                 <li class="mainBarLogo" style="width: 230px;"><a href="/home" style="padding:20px 2px"></a></li>
                 <!--        </div>-->
@@ -86,7 +81,7 @@
                 </div>
                 <div class="phoneLoged">
                     <li id="phoneUserDrop" style="float: right;width: 35px; margin-right: 5%;">
-                    <a href="" style="padding-top: 10px;">
+                    <a href="#" style="padding-top: 10px;">
                         <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
                     </a>
                     </li>

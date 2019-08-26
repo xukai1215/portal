@@ -20,6 +20,8 @@ public interface ConceptDao extends MongoRepository<Concept,String> {
 
     Concept findByOid(String oid);
 
+    Concept findFirstByOid(String oid);
+
     Page<Concept> findByParentId(String parentId, Pageable pageable);
 
     Page<Concept> findByNameContainsIgnoreCase(String name, Pageable pageable);

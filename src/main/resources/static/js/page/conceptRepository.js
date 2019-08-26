@@ -16,7 +16,7 @@ new Vue({
             pageOption: {
                 paginationShow:false,
                 progressBar: true,
-                sortAsc: false,
+                sortAsc: true,
                 currentPage: 1,
                 pageSize: 10,
                 sortType: "default",
@@ -773,9 +773,9 @@ new Vue({
             query.page=data.page;
             query.sortType= this.pageOption.sortType;
             if(data.asc){
-                query.asc= 0;
+                query.asc= 1;
             }else{
-                query.asc = 1;
+                query.asc = 0;
             }
             query.searchText=data.searchText;
 

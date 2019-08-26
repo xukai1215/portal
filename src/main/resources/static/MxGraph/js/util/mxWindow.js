@@ -469,7 +469,7 @@ mxWindow.prototype.activate = function()
 			
 			if (elt != null && elt.style != null)
 			{
-				elt.style.zIndex = index;
+				elt.style.zIndex = 999;
 			}
 		}
 		
@@ -1082,7 +1082,13 @@ mxWindow.prototype.setVisible = function(visible)
  */
 mxWindow.prototype.show = function()
 {
+	this.div.style.position='absolute'
 	this.div.style.display = '';
+    this.div.style.backgroundColor= "white";
+    this.div.style.borderRadius="2px";
+    this.div.style.boxShadow= "rgba(0, 0, 0, 0.3) 0px 1px 3px";
+    this.div.style.boxSizing="border-box";
+
 	this.activate();
 	
 	var style = mxUtils.getCurrentStyle(this.contentWrapper);
