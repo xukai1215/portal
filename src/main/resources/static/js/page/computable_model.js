@@ -3,7 +3,7 @@ new Vue({
     data: function () {
         return {
             activeIndex:'3-3',
-            activeName: 'Model Item',
+            activeName: 'AttributeSet',
 
             databrowser:[],
             dataid:'',
@@ -294,6 +294,83 @@ new Vue({
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
+        });
+
+
+        diagram = new OGMSDiagram();
+        diagram.init($('#ogmsDiagramContainer'),
+            {
+                width: 1000,       //! Width of panel
+                height: "100%",       //! Height of panel
+                enabled: false      //! Edit enabled
+            },
+            {
+                x: 500,            //! X postion of state information window
+                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop(),              //! Y postion of state information window
+                width: 520,         //! Width of state information window
+                height: 650         //! Height of state information window
+            },
+            {
+                x: 1000,           //! X postion of data reference information window
+                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop(),              //! Y postion of data reference information window
+                width: 300,         //! Width of data reference information window
+                height: 400         //! Height of data reference information window
+            },
+            '/static/MxGraph/images/modelState.png',    //! state IMG
+            '/static/MxGraph/images/grid.gif',          //! Grid IMG
+            '/static/MxGraph/images/connector.gif',     //! Connection center IMG
+            false                       //! Debug button
+        );
+
+        console.log(Behavior)
+
+        var behavior={};
+
+        if (Behavior.StateGroup[0].States== '') {
+            behavior.states = [];
+        }
+        else {
+            behavior.states = Behavior.StateGroup[0].States[0].State;
+        }
+
+        if (Behavior.StateGroup[0].StateTransitions == "") {
+            behavior.transition = [];
+        }
+        else {
+            behavior.transition = Behavior.StateGroup[0].StateTransitions[0].Add;
+        }
+
+        if (Behavior.RelatedDatasets == "") {
+            behavior.dataRef = [];
+        }
+        else {
+            behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
+        }
+
+        // for(i=0;i<behavior.states.length;i++){
+        //     var state=behavior.states[i];
+        //     if(state.hasOwnProperty("Event")){
+        //         if(state.Event.hasOwnProperty("name")){
+        //             behavior.states[i].events=[];
+        //             behavior.states[i].events.push(state.Event);
+        //         }
+        //         else{
+        //             behavior.states[i].events=state.Event;
+        //         }
+        //     }
+        // }
+        console.log(behavior)
+        diagram.loadJSON(JSON.stringify(behavior).replace("\"Event\":", "\"events\":"));
+
+        diagram.onStatedbClick(function(state){
+            diagram.showStateWin({
+                x : 500,
+                y : $(window).scrollTop() + 100
+            },{
+                width : 520,
+                height : 650
+            });
+
         });
     }
 })

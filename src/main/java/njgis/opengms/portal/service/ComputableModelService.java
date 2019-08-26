@@ -20,6 +20,7 @@ import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.XmlTool;
 import njgis.opengms.portal.utils.ZipUtils;
 import njgis.opengms.portal.utils.deCode;
 import org.apache.commons.io.FileUtils;
@@ -33,14 +34,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.IOUtils;
 
-import javax.rmi.CORBA.Util;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -88,7 +87,7 @@ public class ComputableModelService {
     public ModelAndView getPage(String id) {
         //条目信息
         try{
-            System.out.println("1");
+
             ComputableModel modelInfo = getByOid(id);
             modelInfo.setViewCount(modelInfo.getViewCount() + 1);
             computableModelDao.save(modelInfo);
@@ -115,7 +114,7 @@ public class ComputableModelService {
                     classResult.add(array1);
                 }
             }
-            System.out.println("2");
+
             //时间
             Date date = modelInfo.getCreateTime();
             Calendar calendar = Calendar.getInstance();
@@ -128,7 +127,7 @@ public class ComputableModelService {
             //资源信息
             JSONArray resourceArray = new JSONArray();
             List<String> resources = modelInfo.getResources();
-            System.out.println("3");
+
             if (resources != null) {
                 for (int i = 0; i < resources.size(); i++) {
 
@@ -150,7 +149,12 @@ public class ComputableModelService {
                 }
 
             }
-            System.out.println("4");
+            JSONObject mdlJson=(JSONObject)JSONObject.toJSON(modelInfo.getMdlJson());
+            JSONObject modelClass=(JSONObject)mdlJson.getJSONArray("ModelClass").get(0);
+            JSONObject behavior=(JSONObject)modelClass.getJSONArray("Behavior").get(0);
+
+
+
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("computable_model");
             modelAndView.addObject("modelInfo", modelInfo);
@@ -159,9 +163,9 @@ public class ComputableModelService {
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
             modelAndView.addObject("resources", resourceArray);
+            modelAndView.addObject("behavior", behavior);
             modelAndView.addObject("loadPath",htmlLoadPath);
 
-            System.out.println("5");
             return modelAndView;
 
         }catch (Exception e){
@@ -395,6 +399,8 @@ public class ComputableModelService {
                         }
 
                         computableModel.setMdl(content);
+                        JSONObject mdlJson = XmlTool.documentToJSONObject(content);
+                        computableModel.setMdlJson(mdlJson);
                     }
                     else{
                         System.out.println("mdl文件未找到!");

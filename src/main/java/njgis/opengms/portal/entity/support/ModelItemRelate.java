@@ -25,8 +25,8 @@ public class ModelItemRelate {
     List<String> computableModels;
 
     List<String> concepts;
-    List<String> spatialReference;
-    List<String> dataTemplates;
+    List<String> spatialReferences;
+    List<String> templates;
     List<String> units;
 
     public ModelItemRelate(){
