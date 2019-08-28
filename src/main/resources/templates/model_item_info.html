@@ -6,16 +6,16 @@
     <title th:text="${modelInfo.name}+' | OpenGMS'">Model Item Info | OpenGMS</title>
     <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
     <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{../static/css/font-awesome/css/font-awesome.min.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/style.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/universal.css}">
-    <link rel="stylesheet" th:href="@{../static/css/base/itemInfo.css}">
-    <link rel="stylesheet" th:href="@{../static/css/page/model_item_info.css}">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/itemInfo.css">
+    <link rel="stylesheet" href="/static/css/page/model_item_info.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
 
     <style>
         #description h1 {
@@ -133,7 +133,7 @@
             <div id="related_models" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Related Models</h4>
+                        <h4>Related Items</h4>
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
@@ -142,12 +142,12 @@
                             <div class="list_panel clearfix" th:each="model:${modelItems}">
                                 <!--<div th:text="${model.image}"></div>-->
                                 <div class="img" th:switch="${model.image}">
-                                    <img th:case="''" src="/static/img/model/conceptual.png">
-                                    <img th:case="null" src="/static/img/model/conceptual.png">
+                                    <img th:case="''" src="/static/img/model/model.png">
+                                    <img th:case="null" src="/static/img/model/model.png">
                                     <img th:case="*" th:src="${model.image}">
                                 </div>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/conceptualModel/'+${model.oid}" target="_blank"
+                                    <a th:href="'/modelItem/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -156,16 +156,17 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
-                                Create New ModelItem
-                            </button>
+                            <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Model Item
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(modelItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related model item. You can contribute a new model item.
+                                There is no related model item. You can bind model items.
                             </h5>
-                            <button class="createConceptual btn btn-default" type="button"
-                                    style="display: inline-block;">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(1)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -190,16 +191,17 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createConceptual btn btn-primary btn-lg btn-block">
-                                Create New Conceptual Model
-                            </button>
+                            <el-button @click="addRelation(2)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Conceptual Model
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(conceptualModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related conceptual model. You can contribute a new conceptual model.
+                                There is no related conceptual model. You can bind conceptual models.
                             </h5>
-                            <button class="createConceptual btn btn-default" type="button"
-                                    style="display: inline-block;">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(2)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -223,15 +225,16 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createLogical btn btn-primary btn-lg btn-block">
-                                Create New Logical Model
-                            </button>
+                            <el-button @click="addRelation(3)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Logical Model
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(logicalModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related logical model. You can contribute a new logical model.
+                                There is no related logical model. You can bind logical models.
                             </h5>
-                            <button class="createLogical btn btn-default" type="button" style="display: inline-block;">
+                            <button class="btn btn-default" type="button" style="display: inline-block;" @click="addRelation(3)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -254,21 +257,150 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <button type="button" class="createComputable btn btn-primary btn-lg btn-block">
-                                Create New Computable Model
-                            </button>
+                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Computable Model
+                            </el-button>
                         </div>
                         <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can contribute a new computable model.
+                                There is no related computable model. You can bind computable models.
                             </h5>
-                            <button class="createComputable btn btn-default" type="button"
-                                    style="display: inline-block;">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(4)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
                         </div>
 
+                    </el-tab-pane>
+                    <el-tab-pane label="Concept & Semantic" name="Concept & Semantic">
+                        <div th:if="${#lists.size(concepts)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${concepts}">
+                                <div class="img">
+                                    <img src="/static/img/model/semantics.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/concept/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(5)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Concept & Semantic
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(concepts)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related concept & semantic. You can bind concepts or semantics.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(5)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Spatial Reference" name="Spatial Reference">
+                        <div th:if="${#lists.size(spatialReferences)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${spatialReferences}">
+                                <div class="img">
+                                    <img src="/static/img/model/spatialreference.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/spatialReference/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(6)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Spatial Reference
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(spatialReferences)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related spatial reference. You can bind spatial references.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(6)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Data Template" name="Data Template">
+                        <div th:if="${#lists.size(templates)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${templates}">
+                                <div class="img">
+                                    <img src="/static/img/model/template.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/template/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.type}+' | '+${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(7)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Data Template
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(templates)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related data template. You can bind data templates.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(7)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Unit & Metric" name="Unit & Metric">
+                        <div th:if="${#lists.size(units)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${units}">
+                                <div class="img">
+                                    <img src="/static/img/model/unit.png">
+                                </div>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/repository/unit/'+${model.oid}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description_EN!=''?model.description_EN:model.description_ZH}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(8)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Add Related Unit & Metrics
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(units)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related Unit & Metric. You can bind units or metrics.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(8)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -280,20 +412,25 @@
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeRelatedDataName" type="border-card" stretch="true">
-                    <el-tab-pane label="Related Data Items" name="Related Data Items" style="width: 100%;height:100%px;">
+                    <el-tab-pane label="Related Data Items" name="Related Data Items"
+                                 style="width: 100%;height:100%px;">
 
-                        <el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
-                            <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                        <el-card v-show="relatedModelNotNull" class="is-hover-shadow relatedModelsInfo"
+                                 v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">
+                            <div><strong>Data: <a :href="checkRelatedData(item)"
+                                                  target="_blank">{{item.name}}</a></strong>
                                 <br><strong>Description:</strong><span>{{item.description}}</span>
 
                             </div>
 
                         </el-card>
-                        <el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary" icon="el-icon-star-off" style="width: 100%">
+                        <el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary"
+                                   icon="el-icon-star-off" style="width: 100%">
 
                             More...
                         </el-button>
-                        <el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo" style="margin-top: 10px;margin-bottom: 10px"  >
+                        <el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo"
+                                 style="margin-top: 10px;margin-bottom: 10px">
                             <div style="
                                     text-align: center;
                                     font-weight: 600;
@@ -303,7 +440,8 @@
 
                             </div>
 
-                            <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">
+                            <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
                                 add the first model for this data
                             </el-button>
                         </el-card>
@@ -336,17 +474,21 @@
                     >
 
 
-                        <el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>
-                        <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >
+                        <el-input v-model="relatedModelsSearchText" placeholder="search related models.."
+                                  @keyup.native="searchFromRelatedModels"></el-input>
+                        <el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll"
+                                 v-loading="loading" @scroll.native="loadMore($event)">
 
-                            <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">
-                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                            <div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels"
+                                 style="margin-top: 10px;margin-bottom: 10px;">
+                                <div><strong>Data: <a :href="checkRelatedData(item)"
+                                                      target="_blank">{{item.name}}</a></strong>
                                     <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                 </div>
                             </div>
                             <div v-if="nomore!=''" style="text-align: center">
-                                <span  >no more data</span>
+                                <span>no more data</span>
                             </div>
 
 
@@ -355,7 +497,8 @@
 
                         <span slot="footer" class="dialog-footer">
                                 <el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>
-                                <el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
+                                <el-button type="primary"
+                                           @click="searchRelatedModelsDialogVisible = false">Sure</el-button>
                               </span>
                     </el-dialog>
 
@@ -369,7 +512,8 @@
                                 "><span>Add the models into the current data related models</span></div>
                         <el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">
                             add models
-                        </el-button></br>
+                        </el-button>
+                        </br>
 
                     </el-tab-pane>
 
@@ -381,12 +525,15 @@
                             :before-close="handleClose">
 
 
-                        <el-form :inline="true"  class="demo-form-inline">
-                            <el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created data</el-radio>
+                        <el-form :inline="true" class="demo-form-inline">
+                            <el-radio v-model="value1" label="1" @change="clearSearchResult()">from my created data
+                            </el-radio>
                             <el-radio v-model="value1" label="2" @change="clearSearchResult()">from all data</el-radio>
                         </el-form>
 
-                        <el-input v-model="addModelsSearchText" placeholder="search related models.."  @keyup.enter.native="searchRelatedModels"></el-input></br>
+                        <el-input v-model="addModelsSearchText" placeholder="search related models.."
+                                  @keyup.enter.native="searchRelatedModels"></el-input>
+                        </br>
 
                         <el-alert
                                 title=""
@@ -397,16 +544,20 @@
                         </el-alert>
 
 
-                        <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >
+                        <el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo"
+                                 style="height: 300px;overflow-y: scroll" v-loading="loading"
+                                 @scroll.native="loadAddMore($event)">
 
-                            <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">
-                                <div > <strong>Data: <a :href="checkRelatedData(item)" target="_blank">{{item.name}}</a></strong>
+                            <el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"
+                                     @click.native="selectRelatedModel(item,$event)">
+                                <div><strong>Data: <a :href="checkRelatedData(item)"
+                                                      target="_blank">{{item.name}}</a></strong>
                                     <br><strong>Description:</strong><span>{{item.description}}</span>
 
                                 </div>
                             </el-card>
                             <div v-if="nomore!=''" style="text-align: center">
-                                <span  >no more data</span>
+                                <span>no more data</span>
                             </div>
 
 
@@ -414,7 +565,8 @@
 
 
                         <span slot="footer" class="dialog-footer">
-                                <el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>
+                                <el-button @click="relatedToCurrentData()"
+                                           type="success">RelatedToCurrentData</el-button>
                             <!--<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>-->
                               </span>
                     </el-dialog>
@@ -433,7 +585,7 @@
                 </div>
                 <div class="block_content">
                     <el-table
-                            :data="tableData6"
+                            :data="refTableData"
                             border
                             stripe
                             style="width: 100%">
@@ -532,7 +684,8 @@
 
             </div>
 
-            <div id="Authorship" class="detail_block" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+            <div id="Authorship" class="detail_block"
+                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -545,7 +698,8 @@
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
                                 aria-expanded="true">[Expand]</a></span>
                         <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</div>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true" style="">
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true"
+                             style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
                                     <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
@@ -553,7 +707,8 @@
                                     <dt th:if="${author.email!=''}">Email: &nbsp</dt>
                                     <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
                                     <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
-                                    <dd th:if="${author.homepage!=''}" ><a th:href="${author.homepage}" target="_blank">View</a></dd>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
@@ -571,10 +726,11 @@
 
                     <a th:href="'/knowledgeGraph/'+${modelInfo.knowledgeGraph}">
                         <img src="/static/img/logo/knowledgeGraph.jpg" style="text-align: center;width:100%;">
-                    </a>                </div>
+                    </a></div>
             </div>
 
-            <div id="Modifier" class="detail_block" th:if="${modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+            <div id="Modifier" class="detail_block"
+                 th:if="${modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>History</h4>
@@ -584,16 +740,19 @@
 
                     <div style="text-align: left;">
 
-                            <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
-                                <dl>
-                                    <dt>Last modifier :&nbsp </dt>
-                                    <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}" target="_blank"></a></dd>
-                                    <dt>Last modify time :&nbsp</dt>
-                                    <dd th:text="${lastModifyTime}"></dd>
-                                    <dt>Modify times :&nbsp</dt>
-                                    <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a th:href="'/version/historyList/'+${modelInfo.oid}" target="_blank">View History</a></dd>
-                                </dl>
-                            </div>
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/'+${modelInfo.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
 
                     </div>
                 </div>
@@ -617,6 +776,101 @@
 
     </div>
 
+    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">
+
+        <el-card class="box-card" style="width:40%;float: left;">
+            <div slot="header" class="clearfix">
+                <span>Related Items</span>
+
+            </div>
+            <el-table
+                    :data="tableData"
+                    ref="leftTable"
+                    :max-height="tableMaxHeight">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="Contributor">
+                                <span>{{ props.row.author }}</span>
+                            </el-form-item>
+
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Name">
+                    <template slot-scope="props">
+                        <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                    </template>
+                </el-table-column>
+
+                <el-table-column fixed="right" label="Operation" width="100">
+                    <template slot-scope="scope">
+
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">Delete
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+
+
+        <el-card class="box-card" style="width:60%;">
+            <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
+                <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+            </el-input>
+            <el-table
+                    :data="pageOption.searchResult"
+                    style="margin-top:17px;"
+                    :max-height="tableMaxHeight">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="Detail">
+                                <span>{{ props.row.description }}</span>
+                            </el-form-item>
+
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Name">
+                    <template slot-scope="props">
+                        <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Contributor"
+                        prop="author">
+                </el-table-column>
+                <el-table-column fixed="right" label="Operation" width="100">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">Add
+                        </el-button>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination style="text-align: center;margin-top:20px"
+                           @current-change="handlePageChange"
+                           :current-page="pageOption.currentPage"
+                           layout="total, prev, pager, next, jumper"
+                           :page-size="5"
+                           :total="pageOption.total">
+            </el-pagination>
+        </el-card>
+        <div slot="footer" class="dialog-footer">
+            <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+    <el-button @click="dialogTableVisible = false;">Cancel</el-button>
+    <el-button type="primary" @click="confirm()">OK</el-button>
+  </div>
+    </el-dialog>
+
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
@@ -624,16 +878,17 @@
 </body>
 
 
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
-<script src="../static/js/common/vue-avatar.min.js"></script>
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/common/qrcode.min.js"></script>
-<script src="../static/js/page/model_item_info.js"></script>
-<script src="../static/js/common/loadUser.js"></script>
-<script src="../static/js/common/copy.js"></script>
-<script src="../static/js/common/bootstrap.min.js"></script>
-<script src="../static/js/common/navbar.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/common/qrcode.min.js"></script>
+<script src="/static/js/page/model_item_info.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 
 </html>

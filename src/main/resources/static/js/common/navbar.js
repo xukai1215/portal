@@ -408,3 +408,5 @@ function watchWidth() {
 //         }
 //     }
 // });
+
+ELEMENT.locale(ELEMENT.lang.en);

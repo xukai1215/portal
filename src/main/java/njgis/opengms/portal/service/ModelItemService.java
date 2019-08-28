@@ -73,6 +73,20 @@ public class ModelItemService {
     @Autowired
     ComputableModelDao computableModelDao;
 
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -176,6 +190,10 @@ public class ModelItemService {
         List<String> conceptual=modelItemRelate.getConceptualModels();
         List<String> computable=modelItemRelate.getComputableModels();
         List<String> logical=modelItemRelate.getLogicalModels();
+        List<String> concepts=modelItemRelate.getConcepts();
+        List<String> spatialReferences=modelItemRelate.getSpatialReferences();
+        List<String> templates=modelItemRelate.getTemplates();
+        List<String> units=modelItemRelate.getUnits();
 
         JSONArray modelItemArray=new JSONArray();
         if(modelItems!=null) {
@@ -225,6 +243,65 @@ public class ModelItemService {
             computableArray.add(computableJson);
         }
 
+        JSONArray conceptArray=new JSONArray();
+        if(concepts!=null) {
+            for (int i = 0; i < concepts.size(); i++) {
+                String oid = concepts.get(i);
+                Concept concept = conceptDao.findFirstByOid(oid);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", concept.getName());
+                jsonObj.put("oid", concept.getOid());
+                jsonObj.put("alias", concept.getAlias());
+                jsonObj.put("description", concept.getDescription());
+                jsonObj.put("description_ZH", concept.getDescription_ZH());
+                jsonObj.put("description_EN", concept.getDescription_EN());
+                conceptArray.add(jsonObj);
+            }
+        }
+
+        JSONArray spatialReferenceArray=new JSONArray();
+        if(spatialReferences!=null) {
+            for (int i = 0; i < spatialReferences.size(); i++) {
+                String oid = spatialReferences.get(i);
+                SpatialReference spatialReference = spatialReferenceDao.findByOid(oid);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", spatialReference.getName());
+                jsonObj.put("oid", spatialReference.getOid());
+                jsonObj.put("wkname", spatialReference.getWkname());
+                jsonObj.put("description", spatialReference.getDescription());
+                spatialReferenceArray.add(jsonObj);
+            }
+        }
+
+        JSONArray templateArray=new JSONArray();
+        if(templates!=null) {
+            for (int i = 0; i < templates.size(); i++) {
+                String oid = templates.get(i);
+                Template template = templateDao.findByOid(oid);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", template.getName());
+                jsonObj.put("oid", template.getOid());
+                jsonObj.put("description", template.getDescription());
+                jsonObj.put("type", template.getType());
+                templateArray.add(jsonObj);
+            }
+        }
+
+        JSONArray unitArray=new JSONArray();
+        if(units!=null) {
+            for (int i = 0; i < units.size(); i++) {
+                String oid = units.get(i);
+                Unit unit = unitDao.findByOid(oid);
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", unit.getName());
+                jsonObj.put("oid", unit.getOid());
+
+                jsonObj.put("description_ZH", unit.getDescription_ZH());
+                jsonObj.put("description_EN", unit.getDescription_EN());
+                unitArray.add(jsonObj);
+            }
+        }
+
         //用户信息
         JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
 
@@ -264,6 +341,10 @@ public class ModelItemService {
         modelAndView.addObject("conceptualModels",conceptualArray);
         modelAndView.addObject("logicalModels",logicalArray);
         modelAndView.addObject("computableModels",computableArray);
+        modelAndView.addObject("concepts",conceptArray);
+        modelAndView.addObject("spatialReferences",spatialReferenceArray);
+        modelAndView.addObject("templates",templateArray);
+        modelAndView.addObject("units",unitArray);
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
@@ -455,6 +536,162 @@ public class ModelItemService {
         }
     }
 
+    public JSONArray getRelation(String oid,String type){
+
+        JSONArray result=new JSONArray();
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        ModelItemRelate relation=modelItem.getRelate();
+        List<String> list=new ArrayList<>();
+
+        switch (type){
+            case "modelItem":
+                list=relation.getModelItems();
+                if(list!=null) {
+                    for (String id : list) {
+                        ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", modelItem1.getOid());
+                        item.put("name", modelItem1.getName());
+                        item.put("author", userService.getByUid(modelItem1.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "conceptualModel":
+                list=relation.getConceptualModels();
+                if(list!=null) {
+                    for (String id : list) {
+                        ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", conceptualModel.getOid());
+                        item.put("name", conceptualModel.getName());
+                        item.put("author", userService.getByUid(conceptualModel.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "logicalModel":
+                list=relation.getLogicalModels();
+                if(list!=null) {
+                    for (String id : list) {
+                        LogicalModel logicalModel = logicalModelDao.findFirstByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", logicalModel.getOid());
+                        item.put("name", logicalModel.getName());
+                        item.put("author", userService.getByUid(logicalModel.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "computableModel":
+                list=relation.getComputableModels();
+                if(list!=null) {
+                    for (String id : list) {
+                        ComputableModel computableModel = computableModelDao.findFirstByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", computableModel.getOid());
+                        item.put("name", computableModel.getName());
+                        item.put("author", userService.getByUid(computableModel.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "concept":
+                list=relation.getConcepts();
+                if(list!=null) {
+                    for (String id : list) {
+                        Concept concept = conceptDao.findByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", concept.getOid());
+                        item.put("name", concept.getName());
+                        item.put("author", userService.getByUid(concept.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "spatialReference":
+                list=relation.getSpatialReferences();
+                if(list!=null) {
+                    for (String id : list) {
+                        SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", spatialReference.getOid());
+                        item.put("name", spatialReference.getName());
+                        item.put("author", userService.getByUid(spatialReference.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "template":
+                list=relation.getTemplates();
+                if(list!=null) {
+                    for (String id : list) {
+                        Template template = templateDao.findByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", template.getOid());
+                        item.put("name", template.getName());
+                        item.put("author", userService.getByUid(template.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+            case "unit":
+                list=relation.getUnits();
+                if(list!=null) {
+                    for (String id : list) {
+                        Unit unit = unitDao.findByOid(id);
+                        JSONObject item = new JSONObject();
+                        item.put("oid", unit.getOid());
+                        item.put("name", unit.getName());
+                        item.put("author", userService.getByUid(unit.getAuthor()).getName());
+                        result.add(item);
+                    }
+                }
+                break;
+
+        }
+
+        return result;
+    }
+
+    public String setRelation(String oid,String type,List<String> relations){
+
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        ModelItemRelate relate=modelItem.getRelate();
+
+        switch (type){
+            case "modelItem":
+                relate.setModelItems(relations);
+                break;
+            case "conceptualModel":
+                relate.setConceptualModels(relations);
+                break;
+            case "logicalModel":
+                relate.setLogicalModels(relations);
+                break;
+            case "computableModel":
+                relate.setComputableModels(relations);
+                break;
+            case "concept":
+                relate.setConcepts(relations);
+                break;
+            case "spatialReference":
+                relate.setSpatialReferences(relations);
+                break;
+            case "template":
+                relate.setTemplates(relations);
+                break;
+            case "unit":
+                relate.setUnits(relations);
+                break;
+        }
+
+        modelItem.setRelate(relate);
+        modelItemDao.save(modelItem);
+
+        return "suc";
+    }
+
     public JSONObject bindModel(int type, String name, String oid){
 
         JSONObject result=new JSONObject();
@@ -578,6 +815,7 @@ public class ModelItemService {
             userObj.put("oid",user.getOid());
             userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
             userObj.put("name",user.getName());
+            modelItems.get(i).setAuthor(user.getName());
             users.add(userObj);
         }
 

@@ -78,7 +78,7 @@ public class ComputableModelRestController {
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
     ModelAndView get(@PathVariable ("id") String id){
-        System.out.println("enter it");
+
         return computableModelService.getPage(id);
 
     }

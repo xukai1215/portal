@@ -10,7 +10,7 @@ a{
 }
 
 li a{
-    color:white;
+    /*color:white;*/
 }
 li a:focus,li a:active,li a:hover{
     color:#00c0ff !important;

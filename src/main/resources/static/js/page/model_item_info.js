@@ -5,10 +5,29 @@ new Vue({
     },
     data: function () {
         return {
+            dialogTableVisible:false,
+            relateSearch:"",
+            relateType:"",
+            relateTitle:"",
+            tableMaxHeight:400,
+            tableData: [],
+
+            pageOption: {
+                paginationShow:false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
+
+                total: 264,
+                searchResult: [],
+            },
+
+
             activeIndex:'2',
             activeName: 'Computable Model',
             activeRelatedDataName:'Add Data Items',
-            tableData6: [{
+            refTableData: [{
                 title: 'Anisotropic magnetotransport and exotic longitudinal linear magnetoresistance in WT e2 crystals',
                 authors: 'Zhao Y.,Liu H.,Yan J.,An W.,Liu J.,Zhang X.,Wang H.,Liu Y.,Jiang H.,Li Q.,Wang Y.,Li X.-Z.,Mandrus D.,Xie X.~C.,Pan M.,Wang J.',
                 date: 'jul 2015',
@@ -101,12 +120,12 @@ new Vue({
             let refLink=$(".refLink");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget==refLink[i]){
-                    window.open(this.tableData6[i].links);
+                    window.open(this.refTableData[i].links);
                 }
             }
             //console.log(event.currentTarget);
         },
-        jump(num){
+        jump(){
             $.ajax({
                 type: "GET",
                 url: "/user/load",
@@ -124,38 +143,43 @@ new Vue({
                         window.location.href = "/user/login";
                     }
                     else{
-                        var bindOid=window.location.pathname.substring(11);
-                        this.setSession("bindOid",window.location.pathname.substring(11));
-                        switch (num){
-                            case 1:
-                                window.open("/user/createConceptualModel","_blank")
+                        let arr=window.location.href.split("/");
+                        let bindOid=arr[arr.length-1].split("#")[0];
+                        this.setSession("bindOid",bindOid);
+                        switch (this.relateType){
+                            case "modelItem":
+                                window.open("/user/createModelItem", "_blank")
                                 break;
-                            case 2:
-                                window.open("/user/createLogicalModel","_blank")
+                            case "conceptualModel":
+                                window.open("/user/createConceptualModel", "_blank")
                                 break;
-                            case 3:
-                                window.open("/user/createComputableModel","_blank")
+                            case "logicalModel":
+                                window.open("/user/createLogicalModel", "_blank")
+                                break;
+                            case "computableModel":
+                                window.open("/user/createComputableModel", "_blank")
+                                break;
+                            case "concept":
+                                window.open("/repository/createConcept", "_blank")
+                                break;
+                            case "spatialReference":
+                                window.open("/repository/createSpatialReference", "_blank")
+                                break;
+                            case "template":
+                                window.open("/repository/createTemplate", "_blank")
+                                break;
+                            case "unit":
+                                window.open("/repository/createUnit", "_blank")
                                 break;
                         }
-
-
                     }
                 }
             })
         },
 
-
-
         checkRelatedData(item){
             let curentId=document.location.href.split("/");
             return curentId[0]+"//"+curentId[2]+"/dataItem/"+item.id;
-        },
-        handleClose(done) {
-            this.$confirm('are u sure close this dialog？')
-                .then(_ => {
-                    done();
-                })
-                .catch(_ => {});
         },
         //add related models
 
@@ -185,9 +209,6 @@ new Vue({
 
 
         },
-
-
-
 
         searchRelatedModels(){
 
@@ -415,20 +436,217 @@ new Vue({
                 })
 
 
+        },
+
+        //relate search
+        search(){
+            var data = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage - 1,
+                pageSize: this.pageOption.pageSize,
+                searchText: this.relateSearch,
+                sortType:"default",
+                classifications: ["all"],
+            };
+            let url,contentType;
+            switch (this.relateType){
+                case "concept":
+                    url=this.relateSearch.trim()==""?"/repository/getConceptList":"/repository/searchConcept";
+                    data.asc=data.asc==true?0:1;
+                    data=JSON.stringify(data);
+                    contentType="application/json";
+                    break;
+                case "spatialReference":
+                    url=this.relateSearch.trim()==""?"/repository/getSpatialReferenceList":"/repository/searchSpatialReference";
+                    data.asc=data.asc==true?0:1;
+                    data=JSON.stringify(data);
+                    contentType="application/json";
+                    break;
+                case "template":
+                    url=this.relateSearch.trim()==""?"/repository/getTemplateList":"/repository/searchTemplate";
+                    data.asc=data.asc==true?0:1;
+                    data=JSON.stringify(data);
+                    contentType="application/json";
+                    break;
+                case "unit":
+                    url=this.relateSearch.trim()==""?"/repository/getUnitList":"/repository/searchUnit";
+                    data.asc=data.asc==true?0:1;
+                    data=JSON.stringify(data);
+                    contentType="application/json";
+                    break;
+                default:
+                    url="/"+ this.relateType +"/list";
+                    contentType="application/x-www-form-urlencoded";
+            }
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                async: true,
+                contentType:contentType,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption.total = data.total;
+                        this.pageOption.pages = data.pages;
+                        this.pageOption.searchResult = data.list;
+                        this.pageOption.users = data.users;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow=true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
+        getRelation(){
+            //从地址栏拿到oid
+            let arr=window.location.href.split("/");
+            let oid=arr[arr.length-1].split("#")[0];
+            let data = {
+                oid:oid,
+                type:this.relateType
+            };
+            $.ajax({
+                type: "GET",
+                url: "/modelItem/getRelation",
+                data: data,
+                async: true,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.tableData=data;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
+        handlePageChange(val) {
+
+            this.pageOption.currentPage = val;
+
+            this.search();
+        },
+
+        handleDelete(index,row){
+            console.log(index,row);
+            let table=new Array();
+            for(i=0;i<this.tableData.length;i++){
+                table.push(this.tableData[i]);
+            }
+            table.splice(index,1);
+            this.tableData=table;
+
+        },
+
+        handleEdit(index,row){
+            console.log(row);
+            let flag=false;
+            for(i=0;i<this.tableData.length;i++){
+                let tableRow=this.tableData[i];
+                if(tableRow.oid==row.oid){
+                    flag=true;
+                    break;
+                }
+            }
+            if(!flag){
+                this.tableData.push(row);
+            }
+        },
+
+        confirm(){
+            //从地址栏拿到oid
+            let arr=window.location.href.split("/");
+            let oid=arr[arr.length-1].split("#")[0];
+
+            let relateArr=[];
+            this.tableData.forEach(function(item,index){
+                relateArr.push(item.oid);
+            })
+
+            var data = {
+                oid:oid,
+                type:this.relateType,
+                relations:relateArr
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/modelItem/setRelation",
+                data: data,
+                async: true,
+                success: (json) => {
+                    alert("Success!");
+                    this.dialogTableVisible=false;
+                    window.location.reload();
+                },
+                error:(json)=>{
+                    alert("Error!")
+                }
+            })
+        },
+
+        handleClose(done) {
+            this.$confirm('Are you sure to close？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {});
+        },
+
+        addRelation(order){
+            switch (order){
+                case 1:
+                    this.relateType="modelItem";
+                    this.relateTitle="Add Related Model Item"
+                    break;
+                case 2:
+                    this.relateType="conceptualModel";
+                    this.relateTitle="Add Related Conceptual Model"
+                    break;
+                case 3:
+                    this.relateType="logicalModel";
+                    this.relateTitle="Add Related Logical Model"
+                    break;
+                case 4:
+                    this.relateType="computableModel";
+                    this.relateTitle="Add Related Computable Model"
+                    break;
+                case 5:
+                    this.relateType="concept";
+                    this.relateTitle="Add Related Concept & Semantic"
+                    break;
+                case 6:
+                    this.relateType="spatialReference";
+                    this.relateTitle="Add Related Spatial Reference"
+                    break;
+                case 7:
+                    this.relateType="template";
+                    this.relateTitle="Add Related Data Template"
+                    break;
+                case 8:
+                    this.relateType="unit";
+                    this.relateTitle="Add Related Unit & Metric"
+                    break;
+            }
+            this.tableData=[];
+            this.pageOption.searchResult=[];
+            this.relateSearch="";
+            this.getRelation();
+            this.search();
+            this.dialogTableVisible=true;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -466,14 +684,6 @@ new Vue({
             })
 
 
-
-
-
-
-
-
-
-
         $(document).on("click", ".detail-toggle", function () {
             if ($(this).text() == "[Collapse]") {
                 $(this).text("[Expand]");
@@ -501,17 +711,8 @@ new Vue({
                 json[i].author = json[i].author.join(", ");
             }
             console.log(json);
-            this.tableData6 = json;
+            this.refTableData = json;
         }
-        $(".createConceptual").click(()=>{
-            this.jump(1);
-        })
-        $(".createLogical").click(()=>{
-            this.jump(2);
-        })
-        $(".createComputable").click(()=>{
-            this.jump(3);
-        })
 
         $("#fullPaper").click(function(){
             $("#description .block_content").css("overflow","inherit");

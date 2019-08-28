@@ -52,7 +52,7 @@
                 <div class="detail_overview">
 
                     <div class="img" th:object="${datainfo}">
-                        <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{../../static/img/model/data.png}">-->
+                        <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{/static/img/model/data.png}">-->
                         <avatar   th:username="${datainfo.data.name}" :size="90" :rounded="false" ></avatar>
 
                         <!--<img th:unless="${datainfo.data.image!=Null}" th:src="${datainfo.data.image}">-->
@@ -105,7 +105,7 @@
                     <div id="detail" class="detailIntroducePanel" th:utext="${datainfo.data.detail}" style="overflow:auto"></div>
                 </div>
                 <div class="fullPaper text-center hide">
-                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Text<i class="fa fa-angle-down"
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i class="fa fa-angle-down"
                                                                                               style="margin-left: 10px;color:red;font-weight: bold"
                                                                                               aria-hidden="true"></i></a>
                 </div>
@@ -358,7 +358,7 @@
 
                                     <div  class="el-col el-col-10 el-col-offset-4"  >
 
-                                        <img th:src="@{../../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">
+                                        <img th:src="@{/static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">
 
 
                                         <div  style="margin-left: 55px;display: block;" th:object="${datainfo}">
@@ -462,7 +462,7 @@
                 <div class="block_content">
                     <div class="el-row" style="height: 40px;display: flex;justify-content: center;align-items: Center;">
                         <div class="el-col el-col-4 el-col-offset-3">
-                            <img src="../../static/img/icon/boy.png" class="round_icon" style="width: 40px; height: 40px; float: left;">
+                            <img src="/static/img/icon/boy.png" class="round_icon" style="width: 40px; height: 40px; float: left;">
                         </div>
 
                         <div class="el-col el-col-20">
@@ -538,20 +538,21 @@
 
 </body>
 
-<script th:src="@{../../static/js/common/vue.min.js}"></script>
-<script th:src="@{../../static/element-ui/index.js}"></script>
-<script th:src="@{../../static/js/common/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/js/common/vue.min.js}"></script>
+<script th:src="@{/static/element-ui/index.js}"></script>
+<script th:src="@{/static/js/common/jquery-3.3.1.min.js}"></script>
 
 
-<script src="../static/js/common/vue-avatar.min.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
 
-<script th:src="@{../../static/js/common/axios.min.js}"></script>
+<script th:src="@{/static/js/common/axios.min.js}"></script>
 
-<script src="../static/js/common/qrcode.min.js"></script>
+<script src="/static/js/common/qrcode.min.js"></script>
 
-<script src="../static/js/page/data_item_info.js" th:src="@{../../static/js/page/data_item_info.js}"></script>
-<script src="../static/js/common/loadUser.js"></script>
-<script src="../static/js/common/copy.js"></script>
-<script src="../static/js/common/navbar.js"></script>
+<script src="/static/js/page/data_item_info.js" th:src="@{/static/js/page/data_item_info.js}"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
+<script src="/static/element-ui/umd/locale/en.js">
+<script src="/static/js/common/navbar.js"></script>
 
 </html>

@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>User Page | OpenGMS</title>
 
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/css/base/style.css">
-    <link rel="stylesheet" href="../static/css/base/universal.css">
-    <link rel="stylesheet" href="../static/css/base/list.css">
-    <link rel="stylesheet" href="../static/css/page/user_page.css">
-    <link rel="stylesheet" href="../static/css/page/user_page2.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/page/user_page.css">
+    <link rel="stylesheet" href="/static/css/page/user_page2.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
 
         .user-interest .content-body span{
@@ -70,275 +70,275 @@
                     <!--<div class="user-interest content">-->
                     <!--<h4 class="content-head">Subject Areas</h4>-->
                     <!--<div class="content-body text-center">-->
-                    <!--<span class="badge label-info" th:each="area:${userInfo.subjectAreas}" th:text="${area}" style="word-wrap:break-word; word-break:break-all;"></span>-->
+                        <!--<span class="badge label-info" th:each="area:${userInfo.subjectAreas}" th:text="${area}" style="word-wrap:break-word; word-break:break-all;"></span>-->
                     <!--</div>-->
-                    <!--</div>-->
-                    <div class="user-description content" th:if="${userInfo.description.trim()}!=''">
+                <!--</div>-->
+                <div class="user-description content" th:if="${userInfo.description.trim()}!=''">
 
-                        <h4 class="content-head">Description</h4>
-                        <div class="content-body" th:text="${userInfo.description}">
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                            </p>
-                        </div>
+                    <h4 class="content-head">Description</h4>
+                    <div class="content-body" th:text="${userInfo.description}">
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        </p>
                     </div>
-                    <div class="user-interest content">
-                        <h4 class="content-head">Details</h4>
-                        <div class="content-body">
-                            <div>
-                                <div style="text-align: right;width:25%;display: inline-block;">
-                                    <h5>Email</h5>
-                                </div>
-                                <div style="width:62.5%;margin-left: 10%;display: inline-block;">
-                                    <a th:href="'mailto:'+${userInfo.email}" ><h5 th:text="${userInfo.email}">(Log in to send email)</h5></a>
-                                </div>
+                </div>
+                <div class="user-interest content">
+                    <h4 class="content-head">Details</h4>
+                    <div class="content-body">
+                        <div>
+                            <div style="text-align: right;width:25%;display: inline-block;">
+                                <h5>Email</h5>
                             </div>
-
-                            <div th:if="${userInfo.phone.trim()}!=''">
-                                <div style="text-align: right;width:25%;display: inline-block;">
-                                    <h5>Phone</h5>
-                                </div>
-                                <div style="width:62.5%;margin-left: 10%;display: inline-block;">
-                                    <h5 th:text="${userInfo.phone}">(435) 797-2946</h5>
-                                </div>
+                            <div style="width:62.5%;margin-left: 10%;display: inline-block;">
+                                <a th:href="'mailto:'+${userInfo.email}" ><h5 th:text="${userInfo.email}">(Log in to send email)</h5></a>
                             </div>
-
-                            <div th:if="${userInfo.wiki.trim()}!=''">
-                                <div style="text-align: right;width:25%;display: inline-block;">
-                                    <h5>Website</h5>
-                                </div>
-                                <div style="width:62.5%;margin-left: 10%;display: inline-block;word-wrap: break-word">
-                                    <a href="javascript:void(0)"><h5 th:text="${userInfo.wiki}"></h5></a>
-                                </div>
-                            </div>
-
                         </div>
+
+                        <div th:if="${userInfo.phone.trim()}!=''">
+                            <div style="text-align: right;width:25%;display: inline-block;">
+                                <h5>Phone</h5>
+                            </div>
+                            <div style="width:62.5%;margin-left: 10%;display: inline-block;">
+                                <h5 th:text="${userInfo.phone}">(435) 797-2946</h5>
+                            </div>
+                        </div>
+
+                        <div th:if="${userInfo.wiki.trim()}!=''">
+                            <div style="text-align: right;width:25%;display: inline-block;">
+                                <h5>Website</h5>
+                            </div>
+                            <div style="width:62.5%;margin-left: 10%;display: inline-block;word-wrap: break-word">
+                                <a href="javascript:void(0)"><h5 th:text="${userInfo.wiki}"></h5></a>
+                            </div>
+                        </div>
+
                     </div>
-                </el-col>
-                <el-col class="main_right" :span="18" style="padding-left:10px">
-                    <div class="user-modellist content">
-                        <div class="content-body" style="padding-top:15px">
-                            <el-tabs v-model="activeName" @tab-click="handleClick">
-                                <el-tab-pane label="Model Item" name="Model Item">
-                                    <div class="list-item" v-for="(modelItem,key) in modelItems.result">
-                                        <div class="detail_title">
-                                            <a :class="modelItem.viewCount>500?'hot':''" :href="'/modelItem/'+ modelItem.oid" target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
-                                        </div>
-                                        <div class="detail_overview">
-                                            <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                <img :src="modelItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
+                </div>
+            </el-col>
+            <el-col class="main_right" :span="18" style="padding-left:10px">
+                <div class="user-modellist content">
+                    <div class="content-body" style="padding-top:15px">
+                        <el-tabs v-model="activeName" @tab-click="handleClick">
+                            <el-tab-pane label="Model Item" name="Model Item">
+                                <div class="list-item" v-for="(modelItem,key) in modelItems.result">
+                                    <div class="detail_title">
+                                        <a :class="modelItem.viewCount>500?'hot':''" :href="'/modelItem/'+ modelItem.oid" target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
+                                    </div>
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                            <img :src="modelItem.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
+                                        </a>
 
-                                            <div class="info">
-                                                <p>{{modelItem.description}}</p>
-                                                <div class="tags" v-if="modelItem.keywords.length>0">
-                                                    <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
-                                                </div>
+                                        <div class="info">
+                                            <p>{{modelItem.description}}</p>
+                                            <div class="tags" v-if="modelItem.keywords.length>0">
+                                                <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
                                             </div>
                                         </div>
-                                        <hr>
-                                        <div class="detail_bottom">
+                                    </div>
+                                    <hr>
+                                    <div class="detail_bottom">
 
-                                            <div class="detail_option">
+                                        <div class="detail_option">
 
-                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
-                                                <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}
+                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+
+                                <div class="text-center" style="margin-top:15px;">
+                                    <el-pagination
+                                            @current-change="modelItemHandleCurrentChange"
+                                            :current-page="modelItems.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="modelItems.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Data Item" name="Data Item">
+                                <div class="list-item" v-for="(dataItem,key) in dataItems.result">
+                                    <div class="detail_title">
+                                        <a :class="dataItem.viewCount>500?'hot':''" :href="'/dataItem/'+ dataItem.oid" target="_blank">{{dataItem.name}}&nbsp&nbsp</a>
+                                    </div>
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/dataItem/'+ dataItem.oid" target="_blank">
+                                            <img :src="dataItem.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
+                                        </a>
+
+                                        <div class="info">
+                                            <p>{{dataItem.description}}</p>
+                                            <div class="tags" v-if="dataItem.keywords.length>0">
+                                                <span class="badge badge-info" v-for="keyword in dataItem.keywords">{{keyword.toUpperCase()}}</span>
                                             </div>
-                                            <br>
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="detail_bottom">
 
-                                    <div class="text-center" style="margin-top:15px;">
-                                        <el-pagination
-                                                @current-change="modelItemHandleCurrentChange"
-                                                :current-page="modelItems.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="modelItems.total">
-                                        </el-pagination>
+                                        <div class="detail_option">
+
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}
+                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.viewCount}}
+                                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.thumbsUpCount}}-->
+                                        </div>
+                                        <br>
                                     </div>
-                                </el-tab-pane>
-                                <el-tab-pane label="Data Item" name="Data Item">
-                                    <div class="list-item" v-for="(dataItem,key) in dataItems.result">
-                                        <div class="detail_title">
-                                            <a :class="dataItem.viewCount>500?'hot':''" :href="'/dataItem/'+ dataItem.oid" target="_blank">{{dataItem.name}}&nbsp&nbsp</a>
-                                        </div>
-                                        <div class="detail_overview">
-                                            <a class="img" :href="'/dataItem/'+ dataItem.oid" target="_blank">
-                                                <img :src="dataItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
+                                </div>
 
-                                            <div class="info">
-                                                <p>{{dataItem.description}}</p>
-                                                <div class="tags" v-if="dataItem.keywords.length>0">
-                                                    <span class="badge badge-info" v-for="keyword in dataItem.keywords">{{keyword.toUpperCase()}}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="detail_bottom">
-
-                                            <div class="detail_option">
-
-                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.viewCount}}
-                                                <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.thumbsUpCount}}-->
-                                            </div>
-                                            <br>
-                                        </div>
+                                <div class="text-center" style="margin-top:15px;">
+                                    <el-pagination
+                                            @current-change="dataItemHandleCurrentChange"
+                                            :current-page="dataItems.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="dataItems.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Conceptual Model" name="Conceptual Model">
+                                <div class="list-item" v-for="(conceptualModel,key) in conceptualModels.result">
+                                    <div class="detail_title">
+                                        <a :class="conceptualModel.viewCount>500?'hot':''" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">{{conceptualModel.name}}&nbsp&nbsp</a>
                                     </div>
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
+                                            <img :src="conceptualModel.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
+                                        </a>
 
-                                    <div class="text-center" style="margin-top:15px;">
-                                        <el-pagination
-                                                @current-change="dataItemHandleCurrentChange"
-                                                :current-page="dataItems.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="dataItems.total">
-                                        </el-pagination>
-                                    </div>
-                                </el-tab-pane>
-                                <el-tab-pane label="Conceptual Model" name="Conceptual Model">
-                                    <div class="list-item" v-for="(conceptualModel,key) in conceptualModels.result">
-                                        <div class="detail_title">
-                                            <a :class="conceptualModel.viewCount>500?'hot':''" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">{{conceptualModel.name}}&nbsp&nbsp</a>
-                                        </div>
-                                        <div class="detail_overview">
-                                            <a class="img" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
-                                                <img :src="conceptualModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-
-                                            <div class="info">
-                                                <p>{{conceptualModel.description}}</p>
-                                                <!--<div class="tags" v-if="conceptualModel.keywords.length>0">-->
+                                        <div class="info">
+                                            <p>{{conceptualModel.description}}</p>
+                                            <!--<div class="tags" v-if="conceptualModel.keywords.length>0">-->
                                                 <!--<span class="badge badge-info" v-for="keyword in conceptualModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                                <!--</div>-->
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="detail_bottom">
-
-                                            <div class="detail_option">
-
-                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)+' '+conceptualModel.createTime.substring(11,19)}}
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.viewCount}}
-                                                <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.thumbsUpCount}}-->
-                                            </div>
-                                            <br>
+                                            <!--</div>-->
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="detail_bottom">
 
-                                    <div class="text-center" style="margin-top:15px;">
-                                        <el-pagination
-                                                @current-change="conceptualModelHandleCurrentChange"
-                                                :current-page="conceptualModels.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="conceptualModels.total">
-                                        </el-pagination>
-                                    </div>
-                                </el-tab-pane>
-                                <el-tab-pane label="Logical Model" name="Logical Model">
-                                    <div class="list-item" v-for="(logicalModel,key) in logicalModels.result">
-                                        <div class="detail_title">
-                                            <a :class="logicalModel.viewCount>500?'hot':''" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">{{logicalModel.name}}&nbsp&nbsp</a>
+                                        <div class="detail_option">
+
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)+' '+conceptualModel.createTime.substring(11,19)}}
+                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.viewCount}}
+                                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.thumbsUpCount}}-->
                                         </div>
-                                        <div class="detail_overview">
-                                            <a class="img" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
-                                                <img :src="logicalModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
+                                        <br>
+                                    </div>
+                                </div>
 
-                                            <div class="info">
-                                                <p>{{logicalModel.description}}</p>
-                                                <!--<div class="tags" v-if="logicalModel.keywords.length>0">-->
+                                <div class="text-center" style="margin-top:15px;">
+                                    <el-pagination
+                                            @current-change="conceptualModelHandleCurrentChange"
+                                            :current-page="conceptualModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="conceptualModels.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Logical Model" name="Logical Model">
+                                <div class="list-item" v-for="(logicalModel,key) in logicalModels.result">
+                                    <div class="detail_title">
+                                        <a :class="logicalModel.viewCount>500?'hot':''" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">{{logicalModel.name}}&nbsp&nbsp</a>
+                                    </div>
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
+                                            <img :src="logicalModel.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
+                                        </a>
+
+                                        <div class="info">
+                                            <p>{{logicalModel.description}}</p>
+                                            <!--<div class="tags" v-if="logicalModel.keywords.length>0">-->
                                                 <!--<span class="badge badge-info" v-for="keyword in logicalModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                                <!--</div>-->
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="detail_bottom">
-
-                                            <div class="detail_option">
-
-                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.viewCount}}
-                                                <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.thumbsUpCount}}-->
-                                            </div>
-                                            <br>
+                                            <!--</div>-->
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="detail_bottom">
 
-                                    <div class="text-center" style="margin-top:15px;">
-                                        <el-pagination
-                                                @current-change="logicalModelHandleCurrentChange"
-                                                :current-page="logicalModels.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="logicalModels.total">
-                                        </el-pagination>
-                                    </div>
-                                </el-tab-pane>
-                                <el-tab-pane label="Computable Model" name="Computable Model">
-                                    <div class="list-item" v-for="(computableModel,key) in computableModels.result">
-                                        <div class="detail_title">
-                                            <a :class="computableModel.viewCount>500?'hot':''" :href="'/computableModel/'+ computableModel.oid" target="_blank">{{computableModel.name}}&nbsp&nbsp</a>
+                                        <div class="detail_option">
+
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}
+                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.viewCount}}
+                                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.thumbsUpCount}}-->
                                         </div>
-                                        <div class="detail_overview">
-                                            <a class="img" :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                <img :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
+                                        <br>
+                                    </div>
+                                </div>
 
-                                            <div class="info">
-                                                <p>{{computableModel.description}}</p>
-                                                <!--<div class="tags" v-if="computableModel.keywords.length>0">-->
+                                <div class="text-center" style="margin-top:15px;">
+                                    <el-pagination
+                                            @current-change="logicalModelHandleCurrentChange"
+                                            :current-page="logicalModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="logicalModels.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Computable Model" name="Computable Model">
+                                <div class="list-item" v-for="(computableModel,key) in computableModels.result">
+                                    <div class="detail_title">
+                                        <a :class="computableModel.viewCount>500?'hot':''" :href="'/computableModel/'+ computableModel.oid" target="_blank">{{computableModel.name}}&nbsp&nbsp</a>
+                                    </div>
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                            <img :src="computableModel.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
+                                        </a>
+
+                                        <div class="info">
+                                            <p>{{computableModel.description}}</p>
+                                            <!--<div class="tags" v-if="computableModel.keywords.length>0">-->
                                                 <!--<span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                                <!--</div>-->
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="detail_bottom">
-
-                                            <div class="detail_option">
-
-                                                <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.viewCount}}
-                                                <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.thumbsUpCount}}-->
-                                            </div>
-                                            <br>
+                                            <!--</div>-->
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="detail_bottom">
 
-                                    <div class="text-center" style="margin-top:15px;">
-                                        <el-pagination
-                                                @current-change="computableModelHandleCurrentChange"
-                                                :current-page="computableModels.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="computableModels.total">
-                                        </el-pagination>
+                                        <div class="detail_option">
+
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.thumbsUpCount}}-->
+                                        </div>
+                                        <br>
                                     </div>
-                                </el-tab-pane>
-                            </el-tabs>
-                        </div>
+                                </div>
+
+                                <div class="text-center" style="margin-top:15px;">
+                                    <el-pagination
+                                            @current-change="computableModelHandleCurrentChange"
+                                            :current-page="computableModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="computableModels.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
                     </div>
-                </el-col>
-
-            </div>
+                </div>
+            </el-col>
 
         </div>
 
-        <div th:replace="fragments/footer :: footer"></div>
-
     </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
 
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/page/user_page.js"></script>
-<script src="../static/js/common/loadUser.js"></script>
-<script src="../static/js/common/navbar.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/user_page.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 </html>

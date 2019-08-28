@@ -31,6 +31,41 @@ public class RepositoryRestController {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @RequestMapping(value="/modelItem/{id}",method = RequestMethod.GET)
+    public ModelAndView redirectModelItem(@PathVariable("id") String id){
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/modelItem/"+id);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/conceptualModel/{id}",method = RequestMethod.GET)
+    public ModelAndView redirectConceptualModel(@PathVariable("id") String id){
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/conceptualModel/"+id);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/logicalModel/{id}",method = RequestMethod.GET)
+    public ModelAndView redirectLogicalModel(@PathVariable("id") String id){
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/logicalModel/"+id);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/computableModel/{id}",method = RequestMethod.GET)
+    public ModelAndView redirectComputableModel(@PathVariable("id") String id){
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/computableModel/"+id);
+
+        return modelAndView;
+    }
+
+
+
     //concept
     @RequestMapping(value="/getConceptTree",method = RequestMethod.GET)
     public JsonResult getConceptTree(){
