@@ -363,12 +363,14 @@ Format.prototype.refresh = function()
 		
 		div.appendChild(label);
 		this.panels.push(new DiagramFormatPanel(this, ui, div));
+
 	}
 	else if (graph.isEditing())
 	{
 		mxUtils.write(label, mxResources.get('text'));
 		div.appendChild(label);
 		this.panels.push(new TextFormatPanel(this, ui, div));
+
 	}
 	else
 	{
@@ -465,7 +467,7 @@ Format.prototype.refresh = function()
 			textPanel.style.display = 'none';
 			this.panels.push(new TextFormatPanel(this, ui, textPanel));
 			this.container.appendChild(textPanel);
-			
+
 			// Arrange
 			mxUtils.write(label3, mxResources.get('arrange'));
 			div.appendChild(label3);
@@ -474,12 +476,16 @@ Format.prototype.refresh = function()
 			arrangePanel.style.display = 'none';
 			this.panels.push(new ArrangePanel(this, ui, arrangePanel));
 			this.container.appendChild(arrangePanel);
-			
+
 			addClickHandler(label2, textPanel, idx++);
 			addClickHandler(label3, arrangePanel, idx++);
 		}
 	}
 };
+
+
+
+
 
 /**
  * Base class for format panels.
@@ -1398,6 +1404,11 @@ BaseFormatPanel.prototype.destroy = function()
 		this.listeners = null;
 	}
 };
+
+
+
+
+
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -3117,6 +3128,11 @@ ArrangePanel.prototype.addStyleOps = function(div)
 	return div;
 };
 
+
+
+
+
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -4275,6 +4291,11 @@ TextFormatPanel.prototype.addFont = function(container)
 	return container;
 };
 
+
+
+
+
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -4313,7 +4334,7 @@ StyleFormatPanel.prototype.init = function()
 		if (!ss.containsImage || ss.style.shape == 'image')
 		{
 			this.container.appendChild(this.addModelDescription(this.createPanel()));		
-			this.container.appendChild(this.addModelItem(this.createPanel()));
+			//this.container.appendChild(this.addModelItem(this.createPanel()));
 			//this.container.appendChild(this.addConceptItem(this.createPanel()));
 		}
 	}
@@ -5509,6 +5530,12 @@ StyleFormatPanel.prototype.addStyleOps = function(div)
 	return div;
 };
 
+
+
+
+
+
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -5534,7 +5561,7 @@ DiagramFormatPanel.prototype.init = function()
 	var editor = ui.editor;
 	var graph = editor.graph;
 
-	this.container.appendChild(this.addSceneDescription(this.createPanel()));
+	//this.container.appendChild(this.addSceneDescription(this.createPanel()));
 	
 	this.container.appendChild(this.addView(this.createPanel()));
 	
@@ -5574,13 +5601,13 @@ DiagramFormatPanel.prototype.addSceneDescription = function(div)
         value.setAttribute("model_name", textbox.value);
         graph.getModel().setValue(cell, value);
     };
-		
+
 	div.style.paddingTop = "2px";
 	var title = this.createTitle("Scene Description");
 	title.style.paddingBottom = '4px';
 	title.style.paddingTop = '4px';
 	div.appendChild(title);
-	
+
 	var text = document.createElement("textarea");
 	text.id = "model_scene_description";
 	text.style.height = "100px";

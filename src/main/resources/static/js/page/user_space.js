@@ -20,6 +20,7 @@ var vue = new Vue({
         //todo data-item
         data_upload:false,
         data_show:false,
+        user_position:"",
         dcount:new Number(),
         sourceStoreId:'',
         data_upload_id:'',
@@ -1023,6 +1024,7 @@ var vue = new Vue({
                     this.deploys_show = false;
                     this.data_upload=false;
                     this.data_show=false;
+                    this.user_position = this.curIndex,
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1134,6 +1136,7 @@ var vue = new Vue({
                     this.tasks_show = false;
                     this.servers_show = false;
                     this.deploys_show = false;
+                    this.user_position = this.curIndex,
                     this.resourceLoad = false;
                     this.data_upload=false;
                     this.data_show=true;
@@ -2621,8 +2624,6 @@ var vue = new Vue({
         },
 
         getDataItems(){
-
-
             var da={
                 userOid:this.userId,
                 page:this.page,
@@ -2630,7 +2631,6 @@ var vue = new Vue({
                 asc:this.sortAsc
 
             }
-
 
             this.loading=true
             var that=this;
@@ -2647,8 +2647,6 @@ var vue = new Vue({
                 }
                 this.data_show=true
                 this.loading=false
-
-
 
             })
 
@@ -3610,13 +3608,13 @@ var vue = new Vue({
                         console.log(this.userId)
                         // this.addAllData()
 
-                        axios.get("/dataItem/amountofuserdata",{
-                            params:{
-                                userOid:this.userId
-                            }
-                        }).then(res=>{
-                            that.dcount=res.data
-                        });
+                        // axios.get("/dataItem/amountofuserdata",{
+                        //     params:{
+                        //         userOid:this.userId
+                        //     }
+                        // }).then(res=>{
+                        //     that.dcount=res.data
+                        // });
 
                         $("#author").val(this.userName);
 

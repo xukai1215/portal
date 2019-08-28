@@ -93,11 +93,12 @@
                     </div>
                 </div>
                 <div class="block_content" style="margin-top:20px;">
-                    <div>
+                    <div th:each="classS:${classifications}">
                         <span style="font-size:24px;margin-right: 8px">●</span>
-
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="classS:${classifications}" th:text="${classS}" :to="{ path: '/' }">Earth System Classification</el-breadcrumb-item>
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class}" :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                 </div>
@@ -150,7 +151,7 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text">
-                        <span th:text="NNU_Group+'.('+${year}+').'+${info.name_EN}+','">
+                        <span th:text="NNU_Group+'.('+${year}+').'+${info.name}+','">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                         </span>
                         <a th:href="'http://geomodeling.njnu.edu.cn/repository/concept/'+${info.oid}"

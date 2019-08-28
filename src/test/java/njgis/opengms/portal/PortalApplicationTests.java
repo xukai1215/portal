@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.CommonService;
+import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +48,23 @@ public class PortalApplicationTests {
 
     @Value("${resourcePath}")
     private String resourcePath;
+
+
+    @Test
+    public void updateConcept(){
+
+        List<Concept> list = conceptDao.findAll();
+        List<String> list1 = new ArrayList<>();
+        for (Concept concept :list) {
+            if (concept.getParentId()!= null){
+                list1.add(concept.getParentId());
+                concept.setClassifications(list1);
+                conceptDao.save(concept);
+                list1.clear();
+                Utils.count();
+            }
+        }
+    }
 
 
     @Test

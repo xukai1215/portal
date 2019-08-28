@@ -23,6 +23,7 @@ public class UnitResultDTO {
     String name;
     String image;
     String description;
+    String description_ZH;
     String author;
 
     Date createTime;

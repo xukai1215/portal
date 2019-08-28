@@ -353,6 +353,7 @@ var vue = new Vue({
             this.logicalModel.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), this.logicalModel.authorship);
 
+
             let iframeWindow=$("#ModelEditor")[0].contentWindow;
 
             this.logicalModel.svg = "<svg width='" + iframeWindow.getW() + "px' height='" + iframeWindow.getH() + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>"

@@ -90,7 +90,14 @@ public class RepositoryRestController {
     @RequestMapping (value="/getConceptInfo/{id}",method = RequestMethod.GET)
     public JsonResult getConceptInfo(@PathVariable ("id") String id){
         Concept concept=repositoryService.getConceptByOid(id);
-        concept.setImage(concept.getImage().equals("")?"":htmlLoadPath+concept.getImage());
+        String image=concept.getImage();
+        if(image==null||image.equals("")){
+            image="";
+        }
+        else{
+            image=htmlLoadPath+image;
+        }
+        concept.setImage(image);
         return ResultUtils.success(concept);
     }
 
