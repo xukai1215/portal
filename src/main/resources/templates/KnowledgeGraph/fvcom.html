@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" />
     <title>FVCOM Knowledge Graph</title>
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
     <link
       rel="stylesheet"
@@ -17,65 +18,26 @@
 	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
     <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
-    <style>
-      .am-g.am-datatable-footer {
-        display: flex;
-      }
-      .am-g.am-datatable-footer .am-u-sm-5 {
-        width: 0 !important;
-      }
-      .am-g.am-datatable-footer .am-u-sm-7 {
-        width: 100% !important;
-      }
-    </style>
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap/css/bootstrap.css}" />
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.css}" />
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
   </head>
   <body>
     <div class="container" id="app">
-      <div class="aside">
-        <div>
-          <i class="fa fa-globe fa-3x" style="color:#98df8a"></i>
-          <h4>FVCOM</h4>
+      <!--add new div-->
+      <div class="suspension">
+        <div class="suspension-box">
+          <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
+          <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+          <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+          <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
         </div>
-        <div class="tags">
-          <span class="tag">Triangulation Network</span>
-          <span class="tag">Hydrologic Model</span>
+      </div>
+      <!--add new div-->
+      <div class="row no-gutters">
+        <div class="col-lg-11">
+
         </div>
-        <div class="desc">
-          FVCOM is a prognostic, unstructured grid, finite-volume, free-surface,
-          three-dimensional (3-D) primitive equations ocean model developed by
-          Chen et al. (2003a). The original version of FVCOM consists of
-          momentum, continuity, temperature, salinity and density equations and
-          is closed physically and mathematically using the Mellor and Yamada
-          level 2.5 turbulent closure scheme for vertical mixing and the
-          Smagorinsky turbulent closure scheme for horizontal mixing. The
-          irregular bottom topography is represented using a σ-coordinate
-          transformation, and the horizontal grids are comprised of unstructured
-          triangular cells. FVCOM solves the governing equations in integral
-          form by computing fluxes between non-overlapping horizontal triangular
-          control volumes. This finite-volume approach combines the best of
-          finite-element methods (FEM) for geometric flexibility and
-          finite-difference methods (FDM) for simple discrete structures and
-          computational efficiency. This numerical approach also provides a much
-          better representation of mass, momentum, salt, and heat conservation
-          in coastal and estuarine regions with complex geometry. The
-          conservative nature of FVCOM in addition to its flexible grid topology
-          and code simplicity make FVCOM ideally suited for interdisciplinary
-          application in the coastal ocean.
-        </div>
-        <ul class="menu">
-          <li v-bind:class="{active:active===0}" @click="indexChange(0)">
-            index
-          </li>
-          <li v-bind:class="{active:active===1}" @click="indexChange(1)">
-            History
-          </li>
-          <li v-bind:class="{active:active===2}" @click="indexChange(2)">
-            Map
-          </li>
-          <li v-bind:class="{active:active===3}" @click="indexChange(3)">
-            Keywords
-          </li>
-        </ul>
       </div>
       <div class="main">
         <div class="graphPanel" v-show="active===0">
@@ -94,15 +56,19 @@
             class="am-panel am-panel-default am-animation-slide-right"
             id="infoPanel"
             v-if="infoPanelShow"
+            style="transform: translate(0px, 0px); transition: transform 0.5s ease-in-out;"
           >
-            <div class="am-panel-hd">
+            <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
               {{ nodeName }}
-              <a href="#" class="am-close pull-right">&times;</a>
+              <a @click="myFunction()" class="am-close pull-right">&times;</a>
             </div>
-            <div class="am-panel-bd">
+            <div id="content" class="am-panel-bd" >
               <table
-                class="am-table am-table-striped am-table-bordered am-table-compact"
-                id="linkTable"
+                      class="am-table am-table-striped am-table-bordered am-table-compact "
+                      data-classes="table table-bordered"
+                      data-pagination="true" data-page-size="10"
+                      data-pagination-loop="false"
+                      id="linkTable"
               >
                 <thead>
                   <tr>
@@ -171,6 +137,7 @@
       </div>
     </div>
   </body>
+  <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
@@ -180,6 +147,8 @@
   <script th:src="@{/static/KnowledgeGraph/js/echarts/echarts.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/leaflet/leaflet.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/geojsonhint.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
   <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
   <!-- <script src="js/echarts//extension/modularity.js"></script> -->
   <script th:src="@{/static/KnowledgeGraph/js/fvcom.js}"></script>

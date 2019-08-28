@@ -245,6 +245,8 @@ public class ModelDao {
 	}
 
 
+
+
 	public Boolean ping(String ipAddress, String port, int timeOut) {
 		try {
 			URL url  = new URL("http://"+ipAddress+":"+port+"/ping");

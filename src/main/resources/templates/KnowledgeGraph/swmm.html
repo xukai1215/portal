@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" />
     <title>SWMM Knowledge Graph</title>
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
     <link
       rel="stylesheet"
@@ -18,62 +18,27 @@
 	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
     <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index2.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/index/bootstrap.min.css" />
-
-    <style>
-      .am-g.am-datatable-footer {
-        display: flex;
-      }
-      .am-g.am-datatable-footer .am-u-sm-5 {
-        width: 0 !important;
-      }
-      .am-g.am-datatable-footer .am-u-sm-7 {
-        width: 100% !important;
-      }
-    </style>
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap/css/bootstrap.css}" />
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.css}" />
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
   </head>
   <body>
     <div class="container" id="app">
-      <div class="aside">
-        <div>
-          <i class="fa fa-globe fa-3x" style="color:#98df8a"></i>
-          <h4>SWMM</h4>
+      <!--add new div-->
+      <div class="suspension">
+        <div class="suspension-box">
+          <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
+          <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+          <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+          <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
         </div>
-        <div class="tags">
-          <span class="tag">Distributed</span>
-          <span class="tag">Hydrologic Model</span>
-        </div>
-        <div class="desc">
-          EPA's Stormwater Management Model (SWMM) is used for single event or
-          long-term simulations of water runoff quantity and quality in
-          primarily urban areas–although there are also many applications that
-          can be used for drainage systems in non-urban areas. It is used
-          throughout the world for planning, analysis, and design related to
-          stormwater runoff, combined and sanitary sewers, and other drainage
-          systems. SWMM was developed to help support local, state, and national
-          stormwater management objectives to reduce runoff through infiltration
-          and retention, and help to reduce discharges that cause impairment of
-          our Nation’s waterbodies.
-        </div>
-        <ul class="menu">
-          <li v-bind:class="{active:active===0}" @click="indexChange(0)">
-            index
-          </li>
-          <li v-bind:class="{active:active===1}" @click="indexChange(1)">
-            History
-          </li>
-          <li v-bind:class="{active:active===2}" @click="indexChange(2)">
-            Map
-          </li>
-          <li v-bind:class="{active:active===3}" @click="indexChange(3)">
-            Keywords
-          </li>
-        </ul>
       </div>
-      <div class="main">
+      <!--add new div-->
+      <div class="row no-gutters">
+        <div class="col-lg-11">
+        </div>
+      </div>
+        <div class="main">
         <div class="graphPanel" v-show="active===0">
           <div id="searchPanel">
             <p>请选择年份</p>
@@ -90,15 +55,19 @@
             class="am-panel am-panel-default am-animation-slide-right"
             id="infoPanel"
             v-if="infoPanelShow"
+            style="transform: translate(0px, 0px); transition: transform 0.5s ease-in-out;"
           >
-            <div class="am-panel-hd">
+            <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
               {{ nodeName }}
-              <a href="#" class="am-close pull-right">&times;</a>
+              <a @click="myFunction()" class="am-close pull-right">&times;</a>
             </div>
-            <div class="am-panel-bd">
+            <div id="content" class="am-panel-bd" >
               <table
-                class="am-table am-table-striped am-table-bordered am-table-compact"
-                id="linkTable"
+                      class="am-table am-table-striped am-table-bordered am-table-compact "
+                      data-classes="table table-bordered"
+                      data-pagination="true" data-page-size="10"
+                      data-pagination-loop="false"
+                      id="linkTable"
               >
                 <thead>
                   <tr>
@@ -167,6 +136,7 @@
       </div>
     </div>
   </body>
+  <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
@@ -176,9 +146,9 @@
   <script th:src="@{/static/KnowledgeGraph/js/echarts/echarts.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/leaflet/leaflet.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/geojsonhint.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
   <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
   <!-- <script src="js/echarts//extension/modularity.js"></script> -->
   <script th:src="@{/static/KnowledgeGraph/js/swmm.js}"></script>
-  <script src="/static/js/index/bootstrap.min.js"></script>
-  <script src="/static/js/common/backTop.js/"></script>
 </html>

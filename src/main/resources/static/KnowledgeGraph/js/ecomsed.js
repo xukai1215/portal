@@ -79,6 +79,7 @@ var app = new Vue({
           };
           dragBox(document.querySelector("#bar"), document.querySelector("#infoPanel"));
       },
+    //显示时间，datetimepicker为时间选择部分
     loadPage() {
       let that = this;
       $("#datetimepicker")
@@ -92,12 +93,13 @@ var app = new Vue({
           endDate: new Date()
         })
         .on("changeDate.datepicker.amui", function(event) {
-          that.queryYear = event.date.getFullYear();
+          that.queryYear = event.date.getFullYear();  //getFullYear() 方法可返回一个表示年份的 4 位数字
           that.getGraphData(that.queryYear);
         });
 
       this.getGraphData(2018);
     },
+      //根据index值确定执行哪个绘制函数
     indexChange(index) {
       // $("#d3Canvas").empty();
       this.active = index;
@@ -119,25 +121,23 @@ var app = new Vue({
         url:
           "http://geomodeling.njnu.edu.cn/Knowledge/GetModelGraphBySearchTextServlet",
         type: "get",
-        data: {
-          type: "model",
-          text: "XINANJIANG MODEL",
-          sTime: year,
-          eTime: year
-        },
+        data: { type: "model", text: "ecomsed", sTime: year, eTime: year },
         success: function(graph) {
-          that.createGraph(graph);
+          that.createGraph(graph);  //创建图
         }
       });
     },
+      //绘图函数
     createGraph(graph) {
       let that = this;
       let links = graph.links;
       let nodes = graph.nodes;
       let max = 1,
         min = 1;
+      //定义两个set类型的数组变量
       let categoriesSet = new Set();
       let countSet = new Set();
+      //把最大最小的node.value取出
       for (let node of nodes) {
         categoriesSet.add(node.category);
         countSet.add(node.value);
@@ -148,7 +148,7 @@ var app = new Vue({
           min = node.value;
         }
       }
-      let categories = Array.from(categoriesSet);
+      let categories = Array.from(categoriesSet);//将类数组categoriesSet转换为数组categories
       let colorsObj = {};
       let colors = [
         "#dd6b66",
@@ -175,9 +175,9 @@ var app = new Vue({
         $(".graphPanel .legend").append(li);
       }
       let countArray = Array.from(countSet);
-      let kclass = that.getJenksBreaks(countArray, 4);
+      let kclass = that.getJenksBreaks(countArray, 4);//getJenksBreaks函数在928行
       nodes.forEach(function(node) {
-        node.radius = that.getJenksBreaksIndex(kclass, node.value);
+        node.radius = that.getJenksBreaksIndex(kclass, node.value);//getJenksBreaksIndex函数在1020行
       });
 
       $("#d3Canvas").empty();
@@ -207,15 +207,15 @@ var app = new Vue({
         if (colorsObj.hasOwnProperty(key)) {
           return colorsObj[key];
         } else {
-          return "#ada2a8";
+          return "#4e5364";  //此处为连线的颜色
         }
       };
-
+        //.**是d3的操作符
       let tooltip = d3
         .select(".graphPanel")
         .append("div")
         .attr("class", "tooltip")
-        .style("opacity", 0);
+        .style("opacity", 0);//不透明度
 
       // let close = d3
       //   .select(".closePanel")
@@ -237,24 +237,26 @@ var app = new Vue({
       if (strength < 500) {
         strength = 500;
       }
-      let simulation = d3
-        .forceSimulation()
-        .force("center", d3.forceCenter(width / 2, height / 2))
+
+        // 创建一个力学模拟器
+        // d3.forceSimulation()函数用来创建一个空的模拟器
+        // simulation.force(name,[force])函数的作用是：如果指定了力force，则为指
+        // 定的名称name分配力并返回该模拟。 如果未指定力，则返回具有指定名称的力，如果
+        // 没这样的力，则返回undefined。 （默认情况下，新的模拟没有力量。）
+        // d3.forceLink()函数用来创建一个空的link力数组
+        // d3.forceLink().id()用来指定link力数组中每个节点的id的获取方式
+      let simulation = d3.forceSimulation()
+        .force("center", d3.forceCenter(width / 2, height / 2))// 用指定的x坐标和y坐标创建一个居中力
         .force("x", d3.forceX(width / 2).strength(0.1))
         .force("y", d3.forceY(height / 2).strength(0.1))
-        .force("charge", d3.forceManyBody().strength(-1 * strength))
-        .force(
-          "link",
-          d3
-            .forceLink()
-            .strength(2)
-            .id(function(d) {
+        .force("charge", d3.forceManyBody().strength(-1 * strength))//万有引力
+        .force("link",d3.forceLink().strength(2).id(function(d) {
               return d.id;
-            })
+            })//link为链接力
           // .distance(60)
         )
-        .alphaTarget(0)
-        .alphaDecay(0.05);
+        .alphaTarget(0)//目标alpha系数
+        .alphaDecay(0.05);//衰减率
 
       let transform = d3.zoomIdentity;
 
@@ -264,7 +266,8 @@ var app = new Vue({
         simulationUpdate();
       }
 
-      d3.select(graphCanvas)
+        //几个事件，鼠标移动、鼠标点击
+    d3.select(graphCanvas)
         .on("mousemove", mouseMove)
         .on("click", mouseClick)
         .call(
@@ -279,7 +282,7 @@ var app = new Vue({
             .scaleExtent([1 / 10, 8])
             .on("zoom", zoomed)
         );
-
+        //鼠标拖拽
       function dragsubject() {
         var i,
           x = transform.invertX(d3.event.x),
@@ -298,7 +301,7 @@ var app = new Vue({
             // console.log(node);
             that.nodeName = node.name;
             that.nodeCategory = node.category;
-            that.infoPanelShow = true;
+            that.infoPanelShow = true;//显示此panel
             for (let i = 0; i < links.length; i++) {
               let link = links[i];
               if (link.source.id === node.id) {
@@ -309,10 +312,10 @@ var app = new Vue({
             }
             that.$nextTick(() => {
               if (that.table) {
-                  $("#connectedTable").bootstrapTable("destroy");
+                that.table.destroy();
                 that.table = null;
               }
-              /*that.table = $("#linkTable").DataTable({
+              that.table = $("#linkTable").DataTable({
                 columns: [
                   { data: "name", name: "NAME" },
                   { data: "category", name: "TYPE" }
@@ -321,50 +324,21 @@ var app = new Vue({
                 searching: false,
                 bLengthChange: false,
                 data: that.nodeLinks
-              });*/
-                $(document).ready(function() {
+              });
+                /*$(document).ready(function() {
                     that.table = $("#linkTable").bootstrapTable({
                         columns: [
-                            {   data: "name",
-                                name: "NAME",
-                                align: 'center',
-                                valign: 'middle',
-                                sortable: true,
-                                //formatter函数把数据传入表格中
-                                formatter:function (value, row, index) {
-                                    return row["name"];
-                                    //return {css:{"color":'black'}}
-                                }
-                            },
-                            {   data: "category",
-                                name: "TYPE",
-                                align: 'center',
-                                valign: 'middle',
-                                sortable: true,
-                                formatter:function (value, row, index) {
-                                    return row["category"];
-                                    //return {css:{"color":'black'}}
-                                }
-                            }
+                            {data: "name", name: "NAME"},
+                            {data: "category", name: "TYPE"}
                         ],
-                        height:500,
-                        //resizable:true,
-                        pagination:true,
-                        sidePagination: 'client',
-                        pageNumber: 1,
-                        pageSize: 10,
-                        pageList: [10,20,50,'All'],
-                        search: true,
-                        showRefresh: true,
-                        showToggle: true,
-                        showColumns: true,
                         bInfo: false,
                         searching: false,
                         bLengthChange: false,
                         data: that.nodeLinks
                     });
-                });
+                });*/
             });
+
             return false;
           }
         }
@@ -485,22 +459,23 @@ var app = new Vue({
 
           context.arc(d.x, d.y, d.radius, 0, 2 * Math.PI, true);
           if (
-            connected.connectedNodes.length > 0 &&
-            connected.connectedNodes.indexOf(d.id) < 0
+              connected.connectedNodes.length > 0 &&
+              connected.connectedNodes.indexOf(d.id) < 0
           ) {
-            context.fillStyle = "#b9b9b9";
+            //更改颜色尝试
+            context.fillStyle = "#3b3e25";
           } else {
             context.fillStyle = color(d.category);
           }
 
           context.fill();
-
+            //更改颜色尝试,不要轮廓色
           context.strokeStyle = null;
           context.stroke();
         }
         context.restore();
       }
-
+        //鼠标移动事件
       function mouseMove() {
         let point = d3.mouse(this);
         if (timeout) {
@@ -543,7 +518,7 @@ var app = new Vue({
               selectedNode = d;
             }
           }
-
+            //利用tooltip鼠标悬停到node时，出现属性字迹
           if (selectedNode) {
             connected = getConnected(selectedNode);
             // console.log(connected);
@@ -570,19 +545,19 @@ var app = new Vue({
           }
         }, 100);
       }
-
+        //鼠标点击事件
       function mouseClick() {
         let that = this;
         let point = d3.mouse(this);
         if (timeout) {
           clearTimeout(timeout);
         }
-
+          //点击鼠标选择对应的Node
         if (selectedNode) {
           let dx = selectedNode.x * transform.k + transform.x - point[0];
           let dy = selectedNode.y * transform.k + transform.y - point[1];
           let distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance > radius * transform.k) {
+          if (distance > radius * transform.k) {          //出现的distance与半径比较，是为什么
             that.infoPanelShow = true;
             lockFlag = true;
           } else {
@@ -635,7 +610,7 @@ var app = new Vue({
           return true;
         return false;
       }
-
+        //？？？为啥要转化color-rgb
       function ColorToRgba(hex, fade) {
         var rgb = []; // 定义rgb数组
         if (/^\#[0-9A-F]{3}$/i.test(hex)) {
@@ -649,7 +624,7 @@ var app = new Vue({
         if (/^#[0-9A-F]{6}$/i.test(hex)) {
           //判断传入是否为#六位十六进制数
           hex.replace(/[0-9A-F]{2}/gi, function(kw) {
-            rgb.push(eval("0x" + kw)); //十六进制转化为十进制并存如数组
+            rgb.push(eval("0x" + kw)); //十六进制转化为十进制并存入数组
           });
           rgb.push(fade);
           return `rgba(${rgb.join(",")})`; //输出RGB格式颜色
@@ -676,13 +651,14 @@ var app = new Vue({
         return { connectedNodes, connectedLinks };
       }
     },
+      //创建历史趋势图
     createHistoryTrendGraph() {
       if (this.historyChart) {
         this.historyChart.dispose();
       }
       let that = this;
       $.ajax({
-        url: "/static/KnowledgeGraph/assets/xajModel/researchTrend.json",
+        url: "/static/KnowledgeGraph/assets/ecomsed/researchTrend.json",
         type: "get",
         dataType: "json",
         success: function(data) {
@@ -694,7 +670,7 @@ var app = new Vue({
           that.agencyOrder = data.agency;
           let xAxisData = [];
           let seriesData = [];
-          for (let i = 1970; i < 2019; i++) {
+          for (let i = 1970; i < 2020; i++) {
             xAxisData.push(i);
           }
           for (let obj of data.count) {
@@ -718,7 +694,7 @@ var app = new Vue({
                   shadowOffsetX: 0,
                   shadowOffsetY: 0,
                   textStyle: {
-                    color: "#222"
+                    color: "#b9b9b9"         //修改
                   }
                 }
               },
@@ -754,6 +730,7 @@ var app = new Vue({
         }
       });
     },
+      //创建历史国家图谱
     createHistoryCountryGraph() {
       if (this.historyChart) {
         this.historyChart.dispose();
@@ -785,7 +762,7 @@ var app = new Vue({
           );
           this.historyChart.showLoading();
           $.ajax({
-            url: "/static/KnowledgeGraph/assets/xajModel/researchCountry.json",
+            url: "/static/KnowledgeGraph/assets/ecomsed/researchCountry.json",
             type: "get",
             dataType: "json",
             success: function(result) {
@@ -908,11 +885,12 @@ var app = new Vue({
         this.createHistoryCountryGraph();
       }
     },
+      //准备地图
     prepareLeafletMap() {
       let that = this;
       if (this.locationOfModel.length === 0) {
         $.ajax({
-          url: "/static/KnowledgeGraph/assets/xajModel/locationOfModel.json",
+          url: "/static/KnowledgeGraph/assets/ecomsed/locationOfModel.json",
           type: "get",
           success: function(locations) {
             that.locationOfModel = locations;
@@ -940,6 +918,7 @@ var app = new Vue({
         });
       }
     },
+      //创建地图
     createLeafletMap() {
       let that = this;
       let map = L.map("leadletMap", { attributionControl: false }).setView(
@@ -1002,11 +981,12 @@ var app = new Vue({
         }
       }
     },
+      //获取位置地理json值
     getLocationGeojson(id) {
       let that = this;
       let promise = new Promise(function(resolve, reject) {
         $.ajax({
-          url: "http://geomodeling.njnu.edu.cn//Knowledge/GetLocationByIdServlet",
+          url: "http://geomodeling.njnu.edu.cn/Knowledge/GetLocationByIdServlet",
           data: { id: id },
           type: "get",
           success: function(data) {
@@ -1134,7 +1114,7 @@ var app = new Vue({
           $.ajax({
             url:
               "http://geomodeling.njnu.edu.cn/Knowledge/GetKeywordsByIdDivideInYearServlet",
-            data: { id: "0bf2a302-6081-47e2-9c9e-82b0dc0b0a30" },
+            data: { id: "37ade37b-7728-442b-89f4-1eb34e4a63e9" },
             type: "get",
             success: function(data) {
               that.createD3StreamGraph(data);
@@ -1169,32 +1149,25 @@ var app = new Vue({
       //   .style("visibility", "hidden")
       //   .style("top", "30px")
       //   .style("left", "55px");
-        let tooltip = d3
-            .select(".keywordsPanel")
-            .append("div")
-            .attr("class", "streamInfo")
-            .style("opacity", 0);
-        let svg = d3.select("#keywordChart").append("svg")
-        /*.attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)*/
-            .attr("width", '100%')
-            .attr("height", '100%')
-            .append("g")
-            // .attr("transform", "translate(0,0)")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .attr('viewBox', '0 0 1000 1000')//设置svg画布大小，该大小是一个相对的大小，并不是绝对尺寸
-            .attr('preserveAspectRatio', 'xMidYMid meet');//该属性指定SVG图形在屏幕的最左上角开始显示，并且保持等比缩放
+      let tooltip = d3
+        .select(".keywordsPanel")
+        .append("div")
+        .attr("class", "streamInfo")
+        .style("opacity", 0);
+      let svg = d3
+        .select("#keywordChart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       let legendSet = new Set(),
         yearSet = new Set();
       //   min = -10,
       //   max = 0;
       for (let obj of data) {
         legendSet.add(obj["name"]);
-        if (obj["time"] * 1 > 1969) {
-          yearSet.add(obj["time"]);
-        }else{
-          console.log(obj["time"])
-        }
+        yearSet.add(obj["time"]);
       }
       // console.log(min,max)
       let legends = Array.from(legendSet);
@@ -1253,10 +1226,10 @@ var app = new Vue({
         .append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x).ticks(5));
-
+      
       let y = d3
         .scaleLinear()
-        .domain([-legendCount[0].count*2, legendCount[0].count*2])
+        .domain([-legendCount[0].count, legendCount[0].count])
         .range([height, 0]);
       svg.append("g").call(d3.axisLeft(y));
 
@@ -1351,8 +1324,12 @@ var app = new Vue({
       }
       return 0;
     }
+
   }
+
 });
+
+
 
 // function getLinksByYear(sYear, eYsar, links) {
 //   let resultLink = [];
@@ -1380,7 +1357,7 @@ var app = new Vue({
 // }
 
 /**
- * 
+ *
   function createGraph(graph) {
     let links = getLinksByYear(2018, 2019, graph.links);
     let nodes = getNodesByLink(links, graph.nodes);
@@ -1421,7 +1398,7 @@ var app = new Vue({
     if (nodes.length > 500) {
       let option = {
         title: {
-          text: "xajModel Knowledge Graph",
+          text: "ecomsed Knowledge Graph",
           top: "bottom",
           left: "right"
         },
@@ -1450,7 +1427,7 @@ var app = new Vue({
         ],
         series: [
           {
-            name: "xajModel Knowledge Graph",
+            name: "ecomsed Knowledge Graph",
             type: "graphGL",
             data: nodes,
             edges: links,
@@ -1497,7 +1474,7 @@ var app = new Vue({
     } else {
       let option = {
         title: {
-          text: "xajModel Knowledge Graph",
+          text: "ecomsed Knowledge Graph",
           top: "bottom",
           left: "right"
         },
@@ -1528,7 +1505,7 @@ var app = new Vue({
         animationEasingUpdate: "quinticInOut",
         series: [
           {
-            name: "xajModel Knowledge Graph",
+            name: "ecomsed Knowledge Graph",
             type: "graph",
             layout: "force",
             data: nodes,
@@ -1566,7 +1543,7 @@ var app = new Vue({
       myChart.setOption(option);
     }
   }
- */
+
 /**
  * series 可以添加
  *           modularity: true,
@@ -1582,7 +1559,7 @@ var app = new Vue({
 /**
   * 普通
   * {
-          name: "xajModel Knowledge Graph",
+          name: "ecomsed Knowledge Graph",
           type: "graph",
           layout: "force",
           data: graph.nodes,
@@ -1617,7 +1594,7 @@ var app = new Vue({
 /**
   * webgl
   * {
-          name: "xajModel Knowledge Graph",
+          name: "ecomsed Knowledge Graph",
           type: "graphGL",
           layout: "force",
           data: nodes,
