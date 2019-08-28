@@ -92,7 +92,7 @@ public class ModelItemService {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
-
+        //getpage函数通过id获取需要的页面
     public ModelAndView getPage(String id){
         //条目信息
         ModelItem modelInfo=getByOid(id);

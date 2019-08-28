@@ -1,5 +1,4 @@
 package njgis.opengms.portal.bean.datacontainer;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

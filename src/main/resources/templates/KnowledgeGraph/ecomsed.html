@@ -2,9 +2,9 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" />
-    <title>SWAT Knowledge Graph</title>
+    <title>ECOMSED Knowledge Graph</title>
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
     <link
@@ -22,30 +22,26 @@
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap/css/bootstrap.css}" />
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.css}" />
     <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
-    <!--<link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index2.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />-->
   </head>
   <body>
     <div class="container" id="app">
-        <!--add new div-->
-            <div class="suspension">
-                <div class="suspension-box">
-                    <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
-                    <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
-                    <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
-                    <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
-                </div>
-            </div>
-        <!--add new div-->
-        <div class="row no-gutters">
+      <!--add new div-->
+      <div class="suspension">
+        <div class="suspension-box">
+          <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
+          <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+          <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+          <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
+        </div>
+      </div>
+      <!--add new div-->
+      <div class="row no-gutters">
         <div class="col-lg-11">
 
         </div>
-        </div>
-        <div class="main">
+      </div>
+      <div class="main">
         <div class="graphPanel" v-show="active===0">
-
           <div id="searchPanel">
             <p>请选择年份</p>
             <input
@@ -69,11 +65,11 @@
             </div>
             <div id="content" class="am-panel-bd" >
               <table
-                class="am-table am-table-striped am-table-bordered am-table-compact "
-                data-classes="table table-bordered"
-                data-pagination="true" data-page-size="10"
-                data-pagination-loop="false"
-                id="linkTable"
+                      class="am-table am-table-striped am-table-bordered am-table-compact "
+                      data-classes="table table-bordered"
+                      data-pagination="true" data-page-size="10"
+                      data-pagination-loop="false"
+                      id="linkTable"
               >
                 <thead>
                   <tr>
@@ -142,6 +138,7 @@
       </div>
     </div>
   </body>
+
   <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
@@ -154,10 +151,7 @@
   <script th:src="@{/static/KnowledgeGraph/js/geojsonhint.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/swat.js}"></script>
-  <!--<script src="../static/js/index/main.js"></script>
-  <script src="../static/js/common/loadUser.js"></script>
-  <script src="../static/js/common/navbar.js"></script>
-  <script src="../static/js/index/bootstrap.min.js"></script>
-  <script src="../static/js/common/backTop.js/"></script>-->
+  <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
+  <!-- <script src="js/echarts//extension/modularity.js"></script> -->
+  <script th:src="@{/static/KnowledgeGraph/js/ecomsed.js}"></script>
 </html>
