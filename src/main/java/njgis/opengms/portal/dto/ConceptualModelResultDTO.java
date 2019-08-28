@@ -1,31 +1,23 @@
-package njgis.opengms.portal.entity;
+package njgis.opengms.portal.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @ClassName ConceptualModel
- * @Description todo
- * @Author Kai
- * @Date 2019/3/1
- * @Version 1.0.0
- * TODO
- */
-
-@Document
 @Data
-public class ConceptualModel {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class ConceptualModelResultDTO {
     @Id
     String id;
     String oid;
     String name;
-//    String image;
+    //    String image;
     String relateModelItem;
     String description;
     String cXml;
@@ -33,6 +25,7 @@ public class ConceptualModel {
     String author;
     String detail;
 //    String status;
+    String relateModelItemName;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;
@@ -40,14 +33,10 @@ public class ConceptualModel {
 
     List<String> classifications;
     List<String> keywords;
-//    List<String> contributors;
+    //    List<String> contributors;
 //    List<String> modelItems;
     List<String> image;
     List<AuthorInfo> authorship;
-
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
 
     Date createTime;
     Date lastModifyTime;

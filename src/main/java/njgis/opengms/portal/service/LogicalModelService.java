@@ -9,19 +9,18 @@ import njgis.opengms.portal.dao.LogicalModelDao;
 import njgis.opengms.portal.dao.ModelDao;
 import njgis.opengms.portal.dao.ModelItemDao;
 import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
-import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.Classification;
+import njgis.opengms.portal.entity.LogicalModel;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.deCode;
 import org.bson.Document;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -35,7 +34,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static njgis.opengms.portal.utils.Utils.saveFiles;
@@ -199,6 +197,66 @@ public class LogicalModelService {
                 modelItemDao.save(modelItem);
 
 
+
+                result.put("code", 1);
+                result.put("id", logicalModel.getOid());
+            }catch (Exception e) {
+                e.printStackTrace();
+                result.put("code", -2);
+            }
+        }
+        return result;
+    }
+
+    public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
+        JSONObject result=new JSONObject();
+        LogicalModel logicalModel = logicalModelDao.findFirstByOid(jsonObject.getString("oid"));
+
+        String path=resourcePath+"/logicalModel";
+        List<String> images=saveFiles(files,path,uid,"/logicalModel");
+        if(images==null){
+            result.put("code",-1);
+        }
+        else {
+            try {
+                logicalModel.setImage(images);
+                logicalModel.setName(jsonObject.getString("name"));
+                logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                logicalModel.setDescription(jsonObject.getString("description"));
+                logicalModel.setContentType(jsonObject.getString("contentType"));
+                logicalModel.setDetail(jsonObject.getString("detail"));
+                logicalModel.setCXml(jsonObject.getString("cXml"));
+                logicalModel.setSvg(jsonObject.getString("svg"));
+                JSONArray jsonArray=jsonObject.getJSONArray("authorship");
+                List<AuthorInfo> authorship=new ArrayList<>();
+                for(int i=0;i<jsonArray.size();i++){
+                    JSONObject author=jsonArray.getJSONObject(i);
+                    AuthorInfo authorInfo=new AuthorInfo();
+                    authorInfo.setName(author.getString("name"));
+                    authorInfo.setEmail(author.getString("email"));
+                    authorInfo.setIns(author.getString("ins"));
+                    authorInfo.setHomepage(author.getString("homepage"));
+                    authorship.add(authorInfo);
+                }
+                logicalModel.setAuthorship(authorship);
+                logicalModel.setAuthor(uid);
+//                boolean isAuthor = jsonObject.getBoolean("isAuthor");
+                logicalModel.setIsAuthor(true);
+//                if (isAuthor) {
+//                    logicalModel.setRealAuthor(null);
+//                } else {
+//                    AuthorInfo authorInfo = new AuthorInfo();
+//                    authorInfo.setName(jsonObject.getJSONObject("author").getString("name"));
+//                    authorInfo.setIns(jsonObject.getJSONObject("author").getString("ins"));
+//                    authorInfo.setEmail(jsonObject.getJSONObject("author").getString("email"));
+//                    logicalModel.setRealAuthor(authorInfo);
+//                }
+
+
+                Date now = new Date();
+                logicalModel.setCreateTime(now);
+                logicalModel.setLastModifyTime(now);
+                logicalModelDao.save(logicalModel);
 
                 result.put("code", 1);
                 result.put("id", logicalModel.getOid());

@@ -1,18 +1,18 @@
 package njgis.opengms.portal.controller.rest;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dto.ConceptualModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.entity.Classification;
+import njgis.opengms.portal.entity.ConceptualModel;
 import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.service.ClassificationService;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.ConceptualModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -20,10 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,7 +61,13 @@ public class ConceptualModelRestController {
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
     JsonResult getInfo(@PathVariable ("id") String id){
-        return ResultUtils.success(conceptualModelService.getByOid(id));
+        ConceptualModel conceptualModel=conceptualModelService.getByOid(id);
+        ModelItem modelItem=modelItemService.getByOid(conceptualModel.getRelateModelItem());
+        ConceptualModelResultDTO conceptualModelResultDTO=new ConceptualModelResultDTO();
+        BeanUtils.copyProperties(conceptualModel,conceptualModelResultDTO);
+        conceptualModelResultDTO.setRelateModelItemName(modelItem.getName());
+
+        return ResultUtils.success(conceptualModelResultDTO);
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
@@ -144,6 +147,25 @@ public class ConceptualModelRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value="/update",method = RequestMethod.POST)
+    JsonResult update(@RequestParam("conceptualModel") String model, HttpServletRequest request){
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        List<MultipartFile> files=multipartRequest.getFiles("imgFiles");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+
+        JSONObject result=conceptualModelService.update(files,jsonObject,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public JsonResult deleteConceptualModel(@RequestParam(value="oid") String oid, HttpServletRequest request){
         HttpSession session=request.getSession();
@@ -154,5 +176,15 @@ public class ConceptualModelRestController {
         String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(conceptualModelService.delete(oid,userName));
     }
+
+    @RequestMapping (value = "/getUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getUserOidByOid(@RequestParam(value="oid") String oid){
+        ConceptualModel conceptualModel=conceptualModelService.getByOid(oid);
+        String userId=conceptualModel.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
+    }
+
 
 }

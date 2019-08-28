@@ -167,16 +167,17 @@
                     //  mainUI.setStatusText("Load OK");
                     if (uid != null && uid != "" && uid != "0") {
                         $.ajax({
-                            url: "/GeoModeling/ConceptModelInfoServlet",
+                            url: "/conceptualModel/getInfo/" + uid,
                             type: "get",
                             data: { "mid": uid },
                             success: function (result) {
-                                var data = JSON.parse(result);
+                                var data = result.data;
                                 console.log(data)
                                 var xml_doc = mxUtils.parseXml(data.cxml);
                                 xml_doc.documentElement.setAttribute("page", 0);
                                 mainUI.editor.setGraphXml(xml_doc.documentElement);
                                 window.onbeforeunload = null;
+                                window.sessionStorage.setItem("editConceptualModel_id", "");
                             }
                         })
                     }

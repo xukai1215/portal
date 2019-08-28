@@ -28,6 +28,11 @@
                         >
                 </el-table-column>
                 <el-table-column
+                        prop="type"
+                        label="Type"
+                        width="200">
+                </el-table-column>
+                <el-table-column
                         prop="modifier"
                         label="Modifier"
                         width="200">
@@ -72,6 +77,11 @@
                 >
                 </el-table-column>
                 <el-table-column
+                        prop="type"
+                        label="Type"
+                        width="200">
+                </el-table-column>
+                <el-table-column
                         prop="modifier"
                         label="Modifier"
                         width="200">
@@ -106,6 +116,11 @@
                         prop="name"
                         label="Name"
                 >
+                </el-table-column>
+                <el-table-column
+                        prop="type"
+                        label="Type"
+                        width="200">
                 </el-table-column>
                 <el-table-column
                         prop="modifier"
@@ -151,42 +166,21 @@
                     console.log(row);
                 },
 
-                getUnchecked(){
+                getVersions(){
                     $.ajax({
                         type: "GET",
-                        url: "/version/getUnchecked",
+                        url: "/version/getVersions",
                         data: {},
                         async: true,
                         success: (json) => {
 
-                            this.tableData=json.data;
+                            this.tableData=json.data.uncheck;
+                            this.tableData2=json.data.accept;
+                            this.tableData3=json.data.reject;
                         }
                     })
                 },
-                getAccepted(){
-                    $.ajax({
-                        type: "GET",
-                        url: "/version/getAccepted",
-                        data: {},
-                        async: true,
-                        success: (json) => {
 
-                            this.tableData2=json.data;
-                        }
-                    })
-                },
-                getRejected(){
-                    $.ajax({
-                        type: "GET",
-                        url: "/version/getRejected",
-                        data: {},
-                        async: true,
-                        success: (json) => {
-
-                            this.tableData3=json.data;
-                        }
-                    })
-                },
                 view(event){
                     let refLink=$(".viewBtn");
                     for(i=0;i<refLink.length;i++){
@@ -268,9 +262,7 @@
         ,
         mounted() {
 
-            this.getUnchecked();
-            this.getAccepted();
-            this.getRejected();
+            this.getVersions()
 
         }
     });

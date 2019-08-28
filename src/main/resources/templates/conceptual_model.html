@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" >
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Conceptual Model | OpenGMS</title>
 
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
@@ -14,8 +15,8 @@
     <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
     <link rel="stylesheet" type="text/css" href="/static/js/conceptModelEditor/styles/grapheditor.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" >
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" >
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css">
     <style>
         .img img {
             width: 90px;
@@ -34,11 +35,11 @@
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #d2d2d2 solid 1px">
             <div class="detail">
                 <div class="detail_title">
-                    <a th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
+                    <a th:if="${history!=true}" th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
-                    <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'></a>-->
+                    <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
@@ -58,9 +59,10 @@
                         </div>
                     </div>
 
-                    <div class="detail_option">
+                    <div class="detail_option" th:if="${history!=true}">
                         <button type="button" class="btn btn-default" style="font-weight: bold;font-size:16px"
-                                data-toggle="tooltip" data-placement="left" title="bind to another model item" @click="modelItemFormVisible=true">+
+                                data-toggle="tooltip" data-placement="left" title="bind to another model item"
+                                @click="modelItemFormVisible=true">+
                         </button>
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
@@ -117,9 +119,10 @@
                     </div>
                 </div>
                 <div class="fullPaper text-center hide">
-                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i class="fa fa-angle-down"
-                                                                                              style="margin-left: 10px;color:red;font-weight: bold"
-                                                                                              aria-hidden="true"></i></a>
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
+                            class="fa fa-angle-down"
+                            style="margin-left: 10px;color:red;font-weight: bold"
+                            aria-hidden="true"></i></a>
                 </div>
             </div>
             <div id="cite" class="detail_block">
@@ -130,9 +133,10 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text" class="width:100%-50px">
-                            <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
+                            <span th:text="${user.name}+'.('+${year}+').'+${modelInfo.name}+','">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
+
                         <a th:href="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
                            th:text="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
                             http://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
@@ -148,7 +152,8 @@
             <div id="Contributor" class="detail_block" style="margin-bottom: 55px;">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
-                        <h4>Contributor</h4>
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
                     </div>
                 </div>
                 <div class="block_content">
@@ -167,12 +172,14 @@
                     </div>
                     <div class="el-row el-col-offset-3">
                         <div class="text-center">
-                            <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="Authorship" class="detail_block" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+            <div id="Authorship" class="detail_block"
+                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -185,7 +192,8 @@
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
                                 aria-expanded="true">[Expand]</a></span>
                         <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</div>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true" style="">
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true"
+                             style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
                                     <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
@@ -193,29 +201,58 @@
                                     <dt th:if="${author.email!=''}">Email: &nbsp</dt>
                                     <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
                                     <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
-                                    <dd th:if="${author.homepage!=''}" ><a th:href="${author.homepage}" target="_blank">View</a></dd>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-                <div id="QR" class="detail_block">
-                    <div class="block_head">
-                        <div class="head_text" style="padding-left: 10px;">
-                            <h4>QR Code</h4>
-                        </div>
+            <div id="Modifier" class="detail_block"
+                 th:if="${history!=true&&modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
                     </div>
-                    <div class="block_content">
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
 
-                        <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/conceptualModel/'+${modelInfo.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
 
                     </div>
                 </div>
+            </div>
+            <div id="QR" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                </div>
+            </div>
 
         </div>
 
-
+        <div th:if="${history==true}" style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
     </div>
 
     <el-dialog title="Bind Model Item" :visible.sync="modelItemFormVisible">
@@ -396,6 +433,7 @@
 <script src="/static/js/page/conceptual_model.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/copy.js"></script>
-<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 
 </html>

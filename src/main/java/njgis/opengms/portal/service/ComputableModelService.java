@@ -149,9 +149,7 @@ public class ComputableModelService {
                 }
 
             }
-            JSONObject mdlJson=(JSONObject)JSONObject.toJSON(modelInfo.getMdlJson());
-            JSONObject modelClass=(JSONObject)mdlJson.getJSONArray("ModelClass").get(0);
-            JSONObject behavior=(JSONObject)modelClass.getJSONArray("Behavior").get(0);
+
 
 
 
@@ -163,7 +161,12 @@ public class ComputableModelService {
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
             modelAndView.addObject("resources", resourceArray);
-            modelAndView.addObject("behavior", behavior);
+            JSONObject mdlJson=(JSONObject)JSONObject.toJSON(modelInfo.getMdlJson());
+            if(mdlJson!=null) {
+                JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
+                JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
+                modelAndView.addObject("behavior", behavior);
+            }
             modelAndView.addObject("loadPath",htmlLoadPath);
 
             return modelAndView;
@@ -451,6 +454,158 @@ public class ComputableModelService {
                 modelItemRelate.getComputableModels().add(computableModel.getOid());
                 modelItem.setRelate(modelItemRelate);
                 modelItemDao.save(modelItem);
+
+                result.put("code", 1);
+                result.put("id", computableModel.getOid());
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.put("code", -2);
+            }
+        }
+        return result;
+    }
+
+    public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
+        JSONObject result = new JSONObject();
+        ComputableModel computableModel = computableModelDao.findFirstByOid(jsonObject.getString("oid"));
+
+        String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
+        List<String> resources = saveFiles(files, path, uid, "");
+        if (resources == null) {
+            result.put("code", -1);
+        } else {
+            try {
+                computableModel.setResources(resources);
+                computableModel.setName(jsonObject.getString("name"));
+                computableModel.setDetail(jsonObject.getString("detail"));
+                computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                computableModel.setDescription(jsonObject.getString("description"));
+                computableModel.setContentType(jsonObject.getString("contentType"));
+                computableModel.setUrl(jsonObject.getString("url"));
+                String md5 = "";
+                if (jsonObject.getString("contentType").equals("Package")) {
+                    String filePath = path + resources.get(0);
+                    FileInputStream file = new FileInputStream(filePath);
+                    md5 = DigestUtils.md5DigestAsHex(IOUtils.readFully(file, -1, true));
+
+                    String mdlPath=null;
+                    String testDataDirectoryPath = null;
+                    String destDirPath = path + "/unZip/" + computableModel.getOid();
+                    ZipUtils.unZip(new File(filePath),destDirPath);
+                    File unZipDir = new File(destDirPath);
+                    if (unZipDir.exists()) {
+                        LinkedList<File> list = new LinkedList<File>();
+                        File[] dirFiles = unZipDir.listFiles();
+                        for (File file2 : dirFiles) {
+                            if (file2.isDirectory()) {
+                                //我为了节省时间就直接复用许凯的代码了
+                                if(file2.getName().equals("testify")){
+                                    testDataDirectoryPath = file2.getAbsolutePath();
+                                }else if(file2.getName().equals("model")){
+                                    list.add(file2);
+                                }
+                            } else {
+                                String name=file2.getName();
+                                if(name.substring(name.length()-3,name.length()).equals("mdl")){
+                                    mdlPath=file2.getAbsolutePath();
+                                    break;
+                                }
+                                System.out.println("文件:" + file2.getAbsolutePath());
+                            }
+                        }
+                        File temp_file;
+                        while (!list.isEmpty()) {
+                            temp_file = list.removeFirst();
+                            dirFiles = temp_file.listFiles();
+                            for (File file2 : dirFiles) {
+                                if (file2.isDirectory()) {
+                                    continue;
+                                } else {
+                                    String name=file2.getName();
+                                    if(name.substring(name.length()-3,name.length()).equals("mdl")){
+                                        mdlPath=file2.getAbsolutePath();
+                                        break;
+                                    }
+                                    System.out.println("文件:" + file2.getAbsolutePath());
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("文件不存在!");
+                    }
+
+                    //获取测试数据，并进行存储
+                    if(testDataDirectoryPath != null){
+                        String testData = generateTestData(testDataDirectoryPath,computableModel.getOid());
+                        computableModel.setTestDataPath(testData);
+                    }else{
+                        computableModel.setTestDataPath("");
+                    }
+
+                    String content="";
+                    if(mdlPath!=null){
+                        try {
+                            BufferedReader in = new BufferedReader(new FileReader(mdlPath));
+                            String str=in.readLine();
+                            if(str.indexOf("ModelClass")!=-1){
+                                content+=str;
+                            }
+                            while ((str = in.readLine()) != null) {
+                                content+=str;
+                            }
+                            in.close();
+                            System.out.println(content);
+                        } catch (IOException e) {
+                            System.out.println(e);
+                        }
+
+                        computableModel.setMdl(content);
+                        JSONObject mdlJson = XmlTool.documentToJSONObject(content);
+                        computableModel.setMdlJson(mdlJson);
+                    }
+                    else{
+                        System.out.println("mdl文件未找到!");
+                    }
+
+                    Utils.deleteDirectory(destDirPath);
+                }
+
+                computableModel.setMd5(md5);
+
+
+
+                JSONArray jsonArray=jsonObject.getJSONArray("authorship");
+                List<AuthorInfo> authorship=new ArrayList<>();
+                for(int i=0;i<jsonArray.size();i++){
+                    JSONObject author=jsonArray.getJSONObject(i);
+                    AuthorInfo authorInfo=new AuthorInfo();
+                    authorInfo.setName(author.getString("name"));
+                    authorInfo.setEmail(author.getString("email"));
+                    authorInfo.setIns(author.getString("ins"));
+                    authorInfo.setHomepage(author.getString("homepage"));
+                    authorship.add(authorInfo);
+                }
+                computableModel.setAuthorship(authorship);
+
+                computableModel.setAuthor(uid);
+
+//                boolean isAuthor = jsonObject.getBoolean("isAuthor");
+                computableModel.setIsAuthor(true);
+//                if (isAuthor) {
+//                    computableModel.setRealAuthor(null);
+//                } else {
+//                    AuthorInfo authorInfo = new AuthorInfo();
+//                    authorInfo.setName(jsonObject.getJSONObject("author").getString("name"));
+//                    authorInfo.setIns(jsonObject.getJSONObject("author").getString("ins"));
+//                    authorInfo.setEmail(jsonObject.getJSONObject("author").getString("email"));
+//                    computableModel.setRealAuthor(authorInfo);
+//                }
+
+
+                Date now = new Date();
+                computableModel.setCreateTime(now);
+                computableModel.setLastModifyTime(now);
+                computableModelDao.save(computableModel);
 
                 result.put("code", 1);
                 result.put("id", computableModel.getOid());

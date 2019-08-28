@@ -88,7 +88,10 @@ public class ModelItemRestController {
     public JsonResult updateModelItem(@RequestBody ModelItemUpdateDTO modelItemUpdateDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
-
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
         JSONObject result=modelItemService.update(modelItemUpdateDTO,uid);
         if(result==null){
             return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");

@@ -24,14 +24,16 @@ public class ModelItem {
     String author;
     String status;
     String knowledgeGraph;
-    String lastModifier;
+
 
     List<String> classifications;
     List<String> keywords;
     List<Reference> references;
-    List<String> contributors;
     List<AuthorInfo> authorship;
     List<String> relatedData;
+
+    String lastModifier;
+    List<String> contributors;
     List<String> versions;
 
     boolean lock;

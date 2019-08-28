@@ -14,7 +14,7 @@
     <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{/static/css/components/file-manager.css}">
     <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
-    <link rel="stylesheet" type="text/css" href="/static/js/conceptModelEditor/styles/grapheditor.css">
+    <link rel="stylesheet" type="text/css" href="/static/MxGraph/css/common.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
 
@@ -251,7 +251,7 @@
                                     <tr th:each="software,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].SoftwareConfigures[0].Add}">
                                         <td th:if="${key.index}==0" th:attr="rowspan=${key.size}">SoftwareConfigures</td>
                                         <td th:text="${software.key}"></td>
-                                        <td th:text="${software.value}+' | '+${software.platform}"></td>
+                                        <td th:text="${software.value}"></td>
                                     </tr>
                                 </div>
                                 <div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies}!=''">

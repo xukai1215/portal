@@ -2,10 +2,16 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dto.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
+import njgis.opengms.portal.entity.ComputableModel;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.ComputableModelService;
+import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +39,9 @@ public class ComputableModelRestController {
     ComputableModelService computableModelService;
 
     @Autowired
+    ModelItemService modelItemService;
+
+    @Autowired
     UserService userService;
 
 
@@ -51,6 +60,25 @@ public class ComputableModelRestController {
         }
         JSONObject result=computableModelService.insert(files,jsonObject,uid);
         userService.computableModelPlusPlus(uid);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping (value="/update",method = RequestMethod.POST)
+    JsonResult update(@RequestParam("computableModel") String model, HttpServletRequest request){
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        List<MultipartFile> files=multipartRequest.getFiles("resources");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=computableModelService.update(files,jsonObject,uid);
+
 
         return ResultUtils.success(result);
     }
@@ -85,7 +113,13 @@ public class ComputableModelRestController {
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
     JsonResult getInfo(@PathVariable ("id") String id){
-        return ResultUtils.success(computableModelService.getByOid(id));
+        ComputableModel computableModel=computableModelService.getByOid(id);
+        ComputableModelResultDTO computableModelResultDTO=new ComputableModelResultDTO();
+        ModelItem modelItem=modelItemService.getByOid(computableModel.getRelateModelItem());
+        BeanUtils.copyProperties(computableModel,computableModelResultDTO);
+        computableModelResultDTO.setRelateModelItemName(modelItem.getName());
+
+        return ResultUtils.success(computableModelResultDTO);
     }
 
     @RequestMapping(value = "/deploy/{id}",method = RequestMethod.POST)
@@ -182,6 +216,15 @@ public class ComputableModelRestController {
         JSONObject result=computableModelService.getComputableModelsByUserId(uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping (value = "/getUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getUserOidByOid(@RequestParam(value="oid") String oid){
+        ComputableModel computableModel=computableModelService.getByOid(oid);
+        String userId=computableModel.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
     }
 
 
