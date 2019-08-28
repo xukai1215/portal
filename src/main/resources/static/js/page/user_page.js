@@ -18,6 +18,7 @@ new Vue({
             activeName: 'Model Item',
             currentPage: 1,
 
+
             pageOption:{
                 progressBar:true,
                 sortAsc:false,
@@ -58,8 +59,13 @@ new Vue({
             },
 
             newestArticle:{
-
                 result:[],
+            },
+
+            userLab:{
+                labInfo:[],
+                labLeader:[],
+                labMember:[],
             },
 
             articleAdd:{
@@ -155,9 +161,14 @@ new Vue({
         //     this.showIndex=index;
         // },
 
+        labClick(){
+            this.bodyIndex=4;
+            $('html,body').animate({scrollTop: '0px'}, 200);
+        },
+
         menu_Click(index){
-            window.scroll(0,0);
             this.bodyIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 200);
         },
 
         // resource按钮单独做以每次都显示model item
@@ -321,6 +332,7 @@ new Vue({
                             this.logicalModels.total = data.total;
                             this.logicalModels.result = data.list;
                             this.pageOption.progressBar = false;
+                            console.log('logical'+this.logicalModels.result);
                         }, 500);
                     } else {
                         console.log("search logical model failed.")
@@ -346,13 +358,14 @@ new Vue({
 
                     if (json.code == 0) {
                         const data = json.data;
-
+                        console.log(data.list);
+                        if(data.list.length!=0)
                         setTimeout(() => {
 
                             this.computableModels.total = data.total;
                             this.computableModels.result = data.list;
                             this.pageOption.progressBar = false;
-
+                            console.log('computer'+this.computableModels.result);
                         }, 500);
                     } else {
                         console.log("search computable model failed.")
@@ -379,12 +392,13 @@ new Vue({
 
                     if (json.code == 0) {
                         const data=json.data;
+                        console.log(data.list.length);
                         setTimeout(() => {
 
                             this.articles.total=data.total;
                             this.articles.result=data.list;
                             this.pageOption.progressBar=false;
-
+                            console.log(this.articles.result);
                         }, 500);
                     } else {
                         console.log("search computable model failed.")
@@ -471,6 +485,7 @@ new Vue({
                   asc:false,
                   oid:hrefs[hrefs.length-1],
               },
+              type:"GET",
               url:"/article/findNewest",
               async:true,
               success: (json)=>{
@@ -482,8 +497,6 @@ new Vue({
                               this.newestArticle.result=data.list;
                               this.pageOption.progressBar=false;
                           },500)
-                      console.log(this.newestArticle.result);
-                      console.log(this.newestArticle);
                   }else{
                       console.log("search data item failed.")
                   }
@@ -492,32 +505,63 @@ new Vue({
           })
         },
 
-        ArticleAddToBack(){
-            var obj=
-                    {
-                    title:this.articleAdd.title,
-                    authors:this.articleAdd.author,
-                    journal:this.articleAdd.journal,
-                    startPage:this.articleAdd.startPage,
-                    endPage:this.articleAdd.endPage,
-                    date:this.articleAdd.date,
-                    link:this.articleAdd.link,
-                }
-            $.ajax({
-                url: "/article/add",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(obj),
+        // ArticleAddToBack(){
+        //     var obj=
+        //             {
+        //             title:this.articleAdd.title,
+        //             authors:this.articleAdd.author,
+        //             journal:this.articleAdd.journal,
+        //             startPage:this.articleAdd.startPage,
+        //             endPage:this.articleAdd.endPage,
+        //             date:this.articleAdd.date,
+        //             link:this.articleAdd.link,
+        //         }
+        //     $.ajax({
+        //         url: "/article/add",
+        //         type: "POST",
+        //         contentType: "application/json",
+        //         data: JSON.stringify(obj),
+        //
+        //         async:true,
+        //         success:(json)=>{
+        //             if(json.code==0){
+        //                 alert("Add Success");
+        //             }
+        //         }
+        //
+        //     })
+        //
+        // },
 
+        labLoad(){
+            const hrefs=window.location.href.split('/');
+            var oid=hrefs[hrefs.length-1];
+
+            $.ajax({
+                data:{
+                    oid:oid
+                },
+                type:"GET",
+                url: "/lab/findByName",
                 async:true,
                 success:(json)=>{
                     if(json.code==0){
-                        alert("Add Success");
+                        const data=json.data;
+                        setTimeout(
+                            ()=>{
+                                this.userLab.labInfo=data.lab;
+                                this.userLab.leader=data.labLeader;
+                                this.userLab.members=data.labMembers;
+                                // this.pageOption.progressBar=false;
+                                console.log(this.userLab.labInfo);
+                                console.log(this.userLab.leader);
+                                console.log(this.userLab.members);
+                            },500)
+                    }else{
+                        console.log("search data item failed.")
                     }
-                }
-
+            }
             })
-
         },
 
 
@@ -529,7 +573,7 @@ new Vue({
 
     mounted(){
         this.modelItemHandleCurrentChange(1);
-        // this.dataItemHandleCurrentChange(1);
+        // // this.dataItemHandleCurrentChange(1);
         this.logicalModelHandleCurrentChange(1);
         this.conceptualModelHandleCurrentChange(1);
         this.computableModelHandleCurrentChange(1);
@@ -537,6 +581,7 @@ new Vue({
         this.projectHandleCurrentChange(1);
         this.conferenceHandleCurrentChange(1);
         this.articleNewestLoad();
+        this.labLoad();
     }
 
 

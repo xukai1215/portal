@@ -30,6 +30,9 @@ public class ArticleService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    UserService userService;
+
     public JSONObject findNewestArticle(ArticleFindDTO articleFindDTO ,String oid ){
         int page=articleFindDTO.getPage();
         int pageSize = articleFindDTO.getPageSize();
@@ -44,7 +47,7 @@ public class ArticleService {
         JSONObject result=new JSONObject();
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
-        System.out.println(result);
+//        System.out.println(result);
         return result;
 
     }
@@ -60,11 +63,29 @@ public class ArticleService {
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(userName,pageable);
-
         JSONObject result=new JSONObject();
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
+
         System.out.println(result);
+        return result;
+
+    }
+
+    public JSONObject searchByTitle(ArticleFindDTO articleFindDTO,String userName){
+        int page=articleFindDTO.getPage();
+        int pageSize = articleFindDTO.getPageSize();
+        String sortElement=articleFindDTO.getSortElement();
+        Boolean asc = articleFindDTO.getAsc();
+        String title= articleFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ArticleResultDTO> articleResultDTOPage=articleDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",articleResultDTOPage.getContent());
+        result.put("total",articleResultDTOPage.getTotalElements());
         return result;
 
     }
@@ -77,8 +98,40 @@ public class ArticleService {
         article.setContributor(contributor);
         article.setOid(UUID.randomUUID().toString());
 
-        System.out.println(article);
+        System.out.println("add");
+
         return articleDao.insert(article);
+
+    }
+
+    public Article editArticle(ArticleAddDTO articleAddDTO,String oid){
+        Article article=articleDao.findFirstByOid(oid);
+        if(article==null) {}
+        else {
+            article.setTitle(articleAddDTO.getTitle());
+            article.setAuthors(articleAddDTO.getAuthors());
+            article.setJournal(articleAddDTO.getJournal());
+            article.setDate(articleAddDTO.getDate());
+            article.setStartPage(articleAddDTO.getStartPage());
+            article.setEndPage(articleAddDTO.getEndPage());
+            article.setLink(articleAddDTO.getLink());
+        }
+        articleDao.save(article);
+        return article;
+    }
+
+    public int deleteByOid (String oid,String userName){
+        Article article=articleDao.findFirstByOid(oid);
+        if(article!=null){
+            articleDao.deleteArticleByOid(oid);
+            userService.modelItemMinusMinus(userName);
+            return 1;
+        }
+        else
+
+            return -1;
+
+
 
     }
 
@@ -96,8 +149,6 @@ public class ArticleService {
         JSONObject result=new JSONObject();
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
-
-        System.out.println("ArticleService");
 
         return result;
     }

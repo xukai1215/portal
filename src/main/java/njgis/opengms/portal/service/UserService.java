@@ -188,6 +188,26 @@ public class UserService {
         user.setUnits(--count);
         userDao.save(user);
     }
+    public void articleItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getArticlesCount();
+        user.setArticlesCount(--count);
+        userDao.save(user);
+    }
+
+    public void projectItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getProjectsCount();
+        user.setProjectsCount(--count);
+        userDao.save(user);
+    }
+
+    public void conferenceItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getConferencesCount();
+        user.setConferencesCount(--count);
+        userDao.save(user);
+    }
 
     public User getByUid(String userName){
         try {

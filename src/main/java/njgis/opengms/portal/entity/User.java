@@ -33,7 +33,6 @@ public class User {
     String personPage;
     String institution;
 
-    Affiliation affiliation;
     Introduction introduction;
 
     List<String> organizations;
@@ -46,7 +45,8 @@ public class User {
     List<Conference> conferences;
     List<EducationExperience> educationExperiences;
 
-    List<Lab> labs;
+//    List<Lab> labs;
+    String lab;
     List<Project> projects;
 
     int modelItems;
@@ -59,6 +59,11 @@ public class User {
     int templates;
     int units;
     int articlesCount;
+    int projectsCount;
+    int conferencesCount;
 
+
+    Affiliation affiliation;
     Date createTime;
+
 }

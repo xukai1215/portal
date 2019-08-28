@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,9 +19,10 @@ public class Conference {
     String title;
     String theme;
     String conferenceRole;
-    String holdLocation;
+    String location;
     String contributor;
-    Date startTime;
-    Date endTime;
+    String startTime;
+    String endTime;
+    Date creatDate;
     int viewCount;
 }

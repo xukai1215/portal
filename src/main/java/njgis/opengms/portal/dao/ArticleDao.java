@@ -31,5 +31,7 @@ public interface ArticleDao extends MongoRepository<Article,String> {
 //
      Page<ArticleResultDTO> findByContributor(String contributor,Pageable pageable);
 
+     Page<ArticleResultDTO> findByTitleContainsIgnoreCaseAndContributor(String title,String contributor,Pageable pageable);
 
+     void deleteArticleByOid(String oid);
 }

@@ -169,7 +169,7 @@
     flex-wrap: wrap;
     margin-top: 16px;
     margin-bottom: 15px;
-    width: 1100px;
+    width: 1200px;
     justify-content: space-between;
     align-items: flex-start;
 }
@@ -181,7 +181,7 @@
 .leftContentContainer{
     display: flex;
     flex-direction: column;
-    width: 665px;
+    width: 720px;
     justify-content: flex-start;
     align-items: stretch;
     background-color: #f3f3f3;
@@ -190,7 +190,7 @@
 .rigntContentContainer{
     display: flex;
     flex-direction: column;
-    width: 420px;
+    width: 465px;
     justify-content: flex-start;
     align-items: stretch;
     background-color: #f3f3f3;
@@ -590,7 +590,7 @@
     border-radius: 3px;
     position: absolute;
     width: 390px;
-    height: 130px;
+    height: 145px !important;
     max-width: 500px;
     height:55px;
     z-index: 2;
@@ -620,7 +620,7 @@
     background-size: cover;
     /*background-attachment: fixed;*/
     background-position-x:50%;
-    background-position-y: 452px;
+    background-position-y: 445px;
 }
 
 .containerWithBorder{
@@ -654,6 +654,7 @@
     border-radius: 3px;
     background-color: rgba(0,0,0,0.3);
     z-index: 5;
+    cursor: pointer;
 }
 
 .cardHeadContainer{
@@ -669,7 +670,7 @@
     margin-bottom: 5px;
     color: rgb(56, 56, 56);
     line-height: 22px;
-    max-width: 671px;
+    max-width: 700px;
     font-weight: 600;
     max-height: 50px;
 }

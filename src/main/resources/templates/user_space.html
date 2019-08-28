@@ -27,6 +27,7 @@
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
     <link rel="stylesheet" href="/static/css/page/user_space.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
 
@@ -175,149 +176,114 @@
                     </div>
                 </div>
                 <!--主页，右-->
-                <div class="col-md-8">
-                    <!--Create图标及链接-->
-                    <div class="row" style="margin-top:15px">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title-box">
-                                        <h3><i class="fa fa-bar-chart-o fa-fw"></i>Create</h3>
-                                    </div>
-                                </div>
-                                <div class="panel-body padding-0 text-center">
-                                    <!--前五个-->
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/user/createModelItem">
-                                                <img src="/static/img/model/model.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;"> Model Item</div>
-                                        </el-card>
-                                    </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="javascript:void(0);" @click="toDataItem">
-                                                <img src="/static/img/model/data.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">
-                                                Data Item
+                <div class="col-md-8 flexColContainer">
 
-                                            </div>
-                                        </el-card>
+                    <div class="flexRowContainer">
+                        <!--Create图标及链接-->
+                        <div class="row" style="margin-top:15px;flex-grow:3;width: 55%;margin-right: 10px">
+                            <div class="col-md-12">
+                                <div class="panel panel-default" style="margin: 0">
+                                    <div class="panel-heading">
+                                        <div class="panel-title-box">
+                                            <h3><i class="fa fa-bar-chart-o fa-fw"></i>Create</h3>
+                                        </div>
                                     </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/user/createConceptualModel">
-                                                <img src="/static/img/model/conceptual.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">
-                                                Conceptual Model
+                                    <div class="panel-body padding-0 flexRowContainer " style="flex-wrap: wrap;">
+                                        <!--前五个-->
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/user/createModelItem">
+                                                    <div style="text-align: center;padding: 10px 0 5px;"> Model Item</div>
+                                                </a>
+                                            </el-card>
 
-                                            </div>
-                                        </el-card>
-                                    </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/user/createLogicalModel">
-                                                <img src="/static/img/model/logical.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">
-                                                Logical Model
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="javascript:void(0);" @click="toDataItem">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">Data Item</div>
+                                                </a>
+                                            </el-card>
 
-                                            </div>
-                                        </el-card>
-                                    </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/user/createComputableModel">
-                                                <img src="/static/img/model/calcModel.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">
-                                                Computable Model
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/user/createConceptualModel">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">
+                                                        Conceptual Model
 
-                                            </div>
-                                        </el-card>
-                                    </div>
+                                                    </div>
+                                                </a>
+                                            </el-card>
 
-                                    <!--后四个-->
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/repository/createConcept">
-                                                <img src="/static/img/model/semantics.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">Concept & Semantic</div>
-                                        </el-card>
-                                    </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/repository/createSpatialReference">
-                                                <img src="/static/img/model/spatialreference.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">Spatial Reference</div>
-                                        </el-card>
-                                    </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/repository/createTemplate">
-                                                <img src="/static/img/model/template.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">Date Template</div>
-                                        </el-card>
-                                    </div>
-                                    <div class="el-col pull-left text-center" style="width:20%">
-                                        <el-card shadow="hover">
-                                            <a href="/repository/createUnit">
-                                                <img src="/static/img/model/unit.png" style="width:90px;height: 90px;" class="image">
-                                            </a>
-                                            <div style="text-align: center;padding: 10px 0 5px;">Unit & Metric</div>
-                                        </el-card>
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/user/createLogicalModel">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">
+                                                        Logical Model
+
+                                                    </div>
+                                                </a>
+                                            </el-card>
+
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/user/createComputableModel">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">Computable Model</div>
+<!--                                                    <img src="/static/img/model/calcModel.png" style="width:90px;height: 90px;" class="image">-->
+                                                </a>
+                                            </el-card>
+
+                                            <el-card class="creatItemCard" shadow="hover" >
+                                                <a href="/repository/createConcept">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">Concept & Semantic</div>
+                                                </a>
+                                            </el-card>
+
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/repository/createSpatialReference">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">Spatial Reference</div>
+                                                </a>
+                                            </el-card>
+
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/repository/createTemplate">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">Date Template</div>
+                                                </a>
+                                            </el-card>
+
+                                            <el-card class="creatItemCard" shadow="hover">
+                                                <a href="/repository/createUnit">
+                                                    <div style="text-align: center;padding: 10px 0 5px;">Unit & Metric</div>
+                                                </a>
+                                            </el-card>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!--Task Info记录-->
-                    <div class="row" style="margin-top:15px">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title-box">
-                                        <h3><i class="fa fa-bar-chart-o fa-fw"></i>Task Info</h3>
-                                    </div>
-                                </div>
-                                <div class="panel-body padding-0">
-                                    <div class="col-md-4">
-                                        <div class="widget widget-info widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-spinner"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
-                                                <div class="widget-title">On Going Calculations</div>
-                                            </div>
+<!--                        Task Info记录-->
+                        <div class="row" style="margin-top:15px;flex-grow:2;width: 40%">
+                            <div class="col-md-12" style="height: 55px">
+                                <div class="panel panel-default" style="margin: 0">
+                                    <div class="panel-heading">
+                                        <div class="panel-title-box">
+                                            <h3><i class="fa fa-bar-chart-o fa-fw"></i>Task Info</h3>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="widget widget-success widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-tasks"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.success}}</div>
-                                                <div class="widget-title">Success Calculations</div>
-
+                                    <div class="panel-body padding-0 flexColContainer" style="height: 171px">
+                                        <div class="col-md-12" style="height: 55px">
+                                            <div class="backColorInfo  flexRowContainer flexCenter" style="height: 50px;margin-top: 5px">
+                                                <div class="flexCenter taskStats">{{statisticsInfo.calculating}}</div>
+                                                <div class="innerBorderCol"></div>
+                                                <div class="flexCenter taskDetail">On&nbsp<span style="font-weight: 600">Going</span>&nbspCalculations</div>
+<!--                                                </div>-->
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="widget widget-danger widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-support"></span>
+                                        <div class="col-md-12" style="height: 55px">
+                                            <div class="backColorSuccess  flexRowContainer flexCenter" style="height: 50px;margin-top: 5px">
+                                                <div class="flexCenter taskStats">{{statisticsInfo.success}}</div>
+                                                <div class="innerBorderCol"></div>
+                                                <div class="flexCenter taskDetail"><span style="font-weight: 600">Success</span>&nbspCalculations</div>
                                             </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
-                                                <div class="widget-title">Fail Calculations</div>
+                                        </div>
+                                        <div class="col-md-12" style="height: 55px">
+                                            <div class="backColorDanger flexRowContainer flexCenter" style="height: 50px;margin-top: 5px">
+                                                <div class="flexCenter taskStats">{{statisticsInfo.fail}}</div>
+                                                <div class="innerBorderCol"></div>
+                                                <div class="flexCenter taskDetail"><span style="font-weight: 600">Fail</span>&nbspCalculations</div>
                                             </div>
                                         </div>
                                     </div>
@@ -326,7 +292,922 @@
                         </div>
                     </div>
 
+                   <!--personal research-->
+                    <div class="flexColContainer" style="margin-top: 10px;">
+                        <div class="researchTitle">
+                            <div>My Research</div>
+                            <ul class="researchMenu flexRowContainer">
+                                <li :class="{researchMenuChoosed:researchIndex==1}" style="cursor: pointer;" @click="articleClick(1)">Articles</li>
+                                <li :class="{researchMenuChoosed:researchIndex==2}" style="cursor: pointer;" @click="projectClick(2)">Projects</li>
+                                <li :class="{researchMenuChoosed:researchIndex==3}" style="cursor: pointer;" @click="conferenceClick(3)">Conferences</li>
+                            </ul>
+                        </div>
+                        <div class="researchContent flexColContainer" :class="{showFlex:researchIndex==1}" >
+                            <div role="researchContentHeader" style="margin-top: 10px">
+                                <div class="col-md-4">
+                                    <button class="btn btn-warning" data-toggle="modal"
+                                            data-target="#articleInfo" style="margin-left: 8px;">
+                                        Add Article
+                                    </button>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="input-group" @keydown.enter="search()">
+                                        <input type="text" class="form-control" name="searchText"
+                                               placeholder="please enter name" v-model="searchText">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary" @click="searchArticles()">Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="innerBorderRow"></div>
+
+                            <div class="item">
+                                <div class="col-sm-12 articleContent" :class="{showActive:researchIndex==1}" :key="index"  v-for="(Article,index) in researchItems.list">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading flexRowContainer" style="justify-content: space-between">
+                                            <a style="max-width: 700px;font-size: 16px;font-family: sams-serif;font-weight: 600">
+                                                {{Article.title}}
+                                            </a>
+                                            <div class="pull-right" style="margin-top: -3px;">
+                                                    <button class="btn btn-default editBtn" data-toggle="modal"
+                                                            data-target="#articleEdit" @click="setSession('editItemOid',Article.oid)">Edit</button>
+                                                <button class="btn btn-danger deleteBtn"
+                                                        @click="deleteResearchItem(Article.oid)">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p><b>Authors:</b> &nbsp&nbsp{{Article.authors[0]}}, {{Article.authors[1]}} </p>
+                                            <p><b>Journal:</b> &nbsp&nbsp{{Article.journal}}</p>
+                                            <p><b>Date:</b> &nbsp&nbsp{{Article.date}}</p>
+                                            <p><b>Pages:</b> &nbsp&nbsp{{Article.startPage}}&nbsp-&nbsp{{Article.endPage}}</p>
+                                            <p>Create Time: {{formatDate(Article.creatDate)}}</p>
+                                            <p style="word-break: break-all;"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <ul class="page">
+                                            <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                                <b>FIRST</b>
+                                            </li>
+                                            <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                                <b>PRE</b>
+                                            </li>
+                                            <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                                @click="changePage(page)">{{page}}
+                                            </li>
+                                            <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                                @click="changePage(curPage+1)">
+                                                <b>NEXT</b>
+                                            </li>
+                                            <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                                @click="changePage(totalPage)">
+                                                <b>LAST</b>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+<!--                                add article弹出框-->
+                                <div class="modal fade" id="articleInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" id="modalContent">
+                                            <div class="modal-header" style="background: deepskyblue">
+                                                <h3 class="modal-title" id="myModalLabel" style="color:aliceblue;text-align: center">
+                                                    Add Articles
+                                                </h3>
+                                            </div>
+                                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                                <section class="panel">
+                                                    <header class="panel-heading custom-tab ">
+                                                        <ul class="nav nav-tabs">
+                                                            <li class="active">
+                                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference</a>
+                                                            </li>
+                                                            <li class="">
+                                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference by DOI</a>
+                                                            </li>
+                                                        </ul>
+                                                    </header>
+                                                    <div class="panel-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" id="manually">
+                                                                <div class="form-group">
+                                                                    <label for="articleTitle"
+                                                                           class="col-sm-2 control-label">Title</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleTitle"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleAuthor"
+                                                                           class="col-sm-2 control-label">Author</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleAuthor"/>
+                                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="articleDate"
+                                                                           class="col-sm-2 control-label">Date</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleDate"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleJournal"
+                                                                           class="col-sm-2 control-label">Journal</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleJournal"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleStartPage"
+                                                                           class="col-sm-2 control-label">Pages</label>
+                                                                    <div class="col-sm-10" style="display: flex;justify-content: space-between">
+                                                                        <input type="text" class="form-control" style="width: 45%"
+                                                                               id="articleStartPage"/>-
+                                                                        <input type="text" class="form-control" style="width: 45%"
+                                                                               id="articleEndPage"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleLink"
+                                                                           class="col-sm-2 control-label">Link</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleLink"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane" id="automatically">
+                                                                <div class="form-group"
+                                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
+                                                                    <lable class="control-label col-md-2">
+                                                                        DOI :
+                                                                    </lable>
+                                                                    <div class="input-group col-md-10">
+                                                                        <input id="doi_searchBox" type="text"
+                                                                               class="form-control">
+                                                                        <span class="input-group-btn">
+                                                                            <button id="doiSearch"
+                                                                                    class="btn btn-default"
+                                                                                    type="button">Search</button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div class="modal-footer">
+                                                    <button type="button" class="btn btn-success" style="font-size:15px" @click="addArticleClick">
+                                                        Save
+                                                    </button>
+                                                    <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"
+                                                            style="font-size:15px">
+                                                        Cancel
+                                                    </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+
+<!--                                edit article弹出框-->
+                                <div class="modal fade" id="articleEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" >
+                                            <div class="modal-header" style="background: deepskyblue">
+                                                <h3 class="modal-title"  style="color:aliceblue;text-align: center">
+                                                    Edit
+                                                </h3>
+                                            </div>
+                                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                                <section class="panel">
+                                                    <header class="panel-heading custom-tab ">
+                                                        <ul class="nav nav-tabs">
+                                                            <li class="active">
+                                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference</a>
+                                                            </li>
+                                                            <li class="">
+                                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference by DOI</a>
+                                                            </li>
+                                                        </ul>
+                                                    </header>
+                                                    <div class="panel-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" >
+                                                                <div class="form-group">
+                                                                    <label for="articleTitleEdit"
+                                                                           class="col-sm-2 control-label">Title</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleTitleEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleAuthorEdit"
+                                                                           class="col-sm-2 control-label">Author</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleAuthorEdit"/>
+                                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="articleDateEdit"
+                                                                           class="col-sm-2 control-label">Date</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleDateEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleJournalEdit"
+                                                                           class="col-sm-2 control-label">Journal</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleJournalEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleStartPageEdit"
+                                                                           class="col-sm-2 control-label">Pages</label>
+                                                                    <div class="col-sm-10" style="display: flex;justify-content: space-between">
+                                                                        <input type="text" class="form-control" style="width: 45%"
+                                                                               id="articleStartPageEdit"/>-
+                                                                        <input type="text" class="form-control" style="width: 45%"
+                                                                               id="articleEndPageEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="articleLinkEdit"
+                                                                           class="col-sm-2 control-label">Link</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="articleLinkEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+<!--                                                            <div class="tab-pane" id="automatically">-->
+<!--                                                                <div class="form-group"-->
+<!--                                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+<!--                                                                    <lable class="control-label col-md-2">-->
+<!--                                                                        DOI :-->
+<!--                                                                    </lable>-->
+<!--                                                                    <div class="input-group col-md-10">-->
+<!--                                                                        <input id="doi_searchBox" type="text"-->
+<!--                                                                               class="form-control">-->
+<!--                                                                        <span class="input-group-btn">-->
+<!--                                                                            <button id="doiSearch"-->
+<!--                                                                                    class="btn btn-default"-->
+<!--                                                                                    type="button">Search</button>-->
+<!--                                                                        </span>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div class="modal-footer">
+                                                    <button type="button" class="btn btn-success" style="font-size:15px;background-color: #01c9ff" @click="articleEditClick()">
+                                                        Edit
+                                                    </button>
+                                                    <button  type="button" class="btn btn-default" data-dismiss="modal"
+                                                            style="font-size:15px">
+                                                        Cancel
+                                                    </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="researchContent flexColContainer" :class="{showFlex:researchIndex==2}" >
+                            <div role="researchContentHeader" style="margin-top: 10px">
+                                <div class="col-md-4">
+                                    <button class="btn btn-warning" data-toggle="modal"
+                                            data-target="#projectInfo" style="margin-left: 8px;">
+                                        Add Project
+                                    </button>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="input-group" @keydown.enter="search()">
+                                        <input type="text" class="form-control" name="searchText"
+                                               placeholder="please enter name" v-model="searchText">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary" @click="searchProjects()">Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="innerBorderRow"></div>
+
+                            <div class="item">
+                                <div class="col-sm-12 articleContent" :class="{showActive:researchIndex==2}"  :key="index"  v-for="(project,index) in projectResult.list">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading flexRowContainer" style="justify-content: space-between">
+                                            <a style="max-width: 700px;font-size: 16px;font-family: sams-serif;font-weight: 600">
+                                                {{project.projectName}}
+                                            </a>
+                                            <div class="pull-right" style="margin-top: -3px;">
+                                                <button class="btn btn-default editBtn" data-toggle="modal"
+                                                        data-target="#projectEdit" @click="setSession('editItemOid',project.oid)">Edit</button>
+                                                <button class="btn btn-danger deleteBtn"
+                                                        @click="deleteResearchItem(project.oid)">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p><b>start time:</b> &nbsp&nbsp{{project.startTime}}</p>
+                                            <p><b>end time:</b> &nbsp&nbsp{{project.endTime}}</p>
+                                            <p><b>role:</b> &nbsp&nbsp{{project.role}}</p>
+                                            <p><b>fund agency:</b>&nbsp&nbsp{{project.fundAgency}}</p>
+                                            <p>Create Time: {{formatDate(project.creatDate)}}</p>
+                                            <p style="word-break: break-all;"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <ul class="page">
+                                            <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                                <b>FIRST</b>
+                                            </li>
+                                            <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                                <b>PRE</b>
+                                            </li>
+                                            <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                                @click="changePage(page)">{{page}}
+                                            </li>
+                                            <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                                @click="changePage(curPage+1)">
+                                                <b>NEXT</b>
+                                            </li>
+                                            <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                                @click="changePage(totalPage)">
+                                                <b>LAST</b>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!--                                add porject弹出框-->
+                                <div class="modal fade" id="projectInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" >
+                                            <div class="modal-header" style="background: deepskyblue">
+                                                <h3 class="modal-title" style="color:aliceblue;text-align: center">
+                                                    Add Projects
+                                                </h3>
+                                            </div>
+                                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                                <section class="panel">
+                                                    <header class="panel-heading custom-tab ">
+<!--                                                        <ul class="nav nav-tabs">-->
+<!--                                                            <li class="active">-->
+<!--                                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter-->
+<!--                                                                    Reference</a>-->
+<!--                                                            </li>-->
+<!--                                                            <li class="">-->
+<!--                                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter-->
+<!--                                                                    Reference by DOI</a>-->
+<!--                                                            </li>-->
+<!--                                                        </ul>-->
+                                                    </header>
+                                                    <div class="panel-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" >
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="projectName"
+                                                                           class="col-sm-2 control-label">Name</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="projectName"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="startTime"
+                                                                           class="col-sm-2 control-label">Start Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="startTime"/>
+                                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="endTime"
+                                                                           class="col-sm-2 control-label">End Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="endTime"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="role"
+                                                                           class="col-sm-2 control-label">Role</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="role"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="fundAgency"
+                                                                           class="col-sm-2 control-label">Fund Agency</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="fundAgency"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="amount"
+                                                                           class="col-sm-2 control-label">Amount</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="amount"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+<!--                                                            <div class="tab-pane" id="automatically">-->
+<!--                                                                <div class="form-group"-->
+<!--                                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+<!--                                                                    <lable class="control-label col-md-2">-->
+<!--                                                                        DOI :-->
+<!--                                                                    </lable>-->
+<!--                                                                    <div class="input-group col-md-10">-->
+<!--                                                                        <input id="doi_searchBox" type="text"-->
+<!--                                                                               class="form-control">-->
+<!--                                                                        <span class="input-group-btn">-->
+<!--                                                                            <button id="doiSearch"-->
+<!--                                                                                    class="btn btn-default"-->
+<!--                                                                                    type="button">Search</button>-->
+<!--                                                                        </span>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-success" style="font-size:15px" @click="addProjectClick">
+                                                    Save
+                                                </button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                        style="font-size:15px">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+
+                                <!--                                edit porject弹出框-->
+                                <div class="modal fade" id="projectEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" >
+                                            <div class="modal-header" style="background: deepskyblue">
+                                                <h3 class="modal-title"  style="color:aliceblue;text-align: center">
+                                                    Edit
+                                                </h3>
+                                            </div>
+                                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                                <section class="panel">
+                                                    <header class="panel-heading custom-tab ">
+                                                        <ul class="nav nav-tabs">
+                                                            <li class="active">
+                                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference</a>
+                                                            </li>
+                                                            <li class="">
+                                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference by DOI</a>
+                                                            </li>
+                                                        </ul>
+                                                    </header>
+                                                    <div class="panel-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" >
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="projectName"
+                                                                           class="col-sm-2 control-label">Name</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="projectNameEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="startTime"
+                                                                           class="col-sm-2 control-label">Start Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="startTimeEdit"/>
+                                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="endTime"
+                                                                           class="col-sm-2 control-label">End Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="endTimeEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="role"
+                                                                           class="col-sm-2 control-label">Role</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="roleEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="fundAgency"
+                                                                           class="col-sm-2 control-label">Fund Agency</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="fundAgencyEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="amount"
+                                                                           class="col-sm-2 control-label">Amount</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="amountEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--                                                            <div class="tab-pane" id="automatically">-->
+                                                            <!--                                                                <div class="form-group"-->
+                                                            <!--                                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+                                                            <!--                                                                    <lable class="control-label col-md-2">-->
+                                                            <!--                                                                        DOI :-->
+                                                            <!--                                                                    </lable>-->
+                                                            <!--                                                                    <div class="input-group col-md-10">-->
+                                                            <!--                                                                        <input id="doi_searchBox" type="text"-->
+                                                            <!--                                                                               class="form-control">-->
+                                                            <!--                                                                        <span class="input-group-btn">-->
+                                                            <!--                                                                            <button id="doiSearch"-->
+                                                            <!--                                                                                    class="btn btn-default"-->
+                                                            <!--                                                                                    type="button">Search</button>-->
+                                                            <!--                                                                        </span>-->
+                                                            <!--                                                                    </div>-->
+                                                            <!--                                                                </div>-->
+                                                            <!--                                                            </div>-->
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-success" style="font-size:15px;background-color: #01c9ff" @click="projectEditClick">
+                                                    Edit
+                                                </button>
+                                                <button  type="button" class="btn btn-default" data-dismiss="modal"
+                                                         style="font-size:15px">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="researchContent flexColContainer" :class="{showFlex:researchIndex==3}" >
+                            <div role="researchContentHeader" style="margin-top: 10px">
+                                <div class="col-md-4">
+                                    <button class="btn btn-warning" data-toggle="modal"
+                                            data-target="#conferenceInfo" style="margin-left: 8px;">
+                                        Add Conference
+                                    </button>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="input-group" @keydown.enter="search()">
+                                        <input type="text" class="form-control" name="searchText"
+                                               placeholder="please enter name" v-model="searchText">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary" @click="searchConferences()">Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="innerBorderRow"></div>
+
+                            <div class="item">
+                                <div class="col-sm-12 articleContent" :class="{showActive:researchIndex==3}"   :key="index"  v-for="(conference,index) in conferenceResult.list">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading flexRowContainer" style="justify-content: space-between">
+                                            <a style="max-width: 700px;font-size: 16px;font-family: sams-serif;font-weight: 600">
+                                                {{conference.title}}
+                                            </a>
+                                            <div class="pull-right" style="margin-top: -3px;">
+                                                <button class="btn btn-default editBtn" data-toggle="modal"
+                                                        data-target="#conferenceEdit" @click="setSession('editItemOid',conference.oid)">Edit</button>
+                                                <button class="btn btn-danger deleteBtn"
+                                                        @click="deleteResearchItem(conference.oid)">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p><b>Theme:</b> &nbsp&nbsp{{conference.theme}}</p>
+                                            <p><b>Conference role:</b> &nbsp&nbsp{{conference.conferenceRole}}</p>
+                                            <p><b>location:</b>&nbsp&nbsp{{conference.location}}</p>
+                                            <p><b>Start Time:</b>&nbsp&nbsp{{conference.contributor}}</p>
+                                            <p><b>End Time:</b>&nbsp&nbsp{{conference.startTime}}</p>
+                                            <p>Create Time: {{formatDate(conference.endTime)}}</p>
+                                            <p style="word-break: break-all;"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 text-center">
+                                        <ul class="page">
+                                            <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                                <b>FIRST</b>
+                                            </li>
+                                            <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                                <b>PRE</b>
+                                            </li>
+                                            <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                                @click="changePage(page)">{{page}}
+                                            </li>
+                                            <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                                @click="changePage(curPage+1)">
+                                                <b>NEXT</b>
+                                            </li>
+                                            <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                                @click="changePage(totalPage)">
+                                                <b>LAST</b>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!--                                add conference弹出框-->
+                                <div class="modal fade" id="conferenceInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" >
+                                            <div class="modal-header" style="background: deepskyblue">
+                                                <h3 class="modal-title" style="color:aliceblue;text-align: center">
+                                                    Add Conference
+                                                </h3>
+                                            </div>
+                                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                                <section class="panel">
+                                                    <header class="panel-heading custom-tab ">
+                                                        <!--                                                        <ul class="nav nav-tabs">-->
+                                                        <!--                                                            <li class="active">-->
+                                                        <!--                                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter-->
+                                                        <!--                                                                    Reference</a>-->
+                                                        <!--                                                            </li>-->
+                                                        <!--                                                            <li class="">-->
+                                                        <!--                                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter-->
+                                                        <!--                                                                    Reference by DOI</a>-->
+                                                        <!--                                                            </li>-->
+                                                        <!--                                                        </ul>-->
+                                                    </header>
+                                                    <div class="panel-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" >
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferenceTitle"
+                                                                           class="col-sm-2 control-label">Title</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferenceTitle"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="theme"
+                                                                           class="col-sm-2 control-label">Theme</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="theme"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferenceRole"
+                                                                           class="col-sm-2 control-label">Role</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferenceRole"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferenceLocation"
+                                                                           class="col-sm-2 control-label">Location</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferenceLocation"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferStartTime"
+                                                                           class="col-sm-2 control-label">Start Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferStartTime"/>
+                                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferEndTime"
+                                                                           class="col-sm-2 control-label">End Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferEndTime"/>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+                                                            <!--                                                            <div class="tab-pane" id="automatically">-->
+                                                            <!--                                                                <div class="form-group"-->
+                                                            <!--                                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+                                                            <!--                                                                    <lable class="control-label col-md-2">-->
+                                                            <!--                                                                        DOI :-->
+                                                            <!--                                                                    </lable>-->
+                                                            <!--                                                                    <div class="input-group col-md-10">-->
+                                                            <!--                                                                        <input id="doi_searchBox" type="text"-->
+                                                            <!--                                                                               class="form-control">-->
+                                                            <!--                                                                        <span class="input-group-btn">-->
+                                                            <!--                                                                            <button id="doiSearch"-->
+                                                            <!--                                                                                    class="btn btn-default"-->
+                                                            <!--                                                                                    type="button">Search</button>-->
+                                                            <!--                                                                        </span>-->
+                                                            <!--                                                                    </div>-->
+                                                            <!--                                                                </div>-->
+                                                            <!--                                                            </div>-->
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-success" style="font-size:15px" @click="addConferenceClick">
+                                                    Save
+                                                </button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                        style="font-size:15px">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+
+                                <!--                                edit conference弹出框-->
+                                <div class="modal fade" id="conferenceEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" >
+                                            <div class="modal-header" style="background: deepskyblue">
+                                                <h3 class="modal-title"  style="color:aliceblue;text-align: center">
+                                                    Edit
+                                                </h3>
+                                            </div>
+                                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                                <section class="panel">
+                                                    <header class="panel-heading custom-tab ">
+                                                        <ul class="nav nav-tabs">
+                                                            <li class="active">
+                                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference</a>
+                                                            </li>
+                                                            <li class="">
+                                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
+                                                                    Reference by DOI</a>
+                                                            </li>
+                                                        </ul>
+                                                    </header>
+                                                    <div class="panel-body">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane active" >
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferenceTitle"
+                                                                           class="col-sm-2 control-label">Title</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferenceTitleEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="theme"
+                                                                           class="col-sm-2 control-label">Theme</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="themeEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferenceRole"
+                                                                           class="col-sm-2 control-label">Role</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferenceRoleEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferenceLocation"
+                                                                           class="col-sm-2 control-label">Location</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferenceLocationEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferStartTime"
+                                                                           class="col-sm-2 control-label">Start Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferStartTimeEdit"/>
+                                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group flexCenter">
+                                                                    <label for="conferEndTime"
+                                                                           class="col-sm-2 control-label">End Time</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                               id="conferEndTimeEdit"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--                                                            <div class="tab-pane" id="automatically">-->
+                                                            <!--                                                                <div class="form-group"-->
+                                                            <!--                                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+                                                            <!--                                                                    <lable class="control-label col-md-2">-->
+                                                            <!--                                                                        DOI :-->
+                                                            <!--                                                                    </lable>-->
+                                                            <!--                                                                    <div class="input-group col-md-10">-->
+                                                            <!--                                                                        <input id="doi_searchBox" type="text"-->
+                                                            <!--                                                                               class="form-control">-->
+                                                            <!--                                                                        <span class="input-group-btn">-->
+                                                            <!--                                                                            <button id="doiSearch"-->
+                                                            <!--                                                                                    class="btn btn-default"-->
+                                                            <!--                                                                                    type="button">Search</button>-->
+                                                            <!--                                                                        </span>-->
+                                                            <!--                                                                    </div>-->
+                                                            <!--                                                                </div>-->
+                                                            <!--                                                            </div>-->
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-success" style="font-size:15px;background-color: #01c9ff" @click="conferenceEditClick">
+                                                    Edit
+                                                </button>
+                                                <button  type="button" class="btn btn-default" data-dismiss="modal"
+                                                         style="font-size:15px">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+
+
 
                 <!--Edit Information modal-->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -478,7 +1359,8 @@
                     </div>
                     <!--列表-->
                     <div class="row">
-                        <div class="col-sm-12" v-for="modelItem in searchResult">
+                        <div class="col-sm-12" v-for="(modelItem,index) in searchResult" :key="index">
+
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <a :href="'/modelItem/'+modelItem.oid" target="_blank"
@@ -820,6 +1702,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- end computable-models -->
         <!--End Model-->
 
@@ -1907,10 +2790,270 @@
 
         <!--End Community-->
 
+            <!--Research-->
 
+            <!-- start articles -->
+            <div :style="{display:curIndex=='5-1'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>Research</a>
+                    </li>
+                    <li class="active">Articles</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                    <button class="btn btn-warning" data-toggle="modal"
+                                                            data-target="#articleInfo">
+                                                        Add Article
+                                                    </button>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="searchResearchItems()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--列表-->
+                    <div class="row">
+                        <div class="col-sm-12" v-for="Article in searchResult">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a >
+                                        {{Article.title}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a
+                                           @click="setSession('editModelItem_id',Article.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteResearchItem(Article.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(Article.creatDate)}}</p>
+                                    <p style="word-break: break-all;">
+<!--                                        <b>Overview:</b>{{modelItem.description}}</p>-->
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model items</h4>
+                    </div>
+                    <!--尾部按钮-->
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+<!--                add article 弹出框-->
+<!--                <div class="modal fade" id="articleInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+<!--                    <div class="modal-dialog">-->
+<!--                        <div class="modal-content" id="modalContent">-->
+<!--                            <div class="modal-header" style="background: deepskyblue">-->
+<!--                                <h3 class="modal-title" id="myModalLabel" style="color:aliceblue;text-align: center">-->
+<!--                                    Add Articles-->
+<!--                                </h3>-->
+<!--                            </div>-->
+<!--                            <div class="modal-body" style="font-size: 20px;overflow: hidden">-->
+<!--                                <section class="panel">-->
+<!--                                    <header class="panel-heading custom-tab ">-->
+<!--                                        <ul class="nav nav-tabs">-->
+<!--                                            <li class="active">-->
+<!--                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter-->
+<!--                                                    Reference</a>-->
+<!--                                            </li>-->
+<!--                                            <li class="">-->
+<!--                                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter-->
+<!--                                                    Reference by DOI</a>-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </header>-->
+<!--                                    <div class="panel-body">-->
+<!--                                        <div class="tab-content">-->
+<!--                                            <div class="tab-pane active" id="manually">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="articleTitle"-->
+<!--                                                           class="col-sm-2 control-label">Title</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="articleTitle"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="articleAuthor"-->
+<!--                                                           class="col-sm-2 control-label">Author</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="articleAuthor"/>-->
+<!--&lt;!&ndash;                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>&ndash;&gt;-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="articleDate"-->
+<!--                                                           class="col-sm-2 control-label">Date</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="articleDate"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="articleJournal"-->
+<!--                                                           class="col-sm-2 control-label">Journal</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="articleJournal"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="articleStartPage"-->
+<!--                                                           class="col-sm-2 control-label">Pages</label>-->
+<!--                                                    <div class="col-sm-10" style="display: flex;justify-content: space-between">-->
+<!--                                                        <input type="text" class="form-control" style="width: 45%"-->
+<!--                                                               id="articleStartPage"/>- -->
+<!--                                                        <input type="text" class="form-control" style="width: 45%"-->
+<!--                                                               id="articleEndPage"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="articleLink"-->
+<!--                                                           class="col-sm-2 control-label">Link</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="articleLink"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="tab-pane" id="automatically">-->
+<!--                                                <div class="form-group"-->
+<!--                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+<!--                                                    <lable class="control-label col-md-2">-->
+<!--                                                        DOI :-->
+<!--                                                    </lable>-->
+<!--                                                    <div class="input-group col-md-10">-->
+<!--                                                        <input id="doi_searchBox" type="text"-->
+<!--                                                               class="form-control">-->
+<!--                                                        <span class="input-group-btn">-->
+<!--                                            <button id="doiSearch"-->
+<!--                                                    class="btn btn-default"-->
+<!--                                                    type="button">Search</button>-->
+<!--                                        </span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--&lt;!&ndash;                                                <div id="doiDetails" style="display:none">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <lable class="control-label col-md-2">Title</lable>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="col-md-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <textarea id="doiTitle" class="form-control" style="width:100%;"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                      readonly></textarea>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <label for="nameInput"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               class="col-sm-2 control-label">Author</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="col-sm-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <textarea id="doiAuthor" class="form-control" style="width:100%;"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                      readonly></textarea>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <label for="nameInput"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               class="col-sm-2 control-label">Date</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="col-sm-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                   id="doiDate" readonly/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <label for="nameInput"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               class="col-sm-2 control-label">Journal</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="col-sm-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                   id="doiJournal" readonly/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <label for="nameInput"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               class="col-sm-2 control-label">Pages</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="col-sm-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                   id="doiPages" readonly/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <label for="nameInput"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               class="col-sm-2 control-label">Link</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="col-sm-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                   id="doiLink" readonly/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </div>&ndash;&gt;-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </section>-->
+<!--                            </div>-->
+<!--                            <div class="modal-footer">-->
+<!--                                <a>-->
+<!--                                    <button type="button" class="btn btn-success" style="font-size:15px" @click="addArticleClick">-->
+<!--                                        Save-->
+<!--                                    </button>-->
+<!--                                    <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"-->
+<!--                                            style="font-size:15px">-->
+<!--                                        Cancel-->
+<!--                                    </button>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; /.modal-content &ndash;&gt;-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; /.modal-dialog &ndash;&gt;-->
+<!--                </div>-->
+            </div>
+            <!-- end model-items -->
 
             <!-- start task -->
-            <div :style="{display:curIndex=='5'?'block':'none'}">
+            <div :style="{display:curIndex=='6'?'block':'none'}">
                 <div class="page-content-wrap container-fluid" style="margin-top:10px">
                     <div class="row">
                         <div class="col-md-12">
@@ -2008,7 +3151,7 @@
                 </div>
             </div>
             <!-- end task -->
-
+        </div>
 
         </div>
     </div>

@@ -23,15 +23,34 @@ public class ArticleRestController {
         return ResultUtils.success(articleService.findNewestArticle(articleFindDTO,oid));
     }
 
+    @RequestMapping(value="/searchByTitle",method=RequestMethod.GET)
+    JsonResult searchByTitle(ArticleFindDTO articleFindDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName=session.getAttribute("uid").toString();
+
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+
+        return ResultUtils.success(articleService.searchByTitle(articleFindDTO,userName));
+    }
+
+//    @RequestParam(value="pageSize") int pageSize,
+//    @RequestParam(value="page") int page,
+//    @RequestParam(value="sortElement") String sortElement,
+//    @RequestParam(value="asc") Boolean sortAsc
     @RequestMapping(value = "/getByUserOidBySort",method = RequestMethod.GET)
-    JsonResult getByUserOidBySort(@RequestBody ArticleFindDTO articleFindDTO, HttpServletRequest request){
+    JsonResult getByUserOidBySort( ArticleFindDTO articleFindDTO, HttpServletRequest request){
+//        ArticleFindDTO articleFindDTO=new ArticleFindDTO();
+//        articleFindDTO.setAsc(sortAsc);
+//        articleFindDTO.setPage(page);
+//        articleFindDTO.setPageSize(pageSize);
+//        articleFindDTO.setSortElement(sortElement);
         HttpSession session=request.getSession();
         String userName=session.getAttribute("uid").toString();
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-
-        System.out.println("11");
         return ResultUtils.success(articleService.getByUserOidBySort(articleFindDTO,userName));
     }
 
@@ -45,6 +64,25 @@ public class ArticleRestController {
         }
         Article article=articleService.addNewArticle(articleAddDTO,userName);
         return ResultUtils.success(article.getOid());
+    }
+
+    @RequestMapping(value="/editByOid",method=RequestMethod.POST)
+    public JsonResult editArticle(@RequestBody ArticleAddDTO articleAddDTO){
+        String oid=articleAddDTO.getOid();
+        Article article=articleService.editArticle(articleAddDTO,oid);
+        System.out.println("/edit");
+        return ResultUtils.success(article.getOid());
+    }
+
+    @RequestMapping(value="/deleteByOid",method=RequestMethod.POST)
+    public JsonResult deleteByOid(String oid,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName=session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            return ResultUtils.success(articleService.deleteByOid(oid,userName));
+        }
     }
 
 

@@ -11,8 +11,9 @@ public class ConferenceResultDTO {
     String title;
     String theme;
     String conferenceRole;
-    String holdLocation;
-    Date startTime;
-    Date endTime;
+    String location;
+    String startTime;
+    String endTime;
     int viewCount;
+    Date creatDate;
 }

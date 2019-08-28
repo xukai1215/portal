@@ -15,11 +15,12 @@ public class Project {
     String oid;
 
     String projectName;
-    Date startTime;
-    Date endTime;
+    String startTime;
+    String endTime;
     String contributor;
     String role;
     String fundAgency;
     int amount;
     int viewCount;
+    Date creatDate;
 }

@@ -11,5 +11,5 @@ import java.util.List;
 public class Lab {
     String labName;
     String leaderName;
-    List<String> member;
+    List<String> members;
 }

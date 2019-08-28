@@ -26,5 +26,9 @@ public interface ProjectDao extends MongoRepository<Project,String> {
     Page<Project> findByFundAgency(String fundAgency,Pageable pageable);
 
 //
+    Page<ProjectResultDTO> findByProjectNameContainsIgnoreCaseAndContributor(String projectName, String contributor, Pageable pageable);
+
     Page<ProjectResultDTO> findByContributor(String contributor,Pageable pageable);
+
+    void deleteProjectByOid(String oid);
 }

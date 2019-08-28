@@ -720,8 +720,8 @@ var vue = new Vue({
             for (i = 0; i < tags.length; i++) { $('#refAuthor').tagEditor('removeTag', tags[i]); }
             $("#refDate").val("")
             $("#refJournal").val("")
-            $("#refPages").val("")
             $("#refLink").val("")
+            $("#refPages").val("")
 
             $("#doiDetails").css("display", "none");
             $("#doiTitle").val("")

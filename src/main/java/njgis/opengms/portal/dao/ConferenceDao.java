@@ -23,10 +23,13 @@ public interface ConferenceDao extends MongoRepository<Conference,String> {
     //
     Page<Conference> findByTitleLikeIgnoreCase(String title,Pageable pageable);
 
-    Page<Conference> findByHoldLocation(String holdLocation,Pageable pageable);
+    Page<Conference> findByLocation(String location,Pageable pageable);
     Page<Conference> findByTheme(String theme,Pageable pageable);
     //
 //
     Page<ConferenceResultDTO> findByContributor(String contributor,Pageable pageable);
 
+    Page<ConferenceResultDTO> findByTitleContainsIgnoreCaseAndContributor(String title,String contrrbutor,Pageable pageable);
+
+    void deleteConferenceByOid(String oid);
 }

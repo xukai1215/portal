@@ -63,6 +63,7 @@ var vue = new Vue({
         childIndex:0,
         //model-item
         searchResult: [],
+        modelItemResult: [],
         page: 1,
         sortAsc: 1,//1 -1
         sortType: "default",
@@ -113,11 +114,48 @@ var vue = new Vue({
         downloadDataSet:[],
         downloadDataSetName:[],
         uploadDialogVisible: false,
-        alllen:0
+        alllen:0,
 
+        researchIndex:1,
+        pageControlIndex:'',
 
+        articleToBack:{
+            title:'aa',
+            author:[],
+            journal:'ss',
+            startPage:1,
+            endPage:2,
+            date:2019,
+            link:'aa',
+        },
+
+        projectToBack:{
+            name:'',
+            startTime: '',
+            endTime:'',
+            role:'',
+            fundAgency: '',
+            amount: 1,
+        },
+
+        conferenceToBack: {
+            title: '',
+            theme: '',
+            role: '',
+            location: '',
+            startTime: '',
+            endTime: '',
+        },
+
+        researchItemOid:'',
+        researchItems:[],
+        projectResult:[],
+        conferenceResult:[],
+
+        editOid:'',
 
     },
+
     methods: {
         filterTag(value, row) {
             return row.fromWhere === value;
@@ -163,25 +201,31 @@ var vue = new Vue({
             switch (index){
                 case '1':
                     this.searchText = '';
-                    this.searchResult = [];
+                    this.searchResult = new Array();
                     this.page = 1;
                     this.getTasksInfo();
+                    this.pageControlIndex='research';
+                    this.getArticleResult();
+
                     break;
                 case '2-1':
                 case '2-2':
                 case '2-3':
                 case '2-4':
-                case '5':
+                case '6':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getModels();
+                    this.showWhat=index;
+                    this.pageControlIndex=this.curIndex;
                     break;
                 case '3-1':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getDataItems();
+                    this.pageControlIndex=this.curIndex;
                     break;
                 case '3-2':
                     this.searchText = '';
@@ -189,38 +233,373 @@ var vue = new Vue({
                     this.page = 1;
                     this.classif=[];
                     $("#classification").val('');
+                    this.pageControlIndex=this.curIndex;
                     this.data_img=[]
                     break;
                 case '3-3':
                     this.panye(1);
                     this.addAllData()
+                    this.pageControlIndex=this.curIndex;
                 case '4-1':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getConcepts();
+                    this.pageControlIndex=this.curIndex;
                     break;
                 case '4-2':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getSpatials();
+                    this.pageControlIndex=this.curIndex;
                     break;
                 case '4-3':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getTemplates();
+                    this.pageControlIndex=this.curIndex;
                     break;
                 case '4-4':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getUnits();
+                    this.pageControlIndex=this.curIndex;
                     break;
+                // case '5-1':
+                // case '5-2':
+                // case '5-3':
+                //
+                //     this.getResearchItems();
+                //     break;
             }
         },
 
+
+        setSession(name, value) {
+            window.sessionStorage.setItem(name, value);
+            this.editOid=sessionStorage.getItem('editItemOid');
+        },
+
+
+        addArticleClick(){
+
+            this.articleToBack.title=$("#articleTitle").val();
+            var tags = $('#articleAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            this.articleToBack.author=tags;
+            this.articleToBack.journal=$("#articleJournal").val();
+            this.articleToBack.startPage=$("#articleStartPage").val();
+            this.articleToBack.endPage=$("#articleEndPage").val();
+            this.articleToBack.date=$("#articleDate").val();
+            this.articleToBack.link=$("#articleLink").val();
+            // console.log(this.articleToBack);
+            this.ArticleAddToBack();
+
+        },
+
+        ArticleAddToBack(){
+            if(this.articleToBack.title==""||this.articleToBack.author=="")
+                alert("Please enter the Title and at least one Author.");
+            else
+                {
+            let obj=
+                {
+                    title:this.articleToBack.title,
+                    authors:this.articleToBack.author,
+                    journal:this.articleToBack.journal,
+                    startPage:this.articleToBack.startPage,
+                    endPage:this.articleToBack.endPage,
+                    date:this.articleToBack.date,
+                    link:this.articleToBack.link,
+                }
+            console.log(obj);
+            $.ajax({
+                url: "/article/add",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        alert("Add Success");
+                        this.getArticleResult();
+                        $("#articleInfo")[0].style.display="none";
+                    }
+                    else alert("Add Error");//此处error信息不明确，记得后加
+                }
+
+            })
+            }
+
+        },
+
+        addProjectClick(){
+
+            this.projectToBack.name=$("#projectName").val();
+            this.projectToBack.startTime=$("#startTime").val();
+            this.projectToBack.endTime=$("#endTime").val();
+            this.projectToBack.role=$("#role").val();
+            this.projectToBack.fundAgency=$("#fundAgency").val();
+            this.projectToBack.amount=$("#amount").val();
+            this.ProjectAddToBack();
+        },
+
+        ProjectAddToBack(){
+            if(this.projectToBack.title=="")
+                alert("Please enter the project Name.");
+            else
+            {
+                let obj=
+                    {
+                        projectName:this.projectToBack.name,
+                        startTime:this.projectToBack.startTime,
+                        endTime:this.projectToBack.endTime,
+                        role:this.projectToBack.role,
+                        fundAgency:this.projectToBack.fundAgency,
+                        amount:this.projectToBack.amount,
+                    }
+                $.ajax({
+                    url: "/project/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Add Success");
+                            this.getProjectResult();
+                            $("#projectInfo")[0].style.display="none";
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+            }
+
+        },
+
+        addConferenceClick(){
+            this.conferenceToBack.title=$("#conferenceTitle").val();
+            this.conferenceToBack.theme=$("#theme").val();
+            this.conferenceToBack.role=$("#conferenceRole").val();
+            this.conferenceToBack.location=$("#conferenceLocation").val();
+            this.conferenceToBack.startTime=$("#conferstartTime").val();
+            this.conferenceToBack.endTime=$("#conferendTime").val();
+            this.ConferenceAddToBack();
+        },
+
+        ConferenceAddToBack(){
+            if(this.projectToBack.title=="")
+                alert("Please enter the project name.");
+            else
+            {
+                let obj=
+                    {
+                        title:this.conferenceToBack.title,
+                        theme:this.conferenceToBack.theme,
+                        conferenceRole:this.conferenceToBack.role,
+                        location:this.conferenceToBack.location,
+                        startTime:this.conferenceToBack.startTime,
+                        endTime:this.conferenceToBack.endTime
+                    }
+                $.ajax({
+                    url: "/conference/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Add Success");
+                            this.getConferenceResult();
+                            $("#conferenceInfo")[0].style.display="none";
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+            }
+
+        },
+
+        articleClick(index){
+            this.researchIndex=index;
+            // this.curIndex='research'+index.toString();
+            this.pageControlIndex='research';
+            this.searchText = '';
+            this.searchResult = [];
+            this.page = 1;
+            // this.pageSize=4;
+            this.getArticleResult();
+        },
+
+        projectClick(index){
+            this.researchIndex=index;
+            this.pageControlIndex='research';
+            this.searchText = '';
+            this.searchResult = [];
+            this.page = 1;
+            // this.pageSize=4;
+            this.getProjectResult();
+        },
+
+        conferenceClick(index){
+            this.researchIndex=index;
+            this.pageControlIndex='research';
+            this.searchText = '';
+            this.searchResult = [];
+            this.page = 1;
+            // this.pageSize=4;
+            this.getConferenceResult();
+        },
+
+        articleEditClick(){
+            this.articleToBack.title=$("#articleTitleEdit").val();
+            var tags = $('#articleAuthorEdit').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthorEdit').tagEditor('removeTag', tags[i]); }
+            this.articleToBack.author=tags;
+            this.articleToBack.journal=$("#articleJournalEdit").val();
+            this.articleToBack.startPage=$("#articleStartPageEdit").val();
+            this.articleToBack.endPage=$("#articleEndPageEdit").val();
+            this.articleToBack.date=$("#articleDateEdit").val();
+            this.articleToBack.link=$("#articleLinkEdit").val();
+            this.editArticle();
+        },
+
+        projectEditClick(){
+            this.projectToBack.name=$("#projectNameEdit").val();
+            this.projectToBack.startTime=$("#startTimeEdit").val();
+            this.projectToBack.endTime=$("#endTimeEdit").val();
+            this.projectToBack.role=$("#roleEdit").val();
+            this.projectToBack.fundAgency=$("#fundAgencyEdit").val();
+            this.projectToBack.amount=$("#amountEdit").val();
+            this.editProject();
+        },
+
+        conferenceEditClick(){
+            this.conferenceToBack.title=$("#conferenceTitleEdit").val();
+            console.log(this.conferenceToBack.title);
+            console.log(this.editOid);
+            this.conferenceToBack.theme=$("#themeEdit").val();
+            this.conferenceToBack.role=$("#conferenceRoleEdit").val();
+            this.conferenceToBack.location=$("#conferenceLocationEdit").val();
+            this.conferenceToBack.startTime=$("#conferStartTimeEdit").val();
+            this.conferenceToBack.endTime=$("#conferEndTimeEdit").val();
+            this.editConference();
+        },
+
+        editArticle(){
+            // var urls={
+            //     1:"/article/editByOid",
+            //     2:"/project/editByOid",
+            //     3:"/conference/editByOid",
+            // }
+            // var url=urls[this.researchIndex];
+            if(this.articleToBack.title==""||this.articleToBack.author=="")
+                alert("Please enter the Title and at least one Author.");
+            else {
+                let obj =
+                    {
+                        title:this.articleToBack.title,
+                        authors:this.articleToBack.author,
+                        journal:this.articleToBack.journal,
+                        startPage:this.articleToBack.startPage,
+                        endPage:this.articleToBack.endPage,
+                        date:this.articleToBack.date,
+                        link:this.articleToBack.link,
+                        oid:this.editOid,
+                    }
+                $.ajax({
+                    url: "/article/editByOid",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Edit Success");
+                            this.getArticleResult();
+                            $("#articleEdit")[0].style.display = "none";
+                        } else alert("Edit Error");//此处error信息不明确，记得后加
+                    }
+                })
+            }
+        },
+
+        editProject(){
+            if(this.projectToBack.name=="")
+                alert("Please enter the project Name.");
+            else {
+                let obj =
+                    {
+                        projectName:this.projectToBack.name,
+                        startTime:this.projectToBack.startTime,
+                        endTime:this.projectToBack.endTime,
+                        role:this.projectToBack.role,
+                        fundAgency:this.projectToBack.fundAgency,
+                        amount:this.projectToBack.amount,
+                        oid:this.editOid,
+                    }
+                $.ajax({
+                    url: "/project/editByOid",
+                    type: "POST",
+                    contentType: "application/json",
+                    data:  JSON.stringify(obj),
+
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Edit Success");
+                            this.getProjectResult();
+                            $("#projectEdit")[0].style.display = "none";
+                        } else alert("Edit Error");//此处error信息不明确，记得后加
+                    }
+                })
+            }
+        },
+
+        editConference(){
+            if(this.conferenceToBack.title=="")
+                alert("Please enter the conference Title.");
+            else {
+                let obj =
+                    {
+                        title:this.conferenceToBack.title,
+                        theme:this.conferenceToBack.theme,
+                        conferenceRole:this.conferenceToBack.role,
+                        location:this.conferenceToBack.location,
+                        startTime:this.conferenceToBack.startTime,
+                        endTime:this.conferenceToBack.endTime,
+                        oid:this.editOid,
+                    }
+                $.ajax({
+                    url: "/conference/editByOid",
+                    type: "POST",
+                    contentType: "application/json",
+                    data:  JSON.stringify(obj),
+
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Edit Success");
+                            this.getConferenceResult();
+                            $("#conferenceEdit")[0].style.display = "none";
+                        } else alert("Edit Error");//此处error信息不明确，记得后加
+                    }
+                })
+            }
+        },
+
+        deleteResearchItemClick(oid){
+            this.deleteResearchItem(oid);
+        },
         imgFile(){
             $("#imgOne").click();
         },
@@ -630,10 +1009,6 @@ var vue = new Vue({
             window.location.href = '../deploy-modelService/deploy-modelService.html';
         },
 
-
-        setSession(name, value) {
-            window.sessionStorage.setItem(name, value);
-        },
 
         menuClick(num) {
             switch (num) {
@@ -1065,9 +1440,139 @@ var vue = new Vue({
             })
         },
 
+        searchArticles(){
+            // var urls={
+            //     1:"/article/searchByTitle",
+            //     2:"/project/searchByName",
+            //     3:"/conference/searchByTitle",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:"GET",
+                url:"/article/searchByTitle",
+                data:{
+                    page: this.page-1,
+                    pageSize:4,
+                    sortElement:"creatDate",
+                    asc: false,
+                    searchText:this.searchText
+
+                },
+                cache: false,
+                async: true,
+                dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        this.resourceLoad = false;
+                        this.totalNum = data.total;
+                       Vue.set(this.researchItems ,'list',data.list) ;
+
+                        console.log(this.researchItems );
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            })
+        },
+
+        searchProjects(){
+            // var urls={
+            //     1:"/article/searchByTitle",
+            //     2:"/project/searchByName",
+            //     3:"/conference/searchByTitle",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:"GET",
+                url:"/project/searchByName",
+                data:{
+                    page: this.page-1,
+                    pageSize:4,
+                    sortElement:"creatDate",
+                    asc: false,
+                    searchText:this.searchText
+
+                },
+                cache: false,
+                async: true,
+                dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        this.resourceLoad = false;
+                        this.totalNum = data.total;
+                        Vue.set(this.projectResult ,'list',data.list) ;
+
+                        console.log(this.projectResult );
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            })
+        },
+
+        searchConferences(){
+            // var urls={
+            //     1:"/article/searchByTitle",
+            //     2:"/project/searchByName",
+            //     3:"/conference/searchByTitle",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:"GET",
+                url:"/conference/searchByTitle",
+                data:{
+                    page: this.page-1,
+                    pageSize:4,
+                    sortElement:"creatDate",
+                    asc: false,
+                    searchText:this.searchText
+
+                },
+                cache: false,
+                async: true,
+                dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        this.resourceLoad = false;
+                        this.totalNum = data.total;
+                        Vue.set(this.conferenceResult ,'list',data.list) ;
+
+                        console.log(this.conferenceResult );
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            })
+        },
+
         getModels() {
             var url = "";
             var name = "";
+            console.log(this.searchResult);
             if (this.curIndex=='2-1') {
                 url = "/modelItem/getModelItemsByUserId";
                 name = "modelItems";
@@ -1084,7 +1589,7 @@ var vue = new Vue({
                 url = "/computableModel/getComputableModelsByUserId";
                 name = "computableModels";
             }
-            else if (this.curIndex=='5') {
+            else if (this.curIndex=='6') {
                 url = "/task/getTasksByUserId";
                 name = "tasks";
                 this.sortAsc=-1;
@@ -1094,6 +1599,8 @@ var vue = new Vue({
             //     name = "computableModels";
 
             // }
+            this.$forceUpdate();
+
             $.ajax({
                 type: "Get",
                 url: url,
@@ -1118,8 +1625,14 @@ var vue = new Vue({
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
-                        this.searchCount = Number.parseInt(data["count"]);
-                        this.searchResult = data[name];
+                        // this.searchCount = Number.parseInt(data["count"]);
+                        //this.searchResult = data[name];
+                        for (var i = 0; i < data[name].length; i++){
+                            // this.searchResult.push(data[name][i]);
+                            this.searchResult.splice(i,0,data[name][i]);
+                            console.log(data[name][i]);
+                        }
+                        //this.modelItemResult = data[name];
                         if (this.page == 1) {
                             this.pageInit();
                         }
@@ -1274,6 +1787,153 @@ var vue = new Vue({
             })
         },
 
+        getArticleResult(){
+            // this.pageSize=4;
+            this.researchItems=[];
+            // var urls={
+            //     1:"/article/getByUserOidBySort",
+            //     2:"/project/getByUserOidBySort",
+            //     3:"/conference/getByUserOidBySort",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:'GET',
+                url:"/article/getByUserOidBySort",
+                // contentType:'application/json',
+
+                data:
+                    {
+                        page: this.page-1,
+                        pageSize:10,
+                        sortElement:"creatDate",
+                        asc: false
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        setTimeout(()=>{
+                            const data = json.data;
+                            this.resourceLoad = false;
+                            this.totalNum = data.total;
+                            // this.researchItems = data.list;
+                            Vue.set(this.researchItems ,'list', data.list);
+                            console.log(this.researchItems);
+                            this.$forceUpdate();
+                            if(this.page==1){
+                                this.pageInit();
+                            }
+                        },150)
+
+
+
+                    }
+                }
+            })
+        },
+
+        getProjectResult(){
+            var url="/project/getByUserOidBySort";
+            $.ajax({
+                type:'GET',
+                url:url,
+                // contentType:'application/json',
+
+                data:
+                    {
+                        page: this.page-1,
+                        pageSize:10,
+                        sortElement:"creatDate",
+                        asc: false
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        setTimeout(()=>{
+                            const data = json.data;
+                            this.resourceLoad = false;
+                            this.totalNum = data.total;
+                            // this.researchItems = data.list;
+                            Vue.set(this.projectResult ,'list', data.list);
+                            console.log(this.projectResult);
+                            this.$forceUpdate();
+                            if(this.page==1){
+                                this.pageInit();
+                            }
+                        },150)
+
+
+
+                    }
+                }
+            })
+        },
+
+        getConferenceResult(){
+            var url="/conference/getByUserOidBySort";
+            $.ajax({
+                type:'GET',
+                url:url,
+                // contentType:'application/json',
+
+                data:
+                    {
+                        page: this.page-1,
+                        pageSize:10,
+                        sortElement:"creatDate",
+                        asc: false
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        setTimeout(()=>{
+                            const data = json.data;
+                            this.resourceLoad = false;
+                            this.totalNum = data.total;
+                            // this.researchItems = data.list;
+                            Vue.set(this.conferenceResult ,'list', data.list);
+                            console.log(this.projectResult);
+                            this.$forceUpdate();
+                            if(this.page==1){
+                                this.pageInit();
+                            }
+                        },150)
+
+
+
+                    }
+                }
+            })
+        },
 
         deleteModel(oid) {
             if (confirm("Are you sure to delete this model?")) {
@@ -1483,6 +2143,66 @@ var vue = new Vue({
             }
         },
 
+        deleteResearchItem(oid){
+            var urls={
+                1:"/article/deleteByOid",
+                2:"/project/deleteByOid",
+                3:"/conference/deleteByOid",
+            }
+            if (confirm("Are you sure to delete this item?")){
+                var url=urls[this.researchIndex];
+
+                $.ajax({
+                    type:"POST",
+                    url:url,
+                    data:{
+                        oid:oid
+                    },
+
+                    cache: false,
+                    async: true,
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (json) => {
+                        if(json.code==-1){
+                            alert("Please log in first!")
+                        }
+                        else{
+                            if(json.data==1){
+                                alert("delete successfully!")
+                            }
+                            else{
+                                alert("delete failed!")
+                            }
+                        }
+                        if (this.searchText.trim() != "") {
+                            if(this.researchIndex==1)
+                                this.searchArticles();
+                            if(this.researchIndex==2)
+                                this.searchProjects();
+                            if(this.researchIndex==3)
+                                this.searchConferences();
+                        }
+                        else {
+                            if(this.researchIndex==1)
+                                this.getArticleResult();
+                            if(this.researchIndex==2)
+                                this.getProjectResult();
+                            if(this.researchIndex==3)
+                                this.getConferenceResult();
+                        }
+
+                    }
+
+
+
+                })
+            }
+        },
+
         updateModels() {
 
             $.ajax({
@@ -1573,6 +2293,7 @@ var vue = new Vue({
             form.remove();
         },
         //page
+        // 初始化page并显示第一页
         pageInit() {
             this.totalPage = Math.floor((this.totalNum + this.pageSize - 1) / this.pageSize);
             if (this.totalPage < 1) {
@@ -1590,6 +2311,7 @@ var vue = new Vue({
                     this.pageList.push(i + 1);
                 }
             } else if (this.totalPage - this.curPage < 5 && this.curPage > 4) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+
                 this.pageList = [
                     this.curPage - 4,
                     this.curPage - 3,
@@ -1601,6 +2323,7 @@ var vue = new Vue({
                 let cur = Math.floor((this.curPage - 1) / 5) * 5 + 1;
                 if (this.curPage % 5 === 0) {
                     cur = cur + 1;
+
                 }
                 this.pageList = [
                     cur,
@@ -1620,33 +2343,114 @@ var vue = new Vue({
                 return;
             }
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
-                if (this.data_show) {
+                if(this.curIndex!=1)
+                    this.pageControlIndex=this.curIndex;
+                else this.pageControlIndex='research';
+                switch (this.pageControlIndex) {
                     // this.computerModelsDeploy = [];
                     // this.resourceLoad = true;
                     // this.curPage = pageNo;
                     // this.getPageList();
                     // this.page = pageNo;
                     // this.getDataItems();
+                    case '2-1':
+                    case '2-2':
+                    case '2-3':
+                    case '2-4':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getModels();
+                        break;
+                    //
+                    // case 3:
+                    //     this.resourceLoad = true;
+                    //     this.searchResult = [];
+                    //     //not result scroll
+                    //     //window.scrollTo(0, 0);
+                    //     this.curPage = pageNo;
+                    //     this.getPageList();
+                    //     this.page = pageNo;
+                    //     this.getDataItems();
+                    //     break;
 
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-                    this.getDataItems();
+                    case '4-1':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getConcepts();
+                        break;
+                    case '4-2':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getSpatials();
+                        break;
+                    case '4-3':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getTemplates();
+                        break;
+                    case '4-4':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getUnits();
+                        break;
 
-                } else {
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-                    this.getModels();
+
+                    case 'research':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        switch (this.researchIndex) {
+                            case 1:this.getArticleResult();
+                            break;
+                            case 2:this.getProjectResult();
+                            break;
+                            case 3:this.getConferenceResult();
+                            break;
+                        }
+                        break;
+
+
                 }
+                // if(this.researchIndex==1||this.researchIndex==2||this.researchIndex==3){
+                //     this.resourceLoad = true;
+                //     this.searchResult = [];
+                //     //not result scroll
+                //     //window.scrollTo(0, 0);
+                //     this.curPage = pageNo;
+                //     this.getPageList();
+                //     this.pageSize=4;
+                //     this.page = pageNo;
+                //     this.getResearchItems();
+                // }
                 //this.changeCurPage.emit(this.curPage);
             }
         },
@@ -1852,7 +2656,7 @@ var vue = new Vue({
 
         },
         //todo 数据条目的增删操作
-        searchDataItems(){},
+        // searchDataItems(){},
         deleteDataitems(id){
 
             //todo 删除category中的 id
@@ -2564,10 +3368,11 @@ var vue = new Vue({
 
     },
     created(){
-
-
+        this.getArticleResult();
     },
     mounted() {
+
+
 
         $('.dropdown-toggle').dropdown()
 
@@ -2581,6 +3386,14 @@ var vue = new Vue({
             keyboard: false,
             backdrop: true,
             show: false,
+        })
+
+        $("#articleAuthor").tagEditor({
+            forceLowercase: false
+        })
+
+        $("#articleAuthorEdit").tagEditor({
+            forceLowercase: false
         })
 
         $("#edit").click(() => {

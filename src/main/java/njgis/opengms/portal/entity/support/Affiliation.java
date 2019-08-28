@@ -8,8 +8,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Affiliation {
-    String institutionName;
+    String name;
     String department;
-    String insLocation;
-    String insPosition;
+    String location;
+    String position;
+
+
+
+
 }
