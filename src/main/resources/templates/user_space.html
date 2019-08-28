@@ -2474,8 +2474,10 @@
                                 <div class="panel-body">
                                     <p>
                                         <b>Create Time:</b> {{formatDate(concept.createTime)}}</p>
-                                    <p style="word-break: break-all;">
+                                    <p style="word-break: break-all;" v-if="concept.description">
                                         <b>Overview:</b>{{concept.description}}</p>
+                                    <p style="word-break: break-all;" v-if="!concept.description">
+                                        <b>Overview:</b>{{concept.description_EN}}</p>
                                 </div>
                             </div>
                         </div>
@@ -2571,7 +2573,7 @@
                                     <p>
                                         <b>Create Time:</b> {{formatDate(spatial.createTime)}}</p>
                                     <p style="word-break: break-all;">
-                                        <b>Overview:</b>{{spatial.description}}</p>
+                                        <b>Overview:</b>{{spatial.wkt}}</p>
                                 </div>
                             </div>
                         </div>
@@ -2762,8 +2764,10 @@
                                 <div class="panel-body">
                                     <p>
                                         <b>Create Time:</b> {{formatDate(unit.createTime)}}</p>
-                                    <p style="word-break: break-all;">
+                                    <p style="word-break: break-all;" v-if="unit.description!=null">
                                         <b>Overview:</b>{{unit.description}}</p>
+                                    <p style="word-break: break-all;" v-if="unit.description==null">
+                                        <b>Overview:</b>{{unit.description_ZH}}</p>
                                 </div>
                             </div>
                         </div>

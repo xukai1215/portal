@@ -395,6 +395,7 @@ var vue = new Vue({
 
                 this.conceptualModel.cXml = xml;
             }
+
             //添加图片
             var formData = new FormData();//重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
             var files=$("#imgFiles")[0].files;

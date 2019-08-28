@@ -1521,27 +1521,28 @@ var ConfirmSaveConceptualModelDialog = function (editorUi) {
         div.appendChild(cancelBtn);
     }
 
-    var okBtn = mxUtils.button(mxResources.get('ok'), function()
-    {
-        // Removes all illegal control characters before parsing
-		if($("#model_scene_name").val()===""){
-			alert("please enter conceptual model name");
-			return;
-		}
-        /*var graph = editorUi.editor.graph;
-        save_model_decription(graph);*/
-        var xml = editorUi.editor.getGraphXml();
-        $.ajax({
-            url:"/GeoModeling/ConceptualModelEditorServlet",
-            type:"post",
-            data:{"name":$("#model_scene_name").val(),"conceptual":xml.outerHTML},
-            success:function (result) {
-                alert(result);
-            }
-        });
+    // var okBtn = mxUtils.button(mxResources.get('ok'), function()
+    // {
+    //     // Removes all illegal control characters before parsing
+	// 	if($("#model_scene_name").val()===""){
+	// 		alert("please enter conceptual model name");
+	// 		return;
+	// 	}
+    //     /*var graph = editorUi.editor.graph;
+    //     save_model_decription(graph);*/
+    //     var xml = editorUi.editor.getGraphXml();
+    //     $.ajax({
+    //         url:"/GeoModeling/ConceptualModelEditorServlet",
+    //         type:"post",
+    //         data:{"name":$("#model_scene_name").val(),"conceptual":xml.outerHTML},
+    //         success:function (result) {
+    //             alert(result);
+    //         }
+    //     });
+	//
+    //     editorUi.hideDialog();
+    // });
 
-        editorUi.hideDialog();
-    });
     okBtn.className = 'geBtn gePrimaryBtn';
     div.appendChild(okBtn);
 

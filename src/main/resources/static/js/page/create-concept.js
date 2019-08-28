@@ -925,20 +925,20 @@ var vue = new Vue({
             });
         },
 
-        // searchByOid(oid){
-        //     $.ajax({
-        //         url: "/repository/getConceptInfo/" + oid,
-        //         type:'GET',
-        //         data: {},
-        //         async:false,
-        //         success:(result)=>{
-        //             console.log(result);
-        //             var basicInfo = result.data;
-        //             var relate = basicInfo.name;
-        //             this.related.push(relate);
-        //         }
-        //     })
-        // }
+        searchByOid(oid){
+            $.ajax({
+                url: "/repository/getConceptInfo/" + oid,
+                type:'GET',
+                data: {},
+                async:false,
+                success:(result)=>{
+                    console.log(result);
+                    var basicInfo = result.data;
+                    var relate = basicInfo.name;
+                    this.related.push(relate);
+                }
+            })
+        }
     },
     mounted() {
 
@@ -1031,6 +1031,7 @@ var vue = new Vue({
                     for (var i = 0; i < this.relatedOid.length; i++) {
                         this.searchByOid(this.relatedOid[i]);
                     }
+
                     $('#related').tagEditor('destroy')
                     $('#related').tagEditor({
                         initialTags: this.related,

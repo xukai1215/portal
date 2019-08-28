@@ -97,10 +97,12 @@
                     </div>
                 </div>
                 <div class="block_content" style="margin-top:20px;">
-                    <div>
+                    <div th:each="classS:${classifications}">
                         <span style="font-size:24px;margin-right: 8px">●</span>
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="classS:${classifications}" th:text="${classS}" :to="{ path: '/' }"></el-breadcrumb-item>
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class}" :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                 </div>

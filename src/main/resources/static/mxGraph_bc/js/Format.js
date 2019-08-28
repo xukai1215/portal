@@ -467,377 +467,378 @@ Format.prototype.refresh = function()
 
 		label.style.backgroundColor = this.inactiveTabBackgroundColor;
 		label.style.borderLeftWidth = '1px';
-		if((type!="start")&&(type!="end")){
-            label.style.width = "33.3%";
-			label.style.borderLeftWidth = '0px';
-			if(type!=""){
-				mxUtils.write(label, labelName[type]);
-			}
-            else{
-				mxUtils.write(label, "Dependency");
-			}
-            div.appendChild(label);
-
-            var itemPanel = div.cloneNode(false);
-            itemPanel.style.display = 'none';
-
-            var subPanel = new ArrangePanel(this, ui, itemPanel);
-            subPanel.container.innerHTML = "";
-
-            subPanel.container.style.padding = "6px 0px 6px 18px";
-
-            subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Name"));
-
-            var input = document.createElement("input");
-            input.style.width = "200px";
-			input.style.marginBottom = "5px";
-
-            var textArea = document.createElement("textarea");
-            textArea.style.width = "200px";
-            textArea.style.height = "300px";
-            textArea.style.marginBottom = "5px";
-            textArea.onclick = function () {
-                this.focus();
-            };
-			
-			input.value ="";
-			textArea.value="";
-			if(cell.uid!=undefined){
-				if(type==="modelitem"){
-					for(let i=0;i<graph.logicalScene.modelItems.length;i++){
-						if(graph.logicalScene.modelItems[i].uid==cell.uid){
-							if(graph.logicalScene.modelItems[i].name!=undefined){
-								input.value =graph.logicalScene.modelItems[i].name;
-							}
-							if(graph.logicalScene.modelItems[i].description!=undefined){
-								textArea.value=graph.logicalScene.modelItems[i].description;
-							}
-							break;
-						}
-					}
-				}else if(type==="dataitem"){
-					for(let i=0;i<graph.logicalScene.dataItems.length;i++){
-						if(graph.logicalScene.dataItems[i].uid==cell.uid){
-							if(graph.logicalScene.dataItems[i].name!=undefined){
-								input.value =graph.logicalScene.dataItems[i].name;
-							}
-							if(graph.logicalScene.dataItems[i].description!=undefined){
-								textArea.value=graph.logicalScene.dataItems[i].description;
-							}
-							break;
-						}
-					}
-				}else if(type==="condition"){
-					for(let i=0;i<graph.logicalScene.conditionItems.length;i++){
-						if(graph.logicalScene.conditionItems[i].uid==cell.uid){
-							if(graph.logicalScene.conditionItems[i].name!=undefined){
-								input.value =graph.logicalScene.conditionItems[i].name;
-							}
-							if(graph.logicalScene.conditionItems[i].description!=undefined){
-								textArea.value=graph.logicalScene.conditionItems[i].description;
-							}
-							break;
-						}
-					}
-				}else if(type==="operation"){
-					for(let i=0;i<graph.logicalScene.operations.length;i++){
-						if(graph.logicalScene.operations[i].uid==cell.uid){
-							if(graph.logicalScene.operations[i].name!=undefined){
-								input.value =graph.logicalScene.operations[i].name;
-							}
-							if(graph.logicalScene.operations[i].description!=undefined){
-								textArea.value=graph.logicalScene.operations[i].description;
-							}
-							break;
-						}
-					}
-				}
-				else if(cell.isEdge()){
-					for(let i=0;i<graph.logicalScene.dependencies.length;i++){
-						if(graph.logicalScene.dependencies[i].uid==cell.uid){
-							if(graph.logicalScene.dependencies[i].name!=undefined){
-								input.value =graph.logicalScene.dependencies[i].name;
-							}
-							if(graph.logicalScene.dependencies[i].description!=undefined){
-								textArea.value=graph.logicalScene.dependencies[i].description;
-							}
-							break;
-						}
-					}
-				}
-			}
-			subPanel.container.appendChild(input);
-			subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Description"));
-			subPanel.container.appendChild(textArea);
-            if(cell.isEdge()){
-				subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Relation"));
-				if (cell.source && cell.target) {
-					var ul = document.createElement("ul");
-					ul.style.padding = '0';
-					ul.style.margin = '0';
-					ul.style.fontSize = '12px';
-					ul.style.overflow = 'auto';
-					ul.style.border = 'solid 1px #d5d5d5';
-					ul.style.marginBottom='20px';
-					var source = cell.source;
-					var target = cell.target;
-					var li = document.createElement("li");
-					li.innerHTML = "Source: " + source.value;
-					var li2 = document.createElement("li");
-					li2.innerHTML = "Target: " + target.value;
-					ul.appendChild(li);
-					ul.appendChild(li2);
-					subPanel.container.appendChild(ul);
-				}
-			}
-
-            var buttonDiv =document.createElement("div");
-            buttonDiv.style.marginBottom = "10px";
-			var button = document.createElement("button");
-			var that=this;
-            button.onclick = function(){
-				var cell  = graph.getSelectionCell();
-				if(type==="modelitem"){
-					if(cell.uid==undefined){
-						var newObject={};
-						cell.uid=that.createUUID();
-						newObject.uid=cell.uid;
-						newObject.name = input.value;
-						newObject.description = textArea.value;
-						graph.logicalScene.modelItems.push(newObject);
-					}
-					else{
-						for(let i=0;i<graph.logicalScene.modelItems.length;i++){
-							if(graph.logicalScene.modelItems[i].uid==cell.uid){
-								graph.logicalScene.modelItems[i].name=input.value;
-								graph.logicalScene.modelItems[i].description=textArea.value;
-								break;
-							}
-						}
-					}
-				}else if(type==="dataitem"){
-					if(cell.uid==undefined){
-						var newObject={};
-						cell.uid=that.createUUID();
-						newObject.uid=cell.uid;
-						newObject.name = input.value;
-						newObject.description = textArea.value;
-						graph.logicalScene.dataItems.push(newObject);
-					}
-					else{
-						for(let i=0;i<graph.logicalScene.dataItems.length;i++){
-							if(graph.logicalScene.dataItems[i].uid==cell.uid){
-								graph.logicalScene.dataItems[i].name=input.value;
-								graph.logicalScene.dataItems[i].description=textArea.value;
-								break;
-							}
-						}
-					}
-				}else if(type==="condition"){
-					if(cell.uid==undefined){
-						var newObject={};
-						cell.uid=that.createUUID();
-						newObject.uid=cell.uid;
-						newObject.name = input.value;
-						newObject.description = textArea.value;
-						graph.logicalScene.conditionItems.push(newObject);
-					}
-					else{
-						for(let i=0;i<graph.logicalScene.conditionItems.length;i++){
-							if(graph.logicalScene.conditionItems[i].uid==cell.uid){
-								graph.logicalScene.conditionItems[i].name=input.value;
-								graph.logicalScene.conditionItems[i].description=textArea.value;
-								break;
-							}
-						}
-					}
-				}else if(type==="operation"){
-					if(cell.uid==undefined){
-						var newObject={};
-						cell.uid=that.createUUID();
-						newObject.uid=cell.uid;
-						newObject.name = input.value;
-						newObject.description = textArea.value;
-						graph.logicalScene.operations.push(newObject);
-					}
-					else{
-						for(let i=0;i<graph.logicalScene.operations.length;i++){
-							if(graph.logicalScene.operations[i].uid==cell.uid){
-								graph.logicalScene.operations[i].name=input.value;
-								graph.logicalScene.operations[i].description=textArea.value;
-								break;
-							}
-						}
-					}
-				}
-				else if(cell.isEdge()){
-					var sourceType=labelName[cell.source.style.match(/flowchart\.([\S]*);whiteSpace/)[1]];
-					var targetType=labelName[cell.target.style.match(/flowchart\.([\S]*);whiteSpace/)[1]];
-					if(cell.uid==undefined){
-						var newObject={};
-						cell.uid=that.createUUID();
-						newObject.uid=cell.uid;
-						newObject.name = input.value;
-						newObject.description=textArea.value;
-						newObject.from = cell.source.uid;
-						newObject.to=cell.target.uid;
-						newObject.fromtype=sourceType;
-						newObject.totype=targetType;
-						graph.logicalScene.dependencies.push(newObject);
-					}
-					else{
-						for(let i=0;i<graph.logicalScene.dependencies.length;i++){
-							if(graph.logicalScene.dependencies[i].uid==cell.uid){
-								graph.logicalScene.dependencies[i].name=input.value;
-								graph.logicalScene.dependencies[i].description=textArea.value;
-								graph.logicalScene.dependencies[i].from=cell.source.uid;
-								graph.logicalScene.dependencies[i].to=cell.target.uid;
-								graph.logicalScene.dependencies[i].fromtype=sourceType;
-								graph.logicalScene.dependencies[i].totype=targetType;
-								break;
-							}
-						}
-					}
-				}
-
-				for(let i=0;i<graph.mxgraphList.length;i++){
-					if(graph.mxgraphList[i].uid==$("#viewPanel option:selected").attr("currentUID")){
-						var encoder = new mxCodec();
-            			var node = encoder.encode(graph.getModel());
-						graph.mxgraphList[i].graphXML=mxUtils.getXml(node);
-					}
-				}
-
-				// console.log(graph.mxgraphList);
-				// console.log(graph.logicalScene);
-				if(!cell.isEdge()){
-					graph.cellLabelChanged(cell,input.value,false);
-				}
-            };
-            button.innerHTML = "Save";
-            button.style.width = "205px";
-
-            buttonDiv.appendChild(button);
-            subPanel.container.appendChild(buttonDiv);
-
-            if((type==="dataitem")&&($("#viewPanel").val()==="Condition")){
-                subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Data Item"));
-                var ul = document.createElement("ul");
-            	ul.style.minHeight = "100px";
-            	ul.style.padding = 0;
-                ul.style.margin = 0;
-            	ul.style.border = "1px solid #ddd";
-            	for(var i=0;i<graph.logicalScene.dataItems.length;i++){
-					(function (e) {
-                        var dataItem = graph.logicalScene.dataItems[e];
-                        var li = document.createElement("li");
-                        li.style.fontSize = "14px";
-                        li.style.padding = "8px 5px";
-                        li.style.borderBottom = "1px solid #ccc";
-                        li.style.listStyle = "none";
-                        li.innerHTML = dataItem.name;
-                        li.setAttribute("value",dataItem.name);
-                        li.setAttribute("description",dataItem.description);
-                        li.onclick = function () {
-                            input.value = li.getAttribute("value");
-                            textArea.value = li.getAttribute("description");
-                        }
-                        ul.appendChild(li);
-                    })(i);
-				}
-                subPanel.container.appendChild(ul);
-			}
-
-            if((type==="dataitem")&&($("#viewPanel").val()==="Data")){
-                subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Data Item"));
-                var ul = document.createElement("ul");
-                ul.style.minHeight = "100px";
-                ul.style.padding = 0;
-                ul.style.margin = 0;
-                ul.style.border = "1px solid #ddd";
-                for(var i=0;i<graph.logicalScene.dataItems.length;i++){
-                    (function (e) {
-                        var dataItem = graph.logicalScene.dataItems[e];
-                        var li = document.createElement("li");
-                        li.style.fontSize = "14px";
-                        li.style.padding = "8px 5px";
-                        li.style.borderBottom = "1px solid #ccc";
-                        li.style.listStyle = "none";
-                        li.innerHTML = dataItem.name;
-                        li.setAttribute("value",dataItem.name);
-                        li.setAttribute("description",dataItem.description);
-                        li.onclick = function () {
-                            input.value = li.getAttribute("value");
-                            textArea.value = li.getAttribute("description");
-                        }
-                        ul.appendChild(li);
-                    })(i);
-                }
-                subPanel.container.appendChild(ul);
-            }
-
-            if((type==="modelitem")&&($("#viewPanel").val()==="Condition")){
-                subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Model Item"));
-                var ul = document.createElement("ul");
-                ul.style.minHeight = "100px";
-                ul.style.padding = 0;
-                ul.style.margin = 0;
-                ul.style.border = "1px solid #ddd";
-                for(var i=0;i<graph.logicalScene.modelItems.length;i++){
-                    (function (e) {
-                        var modelItem = graph.logicalScene.modelItems[e];
-                        var li = document.createElement("li");
-                        li.style.fontSize = "14px";
-                        li.style.padding = "8px 5px";
-                        li.style.borderBottom = "1px solid #ccc";
-                        li.style.listStyle = "none";
-                        li.innerHTML = modelItem.name;
-                        li.setAttribute("value",modelItem.name);
-                        li.setAttribute("description",modelItem.description);
-                        li.onclick = function () {
-                            input.value = li.getAttribute("value");
-                            textArea.value = li.getAttribute("description");
-                        }
-                        ul.appendChild(li);
-                    })(i);
-                }
-                subPanel.container.appendChild(ul);
-            }
-
-            if((type==="operation")&&($("#viewPanel").val()==="Data")){
-                subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Operation Item"));
-                var ul = document.createElement("ul");
-                ul.style.minHeight = "100px";
-                ul.style.padding = 0;
-                ul.style.margin = 0;
-                ul.style.border = "1px solid #ddd";
-                for(var i=0;i<graph.logicalScene.operations.length;i++){
-                    (function (e) {
-                    	var operation = graph.logicalScene.operations[e];
-                        var li = document.createElement("li");
-                        li.style.fontSize = "14px";
-                        li.style.padding = "8px 5px";
-                        li.style.borderBottom = "1px solid #ccc";
-                        li.style.listStyle = "none";
-                        li.innerHTML = operation.name;
-                        li.setAttribute("value",operation.name);
-                        li.setAttribute("description",operation.description);
-                        li.onclick = function () {
-                            input.value = li.getAttribute("value");
-                            textArea.value = li.getAttribute("description");
-                        }
-                        ul.appendChild(li);
-                    })(i);
-                }
-                subPanel.container.appendChild(ul);
-            }
-
-            this.panels.push(subPanel);
-            this.container.appendChild(itemPanel);
-            addClickHandler(label, itemPanel, idx++);
-		}else{
-            label.style.width = "50%";
-		}
+        label.style.width = (containsLabel) ? '50%' : '33.3%';
+		// if((type!="start")&&(type!="end")){
+        //     label.style.width = "33.3%";
+		// 	label.style.borderLeftWidth = '0px';
+		// 	if(type!=""){
+		// 		mxUtils.write(label, labelName[type]);
+		// 	}
+        //     else{
+		// 		mxUtils.write(label, "Dependency");
+		// 	}
+        //     div.appendChild(label);
+		//
+        //     var itemPanel = div.cloneNode(false);
+        //     itemPanel.style.display = 'none';
+		//
+        //     var subPanel = new ArrangePanel(this, ui, itemPanel);
+        //     subPanel.container.innerHTML = "";
+		//
+        //     subPanel.container.style.padding = "6px 0px 6px 18px";
+		//
+        //     subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Name"));
+		//
+        //     var input = document.createElement("input");
+        //     input.style.width = "200px";
+		// 	input.style.marginBottom = "5px";
+		//
+        //     var textArea = document.createElement("textarea");
+        //     textArea.style.width = "200px";
+        //     textArea.style.height = "300px";
+        //     textArea.style.marginBottom = "5px";
+        //     textArea.onclick = function () {
+        //         this.focus();
+        //     };
+		//
+		// 	input.value ="";
+		// 	textArea.value="";
+		// 	if(cell.uid!=undefined){
+		// 		if(type==="modelitem"){
+		// 			for(let i=0;i<graph.logicalScene.modelItems.length;i++){
+		// 				if(graph.logicalScene.modelItems[i].uid==cell.uid){
+		// 					if(graph.logicalScene.modelItems[i].name!=undefined){
+		// 						input.value =graph.logicalScene.modelItems[i].name;
+		// 					}
+		// 					if(graph.logicalScene.modelItems[i].description!=undefined){
+		// 						textArea.value=graph.logicalScene.modelItems[i].description;
+		// 					}
+		// 					break;
+		// 				}
+		// 			}
+		// 		}else if(type==="dataitem"){
+		// 			for(let i=0;i<graph.logicalScene.dataItems.length;i++){
+		// 				if(graph.logicalScene.dataItems[i].uid==cell.uid){
+		// 					if(graph.logicalScene.dataItems[i].name!=undefined){
+		// 						input.value =graph.logicalScene.dataItems[i].name;
+		// 					}
+		// 					if(graph.logicalScene.dataItems[i].description!=undefined){
+		// 						textArea.value=graph.logicalScene.dataItems[i].description;
+		// 					}
+		// 					break;
+		// 				}
+		// 			}
+		// 		}else if(type==="condition"){
+		// 			for(let i=0;i<graph.logicalScene.conditionItems.length;i++){
+		// 				if(graph.logicalScene.conditionItems[i].uid==cell.uid){
+		// 					if(graph.logicalScene.conditionItems[i].name!=undefined){
+		// 						input.value =graph.logicalScene.conditionItems[i].name;
+		// 					}
+		// 					if(graph.logicalScene.conditionItems[i].description!=undefined){
+		// 						textArea.value=graph.logicalScene.conditionItems[i].description;
+		// 					}
+		// 					break;
+		// 				}
+		// 			}
+		// 		}else if(type==="operation"){
+		// 			for(let i=0;i<graph.logicalScene.operations.length;i++){
+		// 				if(graph.logicalScene.operations[i].uid==cell.uid){
+		// 					if(graph.logicalScene.operations[i].name!=undefined){
+		// 						input.value =graph.logicalScene.operations[i].name;
+		// 					}
+		// 					if(graph.logicalScene.operations[i].description!=undefined){
+		// 						textArea.value=graph.logicalScene.operations[i].description;
+		// 					}
+		// 					break;
+		// 				}
+		// 			}
+		// 		}
+		// 		else if(cell.isEdge()){
+		// 			for(let i=0;i<graph.logicalScene.dependencies.length;i++){
+		// 				if(graph.logicalScene.dependencies[i].uid==cell.uid){
+		// 					if(graph.logicalScene.dependencies[i].name!=undefined){
+		// 						input.value =graph.logicalScene.dependencies[i].name;
+		// 					}
+		// 					if(graph.logicalScene.dependencies[i].description!=undefined){
+		// 						textArea.value=graph.logicalScene.dependencies[i].description;
+		// 					}
+		// 					break;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// 	subPanel.container.appendChild(input);
+		// 	subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Description"));
+		// 	subPanel.container.appendChild(textArea);
+        //     if(cell.isEdge()){
+		// 		subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Relation"));
+		// 		if (cell.source && cell.target) {
+		// 			var ul = document.createElement("ul");
+		// 			ul.style.padding = '0';
+		// 			ul.style.margin = '0';
+		// 			ul.style.fontSize = '12px';
+		// 			ul.style.overflow = 'auto';
+		// 			ul.style.border = 'solid 1px #d5d5d5';
+		// 			ul.style.marginBottom='20px';
+		// 			var source = cell.source;
+		// 			var target = cell.target;
+		// 			var li = document.createElement("li");
+		// 			li.innerHTML = "Source: " + source.value;
+		// 			var li2 = document.createElement("li");
+		// 			li2.innerHTML = "Target: " + target.value;
+		// 			ul.appendChild(li);
+		// 			ul.appendChild(li2);
+		// 			subPanel.container.appendChild(ul);
+		// 		}
+		// 	}
+		//
+        //     var buttonDiv =document.createElement("div");
+        //     buttonDiv.style.marginBottom = "10px";
+		// 	var button = document.createElement("button");
+		// 	var that=this;
+        //     button.onclick = function(){
+		// 		var cell  = graph.getSelectionCell();
+		// 		if(type==="modelitem"){
+		// 			if(cell.uid==undefined){
+		// 				var newObject={};
+		// 				cell.uid=that.createUUID();
+		// 				newObject.uid=cell.uid;
+		// 				newObject.name = input.value;
+		// 				newObject.description = textArea.value;
+		// 				graph.logicalScene.modelItems.push(newObject);
+		// 			}
+		// 			else{
+		// 				for(let i=0;i<graph.logicalScene.modelItems.length;i++){
+		// 					if(graph.logicalScene.modelItems[i].uid==cell.uid){
+		// 						graph.logicalScene.modelItems[i].name=input.value;
+		// 						graph.logicalScene.modelItems[i].description=textArea.value;
+		// 						break;
+		// 					}
+		// 				}
+		// 			}
+		// 		}else if(type==="dataitem"){
+		// 			if(cell.uid==undefined){
+		// 				var newObject={};
+		// 				cell.uid=that.createUUID();
+		// 				newObject.uid=cell.uid;
+		// 				newObject.name = input.value;
+		// 				newObject.description = textArea.value;
+		// 				graph.logicalScene.dataItems.push(newObject);
+		// 			}
+		// 			else{
+		// 				for(let i=0;i<graph.logicalScene.dataItems.length;i++){
+		// 					if(graph.logicalScene.dataItems[i].uid==cell.uid){
+		// 						graph.logicalScene.dataItems[i].name=input.value;
+		// 						graph.logicalScene.dataItems[i].description=textArea.value;
+		// 						break;
+		// 					}
+		// 				}
+		// 			}
+		// 		}else if(type==="condition"){
+		// 			if(cell.uid==undefined){
+		// 				var newObject={};
+		// 				cell.uid=that.createUUID();
+		// 				newObject.uid=cell.uid;
+		// 				newObject.name = input.value;
+		// 				newObject.description = textArea.value;
+		// 				graph.logicalScene.conditionItems.push(newObject);
+		// 			}
+		// 			else{
+		// 				for(let i=0;i<graph.logicalScene.conditionItems.length;i++){
+		// 					if(graph.logicalScene.conditionItems[i].uid==cell.uid){
+		// 						graph.logicalScene.conditionItems[i].name=input.value;
+		// 						graph.logicalScene.conditionItems[i].description=textArea.value;
+		// 						break;
+		// 					}
+		// 				}
+		// 			}
+		// 		}else if(type==="operation"){
+		// 			if(cell.uid==undefined){
+		// 				var newObject={};
+		// 				cell.uid=that.createUUID();
+		// 				newObject.uid=cell.uid;
+		// 				newObject.name = input.value;
+		// 				newObject.description = textArea.value;
+		// 				graph.logicalScene.operations.push(newObject);
+		// 			}
+		// 			else{
+		// 				for(let i=0;i<graph.logicalScene.operations.length;i++){
+		// 					if(graph.logicalScene.operations[i].uid==cell.uid){
+		// 						graph.logicalScene.operations[i].name=input.value;
+		// 						graph.logicalScene.operations[i].description=textArea.value;
+		// 						break;
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 		else if(cell.isEdge()){
+		// 			var sourceType=labelName[cell.source.style.match(/flowchart\.([\S]*);whiteSpace/)[1]];
+		// 			var targetType=labelName[cell.target.style.match(/flowchart\.([\S]*);whiteSpace/)[1]];
+		// 			if(cell.uid==undefined){
+		// 				var newObject={};
+		// 				cell.uid=that.createUUID();
+		// 				newObject.uid=cell.uid;
+		// 				newObject.name = input.value;
+		// 				newObject.description=textArea.value;
+		// 				newObject.from = cell.source.uid;
+		// 				newObject.to=cell.target.uid;
+		// 				newObject.fromtype=sourceType;
+		// 				newObject.totype=targetType;
+		// 				graph.logicalScene.dependencies.push(newObject);
+		// 			}
+		// 			else{
+		// 				for(let i=0;i<graph.logicalScene.dependencies.length;i++){
+		// 					if(graph.logicalScene.dependencies[i].uid==cell.uid){
+		// 						graph.logicalScene.dependencies[i].name=input.value;
+		// 						graph.logicalScene.dependencies[i].description=textArea.value;
+		// 						graph.logicalScene.dependencies[i].from=cell.source.uid;
+		// 						graph.logicalScene.dependencies[i].to=cell.target.uid;
+		// 						graph.logicalScene.dependencies[i].fromtype=sourceType;
+		// 						graph.logicalScene.dependencies[i].totype=targetType;
+		// 						break;
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		//
+		// 		for(let i=0;i<graph.mxgraphList.length;i++){
+		// 			if(graph.mxgraphList[i].uid==$("#viewPanel option:selected").attr("currentUID")){
+		// 				var encoder = new mxCodec();
+        //     			var node = encoder.encode(graph.getModel());
+		// 				graph.mxgraphList[i].graphXML=mxUtils.getXml(node);
+		// 			}
+		// 		}
+		//
+		// 		// console.log(graph.mxgraphList);
+		// 		// console.log(graph.logicalScene);
+		// 		if(!cell.isEdge()){
+		// 			graph.cellLabelChanged(cell,input.value,false);
+		// 		}
+        //     };
+        //     button.innerHTML = "Save";
+        //     button.style.width = "205px";
+		//
+        //     buttonDiv.appendChild(button);
+        //     subPanel.container.appendChild(buttonDiv);
+		//
+        //     if((type==="dataitem")&&($("#viewPanel").val()==="Condition")){
+        //         subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Data Item"));
+        //         var ul = document.createElement("ul");
+        //     	ul.style.minHeight = "100px";
+        //     	ul.style.padding = 0;
+        //         ul.style.margin = 0;
+        //     	ul.style.border = "1px solid #ddd";
+        //     	for(var i=0;i<graph.logicalScene.dataItems.length;i++){
+		// 			(function (e) {
+        //                 var dataItem = graph.logicalScene.dataItems[e];
+        //                 var li = document.createElement("li");
+        //                 li.style.fontSize = "14px";
+        //                 li.style.padding = "8px 5px";
+        //                 li.style.borderBottom = "1px solid #ccc";
+        //                 li.style.listStyle = "none";
+        //                 li.innerHTML = dataItem.name;
+        //                 li.setAttribute("value",dataItem.name);
+        //                 li.setAttribute("description",dataItem.description);
+        //                 li.onclick = function () {
+        //                     input.value = li.getAttribute("value");
+        //                     textArea.value = li.getAttribute("description");
+        //                 }
+        //                 ul.appendChild(li);
+        //             })(i);
+		// 		}
+        //         subPanel.container.appendChild(ul);
+		// 	}
+		//
+        //     if((type==="dataitem")&&($("#viewPanel").val()==="Data")){
+        //         subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Data Item"));
+        //         var ul = document.createElement("ul");
+        //         ul.style.minHeight = "100px";
+        //         ul.style.padding = 0;
+        //         ul.style.margin = 0;
+        //         ul.style.border = "1px solid #ddd";
+        //         for(var i=0;i<graph.logicalScene.dataItems.length;i++){
+        //             (function (e) {
+        //                 var dataItem = graph.logicalScene.dataItems[e];
+        //                 var li = document.createElement("li");
+        //                 li.style.fontSize = "14px";
+        //                 li.style.padding = "8px 5px";
+        //                 li.style.borderBottom = "1px solid #ccc";
+        //                 li.style.listStyle = "none";
+        //                 li.innerHTML = dataItem.name;
+        //                 li.setAttribute("value",dataItem.name);
+        //                 li.setAttribute("description",dataItem.description);
+        //                 li.onclick = function () {
+        //                     input.value = li.getAttribute("value");
+        //                     textArea.value = li.getAttribute("description");
+        //                 }
+        //                 ul.appendChild(li);
+        //             })(i);
+        //         }
+        //         subPanel.container.appendChild(ul);
+        //     }
+		//
+        //     if((type==="modelitem")&&($("#viewPanel").val()==="Condition")){
+        //         subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Model Item"));
+        //         var ul = document.createElement("ul");
+        //         ul.style.minHeight = "100px";
+        //         ul.style.padding = 0;
+        //         ul.style.margin = 0;
+        //         ul.style.border = "1px solid #ddd";
+        //         for(var i=0;i<graph.logicalScene.modelItems.length;i++){
+        //             (function (e) {
+        //                 var modelItem = graph.logicalScene.modelItems[e];
+        //                 var li = document.createElement("li");
+        //                 li.style.fontSize = "14px";
+        //                 li.style.padding = "8px 5px";
+        //                 li.style.borderBottom = "1px solid #ccc";
+        //                 li.style.listStyle = "none";
+        //                 li.innerHTML = modelItem.name;
+        //                 li.setAttribute("value",modelItem.name);
+        //                 li.setAttribute("description",modelItem.description);
+        //                 li.onclick = function () {
+        //                     input.value = li.getAttribute("value");
+        //                     textArea.value = li.getAttribute("description");
+        //                 }
+        //                 ul.appendChild(li);
+        //             })(i);
+        //         }
+        //         subPanel.container.appendChild(ul);
+        //     }
+		//
+        //     if((type==="operation")&&($("#viewPanel").val()==="Data")){
+        //         subPanel.container.appendChild(BaseFormatPanel.prototype.createTitle("Select Operation Item"));
+        //         var ul = document.createElement("ul");
+        //         ul.style.minHeight = "100px";
+        //         ul.style.padding = 0;
+        //         ul.style.margin = 0;
+        //         ul.style.border = "1px solid #ddd";
+        //         for(var i=0;i<graph.logicalScene.operations.length;i++){
+        //             (function (e) {
+        //             	var operation = graph.logicalScene.operations[e];
+        //                 var li = document.createElement("li");
+        //                 li.style.fontSize = "14px";
+        //                 li.style.padding = "8px 5px";
+        //                 li.style.borderBottom = "1px solid #ccc";
+        //                 li.style.listStyle = "none";
+        //                 li.innerHTML = operation.name;
+        //                 li.setAttribute("value",operation.name);
+        //                 li.setAttribute("description",operation.description);
+        //                 li.onclick = function () {
+        //                     input.value = li.getAttribute("value");
+        //                     textArea.value = li.getAttribute("description");
+        //                 }
+        //                 ul.appendChild(li);
+        //             })(i);
+        //         }
+        //         subPanel.container.appendChild(ul);
+        //     }
+		//
+        //     this.panels.push(subPanel);
+        //     this.container.appendChild(itemPanel);
+        //     addClickHandler(label, itemPanel, idx++);
+		// }else{
+        //     label.style.width = "50%";
+		// }
 
 		var label2 = label.cloneNode(false);
 		var label3 = label2.cloneNode(false);
@@ -846,24 +847,26 @@ Format.prototype.refresh = function()
 		label2.style.backgroundColor = this.inactiveTabBackgroundColor;
 		label3.style.backgroundColor = this.inactiveTabBackgroundColor;
 		
-		// Style
-		/*if (containsLabel)
+		// Model Description
+		if (containsLabel)
 		{
 			label2.style.borderLeftWidth = '0px';
 		}
 		else
 		{
 			label.style.borderLeftWidth = '0px';
-			mxUtils.write(label, mxResources.get('style'));
+			mxUtils.write(label, mxResources.get('text'));
 			div.appendChild(label);
 
-			var stylePanel = div.cloneNode(false);
-			stylePanel.style.display = 'none';
-			this.panels.push(new StyleFormatPanel(this, ui, stylePanel));
-			this.container.appendChild(stylePanel);
+			var textPanel = div.cloneNode(false);
+            textPanel.style.display = 'none';
+			this.panels.push(new TextFormatPanel(this, ui, textPanel));
+			this.container.appendChild(textPanel);
 
-			addClickHandler(label, stylePanel, idx++);
-		}*/
+			addClickHandler(label, textPanel, idx++);
+		}
+
+        // Style
         if((type!="start")&&(type!="end")){
             label2.style.borderLeftWidth = '1px';
             label3.style.borderLeftWidth = '1px';
@@ -910,7 +913,17 @@ Format.prototype.createUUID=function(){
 	  return v.toString(16);
 	});
   }
-  
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Base class for format panels.
  */
@@ -1831,6 +1844,15 @@ BaseFormatPanel.prototype.destroy = function()
 	}
 };
 
+
+
+
+
+
+
+
+
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -2748,6 +2770,14 @@ ArrangePanel.prototype.addEdgeGeometry = function(container)
 	listener();
 };
 
+
+
+
+
+
+
+
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -2765,7 +2795,14 @@ mxUtils.extend(TextFormatPanel, BaseFormatPanel);
 TextFormatPanel.prototype.init = function()
 {
 	this.container.style.borderBottom = 'none';
-	this.addFont(this.container);
+	//this.addFont(this.container);
+
+    var ss = this.format.getSelectionState();
+
+    if (!ss.containsImage || ss.style.shape == 'image')
+    {
+        this.container.appendChild(this.addModelDescription(this.createPanel()));
+    }
 };
 
 /**
@@ -4070,6 +4107,80 @@ TextFormatPanel.prototype.addFont = function(container)
 	return container;
 };
 
+TextFormatPanel.prototype.addModelDescription = function(div)
+{
+    var ui = this.editorUi;
+    var editor = ui.editor;
+    var graph = editor.graph;
+
+    var title = this.createTitle("Model Description");
+    title.style.paddingBottom = '6px';
+    div.appendChild(title);
+
+    var text = document.createElement("textarea");
+    //text.id = "model_description";
+    text.style.height = "100px";
+    text.style.width = "200px";
+    text.style.maxWidth = "200px";
+    text.style.display = "block";
+    //div.appendChild(text);
+
+    var text2 = document.createElement("input");
+    text2.id = "model_description";
+    text2.style.width = "200px";
+    text2.style.maxWidth = "200px";
+    text2.style.display = "block";
+    div.appendChild(text2);
+
+    var btn = document.createElement("button");
+    btn.className = "geColorBtn";
+    btn.innerHTML="Update";
+    //div.appendChild(btn);
+
+    text2.onblur = function(){
+        var cell = graph.getSelectionCell();
+        var value = graph.getModel().getValue(cell);
+        if (value==null || typeof(value)=="string")
+        {
+            var doc = mxUtils.createXmlDocument();
+            var obj = doc.createElement('object');
+            obj.setAttribute('label', value);
+            var content = document.getElementById('model_description').value;
+            obj.setAttribute("relate_description", content);
+
+            graph.getModel().setValue(cell, obj);
+        }
+        else
+        {
+            var content = document.getElementById('model_description').value;
+            value.setAttribute("relate_description", content);
+            graph.getModel().setValue(cell, value);
+        }
+    }
+
+    var cell = graph.getSelectionCell();
+    var value = graph.getModel().getValue(cell);
+    if (typeof(value)!="string" && value != null)
+    {
+        if (typeof(value)=="object")
+        {
+            var description = value.getAttribute("relate_description");
+            text2.value = description;
+        }
+    }
+    return div;
+};
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -4095,8 +4206,9 @@ StyleFormatPanel.prototype.init = function()
 	var editor = ui.editor;
 	var graph = editor.graph;
 	var ss = this.format.getSelectionState();
-	
-	if (!ss.containsImage || ss.style.shape == 'image')
+
+
+    if (!ss.containsImage || ss.style.shape == 'image')
 	{
 		this.container.appendChild(this.addFill(this.createPanel()));
 	}
@@ -4109,15 +4221,16 @@ StyleFormatPanel.prototype.init = function()
 	this.container.appendChild(opacityPanel);
 	this.container.appendChild(this.addEffects(this.createPanel()));
 	//var opsPanel = this.addEditOps(this.createPanel());
-	
+
 	/*if (opsPanel.firstChild != null)
 	{
 		mxUtils.br(opsPanel);
 	}*/
-	
+
 	//this.container.appendChild(this.addStyleOps(opsPanel));
     this.addFont(this.container);
 };
+
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -6573,7 +6686,7 @@ DiagramFormatPanel.prototype.init = function()
     buttonDiv.appendChild(button);
     panel.appendChild(buttonDiv);
 
-	this.container.appendChild(panel);
+	//this.container.appendChild(panel);
 
 	this.container.appendChild(this.addView(this.createPanel()));
 

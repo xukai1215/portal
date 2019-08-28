@@ -105,6 +105,7 @@ public class RepositoryService {
         //兼容两种格式的数据
         Classification classification = null;
 
+        JSONArray array=new JSONArray();
         JSONArray classResult=new JSONArray();
 
         if(concept.getParentId()!=null)
@@ -113,9 +114,10 @@ public class RepositoryService {
 
             if(classification!=null&&classification.getParentId()!=null){
                 Classification classification2 = conceptClassificationDao.findFirstByOid(classification.getParentId());
-                classResult.add(classification2.getNameEn());
+                array.add(classification2.getNameEn());
             }
-            classResult.add(classification.getNameEn());
+            array.add(classification.getNameEn());
+            classResult.add(array);
 
             org.dom4j.Document d = null;
             JSONArray localizationArray = new JSONArray();
@@ -150,14 +152,26 @@ public class RepositoryService {
             modelAndView.addObject("localizations",localizationArray);
 
         }else {
-            int len = concept.getClassifications().size();
-            for (int i = 0; i<len; i++){
+            List<String> classifications = concept.getClassifications();
+            for(int i=0;i<classifications.size();i++){
+                array.clear();
+                String classId=classifications.get(i);
+                classification=conceptClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
 
-                classification = conceptClassificationDao.findFirstByOid(concept.getClassifications().get(i));
+                classId=classification.getParentId();
+                classification=conceptClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
 
-                classResult.add(classification.getNameEn());
+                JSONArray array1=new JSONArray();
+                for(int j=array.size()-1;j>=0;j--){
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
             }
-
+            System.out.println(classResult);
         }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
@@ -364,6 +378,7 @@ public class RepositoryService {
         //兼容两种格式的数据
         Classification classification = null;
 
+        JSONArray array=new JSONArray();
         JSONArray classResult=new JSONArray();
 
         if(spatialReference.getParentId()!=null)
@@ -372,9 +387,10 @@ public class RepositoryService {
 
             if(classification!=null&&classification.getParentId()!=null){
                 Classification classification2 = spatialReferenceClassificationDao.findFirstByOid(classification.getParentId());
-                classResult.add(classification2.getNameEn());
+                array.add(classification2.getNameEn());
             }
-            classResult.add(classification.getNameEn());
+            array.add(classification.getNameEn());
+            classResult.add(array);
 
             org.dom4j.Document d = null;
             JSONArray localizationArray = new JSONArray();
@@ -407,13 +423,26 @@ public class RepositoryService {
             });
             modelAndView.addObject("localizations",localizationArray);
         }else{
-            int len = spatialReference.getClassifications().size();
-            for (int i = 0; i<len; i++){
+            List<String> classifications = spatialReference.getClassifications();
+            for(int i=0;i<classifications.size();i++){
+                array.clear();
+                String classId=classifications.get(i);
+                classification=spatialReferenceClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
 
-                classification = spatialReferenceClassificationDao.findFirstByOid(spatialReference.getClassifications().get(i));
+                classification=spatialReferenceClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
 
-                classResult.add(classification.getNameEn());
+                JSONArray array1=new JSONArray();
+                for(int j=array.size()-1;j>=0;j--){
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
             }
+            System.out.println(classResult);
         }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
@@ -601,6 +630,7 @@ public class RepositoryService {
         //兼容两种格式的数据
         Classification classification = null;
 
+        JSONArray array=new JSONArray();
         JSONArray classResult=new JSONArray();
 
         if(template.getParentId()!=null)
@@ -609,9 +639,10 @@ public class RepositoryService {
 
             if(classification!=null&&classification.getParentId()!=null){
                 Classification classification2 = templateClassificationDao.findFirstByOid(classification.getParentId());
-                classResult.add(classification2.getNameEn());
+                array.add(classification2.getNameEn());
             }
-            classResult.add(classification.getNameEn());
+            array.add(classification.getNameEn());
+            classResult.add(array);
 
             org.dom4j.Document d = null;
             JSONArray localizationArray = new JSONArray();
@@ -644,13 +675,26 @@ public class RepositoryService {
             });
             modelAndView.addObject("localizations",localizationArray);
         }else{
-            int len = template.getClassifications().size();
-            for (int i = 0; i<len; i++){
+            List<String> classifications = template.getClassifications();
+            for(int i=0;i<classifications.size();i++){
+                array.clear();
+                String classId=classifications.get(i);
+                classification=templateClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
 
-                classification = templateClassificationDao.findFirstByOid(template.getClassifications().get(i));
+                classification=templateClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
 
-                classResult.add(classification.getNameEn());
+                JSONArray array1=new JSONArray();
+                for(int j=array.size()-1;j>=0;j--){
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
             }
+            System.out.println(classResult);
         }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
@@ -815,6 +859,7 @@ public class RepositoryService {
         //兼容两种格式的数据
         Classification classification = null;
 
+        JSONArray array=new JSONArray();
         JSONArray classResult=new JSONArray();
 
         if(unit.getParentId()!=null)
@@ -823,9 +868,10 @@ public class RepositoryService {
 
             if(classification!=null&&classification.getParentId()!=null){
                 Classification classification2 = unitClassificationDao.findFirstByOid(classification.getParentId());
-                classResult.add(classification2.getNameEn());
+                array.add(classification2.getNameEn());
             }
-            classResult.add(classification.getNameEn());
+            array.add(classification.getNameEn());
+            classResult.add(array);
 
             org.dom4j.Document d = null;
             JSONArray localizationArray = new JSONArray();
@@ -858,13 +904,26 @@ public class RepositoryService {
             });
             modelAndView.addObject("localizations",localizationArray);
         }else{
-            int len = unit.getClassifications().size();
-            for (int i = 0; i<len; i++){
+            List<String> classifications = unit.getClassifications();
+            for(int i=0;i<classifications.size();i++){
+                array.clear();
+                String classId=classifications.get(i);
+                classification=unitClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
 
-                classification = unitClassificationDao.findFirstByOid(unit.getClassifications().get(i));
+                classification=unitClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
 
-                classResult.add(classification.getNameEn());
+                JSONArray array1=new JSONArray();
+                for(int j=array.size()-1;j>=0;j--){
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
             }
+            System.out.println(classResult);
         }
 
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );

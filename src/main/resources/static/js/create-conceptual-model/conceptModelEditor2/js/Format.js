@@ -4313,7 +4313,7 @@ StyleFormatPanel.prototype.init = function()
 		if (!ss.containsImage || ss.style.shape == 'image')
 		{
 			this.container.appendChild(this.addModelDescription(this.createPanel()));		
-			this.container.appendChild(this.addModelItem(this.createPanel()));
+			//this.container.appendChild(this.addModelItem(this.createPanel()));
 			//this.container.appendChild(this.addConceptItem(this.createPanel()));
 		}
 	}
