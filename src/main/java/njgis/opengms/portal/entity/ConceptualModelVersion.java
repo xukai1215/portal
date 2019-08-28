@@ -8,31 +8,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @ClassName ConceptualModel
- * @Description todo
- * @Author Kai
- * @Date 2019/3/1
- * @Version 1.0.0
- * TODO
- */
-
 @Document
 @Data
-public class ConceptualModel {
-
+public class ConceptualModelVersion {
     @Id
     String id;
     String oid;
     String name;
-//    String image;
     String relateModelItem;
     String description;
     String cXml;
     String svg;
-    String author;
     String detail;
-//    String status;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;
@@ -40,21 +27,15 @@ public class ConceptualModel {
 
     List<String> classifications;
     List<String> keywords;
-//    List<String> contributors;
-//    List<String> modelItems;
     List<String> image;
     List<AuthorInfo> authorship;
 
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
+    Date modifyTime;
 
-    Date createTime;
-    Date lastModifyTime;
+    //版本相关
+    String modifier;
+    String originOid;//正式数据库对应条目的oid
+    Long verNumber;//版本号
+    int verStatus;//版本状态
 
-    boolean lock;
-
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
 }

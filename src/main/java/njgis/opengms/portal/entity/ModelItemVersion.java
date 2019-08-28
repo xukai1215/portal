@@ -14,15 +14,16 @@ import java.util.List;
 public class ModelItemVersion {
     @Id
     String id;
-    String originOid;
+    String originOid;//正式数据库对应条目的oid
     String oid;
     String name;//
     String image;//
     String description;//
     String detail;//
     String modifier;
-    Long verNumber;
-    int status;
+
+    Long verNumber;//版本号
+    int status;//版本状态
 
     List<String> classifications;//
     List<String> keywords;//

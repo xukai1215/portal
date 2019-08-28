@@ -204,7 +204,7 @@ Toolbar.prototype.init = function()
         openIcon.style.lineHeight = "24px";
         openIcon.style.fontSize = "16px";
         openBtn.appendChild(openIcon);
-        var editorUi = this.editorUi;
+        editorUi = this.editorUi;
         openBtn.onclick = function () {
             editorUi.showDialog(new OpenNewFile(editorUi).container, 320, 80, true, true, function()
             {

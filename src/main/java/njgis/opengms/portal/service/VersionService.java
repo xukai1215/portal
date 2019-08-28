@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.ModelItemVersion;
+import njgis.opengms.portal.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +40,9 @@ public class VersionService {
 
     @Autowired
     ConceptualModelDao conceptualModelDao;
+
+    @Autowired
+    ConceptualModelVersionDao conceptualModelVersionDao;
 
     @Autowired
     LogicalModelDao logicalModelDao;
@@ -372,6 +373,34 @@ public class VersionService {
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelItemVersion.getReferences())));
+
+        return modelAndView;
+    }
+
+    public ModelAndView getConceptualModelHistoryPage(String id){
+
+        //条目信息
+        ConceptualModelVersion modelInfo = conceptualModelVersionDao.findFirstByOid(id);
+
+        //时间
+        Date date = modelInfo.getModifyTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateResult = simpleDateFormat.format(date);
+
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(modelInfo.getModifier());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("conceptual_model");
+        modelAndView.addObject("modelInfo", modelInfo);
+        modelAndView.addObject("date", dateResult);
+        modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+        modelAndView.addObject("user", userJson);
+        modelAndView.addObject("loadPath", htmlLoadPath);
+        modelAndView.addObject("history",true);
+
 
         return modelAndView;
     }

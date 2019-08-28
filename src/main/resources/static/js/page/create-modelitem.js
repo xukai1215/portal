@@ -615,9 +615,6 @@ var vue = new Vue({
                             return img.hasAttribute('internal-blob');
                         }
                     });
-
-
-
                 }
             })
             window.sessionStorage.setItem("editModelItem_id", "");

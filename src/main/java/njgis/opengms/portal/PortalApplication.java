@@ -14,16 +14,9 @@ import java.io.IOException;
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class PortalApplication extends SpringBootServletInitializer {
 
-
-
-
     public static void main(String[] args) throws IOException {
         SpringApplication.run(PortalApplication.class, args);
-
-
     }
-
-
 
 
     @Override

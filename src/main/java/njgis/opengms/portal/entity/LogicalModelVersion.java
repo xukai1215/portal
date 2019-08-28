@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @ClassName ComputableModel
+ * @ClassName ConceptualModel
  * @Description todo
  * @Author Kai
  * @Date 2019/3/1
@@ -19,53 +19,35 @@ import java.util.List;
 
 @Document
 @Data
-
-public class ComputableModel {
+public class LogicalModelVersion {
     @Id
     String id;
     String oid;
+    String computableModelId;
     String name;
-    String image;
     String relateModelItem;
     String description;
-    String author;
-    String status;
+    String cXml;
+    String svg;
+
     String detail;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;
     String contentType;
-    String url;
-    String modelserUrl;
-
-    String md5;
-    Boolean deploy;
 
     List<String> classifications;
     List<String> keywords;
-//    List<String> contributors;
-    List<String> resources;
-    List<String> deployedService;
-    List<String> containerId;
+    List<String> image;
     List<AuthorInfo> authorship;
 
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
+    Date modifyTime;
 
-//    ComputableModelRelate relate;
+    Object mdl;
 
-    Date createTime;
-    Date lastModifyTime;
-
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
-
-    boolean lock;
-
-    String mdl;
-    String testDataPath;
-
-    Object mdlJson;
+    //版本相关
+    String modifier;
+    String originOid;//正式数据库对应条目的oid
+    Long verNumber;//版本号
+    int verStatus;//版本状态
 }

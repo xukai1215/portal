@@ -20,7 +20,7 @@ import java.util.List;
 @Document
 @Data
 
-public class ComputableModel {
+public class ComputableModelVersion {
     @Id
     String id;
     String oid;
@@ -28,7 +28,6 @@ public class ComputableModel {
     String image;
     String relateModelItem;
     String description;
-    String author;
     String status;
     String detail;
 
@@ -49,23 +48,18 @@ public class ComputableModel {
     List<String> containerId;
     List<AuthorInfo> authorship;
 
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
-
 //    ComputableModelRelate relate;
 
-    Date createTime;
-    Date lastModifyTime;
-
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
-
-    boolean lock;
+    Date modifyTime;
 
     String mdl;
     String testDataPath;
 
     Object mdlJson;
+
+    //版本相关
+    String modifier;
+    String originOid;//正式数据库对应条目的oid
+    Long verNumber;//版本号
+    int verStatus;//版本状态
 }

@@ -1,31 +1,24 @@
-package njgis.opengms.portal.entity;
+package njgis.opengms.portal.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @ClassName ConceptualModel
- * @Description todo
- * @Author Kai
- * @Date 2019/3/1
- * @Version 1.0.0
- * TODO
- */
-
-@Document
 @Data
-public class ConceptualModel {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class LogicalModelResultDTO {
     @Id
     String id;
     String oid;
+    String computableModelId;
     String name;
-//    String image;
+    //    String image;
     String relateModelItem;
     String description;
     String cXml;
@@ -33,6 +26,7 @@ public class ConceptualModel {
     String author;
     String detail;
 //    String status;
+    String relateModelItemName;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;
@@ -40,21 +34,20 @@ public class ConceptualModel {
 
     List<String> classifications;
     List<String> keywords;
-//    List<String> contributors;
-//    List<String> modelItems;
     List<String> image;
+    //    List<String> contributors;
     List<AuthorInfo> authorship;
 
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
+//    LogicalModelRelate relate;
 
     Date createTime;
     Date lastModifyTime;
 
     boolean lock;
 
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
+    int shareCount = 0;
+    int viewCount = 0;
+    int thumbsUpCount = 0;
+
+    Object mdl;
 }

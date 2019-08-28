@@ -37,7 +37,7 @@
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
-                    <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'></a>-->
+                    <a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
@@ -207,6 +207,7 @@
 
         </div>
 
+        <div th:if="${history==true}" style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
 
     </div>
 

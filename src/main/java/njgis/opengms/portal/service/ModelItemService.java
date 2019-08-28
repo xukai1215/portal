@@ -497,10 +497,13 @@ public class ModelItemService {
             } else {
 
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
-                BeanUtils.copyProperties(modelItemUpdateDTO, modelItemVersion);
+                BeanUtils.copyProperties(modelItemUpdateDTO, modelItemVersion, "id");
 
                 String uploadImage = modelItemUpdateDTO.getUploadImage();
-                if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
+                if(uploadImage.equals("")){
+                    modelItemVersion.setImage("");
+                }
+                else if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
                     String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
                     String imgStr = uploadImage.split(",")[1];
                     Utils.base64StrToImage(imgStr, resourcePath + path);

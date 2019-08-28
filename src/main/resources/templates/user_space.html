@@ -85,6 +85,10 @@
             padding: 10px;
         }
 
+        li a{
+            color:white;
+        }
+
         [v-cloak] {
             display: none;
         }
@@ -1463,10 +1467,11 @@
                                         {{conceptual.name}}
                                     </a>
                                     <div class="pull-right" :attr.uid="conceptual.oid" style="margin-top: -3px;">
-                                        <!--<a href="../create-conceptual-model/create-conceptual-model.html"-->
-                                        <!--@click="setSession('editConceptualModel_id',conceptual.model_id)">-->
-                                        <!--<button class="btn btn-default editBtn">Edit</button>-->
-                                        <!--</a>-->
+
+                                        <a href="/user/createConceptualModel"
+                                        @click="setSession('editConceptualModel_id',conceptual.oid)">
+                                        <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
                                         <!-- [routerLink]="['/userSpace/editConceptualModel', conceptual.model_id]" -->
                                         <button class="btn btn-danger deleteBtn"
                                                 @click="deleteModel(conceptual.oid)">Delete
@@ -1560,10 +1565,10 @@
                                         {{logical.name}}
                                     </a>
                                     <div class="pull-right" :attr.uid="logical.model_id" style="margin-top: -3px;">
-                                        <!--<a href="../create-conceptual-model/create-conceptual-model.html"-->
-                                        <!--@click="setSession('editLogicalModel_id',logical.model_id)">-->
-                                        <!--<button class="btn btn-default editBtn">Edit</button>-->
-                                        <!--</a>-->
+                                        <a href="/user/createLogicalModel"
+                                        @click="setSession('editLogicalModel_id',logical.oid)">
+                                        <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
                                         <!-- [routerLink]="['/userSpace/editConceptualModel', conceptual.model_id]" -->
                                         <button class="btn btn-danger deleteBtn" @click="deleteModel(logical.oid)">
                                             Delete
@@ -1657,7 +1662,12 @@
                                        @click="setSession('computableModelInfo_id',computable.oid)">
                                         {{computable.name}}
                                     </a>
-                                    <div class="pull-right" :attr.uid="computable.model_id" style="margin-top: -3px;">
+
+                                    <div class="pull-right" :attr.uid="computable.oid" style="margin-top: -3px;">
+                                        <a href="/user/createComputableModel"
+                                           @click="setSession('editComputableModel_id',computable.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
                                         <button class="btn btn-danger deleteBtn"
                                                 @click="deleteModel(computable.oid)">
                                             Delete

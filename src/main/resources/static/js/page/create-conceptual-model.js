@@ -85,101 +85,6 @@ var vue = new Vue({
     },
     mounted() {
 
-
-        $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
-
-        //作者添加
-        var user_num = 1;
-        $(".user-add").click(function () {
-            user_num++;
-            var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-            str += user_num;
-            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-            str += user_num;
-            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                "                                                                                                    <div>\n" +
-                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                "                                                                                                               style='font-weight: bold;'>\n" +
-                "                                                                                                            Name:\n" +
-                "                                                                                                        </lable>\n" +
-                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                "                                                                                                            <input type='text'\n" +
-                "                                                                                                                   name=\"name\"\n" +
-                "                                                                                                                   class='form-control'>\n" +
-                "                                                                                                        </div>\n" +
-                "                                                                                                    </div>\n" +
-                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                "                                                                                                               style='font-weight: bold;'>\n" +
-                "                                                                                                            Affiliation:\n" +
-                "                                                                                                        </lable>\n" +
-                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                "                                                                                                            <input type='text'\n" +
-                "                                                                                                                   name=\"ins\"\n" +
-                "                                                                                                                   class='form-control'>\n" +
-                "                                                                                                        </div>\n" +
-                "                                                                                                    </div>\n" +
-                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                "                                                                                                               style='font-weight: bold;'>\n" +
-                "                                                                                                            Email:\n" +
-                "                                                                                                        </lable>\n" +
-                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                "                                                                                                            <input type='text'\n" +
-                "                                                                                                                   name=\"email\"\n" +
-                "                                                                                                                   class='form-control'>\n" +
-                "                                                                                                        </div>\n" +
-                "                                                                                                    </div>\n" +
-                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                "                                                                                                               style='font-weight: bold;'>\n" +
-                "                                                                                                            Homepage:\n" +
-                "                                                                                                        </lable>\n" +
-                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                "                                                                                                            <input type='text'\n" +
-                "                                                                                                                   name=\"homepage\"\n" +
-                "                                                                                                                   class='form-control'>\n" +
-                "                                                                                                        </div>\n" +
-                "                                                                                                    </div>\n" +
-                "                                                                                                </div></div> </div> </div>"
-            content_box.append(str)
-        })
-
-        tinymce.init({
-            selector: "textarea#myText",
-            height: 400,
-            theme: 'modern',
-            plugins: ['link', 'table', 'image', 'media'],
-            image_title: true,
-            // enable automatic uploads of images represented by blob or data URIs
-            automatic_uploads: true,
-            // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-            // images_upload_url: 'postAcceptor.php',
-            // here we add custom filepicker only to Image dialog
-            file_picker_types: 'image',
-
-            file_picker_callback: function (cb, value, meta) {
-                var input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
-                input.onchange = function () {
-                    var file = input.files[0];
-
-                    var reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function () {
-                        var img = reader.result.toString();
-                        cb(img, {title: file.name});
-                    }
-                };
-                input.click();
-            },
-            images_dataimg_filter: function (img) {
-                return img.hasAttribute('internal-blob');
-            }
-        });
-
         $.ajax({
             type: "GET",
             url: "/user/load",
@@ -227,6 +132,224 @@ var vue = new Vue({
                 }
             }
         })
+
+
+        var oid = window.sessionStorage.getItem("editConceptualModel_id");
+
+        var user_num = 0;
+
+        $("input[name='ContentType']").iCheck({
+            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-green',
+            increaseArea: '0%' // optional
+
+        });
+
+        //content type radio
+
+
+        $("input:radio[name='ContentType']").on('ifChecked', function(event){
+
+            if($(this).val()=="MxGraph"){
+                $("#MxGraph").show();
+                $("#Image").hide();
+            }
+            else{
+                $("#MxGraph").hide();
+                $("#Image").show();
+            }
+
+        });
+
+        if ((oid === "0") || (oid === "") || (oid === null)) {
+            $("input[name='ContentType']").eq(0).iCheck('check');
+            $("#MxGraph").show();
+            $("#Image").hide();
+
+            tinymce.init({
+                selector: "textarea#myText",
+                height: 400,
+                theme: 'modern',
+                plugins: ['link', 'table', 'image', 'media'],
+                image_title: true,
+                // enable automatic uploads of images represented by blob or data URIs
+                automatic_uploads: true,
+                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                // images_upload_url: 'postAcceptor.php',
+                // here we add custom filepicker only to Image dialog
+                file_picker_types: 'image',
+
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.onchange = function () {
+                        var file = input.files[0];
+
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = function () {
+                            var img = reader.result.toString();
+                            cb(img, {title: file.name});
+                        }
+                    };
+                    input.click();
+                },
+                images_dataimg_filter: function (img) {
+                    return img.hasAttribute('internal-blob');
+                }
+            });
+        }
+        else{
+            $.ajax({
+                url: "/conceptualModel/getInfo/" + oid,
+                type: "get",
+                data: {},
+
+                success: (result) => {
+                    console.log(result)
+                    var basicInfo = result.data;
+
+                    $("#search-box").val(basicInfo.relateModelItemName)
+                    this.conceptualModel.bindModelItem=basicInfo.relateModelItemName;
+                    this.conceptualModel.bindOid=basicInfo.relateModelItem;
+                    $("#bind").html("unbind")
+                    $("#bind").removeClass("btn-success");
+                    $("#bind").addClass("btn-warning")
+                    document.getElementById("search-box").readOnly = true;
+
+
+                    if(basicInfo.contentType=="MxGraph"){
+                        $("input[name='ContentType']").eq(0).iCheck('check');
+                        $("#MxGraph").show();
+                        $("#Image").hide();
+                    }
+                    else{
+                        $("input[name='ContentType']").eq(1).iCheck('check');
+                        $("#MxGraph").hide();
+                        $("#Image").show();
+                    }
+
+                    $(".providers").children(".panel").remove();
+
+                    let authorship = basicInfo.authorship;
+                    if(authorship!=null) {
+                        for (i = 0; i < authorship.length; i++) {
+                            user_num++;
+                            var content_box = $(".providers");
+                            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                            str += user_num;
+                            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+                            str += user_num;
+                            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
+                                "                                                                                                    <div>\n" +
+                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                "                                                                                                               style='font-weight: bold;'>\n" +
+                                "                                                                                                            Name:\n" +
+                                "                                                                                                        </lable>\n" +
+                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                "                                                                                                            <input type='text'\n" +
+                                "                                                                                                                   name=\"name\"\n" +
+                                "                                                                                                                   class='form-control' value='" +
+                                authorship[i].name +
+                                "'>\n" +
+                                "                                                                                                        </div>\n" +
+                                "                                                                                                    </div>\n" +
+                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                "                                                                                                               style='font-weight: bold;'>\n" +
+                                "                                                                                                            Affiliation:\n" +
+                                "                                                                                                        </lable>\n" +
+                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                "                                                                                                            <input type='text'\n" +
+                                "                                                                                                                   name=\"ins\"\n" +
+                                "                                                                                                                   class='form-control' value='" +
+                                authorship[i].ins +
+                                "'>\n" +
+                                "                                                                                                        </div>\n" +
+                                "                                                                                                    </div>\n" +
+                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                "                                                                                                               style='font-weight: bold;'>\n" +
+                                "                                                                                                            Email:\n" +
+                                "                                                                                                        </lable>\n" +
+                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                "                                                                                                            <input type='text'\n" +
+                                "                                                                                                                   name=\"email\"\n" +
+                                "                                                                                                                   class='form-control' value='" +
+                                authorship[i].email +
+                                "'>\n" +
+                                "                                                                                                        </div>\n" +
+                                "                                                                                                    </div>\n" +
+                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                "                                                                                                               style='font-weight: bold;'>\n" +
+                                "                                                                                                            Homepage:\n" +
+                                "                                                                                                        </lable>\n" +
+                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                "                                                                                                            <input type='text'\n" +
+                                "                                                                                                                   name=\"homepage\"\n" +
+                                "                                                                                                                   class='form-control' value='" +
+                                authorship[i].homepage +
+                                "'>\n" +
+                                "                                                                                                        </div>\n" +
+                                "                                                                                                    </div>\n" +
+                                "                                                                                                </div></div> </div> </div>"
+                            content_box.append(str)
+                        }
+                    }
+
+                    this.conceptualModel.name=basicInfo.name;
+                    this.conceptualModel.description=basicInfo.description
+
+                    // $("#nameInput").val(basicInfo.name);
+                    // $("#descInput").val(basicInfo.description)
+
+                    //detail
+                    //tinymce.remove("textarea#myText");
+                    $("#myText").html(basicInfo.detail);
+                    tinymce.init({
+                        selector: "textarea#myText",
+                        height: 300,
+                        theme: 'modern',
+                        plugins: ['link', 'table', 'image', 'media'],
+                        image_title: true,
+                        // enable automatic uploads of images represented by blob or data URIs
+                        automatic_uploads: true,
+                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                        // images_upload_url: 'postAcceptor.php',
+                        // here we add custom filepicker only to Image dialog
+                        file_picker_types: 'image',
+
+                        file_picker_callback: function (cb, value, meta) {
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = function () {
+                                var file = input.files[0];
+
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    var img = reader.result.toString();
+                                    cb(img, {title: file.name});
+                                }
+                            };
+                            input.click();
+                        },
+                        images_dataimg_filter: function (img) {
+                            return img.hasAttribute('internal-blob');
+                        }
+                    });
+
+
+
+                }
+            })
+
+        }
+
+
 
         $("#step").steps({
             onFinish: function () {
@@ -279,32 +402,68 @@ var vue = new Vue({
                 formData.append("imgFiles",$("#imgFiles")[0].files[i]);
             }
 
-            formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
-            $.ajax({
-                url: '/conceptualModel/add' ,
-                type: 'post',
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-                async: false
-            }).done(function(res) {
-                switch (res.data.code){
-                    case 1:
-                        alert("create conceptual model successfully!");
-                        window.location.href="/conceptualModel/"+res.data.id;
-                        break;
-                    case -1:
-                        alert("save files error");
-                        break;
-                    case -2:
-                        alert("create fail");
-                        break;
-                }
-            }).fail(function(res) {
-                alert("please login first");
-                window.location.href="/user/login";
-            });
+
+            if ((oid === "0") || (oid === "") || (oid == null)) {
+                formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
+                $.ajax({
+                    url: '/conceptualModel/add',
+                    type: 'post',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false
+                }).done(function (res) {
+                    switch (res.data.code) {
+                        case 1:
+                            alert("create conceptual model successfully!");
+                            window.location.href = "/conceptualModel/" + res.data.id;
+                            break;
+                        case -1:
+                            alert("save files error");
+                            break;
+                        case -2:
+                            alert("create fail");
+                            break;
+                    }
+                }).fail(function (res) {
+                    alert("please login first");
+                    window.location.href = "/user/login";
+                });
+            }
+            else{
+                this.conceptualModel.oid = oid;
+                formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
+                $.ajax({
+                    url: '/conceptualModel/update',
+                    type: 'post',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false
+                }).done(function (res) {
+                    switch (res.data.code) {
+                        case 0:
+                            alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                            window.location.href = "/user/userSpace";
+                            break;
+                        case 1:
+                            alert("update conceptual model successfully!");
+                            window.location.href = "/conceptualModel/" + res.data.id;
+                            break;
+                        case -1:
+                            alert("save files error");
+                            break;
+                        case -2:
+                            alert("create fail");
+                            break;
+                    }
+                }).fail(function (res) {
+                    alert("please login first");
+                    window.location.href = "/user/login";
+                });
+            }
         })
 
 
@@ -365,12 +524,7 @@ var vue = new Vue({
             }
         })
 
-        $("input[name='ContentType']").iCheck({
-            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
-            radioClass: 'iradio_flat-green',
-            increaseArea: '0%' // optional
 
-        });
         $("input[name='author_confirm']").iCheck({
             //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
             radioClass: 'iradio_flat-green',
@@ -378,21 +532,7 @@ var vue = new Vue({
 
         });
 
-        //content type radio
-        $("input[name='ContentType']").eq(0).iCheck('check');
 
-        $("input:radio[name='ContentType']").on('ifChecked', function(event){
-
-            if($(this).val()=="MxGraph"){
-                $("#MxGraph").show();
-                $("#Image").hide();
-            }
-            else{
-                $("#MxGraph").hide();
-                $("#Image").show();
-            }
-
-        });
         //author radio
         $("input[name='author_confirm']").eq(0).iCheck('check');
 
@@ -407,6 +547,66 @@ var vue = new Vue({
             }
 
         });
+
+        $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
+
+        //作者添加
+        var user_num = 1;
+        $(".user-add").click(function () {
+            user_num++;
+            var content_box = $(this).parent().children('div');
+            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+            str += user_num;
+            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+            str += user_num;
+            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
+                "                                                                                                    <div>\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Name:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"name\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Affiliation:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"ins\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Email:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"email\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Homepage:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"homepage\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                </div></div> </div> </div>"
+            content_box.append(str)
+        })
 
 
 
