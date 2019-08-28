@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/static/css/page/user_page.css">
     <link rel="stylesheet" href="/static/css/page/user_page2.css">
     <link rel="stylesheet" href="/static/css/base/index2.css">
+    <link rel="stylesheet" href="/static/css/base/backTop.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
@@ -80,7 +81,7 @@
 
         <!--       overview-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==1}"  >
-                <div role="brief introduction" class="leftContentContainer" style="width: 665px">
+                <div role="brief introduction" class="leftContentContainer">
                    <div id="selfIntroduction" class="contentColContainer">
                        <div class="subTitle" style="">
                                <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
@@ -313,7 +314,7 @@
                     </div>
                 </div>
 
-                <div class="rigntContentContainer" style="width: 420px">
+                <div class="rigntContentContainer" >
                     <div id="affiliation" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
@@ -321,9 +322,9 @@
                         <div class="contentContainer colArrange" >
                             <div class="contentContainer" style="height: 80px;padding-left: 0px; ">
                                 <div class="contentColContainer" style="width: 300px;align-items: flex-start;padding-left: 10px;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                    <h3>NanJing Normal University </h3>
-                                    <h4>school of geo</h4>
-                                    <h4>student</h4>
+                                    <h3 th:text="${userInfo.affiliation.name}"></h3>
+                                    <h4 th:text="${userInfo.affiliation.department}"></h4>
+                                    <h4 th:text="${userInfo.affiliation.position}"></h4>
 <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
                                 </div>
                                 <div class="institutionIcon">
@@ -332,11 +333,12 @@
                             </div>
 <!--                            <div class="innerBorder"></div>-->
                             <div class="contentContainer colArrange" style="height: 100px">
-                                <div class="itemCardCol wzhFilter_Lab" style="height: 130px;justify-content: flex-start;margin-top: 0;margin-left: 12px;border: none">
+                                <div class="itemCardCol wzhFilter_Lab"
+                                     style="justify-content: flex-start;margin-top: 0;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >
                                     <div class="greyShade" style="padding-left: 18px">
                                         <div class="containerWithBorder"> <h3 style="color: #f0f0f0;margin: 0">Laboratory</h3></div>
-                                        <h4 style="color: #f1f1f1;margin-left: 25px">VGE</h4>
-                                        <h4 style="color: #f1f1f1;margin-left: 25px">lab leader:&nbsp<span> CM</span></h4>
+                                        <h4 style="color: #f1f1f1;margin-left: 0px" th:text="${userInfo.lab}"></h4>
+                                        <h4 style="color: #f1f1f1;margin-left: 0px">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>
                                     </div>
 
                                 </div>
@@ -356,7 +358,7 @@
 
 <!--                      model item-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==2}" >
-                <div id="modelStats" class="leftContentContainer" style="width: 270px">
+                <div id="modelStats" class="leftContentContainer" style="width: 290px">
                     <div  class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Model Stats</h4></div>
@@ -386,7 +388,7 @@
 
                 </div>
 
-                <div class="rigntContentContainer" style="width:820px">
+                <div class="rigntContentContainer" style="width:900px">
                     <div class="itemContainer" :class="{showActive:showIndex==1}" >
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
@@ -650,7 +652,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(computableModel,key) in computableModels.result">
+                            <div class="list-item" :key="computableModel.oid" v-for="(computableModel,key) in computableModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -678,9 +680,9 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <div class="tags" v-if="computableModel.keywords.length>0">
-                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>
-                                        </div>
+<!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+<!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                        </div>-->
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
                                         </div>
@@ -710,7 +712,7 @@
 
             <!--          research-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==3}"  >
-                    <div  class="leftContentContainer" style="width: 270px">
+                    <div  class="leftContentContainer" style="width: 290px">
                         <div  class="contentColContainer">
                             <div class="subTitle" style="">
                                 <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Research</h4></div>
@@ -731,20 +733,11 @@
                                     <p>100</p></div></a></li>
 
                             </ul>
-                            <ul>
-                                <button class="viewMoreButton" @click="addArticleClick()"><p style="font-weight: 700;font-size: 25px;">+</p></button>
-                                <input type="text" id="titleInput">
-                                <input type="text" id="firstAuthorInput">
-                                <input type="text" id="secAuthorInput">
-                                <input type="text" id="journalInput">
-                                <input type="text" id="startPageInput">-<input type="text" id="endPageInput">
-                                <input type="text" id="dateInput">
-                                <input type="text" id="linkInput">
-                            </ul>
+
                         </div>
 
                     </div>
-                    <div class="rigntContentContainer" style="width:820px">
+                    <div class="rigntContentContainer" style="width:900px">
                         <div class="itemContainer" :class="{showActive:researchIndex==1}" >
                             <div  class="contentColContainer" style="margin-bottom: 0">
                                 <div class="subTitle" >
@@ -919,7 +912,7 @@
 
             <!--            info-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==4}" >
-                <div class="leftContentContainer" style="width: 665px">
+                <div class="leftContentContainer">
                     <div id="personalIntro" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Personal Introduction</h4></div>
@@ -945,22 +938,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="rigntContentContainer" style="width: 420px">
+                <div class="rigntContentContainer">
                     <div id="labInfo" class="contentColContainer">
                         <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Lab</h4></div>
+                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-width:800px">Laboratory</h4></div>
+                            <div></div>
                         </div>
                         <div class="contentColContainer" style="flex: 1; box-shadow: none">
                             <div class="infoContainer">
-                                <h3 style="font-weight: 600;">Key Laboratory of Virtual Geographic Environment, Ministry of Education of PRC</h3>
+                                <h3 th:text="${userInfo.lab}" style="font-weight: 600;"></h3>
                             </div>
                             <div class="infoContainer">
                                 <p>Lab Leader</p>
-                                <h3>Min Chen</h3>
+                                <a v-if="userLab.labInfo.leaderName" :href="'/user/'+ userLab.leader.oid" target="_blank">
+                                   <h3>{{userLab.labInfo.leaderName}}</h3>
+                                </a>
                             </div>
                             <div class="infoContainer">
-                                <p>Lab Member</p>
-                                <h3>...</h3>
+                                <p>Lab Members</p>
+                                <div v-for="member in userLab.members">
+                                    <a :href="'/user/'+member.oid">
+                                        <h4>{{member.userName}}</h4>
+                                    </a>
+                                </div>
                             </div>
                         </div>
 
