@@ -105,6 +105,7 @@ public class ConceptualModelService {
         calendar.setTime(date);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateResult = simpleDateFormat.format(date);
+
         String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
 
         //用户信息
@@ -259,7 +260,6 @@ public class ConceptualModelService {
                     Date now = new Date();
 
                     if (author0.equals(uid)) {
-                        conceptualModel.setCreateTime(now);
                         conceptualModel.setLastModifyTime(now);
                         conceptualModelDao.save(conceptualModel);
 

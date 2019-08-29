@@ -48,12 +48,13 @@ public class LogicalModel {
     List<String> contributors;
     List<String> versions;
 
+    boolean lock;
+
 //    LogicalModelRelate relate;
 
     Date createTime;
     Date lastModifyTime;
 
-    boolean lock;
 
     int shareCount = 0;
     int viewCount = 0;

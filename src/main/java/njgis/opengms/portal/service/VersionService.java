@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.deCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +50,13 @@ public class VersionService {
     LogicalModelDao logicalModelDao;
 
     @Autowired
+    LogicalModelVersionDao logicalModelVersionDao;
+
+    @Autowired
     ComputableModelDao computableModelDao;
+
+    @Autowired
+    ComputableModelVersionDao computableModelVersionDao;
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -403,5 +411,100 @@ public class VersionService {
 
 
         return modelAndView;
+    }
+
+    public ModelAndView getLogicalModelHistoryPage(String id){
+        //条目信息
+        LogicalModelVersion modelInfo=logicalModelVersionDao.findFirstByOid(id);
+
+        //时间
+        Date date=modelInfo.getModifyTime();
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String dateResult=simpleDateFormat.format(date);
+
+        //用户信息
+
+        JSONObject userJson=userService.getItemUserInfo(modelInfo.getModifier());
+
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("logical_model");
+        modelAndView.addObject("modelInfo",modelInfo);
+        String computableModelId=modelInfo.getComputableModelId();
+        modelAndView.addObject("uid",deCode.encode((modelInfo.getOid()+"-"+computableModelId).getBytes()));
+        modelAndView.addObject("date",dateResult);
+        modelAndView.addObject("year",calendar.get(Calendar.YEAR));
+        modelAndView.addObject("user",userJson);
+        modelAndView.addObject("loadPath",htmlLoadPath);
+        modelAndView.addObject("history",true);
+
+        return modelAndView;
+    }
+
+    public ModelAndView getComputableModelHistoryPage(String id){
+        //条目信息
+        try{
+
+            ComputableModelVersion modelInfo = computableModelVersionDao.findFirstByOid(id);
+
+            //时间
+            Date date = modelInfo.getModifyTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateResult = simpleDateFormat.format(date);
+
+            //用户信息
+            JSONObject userJson = userService.getItemUserInfo(modelInfo.getModifier());
+            //资源信息
+            JSONArray resourceArray = new JSONArray();
+            List<String> resources = modelInfo.getResources();
+
+            if (resources != null) {
+                for (int i = 0; i < resources.size(); i++) {
+
+                    String path = resources.get(i);
+
+                    String[] arr = path.split("\\.");
+                    String suffix = arr[arr.length - 1];
+
+                    arr = path.split("/");
+                    String name = arr[arr.length - 1].substring(14);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", i);
+                    jsonObject.put("name", name);
+                    jsonObject.put("suffix", suffix);
+                    jsonObject.put("path",resources.get(i));
+                    resourceArray.add(jsonObject);
+
+                }
+
+            }
+
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("computable_model");
+            modelAndView.addObject("modelInfo", modelInfo);
+            modelAndView.addObject("date", dateResult);
+            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+            modelAndView.addObject("user", userJson);
+            modelAndView.addObject("resources", resourceArray);
+            JSONObject mdlJson=(JSONObject)JSONObject.toJSON(modelInfo.getMdlJson());
+            if(mdlJson!=null) {
+                JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
+                JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
+                modelAndView.addObject("behavior", behavior);
+            }
+            modelAndView.addObject("loadPath",htmlLoadPath);
+
+            modelAndView.addObject("history",true);
+
+            return modelAndView;
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new MyException(e.getMessage());
+        }
     }
 }

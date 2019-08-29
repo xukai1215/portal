@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Logical Model | OpenGMS</title>
+    <title th:text="${modelInfo.name}+' | OpenGMS'">Logical Model | OpenGMS</title>
 
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
@@ -33,11 +33,11 @@
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #d2d2d2 solid 1px">
             <div class="detail">
                 <div class="detail_title">
-                    <a th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
+                    <a th:if="${history!=true}" th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
-                    <a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="detail_option">
+                    <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
@@ -120,12 +120,12 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text" class="width:100%-50px">
-                            <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
+                            <span th:text="${user.name}+'.('+${year}+').'+${modelInfo.name}+','">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
-                        <a th:href="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
-                           th:text="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
-                            http://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        <a th:href="'http://geomodeling.njnu.edu.cn/logicalModel/'+${modelInfo.oid}"
+                           th:text="'http://geomodeling.njnu.edu.cn/logicalModel/'+${modelInfo.oid}">
+                            http://geomodeling.njnu.edu.cn/logicalModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">
@@ -136,11 +136,11 @@
         </div>
         <div class="right-panel el-col el-col-5">
 
-
                 <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
                     <div class="block_head">
                         <div class="head_text" style="padding-left: 10px;">
-                            <h4>Contributor</h4>
+                            <h4 th:if="${history!=true}" >Contributor</h4>
+                            <h4 th:if="${history==true}" >Modifier</h4>
                         </div>
                     </div>
                     <div class="block_content">
@@ -159,7 +159,8 @@
                         </div>
                         <div class="el-row el-col-offset-3">
                             <div class="text-center">
-                                <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                                <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                                <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                             </div>
                         </div>
                     </div>
@@ -192,6 +193,35 @@
                         </div>
                     </div>
                 </div>
+            <div id="Modifier" class="detail_block"
+                 th:if="${history!=true&&modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/logicalModel/'+${modelInfo.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
                 <div id="QR" class="detail_block">
                     <div class="block_head">
                         <div class="head_text" style="padding-left: 10px;">

@@ -2,12 +2,10 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.RepositoryQueryDTO;
 import njgis.opengms.portal.dto.community.*;
-import njgis.opengms.portal.entity.Concept;
-import njgis.opengms.portal.entity.SpatialReference;
-import njgis.opengms.portal.entity.Template;
-import njgis.opengms.portal.entity.Unit;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.RepositoryService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -25,6 +23,30 @@ public class RepositoryRestController {
 
     @Autowired
     RepositoryService repositoryService;
+
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    ConceptVersionDao conceptVersionDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    TemplateVersionDao templateVersionDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    SpatialReferenceVersionDao spatialReferenceVersionDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    UnitVersionDao unitVersionDao;
 
     @Autowired
     UserService userService;
@@ -201,6 +223,15 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/getConceptUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getConceptUserOidByOid(@RequestParam(value="oid") String oid){
+        Concept concept=conceptDao.findByOid(oid);
+        String userId=concept.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
+    }
+
 
 
 
@@ -324,6 +355,14 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/getSpatialReferenceUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getSpatialReferenceUserOidByOid(@RequestParam(value="oid") String oid){
+        SpatialReference spatialReference=spatialReferenceDao.findByOid(oid);
+        String userId=spatialReference.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
+    }
 
     //Template
     @RequestMapping(value="/template",method = RequestMethod.GET)
@@ -434,7 +473,14 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/getTemplateUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getTemplateUserOidByOid(@RequestParam(value="oid") String oid){
+        Template template=templateDao.findByOid(oid);
+        String userId=template.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
 
+    }
 
 
 
@@ -555,6 +601,15 @@ public class RepositoryRestController {
         JSONObject result=repositoryService.searchUnitsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping (value = "/getUnitUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getUnitUserOidByOid(@RequestParam(value="oid") String oid){
+        Unit unit=unitDao.findByOid(oid);
+        String userId=unit.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
     }
 
     //Contributers

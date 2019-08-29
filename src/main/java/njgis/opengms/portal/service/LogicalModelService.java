@@ -5,15 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import njgis.opengms.portal.dao.LogicalModelDao;
-import njgis.opengms.portal.dao.ModelDao;
-import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.entity.LogicalModel;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -21,6 +15,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.deCode;
 import org.bson.Document;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -52,6 +47,9 @@ import static njgis.opengms.portal.utils.Utils.saveFiles;
 public class LogicalModelService {
     @Autowired
     LogicalModelDao logicalModelDao;
+
+    @Autowired
+    LogicalModelVersionDao logicalModelVersionDao;
 
     @Autowired
     ModelItemDao modelItemDao;
@@ -111,9 +109,18 @@ public class LogicalModelService {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
         String dateResult=simpleDateFormat.format(date);
 
+        String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
+
         //用户信息
 
         JSONObject userJson=userService.getItemUserInfo(modelInfo.getAuthor());
+
+        //修改者信息
+        String lastModifier=modelInfo.getLastModifier();
+        JSONObject modifierJson=null;
+        if(lastModifier!=null){
+            modifierJson = userService.getItemUserInfo(lastModifier);
+        }
 
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("logical_model");
@@ -125,6 +132,8 @@ public class LogicalModelService {
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
         modelAndView.addObject("user",userJson);
         modelAndView.addObject("loadPath",htmlLoadPath);
+        modelAndView.addObject("lastModifier", modifierJson);
+        modelAndView.addObject("lastModifyTime", lastModifyTime);
 
         return modelAndView;
     }
@@ -210,38 +219,40 @@ public class LogicalModelService {
 
     public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
         JSONObject result=new JSONObject();
-        LogicalModel logicalModel = logicalModelDao.findFirstByOid(jsonObject.getString("oid"));
+        LogicalModel logicalModel_ori = logicalModelDao.findFirstByOid(jsonObject.getString("oid"));
 
-        String path=resourcePath+"/logicalModel";
-        List<String> images=saveFiles(files,path,uid,"/logicalModel");
-        if(images==null){
-            result.put("code",-1);
-        }
-        else {
-            try {
-                logicalModel.setImage(images);
-                logicalModel.setName(jsonObject.getString("name"));
-                logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
-                logicalModel.setDescription(jsonObject.getString("description"));
-                logicalModel.setContentType(jsonObject.getString("contentType"));
-                logicalModel.setDetail(jsonObject.getString("detail"));
-                logicalModel.setCXml(jsonObject.getString("cXml"));
-                logicalModel.setSvg(jsonObject.getString("svg"));
-                JSONArray jsonArray=jsonObject.getJSONArray("authorship");
-                List<AuthorInfo> authorship=new ArrayList<>();
-                for(int i=0;i<jsonArray.size();i++){
-                    JSONObject author=jsonArray.getJSONObject(i);
-                    AuthorInfo authorInfo=new AuthorInfo();
-                    authorInfo.setName(author.getString("name"));
-                    authorInfo.setEmail(author.getString("email"));
-                    authorInfo.setIns(author.getString("ins"));
-                    authorInfo.setHomepage(author.getString("homepage"));
-                    authorship.add(authorInfo);
-                }
-                logicalModel.setAuthorship(authorship);
-                logicalModel.setAuthor(uid);
+        if(!logicalModel_ori.isLock()) {
+            String path = resourcePath + "/logicalModel";
+            List<String> images = saveFiles(files, path, uid, "/logicalModel");
+            if (images == null) {
+                result.put("code", -1);
+            } else {
+                try {
+                    LogicalModel logicalModel=new LogicalModel();
+                    BeanUtils.copyProperties(logicalModel_ori,logicalModel);
+                    logicalModel.setImage(images);
+                    logicalModel.setName(jsonObject.getString("name"));
+                    logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                    logicalModel.setDescription(jsonObject.getString("description"));
+                    logicalModel.setContentType(jsonObject.getString("contentType"));
+                    logicalModel.setDetail(jsonObject.getString("detail"));
+                    logicalModel.setCXml(jsonObject.getString("cXml"));
+                    logicalModel.setSvg(jsonObject.getString("svg"));
+                    JSONArray jsonArray = jsonObject.getJSONArray("authorship");
+                    List<AuthorInfo> authorship = new ArrayList<>();
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JSONObject author = jsonArray.getJSONObject(i);
+                        AuthorInfo authorInfo = new AuthorInfo();
+                        authorInfo.setName(author.getString("name"));
+                        authorInfo.setEmail(author.getString("email"));
+                        authorInfo.setIns(author.getString("ins"));
+                        authorInfo.setHomepage(author.getString("homepage"));
+                        authorship.add(authorInfo);
+                    }
+                    logicalModel.setAuthorship(authorship);
+                    logicalModel.setAuthor(uid);
 //                boolean isAuthor = jsonObject.getBoolean("isAuthor");
-                logicalModel.setIsAuthor(true);
+                    logicalModel.setIsAuthor(true);
 //                if (isAuthor) {
 //                    logicalModel.setRealAuthor(null);
 //                } else {
@@ -253,19 +264,44 @@ public class LogicalModelService {
 //                }
 
 
-                Date now = new Date();
-                logicalModel.setCreateTime(now);
-                logicalModel.setLastModifyTime(now);
-                logicalModelDao.save(logicalModel);
+                    Date now = new Date();
+                    if(logicalModel_ori.getAuthor().equals(uid)) {
+                        logicalModel.setLastModifyTime(now);
+                        logicalModelDao.save(logicalModel);
 
-                result.put("code", 1);
-                result.put("id", logicalModel.getOid());
-            }catch (Exception e) {
-                e.printStackTrace();
-                result.put("code", -2);
+                        result.put("methord","update");
+                        result.put("code", 1);
+                        result.put("id", logicalModel.getOid());
+                    }
+                    else{
+                        LogicalModelVersion logicalModelVersion=new LogicalModelVersion();
+                        BeanUtils.copyProperties(logicalModel,logicalModelVersion,"id");
+                        logicalModelVersion.setOid(UUID.randomUUID().toString());
+                        logicalModelVersion.setOriginOid(logicalModel_ori.getOid());
+                        logicalModelVersion.setModifier(uid);
+                        logicalModelVersion.setVerNumber(now.getTime());
+                        logicalModelVersion.setVerStatus(0);
+                        logicalModelVersion.setModifyTime(now);
+
+                        logicalModelVersionDao.save(logicalModelVersion);
+
+                        logicalModel_ori.setLock(true);
+                        logicalModelDao.save(logicalModel_ori);
+
+                        result.put("method", "version");
+                        result.put("code",0);
+                        result.put("oid", logicalModelVersion.getOid());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.put("code", -2);
+                }
             }
+            return result;
         }
-        return result;
+        else {
+            return null;
+        }
     }
 
     public int delete(String oid,String userName){

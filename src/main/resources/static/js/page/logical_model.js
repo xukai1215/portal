@@ -45,8 +45,8 @@ new Vue({
                             crossDomain: true,
                             success: (json) => {
                                 // if(json.data==data.oid){
-                                window.sessionStorage.setItem("editlogicalModel_id",oid)
-                                window.location.href="/user/createlogicalModel";
+                                window.sessionStorage.setItem("editLogicalModel_id",oid)
+                                window.location.href="/user/createLogicalModel";
                                 // }
                                 // else{
                                 //     alert("You are not the model item's author, please contact to the author to modify the model item.")
@@ -57,6 +57,11 @@ new Vue({
                 }
             })
         },
+
+        setSession(name, value) {
+            window.sessionStorage.setItem(name, value);
+        },
+
         switchClick(i){
 
             if(i==1) {
