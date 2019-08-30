@@ -18,10 +18,8 @@ public class ConceptVersion {
     String image;
     String description;
     String detail;
-    Date createTime;
-    Date lastModifyTime;
+    Date modifyTime;
     List<String> related;
-    String author;
     int loadCount;
 
     String alias;

@@ -152,8 +152,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateConcept",method = RequestMethod.POST)
-    public JsonResult updateConcept(@RequestBody ConceptUpdateDTO conceptUpdateDTO){
-        return ResultUtils.success(repositoryService.updateConcept(conceptUpdateDTO));
+    public JsonResult updateConcept(@RequestBody ConceptUpdateDTO conceptUpdateDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateConcept(conceptUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteConcept",method = RequestMethod.POST)
@@ -287,8 +299,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateSpatialReference",method = RequestMethod.POST)
-    public JsonResult updateSpatialReference(@RequestBody SpatialUpdateDTO spatialUpdateDTO){
-        return ResultUtils.success(repositoryService.updateSpatial(spatialUpdateDTO));
+    public JsonResult updateSpatialReference(@RequestBody SpatialUpdateDTO spatialUpdateDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateSpatial(spatialUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteSpatialReference",method = RequestMethod.POST)
@@ -415,8 +439,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateTemplate",method = RequestMethod.POST)
-    public JsonResult updateTemplate(@RequestBody TemplateUpdateDTO templateUpdateDTO){
-        return ResultUtils.success(repositoryService.updateTemplate(templateUpdateDTO));
+    public JsonResult updateTemplate(@RequestBody TemplateUpdateDTO templateUpdateDTO,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateTemplate(templateUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteTemplate",method = RequestMethod.POST)
@@ -535,8 +571,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateUnit",method = RequestMethod.POST)
-    public JsonResult updateUnit(@RequestBody UnitUpdateDTO unitUpdateDTO){
-        return ResultUtils.success(repositoryService.updateUnit(unitUpdateDTO));
+    public JsonResult updateUnit(@RequestBody UnitUpdateDTO unitUpdateDTO,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateUnit(unitUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteUnit",method = RequestMethod.POST)

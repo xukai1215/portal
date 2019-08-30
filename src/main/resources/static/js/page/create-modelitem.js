@@ -875,7 +875,7 @@ var vue = new Vue({
 
                     success: function (result) {
                         if (result.code === 0) {
-                            if(result.method=="update") {
+                            if(result.method==="update") {
                                 alert("Update Success");
                                 $("#editModal", parent.document).remove();
                                 window.location.href = "/modelItem/" + result.data;

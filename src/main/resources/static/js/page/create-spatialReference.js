@@ -1,8 +1,8 @@
 var vue = new Vue({
-    el:"#app",
-    data:{
-        defaultActive:'4-2',
-        curIndex:'4-2',
+    el: "#app",
+    data: {
+        defaultActive: '4-2',
+        curIndex: '4-2',
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
@@ -16,12 +16,12 @@ var vue = new Vue({
         loginFlag: false,
         activeIndex: 2,
 
-        userInfo:{
+        userInfo: {
             //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
+            name: "",
+            email: "",
+            phone: "",
+            insName: ""
         },
 
         treeData: [{
@@ -56,33 +56,33 @@ var vue = new Vue({
             children: 'children',
             label: 'label'
         },
-        cls:[],
-        clsStr:'',
-        parId:""
+        cls: [],
+        clsStr: '',
+        parId: ""
     },
-    methods:{
-        handleSelect(index,indexPath){
-            this.setSession("index",index);
-            window.location.href="/user/userSpace"
+    methods: {
+        handleSelect(index, indexPath) {
+            this.setSession("index", index);
+            window.location.href = "/user/userSpace"
         },
         handleCheckChange(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree2.getCheckedNodes()
             let classes = [];
-            let str='';
+            let str = '';
             for (let i = 0; i < checkedNodes.length; i++) {
                 // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
+                if (checkedNodes[i].children != undefined) {
                     continue;
                 }
 
                 classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
+                str += checkedNodes[i].label;
+                if (i != checkedNodes.length - 1) {
+                    str += ", ";
                 }
             }
-            this.cls=classes;
-            this.clsStr=str;
+            this.cls = classes;
+            this.clsStr = str;
 
         },
         changeOpen(n) {
@@ -92,14 +92,14 @@ var vue = new Vue({
             window.sessionStorage.setItem(name, value);
         },
         getUserData(UsersInfo, prop) {
-            let index=0;
-            for(i=0;i<UsersInfo.length;i+=4){
+            let index = 0;
+            for (i = 0; i < UsersInfo.length; i += 4) {
                 let value1 = UsersInfo.eq(i)[0].value.trim();
                 let value2 = UsersInfo.eq(i)[0].value.trim();
                 let value3 = UsersInfo.eq(i)[0].value.trim();
                 let value4 = UsersInfo.eq(i)[0].value.trim();
-                if(value1==''&&value2==''&&value3==''&&value4==''){
-                    index=i+4;
+                if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
+                    index = i + 4;
                 }
 
             }
@@ -177,21 +177,21 @@ var vue = new Vue({
 
                     //cls
                     this.cls = basicInfo.classifications;
-                    let ids=[];
-                    for(i=0;i<this.cls.length;i++){
-                        for(j=0;j<4;j++){
-                            for(k=0;k<this.treeData[j].children.length;k++){
-                                if(this.cls[i]==this.treeData[j].children[k].oid){
+                    let ids = [];
+                    for (i = 0; i < this.cls.length; i++) {
+                        for (j = 0; j < 4; j++) {
+                            for (k = 0; k < this.treeData[j].children.length; k++) {
+                                if (this.cls[i] == this.treeData[j].children[k].oid) {
                                     ids.push(this.treeData[j].children[k].id);
                                     this.parid = this.treeData[j].children[k].id;
-                                    this.clsStr+=this.treeData[j].children[k].label;
-                                    if(i!=this.cls.length-1){
-                                        this.clsStr+=", ";
+                                    this.clsStr += this.treeData[j].children[k].label;
+                                    if (i != this.cls.length - 1) {
+                                        this.clsStr += ", ";
                                     }
                                     break;
                                 }
                             }
-                            if(ids.length-1==i){
+                            if (ids.length - 1 == i) {
                                 break;
                             }
                         }
@@ -261,7 +261,7 @@ var vue = new Vue({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
+                data = JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
@@ -286,7 +286,7 @@ var vue = new Vue({
         }
 
         var spatialObj = {};
-        $(".next").click(()=> {
+        $(".next").click(() => {
 
             if (this.cls.length == 0) {
                 alert("Please select parent node");
@@ -298,7 +298,7 @@ var vue = new Vue({
             }
         });
 
-        $(".finish").click(()=> {
+        $(".finish").click(() => {
             spatialObj.classifications = this.cls;
             spatialObj.name = $("#nameInput").val();
             spatialObj.wkname = $("#wknameInput").val();
@@ -338,12 +338,25 @@ var vue = new Vue({
 
                     success: function (result) {
                         if (result.code === 0) {
-                            alert("Update Success");
-                            //$("#editModal",parent.document).remove();
+                            if (result.method === "update") {
+                                alert("Update Success");
+                                //$("#editModal",parent.document).remove();
 
-                            window.location.href = "/repository/spatialReference/" + result.data;
-                            //window.location.reload();
+                                window.location.href = "/repository/spatialReference/" + result.data;
+                                //window.location.reload();
+                            }
+                            else
+                                {
+                                    alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                    window.location.href = "/user/userSpace";
+
+                                }
+
                         }
+                        else {
+                            alert(result.msg);
+                        }
+
                     }
                 })
             }

@@ -20,9 +20,7 @@ public class SpatialReferenceVersion {
     String image;
     String description;
     String detail;
-    Date createTime;
-    Date lastModifyTime;
-    String author;
+    Date modifyTime;
     int loadCount;
 
     String type;

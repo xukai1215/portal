@@ -78,7 +78,7 @@
                         <p th:if="${info.name_ZH==null}" th:text="${info.description}" style="word-break: break-word;"></p>
                     </div>
 
-                    <div class="detail_option">
+                    <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
@@ -172,7 +172,8 @@
             <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
-                        <h4>Contributor</h4>
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
                     </div>
                 </div>
                 <div class="block_content">
@@ -190,7 +191,8 @@
                     </div>
                     <div class="el-row el-col-offset-3">
                         <div class="text-center">
-                            <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
                 </div>
@@ -210,6 +212,35 @@
                 </div>
             </div>
 
+            <div id="Modifier" class="detail_block"
+                 th:if="${history!=true&&info.contributors!=null&&#lists.size(info.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(info.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/concept/'+${info.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div id="QR" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -224,6 +255,10 @@
             </div>
 
         </div>
+
+        <div th:if="${history==true}"
+             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
+
     </div>
 
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">

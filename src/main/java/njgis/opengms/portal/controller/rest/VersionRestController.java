@@ -51,6 +51,30 @@ public class VersionRestController {
     ComputableModelVersionDao computableModelVersionDao;
 
     @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    ConceptVersionDao conceptVersionDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    TemplateVersionDao templateVersionDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    SpatialReferenceVersionDao spatialReferenceVersionDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    UnitVersionDao unitVersionDao;
+
+    @Autowired
     UserService userService;
 
     @RequestMapping(value = "/review", method = RequestMethod.GET)
@@ -171,6 +195,102 @@ public class VersionRestController {
                 modelAndView.addObject("type", type);
                 modelAndView.addObject("list", resultList);
                 break;
+            case "concept":
+                Concept concept = conceptDao.findFirstByOid(id);
+
+                resultList = new JSONArray();
+                versions = concept.getVersions();
+                for (int i = versions.size() - 1; i >= 0; i--) {
+                    String verOid = versions.get(i);
+                    ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(verOid);
+                    JSONObject jsonObject = new JSONObject();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    jsonObject.put("date", sdf.format(conceptVersion.getModifyTime()));
+                    jsonObject.put("oid", conceptVersion.getOid());
+                    User user = userService.getByUid(conceptVersion.getModifier());
+                    jsonObject.put("userName", user.getName());
+                    jsonObject.put("userOid", user.getOid());
+
+                    resultList.add(jsonObject);
+                }
+
+                modelAndView.addObject("oid", concept.getOid());
+                modelAndView.addObject("name", concept.getName());
+                modelAndView.addObject("type", type);
+                modelAndView.addObject("list", resultList);
+                break;
+            case "template":
+                Template template = templateDao.findByOid(id);
+
+                resultList = new JSONArray();
+                versions = template.getVersions();
+                for (int i = versions.size() - 1; i >= 0; i--) {
+                    String verOid = versions.get(i);
+                    TemplateVersion templateVersion = templateVersionDao.findFirstByOid(verOid);
+                    JSONObject jsonObject = new JSONObject();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    jsonObject.put("date", sdf.format(templateVersion.getModifyTime()));
+                    jsonObject.put("oid", templateVersion.getOid());
+                    User user = userService.getByUid(templateVersion.getModifier());
+                    jsonObject.put("userName", user.getName());
+                    jsonObject.put("userOid", user.getOid());
+
+                    resultList.add(jsonObject);
+                }
+
+                modelAndView.addObject("oid", template.getOid());
+                modelAndView.addObject("name", template.getName());
+                modelAndView.addObject("type", type);
+                modelAndView.addObject("list", resultList);
+                break;
+            case "spatialReference":
+                SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
+
+                resultList = new JSONArray();
+                versions = spatialReference.getVersions();
+                for (int i = versions.size() - 1; i >= 0; i--) {
+                    String verOid = versions.get(i);
+                    SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(verOid);
+                    JSONObject jsonObject = new JSONObject();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    jsonObject.put("date", sdf.format(spatialReferenceVersion.getModifyTime()));
+                    jsonObject.put("oid", spatialReferenceVersion.getOid());
+                    User user = userService.getByUid(spatialReferenceVersion.getModifier());
+                    jsonObject.put("userName", user.getName());
+                    jsonObject.put("userOid", user.getOid());
+
+                    resultList.add(jsonObject);
+                }
+
+                modelAndView.addObject("oid", spatialReference.getOid());
+                modelAndView.addObject("name", spatialReference.getName());
+                modelAndView.addObject("type", type);
+                modelAndView.addObject("list", resultList);
+                break;
+            case "unit":
+                Unit unit = unitDao.findByOid(id);
+
+                resultList = new JSONArray();
+                versions = unit.getVersions();
+                for (int i = versions.size() - 1; i >= 0; i--) {
+                    String verOid = versions.get(i);
+                    UnitVersion unitVersion = unitVersionDao.findFirstByOid(verOid);
+                    JSONObject jsonObject = new JSONObject();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    jsonObject.put("date", sdf.format(unitVersion.getModifyTime()));
+                    jsonObject.put("oid", unitVersion.getOid());
+                    User user = userService.getByUid(unitVersion.getModifier());
+                    jsonObject.put("userName", user.getName());
+                    jsonObject.put("userOid", user.getOid());
+
+                    resultList.add(jsonObject);
+                }
+
+                modelAndView.addObject("oid", unit.getOid());
+                modelAndView.addObject("name", unit.getName());
+                modelAndView.addObject("type", type);
+                modelAndView.addObject("list", resultList);
+                break;
         }
 
         return modelAndView;
@@ -178,18 +298,37 @@ public class VersionRestController {
 
     @RequestMapping(value = "/history/{type}/{id}", method = RequestMethod.GET)
     public ModelAndView getModelItemHistory(@PathVariable("type") String type, @PathVariable("id") String id) {
+        ModelAndView modelAndView=new ModelAndView();
         switch (type) {
             case "modelItem":
-                return versionService.getModelItemHistoryPage(id);
+                modelAndView= versionService.getModelItemHistoryPage(id);
+                break;
             case "conceptualModel":
-                return versionService.getConceptualModelHistoryPage(id);
+                modelAndView= versionService.getConceptualModelHistoryPage(id);
+                break;
             case "logicalModel":
-                return versionService.getLogicalModelHistoryPage(id);
+                modelAndView= versionService.getLogicalModelHistoryPage(id);
+                break;
             case "computableModel":
-                return versionService.getComputableModelHistoryPage(id);
-            default:
-                return null;
+                modelAndView= versionService.getComputableModelHistoryPage(id);
+                break;
+            case "concept":
+                modelAndView= versionService.getConceptHistoryPage(id);
+                break;
+            case "spatialReference":
+                modelAndView= versionService.getSpatialReferenceHistoryPage(id);
+                break;
+            case "template":
+                modelAndView= versionService.getTemplateHistoryPage(id);
+                break;
+            case "unit":
+                modelAndView= versionService.getUnitHistoryPage(id);
+                break;
+
         }
+
+        modelAndView.addObject("history",true);
+        return modelAndView;
 
     }
 
@@ -388,6 +527,198 @@ public class VersionRestController {
 
             computableModelVersion.setVerStatus(1);
             computableModelVersionDao.save(computableModelVersion);
+        } else if (versionDTO.getType().equals("concept")) {
+            Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
+            if (concept.getVersions() == null || concept.getVersions().size() == 0) {
+                ConceptVersion conceptVersion = new ConceptVersion();
+                BeanUtils.copyProperties(concept, conceptVersion, "id");
+                conceptVersion.setOid(UUID.randomUUID().toString());
+                conceptVersion.setOriginOid(concept.getOid());
+                conceptVersion.setVerNumber((long) 0);
+                conceptVersion.setVerStatus(2);
+                conceptVersion.setModifier(concept.getAuthor());
+                conceptVersion.setModifyTime(concept.getCreateTime());
+                conceptVersionDao.insert(conceptVersion);
+
+                List<String> versions = concept.getVersions();
+                if (versions == null) versions = new ArrayList<>();
+                versions.add(conceptVersion.getOid());
+                concept.setVersions(versions);
+            }
+
+            ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(versionDTO.getOid());
+            //版本更替
+            BeanUtils.copyProperties(conceptVersion, concept, "id");
+            concept.setOid(conceptVersion.getOriginOid());
+            List<String> versions = concept.getVersions();
+            versions.add(conceptVersion.getOid());
+            concept.setVersions(versions);
+
+            List<String> contributors = concept.getContributors();
+            contributors = contributors == null ? new ArrayList<>() : contributors;
+            String contributor = conceptVersion.getModifier();
+            boolean exist = false;
+            for (int i = 0; i < contributors.size(); i++) {
+                if (contributors.get(i).equals(contributor)) {
+                    exist = true;
+                }
+            }
+            if (!exist && !contributor.equals(concept.getAuthor())) {
+                contributors.add(contributor);
+                concept.setContributors(contributors);
+            }
+
+            concept.setLastModifier(contributor);
+            concept.setLock(false);
+            concept.setLastModifyTime(conceptVersion.getModifyTime());
+            conceptDao.save(concept);
+
+            conceptVersion.setVerStatus(1);
+            conceptVersionDao.save(conceptVersion);
+        } else if (versionDTO.getType().equals("template")) {
+            Template template = templateDao.findByOid(versionDTO.getOriginOid());
+            if (template.getVersions() == null || template.getVersions().size() == 0) {
+                TemplateVersion templateVersion = new TemplateVersion();
+                BeanUtils.copyProperties(template, templateVersion, "id");
+                templateVersion.setOid(UUID.randomUUID().toString());
+                templateVersion.setOriginOid(template.getOid());
+                templateVersion.setVerNumber((long) 0);
+                templateVersion.setVerStatus(2);
+                templateVersion.setModifier(template.getAuthor());
+                templateVersion.setModifyTime(template.getCreateTime());
+                templateVersionDao.insert(templateVersion);
+
+                List<String> versions = template.getVersions();
+                if (versions == null) versions = new ArrayList<>();
+                versions.add(templateVersion.getOid());
+                template.setVersions(versions);
+            }
+
+            TemplateVersion templateVersion = templateVersionDao.findFirstByOid(versionDTO.getOid());
+            //版本更替
+            BeanUtils.copyProperties(templateVersion, template, "id");
+            template.setOid(templateVersion.getOriginOid());
+            List<String> versions = template.getVersions();
+            versions.add(templateVersion.getOid());
+            template.setVersions(versions);
+
+            List<String> contributors = template.getContributors();
+            contributors = contributors == null ? new ArrayList<>() : contributors;
+            String contributor = templateVersion.getModifier();
+            boolean exist = false;
+            for (int i = 0; i < contributors.size(); i++) {
+                if (contributors.get(i).equals(contributor)) {
+                    exist = true;
+                }
+            }
+            if (!exist && !contributor.equals(template.getAuthor())) {
+                contributors.add(contributor);
+                template.setContributors(contributors);
+            }
+
+            template.setLastModifier(contributor);
+            template.setLock(false);
+            template.setLastModifyTime(templateVersion.getModifyTime());
+            templateDao.save(template);
+
+            templateVersion.setVerStatus(1);
+            templateVersionDao.save(templateVersion);
+        } else if (versionDTO.getType().equals("spatialReference")) {
+            SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
+            if (spatialReference.getVersions() == null || spatialReference.getVersions().size() == 0) {
+                SpatialReferenceVersion spatialReferenceVersion = new SpatialReferenceVersion();
+                BeanUtils.copyProperties(spatialReference, spatialReferenceVersion, "id");
+                spatialReferenceVersion.setOid(UUID.randomUUID().toString());
+                spatialReferenceVersion.setOriginOid(spatialReference.getOid());
+                spatialReferenceVersion.setVerNumber((long) 0);
+                spatialReferenceVersion.setVerStatus(2);
+                spatialReferenceVersion.setModifier(spatialReference.getAuthor());
+                spatialReferenceVersion.setModifyTime(spatialReference.getCreateTime());
+                spatialReferenceVersionDao.insert(spatialReferenceVersion);
+
+                List<String> versions = spatialReference.getVersions();
+                if (versions == null) versions = new ArrayList<>();
+                versions.add(spatialReferenceVersion.getOid());
+                spatialReference.setVersions(versions);
+            }
+
+            SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(versionDTO.getOid());
+            //版本更替
+            BeanUtils.copyProperties(spatialReferenceVersion, spatialReference, "id");
+            spatialReference.setOid(spatialReferenceVersion.getOriginOid());
+            List<String> versions = spatialReference.getVersions();
+            versions.add(spatialReferenceVersion.getOid());
+            spatialReference.setVersions(versions);
+
+            List<String> contributors = spatialReference.getContributors();
+            contributors = contributors == null ? new ArrayList<>() : contributors;
+            String contributor = spatialReferenceVersion.getModifier();
+            boolean exist = false;
+            for (int i = 0; i < contributors.size(); i++) {
+                if (contributors.get(i).equals(contributor)) {
+                    exist = true;
+                }
+            }
+            if (!exist && !contributor.equals(spatialReference.getAuthor())) {
+                contributors.add(contributor);
+                spatialReference.setContributors(contributors);
+            }
+
+            spatialReference.setLastModifier(contributor);
+            spatialReference.setLock(false);
+            spatialReference.setLastModifyTime(spatialReferenceVersion.getModifyTime());
+            spatialReferenceDao.save(spatialReference);
+
+            spatialReferenceVersion.setVerStatus(1);
+            spatialReferenceVersionDao.save(spatialReferenceVersion);
+        } else if (versionDTO.getType().equals("unit")) {
+            Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
+            if (unit.getVersions() == null || unit.getVersions().size() == 0) {
+                UnitVersion unitVersion = new UnitVersion();
+                BeanUtils.copyProperties(unit, unitVersion, "id");
+                unitVersion.setOid(UUID.randomUUID().toString());
+                unitVersion.setOriginOid(unit.getOid());
+                unitVersion.setVerNumber((long) 0);
+                unitVersion.setVerStatus(2);
+                unitVersion.setModifier(unit.getAuthor());
+                unitVersion.setModifyTime(unit.getCreateTime());
+                unitVersionDao.insert(unitVersion);
+
+                List<String> versions = unit.getVersions();
+                if (versions == null) versions = new ArrayList<>();
+                versions.add(unitVersion.getOid());
+                unit.setVersions(versions);
+            }
+
+            UnitVersion unitVersion = unitVersionDao.findFirstByOid(versionDTO.getOid());
+            //版本更替
+            BeanUtils.copyProperties(unitVersion, unit, "id");
+            unit.setOid(unitVersion.getOriginOid());
+            List<String> versions = unit.getVersions();
+            versions.add(unitVersion.getOid());
+            unit.setVersions(versions);
+
+            List<String> contributors = unit.getContributors();
+            contributors = contributors == null ? new ArrayList<>() : contributors;
+            String contributor = unitVersion.getModifier();
+            boolean exist = false;
+            for (int i = 0; i < contributors.size(); i++) {
+                if (contributors.get(i).equals(contributor)) {
+                    exist = true;
+                }
+            }
+            if (!exist && !contributor.equals(unit.getAuthor())) {
+                contributors.add(contributor);
+                unit.setContributors(contributors);
+            }
+
+            unit.setLastModifier(contributor);
+            unit.setLock(false);
+            unit.setLastModifyTime(unitVersion.getModifyTime());
+            unitDao.save(unit);
+
+            unitVersion.setVerStatus(1);
+            unitVersionDao.save(unitVersion);
         }
 
         return ResultUtils.success();
@@ -427,6 +758,38 @@ public class VersionRestController {
             ComputableModel computableModel = computableModelDao.findFirstByOid(versionDTO.getOriginOid());
             computableModel.setLock(false);
             computableModelDao.save(computableModel);
+        } else if (versionDTO.getType().equals("concept")) {
+            ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(versionDTO.getOid());
+            conceptVersion.setVerStatus(-1);
+            conceptVersionDao.save(conceptVersion);
+
+            Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
+            concept.setLock(false);
+            conceptDao.save(concept);
+        } else if (versionDTO.getType().equals("template")) {
+            TemplateVersion templateVersion = templateVersionDao.findFirstByOid(versionDTO.getOid());
+            templateVersion.setVerStatus(-1);
+            templateVersionDao.save(templateVersion);
+
+            Template template = templateDao.findByOid(versionDTO.getOriginOid());
+            template.setLock(false);
+            templateDao.save(template);
+        } else if (versionDTO.getType().equals("spatialReference")) {
+            SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(versionDTO.getOid());
+            spatialReferenceVersion.setVerStatus(-1);
+            spatialReferenceVersionDao.save(spatialReferenceVersion);
+
+            SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
+            spatialReference.setLock(false);
+            spatialReferenceDao.save(spatialReference);
+        } else if (versionDTO.getType().equals("unit")) {
+            UnitVersion unitVersion = unitVersionDao.findFirstByOid(versionDTO.getOid());
+            unitVersion.setVerStatus(-1);
+            unitVersionDao.save(unitVersion);
+
+            Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
+            unit.setLock(false);
+            unitDao.save(unit);
         }
 
         return ResultUtils.success();
@@ -505,7 +868,7 @@ public class VersionRestController {
                 reject.add(jsonObject);
             }
         }
-        
+
         List<ComputableModelVersion> computableModelVersionList = computableModelVersionDao.findAll();
         for (ComputableModelVersion computableModelVersion : computableModelVersionList) {
 
@@ -528,6 +891,96 @@ public class VersionRestController {
             }
         }
 
+        List<ConceptVersion> conceptVersionList = conceptVersionDao.findAll();
+        for (ConceptVersion conceptVersion : conceptVersionList) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", conceptVersion.getName());
+            jsonObject.put("oid", conceptVersion.getOid());
+            jsonObject.put("originOid", conceptVersion.getOriginOid());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(conceptVersion.getModifyTime()));
+            jsonObject.put("modifier", conceptVersion.getModifier());
+            jsonObject.put("type", "concept");
+
+            int status = conceptVersion.getVerStatus();
+            if (status == 0) {
+                uncheck.add(jsonObject);
+            } else if (status == 1) {
+                accept.add(jsonObject);
+            } else if (status == -1) {
+                reject.add(jsonObject);
+            }
+        }
+
+        List<TemplateVersion> templateVersionList = templateVersionDao.findAll();
+        for (TemplateVersion templateVersion : templateVersionList) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", templateVersion.getName());
+            jsonObject.put("oid", templateVersion.getOid());
+            jsonObject.put("originOid", templateVersion.getOriginOid());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(templateVersion.getModifyTime()));
+            jsonObject.put("modifier", templateVersion.getModifier());
+            jsonObject.put("type", "template");
+
+            int status = templateVersion.getVerStatus();
+            if (status == 0) {
+                uncheck.add(jsonObject);
+            } else if (status == 1) {
+                accept.add(jsonObject);
+            } else if (status == -1) {
+                reject.add(jsonObject);
+            }
+        }
+
+        List<SpatialReferenceVersion> spatialReferenceVersionList = spatialReferenceVersionDao.findAll();
+        for (SpatialReferenceVersion spatialReferenceVersion : spatialReferenceVersionList) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", spatialReferenceVersion.getName());
+            jsonObject.put("oid", spatialReferenceVersion.getOid());
+            jsonObject.put("originOid", spatialReferenceVersion.getOriginOid());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(spatialReferenceVersion.getModifyTime()));
+            jsonObject.put("modifier", spatialReferenceVersion.getModifier());
+            jsonObject.put("type", "spatialReference");
+
+            int status = spatialReferenceVersion.getVerStatus();
+            if (status == 0) {
+                uncheck.add(jsonObject);
+            } else if (status == 1) {
+                accept.add(jsonObject);
+            } else if (status == -1) {
+                reject.add(jsonObject);
+            }
+        }
+
+        List<UnitVersion> unitVersionList = unitVersionDao.findAll();
+        for (UnitVersion unitVersion : unitVersionList) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", unitVersion.getName());
+            jsonObject.put("oid", unitVersion.getOid());
+            jsonObject.put("originOid", unitVersion.getOriginOid());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(unitVersion.getModifyTime()));
+            jsonObject.put("modifier", unitVersion.getModifier());
+            jsonObject.put("type", "unit");
+
+            int status = unitVersion.getVerStatus();
+            if (status == 0) {
+                uncheck.add(jsonObject);
+            } else if (status == 1) {
+                accept.add(jsonObject);
+            } else if (status == -1) {
+                reject.add(jsonObject);
+            }
+        }
+
+
+        //result
         result.put("uncheck", uncheck);
         result.put("accept", accept);
         result.put("reject", reject);

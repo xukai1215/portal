@@ -17,10 +17,9 @@ public class TemplateVersion {
     List<String> classifications;
     String description;
     String detail;
-    String author;
     String image;
-    Date createTime;
-    Date lastModifyTime;
+    Date modifyTime;
+
     int loadCount;
 
     String xml;

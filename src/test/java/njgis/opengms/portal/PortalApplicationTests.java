@@ -51,6 +51,50 @@ public class PortalApplicationTests {
 
 
     @Test
+    public void addLastModifyTime(){
+        List<Concept> list = conceptDao.findAll();
+        for (Concept concept :list) {
+            if (concept.getLastModifyTime()== null){
+                concept.setLastModifyTime(concept.getCreateTime());
+                conceptDao.save(concept);
+
+                Utils.count();
+            }
+        }
+
+        List<Unit> unitList= unitDao.findAll();
+        for (Unit unit :unitList) {
+            if (unit.getLastModifyTime()== null){
+                unit.setLastModifyTime(unit.getCreateTime());
+                unitDao.save(unit);
+
+                Utils.count();
+            }
+        }
+        
+        List<Template> templateList= templateDao.findAll();
+        for (Template template :templateList) {
+            if (template.getLastModifyTime()== null){
+                template.setLastModifyTime(template.getCreateTime());
+                templateDao.save(template);
+
+                Utils.count();
+            }
+        }
+        
+        List<SpatialReference> spatialReferenceList= spatialReferenceDao.findAll();
+        for (SpatialReference spatialReference :spatialReferenceList) {
+            if (spatialReference.getLastModifyTime()== null){
+                spatialReference.setLastModifyTime(spatialReference.getCreateTime());
+                spatialReferenceDao.save(spatialReference);
+
+                Utils.count();
+            }
+        }
+        
+    }
+
+    @Test
     public void updateConcept(){
 
         List<Concept> list = conceptDao.findAll();
@@ -65,7 +109,6 @@ public class PortalApplicationTests {
             }
         }
     }
-
 
     @Test
     public void contextLoads() {
