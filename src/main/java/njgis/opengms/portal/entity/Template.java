@@ -26,4 +26,12 @@ public class Template {
     String xml;
     String type;
     String parentId;
+
+    //版本
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
+
+    boolean lock;
+
 }

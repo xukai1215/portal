@@ -9,31 +9,30 @@ import java.util.List;
 
 @Document
 @Data
-public class Unit {
+public class ConceptVersion {
     @Id
     String id;
     String oid;
     String name;
     List<String> classifications;
+    String image;
     String description;
     String detail;
-    String author;
-    String image;
-    Date createTime;
-    Date lastModifyTime;
+    Date modifyTime;
+    List<String> related;
     int loadCount;
 
     String alias;
-    String type;
     String parentId;
     String xml;
     String description_ZH;
     String description_EN;
+    String name_ZH;
+    String name_EN;
 
-    //版本
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
-
-    boolean lock;
+    //版本相关
+    String modifier;
+    String originOid;//正式数据库对应条目的oid
+    Long verNumber;//版本号
+    int verStatus;//版本状态
 }

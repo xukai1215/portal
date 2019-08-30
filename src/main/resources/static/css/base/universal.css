@@ -9,8 +9,8 @@ a{
     text-decoration: none;
 }
 
-li a{
-    /*color:white;*/
+.navbar-right a{
+    color:white;
 }
 li a:focus,li a:active,li a:hover{
     color:#00c0ff !important;

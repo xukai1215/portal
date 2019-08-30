@@ -5,6 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.deCode;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -48,7 +53,46 @@ public class VersionService {
     LogicalModelDao logicalModelDao;
 
     @Autowired
+    LogicalModelVersionDao logicalModelVersionDao;
+
+    @Autowired
     ComputableModelDao computableModelDao;
+
+    @Autowired
+    ComputableModelVersionDao computableModelVersionDao;
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    ConceptVersionDao conceptVersionDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    SpatialReferenceVersionDao spatialReferenceVersionDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    TemplateVersionDao templateVersionDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    UnitVersionDao unitVersionDao;
+
+    @Autowired
+    ConceptClassificationDao conceptClassificationDao;
+    @Autowired
+    SpatialReferenceClassificationDao spatialReferenceClassificationDao;
+    @Autowired
+    UnitClassificationDao unitClassificationDao;
+    @Autowired
+    TemplateClassificationDao templateClassificationDao;
+
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -404,4 +448,474 @@ public class VersionService {
 
         return modelAndView;
     }
+
+    public ModelAndView getLogicalModelHistoryPage(String id){
+        //条目信息
+        LogicalModelVersion modelInfo=logicalModelVersionDao.findFirstByOid(id);
+
+        //时间
+        Date date=modelInfo.getModifyTime();
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String dateResult=simpleDateFormat.format(date);
+
+        //用户信息
+
+        JSONObject userJson=userService.getItemUserInfo(modelInfo.getModifier());
+
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("logical_model");
+        modelAndView.addObject("modelInfo",modelInfo);
+        String computableModelId=modelInfo.getComputableModelId();
+        modelAndView.addObject("uid",deCode.encode((modelInfo.getOid()+"-"+computableModelId).getBytes()));
+        modelAndView.addObject("date",dateResult);
+        modelAndView.addObject("year",calendar.get(Calendar.YEAR));
+        modelAndView.addObject("user",userJson);
+        modelAndView.addObject("loadPath",htmlLoadPath);
+        modelAndView.addObject("history",true);
+
+        return modelAndView;
+    }
+
+    public ModelAndView getComputableModelHistoryPage(String id){
+        //条目信息
+        try{
+
+            ComputableModelVersion modelInfo = computableModelVersionDao.findFirstByOid(id);
+
+            //时间
+            Date date = modelInfo.getModifyTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateResult = simpleDateFormat.format(date);
+
+            //用户信息
+            JSONObject userJson = userService.getItemUserInfo(modelInfo.getModifier());
+            //资源信息
+            JSONArray resourceArray = new JSONArray();
+            List<String> resources = modelInfo.getResources();
+
+            if (resources != null) {
+                for (int i = 0; i < resources.size(); i++) {
+
+                    String path = resources.get(i);
+
+                    String[] arr = path.split("\\.");
+                    String suffix = arr[arr.length - 1];
+
+                    arr = path.split("/");
+                    String name = arr[arr.length - 1].substring(14);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", i);
+                    jsonObject.put("name", name);
+                    jsonObject.put("suffix", suffix);
+                    jsonObject.put("path",resources.get(i));
+                    resourceArray.add(jsonObject);
+
+                }
+
+            }
+
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("computable_model");
+            modelAndView.addObject("modelInfo", modelInfo);
+            modelAndView.addObject("date", dateResult);
+            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+            modelAndView.addObject("user", userJson);
+            modelAndView.addObject("resources", resourceArray);
+            JSONObject mdlJson=(JSONObject)JSONObject.toJSON(modelInfo.getMdlJson());
+            if(mdlJson!=null) {
+                JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
+                JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
+                modelAndView.addObject("behavior", behavior);
+            }
+            modelAndView.addObject("loadPath",htmlLoadPath);
+
+            modelAndView.addObject("history",true);
+
+            return modelAndView;
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new MyException(e.getMessage());
+        }
+    }
+
+    public ModelAndView getConceptHistoryPage(String id){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("conceptInfo");
+
+        ConceptVersion concept=conceptVersionDao.findFirstByOid(id);
+        modelAndView.addObject("info",concept);
+
+        //兼容两种格式的数据
+        Classification classification = null;
+
+        JSONArray array=new JSONArray();
+        JSONArray classResult=new JSONArray();
+
+        if(concept.getParentId()!=null)
+        {
+            classification = conceptClassificationDao.findFirstByOid(concept.getParentId());
+
+            if(classification!=null&&classification.getParentId()!=null){
+                Classification classification2 = conceptClassificationDao.findFirstByOid(classification.getParentId());
+                array.add(classification2.getNameEn());
+            }
+            array.add(classification.getNameEn());
+            classResult.add(array);
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(concept.getXml());
+                org.dom4j.Element root=d.getRootElement();
+                org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
+                for(org.dom4j.Element Localization:LocalizationList){
+                    String language = Localization.attributeValue("Local");
+                    String name = Localization.attributeValue("Name");
+                    String desc = Localization.attributeValue("Description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language",language);
+                    jsonObject.put("name",name);
+                    jsonObject.put("desc",desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject)o1;
+                    JSONObject b = (JSONObject)o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+
+            modelAndView.addObject("localizations",localizationArray);
+
+        }else {
+            List<String> classifications = concept.getClassifications();
+            for(int i=0;i<classifications.size();i++){
+                array.clear();
+                String classId=classifications.get(i);
+                classification=conceptClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+
+                classId=classification.getParentId();
+                classification=conceptClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+
+                JSONArray array1=new JSONArray();
+                for(int j=array.size()-1;j>=0;j--){
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
+            }
+            System.out.println(classResult);
+        }
+
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd" );
+
+        List<String> related = concept.getRelated();
+        JSONArray relateArray = new JSONArray();
+        if(related!=null) {
+            for (String relatedId : related) {
+                Concept relatedConcept = conceptDao.findByOid(relatedId);
+                String name = relatedConcept.getName_EN();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", relatedId);
+                jsonObject.put("name", name);
+                relateArray.add(jsonObject);
+            }
+        }
+
+        modelAndView.addObject("classifications",classResult);
+        modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("date",sdf.format(concept.getModifyTime()));
+        modelAndView.addObject("related",relateArray);
+        modelAndView.addObject("history",true);
+
+        return modelAndView;
+    }
+
+    public ModelAndView getSpatialReferenceHistoryPage(String id){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("spatialReferenceInfo");
+
+        SpatialReferenceVersion spatialReference = spatialReferenceVersionDao.findFirstByOid(id);
+        modelAndView.addObject("info", spatialReference);
+
+        //兼容两种格式的数据
+        Classification classification = null;
+
+        JSONArray array = new JSONArray();
+        JSONArray classResult = new JSONArray();
+
+        if (spatialReference.getParentId() != null) {
+            classification = spatialReferenceClassificationDao.findFirstByOid(spatialReference.getParentId());
+
+            if (classification != null && classification.getParentId() != null) {
+                Classification classification2 = spatialReferenceClassificationDao.findFirstByOid(classification.getParentId());
+                array.add(classification2.getNameEn());
+            }
+            array.add(classification.getNameEn());
+            classResult.add(array);
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(spatialReference.getXml());
+                org.dom4j.Element root = d.getRootElement();
+//            org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = root.elements("Localization");
+                for (org.dom4j.Element Localization : LocalizationList) {
+                    String language = Localization.attributeValue("local");
+                    String name = Localization.attributeValue("name");
+                    String desc = Localization.attributeValue("description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language", language);
+                    jsonObject.put("name", name);
+                    jsonObject.put("desc", desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject) o1;
+                    JSONObject b = (JSONObject) o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+            modelAndView.addObject("localizations", localizationArray);
+        } else {
+            List<String> classifications = spatialReference.getClassifications();
+            for (int i = 0; i < classifications.size(); i++) {
+                array.clear();
+                String classId = classifications.get(i);
+                classification = spatialReferenceClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+                classId = classification.getParentId();
+
+                classification = spatialReferenceClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+
+                JSONArray array1 = new JSONArray();
+                for (int j = array.size() - 1; j >= 0; j--) {
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
+            }
+            System.out.println(classResult);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(spatialReference.getModifier());
+
+        modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("date", sdf.format(spatialReference.getModifyTime()));
+        modelAndView.addObject("user", userJson);
+
+
+        return modelAndView;
+    }
+
+    public ModelAndView getTemplateHistoryPage(String id){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("templateInfo");
+
+        TemplateVersion template = templateVersionDao.findFirstByOid(id);
+        modelAndView.addObject("info", template);
+
+        //兼容两种格式的数据
+        Classification classification = null;
+
+        JSONArray array = new JSONArray();
+        JSONArray classResult = new JSONArray();
+
+        if (template.getParentId() != null) {
+            classification = templateClassificationDao.findFirstByOid(template.getParentId());
+
+            if (classification != null && classification.getParentId() != null) {
+                Classification classification2 = templateClassificationDao.findFirstByOid(classification.getParentId());
+                array.add(classification2.getNameEn());
+            }
+            array.add(classification.getNameEn());
+            classResult.add(array);
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(template.getXml());
+                org.dom4j.Element root = d.getRootElement();
+//            org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = root.elements("Localization");
+                for (org.dom4j.Element Localization : LocalizationList) {
+                    String language = Localization.attributeValue("Local");
+                    String name = Localization.attributeValue("Name");
+                    String desc = Localization.attributeValue("Description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language", language);
+                    jsonObject.put("name", name);
+                    jsonObject.put("desc", desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject) o1;
+                    JSONObject b = (JSONObject) o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+            modelAndView.addObject("localizations", localizationArray);
+        } else {
+            List<String> classifications = template.getClassifications();
+            for (int i = 0; i < classifications.size(); i++) {
+                array.clear();
+                String classId = classifications.get(i);
+                classification = templateClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+                classId = classification.getParentId();
+
+                classification = templateClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+
+                JSONArray array1 = new JSONArray();
+                for (int j = array.size() - 1; j >= 0; j--) {
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
+            }
+            System.out.println(classResult);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(template.getModifier());
+
+        modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("date", sdf.format(template.getModifyTime()));
+        modelAndView.addObject("user", userJson);
+
+        return modelAndView;
+    }
+
+    public ModelAndView getUnitHistoryPage(String id){
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("unitInfo");
+
+        UnitVersion unit = unitVersionDao.findFirstByOid(id);
+        modelAndView.addObject("info", unit);
+
+
+        //兼容两种格式的数据
+        Classification classification = null;
+
+        JSONArray array = new JSONArray();
+        JSONArray classResult = new JSONArray();
+
+        if (unit.getParentId() != null) {
+            classification = unitClassificationDao.findFirstByOid(unit.getParentId());
+
+            if (classification != null && classification.getParentId() != null) {
+                Classification classification2 = unitClassificationDao.findFirstByOid(classification.getParentId());
+                array.add(classification2.getNameEn());
+            }
+            array.add(classification.getNameEn());
+            classResult.add(array);
+
+            org.dom4j.Document d = null;
+            JSONArray localizationArray = new JSONArray();
+            try {
+                d = DocumentHelper.parseText(unit.getXml());
+                org.dom4j.Element root = d.getRootElement();
+                org.dom4j.Element Localizations = root.element("Localizations");
+                List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
+                for (org.dom4j.Element Localization : LocalizationList) {
+                    String language = Localization.attributeValue("Local");
+                    String name = Localization.attributeValue("Name");
+                    String desc = Localization.attributeValue("Description");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("language", language);
+                    jsonObject.put("name", name);
+                    jsonObject.put("desc", desc);
+                    localizationArray.add(jsonObject);
+                }
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            localizationArray.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    JSONObject a = (JSONObject) o1;
+                    JSONObject b = (JSONObject) o2;
+                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+                }
+            });
+            modelAndView.addObject("localizations", localizationArray);
+        } else {
+            List<String> classifications = unit.getClassifications();
+            for (int i = 0; i < classifications.size(); i++) {
+                array.clear();
+                String classId = classifications.get(i);
+                classification = unitClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+                classId = classification.getParentId();
+
+                classification = unitClassificationDao.findFirstByOid(classId);
+                array.add(classification.getNameEn());
+
+                JSONArray array1 = new JSONArray();
+                for (int j = array.size() - 1; j >= 0; j--) {
+                    array1.add(array.getString(j));
+                }
+
+                classResult.add(array1);
+
+            }
+            System.out.println(classResult);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(unit.getModifier());
+
+        modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("date", sdf.format(unit.getModifyTime()));
+        modelAndView.addObject("user", userJson);
+
+        return modelAndView;
+
+    }
+
 }

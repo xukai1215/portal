@@ -163,7 +163,12 @@ public class LogicalModelRestController {
         }
         JSONObject result=logicalModelService.update(files,jsonObject,uid);
 
-        return ResultUtils.success(result);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

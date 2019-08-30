@@ -9,7 +9,7 @@ import java.util.List;
 
 @Document
 @Data
-public class Unit {
+public class TemplateVersion {
     @Id
     String id;
     String oid;
@@ -17,23 +17,18 @@ public class Unit {
     List<String> classifications;
     String description;
     String detail;
-    String author;
     String image;
-    Date createTime;
-    Date lastModifyTime;
+    Date modifyTime;
+
     int loadCount;
 
-    String alias;
+    String xml;
     String type;
     String parentId;
-    String xml;
-    String description_ZH;
-    String description_EN;
 
-    //版本
-    String lastModifier;
-    List<String> contributors;
-    List<String> versions;
-
-    boolean lock;
+    //版本相关
+    String modifier;
+    String originOid;//正式数据库对应条目的oid
+    Long verNumber;//版本号
+    int verStatus;//版本状态
 }

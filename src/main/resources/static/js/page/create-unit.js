@@ -336,11 +336,21 @@ var vue = new Vue({
 
                     success: function (result) {
                         if (result.code === 0) {
-                            alert("Update Success");
-                            //$("#editModal",parent.document).remove();
+                            if (result.method === "update") {
+                                alert("Update Success");
+                                //$("#editModal",parent.document).remove();
 
-                            window.location.href = "/repository/unit/" + result.data;
-                            //window.location.reload();
+                                window.location.href = "/repository/unit/" + result.data;
+                                //window.location.reload();
+                            }
+                            else {
+                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                window.location.href = "/user/userSpace";
+
+                            }
+                        }
+                        else{
+                            alert(result.msg);
                         }
                     }
                 })

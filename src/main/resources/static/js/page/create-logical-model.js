@@ -408,17 +408,28 @@ var vue = new Vue({
                     contentType: false,
                     async: false
                 }).done(function (res) {
-                    switch (res.data.code) {
-                        case 1:
-                            alert("update logical model successfully!");
-                            window.location.href = "/logicalModel/" + res.data.id;
-                            break;
-                        case -1:
-                            alert("save files error");
-                            break;
-                        case -2:
-                            alert("create fail");
-                            break;
+                    console.log(res)
+                    if(res.code===0) {
+                        switch (res.data.code) {
+
+                            case 0:
+                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                window.location.href = "/user/userSpace";
+                                break;
+                            case 1:
+                                alert("update logical model successfully!");
+                                window.location.href = "/logicalModel/" + res.data.id;
+                                break;
+                            case -1:
+                                alert("save files error");
+                                break;
+                            case -2:
+                                alert("create fail");
+                                break;
+                        }
+                    }
+                    else{
+                        alert(res.msg);
                     }
                 }).fail(function (res) {
                     alert("please login first");

@@ -2,12 +2,10 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.RepositoryQueryDTO;
 import njgis.opengms.portal.dto.community.*;
-import njgis.opengms.portal.entity.Concept;
-import njgis.opengms.portal.entity.SpatialReference;
-import njgis.opengms.portal.entity.Template;
-import njgis.opengms.portal.entity.Unit;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.RepositoryService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -25,6 +23,30 @@ public class RepositoryRestController {
 
     @Autowired
     RepositoryService repositoryService;
+
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    ConceptVersionDao conceptVersionDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    TemplateVersionDao templateVersionDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    SpatialReferenceVersionDao spatialReferenceVersionDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    UnitVersionDao unitVersionDao;
 
     @Autowired
     UserService userService;
@@ -130,8 +152,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateConcept",method = RequestMethod.POST)
-    public JsonResult updateConcept(@RequestBody ConceptUpdateDTO conceptUpdateDTO){
-        return ResultUtils.success(repositoryService.updateConcept(conceptUpdateDTO));
+    public JsonResult updateConcept(@RequestBody ConceptUpdateDTO conceptUpdateDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateConcept(conceptUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteConcept",method = RequestMethod.POST)
@@ -201,6 +235,15 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/getConceptUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getConceptUserOidByOid(@RequestParam(value="oid") String oid){
+        Concept concept=conceptDao.findByOid(oid);
+        String userId=concept.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
+    }
+
 
 
 
@@ -256,8 +299,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateSpatialReference",method = RequestMethod.POST)
-    public JsonResult updateSpatialReference(@RequestBody SpatialUpdateDTO spatialUpdateDTO){
-        return ResultUtils.success(repositoryService.updateSpatial(spatialUpdateDTO));
+    public JsonResult updateSpatialReference(@RequestBody SpatialUpdateDTO spatialUpdateDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateSpatial(spatialUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteSpatialReference",method = RequestMethod.POST)
@@ -324,6 +379,14 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/getSpatialReferenceUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getSpatialReferenceUserOidByOid(@RequestParam(value="oid") String oid){
+        SpatialReference spatialReference=spatialReferenceDao.findByOid(oid);
+        String userId=spatialReference.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
+    }
 
     //Template
     @RequestMapping(value="/template",method = RequestMethod.GET)
@@ -376,8 +439,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateTemplate",method = RequestMethod.POST)
-    public JsonResult updateTemplate(@RequestBody TemplateUpdateDTO templateUpdateDTO){
-        return ResultUtils.success(repositoryService.updateTemplate(templateUpdateDTO));
+    public JsonResult updateTemplate(@RequestBody TemplateUpdateDTO templateUpdateDTO,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateTemplate(templateUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteTemplate",method = RequestMethod.POST)
@@ -434,7 +509,14 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/getTemplateUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getTemplateUserOidByOid(@RequestParam(value="oid") String oid){
+        Template template=templateDao.findByOid(oid);
+        String userId=template.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
 
+    }
 
 
 
@@ -489,8 +571,20 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateUnit",method = RequestMethod.POST)
-    public JsonResult updateUnit(@RequestBody UnitUpdateDTO unitUpdateDTO){
-        return ResultUtils.success(repositoryService.updateUnit(unitUpdateDTO));
+    public JsonResult updateUnit(@RequestBody UnitUpdateDTO unitUpdateDTO,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=repositoryService.updateUnit(unitUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/deleteUnit",method = RequestMethod.POST)
@@ -555,6 +649,15 @@ public class RepositoryRestController {
         JSONObject result=repositoryService.searchUnitsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping (value = "/getUnitUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getUnitUserOidByOid(@RequestParam(value="oid") String oid){
+        Unit unit=unitDao.findByOid(oid);
+        String userId=unit.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
     }
 
     //Contributers

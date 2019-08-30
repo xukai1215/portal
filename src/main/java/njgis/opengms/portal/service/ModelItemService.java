@@ -182,7 +182,7 @@ public class ModelItemService {
         calendar.setTime(date);
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
         String dateResult=simpleDateFormat.format(date);
-        String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
+
 
         //relate
         ModelItemRelate modelItemRelate=modelInfo.getRelate();
@@ -312,6 +312,7 @@ public class ModelItemService {
              modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
+        String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
 
 
         //图片路径

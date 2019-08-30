@@ -184,7 +184,7 @@
                 view(event){
                     let refLink=$(".viewBtn");
                     for(i=0;i<refLink.length;i++){
-                        if(event.currentTarget==refLink[i]){
+                        if(event.currentTarget===refLink[i]){
                             window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].originOid);
                         }
                     }
@@ -193,7 +193,7 @@
                 viewAccept(event){
                     let refLink=$(".viewAcceptBtn");
                     for(i=0;i<refLink.length;i++){
-                        if(event.currentTarget==refLink[i]){
+                        if(event.currentTarget===refLink[i]){
                             window.open("/version/history/"+this.tableData2[i].type+"/"+this.tableData2[i].oid);
                         }
                     }
@@ -202,7 +202,7 @@
                 viewReject(event){
                     let refLink=$(".viewRejectBtn");
                     for(i=0;i<refLink.length;i++){
-                        if(event.currentTarget==refLink[i]){
+                        if(event.currentTarget===refLink[i]){
                             window.open("/version/history/"+this.tableData3[i].type+"/"+this.tableData3[i].oid);
                         }
                     }
@@ -212,7 +212,7 @@
                     let accepts=$(".accept");
 
                     for(i=0;i<accepts.length;i++){
-                        if(event.currentTarget==accepts[i]){
+                        if(event.currentTarget===accepts[i]){
                             let tableItem=this.tableData[i];
                             let data={
                                 type:tableItem.type,
@@ -237,7 +237,7 @@
                     let rejects=$(".reject");
 
                     for(i=0;i<rejects.length;i++){
-                        if(event.currentTarget==rejects[i]){
+                        if(event.currentTarget===rejects[i]){
                             let tableItem=this.tableData[i];
                             let data={
                                 type:tableItem.type,

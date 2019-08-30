@@ -1173,11 +1173,18 @@ var vue = new Vue({
                     data: JSON.stringify(conceptObj),
                     success: function (result) {
                         if (result.code === 0) {
-                            alert("Update Success");
-                            //$("#editModal",parent.document).remove();
+                            if (result.method === "update") {
+                                alert("Update Success");
+                                window.location.href = "/repository/concept/" + result.data;
+                            }
+                            else {
+                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                window.location.href = "/user/userSpace";
 
-                            window.location.href = "/repository/concept/" + result.data;
-                            //window.location.reload();
+                            }
+                        }
+                        else{
+                            alert(result.msg);
                         }
                     }
                 })

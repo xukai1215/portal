@@ -28,4 +28,11 @@ public class SpatialReference {
     String type;
     String parentId;
     String xml;
+
+    //版本
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
+
+    boolean lock;
 }

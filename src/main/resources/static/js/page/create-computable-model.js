@@ -448,17 +448,22 @@ var vue = new Vue({
                 }).done((res) => {
                     $("#step").css("display", "block");
                     $(".uploading").css("display", "none");
-                    switch (res.data.code) {
-                        case 1:
-                            alert("update computable model successfully!");
-                            window.location.href = "/computableModel/" + res.data.id;
-                            break;
-                        case -1:
-                            alert("save files error");
-                            break;
-                        case -2:
-                            alert("create fail");
-                            break;
+                    if(res.code===0) {
+                        switch (res.data.code) {
+                            case 1:
+                                alert("update computable model successfully!");
+                                window.location.href = "/computableModel/" + res.data.id;
+                                break;
+                            case -1:
+                                alert("save files error");
+                                break;
+                            case -2:
+                                alert("create fail");
+                                break;
+                        }
+                    }
+                    else{
+                        alert(res.msg);
                     }
                 }).fail((res) => {
 

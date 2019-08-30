@@ -31,4 +31,11 @@ public class Concept {
     String description_EN;
     String name_ZH;
     String name_EN;
+
+    //版本
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
+
+    boolean lock;
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Conceptual Model | OpenGMS</title>
+    <title th:text="${modelInfo.name}+' | OpenGMS'">Conceptual Model | OpenGMS</title>
 
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
@@ -137,9 +137,9 @@
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
 
-                        <a th:href="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}"
-                           th:text="'http://geomodeling.njnu.edu.cn/conceptualmodel/'+${modelInfo.oid}">
-                            http://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        <a th:href="'http://geomodeling.njnu.edu.cn/conceptualModel/'+${modelInfo.oid}"
+                           th:text="'http://geomodeling.njnu.edu.cn/conceptualModel/'+${modelInfo.oid}">
+                            http://geomodeling.njnu.edu.cn/conceptualModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">
