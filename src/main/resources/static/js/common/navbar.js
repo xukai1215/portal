@@ -263,7 +263,7 @@ window.onresize= ()=> {
 function watchWidth() {
     windowWidth=window.innerWidth;
     if (windowWidth > 500){
-        console.log(windowWidth);
+        // console.log(windowWidth);
         fullsub.style.display='none';
         phoneUserSub.style.display='none';
     }
@@ -289,7 +289,7 @@ function watchWidth() {
 (function changeBorder (){
     for(let i=0;i<clickMenu.length;i++){
         clickMenu[i].onclick=function showBlueBorder(){
-            console.log(this);
+            console.log('this'+this);
             if(i!=9&&i!=8){
 
                 console.log('11');
