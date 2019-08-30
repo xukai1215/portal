@@ -432,7 +432,7 @@ new Vue({
                             this.projects.total=data.total;
                             this.projects.result=data.list;
                             this.pageOption.progressBar=false;
-
+                            console.log(this.projects.result)
 
                         }, 500);
                     } else {

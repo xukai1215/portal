@@ -409,4 +409,4 @@ function watchWidth() {
 //     }
 // });
 
-ELEMENT.locale(ELEMENT.lang.en);
+// ELEMENT.locale(ELEMENT.lang.en);
