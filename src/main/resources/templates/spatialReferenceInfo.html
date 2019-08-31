@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Spatial Reference | OpenGMS</title>
+    <title th:text="${info.name}+' | OpenGMS'">Spatial Reference | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link href="/static/css/base/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css">
@@ -80,6 +80,9 @@
 
                     <div class="info">
                         <p th:text="${info.wkt==null?info.wkname:info.wkt}" style="word-break: break-word;"></p>
+                        <div class="tags">
+                            <span class="badge badge-info">Spatial Reference</span>
+                        </div>
                     </div>
 
                     <div th:if="${history!=true}" class="detail_option">
