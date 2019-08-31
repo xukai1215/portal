@@ -97,13 +97,13 @@ public class PortalApplicationTests {
     @Test
     public void updateConcept(){
 
-        List<Concept> list = conceptDao.findAll();
+        List<Unit> list = unitDao.findAll();
         List<String> list1 = new ArrayList<>();
-        for (Concept concept :list) {
+        for (Unit concept :list) {
             if (concept.getParentId()!= null){
                 list1.add(concept.getParentId());
                 concept.setClassifications(list1);
-                conceptDao.save(concept);
+                unitDao.save(concept);
                 list1.clear();
                 Utils.count();
             }
