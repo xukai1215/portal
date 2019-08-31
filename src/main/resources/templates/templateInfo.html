@@ -174,12 +174,12 @@
                     <div class="el-row"
                          style="height: 40px; display: flex; justify-content: center; align-items: center;">
                         <div class="el-col el-col-4 el-col-offset-3">
-                            <img src="/static/img/icon/default.png"
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col el-col-20">
                             <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a href="/user/42"><h4 th:text="NNU_Group">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>

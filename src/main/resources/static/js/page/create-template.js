@@ -357,10 +357,10 @@ var vue = new Vue({
                     data: JSON.stringify(templateObj),
                     success: function (result) {
                         if (result.code === 0) {
-                            if (result.method === "update") {
+                            if (result.data.method === "update") {
                                 alert("Update Success");
 
-                                window.location.href = "/repository/template/" + result.data;
+                                window.location.href = "/repository/template/" + result.data.oid;
                                 //window.location.reload();
                             }
                             else {
