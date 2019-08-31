@@ -1282,9 +1282,9 @@ var vue = new Vue({
                     data: JSON.stringify(conceptObj),
                     success: function (result) {
                         if (result.code === 0) {
-                            if (result.method === "update") {
+                            if (result.data.method === "update") {
                                 alert("Update Success");
-                                window.location.href = "/repository/concept/" + result.data;
+                                window.location.href = "/repository/concept/" + result.data.oid;
                             }
                             else {
                                 alert("Success! Changes have been submitted, please wait for the webmaster to review.");

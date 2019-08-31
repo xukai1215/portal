@@ -336,11 +336,11 @@ var vue = new Vue({
 
                     success: function (result) {
                         if (result.code === 0) {
-                            if (result.method === "update") {
+                            if (result.data.method === "update") {
                                 alert("Update Success");
                                 //$("#editModal",parent.document).remove();
 
-                                window.location.href = "/repository/unit/" + result.data;
+                                window.location.href = "/repository/unit/" + result.data.oid;
                                 //window.location.reload();
                             }
                             else {

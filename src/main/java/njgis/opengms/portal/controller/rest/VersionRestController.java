@@ -1043,4 +1043,53 @@ public class VersionRestController {
         return versionService.getPage4Compare(id);
     }
 
+    @RequestMapping(value = "/conceptualModel/{id}", method = RequestMethod.GET)
+    public ModelAndView getConceptualModelCompare(@PathVariable("id") String id) {
+        System.out.println("conceptual model compare");
+
+        return versionService.getConceptualModelHistoryPage(id);
+    }
+
+    @RequestMapping(value = "/logicalModel/{id}", method = RequestMethod.GET)
+    public ModelAndView getLogicalModelCompare(@PathVariable("id") String id) {
+        System.out.println("logical Model compare");
+
+        return versionService.getLogicalModelHistoryPage(id);
+    }
+
+    @RequestMapping(value = "/computableModel/{id}", method = RequestMethod.GET)
+    public ModelAndView getComputableModelCompare(@PathVariable("id") String id) {
+        System.out.println("computable model compare");
+
+        return versionService.getComputableModelHistoryPage(id);
+    }
+
+    @RequestMapping(value = "/concept/{id}", method = RequestMethod.GET)
+    public ModelAndView getConceptCompare(@PathVariable("id") String id) {
+        System.out.println("concept compare");
+
+        return versionService.getConceptHistoryPage(id);
+    }
+
+    @RequestMapping(value = "/template/{id}", method = RequestMethod.GET)
+    public ModelAndView getTemplateCompare(@PathVariable("id") String id) {
+        System.out.println("template compare");
+
+        return versionService.getTemplateHistoryPage(id);
+    }
+
+    @RequestMapping(value = "/spatialReference/{id}", method = RequestMethod.GET)
+    public ModelAndView getSpatialReferenceCompare(@PathVariable("id") String id) {
+        System.out.println("spatialReference compare");
+
+        return versionService.getSpatialReferenceHistoryPage(id);
+    }
+
+    @RequestMapping(value = "/unit/{id}", method = RequestMethod.GET)
+    public ModelAndView getUnitCompare(@PathVariable("id") String id) {
+        System.out.println("unit compare");
+
+        return versionService.getUnitHistoryPage(id);
+    }
+
 }
