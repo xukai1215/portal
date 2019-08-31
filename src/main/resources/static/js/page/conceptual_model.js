@@ -9,8 +9,8 @@ new Vue({
 
             form:{
                 name:"",
-            }
-
+            },
+            graphVisible:false
         }
     },
     methods: {
@@ -123,7 +123,7 @@ new Vue({
                     }
                 }
             })
-        }
+        },
 
     },
     mounted(){
@@ -147,5 +147,6 @@ new Vue({
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
+
     }
 })

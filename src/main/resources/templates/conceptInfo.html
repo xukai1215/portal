@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-    <title>Concept & Semantic | OpenGMS</title>
+    <title th:text="${info.name}+' | OpenGMS'">Concept & Semantic | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link href="/static/css/base/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css">
@@ -76,6 +76,9 @@
                     <div class="info">
                         <p th:if="${info.name_ZH!=null}"  th:text="${info.description_EN==''?info.description_ZH:info.description_EN}" style="word-break: break-word;"></p>
                         <p th:if="${info.name_ZH==null}" th:text="${info.description}" style="word-break: break-word;"></p>
+                        <div class="tags">
+                            <span class="badge badge-info">Concept & Semantic</span>
+                        </div>
                     </div>
 
                     <div th:if="${history!=true}" class="detail_option">
