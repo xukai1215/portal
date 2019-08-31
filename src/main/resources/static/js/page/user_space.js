@@ -204,6 +204,7 @@ var vue = new Vue({
                     this.searchText = '';
                     this.searchResult = new Array();
                     this.page = 1;
+                    this.researchIndex=1;
                     this.getTasksInfo();
                     this.pageControlIndex='research';
                     this.getArticleResult();
@@ -1214,6 +1215,7 @@ var vue = new Vue({
             }
         },
         searchModels() {
+            this.pageSize=10;
             var url = "";
             var name = "";
             if (this.curIndex=='2-1') {
@@ -1246,6 +1248,7 @@ var vue = new Vue({
                     data: {
                         searchText: this.searchText,
                         page: this.page-1,
+                        pagesize:this.pageSize,
                         sortType: this.sortType,
                         asc: this.sortAsc
                     },
@@ -1276,6 +1279,7 @@ var vue = new Vue({
             }
         },
         searchDataItem() {
+            this.pageSize=10;
             var that = this;
             var da={
                 userOid:this.userId,
@@ -1303,6 +1307,7 @@ var vue = new Vue({
                 });
         },
         searchConcepts(){
+            this.pageSize=10;
             var url = "/repository/searchConceptsByUserId";
             var name = "concepts";
             $.ajax({
@@ -1311,6 +1316,7 @@ var vue = new Vue({
                 data: {
                     searchText: this.searchText,
                     page: this.page-1,
+                    pageSize:this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
@@ -1338,6 +1344,7 @@ var vue = new Vue({
             })
         },
         searchSpatials(){
+            this.pageSize=10;
             var url = "/repository/searchSpatialsByUserId";
             var name = "spatials";
             $.ajax({
@@ -1346,6 +1353,7 @@ var vue = new Vue({
                 data: {
                     searchText: this.searchText,
                     page: this.page-1,
+                    pageSize:this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
@@ -1373,6 +1381,7 @@ var vue = new Vue({
             })
         },
         searchTemplates(){
+            this.pageSize=10;
             var url = "/repository/searchTemplatesByUserId";
             var name = "templates";
             $.ajax({
@@ -1381,6 +1390,7 @@ var vue = new Vue({
                 data: {
                     searchText: this.searchText,
                     page: this.page-1,
+                    pageSize:this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
@@ -1408,6 +1418,7 @@ var vue = new Vue({
             })
         },
         searchUnits(){
+            this.pageSize=10;
             var url = "/repository/searchUnitsByUserId";
             var name = "units";
             $.ajax({
@@ -1416,6 +1427,7 @@ var vue = new Vue({
                 data: {
                     searchText: this.searchText,
                     page: this.page-1,
+                    pageSize:this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
@@ -1444,6 +1456,7 @@ var vue = new Vue({
         },
 
         searchArticles(){
+            this.pageSize=5;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1455,7 +1468,7 @@ var vue = new Vue({
                 url:"/article/searchByTitle",
                 data:{
                     page: this.page-1,
-                    pageSize:4,
+                    pageSize: this.pageSize,
                     sortElement:"creatDate",
                     asc: false,
                     searchText:this.searchText
@@ -1487,6 +1500,7 @@ var vue = new Vue({
         },
 
         searchProjects(){
+            this.pageSize=5;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1498,7 +1512,7 @@ var vue = new Vue({
                 url:"/project/searchByName",
                 data:{
                     page: this.page-1,
-                    pageSize:4,
+                    pageSize:this.pageSize,
                     sortElement:"creatDate",
                     asc: false,
                     searchText:this.searchText
@@ -1530,6 +1544,7 @@ var vue = new Vue({
         },
 
         searchConferences(){
+            this.pageSize=5;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1541,7 +1556,7 @@ var vue = new Vue({
                 url:"/conference/searchByTitle",
                 data:{
                     page: this.page-1,
-                    pageSize:4,
+                    pageSize:this.pageSize,
                     sortElement:"creatDate",
                     asc: false,
                     searchText:this.searchText
@@ -1573,6 +1588,7 @@ var vue = new Vue({
         },
 
         getModels() {
+            this.pageSize=10;
             var url = "";
             var name = "";
             console.log(this.searchResult);
@@ -1646,6 +1662,7 @@ var vue = new Vue({
 
         },
         getConcepts(){
+            this.pageSize=10;
             var url = "/repository/getConceptsByUserId";
             var name = "concepts";
 
@@ -1791,7 +1808,7 @@ var vue = new Vue({
         },
 
         getArticleResult(){
-            // this.pageSize=4;
+            this.pageSize=5;
             this.researchItems=[];
             // var urls={
             //     1:"/article/getByUserOidBySort",
@@ -1807,7 +1824,7 @@ var vue = new Vue({
                 data:
                     {
                         page: this.page-1,
-                        pageSize:10,
+                        pageSize:this.pageSize,
                         sortElement:"creatDate",
                         asc: false
                     },
@@ -1845,6 +1862,7 @@ var vue = new Vue({
         },
 
         getProjectResult(){
+            this.pageSize=5;
             var url="/project/getByUserOidBySort";
             $.ajax({
                 type:'GET',
@@ -1854,7 +1872,7 @@ var vue = new Vue({
                 data:
                     {
                         page: this.page-1,
-                        pageSize:10,
+                        pageSize:this.pageSize,
                         sortElement:"creatDate",
                         asc: false
                     },
@@ -1892,6 +1910,7 @@ var vue = new Vue({
         },
 
         getConferenceResult(){
+            this.pageSize=5;
             var url="/conference/getByUserOidBySort";
             $.ajax({
                 type:'GET',
@@ -1901,7 +1920,7 @@ var vue = new Vue({
                 data:
                     {
                         page: this.page-1,
-                        pageSize:10,
+                        pageSize:this.pageSize,
                         sortElement:"creatDate",
                         asc: false
                     },
@@ -2313,14 +2332,14 @@ var vue = new Vue({
                 for (let i = 0; i < this.totalPage; i++) {
                     this.pageList.push(i + 1);
                 }
-            } else if (this.totalPage - this.curPage < 5 && this.curPage > 4) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+            } else if (this.totalPage - this.curPage < 5 ) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
 
                 this.pageList = [
-                    this.curPage - 4,
-                    this.curPage - 3,
-                    this.curPage - 2,
-                    this.curPage - 1,
-                    this.curPage,
+                    this.totalPage - 4,
+                    this.totalPage - 3,
+                    this.totalPage - 2,
+                    this.totalPage - 1,
+                    this.totalPage,
                 ];
             } else {
                 let cur = Math.floor((this.curPage - 1) / 5) * 5 + 1;
