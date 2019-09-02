@@ -27,8 +27,10 @@ public class Unit {
     String type;
     String parentId;
     String xml;
-    String description_ZH;
+    String name_EN;
+    String name_ZH;
     String description_EN;
+    String description_ZH;
 
     //版本
     String lastModifier;

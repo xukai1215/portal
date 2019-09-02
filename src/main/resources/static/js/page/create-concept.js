@@ -819,7 +819,9 @@ var vue = new Vue({
         clsStr:'',
         parId:"",
         related:[],
-        relatedOid:[]
+        relatedOid:[],
+
+        conceptInfo:{}
     },
     methods:{
         handleSelect(index,indexPath){
@@ -1056,6 +1058,7 @@ var vue = new Vue({
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
+            $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
                 height: 350,
@@ -1099,6 +1102,7 @@ var vue = new Vue({
                 success: (result) => {
                     console.log(result);
                     var basicInfo = result.data;
+                    this.conceptInfo = basicInfo;
 
                     //cls
                     this.cls = basicInfo.classifications;
@@ -1127,7 +1131,13 @@ var vue = new Vue({
                     $(".providers").children(".panel").remove();
 
                     $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
+                    if(basicInfo.description != null){
+                        $("#descInput").val(basicInfo.description);
+                    }else if(basicInfo.description_EN != ""){
+                        $("#descInput").val(basicInfo.description_EN);
+                    }else if(basicInfo.description_ZH != ""){
+                        $("#descInput").val(basicInfo.description_ZH);
+                    }
 
                     //image
                     if (basicInfo.image != "") {
@@ -1149,7 +1159,9 @@ var vue = new Vue({
                     });
 
                     //detail
-                    $("#myText").html(basicInfo.detail);
+                    if(basicInfo.detail != null){
+                        $("#myText").html(basicInfo.detail);
+                    }
                     tinymce.init({
                         selector: "textarea#myText",
                         height: 300,
@@ -1183,8 +1195,6 @@ var vue = new Vue({
                             return img.hasAttribute('internal-blob');
                         }
                     });
-
-
                 }
             })
             window.sessionStorage.setItem("editConcept_id", "");

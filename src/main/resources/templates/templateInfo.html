@@ -67,8 +67,10 @@
                 <div class="detail_overview">
 
                     <div class="img">
-                        <avatar th:username="${info.name}" :size="90" :rounded="false" ></avatar>
-                        <!--<img class="calcImg" src="/static/img/repository/dimension.png">-->
+                        <div th:switch="${info.image}" class="img">
+                            <avatar th:case="''" th:username="${info.name}" :size="90" :rounded="false"></avatar>
+                            <img th:case="*" th:src="${image}">
+                        </div>
                     </div>
 
                     <div class="info">
@@ -128,15 +130,15 @@
                             </tr>
                         </table>
                     </div>
-                    <pre th:if="${info.detail==null}" lang="xml" th:text="${info.xml}"></pre>
                     <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
+                    <pre th:if="${info.xml!=null}" lang="xml" th:text="${info.xml}"></pre>
                 </div>
 
             </div>
 
-            <div th:if="${info.detail == null}" class="text-center" >
-                <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
-            </div>
+            <!--<div th:if="${info.detail == null}" class="text-center" >-->
+                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
+            <!--</div>-->
 
             <div id="cite" class="detail_block">
                 <div class="block_head">

@@ -69,6 +69,9 @@ public class RepositoryService {
     @Value("${resourcePath}")
     private String resourcePath;
 
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
+
     //toUpperCase
     public void toUpperCase() {
         List<Concept> concepts = conceptDao.findAll();
@@ -201,6 +204,7 @@ public class RepositoryService {
         }
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+concept.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(concept.getCreateTime()));
         modelAndView.addObject("related", relateArray);
@@ -492,6 +496,7 @@ public class RepositoryService {
         }
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+spatialReference.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(spatialReference.getCreateTime()));
         modelAndView.addObject("user", userJson);
@@ -773,6 +778,7 @@ public class RepositoryService {
 
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+template.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(template.getCreateTime()));
         modelAndView.addObject("user", userJson);
@@ -1034,6 +1040,7 @@ public class RepositoryService {
 
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+unit.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(unit.getCreateTime()));
         modelAndView.addObject("user", userJson);

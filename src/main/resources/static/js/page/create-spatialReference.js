@@ -29,24 +29,27 @@ var vue = new Vue({
             label: "SpatialReferenceRepository",
             oid: '58340c92-d74f-4d81-8a80-e4fcff286008',
             children: [{
-                id: 100,
+                id: 2,
                 "oid": "da70ad83-de57-4fc3-a85d-c1dcf4961433",
                 "label": "Basic"
-            },
+                },
                 {
+                    id: 3,
                     "oid": "c4642926-e797-4f61-92d6-7933df2413d2",
                     "label": "Epsg"
                 },
                 {
+                    id: 4,
                     "oid": "e8562394-b55f-46d7-870e-ef5ad3aaf110",
                     "label": "Esri"
                 },
                 {
-
+                    id: 5,
                     "oid": "ee830613-1603-4f38-a196-5028e4e10d39",
                     "label": "IAU"
                 },
                 {
+                    id: 6,
                     "oid": "b2f2fbfd-f21a-47ac-9e1f-a96ac0218bf1",
                     "label": "CustomizedWKT"
                 }]
@@ -58,7 +61,9 @@ var vue = new Vue({
         },
         cls: [],
         clsStr: '',
-        parId: ""
+        parId: "",
+
+        referenceInfo:{}
     },
     methods: {
         handleSelect(index, indexPath) {
@@ -131,6 +136,8 @@ var vue = new Vue({
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
+
+            $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
                 height: 350,
@@ -174,12 +181,13 @@ var vue = new Vue({
                 success: (result) => {
                     console.log(result)
                     var basicInfo = result.data;
+                    this.referenceInfo = basicInfo;
 
                     //cls
                     this.cls = basicInfo.classifications;
                     let ids = [];
                     for (i = 0; i < this.cls.length; i++) {
-                        for (j = 0; j < 4; j++) {
+                        for (j = 0; j < 1; j++) {
                             for (k = 0; k < this.treeData[j].children.length; k++) {
                                 if (this.cls[i] == this.treeData[j].children[k].oid) {
                                     ids.push(this.treeData[j].children[k].id);
@@ -213,7 +221,9 @@ var vue = new Vue({
 
                     //detail
                     //tinymce.remove("textarea#myText");
-                    $("#myText").html(basicInfo.detail);
+                    if(basicInfo.detail != null){
+                        $("#myText").html(basicInfo.detail);
+                    }
                     tinymce.init({
                         selector: "textarea#myText",
                         height: 300,

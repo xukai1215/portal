@@ -6,6 +6,9 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +111,84 @@ public class PortalApplicationTests {
                 Utils.count();
             }
         }
+    }
+
+    @Test
+    public void updateDetail(){
+        List<Concept> list = conceptDao.findAll();
+        String detail = "";
+        for (Concept concept :list) {
+            if(concept.getDetail() == null){
+                if (!concept.getDescription_EN().equals("")){
+                    detail += concept.getName_EN()+": " +concept.getDescription_EN() +"\n";
+                }
+                if (!concept.getDescription_ZH().equals("")){
+                    detail += concept.getName_ZH()+": " +concept.getDescription_ZH() +"\n";
+                }
+                concept.setDetail(detail);
+                conceptDao.save(concept);
+                detail = "";
+                Utils.count();
+            }
+
+        }
+    }
+
+    @Test
+    public void unitName(){
+        List<Unit> list = unitDao.findAll();
+        for (Unit unit:list) {
+            if (unit.getXml()!=null){
+                org.dom4j.Document document = null;
+                try {
+                    document = DocumentHelper.parseText(unit.getXml());
+                    Element root = document.getRootElement();
+                    Element Localizations = root.element("Localizations");
+                    List<Element> LocalizationList = Localizations.elements("Localization");
+                    for (Element Localization : LocalizationList) {
+                        String language = Localization.attributeValue("Local");
+                        String name = Localization.attributeValue("Name");
+                        if (language.equals("EN_US")){
+                            unit.setName_EN(name);
+                        }else if(language.equals("ZH_CN")){
+                            unit.setName_ZH(name);
+                        }
+                    }
+                    unitDao.save(unit);
+                    Utils.count();
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    @Test
+    public void spatialNameAndDes(){
+        List<SpatialReference> list = spatialReferenceDao.findAll();
+        for (SpatialReference spatialReference:list) {
+            if (spatialReference.getXml()!=null){
+                org.dom4j.Document document = null;
+                try {
+                    document = DocumentHelper.parseText(spatialReference.getXml());
+                    Element root = document.getRootElement();
+                    Element Localization = root.element("Localization");
+
+                    String name = Localization.attributeValue("name");
+                    spatialReference.setName_EN(name);
+                    String description = Localization.attributeValue("description");
+                    spatialReference.setDescription_EN(description);
+
+                    spatialReferenceDao.save(spatialReference);
+                    Utils.count();
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
     }
 
     @Test
