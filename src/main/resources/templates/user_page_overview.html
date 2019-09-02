@@ -35,128 +35,128 @@
 
     <div id="userPage" class="clearfix" style="height: auto;background-color: #f3f3f3">
         <div class="titlePic">
-        <div id="upperContainer" class="fullContainer">
-            <!--/*@thymesVar id="areas" type=""*/-->
-            <div class="userInfoContainer" >
-                <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
-                <div class="user_info" >
-                    <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
-                    <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>
+            <div id="upperContainer" class="fullContainer">
+                <!--/*@thymesVar id="areas" type=""*/-->
+                <div class="userInfoContainer" >
+                    <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
+                    <div class="user_info" >
+                        <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
+                        <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>
 
-                    <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
+                        <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
+                    </div>
                 </div>
+            </div>
+
+            <div id="middleContainer" class="fullContainer">
+                <div class="menuContainer" >
+                    <div class="menuItem" :class="{menuClicked:bodyIndex==1}">
+                        <button class="noneBorderButton"  @click="menu_Click(1)" style="font-size: 16.5px" >Overview</button>
+                        <div class="menuBorder"></div>
+                    </div>
+                    <div class="menuItem" :class="{menuClicked:bodyIndex==2}">
+                        <button class="noneBorderButton"  @click="menu_Click_Resource(2)" style="font-size: 16.5px">Resources</button>
+                        <div class="menuBorder"></div>
+                    </div>
+                    <div class="menuItem" :class="{menuClicked:bodyIndex==3}">
+                        <button class="noneBorderButton"  @click="menu_Click(3)" style="font-size: 16.5px">Research</button>
+                        <div class="menuBorder"></div>
+                    </div>
+                    <div class="menuItem" :class="{menuClicked:bodyIndex==4}">
+                        <button class="noneBorderButton"  @click="menu_Click(4)" style="font-size: 16.5px;padding: 12px 8px 6px 8px;">Info</button>
+                        <div class="menuBorder"></div>
+                    </div>
+                    <!--                <div class="menuItem">-->
+                    <!--                    <a href="###">Research you follow</a>-->
+                    <!--                </div>-->
+
+                </div>
+
             </div>
         </div>
 
-        <div id="middleContainer" class="fullContainer">
-            <div class="menuContainer" >
-                <div class="menuItem" :class="{menuClicked:bodyIndex==1}">
-                    <button class="noneBorderButton"  @click="menu_Click(1)" style="font-size: 16.5px" >Overview</button>
-                    <div class="menuBorder"></div>
-                </div>
-                <div class="menuItem" :class="{menuClicked:bodyIndex==2}">
-                    <button class="noneBorderButton"  @click="menu_Click_Resource(2)" style="font-size: 16.5px">Resources</button>
-                    <div class="menuBorder"></div>
-                </div>
-                <div class="menuItem" :class="{menuClicked:bodyIndex==3}">
-                    <button class="noneBorderButton"  @click="menu_Click(3)" style="font-size: 16.5px">Research</button>
-                    <div class="menuBorder"></div>
-                </div>
-                <div class="menuItem" :class="{menuClicked:bodyIndex==4}">
-                    <button class="noneBorderButton"  @click="menu_Click(4)" style="font-size: 16.5px;padding: 12px 8px 6px 8px;">Info</button>
-                    <div class="menuBorder"></div>
-                </div>
-<!--                <div class="menuItem">-->
-<!--                    <a href="###">Research you follow</a>-->
-<!--                </div>-->
-
-            </div>
-
-        </div>
-        </div>
-
-<!--        <div th:replace="fragments/user_page_head :: userPageComm"></div>-->
-<!--x-->
+        <!--        <div th:replace="fragments/user_page_head :: userPageComm"></div>-->
+        <!--x-->
         <div id="downerContainer" class="fullContainer"  >
 
-        <!--       overview-->
+            <!--       overview-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==1}"  >
                 <div role="brief introduction" class="leftContentContainer">
-                   <div id="selfIntroduction" class="contentColContainer">
-                       <div class="subTitle" style="">
-                               <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
-                               <div>
-                                   <button id="viewMoreIntroduction" class="viewMoreButton" @click="menu_Click(4)" style="">View More</button>
+                    <div id="selfIntroduction" class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
+                            <div>
+                                <button id="viewMoreIntroduction" class="viewMoreButton" @click="menu_Click(4)" style="">View More</button>
 
-                               </div>
-                           </div>
-                       <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0">
-                           <div class="contentContainer" style="flex-direction: column;">
-                               <h4 th:text="${userInfo.description}" style="margin: 0 15px 0"></h4>
-                           </div>
-<!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
-<!--                           <div>-->
-<!--                               <h4 style="font-style:italic;font-weight: 500;color: #999999;">Research Interests & Skills</h4>-->
-<!--                           </div>-->
-<!--                       </div>-->
-                           <div class="innerBorder"></div>
-                           <div class="contentContainer" style="flex-direction: column;height: 40px">
-                               <h4 style="margin: 0 30px 0;color:#828282 ">Research Interests & Skills</h4>
-                               <p style="margin: 0 15px 0" th:each="String : ${userInfo.researchInterests}" th:text="${String}">Geo</p>
+                            </div>
+                        </div>
+                        <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0">
+                            <div class="contentContainer" style="flex-direction: column;">
+                                <h4 th:text="${userInfo.description}" style="margin: 0 15px 0"></h4>
+                            </div>
+                            <!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
+                            <!--                           <div>-->
+                            <!--                               <h4 style="font-style:italic;font-weight: 500;color: #999999;">Research Interests & Skills</h4>-->
+                            <!--                           </div>-->
+                            <!--                       </div>-->
+                            <div class="innerBorder"></div>
+                            <div class="contentContainer" style="flex-direction: column;height: 40px">
+                                <h4 style="margin: 0 30px 0;color:#828282 ">Research Interests & Skills</h4>
+                                <p style="margin: 0 15px 0" th:each="String : ${userInfo.researchInterests}" th:text="${String}">Geo</p>
 
-                           </div>
-                       </div>
-                   </div>
+                            </div>
+                        </div>
+                    </div>
 
-                   <div id="modelItems" class="contentColContainer" >
-                       <div class="subTitle" style="">
-                           <div><h4 style="margin-top: 10px;margin-left: 10px">Resources</h4></div>
-                           <div>
-                               <button id="viewMoreModel" class="viewMoreButton" @click="menu_Click(2)" style="" >View More</button>
-                           </div>
-                       </div>
-                       <div id="modelStatsTable" class="contentContainer" >
+                    <div id="modelItems" class="contentColContainer" >
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 10px">Resources</h4></div>
+                            <div>
+                                <button id="viewMoreModel" class="viewMoreButton" @click="menu_Click(2)" style="" >View More</button>
+                            </div>
+                        </div>
+                        <div id="modelStatsTable" class="contentContainer" >
 
-                          <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer">
-                              <div class="leftCard">
-                                  <div style="margin-left: 10px;margin-top: 11px">
-                                      <img src="../static/img/model/model.png"></div>
-                              </div>
-                              <div class="rightCard">
-                                  <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
-                                  <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                  <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.modelItems}">1000</h2><h5>&nbspitems</h5></div>
-                              </div>
-                          </div>
-                          <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer" >
-                              <div class="leftCard">
-                                  <div style="margin-left: 10px;margin-top: 11px">
-                                      <img src="../static/img/model/model.png"></div>
-                              </div>
-                              <div class="rightCard">
-                                  <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
-                                  <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                  <div class="statsCard"><h2 style="color: #36c9ff;" th:text="${userInfo.dataItems}">1000</h2><h5>&nbspitems</h5></div>
-                              </div>
-                          </div>
-                          <div id="conceptualModel" class="itemCardCol" @click="conceptualModelClick()" style="width: 30%;cursor: pointer">
-                              <div class="titleCard"><h3 style="font-size: 21px">Conceptual Model</h3></div>
-                              <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                              <div class="statsCard"><h2 style="color: #ff9526;" th:text="${userInfo.conceptualModels}">1000</h2><h5>&nbspitems</h5></div>
-                          </div>
-                          <div id="logicalModel" class="itemCardCol" @click="logicalModelClick" style="width: 30%;cursor: pointer">
-                              <div class="titleCard"><h3 style="font-size: 21px">Logical Model</h3></div>
-                              <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                              <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.logicalModels}">1000</h2><h5>&nbspitems</h5></div>
-                          </div>
-                          <div id="computableModel" class="itemCardCol" @click="computableModelClick()" style="width: 30%;cursor: pointer">
-                              <div class="titleCard"><h3 style="font-size: 21px">Computable Model</h3></div>
-                              <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                              <div class="statsCard"><h2 style="color: #aa0b15;" th:text="${userInfo.computableModels}">1000</h2><h5>&nbspitems</h5></div>
-                          </div>
+                            <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer">
+                                <div class="leftCard">
+                                    <div style="margin-left: 10px;margin-top: 11px">
+                                        <img src="../static/img/model/model.png"></div>
+                                </div>
+                                <div class="rightCard">
+                                    <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
+                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                    <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.modelItems}">1000</h2><h5>&nbspitems</h5></div>
+                                </div>
+                            </div>
+                            <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer" >
+                                <div class="leftCard">
+                                    <div style="margin-left: 10px;margin-top: 11px">
+                                        <img src="../static/img/model/model.png"></div>
+                                </div>
+                                <div class="rightCard">
+                                    <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
+                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                    <div class="statsCard"><h2 style="color: #36c9ff;" th:text="${userInfo.dataItems}">1000</h2><h5>&nbspitems</h5></div>
+                                </div>
+                            </div>
+                            <div id="conceptualModel" class="itemCardCol" @click="conceptualModelClick()" style="width: 30%;cursor: pointer">
+                                <div class="titleCard"><h3 style="font-size: 21px">Conceptual Model</h3></div>
+                                <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                <div class="statsCard"><h2 style="color: #ff9526;" th:text="${userInfo.conceptualModels}">1000</h2><h5>&nbspitems</h5></div>
+                            </div>
+                            <div id="logicalModel" class="itemCardCol" @click="logicalModelClick" style="width: 30%;cursor: pointer">
+                                <div class="titleCard"><h3 style="font-size: 21px">Logical Model</h3></div>
+                                <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.logicalModels}">1000</h2><h5>&nbspitems</h5></div>
+                            </div>
+                            <div id="computableModel" class="itemCardCol" @click="computableModelClick()" style="width: 30%;cursor: pointer">
+                                <div class="titleCard"><h3 style="font-size: 21px">Computable Model</h3></div>
+                                <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                <div class="statsCard"><h2 style="color: #aa0b15;" th:text="${userInfo.computableModels}">1000</h2><h5>&nbspitems</h5></div>
+                            </div>
 
-                       </div>
-                   </div>
+                        </div>
+                    </div>
                     <div class="splitBlock">
                         <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">RESEARCH</h4>
                         </div>
@@ -179,40 +179,40 @@
                                     </div>
                                     <div class="innerBorder" style="border-bottom-color: #ffffff;margin: 0 5px"></div>
                                 </div>
-<!--                                <div class="innerBorder" style="border-bottom-color: #c2c2c2;"></div>-->
+                                <!--                                <div class="innerBorder" style="border-bottom-color: #c2c2c2;"></div>-->
                                 <div class="cardDowner colArrange" style="padding-bottom: 15px;justify-content: flex-start;width: 100%">
                                     <div class="splitBlock" style="background-color: #ffffff">
                                         <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Hottest</h4>
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-<!--                                    此处v-for没有用但是加载速度会变快-->
+                                    <!--                                    此处v-for没有用但是加载速度会变快-->
                                     <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                         <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
-                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
-                                                 <div class="cardHeadContainer" style="height: 72px;">
-                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
-                                                         <div style="display: flex">
+                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
+                                            <div class="cardUpper colArrange" @click="articleClick(1)" style="background-color: #fafafa">
+                                                <div class="cardHeadContainer" style="height: 72px;">
+                                                    <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                        <div style="display: flex">
 
-                                                             <h4>{{articles.result[0].title}}</h4>
+                                                            <h4>{{articles.result[0].title}}</h4>
 
-                                                         </div>
-                                                     </div>
-                                                 </div>
-                                                 <div class="cardContentContainer">
-                                                     <div>
-                                                         <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
-                                                         <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
-                                                         <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
-                                                         <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
-                                                     </div>
-                                                 </div>
-                                             </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="cardContentContainer">
+                                                    <div>
+                                                        <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
+                                                        <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
+                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
+                                                        <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                             <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                                 <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
-                                             </div>
-                                         </div>
+                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                <a :href="articles.result[0].link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -234,23 +234,23 @@
                                         <div class="arrowDownerBig"></div>
                                     </div>
                                     <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
+                                        <div class="itemCardCol" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
                                                         <div style="display: flex">
 
-                                                            <h4>{{articles.result[0].title}}</h4>
+                                                            <h4>{{projects.result[0].projectName}}</h4>
 
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="cardContentContainer">
                                                     <div>
-                                                        <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
-                                                        <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
-                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
-                                                        <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                        <p><span>Start Time:</span> &nbsp&nbsp{{projects.result[0].startTime}}</p>
+                                                        <p><span>End Time:</span> &nbsp&nbsp{{projects.result[0].endTime}}</p>
+                                                        <p><span>Role:</span> &nbsp&nbsp{{projects.result[0].role}}</p>
+                                                        <p><span>Fund Agency:</span> &nbsp&nbsp{{projects.result[0].fundAgency}}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -279,24 +279,25 @@
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
+                                    <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
-                                                    <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                    <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
                                                         <div style="display: flex">
 
-                                                            <h4>{{articles.result[0].title}}</h4>
+                                                            <h4>{{conferences.result[0].title}}</h4>
 
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="cardContentContainer">
                                                     <div>
-                                                        <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
-                                                        <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
-                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
-                                                        <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                        <p><span>Theme:</span> &nbsp&nbsp{{conferences.result[0].theme}} </p>
+                                                        <p><span>Conference Role:</span> &nbsp&nbsp{{conferences.result[0].conferenceRole}}</p>
+                                                        <p><span>Start Time:</span> &nbsp&nbsp{{conferences.result[0].startTime}}</p>
+                                                        <p><span>End Time:</span> &nbsp&nbsp{{conferences.result[0].endTime}}</p>
+                                                        <p><span>Location:</span> &nbsp&nbsp{{conferences.result[0].location}}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -322,16 +323,16 @@
                         <div class="contentContainer colArrange" >
                             <div class="contentContainer" style="height: 80px;padding-left: 0px; ">
                                 <div class="contentColContainer" style="width: 300px;align-items: flex-start;padding-left: 10px;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                    <h3 th:text="${userInfo.affiliation.name}"></h3>
-                                    <h4 th:text="${userInfo.affiliation.department}"></h4>
-                                    <h4 th:text="${userInfo.affiliation.position}"></h4>
-<!--                                <h4 th:text="${userInfo.}">nj</h4>-->
+                                    <h3 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.name}"></h3>
+                                    <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.department}"></h4>
+                                    <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.position}"></h4>
+                                    <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
                                 </div>
                                 <div class="institutionIcon">
                                     <img style="width: 60px;height: 60px" src="/static/img/icon/institutionIcon.png">
                                 </div>
                             </div>
-<!--                            <div class="innerBorder"></div>-->
+                            <!--                            <div class="innerBorder"></div>-->
                             <div class="contentContainer colArrange" style="height: 100px">
                                 <div class="itemCardCol wzhFilter_Lab"
                                      style="justify-content: flex-start;margin-top: 0;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >
@@ -356,7 +357,7 @@
                 </div>
             </div>
 
-<!--                      model item-->
+            <!--                      model item-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==2}" >
                 <div id="modelStats" class="leftContentContainer" style="width: 290px">
                     <div  class="contentColContainer">
@@ -366,8 +367,8 @@
                     </div>
                     <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
                         <ul>
-<!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
-<!--                                <p>99999</p></div></a></li>-->
+                            <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
+                            <!--                                <p>99999</p></div></a></li>-->
                             <li><a id="tab-Model Item" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==1}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="modelItemClick()">Model Item<div class="statsNumber" :class="{statsNumberFullColor:showIndex==1}">
                                 <p th:text="${userInfo.modelItems}">1000</p></div></a></li>
@@ -441,7 +442,7 @@
                                     </div>
                                 </div>
                             </div>
-<!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -455,7 +456,7 @@
                                     </el-pagination>
                                 </div>
                             </div>
-<!--                        </div>-->
+                            <!--                        </div>-->
                         </div>
                     </div>
 
@@ -618,9 +619,9 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-<!--                                        <div class="tags" v-if="logicalModel.keywords.length>0">-->
-<!--                                            <span class="badge badge-info" v-for="keyword in logicalModel.keywords">{{keyword.toUpperCase()}}</span>-->
-<!--                                        </div>-->
+                                        <!--                                        <div class="tags" v-if="logicalModel.keywords.length>0">-->
+                                        <!--                                            <span class="badge badge-info" v-for="keyword in logicalModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                        <!--                                        </div>-->
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}
                                         </div>
@@ -680,9 +681,9 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-<!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
-<!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
-<!--                                        </div>-->
+                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                        <!--                                        </div>-->
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
                                         </div>
@@ -712,75 +713,75 @@
 
             <!--          research-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==3}"  >
-                    <div  class="leftContentContainer" style="width: 290px">
-                        <div  class="contentColContainer">
-                            <div class="subTitle" style="">
-                                <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Research</h4></div>
-                            </div>
+                <div  class="leftContentContainer" style="width: 290px">
+                    <div  class="contentColContainer">
+                        <div class="subTitle" style="">
+                            <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Research</h4></div>
                         </div>
-                        <div class="contentColContainer contentUlContainer" style="margin-top: 0px;">
-                            <ul>
-                                <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
-                                <!--                                <p>99999</p></div></a></li>-->
-                                <li><a aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==1}"
-                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="articleClick(1)">Articles<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==1}">
-                                    <p th:text="${userInfo.articlesCount}">1000</p></div></a></li>
-                                <li><a aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==2}"
-                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="projectClick(2)">Projects<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==2}">
-                                    <p>100</p></div></a></li>
-                                <li><a aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==3}"
-                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conferenceClick(3)">Conferences<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==3}">
-                                    <p>100</p></div></a></li>
+                    </div>
+                    <div class="contentColContainer contentUlContainer" style="margin-top: 0px;">
+                        <ul>
+                            <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
+                            <!--                                <p>99999</p></div></a></li>-->
+                            <li><a aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==1}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="articleClick(1)">Articles<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==1}">
+                                <p th:text="${userInfo.articlesCount}">1000</p></div></a></li>
+                            <li><a aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==2}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="projectClick(2)">Projects<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==2}">
+                                <p>100</p></div></a></li>
+                            <li><a aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==3}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conferenceClick(3)">Conferences<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==3}">
+                                <p>100</p></div></a></li>
 
-                            </ul>
-
-                        </div>
+                        </ul>
 
                     </div>
-                    <div class="rigntContentContainer" style="width:900px">
-                        <div class="itemContainer" :class="{showActive:researchIndex==1}" >
-                            <div  class="contentColContainer" style="margin-bottom: 0">
-                                <div class="subTitle" >
-                                    <div><h4 style="margin-top: 10px;color: #999999;">Articles</h4></div>
-                                </div>
+
+                </div>
+                <div class="rigntContentContainer" style="width:900px">
+                    <div class="itemContainer" :class="{showActive:researchIndex==1}" >
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Articles</h4></div>
                             </div>
-                            <div class="contentColContainer modelTable" style="margin-top: 0">
-                                <div class="list-item" v-for="(article,key) in articles.result">
-                                    <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
-                                        <div class="cardUpper colArrange" style="background-color: #fafafa">
-                                            <div class="cardHeadContainer" style="height: 72px;">
-                                                <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
-                                                    <div style="display: flex">
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" v-for="(article,key) in articles.result">
+                                <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
+                                    <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                        <div class="cardHeadContainer" style="height: 72px;">
+                                            <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                <div style="display: flex">
 
-                                                            <h4>{{article.title}}</h4>
+                                                    <h4>{{article.title}}</h4>
 
-                                                        <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                    </div>
-                                                </div>
-                                                    <div class="viewCount">
-                                                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{article.viewCount}}
-                                                    </div>
-                                                </div>
-                                            <div class="cardContentContainer">
-                                                <div>
-                                                    <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
-                                                    <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
-                                                    <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
-                                                    <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
+                                                    <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                             </div>
+                                            <div class="viewCount">
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{article.viewCount}}
+                                            </div>
                                         </div>
-
-                                        <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                            <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
+                                        <div class="cardContentContainer">
+                                            <div>
+                                                <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
+                                                <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
+                                                <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
+                                                <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
+                                            </div>
                                         </div>
                                     </div>
 
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
+                                    </div>
                                 </div>
-                                <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
-                                <div>
-                                    <div class="text-center" style="margin:15px 0;">
-                                        <el-pagination
+
+                            </div>
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
                                             @current-change="articleHandleCurrentChange"
                                             :current-page="articles.currentPage"
                                             :page-size="pageOption.pageSize"
@@ -788,125 +789,126 @@
                                             :total="articles.total"
                                             :pager-count="pageOption.pageCount"
                                             background>
-                                        </el-pagination>
-                                    </div>
+                                    </el-pagination>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="itemContainer" :class="{showActive:researchIndex==2}" >
-                            <div  class="contentColContainer" style="margin-bottom: 0">
-                                <div class="subTitle" >
-                                    <div><h4 style="margin-top: 10px;color: #999999;">Projects</h4></div>
-                                </div>
-                            </div>
-                            <div class="contentColContainer modelTable" style="margin-top: 0">
-                                <div class="list-item" v-for="(project,key) in projects.result">
-                                    <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
-                                        <div class="cardUpper colArrange" style="background-color: #fafafa">
-                                            <div class="cardHeadContainer" style="height: 72px;">
-                                                <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
-                                                    <div style="display: flex">
-
-                                                        <h4>{{project.title}}</h4>
-
-                                                        <div :class="project.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                    </div>
-                                                </div>
-                                                <div class="viewCount">
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}
-                                                </div>
-                                            </div>
-                                            <div class="cardContentContainer">
-                                                <div>
-                                                    <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
-                                                    <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
-                                                    <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
-                                                    <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                            <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
-                                <div>
-                                    <div class="text-center" style="margin:15px 0;">
-                                        <el-pagination
-                                                @current-change="projectHandleCurrentChange"
-                                                :current-page="projects.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="projects.total"
-                                                :pager-count="pageOption.pageCount"
-                                                background>
-                                        </el-pagination>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="itemContainer" :class="{showActive:researchIndex==3}" >
-                            <div  class="contentColContainer" style="margin-bottom: 0">
-                                <div class="subTitle" >
-                                    <div><h4 style="margin-top: 10px;color: #999999;">Conferences</h4></div>
-                                </div>
-                            </div>
-                            <div class="contentColContainer modelTable" style="margin-top: 0">
-                                <div class="list-item" v-for="(conference,key) in conferences.result">
-                                    <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
-                                        <div class="cardUpper colArrange" style="background-color: #fafafa">
-                                            <div class="cardHeadContainer" style="height: 72px;">
-                                                <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
-                                                    <div style="display: flex">
-
-                                                        <h4>{{conference.title}}</h4>
-
-                                                        <div :class="conference.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                    </div>
-                                                </div>
-                                                <div class="viewCount">
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}
-                                                </div>
-                                            </div>
-                                            <div class="cardContentContainer">
-                                                <div>
-                                                    <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
-                                                    <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
-                                                    <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
-                                                    <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                            <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
-                                        </div>
-                                    </div>
-
-                                </div>
-<!--                                                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
-                                <div>
-                                    <div class="text-center" style="margin:15px 0;">
-                                        <el-pagination
-                                                @current-change="conferenceHandleCurrentChange"
-                                                :current-page="conferences.currentPage"
-                                                :page-size="pageOption.pageSize"
-                                                layout="total, prev, pager, next, jumper"
-                                                :total="conferences.total"
-                                                :pager-count="pageOption.pageCount"
-                                                background>
-                                        </el-pagination>
-                                    </div>
-                                </div>
-<!--                            </div>-->
                         </div>
                     </div>
+
+                    <div class="itemContainer" :class="{showActive:researchIndex==2}" >
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Projects</h4></div>
+                            </div>
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" v-for="(project,key) in projects.result">
+                                <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
+                                    <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                        <div class="cardHeadContainer" style="height: 72px;">
+                                            <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                                <div style="display: flex">
+
+                                                    <h4>{{project.projectName}}</h4>
+
+                                                    <div :class="project.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                </div>
+                                            </div>
+                                            <div class="viewCount">
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}
+                                            </div>
+                                        </div>
+                                        <div class="cardContentContainer">
+                                            <div>
+                                                <p><span>Start Time:</span> &nbsp&nbsp{{project.startTime}}</p>
+                                                <p><span>End Time:</span> &nbsp&nbsp{{project.endTime}}</p>
+                                                <p><span>Role:</span> &nbsp&nbsp{{project.role}}</p>
+                                                <p><span>Fund Agency:</span> &nbsp&nbsp{{project.fundAgency}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+<!--                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>-->
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="projectHandleCurrentChange"
+                                            :current-page="projects.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="projects.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
+                                    </el-pagination>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="itemContainer" :class="{showActive:researchIndex==3}" >
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Conferences</h4></div>
+                            </div>
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" v-for="(conference,key) in conferences.result">
+                                <div class="itemCardCol" style="width: 98%;height: 255px;margin-top: 8px;border: none;">
+                                    <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                        <div class="cardHeadContainer" style="height: 72px;">
+                                            <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
+                                                <div style="display: flex">
+
+                                                    <h4>{{conference.title}}</h4>
+
+                                                    <div :class="conference.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                </div>
+                                            </div>
+                                            <div class="viewCount">
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}
+                                            </div>
+                                        </div>
+                                        <div class="cardContentContainer">
+                                            <div>
+                                                <p><span>Theme:</span> &nbsp&nbsp{{conference.theme}} </p>
+                                                <p><span>Conference Role:</span> &nbsp&nbsp{{conference.conferenceRole}}</p>
+                                                <p><span>Start Time:</span> &nbsp&nbsp{{conference.startTime}}</p>
+                                                <p><span>End Time:</span> &nbsp&nbsp{{conference.endTime}}</p>
+                                                <p><span>Location:</span> &nbsp&nbsp{{conference.location}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--                                                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="conferenceHandleCurrentChange"
+                                            :current-page="conferences.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="conferences.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
+                                    </el-pagination>
+                                </div>
+                            </div>
+                            <!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -917,24 +919,57 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Personal Introduction</h4></div>
                         </div>
-                        <div class="contentContainer" >
-
+                        <div class="contentColContainer leftJusitifyCol noMargin" style="width: 100%;padding-bottom: 10px">
+                            <h4 style="margin: 10px 30px 0;color:#828282 ">Affiliation</h4>
+                            <div style="flex-direction: column;padding-left: 28px">
+                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.name}"></h4>
+                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.department}"></h4>
+                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.position}"></h4>
+                            </div>
+                            <div class="innerBorder"></div>
+                            <h4 style="margin: 10px 30px 0;color:#828282 ">Subject Areas</h4>
+                            <div style="flex-direction: column;padding-left: 28px">
+                                <h4 th:each="element:${userInfo.subjectAreas}" th:text="${element}">Geo</h4>
+                            </div>
+                            <div class="innerBorder"></div>
+                            <h4 style="margin: 10px 30px 0;color:#828282 ">Research Interests</h4>
+                            <div style="flex-direction: column;padding-left: 28px">
+                                <h4 th:each="String : ${userInfo.researchInterests}" th:text="${String}">Geo</h4>
+                            </div>
                         </div>
                     </div>
                     <div class="contentColContainer" >
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>
                         </div>
-                        <div class="contentContainer" style=" height: 248px;">
-
+                        <div class="list-item" v-for="(educationXpce,key) in educationExperience.result">
+                            <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 160px; margin-top: 5px">
+                                <div class="cardContentContainer" style="width: 98%;margin:0; border: none;">
+                                    <div>
+                                        <p><span>Institution or University:</span> &nbsp&nbsp{{educationXpce.institution}}</p>
+                                        <p><span>Department:</span> &nbsp&nbsp{{educationXpce.department}}</p>
+                                        <p><span>Academic Degree:</span> &nbsp&nbsp{{educationXpce.academicDegree}}</p>
+                                        <p><span>Time:</span> &nbsp&nbsp {{educationXpce.startTime}}~{{educationXpce.endTime}}</p>
+                                        <p><span>Location:</span> &nbsp&nbsp{{educationXpce.location}}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div  class="contentColContainer" style="margin-top: 0px">
+                    <div  class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Awards & honors</h4></div>
-
                         </div>
-                        <div class="contentContainer" >
+                        <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 80px; margin-top: 5px">
+                            <div class="list-item" v-for="(awardHonor,key) in awardandHonor.result">
+                                <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
+                                    <div>
+                                        <p><span>Name:</span> &nbsp&nbsp{{awardHonor.name}}</p>
+                                        <p><span>Award Agency:</span> &nbsp&nbsp{{awardHonor.awardAgency}}</p>
+                                        <p><span>Award Time:</span> &nbsp&nbsp{{awardHonor.awardTime}}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -951,13 +986,13 @@
                             <div class="infoContainer">
                                 <p>Lab Leader</p>
                                 <a v-if="userLab.labInfo.leaderName" :href="'/user/'+ userLab.leader.oid" target="_blank">
-                                   <h3>{{userLab.labInfo.leaderName}}</h3>
+                                    <h3>{{userLab.labInfo.leaderName}}</h3>
                                 </a>
                             </div>
                             <div class="infoContainer">
                                 <p>Lab Members</p>
                                 <div v-for="member in userLab.members">
-                                    <a :href="'/user/'+member.oid">
+                                    <a :href="'/user/'+member.oid" target="_blank">
                                         <h4>{{member.userName}}</h4>
                                     </a>
                                 </div>

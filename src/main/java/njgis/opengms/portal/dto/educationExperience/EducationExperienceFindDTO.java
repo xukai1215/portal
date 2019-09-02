@@ -1,9 +1,9 @@
-package njgis.opengms.portal.dto.conference;
+package njgis.opengms.portal.dto.educationExperience;
 
 import lombok.Data;
 
 @Data
-public class ConferenceFindDTO {
+public class EducationExperienceFindDTO {
     private Integer page=1;
     private Integer pageSize;
     private Boolean asc = false;

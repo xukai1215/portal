@@ -89,6 +89,18 @@ new Vue({
                 currentPage:1,
                 total:0,
                 result:[],
+            },
+
+            awardandHonor:{
+                currentPage:1,
+                total:0,
+                result:[],
+            },
+
+            educationExperience:{
+                currentPage:1,
+                total:0,
+                result:[],
             }
         }
     },
@@ -179,17 +191,23 @@ new Vue({
         },
 
         articleClick(index){
+            this.bodyIndex=3;
             this.researchIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 220);
             this.articleHandleCurrentChange(1);
         },
 
         projectClick(index){
+            this.bodyIndex=3;
             this.researchIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 220);
             this.projectHandleCurrentChange(1);
         },
 
         conferenceClick(index){
+            this.bodyIndex=3;
             this.researchIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 220);
             this.conferenceHandleCurrentChange(1);
         },
 
@@ -376,7 +394,6 @@ new Vue({
         articleHandleCurrentChange: function (val) {
             this.articles.currentPage=val;
             this.barIndex=1;
-            $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs=window.location.href.split('/');
             $.ajax({
                 type:"GET",
@@ -400,6 +417,7 @@ new Vue({
                             this.pageOption.progressBar=false;
                             console.log(this.articles.result);
                         }, 500);
+                        console.log(this.articles.result);
                     } else {
                         console.log("search computable model failed.")
                     }
@@ -411,7 +429,6 @@ new Vue({
         },
         projectHandleCurrentChange: function (val) {
             this.projects.currentPage=val;
-            $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs=window.location.href.split('/');
             $.ajax({
                 type:"GET",
@@ -432,7 +449,7 @@ new Vue({
                             this.projects.total=data.total;
                             this.projects.result=data.list;
                             this.pageOption.progressBar=false;
-
+                            console.log(this.projects.result)
 
                         }, 500);
                     } else {
@@ -447,7 +464,6 @@ new Vue({
 
         conferenceHandleCurrentChange(val) {
             this.conferences.currentPage=val;
-            $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs=window.location.href.split("/");
             $.ajax({
                 type:"GET",
@@ -532,6 +548,67 @@ new Vue({
         //     })
         //
         // },
+        awardandHonorLoad(val) {
+            this.awardandHonor.currentPage=val;
+            // $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split("/");
+            $.ajax({
+                type:"GET",
+                url:"/awardandHonor/listByUserOid",
+                data:{
+                    page:this.awardandHonor.currentPage-1,
+                    asc: this.pageOption.sortAsc,
+                    pageSize: 3,
+                    oid:hrefs[hrefs.length-1],
+                },
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        const data=json.data;
+                        setTimeout(
+                            ()=>{
+                                this.awardandHonor.total=data.total;
+                                this.awardandHonor.result=data.list;
+                                this.pageOption.progressBar=false;
+                            },500)
+                    }else{
+                        console.log("search data item failed.")
+                    }
+                }
+            })
+
+        },
+
+        educationExperienceLoad(val) {
+            this.educationExperience.currentPage=val;
+            // $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split("/");
+            $.ajax({
+                type:"GET",
+                url:"/educationExperience/listByUserOid",
+                data:{
+                    page:this.educationExperience.currentPage-1,
+                    asc: this.pageOption.sortAsc,
+                    pageSize: 3,
+                    oid:hrefs[hrefs.length-1],
+                },
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        const data=json.data;
+                        setTimeout(
+                            ()=>{
+                                this.educationExperience.total=data.total;
+                                this.educationExperience.result=data.list;
+                                this.pageOption.progressBar=false;
+                            },500)
+                    }else{
+                        console.log("search data item failed.")
+                    }
+                }
+            })
+
+        },
 
         labLoad(){
             const hrefs=window.location.href.split('/');
@@ -581,6 +658,8 @@ new Vue({
         this.projectHandleCurrentChange(1);
         this.conferenceHandleCurrentChange(1);
         this.articleNewestLoad();
+        this.awardandHonorLoad(1);
+        this.educationExperienceLoad(1);
         this.labLoad();
     }
 

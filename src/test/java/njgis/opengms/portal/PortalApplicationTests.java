@@ -3,6 +3,9 @@ package njgis.opengms.portal;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.Affiliation;
+import njgis.opengms.portal.entity.support.AwardandHonor;
+import njgis.opengms.portal.entity.support.EducationExperience;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
@@ -52,6 +55,58 @@ public class PortalApplicationTests {
     @Value("${resourcePath}")
     private String resourcePath;
 
+    @Test
+    public void addUserInfo(){
+        List<User> userList=userDao.findAll();
+        for (User user:userList){
+            if(user.getEmail()==null){
+                user.setEmail("");
+                userDao.save(user);
+            }
+            if(user.getFaceBook()==null){
+                user.setFaceBook("");
+                userDao.save(user);
+            }
+            if(user.getWeiBo()==null){
+                user.setWeiBo("");
+                userDao.save(user);
+            }
+            if(user.getWeChat()==null){
+                user.setWeChat("");
+                userDao.save(user);
+            }
+            if(user.getPersonPage()==null){
+                user.setPersonPage("");
+                userDao.save(user);
+            }
+            if (user.getAffiliation()==null){
+                Affiliation affiliation=new Affiliation();
+                user.setAffiliation(affiliation);
+                userDao.save(user);
+            }
+            if (user.getEducationExperiences()==null){
+                List<EducationExperience> EdExList=new ArrayList<>();
+                user.setEducationExperiences(EdExList);
+                userDao.save(user);
+            }
+            if (user.getAwardsHonors()==null){
+                List<AwardandHonor> awardandHonorsList=new ArrayList<>();
+                user.setAwardsHonors(awardandHonorsList);
+                userDao.save(user);
+            }
+            if (user.getResearchInterests()==null){
+                List<String> researchInteresrsList=new ArrayList<>();
+                user.setResearchInterests(researchInteresrsList);
+                userDao.save(user);
+            }
+            if(user.getLab()==null){
+                user.setLab("");
+                userDao.save(user);
+                Utils.count();
+            }
+
+        }
+    }
 
     @Test
     public void addLastModifyTime(){

@@ -20,6 +20,7 @@ public class ArticleResultDTO {
     int startPage;
     int endPage;
     String date;
+    String link;
     int viewCount;
     Date creatDate;
 
