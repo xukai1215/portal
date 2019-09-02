@@ -294,6 +294,7 @@ var app = new Vue({
             that.nodeName = node.name;
             that.nodeCategory = node.category;
             that.infoPanelShow = true;
+              lockFlag = true;
             for (let i = 0; i < links.length; i++) {
               let link = links[i];
               if (link.source.id === node.id) {
@@ -302,70 +303,36 @@ var app = new Vue({
                 that.nodeLinks.push(link.source);
               }
             }
-            that.$nextTick(() => {
-              if (that.table) {
-                  $("#connectedTable").bootstrapTable("destroy");
-                that.table = null;
-              }
-              /*that.table = $("#linkTable").DataTable({
-                columns: [
-                  { data: "name", name: "NAME" },
-                  { data: "category", name: "TYPE" }
-                ],
-                bInfo: false,
-                searching: false,
-                bLengthChange: false,
-                data: that.nodeLinks
-              });*/
-                $(document).ready(function() {
-                    that.table = $("#linkTable").bootstrapTable({
-                        columns: [
-                            {   data: "name",
-                                name: "NAME",
-                                align: 'center',
-                                valign: 'middle',
-                                sortable: true,
-                                //formatter函数把数据传入表格中
-                                formatter:function (value, row, index) {
-                                    return row["name"];
-                                    //return {css:{"color":'black'}}
-                                }
-                            },
-                            {   data: "category",
-                                name: "TYPE",
-                                align: 'center',
-                                valign: 'middle',
-                                sortable: true,
-                                formatter:function (value, row, index) {
-                                    return row["category"];
-                                    //return {css:{"color":'black'}}
-                                }
-                            }
-                        ],
-                        height:500,
-                        //resizable:true,
-                        pagination:true,
-                        sidePagination: 'client',
-                        pageNumber: 1,
-                        pageSize: 10,
-                        pageList: [10,20,50,'All'],
-                        search: true,
-                        showRefresh: true,
-                        showToggle: true,
-                        showColumns: true,
-                        bInfo: false,
-                        searching: false,
-                        bLengthChange: false,
-                        data: that.nodeLinks
-                    });
-                });
-            });
-            return false;
+              that.$nextTick(() => {
+                  if (that.table) {
+                      that.table.destroy();
+                      that.table = null;
+                  }
+                  that.table = $("#linkTable").DataTable({
+                      columns: [
+                          { data: "name", name: "NAME" },
+                          { data: "category", name: "TYPE" }
+                      ],
+                      bInfo: false,
+                      searching: true,
+                      showToggle: true,
+                      showColumns: true,
+                      bLengthChange: false,
+                      pagination:true,
+                      sidePagination: 'client',
+                      pageNumber: 1,
+                      pageSize: 5,
+                      data: that.nodeLinks,
+                      sScrollY:350,
+                      scrollY:true
+                  });
+              });
+              return false;
           }
         }
         that.infoPanelShow = false;
         if (that.table) {
-            $("#linkTable").bootstrapTable("destroy");
+            that.table.destroy();
         }
         that.table = null;
 
@@ -567,6 +534,7 @@ var app = new Vue({
       }
 
       function mouseClick() {
+        $('#infoPanel').css('display', 'block');
         let that = this;
         let point = d3.mouse(this);
         if (timeout) {

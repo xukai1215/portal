@@ -266,8 +266,7 @@ public class RepositoryRestController {
     @RequestMapping (value="/getSpatialInfo/{id}",method = RequestMethod.GET)
     public JsonResult getSpatialInfo(@PathVariable ("id") String id){
         SpatialReference spatial=repositoryService.getSpatialByOid(id);
-        //concept.setImage(concept.getImage().equals("")?"":htmlLoadPath+concept.getImage());
-        spatial.setImage("");
+        spatial.setImage(spatial.getImage()==null || spatial.getImage().equals("")?"":htmlLoadPath+spatial.getImage());
         return ResultUtils.success(spatial);
     }
 
@@ -407,8 +406,7 @@ public class RepositoryRestController {
     @RequestMapping (value="/getTemplateInfo/{id}",method = RequestMethod.GET)
     public JsonResult getTemplateInfo(@PathVariable ("id") String id){
         Template template=repositoryService.getTemplateByOid(id);
-        //concept.setImage(concept.getImage().equals("")?"":htmlLoadPath+concept.getImage());
-        template.setImage("");
+        template.setImage(template.getImage()== null || template.getImage().equals("")?"":htmlLoadPath+template.getImage());
         return ResultUtils.success(template);
     }
 
@@ -539,8 +537,7 @@ public class RepositoryRestController {
     @RequestMapping (value="/getUnitInfo/{id}",method = RequestMethod.GET)
     public JsonResult getUnitInfo(@PathVariable ("id") String id){
         Unit unit=repositoryService.getUnitByOid(id);
-        //concept.setImage(concept.getImage().equals("")?"":htmlLoadPath+concept.getImage());
-        unit.setImage("");
+        unit.setImage(unit.getImage()==null || unit.getImage().equals("")?"":htmlLoadPath+unit.getImage());
         return ResultUtils.success(unit);
     }
 

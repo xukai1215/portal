@@ -23,6 +23,7 @@ public class TemplateAddDTO {
     String name;
     String description;
     List<String> classifications;
+    String xml;
 
     String uploadImage;
     String detail;

@@ -69,6 +69,9 @@ public class RepositoryService {
     @Value("${resourcePath}")
     private String resourcePath;
 
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
+
     //toUpperCase
     public void toUpperCase() {
         List<Concept> concepts = conceptDao.findAll();
@@ -190,6 +193,9 @@ public class RepositoryService {
 
         String lastModifyTime = sdf.format(concept.getLastModifyTime());
 
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(concept.getAuthor());
+
         //修改者信息
         String lastModifier = concept.getLastModifier();
         JSONObject modifierJson = null;
@@ -198,9 +204,11 @@ public class RepositoryService {
         }
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+concept.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(concept.getCreateTime()));
         modelAndView.addObject("related", relateArray);
+        modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
 
@@ -335,7 +343,7 @@ public class RepositoryService {
         Concept concept_ori = conceptDao.findByOid(conceptUpdateDTO.getOid());
         String author = concept_ori.getAuthor();
         if (!concept_ori.isLock()) {
-            Concept concept = new Concept();
+            Concept concept = concept_ori;
             BeanUtils.copyProperties(conceptUpdateDTO, concept);
             //判断是否为新图片
             String uploadImage = conceptUpdateDTO.getUploadImage();
@@ -488,6 +496,7 @@ public class RepositoryService {
         }
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+spatialReference.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(spatialReference.getCreateTime()));
         modelAndView.addObject("user", userJson);
@@ -620,7 +629,7 @@ public class RepositoryService {
         SpatialReference spatialReference_ori = spatialReferenceDao.findByOid(spatialUpdateDTO.getOid());
         String author = spatialReference_ori.getAuthor();
         if (!spatialReference_ori.isLock()) {
-            SpatialReference spatialReference = new SpatialReference();
+            SpatialReference spatialReference = spatialReference_ori;
             BeanUtils.copyProperties(spatialUpdateDTO, spatialReference);
             //判断是否为新图片
             String uploadImage = spatialUpdateDTO.getUploadImage();
@@ -769,6 +778,7 @@ public class RepositoryService {
 
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+template.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(template.getCreateTime()));
         modelAndView.addObject("user", userJson);
@@ -879,7 +889,7 @@ public class RepositoryService {
         Template template_ori = templateDao.findByOid(templateUpdateDTO.getOid());
         String author = template_ori.getAuthor();
         if (!template_ori.isLock()) {
-            Template template = new Template();
+            Template template = template_ori;
             BeanUtils.copyProperties(templateUpdateDTO, template);
             //判断是否为新图片
             String uploadImage = templateUpdateDTO.getUploadImage();
@@ -1030,6 +1040,7 @@ public class RepositoryService {
 
 
         modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("image", htmlLoadPath+unit.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(unit.getCreateTime()));
         modelAndView.addObject("user", userJson);
@@ -1165,7 +1176,7 @@ public class RepositoryService {
         Unit unit_ori = unitDao.findByOid(unitUpdateDTO.getOid());
         String author = unit_ori.getAuthor();
         if (!unit_ori.isLock()) {
-            Unit unit = new Unit();
+            Unit unit = unit_ori;
             BeanUtils.copyProperties(unitUpdateDTO, unit);
             //判断是否为新图片
             String uploadImage = unitUpdateDTO.getUploadImage();

@@ -267,7 +267,7 @@ div.FixedHeader_Cloned table {
   margin: 0 !important;
 }
 .am-datatable-pager {
-  margin-top: 0;
+  /*margin-top: 0;*/
   margin-bottom: 0;
 }
 .am-datatable-info {
@@ -295,9 +295,9 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
   text-align: center;
   line-height: 14px;
   -webkit-box-shadow: 0 0 3px #444;
-          box-shadow: 0 0 3px #444;
+  box-shadow: 0 0 3px #444;
   -webkit-box-sizing: content-box;
-          box-sizing: content-box;
+  box-sizing: content-box;
   content: '+';
   background-color: #31b131;
 }
@@ -347,9 +347,9 @@ table.dataTable.dtr-column > tbody > tr > th.control:before {
   text-align: center;
   line-height: 14px;
   -webkit-box-shadow: 0 0 3px #666;
-          box-shadow: 0 0 3px #666;
+  box-shadow: 0 0 3px #666;
   -webkit-box-sizing: content-box;
-          box-sizing: content-box;
+  box-sizing: content-box;
   content: '+';
   background-color: #5eb95e;
 }

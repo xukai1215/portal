@@ -789,6 +789,13 @@ public class ModelItemService {
                 for (String child : children
                         ) {
                     classes.add(child);
+                    Classification classification1=classificationService.getByOid(child);
+                    List<String> children1=classification1.getChildrenId();
+                    if(children1.size()>0){
+                        for(String child1:children1){
+                            classes.add(child1);
+                        }
+                    }
                 }
             }
         }

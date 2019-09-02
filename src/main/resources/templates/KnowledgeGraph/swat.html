@@ -1,163 +1,150 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" />
-    <title>SWAT Knowledge Graph</title>
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/style.css}"/>
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
-    <link
-      rel="stylesheet"
-      th:href="@{/static/KnowledgeGraph/css/amaze/extension/datetimepicker/css/amazeui.datetimepicker.css}"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.css}"
-    />
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" />
+  <title>SWAT Knowledge Graph</title>
+  <link rel="stylesheet" href="/static/KnowledgeGraph/css/style.css"/>
+  <link rel="stylesheet" href="/static/KnowledgeGraph/css/amaze/css/amazeui.min.css" />
+  <link
+          rel="stylesheet"
+          href="/static/KnowledgeGraph/css/amaze/extension/datetimepicker/css/amazeui.datetimepicker.css"
+  />
+  <link
+          rel="stylesheet"
+          href="/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.css"
+  />
+  <link rel="stylesheet" href="/static/KnowledgeGraph/js/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="/static/KnowledgeGraph/css/kgstyle.css" />
+  <link href="/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container" id="app">
+  <!--add new div-->
+  <div class="suspension">
+    <div class="suspension-box">
+      <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
+      <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+      <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+      <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
+    </div>
+  </div>
+  <!--add new div-->
+  <div class="row no-gutters">
+    <div class="col-lg-11">
 
-	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
-    <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap/css/bootstrap.css}" />
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.css}" />
-    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
-    <!--<link rel="stylesheet" type="text/css" media="screen" href="../static/css/base/index2.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />-->
-  </head>
-  <body>
-    <div class="container" id="app">
-        <!--add new div-->
-            <div class="suspension">
-                <div class="suspension-box">
-                    <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
-                    <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
-                    <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
-                    <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
-                </div>
-            </div>
-        <!--add new div-->
-        <div class="row no-gutters">
-        <div class="col-lg-11">
-
+    </div>
+  </div>
+  <div class="main">
+    <div class="graphPanel" v-show="active===0">
+      <div id="searchPanel">
+        <p>请选择年份</p>
+        <input
+                type="text"
+                value="2018"
+                id="datetimepicker"
+                class="am-form-field"
+        />
+      </div>
+      <ul class="legend"></ul>
+      <div id="d3Canvas"></div>
+      <div
+              class="am-panel am-panel-default am-animation-slide-right"
+              id="infoPanel"
+              v-if="infoPanelShow"
+      >
+        <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
+          {{ nodeName }}
+          <a @click="myFunction()" class="am-close pull-right">&times;</a>
         </div>
-        </div>
-        <div class="main">
-        <div class="graphPanel" v-show="active===0">
-
-          <div id="searchPanel">
-            <p>请选择年份</p>
-            <input
-              type="text"
-              value="2018"
-              id="datetimepicker"
-              class="am-form-field"
-            />
-          </div>
-          <ul class="legend"></ul>
-          <div id="d3Canvas"></div>
-          <div
-            class="am-panel am-panel-default am-animation-slide-right"
-            id="infoPanel"
-            v-if="infoPanelShow"
-            style="transform: translate(0px, 0px); transition: transform 0.5s ease-in-out;"
+        <div id="content" class="am-panel-bd" >
+          <table
+                  class="am-table am-table-striped am-table-bordered am-table-compact "
+                  data-classes="table table-bordered"
+                  data-pagination="true" data-page-size="10"
+                  data-pagination-loop="false"
+                  id="linkTable"
           >
-            <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
-              {{ nodeName }}
-              <a @click="myFunction()" class="am-close pull-right">&times;</a>
-            </div>
-            <div id="content" class="am-panel-bd" >
-              <table
-                class="am-table am-table-striped am-table-bordered am-table-compact "
-                data-classes="table table-bordered"
-                data-pagination="true" data-page-size="10"
-                data-pagination-loop="false"
-                id="linkTable"
-              >
-                <thead>
-                  <tr>
-                    <th style="text-align: center">Name</th>
-                    <th style="text-align: center">Type</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="historyPanel" v-show="active===1">
-          <div class="btn-group">
-            <button
-              type="button"
-              class="am-btn am-round"
-              v-bind:class="{'am-btn-default':histroyActive===1,'am-btn-primary':histroyActive===0}"
-              @click="historyChange(0)"
-            >
-              Research trend
-            </button>
-            <button
-              type="button"
-              class="am-btn am-round"
-              v-bind:class="{'am-btn-default':histroyActive===0,'am-btn-primary':histroyActive===1}"
-              @click="historyChange(1)"
-            >
-              Research Country
-            </button>
-          </div>
-          <div
-            v-show="histroyActive===0"
-            style="width:100%;height:100%;display: flex"
-          >
-            <div id="historyGraph"></div>
-            <div class="orderPanel">
-              <h5>Researcher Order</h5>
-              <ul>
-                <li
-                  v-for="item of researcherOrder"
-                  :key="item.id"
-                  :id="item.id"
-                >
-                  <i class="fa fa-user-circle fa-fw"></i>
-                  {{ item.name.trim() }}
-                </li>
-              </ul>
-              <h5>Agency Order</h5>
-              <ul>
-                <li v-for="item of agencyOrder" :key="item.id" :id="item.id">
-                  <i class="fa fa-institution fa-fw"></i>
-                  {{ item.name }}
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div id="countryGraph" v-show="histroyActive===1"></div>
-        </div>
-        <div class="mapPanel" v-show="active===2">
-          <div id="leadletMap"></div>
-        </div>
-        <div class="keywordsPanel" v-show="active===3">
-          <div id="keywordChart"></div>
+            <thead>
+            <tr>
+              <th style="text-align: center">Name</th>
+              <th style="text-align: center">Type</th>
+            </tr>
+            </thead>
+          </table>
         </div>
       </div>
     </div>
-  </body>
-  <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/css/amaze/js/amazeui.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/css/amaze/extension/datetimepicker/js/amazeui.datetimepicker.min.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/echarts/echarts.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/leaflet/leaflet.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/geojsonhint.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
-  <script th:src="@{/static/KnowledgeGraph/js/swat.js}"></script>
-  <!--<script src="../static/js/index/main.js"></script>
-  <script src="../static/js/common/loadUser.js"></script>
-  <script src="../static/js/common/navbar.js"></script>
-  <script src="../static/js/index/bootstrap.min.js"></script>
-  <script src="../static/js/common/backTop.js/"></script>-->
+    <div class="historyPanel" v-show="active===1">
+      <div class="btn-group">
+        <button
+                type="button"
+                class="am-btn am-round"
+                v-bind:class="{'am-btn-default':histroyActive===1,'am-btn-primary':histroyActive===0}"
+                @click="historyChange(0)"
+        >
+          Research trend
+        </button>
+        <button
+                type="button"
+                class="am-btn am-round"
+                v-bind:class="{'am-btn-default':histroyActive===0,'am-btn-primary':histroyActive===1}"
+                @click="historyChange(1)"
+        >
+          Research Country
+        </button>
+      </div>
+      <div
+              v-show="histroyActive===0"
+              style="width:100%;height:100%;display: flex"
+      >
+        <div id="historyGraph"></div>
+        <div class="orderPanel">
+          <h5>Researcher Order</h5>
+          <ul>
+            <li
+                    v-for="item of researcherOrder"
+                    :key="item.id"
+                    :id="item.id"
+            >
+              <i class="fa fa-user-circle fa-fw"></i>
+              {{ item.name.trim() }}
+            </li>
+          </ul>
+          <h5>Agency Order</h5>
+          <ul>
+            <li v-for="item of agencyOrder" :key="item.id" :id="item.id">
+              <i class="fa fa-institution fa-fw"></i>
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="countryGraph" v-show="histroyActive===1"></div>
+    </div>
+    <div class="mapPanel" v-show="active===2">
+      <div id="leadletMap"></div>
+    </div>
+    <div class="keywordsPanel" v-show="active===3">
+      <div id="keywordChart"></div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="/static/KnowledgeGraph/js/vue.js"></script>
+<script src="/static/KnowledgeGraph/js/jquery.js"></script>
+<script src="/static/KnowledgeGraph/js/d3.js"></script>
+<script src="/static/KnowledgeGraph/css/amaze/js/amazeui.js"></script>
+<script src="/static/KnowledgeGraph/css/amaze/extension/datetimepicker/js/amazeui.datetimepicker.min.js"></script>
+<script src="/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.js"></script>
+<script src="/static/KnowledgeGraph/js/echarts/echarts.js"></script>
+<script src="/static/KnowledgeGraph/js/leaflet/leaflet.js"></script>
+<script src="/static/KnowledgeGraph/js/geojsonhint.js"></script>
+<script src="/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js"></script>
+<script src="/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js"></script>
+<!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
+<!-- <script src="js/echarts//extension/modularity.js"></script> -->
+<script src="/static/KnowledgeGraph/js/swat.js"></script>
 </html>

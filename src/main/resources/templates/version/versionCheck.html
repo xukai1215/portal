@@ -185,7 +185,13 @@
                     let refLink=$(".viewBtn");
                     for(i=0;i<refLink.length;i++){
                         if(event.currentTarget===refLink[i]){
-                            window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].originOid);
+                            if(this.tableData[i].type=="modelItem"){
+                                window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].originOid);
+                            }
+                            else{
+                                window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].oid);
+                            }
+
                         }
                     }
                     //console.log(event.currentTarget);

@@ -638,10 +638,14 @@ public class VersionService {
             }
         }
 
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(concept.getModifier());
+
         modelAndView.addObject("classifications",classResult);
         modelAndView.addObject("year",Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date",sdf.format(concept.getModifyTime()));
         modelAndView.addObject("related",relateArray);
+        modelAndView.addObject("user", userJson);
         modelAndView.addObject("history",true);
 
         return modelAndView;
