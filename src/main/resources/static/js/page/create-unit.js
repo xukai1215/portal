@@ -29,24 +29,28 @@ var vue = new Vue({
             label: 'Unit Resource Library',
             oid: '9F3DT5JNHCMYC3REE6G5PE7P9J3QKKJW',
             children: [{
-                id: 100,
+                id: 2,
                 label: 'Basic Unit',
                 oid: 'YMFP5H5N6LEPZS7VT99PBD4JYSK87BA4'
             }, {
+                id: 3,
                 label: 'Derivative Unit',
                 oid: 'THTE2JXKCMD5Y7UZJH3Y84WLJWQCYWHV'
             }, {
+                id: 4,
                 label: 'Combinatorial Unit',
                 oid: 'CBVHYTVBBQDQZZLTYLQQACVQM8V5TMMF'
             }]
         }, {
-            id: 2,
+            id: 5,
             label: 'Dimensional Resource Library',
             oid: '6H9YJU4Y58V9CAXDAXM7ULFAJ54R8SEA',
             children: [{
+                id: 6,
                 label: 'Base Dimension',
                 oid: 'HPWH63NTXKA8V8YNJKHJCW5EPF3XPVB9'
             }, {
+                id: 7,
                 label: 'Composite Dimension',
                 oid: 'G4HFPHPEPP3B2MNK46VQS3JLLHTQZQ64'
             }]
@@ -59,7 +63,9 @@ var vue = new Vue({
         },
         cls:[],
         clsStr:'',
-        parId:""
+        parId:"",
+
+        unitInfo:{}
     },
     methods:{
         handleSelect(index,indexPath){
@@ -132,7 +138,7 @@ var vue = new Vue({
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
-
+            $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
                 height: 350,
@@ -176,12 +182,13 @@ var vue = new Vue({
                 success: (result) => {
                     console.log(result)
                     var basicInfo = result.data;
+                    this.unitInfo = basicInfo;
 
                     //cls
                     this.cls = basicInfo.classifications;
                     let ids=[];
                     for(i=0;i<this.cls.length;i++){
-                        for(j=0;j<4;j++){
+                        for(j=0;j<2;j++){
                             for(k=0;k<this.treeData[j].children.length;k++){
                                 if(this.cls[i]==this.treeData[j].children[k].oid){
                                     ids.push(this.treeData[j].children[k].id);
@@ -202,8 +209,15 @@ var vue = new Vue({
                     this.$refs.tree2.setCheckedKeys(ids);
 
                     $(".providers").children(".panel").remove();
+
                     $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
+                    if(basicInfo.description != null){
+                        $("#descInput").val(basicInfo.description);
+                    }else if(basicInfo.description_EN != ""){
+                        $("#descInput").val(basicInfo.description_EN);
+                    }else if(basicInfo.description_ZH != ""){
+                        $("#descInput").val(basicInfo.description_ZH);
+                    }
 
                     //image
                     if (basicInfo.image != "") {
@@ -213,7 +227,9 @@ var vue = new Vue({
 
                     //detail
                     //tinymce.remove("textarea#myText");
-                    $("#myText").html(basicInfo.detail);
+                    if(basicInfo.detail != null){
+                        $("#myText").html(basicInfo.detail);
+                    }
                     tinymce.init({
                         selector: "textarea#myText",
                         height: 300,

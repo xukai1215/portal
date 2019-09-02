@@ -69,8 +69,12 @@
                 <div class="detail_overview">
 
                     <div class="img">
-                        <avatar th:if="${info.name_ZH!=null}" th:username="${info.description_EN==''?info.name_ZH:info.name_EN}" :size="90" :rounded="false"></avatar>
-                        <avatar th:if="${info.name_ZH==null}" th:username="${info.name}" :size="90" :rounded="false"></avatar>
+                        <div th:switch="${info.image}" class="img">
+                            <avatar th:case="''" th:username="${info.name}" :size="90" :rounded="false"></avatar>
+                            <img th:case="*" th:src="${image}">
+                        </div>
+                        <!--<avatar th:if="${info.name_ZH!=null}" th:username="${info.description_EN==''?info.name_ZH:info.name_EN}" :size="90" :rounded="false"></avatar>-->
+                        <!--<avatar th:if="${info.name_ZH==null}" th:username="${info.name}" :size="90" :rounded="false"></avatar>-->
                     </div>
 
                     <div class="info">
@@ -115,8 +119,8 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div th:if="${info.name_ZH!=null}" class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
-                        <table class="table table-bordered">
+                    <div th:if="${info.detail==null}" class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
+                        <table class="table table-bordered" >
                             <thead>
                             <tr>
                                 <th class="thMain" th:text="${localization.language}"></th>
@@ -138,14 +142,14 @@
                             </tr>
                         </table>
                     </div>
-                    <div th:if="${info.name_ZH==null}" th:utext="${info.detail}"></div>
+                    <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
 
                 </div>
             </div>
 
-            <div th:if="${info.name_ZH!=null}" class="text-center" >
-                <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
-            </div>
+            <!--<div th:if="${info.name_ZH!=null}" class="text-center" >-->
+                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
+            <!--</div>-->
 
             <div id="cite" class="detail_block">
                 <div class="block_head">

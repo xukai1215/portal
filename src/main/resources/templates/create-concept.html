@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
+    <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
 
     <style>
         .btn-block {
@@ -118,6 +119,9 @@
          }
         .el-col-20 {
             width: 98%;
+        }
+        .table .thMain{
+            border-top:none;
         }
     </style>
 </head>
@@ -345,7 +349,52 @@
                                                     </div>
 
                                                     <div class="step-tab-panel" id="step3">
-                                                        <textarea id="myText"></textarea>
+                                                        <textarea id="myText">
+                                                            <div>
+                                                                 <table class="table table-bordered" style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${conceptInfo.name_EN != ''}">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th class="thMain"> EN_US</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                                <table class="table table-bordered" style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${conceptInfo.name_EN != ''}">
+                                                                    <colgroup>
+                                                                        <col width="25%">
+                                                                        <col width="75%">
+                                                                    </colgroup>
+                                                                    <tr>
+                                                                        <td>Name</td>
+                                                                        <td >{{conceptInfo.name_EN}}</td>
+                                                                    </tr>
+                                                                    <tr v-if="${conceptInfo.description_EN != ''}">
+                                                                        <td>Description</td>
+                                                                        <td >{{conceptInfo.description_EN}}</td>
+                                                                    </tr>
+                                                                </table>
+                                                                <table class="table table-bordered" style="width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${conceptInfo.name_ZH != ''}">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th class="thMain"> ZH_CN</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                                <table class="table table-bordered " style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${conceptInfo.name_ZH != ''}">
+                                                                    <colgroup>
+                                                                        <col width="25%">
+                                                                        <col width="75%">
+                                                                    </colgroup>
+                                                                    <tr>
+                                                                        <td>Name</td>
+                                                                        <td >{{conceptInfo.name_ZH}}</td>
+                                                                    </tr>
+                                                                    <tr v-if="${conceptInfo.description_ZH != ''}">
+                                                                        <td>Description</td>
+                                                                        <td >{{conceptInfo.description_ZH}}</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </textarea>
                                                     </div>
 
                                                 </div>
