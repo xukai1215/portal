@@ -128,7 +128,8 @@ div.tooltip {
 
 .graphPanel #infoPanel {
     position: absolute;
-    width: 400px;
+    width: 450px;
+    height: 560px;
     top: 100px;
     left: 220px;
     /*cursor: move;*/
