@@ -243,7 +243,7 @@
 }
 
 #personalIntro{
-    height: 210px;
+    /*height: 210px;*/
 }
 
 #modelItems{
@@ -798,3 +798,10 @@
     color: #555555
 }
 
+.leftJusitifyCol{
+    align-items: flex-start;
+}
+
+.noMargin{
+    margin: 0;
+}

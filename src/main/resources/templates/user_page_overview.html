@@ -188,8 +188,8 @@
                                     </div>
                                     <!--                                    此处v-for没有用但是加载速度会变快-->
                                     <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
-                                            <div class="cardUpper colArrange" style="background-color: #fafafa">
+                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
+                                            <div class="cardUpper colArrange" @click="articleClick(1)" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
                                                         <div style="display: flex">
@@ -210,7 +210,7 @@
                                             </div>
 
                                             <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                                <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
+                                                <a :href="articles.result[0].link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                             </div>
                                         </div>
                                     </div>
@@ -234,13 +234,13 @@
                                         <div class="arrowDownerBig"></div>
                                     </div>
                                     <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;">
+                                        <div class="itemCardCol" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
                                                         <div style="display: flex">
 
-                                                            <h4>{{projects.result[0].title}}</h4>
+                                                            <h4>{{projects.result[0].projectName}}</h4>
 
                                                         </div>
                                                     </div>
@@ -279,8 +279,8 @@
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" style="width: 96%;height: 255px;margin-top: 8px;border: none;">
+                                    <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
@@ -919,24 +919,57 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Personal Introduction</h4></div>
                         </div>
-                        <div class="contentContainer" >
-
+                        <div class="contentColContainer leftJusitifyCol noMargin" style="width: 100%;padding-bottom: 10px">
+                            <h4 style="margin: 10px 30px 0;color:#828282 ">Affiliation</h4>
+                            <div style="flex-direction: column;padding-left: 28px">
+                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.name}"></h4>
+                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.department}"></h4>
+                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.position}"></h4>
+                            </div>
+                            <div class="innerBorder"></div>
+                            <h4 style="margin: 10px 30px 0;color:#828282 ">Subject Areas</h4>
+                            <div style="flex-direction: column;padding-left: 28px">
+                                <h4 th:each="element:${userInfo.subjectAreas}" th:text="${element}">Geo</h4>
+                            </div>
+                            <div class="innerBorder"></div>
+                            <h4 style="margin: 10px 30px 0;color:#828282 ">Research Interests</h4>
+                            <div style="flex-direction: column;padding-left: 28px">
+                                <h4 th:each="String : ${userInfo.researchInterests}" th:text="${String}">Geo</h4>
+                            </div>
                         </div>
                     </div>
                     <div class="contentColContainer" >
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>
                         </div>
-                        <div class="contentContainer" style=" height: 248px;">
-
+                        <div class="list-item" v-for="(educationXpce,key) in educationExperience.result">
+                            <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 160px; margin-top: 5px">
+                                <div class="cardContentContainer" style="width: 98%;margin:0; border: none;">
+                                    <div>
+                                        <p><span>Institution or University:</span> &nbsp&nbsp{{educationXpce.institution}}</p>
+                                        <p><span>Department:</span> &nbsp&nbsp{{educationXpce.department}}</p>
+                                        <p><span>Academic Degree:</span> &nbsp&nbsp{{educationXpce.academicDegree}}</p>
+                                        <p><span>Time:</span> &nbsp&nbsp {{educationXpce.startTime}}~{{educationXpce.endTime}}</p>
+                                        <p><span>Location:</span> &nbsp&nbsp{{educationXpce.location}}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div  class="contentColContainer" style="margin-top: 0px">
+                    <div  class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Awards & honors</h4></div>
-
                         </div>
-                        <div class="contentContainer" >
+                        <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 80px; margin-top: 5px">
+                            <div class="list-item" v-for="(awardHonor,key) in awardandHonor.result">
+                                <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
+                                    <div>
+                                        <p><span>Name:</span> &nbsp&nbsp{{awardHonor.name}}</p>
+                                        <p><span>Award Agency:</span> &nbsp&nbsp{{awardHonor.awardAgency}}</p>
+                                        <p><span>Award Time:</span> &nbsp&nbsp{{awardHonor.awardTime}}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -959,7 +992,7 @@
                             <div class="infoContainer">
                                 <p>Lab Members</p>
                                 <div v-for="member in userLab.members">
-                                    <a :href="'/user/'+member.oid">
+                                    <a :href="'/user/'+member.oid" target="_blank">
                                         <h4>{{member.userName}}</h4>
                                     </a>
                                 </div>

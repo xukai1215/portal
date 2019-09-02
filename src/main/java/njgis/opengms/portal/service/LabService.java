@@ -27,6 +27,7 @@ public class LabService {
         Lab lab=labDao.findFirstByLabName(user.getLab());
         User leader=userDao.findFirstByUserName(lab.getLeaderName());
 
+
         List<String> memberName=lab.getMembers();
         List<User> members=new ArrayList<>();
         for(int i=0;i<memberName.size();i++){

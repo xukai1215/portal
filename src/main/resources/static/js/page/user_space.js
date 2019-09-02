@@ -317,7 +317,6 @@ var vue = new Vue({
                     date:this.articleToBack.date,
                     link:this.articleToBack.link,
                 }
-            console.log(obj);
             $.ajax({
                 url: "/article/add",
                 type: "POST",
