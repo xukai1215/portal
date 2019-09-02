@@ -25,6 +25,10 @@ var app = new Vue({
     this.loadPage();
   },
   methods: {
+      myFunction()
+      {
+          $('#infoPanel').css('display', 'none');
+      },
       myFunction1(){$
           console.log("abc");
 
@@ -535,6 +539,7 @@ var app = new Vue({
       }
 
       function mouseClick() {
+        $('#infoPanel').css('display', 'block');
         let that = this;
         let point = d3.mouse(this);
         if (timeout) {
