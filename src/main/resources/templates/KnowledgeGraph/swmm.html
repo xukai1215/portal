@@ -18,9 +18,6 @@
 	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
     <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap/css/bootstrap.css}" />
-    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.css}" />
-    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
   </head>
   <body>
     <div class="container" id="app">
@@ -59,7 +56,6 @@
           >
             <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
               {{ nodeName }}
-              <a @click="myFunction()" class="am-close pull-right">&times;</a>
             </div>
             <div id="content" class="am-panel-bd" >
               <table
