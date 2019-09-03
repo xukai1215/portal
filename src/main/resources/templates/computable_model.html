@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${modelInfo.name}+' | OpenGMS'">Computable Model | OpenGMS</title>
+    <title th:text="${modelInfo.name}+' | Computable Model | OpenGMS'">Computable Model | OpenGMS</title>
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -44,12 +44,14 @@
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #d2d2d2 solid 1px">
             <div class="detail">
                 <div class="detail_title">
-                    <a th:if="${history!=true}" th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
+                    <a th:if="${history!=true}"
+                       th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
 
-                    <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'
+                       @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
@@ -98,18 +100,18 @@
                 </div>
                 <div class="block_content" style="margin-right: 0;">
 
-                    <el-card :body-style="{ padding:'9px'}">
-                        <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>
-                    </el-card>
+                    <div class="el-card is-always-shadow"><!---->
+                        <div class="el-card__body" style="padding: 9px;"><span><i class="el-icon-document"></i>&nbsp;&nbsp; contents</span>
+                        </div>
+                    </div>
 
-
-                    <el-card style="height: 300px;overflow-y:auto" id="browsercont" class="filecontent">
+                    <div class="el-card filecontent is-always-shadow" id="browsercont" style="height: 300px; overflow-y: auto;">
 
 
                         <!--</el-row>-->
-                        <el-card th:each="data:${resources}"
-                                 th:title="${data.name}" class="dataitemisol" shadow="never" th:id="${data.id}"
-                                 th:key="${data.id}" @click.native="getid(id)">
+                        <el-card th:each="data,key:${resources}"
+                                 th:title="${data.name}" class="dataitemisol" shadow="never" th:id="${key.index}"
+                                 th:key="${key.index}" @click.native="getid(id)">
 
                             <el-row>
                                 <el-col :span="6">&nbsp</el-col>
@@ -134,7 +136,7 @@
 
 
                         </el-card>
-                    </el-card>
+                    </div>
 
 
                     <el-card class="browsermenu">
@@ -205,23 +207,23 @@
                                 <col class="col3">
                             </colgroup>
                             <tbody>
-                            <tr>
+                            <tr th:if="${local.local!=''}">
                                 <td style="font-weight: bold;">Language</td>
                                 <td colspan="2" th:text="${local.local}"></td>
                             </tr>
-                            <tr>
+                            <tr th:if="${local.localName!=''}">
                                 <td style="font-weight: bold;">Name</td>
                                 <td colspan="2" th:text="${local.localName}"></td>
                             </tr>
-                            <tr>
+                            <tr th:if="${local.Keywords!=''}">
                                 <td style="font-weight: bold;">Keywords</td>
                                 <td colspan="2" th:text="${local.Keywords}"></td>
                             </tr>
-                            <tr>
+                            <tr th:if="${local.Abstract!=''}">
                                 <td style="font-weight: bold;">Abstract</td>
                                 <td colspan="2" th:text="${local.Abstract}"></td>
                             </tr>
-                            <tr>
+                            <tr th:if="${local.wiki!=''}">
                                 <td style="font-weight: bold;">Wiki</td>
                                 <td colspan="2" th:text="${local.wiki}"></td>
                             </tr>
@@ -349,8 +351,10 @@
                     </div>
                     <div class="el-row el-col-offset-3">
                         <div class="text-center">
-                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
-                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13
+                                14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13
+                                14:32:18 </h5>
                         </div>
                     </div>
                 </div>
@@ -406,7 +410,8 @@
                                 <dd th:text="${lastModifyTime}"></dd>
                                 <dt>Modify times :&nbsp</dt>
                                 <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
-                                        th:href="'/version/historyList/computableModel/'+${modelInfo.oid}" target="_blank">View
+                                        th:href="'/version/historyList/computableModel/'+${modelInfo.oid}"
+                                        target="_blank">View
                                     History</a></dd>
                             </dl>
                         </div>

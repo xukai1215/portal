@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.LogicalModelResultDTO;
@@ -67,6 +68,29 @@ public class LogicalModelRestController {
         LogicalModelResultDTO logicalModelResultDTO=new LogicalModelResultDTO();
         BeanUtils.copyProperties(logicalModel,logicalModelResultDTO);
         logicalModelResultDTO.setRelateModelItemName(modelItem.getName());
+        //资源信息
+        JSONArray resourceArray = new JSONArray();
+        List<String> resources = logicalModel.getImage();
+
+        if (resources != null) {
+            for (int i = 0; i < resources.size(); i++) {
+
+                String path = resources.get(i);
+
+                String[] arr = path.split("\\.");
+                String suffix = arr[arr.length - 1];
+
+                arr = path.split("/");
+                String name = arr[arr.length - 1].substring(14);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name", name);
+                jsonObject.put("suffix", suffix);
+                jsonObject.put("path", resources.get(i));
+                resourceArray.add(jsonObject);
+            }
+        }
+        logicalModelResultDTO.setResourceJson(resourceArray);
 
         return ResultUtils.success(logicalModelResultDTO);
     }

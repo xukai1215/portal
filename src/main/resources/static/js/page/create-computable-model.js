@@ -20,6 +20,14 @@ var vue = new Vue({
 
         },
 
+
+
+        //文件框选择
+        resources:[],
+        fileSelect:'',
+        fileArray:new Array(),
+        formData:new FormData(),
+
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
         editorUrl: "",
@@ -80,8 +88,65 @@ var vue = new Vue({
 
             }
         },
+        addFile(){
+            $("#file").click();
+        },
+        removeFile(){
+            if(this.fileSelect!="") {
+                $(".dataitemisol").css("border","1px solid #ebeef5")
+                let res=this.resources[Number(this.fileSelect)];
+                for(i=0;i<this.fileArray.length;i++){
+                    let file=this.fileArray[i];
+                    if(file.name===res.name&&file.size===res.size&&file.lastModified===res.lastModified&&file.type===res.type){
+                        this.fileArray.splice(i,1);
+                        break;
+                    }
+                }
+                this.resources.splice(Number(this.fileSelect), 1);
+                this.fileSelect = "";
+            }
+        },
+        replaceFile(){
+            this.fileArray=new Array();
+            $("#file").click();
+        },
+        resClick(e){
+
+            let path=e.path;
+            for(i=0;i<path.length;i++){
+                let obj=path[i];
+                if(obj.className.indexOf("dataitemisol")!=-1){
+                    $(".dataitemisol").css("border","1px solid #ebeef5")
+                    this.fileSelect=obj.align;
+                    obj.style.border='2px solid #60b0e8';
+                    break;
+                }
+            }
+        }
     },
     mounted() {
+        $("#file").change(()=> {
+            this.resources=[];
+            let files=$("#file")[0].files;
+            for(i=0;i<files.length;i++){
+                let file=files[i];
+                this.fileArray.push(file);
+                let res={};
+                res.name=file.name;
+                res.path="";
+                let names=res.name.split('.');
+                res.suffix=names[names.length-1];
+                res.size=file.size;
+                res.lastModified=file.lastModified;
+                res.type=file.type;
+                this.resources.push(res);
+            }
+
+
+            //清空
+            let file=document.getElementById("file");
+            file.value='';
+        })
 
         $.ajax({
             type: "GET",
@@ -138,6 +203,8 @@ var vue = new Vue({
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
+            $("#title").text("Create Computable Model")
+
             tinymce.init({
                 selector: "textarea#myText",
                 height: 400,
@@ -173,6 +240,8 @@ var vue = new Vue({
             });
         }
         else {
+            $("#title").text("Modify Computable Model")
+            document.title="Modify Computable Model | OpenGMS"
             $.ajax({
                 url: "/computableModel/getInfo/" + oid,
                 type: "get",
@@ -182,6 +251,7 @@ var vue = new Vue({
                     window.sessionStorage.setItem("editComputableModel_id", "");
                     console.log(result)
                     var basicInfo = result.data;
+                    this.resources=basicInfo.resourceJson;
 
                     $("#search-box").val(basicInfo.relateModelItemName)
                     this.computableModel.bindModelItem=basicInfo.relateModelItemName;
@@ -356,8 +426,6 @@ var vue = new Vue({
             })
         }
 
-
-
         $("#step").steps({
             onFinish: function () {
                 alert('Wizard Completed');
@@ -390,13 +458,15 @@ var vue = new Vue({
             this.computableModel.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), this.computableModel.authorship);
 
-            var formData = new FormData();//重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
-            var files=$("#resource")[0].files;
-            for(i=0;i<files.length;i++){
-                formData.append("resources",files[i]);
+            // //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
+
+            // var files=$("#resource")[0].files;
+            for(i=0;i<this.fileArray.length;i++){
+                this.formData.append("resources",this.fileArray[i]);
             }
+
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                formData.append("computableModel", JSON.stringify(this.computableModel))
+                this.formData.append("computableModel", JSON.stringify(this.computableModel))
 
                 $("#step").css("display", "none");
                 $(".uploading").css("display", "block");
@@ -404,7 +474,7 @@ var vue = new Vue({
                 $.ajax({
                     url: '/computableModel/add',
                     type: 'post',
-                    data: formData,
+                    data: this.formData,
                     cache: false,
                     processData: false,
                     contentType: false,
@@ -432,7 +502,7 @@ var vue = new Vue({
             }
             else{
                 this.computableModel.oid=oid;
-                formData.append("computableModel", JSON.stringify(this.computableModel))
+                this.formData.append("computableModel", JSON.stringify(this.computableModel))
 
                 $("#step").css("display", "none");
                 $(".uploading").css("display", "block");
@@ -440,7 +510,7 @@ var vue = new Vue({
                 $.ajax({
                     url: '/computableModel/update',
                     type: 'post',
-                    data: formData,
+                    data: this.formData,
                     cache: false,
                     processData: false,
                     contentType: false,

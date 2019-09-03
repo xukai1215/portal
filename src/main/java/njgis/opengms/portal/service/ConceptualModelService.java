@@ -106,15 +106,15 @@ public class ConceptualModelService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateResult = simpleDateFormat.format(date);
 
-        String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
+        String lastModifyTime = simpleDateFormat.format(modelInfo.getLastModifyTime());
 
         //用户信息
         JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
 
         //修改者信息
-        String lastModifier=modelInfo.getLastModifier();
-        JSONObject modifierJson=null;
-        if(lastModifier!=null){
+        String lastModifier = modelInfo.getLastModifier();
+        JSONObject modifierJson = null;
+        if (lastModifier != null) {
             modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
@@ -147,7 +147,8 @@ public class ConceptualModelService {
         ConceptualModel conceptualModel = new ConceptualModel();
 
         String path = resourcePath + "/conceptualModel";
-        List<String> images = saveFiles(files, path, uid, "/conceptualModel");
+        List<String> images = new ArrayList<>();
+        saveFiles(files, path, uid, "/conceptualModel",images);
         if (images == null) {
             result.put("code", -1);
         } else {
@@ -211,41 +212,57 @@ public class ConceptualModelService {
     public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
         ConceptualModel conceptualModel_ori = conceptualModelDao.findFirstByOid(jsonObject.getString("oid"));
         String author0 = conceptualModel_ori.getAuthor();
+        ConceptualModel conceptualModel = new ConceptualModel();
+        BeanUtils.copyProperties(conceptualModel_ori, conceptualModel);
 
         JSONObject result = new JSONObject();
         if (!conceptualModel_ori.isLock()) {
 
             String path = resourcePath + "/conceptualModel";
-            List<String> images = saveFiles(files, path, uid, "/conceptualModel");
-            if (images == null) {
-                result.put("code", -1);
-            } else {
-                try {
-                    ConceptualModel conceptualModel=new ConceptualModel();
-                    BeanUtils.copyProperties(conceptualModel_ori,conceptualModel);
-                    conceptualModel.setImage(images);
-                    conceptualModel.setName(jsonObject.getString("name"));
-                    conceptualModel.setDetail(jsonObject.getString("detail"));
-                    JSONArray jsonArray = jsonObject.getJSONArray("authorship");
-                    List<AuthorInfo> authorship = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        JSONObject author = jsonArray.getJSONObject(i);
-                        AuthorInfo authorInfo = new AuthorInfo();
-                        authorInfo.setName(author.getString("name"));
-                        authorInfo.setEmail(author.getString("email"));
-                        authorInfo.setIns(author.getString("ins"));
-                        authorInfo.setHomepage(author.getString("homepage"));
-                        authorship.add(authorInfo);
+            List<String> images = new ArrayList<>();
+
+            try {
+                JSONArray resources = jsonObject.getJSONArray("resources");
+                List<String> oldImages = conceptualModel.getImage();
+                for (Object object : resources) {
+                    JSONObject json = (JSONObject) JSONObject.toJSON(object);
+                    String pa = json.getString("path");
+                    for (String imagePath : oldImages) {
+                        if (pa.equals(imagePath)) {
+                            images.add(imagePath);
+                            break;
+                        }
                     }
-                    conceptualModel.setAuthorship(authorship);
-                    conceptualModel.setRelateModelItem(jsonObject.getString("bindOid"));
-                    conceptualModel.setDescription(jsonObject.getString("description"));
-                    conceptualModel.setContentType(jsonObject.getString("contentType"));
-                    conceptualModel.setCXml(jsonObject.getString("cXml"));
-                    conceptualModel.setSvg(jsonObject.getString("svg"));
-                    conceptualModel.setAuthor(uid);
+                }
+                if (files.size() > 0) {
+                    saveFiles(files, path, uid, "/conceptualModel",images);
+                    if (images == null) {
+                        result.put("code", -1);
+                    }
+                }
+                conceptualModel.setImage(images);
+                conceptualModel.setName(jsonObject.getString("name"));
+                conceptualModel.setDetail(jsonObject.getString("detail"));
+                JSONArray jsonArray = jsonObject.getJSONArray("authorship");
+                List<AuthorInfo> authorship = new ArrayList<>();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject author = jsonArray.getJSONObject(i);
+                    AuthorInfo authorInfo = new AuthorInfo();
+                    authorInfo.setName(author.getString("name"));
+                    authorInfo.setEmail(author.getString("email"));
+                    authorInfo.setIns(author.getString("ins"));
+                    authorInfo.setHomepage(author.getString("homepage"));
+                    authorship.add(authorInfo);
+                }
+                conceptualModel.setAuthorship(authorship);
+                conceptualModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                conceptualModel.setDescription(jsonObject.getString("description"));
+                conceptualModel.setContentType(jsonObject.getString("contentType"));
+                conceptualModel.setCXml(jsonObject.getString("cXml"));
+                conceptualModel.setSvg(jsonObject.getString("svg"));
+                conceptualModel.setAuthor(uid);
 //                boolean isAuthor = jsonObject.getBoolean("isAuthor");
-                    conceptualModel.setIsAuthor(true);
+                conceptualModel.setIsAuthor(true);
 //                if (isAuthor) {
 //                    conceptualModel.setRealAuthor(null);
 //                } else {
@@ -257,45 +274,45 @@ public class ConceptualModelService {
 //                }
 
 
-                    Date now = new Date();
+                Date now = new Date();
 
-                    if (author0.equals(uid)) {
-                        conceptualModel.setLastModifyTime(now);
-                        conceptualModelDao.save(conceptualModel);
+                if (author0.equals(uid)) {
+                    conceptualModel.setLastModifyTime(now);
+                    conceptualModelDao.save(conceptualModel);
 
-                        result.put("method", "update");
-                        result.put("code", 1);
-                        result.put("id", conceptualModel.getOid());
+                    result.put("method", "update");
+                    result.put("code", 1);
+                    result.put("id", conceptualModel.getOid());
 
-                    } else {
-                        ConceptualModelVersion conceptualModelVersion=new ConceptualModelVersion();
-                        BeanUtils.copyProperties(conceptualModel,conceptualModelVersion, "id");
-                        conceptualModelVersion.setOid(UUID.randomUUID().toString());
-                        conceptualModelVersion.setOriginOid(conceptualModel_ori.getOid());
-                        conceptualModelVersion.setModifier(uid);
-                        conceptualModelVersion.setVerNumber(now.getTime());
-                        conceptualModelVersion.setVerStatus(0);
-                        conceptualModelVersion.setModifyTime(now);
+                } else {
+                    ConceptualModelVersion conceptualModelVersion = new ConceptualModelVersion();
+                    BeanUtils.copyProperties(conceptualModel, conceptualModelVersion, "id");
+                    conceptualModelVersion.setOid(UUID.randomUUID().toString());
+                    conceptualModelVersion.setOriginOid(conceptualModel_ori.getOid());
+                    conceptualModelVersion.setModifier(uid);
+                    conceptualModelVersion.setVerNumber(now.getTime());
+                    conceptualModelVersion.setVerStatus(0);
+                    conceptualModelVersion.setModifyTime(now);
 
-                        conceptualModelVersionDao.save(conceptualModelVersion);
+                    conceptualModelVersionDao.save(conceptualModelVersion);
 
-                        conceptualModel_ori.setLock(true);
-                        conceptualModelDao.save(conceptualModel_ori);
+                    conceptualModel_ori.setLock(true);
+                    conceptualModelDao.save(conceptualModel_ori);
 
-                        result.put("method", "version");
-                        result.put("code",0);
-                        result.put("oid", conceptualModelVersion.getOid());
+                    result.put("method", "version");
+                    result.put("code", 0);
+                    result.put("oid", conceptualModelVersion.getOid());
 
 
-                        return result;
+                    return result;
 
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    result.put("code", -2);
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.put("code", -2);
             }
+
             return result;
         } else {
             return null;

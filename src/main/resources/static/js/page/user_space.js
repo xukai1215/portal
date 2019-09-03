@@ -3388,7 +3388,7 @@ var vue = new Vue({
     },
     mounted() {
 
-
+        $("#title").text("User Space")
 
         $('.dropdown-toggle').dropdown()
 

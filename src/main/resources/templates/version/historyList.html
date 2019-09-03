@@ -71,8 +71,6 @@
 
     <div th:replace="fragments/navbar :: unlog"></div>
 
-
-
     <el-card class="box-card">
         <el-page-header @back="goBack" th:content="${name}" style="margin-bottom: 20px;">
         </el-page-header>
@@ -139,7 +137,14 @@
             },
             goBack()
             {
-                window.location.href="/"+this.type+"/"+this.oid;
+                if(this.type==="modelItem"||this.type==="conceptualModel"||this.type==="logicalModel"||this.type==="computableModel")
+                {
+                    window.location.href="/"+this.type+"/"+this.oid;
+                }
+                else{
+                    window.location.href="/repository/"+this.type+"/"+this.oid;
+                }
+
             }
         },
         mounted(){

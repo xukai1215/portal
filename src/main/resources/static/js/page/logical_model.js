@@ -91,6 +91,15 @@ new Vue({
 
     },
     mounted(){
+
+        let parentWidth=$("#pane-Image").width();
+        let children=$("#pane-Image img");
+        for(i=0;i<children.length;i++){
+            if(children.eq(i).width()>parentWidth){
+                children.eq(i).css("width","100%")
+            }
+        }
+
         $(document).on("click", ".detail-toggle", function () {
             if ($(this).text() == "[Collapse]") {
                 $(this).text("[Expand]");

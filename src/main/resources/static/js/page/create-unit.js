@@ -138,6 +138,9 @@ var vue = new Vue({
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
+
+            $("#title").text("Create Unit & Metric")
+
             $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
@@ -174,6 +177,10 @@ var vue = new Vue({
             });
         }
         else {
+
+            $("#title").text("Modify Unit & Metric")
+            document.title="Modify Unit & Metric | OpenGMS"
+
             $.ajax({
                 url: "/repository/getUnitInfo/" + oid,
                 type: "get",

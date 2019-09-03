@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.ComputableModelResultDTO;
@@ -13,6 +14,7 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -43,6 +45,9 @@ public class ComputableModelRestController {
 
     @Autowired
     UserService userService;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
 
     @RequestMapping (value="/add",method = RequestMethod.POST)
@@ -122,6 +127,33 @@ public class ComputableModelRestController {
         ModelItem modelItem=modelItemService.getByOid(computableModel.getRelateModelItem());
         BeanUtils.copyProperties(computableModel,computableModelResultDTO);
         computableModelResultDTO.setRelateModelItemName(modelItem.getName());
+
+        JSONArray resourceArray = new JSONArray();
+        List<String> resources = computableModel.getResources();
+
+        if (resources != null) {
+            for (int i = 0; i < resources.size(); i++) {
+
+                String path = resources.get(i);
+
+                String[] arr = path.split("\\.");
+                String suffix = arr[arr.length - 1];
+
+                arr = path.split("/");
+                String name = arr[arr.length - 1].substring(14);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", i);
+                jsonObject.put("name", name);
+                jsonObject.put("suffix", suffix);
+                jsonObject.put("path",htmlLoadPath+resources.get(i));
+                resourceArray.add(jsonObject);
+
+            }
+
+        }
+
+        computableModelResultDTO.setResourceJson(resourceArray);
 
         return ResultUtils.success(computableModelResultDTO);
     }

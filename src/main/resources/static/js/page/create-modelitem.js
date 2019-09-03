@@ -412,6 +412,8 @@ var vue = new Vue({
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
+            $("#title").text("Create Model Item")
+
             tinymce.init({
                 selector: "textarea#myText",
                 height: 350,
@@ -447,6 +449,8 @@ var vue = new Vue({
             });
         }
         else {
+            $("#title").text("Modify Model Item")
+            document.title="Modify Model Item | OpenGMS"
             $.ajax({
                 url: "/modelItem/getInfo/" + oid,
                 type: "get",

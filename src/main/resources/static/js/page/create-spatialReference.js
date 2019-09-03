@@ -137,6 +137,9 @@ var vue = new Vue({
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
+            $("#title").text("Create Spatial Reference")
+
+
             $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
@@ -173,6 +176,10 @@ var vue = new Vue({
             });
         }
         else {
+
+            $("#title").text("Modify Spatial Reference")
+            document.title="Modify Spatial Reference | OpenGMS"
+
             $.ajax({
                 url: "/repository/getSpatialInfo/" + oid,
                 type: "get",

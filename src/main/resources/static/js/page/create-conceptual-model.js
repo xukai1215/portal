@@ -22,6 +22,12 @@ var vue = new Vue({
 
         },
 
+        //文件框
+        resources:[],
+        fileSelect:'',
+        fileArray:new Array(),
+        formData:new FormData(),
+
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
         editorUrl: "",
@@ -82,8 +88,61 @@ var vue = new Vue({
 
             }
         },
+        addFile(){
+            $("#imgFiles").click();
+        },
+        removeFile(){
+            if(this.fileSelect!="") {
+                $(".dataitemisol").css("border","1px solid #ebeef5")
+                let res=this.resources[Number(this.fileSelect)];
+                for(i=0;i<this.fileArray.length;i++){
+                    let file=this.fileArray[i];
+                    if(file.name===res.name&&file.size===res.size&&file.lastModified===res.lastModified&&file.type===res.type){
+                        this.fileArray.splice(i,1);
+                        break;
+                    }
+                }
+                this.resources.splice(Number(this.fileSelect), 1);
+                this.fileSelect = "";
+            }
+        },
+        replaceFile(){
+            this.fileArray=new Array();
+            $("#imgFiles").click();
+        },
+        resClick(e){
+
+            let path=e.path;
+            for(i=0;i<path.length;i++){
+                let obj=path[i];
+                if(obj.className.indexOf("dataitemisol")!=-1){
+                    $(".dataitemisol").css("border","1px solid #ebeef5")
+                    this.fileSelect=obj.align;
+                    obj.style.border='2px solid #60b0e8';
+                    break;
+                }
+            }
+        }
     },
     mounted() {
+
+        $("#imgFiles").change(()=> {
+
+            let files = $("#imgFiles")[0].files;
+            for (i = 0; i < files.length; i++) {
+                let file = files[i];
+                this.fileArray.push(file);
+                let res = {};
+                res.name = file.name;
+                res.path = "";
+                let names = res.name.split('.');
+                res.suffix = names[names.length - 1];
+                res.size = file.size;
+                res.lastModified = file.lastModified;
+                res.type = file.type;
+                this.resources.push(res);
+            }
+        })
 
         $.ajax({
             type: "GET",
@@ -162,6 +221,9 @@ var vue = new Vue({
         });
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
+
+            $("#title").text("Create Conceptual Model")
+
             $("input[name='ContentType']").eq(0).iCheck('check');
             $("#MxGraph").show();
             $("#Image").hide();
@@ -201,14 +263,21 @@ var vue = new Vue({
             });
         }
         else{
+
+            $("#title").text("Modify Conceptual Model")
+            document.title="Modify Conceptual Model | OpenGMS"
+
             $.ajax({
                 url: "/conceptualModel/getInfo/" + oid,
                 type: "get",
                 data: {},
 
                 success: (result) => {
+                    this.setSession("editConceptualModel_id","");
                     console.log(result)
                     var basicInfo = result.data;
+
+                    this.resources=basicInfo.resourceJson;
 
                     $("#search-box").val(basicInfo.relateModelItemName)
                     this.conceptualModel.bindModelItem=basicInfo.relateModelItemName;
@@ -397,19 +466,18 @@ var vue = new Vue({
             }
 
             //添加图片
-            var formData = new FormData();//重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
-            var files=$("#imgFiles")[0].files;
-            for(i=0;i<files.length;i++){
-                formData.append("imgFiles",$("#imgFiles")[0].files[i]);
+            //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
+
+            for(i=0;i<this.fileArray.length;i++){
+                this.formData.append("imgFiles",this.fileArray[i]);
             }
 
-
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
+                this.formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
                 $.ajax({
                     url: '/conceptualModel/add',
                     type: 'post',
-                    data: formData,
+                    data: this.formData,
                     cache: false,
                     processData: false,
                     contentType: false,
@@ -434,11 +502,12 @@ var vue = new Vue({
             }
             else{
                 this.conceptualModel.oid = oid;
-                formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
+                this.conceptualModel.resources=this.resources;
+                this.formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
                 $.ajax({
                     url: '/conceptualModel/update',
                     type: 'post',
-                    data: formData,
+                    data: this.formData,
                     cache: false,
                     processData: false,
                     contentType: false,

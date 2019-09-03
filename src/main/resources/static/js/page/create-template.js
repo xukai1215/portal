@@ -164,6 +164,8 @@ var vue = new Vue({
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
+            $("#title").text("Create Data Template")
+
             $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
@@ -200,6 +202,11 @@ var vue = new Vue({
             });
         }
         else {
+
+            $("#title").text("Modify Data Template")
+            document.title="Modify Data Template | OpenGMS"
+
+
             $.ajax({
                 url: "/repository/getTemplateInfo/" + oid,
                 type: "get",

@@ -1,5 +1,6 @@
 package njgis.opengms.portal.dto;
 
+import com.alibaba.fastjson.JSONArray;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,8 @@ public class ComputableModelResultDTO {
     String author;
     String status;
     String detail;
+
+    JSONArray resourceJson;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;

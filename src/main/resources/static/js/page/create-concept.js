@@ -1058,6 +1058,9 @@ var vue = new Vue({
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
+
+            $("#title").text("Create Concept & Semantic")
+
             $("#myText").html("");
             tinymce.init({
                 selector: "textarea#myText",
@@ -1094,6 +1097,10 @@ var vue = new Vue({
             });
         }
         else {
+
+            $("#title").text("Modify Concept & Semantic")
+            document.title="Modify Concept & Semantic | OpenGMS"
+
             $.ajax({
                 url: "/repository/getConceptInfo/" + oid,
                 type: "get",

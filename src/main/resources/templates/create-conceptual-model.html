@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Conceptual Model</title>
+    <title>Create Conceptual Model | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
 
 
@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/jquery-ui-1.12.1/jquery-ui.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/iCheck/skins/flat/green.css"/>
+    <link rel="stylesheet" href="/static/css/components/file-manager.css">
 
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
     <link rel="stylesheet" href="/static/css/base/universal.css">
@@ -84,7 +85,7 @@
 
         <div class="page-content clearfix scrollbar"
              :style="{'min-height':ScreenMaxHeight,'max-height':ScreenMaxHeight}" style="overflow-x: hidden;">
-            <div th:replace="fragments/sidebar :: top2"></div>
+            <div th:replace="fragments/sidebar :: top"></div>
             <div class="page-content-wrap container-fluid">
                 <div class="row">
                     <div class="col-md-12 nopadding">
@@ -172,15 +173,49 @@
                                                 </div>
 
                                                 <div id="Image" style="display: none">
-                                                    <div class="form-group" style="margin-top:50px">
-                                                        <label class="control-label col-md-4 col-md-offset-2">
-                                                            Please select conceptual model image:
-                                                        </label>
-                                                        <div class="input-group col-md-offset-1">
-                                                            <input id="imgFiles" type="file" multiple="multiple" accept="image/*"/>
-                                                        </div>
-                                                    </div>
+                                                    <el-button type="primary" @click="addFile()">+ Add</el-button>
+                                                    <el-button type="danger" @click="removeFile()">- Remove</el-button>
+                                                    <!--<el-button type="success" @click="replaceFile()">Replace</el-button>-->
 
+                                                    <el-card :body-style="{ padding:'9px'}" style="margin-top: 10px">
+                                                        <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>
+                                                    </el-card>
+
+
+                                                    <el-card style="height: 300px;overflow-y:auto" id="browsercont" class="filecontent">
+
+                                                        <div @click="resClick" v-for="(resource, index) in resources" >
+                                                            <!--</el-row>-->
+                                                            <el-card style="width:10%" :key="index" :align="index"
+                                                                     :title="resource.name" class="dataitemisol" shadow="never">
+
+                                                                <el-row>
+                                                                    <el-col :span="6">&nbsp</el-col>
+                                                                    <el-col :span="12"><a ><img
+                                                                            :src="'/static/img/filebrowser/'+resource.suffix+'.svg'"
+                                                                            style="height: 60%;width:100%"></a></el-col>
+                                                                    <el-col :span="6">&nbsp</el-col>
+                                                                </el-row>
+                                                                <el-row>
+                                                                    <el-col :span="2">&nbsp</el-col>
+                                                                    <el-col :span="20">
+
+                                                                        <p style="word-wrap: break-word;word-break: break-all;text-align: center"
+                                                                        >{{resource.name}}</p>
+                                                                    </el-col>
+                                                                    <el-col :span="2">&nbsp</el-col>
+
+                                                                </el-row>
+
+                                                                <!--menu item -->
+
+
+                                                            </el-card>
+
+                                                        </div>
+                                                    </el-card>
+
+                                                    <input id="imgFiles" type="file" multiple="multiple" accept="image/*" style="display: none;"/>
                                                 </div>
                                             </div>
                                             <div class="step-tab-panel" id="step3">

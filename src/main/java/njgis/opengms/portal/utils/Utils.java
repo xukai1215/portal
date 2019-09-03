@@ -13,7 +13,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -135,10 +134,10 @@ public class Utils {
 
     }
 
-    public static List<String> saveFiles(List<MultipartFile> files, String path, String uid, String suffix) {
+    public static List<String> saveFiles(List<MultipartFile> files, String path, String uid, String suffix,List<String> result) {
         new File(path).mkdirs();
 
-        List<String> result = new ArrayList<>();
+
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
             fileName = "/" + uid + "/" + new Date().getTime() + "_" + fileName;

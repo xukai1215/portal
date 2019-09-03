@@ -411,6 +411,7 @@ public class ModelItemService {
                 }
             }
             modelItem.setDetail(detailResult);
+
             modelItem.setImage(modelItem.getImage());
             return modelItem;
         } catch (Exception e) {
