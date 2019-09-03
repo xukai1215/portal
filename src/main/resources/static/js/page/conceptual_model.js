@@ -10,7 +10,7 @@ new Vue({
             form:{
                 name:"",
             },
-            graphVisible:false
+            graphVisible:"none"
         }
     },
     methods: {

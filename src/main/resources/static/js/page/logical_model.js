@@ -5,7 +5,7 @@ new Vue({
             activeIndex:'3-2',
             activeNameGraph: 'Image',
 
-            graphVisible:false
+            graphVisible:"none"
         }
     },
     methods: {
