@@ -17,9 +17,15 @@ var vue = new Vue({
                 name:"",
                 ins:"",
                 email:""
-            }
+            },
+            resources:[],
 
         },
+        //文件框
+        resources:[],
+        fileSelect:'',
+        fileArray:new Array(),
+        formData:new FormData(),
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
@@ -82,8 +88,66 @@ var vue = new Vue({
 
             }
         },
+        addFile(){
+            $("#imgFiles").click();
+        },
+        removeFile(){
+            if(this.fileSelect!="") {
+                $(".dataitemisol").css("border","1px solid #ebeef5")
+                let res=this.resources[Number(this.fileSelect)];
+                for(i=0;i<this.fileArray.length;i++){
+                    let file=this.fileArray[i];
+                    if(file.name===res.name&&file.size===res.size&&file.lastModified===res.lastModified&&file.type===res.type){
+                        this.fileArray.splice(i,1);
+                        break;
+                    }
+                }
+                this.resources.splice(Number(this.fileSelect), 1);
+                this.fileSelect = "";
+            }
+        },
+        replaceFile(){
+            this.fileArray=new Array();
+            $("#imgFiles").click();
+        },
+        resClick(e){
+
+            let path=e.path;
+            for(i=0;i<path.length;i++){
+                let obj=path[i];
+                if(obj.className.indexOf("dataitemisol")!=-1){
+                    $(".dataitemisol").css("border","1px solid #ebeef5")
+                    this.fileSelect=obj.align;
+                    obj.style.border='2px solid #60b0e8';
+                    break;
+                }
+            }
+        }
     },
     mounted() {
+
+        $("#imgFiles").change(()=> {
+
+            let files=$("#imgFiles")[0].files;
+            for(i=0;i<files.length;i++){
+                let file=files[i];
+                this.fileArray.push(file);
+                let res={};
+                res.name=file.name;
+                res.path="";
+                let names=res.name.split('.');
+                res.suffix=names[names.length-1];
+                res.size=file.size;
+                res.lastModified=file.lastModified;
+                res.type=file.type;
+                this.resources.push(res);
+            }
+
+
+            //清空
+            let file=document.getElementById("file");
+            file.value='';
+        })
 
         $.ajax({
             type: "GET",
@@ -108,7 +172,7 @@ var vue = new Vue({
                     var bindOid = this.getSession("bindOid");
                     this.logicalModel.bindOid = bindOid;
                     $.ajax({
-                        data: "Get",
+                        type: "Get",
                         url: "/modelItem/getInfo/" + bindOid,
                         data: {},
                         cache: false,
@@ -138,6 +202,9 @@ var vue = new Vue({
 
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
+
+            $("#title").text("Create Logical Model")
+
             tinymce.init({
                 selector: "textarea#myText",
                 height: 400,
@@ -173,6 +240,10 @@ var vue = new Vue({
             });
         }
         else{
+
+            $("#title").text("Modify Logical Model")
+            document.title="Modify Logical Model | OpenGMS"
+
             $.ajax({
                 url: "/logicalModel/getInfo/" + oid,
                 type: "get",
@@ -181,6 +252,8 @@ var vue = new Vue({
                 success: (result) => {
                     console.log(result)
                     var basicInfo = result.data;
+
+                    this.resources=basicInfo.resourceJson;
 
                     $("#search-box").val(basicInfo.relateModelItemName)
                     this.logicalModel.bindModelItem=basicInfo.relateModelItemName;
@@ -362,18 +435,18 @@ var vue = new Vue({
 
             //添加图片
 
-            var formData = new FormData();//重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
-            var files=$("#imgFiles")[0].files;
-            for(i=0;i<files.length;i++){
-                formData.append("imgFiles",$("#imgFiles")[0].files[i]);
+            //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
+
+            for(i=0;i<this.fileArray.length;i++){
+                this.formData.append("imgFiles",this.fileArray[i]);
             }
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                formData.append("logicalModel", JSON.stringify(this.logicalModel))
+                this.formData.append("logicalModel", JSON.stringify(this.logicalModel))
                 $.ajax({
                     url: '/logicalModel/add',
                     type: 'post',
-                    data: formData,
+                    data: this.formData,
                     cache: false,
                     processData: false,
                     contentType: false,
@@ -398,11 +471,12 @@ var vue = new Vue({
             }
             else{
                 this.logicalModel.oid=oid;
-                formData.append("logicalModel", JSON.stringify(this.logicalModel))
+                this.logicalModel.resources=this.resources;
+                this.formData.append("logicalModel", JSON.stringify(this.logicalModel))
                 $.ajax({
                     url: '/logicalModel/update',
                     type: 'post',
-                    data: formData,
+                    data: this.formData,
                     cache: false,
                     processData: false,
                     contentType: false,

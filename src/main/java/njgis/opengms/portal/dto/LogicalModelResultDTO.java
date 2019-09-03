@@ -1,5 +1,6 @@
 package njgis.opengms.portal.dto;
 
+import com.alibaba.fastjson.JSONArray;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,8 @@ public class LogicalModelResultDTO {
     List<String> image;
     //    List<String> contributors;
     List<AuthorInfo> authorship;
+
+    JSONArray resourceJson;
 
 //    LogicalModelRelate relate;
 

@@ -372,7 +372,13 @@ public class PortalApplicationTests {
             if(computableModel.getMdl()!=null) {
                 try {
                     JSONObject jsonObject = XmlTool.documentToJSONObject(computableModel.getMdl());
-//                    System.out.println(jsonObject);
+                    String type=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getString("type");
+                    if(type!=null){
+                        jsonObject.getJSONArray("ModelClass").getJSONObject(0).put("style",type);
+                    }
+                    if(jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+                        jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+                    }
                     computableModel.setMdlJson(jsonObject);
                     computableModelDao.save(computableModel);
                 }

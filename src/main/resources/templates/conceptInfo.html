@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-    <title th:text="${info.name}+' | OpenGMS'">Concept & Semantic | OpenGMS</title>
+    <title th:text="${info.name}+' | Conceptual Model | OpenGMS'">Concept & Semantic | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link href="/static/css/base/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css">
@@ -71,6 +71,7 @@
                     <div class="img">
                         <div th:switch="${info.image}" class="img">
                             <avatar th:case="''" th:username="${info.name}" :size="90" :rounded="false"></avatar>
+                            <avatar th:case="null" th:username="${info.name}" :size="90" :rounded="false"></avatar>
                             <img th:case="*" th:src="${image}">
                         </div>
                         <!--<avatar th:if="${info.name_ZH!=null}" th:username="${info.description_EN==''?info.name_ZH:info.name_EN}" :size="90" :rounded="false"></avatar>-->

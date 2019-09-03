@@ -107,6 +107,7 @@ public class UserRestController {
         else{
 
             user.put("oid",session.getAttribute("oid").toString());
+            user.put("uid",session.getAttribute("uid").toString());
             user.put("name",session.getAttribute("name").toString());
             user.put("image",userService.getImage(session.getAttribute("oid").toString()));
             return user.toString();
