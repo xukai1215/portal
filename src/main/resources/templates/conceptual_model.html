@@ -84,7 +84,7 @@
                 </div>
                 <div class="block_content" style="margin-top:20px;">
 
-                    <el-button typ="text" style="float: right; position: relative" @click="graphVisible = 'block'"> MxGraph </el-button>
+                    <el-button th:if="${modelInfo.contentType}=='MxGraph'" typ="text" style="float: right; position: relative" @click="graphVisible = 'block'"> MxGraph </el-button>
 
                     <el-tabs class="right-content" v-model="activeNameGraph" type="border-card" stretch="true">
                         <el-tab-pane label="Image" name="Image"  th:if="${modelInfo.contentType}!='MxGraph'">

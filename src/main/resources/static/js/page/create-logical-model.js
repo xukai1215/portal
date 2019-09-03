@@ -429,9 +429,15 @@ var vue = new Vue({
 
             let iframeWindow=$("#ModelEditor")[0].contentWindow;
 
-            this.logicalModel.svg = "<svg width='" + iframeWindow.getW() + "px' height='" + iframeWindow.getH() + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>"
+            let result=iframeWindow.getXml();
+
+            this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>"
 
             this.logicalModel.cXml=iframeWindow.getCxml();
+
+            this.logicalModel.xml=result.xml;
+            this.logicalModel.w=result.w;
+            this.logicalModel.h=result.h;
 
             //添加图片
 
