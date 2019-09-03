@@ -12,6 +12,7 @@ import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.MxGraphUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.deCode;
 import org.bson.Document;
@@ -152,6 +153,7 @@ public class LogicalModelService {
         JSONObject result = new JSONObject();
         LogicalModel logicalModel = new LogicalModel();
 
+
         String path = resourcePath + "/logicalModel";
         List<String> images =new ArrayList<>();
         saveFiles(files, path, uid, "/logicalModel",images);
@@ -159,6 +161,15 @@ public class LogicalModelService {
             result.put("code", -1);
         } else {
             try {
+
+                if(jsonObject.getString("contentType").equals("MxGraph")) {
+                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph";
+                    MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + name);
+                    images.add("/logicalModel" + name);
+                }
+
+
                 logicalModel.setImage(images);
                 logicalModel.setOid(UUID.randomUUID().toString());
                 logicalModel.setName(jsonObject.getString("name"));
@@ -219,6 +230,7 @@ public class LogicalModelService {
 
     public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
         JSONObject result = new JSONObject();
+
         LogicalModel logicalModel_ori = logicalModelDao.findFirstByOid(jsonObject.getString("oid"));
         LogicalModel logicalModel = new LogicalModel();
         BeanUtils.copyProperties(logicalModel_ori, logicalModel);
@@ -247,6 +259,14 @@ public class LogicalModelService {
                         return result;
                     }
                 }
+
+                if(jsonObject.getString("contentType").equals("MxGraph")) {
+                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph";
+                    MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + name);
+                    images.add("/logicalModel" + name);
+                }
+
                 logicalModel.setImage(images);
                 logicalModel.setName(jsonObject.getString("name"));
                 logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));

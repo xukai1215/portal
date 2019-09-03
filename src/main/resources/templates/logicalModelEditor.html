@@ -1,4 +1,5 @@
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=5,IE=9"><![endif]-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="/static/mxGraph_bc/styles/grapheditor.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <script type="text/javascript" src="/static/js/common/jquery-3.3.1.min.js"></script>
 
 
@@ -35,26 +36,26 @@
     // Extends EditorUi to update I/O action states based on availability of backend
 
 
-        var uid = window.sessionStorage.getItem("editLogicalModel_id");
+    var uid = window.sessionStorage.getItem("editLogicalModel_id");
 
 
-            //  mainUI.setStatusText("Load OK");
-            if (uid != null && uid != "" && uid != "0") {
-                $.ajax({
-                    url: "/logicalModel/getInfo/" + uid,
-                    type: "get",
-                    data: { "mid": uid },
-                    success: (result)=> {
-                        var data = result.data;
-                        console.log(data)
-                        var xml_doc = mxUtils.parseXml(data.cxml);
-                        xml_doc.documentElement.setAttribute("page", 0);
-                        ui.editor.setGraphXml(xml_doc.documentElement);
-                        window.onbeforeunload = null;
-                        window.sessionStorage.setItem("editLogicalModel_id", "");
-                    }
-                })
+    //  mainUI.setStatusText("Load OK");
+    if (uid != null && uid != "" && uid != "0") {
+        $.ajax({
+            url: "/logicalModel/getInfo/" + uid,
+            type: "get",
+            data: {"mid": uid},
+            success: (result) => {
+                var data = result.data;
+                console.log(data)
+                var xml_doc = mxUtils.parseXml(data.cxml);
+                xml_doc.documentElement.setAttribute("page", 0);
+                ui.editor.setGraphXml(xml_doc.documentElement);
+                window.onbeforeunload = null;
+                window.sessionStorage.setItem("editLogicalModel_id", "");
             }
+        })
+    }
 
 
 </script>
@@ -64,25 +65,67 @@
 <div id="container" class="geEditor" style="left: 0px; top:0px; "></div>
 
 <script type="text/javascript" src="/static/mxGraph_bc/js/Collaboration.js"></script>
-<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 <script>
-    function getCxml(){
-       return ui.editor.getGraphXml().outerHTML;
+    function getCxml() {
+
+        return ui.editor.getGraphXml().outerHTML;
+    }
+
+    function getXml(){
+
+
+        var xmlDoc = mxUtils.createXmlDocument();
+        var root = xmlDoc.createElement('output');
+        xmlDoc.appendChild(root);
+
+        var xmlCanvas = new mxXmlCanvas2D(root);
+        var scale=graph.getView().scale;
+        var stackLayout = new mxStackLayout(graph, true);
+        var border=stackLayout.border;
+        var bounds = graph.getGraphBounds();
+        xmlCanvas.translate(
+            Math.floor((border / scale - bounds.x) / scale),
+            Math.floor((border / scale - bounds.y) / scale),
+        );
+        xmlCanvas.scale(1);
+
+
+        var imgExport = new mxImageExport();
+        imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
+
+
+        var w = Math.ceil(bounds.width * scale / scale + 2 * border);
+        var h = Math.ceil(bounds.height * scale / scale + 2 * border);
+
+        var xml = mxUtils.getXml(root);
+        // xml = encodeURIComponent(xml);
+        console.log(xml)
+
+        let result={};
+        result.xml=xml;
+        result.w=w;
+        result.h=h;
+
+        return result;
     }
 
     function getSvg() {
-        new PrintDialog(ui,'save').container;
+        new PrintDialog(ui, 'save').container;
         return $("svg").eq(7).html();
     }
 
-    function getW(){
-        let gb = graph.getGraphBounds();
-        return Math.ceil(gb.width);
+    function getW() {
+        var bounds = graph.getGraphBounds();
+        var w =  Math.ceil(bounds.width * scale / scale + 2 * border);
+        return w;
     }
 
     function getH() {
-        let gb = graph.getGraphBounds();
-        return Math.ceil(gb.height);
+        var bounds = graph.getGraphBounds();
+        var h = Math.ceil(bounds.height * scale / scale + 2 * border);
+        return h;
     }
 </script>
 </body>

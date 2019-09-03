@@ -273,7 +273,7 @@ var vue = new Vue({
                 data: {},
 
                 success: (result) => {
-                    this.setSession("editConceptualModel_id","");
+
                     console.log(result)
                     var basicInfo = result.data;
 
