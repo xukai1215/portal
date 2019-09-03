@@ -85,9 +85,9 @@
                 <div class="block_content" style="margin-top:20px;">
 
                     <el-button typ="text" style="float: right; position: relative" @click="graphVisible = true"> MxGraph </el-button>
-                    <el-dialog title="MxGraph" :visible.sync="graphVisible" width="50%">
+                    <el-dialog title="MxGraph" :visible.sync="graphVisible" width="75%">
                         <div id="container_top" th:if="${modelInfo.contentType}=='MxGraph'"
-                             style="min-height:500px;position:relative;border: 2px solid rgb(223, 223, 223);border-width: 0 1px">
+                             style="min-height:640px;position:relative;border: 2px solid rgb(223, 223, 223);border-width: 0 1px">
                             <div id="container" class="geEditor"
                                  style="left: 0; top:0;right: 0;bottom: 0;position: absolute;"
                                  th:content="${modelInfo.cXml}"></div>
