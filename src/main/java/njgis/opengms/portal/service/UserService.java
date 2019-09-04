@@ -3,24 +3,21 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.dto.UserUpdateDTO;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.Task;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.dto.UserAddDTO;
+import njgis.opengms.portal.dto.UserUpdateDTO;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.*;
 
-@Service
+@Component
 public class UserService {
 
     @Autowired
@@ -111,6 +108,31 @@ public class UserService {
         user.setComputableModels(++count);
         userDao.save(user);
     }
+    public void conceptPlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getConcepts();
+        user.setConcepts(++count);
+        userDao.save(user);
+    }
+    public void spatialPlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getSpatials();
+        user.setSpatials(++count);
+        userDao.save(user);
+    }
+    public void templatePlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getTemplates();
+        user.setTemplates(++count);
+        userDao.save(user);
+    }
+    public void unitPlusPlus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getUnits();
+        user.setUnits(++count);
+        userDao.save(user);
+    }
+
     //--
     public void modelItemMinusMinus(String userName){
         User user = userDao.findFirstByUserName(userName);
@@ -142,12 +164,56 @@ public class UserService {
         user.setComputableModels(--count);
         userDao.save(user);
     }
+    public void conceptMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getConcepts();
+        user.setConcepts(--count);
+        userDao.save(user);
+    }
+    public void spatialMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getSpatials();
+        user.setSpatials(--count);
+        userDao.save(user);
+    }
+    public void templateMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getTemplates();
+        user.setTemplates(--count);
+        userDao.save(user);
+    }
+    public void unitMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getUnits();
+        user.setUnits(--count);
+        userDao.save(user);
+    }
+    public void articleItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getArticlesCount();
+        user.setArticlesCount(--count);
+        userDao.save(user);
+    }
+
+    public void projectItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getProjectsCount();
+        user.setProjectsCount(--count);
+        userDao.save(user);
+    }
+
+    public void conferenceItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getConferencesCount();
+        user.setConferencesCount(--count);
+        userDao.save(user);
+    }
 
     public User getByUid(String userName){
         try {
             return userDao.findFirstByUserName(userName);
         } catch (Exception e) {
-            System.out.println("有人乱查数据库！！该ID不存在User对象");
+            System.out.println("有人乱查数据库！！该UID不存在User对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }
@@ -156,7 +222,7 @@ public class UserService {
         try {
             return userDao.findFirstByOid(id);
         } catch (Exception e) {
-            System.out.println("有人乱查数据库！！该ID不存在User对象");
+            System.out.println("有人乱查数据库！！该OID不存在User对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }

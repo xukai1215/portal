@@ -9,21 +9,20 @@ import org.dom4j.Element;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import static org.springframework.util.StreamUtils.BUFFER_SIZE;
 
 
 public class Utils {
+
+    static int count=0;
 
     public static class Method {
         public static String POST = "POST";
@@ -135,10 +134,10 @@ public class Utils {
 
     }
 
-    public static List<String> saveFiles(List<MultipartFile> files, String path, String uid, String suffix) {
+    public static List<String> saveFiles(List<MultipartFile> files, String path, String uid, String suffix,List<String> result) {
         new File(path).mkdirs();
 
-        List<String> result = new ArrayList<>();
+
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
             fileName = "/" + uid + "/" + new Date().getTime() + "_" + fileName;
@@ -474,5 +473,9 @@ public class Utils {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static void count(){
+        System.out.println("finish:"+(++count));
     }
 }

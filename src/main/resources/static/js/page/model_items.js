@@ -1,3 +1,4 @@
+
 new Vue({
     el: '#app',
     components: {
@@ -9,7 +10,7 @@ new Vue({
             queryType: 'normal',
             searchText: '',
             classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
-            classifications2: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
+            classifications2: [],
 
             currentClass: "",
 
@@ -26,7 +27,7 @@ new Vue({
 
             treeData: [{
                 id: 1,
-                label: 'Earth System',
+                label: 'Earth System Subject',
                 oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
                 children: [{
                     id: 2,
@@ -54,7 +55,11 @@ new Vue({
                     label: 'Global',
                     oid: '1a59f012-0659-479d-a183-b74921c67a08'
                 }]
-            }, {
+            },{
+                id: 64,
+                label: 'Geography Subject',
+                oid: 'd7824a16-0f3a-4186-8cb7-41eb10028177',
+                children: [{
                 id: 8,
                 label: 'Physical Geography',
                 oid: '44068d3f-533a-4567-9bfd-07eea9d9e8af',
@@ -290,7 +295,7 @@ new Vue({
                         label: 'Others',/////
                         oid: '10bef187-00bf-4cea-b192-bf1465a265b1'
                     }]
-            }
+            }]}
                 // , {
                 //     id: 3,
                 //     label: 'Others',
@@ -534,21 +539,28 @@ new Vue({
 
         //expend
         $("#expend").click(() => {
+            this.pageOption.searchResult=[];
+            this.pageOption.paginationShow=false;
+
             this.setUrl("/modelItem/repository")
             this.queryType = "advanced";
             $(".searcherPanel").css("display", "none");
             $(".advancedSearch").css("display", "block");
             $("#tree1").css("display", "none");
             $("#tree2").css("display", "block");
-            if($(".el-checkbox__input").eq(1).hasClass("is-checked")==true){
-                this.getModels();
-            }
-            else {
-                $(".el-checkbox__input").eq(1).click();
-            }
+            // if($(".el-checkbox__input").eq(1).hasClass("is-checked")==true){
+            //     this.getModels();
+            // }
+            // else {
+            //     $(".el-checkbox__input").eq(1).click();
+            // }
+            this.getModels();
             $("#curClassBar").hide();
         })
         $("#drawback").click(() => {
+            this.pageOption.searchResult=[];
+            this.pageOption.paginationShow=false;
+
             this.queryType = "normal";
             $(".searcherPanel").css("display", "block");
             $(".advancedSearch").css("display", "none");

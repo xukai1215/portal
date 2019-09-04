@@ -5,19 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import njgis.opengms.portal.dao.LogicalModelDao;
-import njgis.opengms.portal.dao.ModelDao;
-import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.MxGraphUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.deCode;
 import org.bson.Document;
@@ -35,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static njgis.opengms.portal.utils.Utils.saveFiles;
@@ -56,6 +50,9 @@ public class LogicalModelService {
     LogicalModelDao logicalModelDao;
 
     @Autowired
+    LogicalModelVersionDao logicalModelVersionDao;
+
+    @Autowired
     ModelItemDao modelItemDao;
 
     @Autowired
@@ -74,17 +71,17 @@ public class LogicalModelService {
     private String htmlLoadPath;
 
 
-    public ModelAndView getPage(String id){
+    public ModelAndView getPage(String id) {
         //条目信息
-        LogicalModel modelInfo=getByOid(id);
-        int viewCount=modelInfo.getViewCount();
+        LogicalModel modelInfo = getByOid(id);
+        int viewCount = modelInfo.getViewCount();
         modelInfo.setViewCount(++viewCount);
         logicalModelDao.save(modelInfo);
         //类
-        JSONArray classResult=new JSONArray();
+        JSONArray classResult = new JSONArray();
 
-        List<String> classifications=modelInfo.getClassifications();
-        if(classifications!=null) {
+        List<String> classifications = modelInfo.getClassifications();
+        if (classifications != null) {
             for (int i = 0; i < classifications.size(); i++) {
 
                 JSONArray array = new JSONArray();
@@ -106,27 +103,39 @@ public class LogicalModelService {
             }
         }
 
+
         //时间
-        Date date=modelInfo.getCreateTime();
-        Calendar calendar=Calendar.getInstance();
+        Date date = modelInfo.getCreateTime();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        String dateResult=simpleDateFormat.format(date);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateResult = simpleDateFormat.format(date);
+
+        String lastModifyTime = simpleDateFormat.format(modelInfo.getLastModifyTime());
 
         //用户信息
 
-        JSONObject userJson=userService.getItemUserInfo(modelInfo.getAuthor());
+        JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
 
-        ModelAndView modelAndView=new ModelAndView();
+        //修改者信息
+        String lastModifier = modelInfo.getLastModifier();
+        JSONObject modifierJson = null;
+        if (lastModifier != null) {
+            modifierJson = userService.getItemUserInfo(lastModifier);
+        }
+
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("logical_model");
-        modelAndView.addObject("modelInfo",modelInfo);
-        String computableModelId=modelInfo.getComputableModelId();
-        modelAndView.addObject("uid",deCode.encode((modelInfo.getOid()+"-"+computableModelId).getBytes()));
-        modelAndView.addObject("classifications",classResult);
-        modelAndView.addObject("date",dateResult);
-        modelAndView.addObject("year",calendar.get(Calendar.YEAR));
-        modelAndView.addObject("user",userJson);
-        modelAndView.addObject("loadPath",htmlLoadPath);
+        modelAndView.addObject("modelInfo", modelInfo);
+        String computableModelId = modelInfo.getComputableModelId();
+        modelAndView.addObject("uid", deCode.encode((modelInfo.getOid() + "-" + computableModelId).getBytes()));
+        modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("date", dateResult);
+        modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+        modelAndView.addObject("user", userJson);
+        modelAndView.addObject("loadPath", htmlLoadPath);
+        modelAndView.addObject("lastModifier", modifierJson);
+        modelAndView.addObject("lastModifyTime", lastModifyTime);
 
         return modelAndView;
     }
@@ -141,16 +150,26 @@ public class LogicalModelService {
     }
 
     public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String uid) {
-        JSONObject result=new JSONObject();
+        JSONObject result = new JSONObject();
         LogicalModel logicalModel = new LogicalModel();
 
-        String path=resourcePath+"/logicalModel";
-        List<String> images=saveFiles(files,path,uid,"/logicalModel");
-        if(images==null){
-            result.put("code",-1);
-        }
-        else {
+
+        String path = resourcePath + "/logicalModel";
+        List<String> images =new ArrayList<>();
+        saveFiles(files, path, uid, "/logicalModel",images);
+        if (images == null) {
+            result.put("code", -1);
+        } else {
             try {
+
+                if(jsonObject.getString("contentType").equals("MxGraph")) {
+                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph";
+                    MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + name);
+                    images.add("/logicalModel" + name);
+                }
+
+
                 logicalModel.setImage(images);
                 logicalModel.setOid(UUID.randomUUID().toString());
                 logicalModel.setName(jsonObject.getString("name"));
@@ -160,11 +179,11 @@ public class LogicalModelService {
                 logicalModel.setDetail(jsonObject.getString("detail"));
                 logicalModel.setCXml(jsonObject.getString("cXml"));
                 logicalModel.setSvg(jsonObject.getString("svg"));
-                JSONArray jsonArray=jsonObject.getJSONArray("authorship");
-                List<AuthorInfo> authorship=new ArrayList<>();
-                for(int i=0;i<jsonArray.size();i++){
-                    JSONObject author=jsonArray.getJSONObject(i);
-                    AuthorInfo authorInfo=new AuthorInfo();
+                JSONArray jsonArray = jsonObject.getJSONArray("authorship");
+                List<AuthorInfo> authorship = new ArrayList<>();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject author = jsonArray.getJSONObject(i);
+                    AuthorInfo authorInfo = new AuthorInfo();
                     authorInfo.setName(author.getString("name"));
                     authorInfo.setEmail(author.getString("email"));
                     authorInfo.setIns(author.getString("ins"));
@@ -192,17 +211,16 @@ public class LogicalModelService {
 
                 logicalModelDao.insert(logicalModel);
 
-                ModelItem modelItem=modelItemDao.findFirstByOid(logicalModel.getRelateModelItem());
-                ModelItemRelate modelItemRelate=modelItem.getRelate();
+                ModelItem modelItem = modelItemDao.findFirstByOid(logicalModel.getRelateModelItem());
+                ModelItemRelate modelItemRelate = modelItem.getRelate();
                 modelItemRelate.getLogicalModels().add(logicalModel.getOid());
                 modelItem.setRelate(modelItemRelate);
                 modelItemDao.save(modelItem);
 
 
-
                 result.put("code", 1);
                 result.put("id", logicalModel.getOid());
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 result.put("code", -2);
             }
@@ -210,13 +228,124 @@ public class LogicalModelService {
         return result;
     }
 
-    public int delete(String oid,String userName){
-        LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
-        if(logicalModel!=null){
+    public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
+        JSONObject result = new JSONObject();
+
+        LogicalModel logicalModel_ori = logicalModelDao.findFirstByOid(jsonObject.getString("oid"));
+        LogicalModel logicalModel = new LogicalModel();
+        BeanUtils.copyProperties(logicalModel_ori, logicalModel);
+
+        if (!logicalModel_ori.isLock()) {
+            String path = resourcePath + "/logicalModel";
+            List<String> images = new ArrayList<>();
+
+            try {
+                JSONArray resources = jsonObject.getJSONArray("resources");
+                List<String> oldImages = logicalModel.getImage();
+                for (Object object : resources) {
+                    JSONObject json = (JSONObject) JSONObject.toJSON(object);
+                    String pa = json.getString("path");
+                    for (String imagePath : oldImages) {
+                        if (pa.equals(imagePath)) {
+                            images.add(imagePath);
+                            break;
+                        }
+                    }
+                }
+                if (files.size() > 0) {
+                    saveFiles(files, path, uid, "/logicalModel",images);
+                    if (images == null) {
+                        result.put("code", -1);
+                        return result;
+                    }
+                }
+
+                if(jsonObject.getString("contentType").equals("MxGraph")) {
+                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph";
+                    MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + name);
+                    images.add("/logicalModel" + name);
+                }
+
+                logicalModel.setImage(images);
+                logicalModel.setName(jsonObject.getString("name"));
+                logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                logicalModel.setDescription(jsonObject.getString("description"));
+                logicalModel.setContentType(jsonObject.getString("contentType"));
+                logicalModel.setDetail(jsonObject.getString("detail"));
+                logicalModel.setCXml(jsonObject.getString("cXml"));
+                logicalModel.setSvg(jsonObject.getString("svg"));
+                JSONArray jsonArray = jsonObject.getJSONArray("authorship");
+                List<AuthorInfo> authorship = new ArrayList<>();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject author = jsonArray.getJSONObject(i);
+                    AuthorInfo authorInfo = new AuthorInfo();
+                    authorInfo.setName(author.getString("name"));
+                    authorInfo.setEmail(author.getString("email"));
+                    authorInfo.setIns(author.getString("ins"));
+                    authorInfo.setHomepage(author.getString("homepage"));
+                    authorship.add(authorInfo);
+                }
+                logicalModel.setAuthorship(authorship);
+                logicalModel.setAuthor(uid);
+//                boolean isAuthor = jsonObject.getBoolean("isAuthor");
+                logicalModel.setIsAuthor(true);
+//                if (isAuthor) {
+//                    logicalModel.setRealAuthor(null);
+//                } else {
+//                    AuthorInfo authorInfo = new AuthorInfo();
+//                    authorInfo.setName(jsonObject.getJSONObject("author").getString("name"));
+//                    authorInfo.setIns(jsonObject.getJSONObject("author").getString("ins"));
+//                    authorInfo.setEmail(jsonObject.getJSONObject("author").getString("email"));
+//                    logicalModel.setRealAuthor(authorInfo);
+//                }
+
+
+                Date now = new Date();
+                if (logicalModel_ori.getAuthor().equals(uid)) {
+                    logicalModel.setLastModifyTime(now);
+                    logicalModelDao.save(logicalModel);
+
+                    result.put("methord", "update");
+                    result.put("code", 1);
+                    result.put("id", logicalModel.getOid());
+                } else {
+                    LogicalModelVersion logicalModelVersion = new LogicalModelVersion();
+                    BeanUtils.copyProperties(logicalModel, logicalModelVersion, "id");
+                    logicalModelVersion.setOid(UUID.randomUUID().toString());
+                    logicalModelVersion.setOriginOid(logicalModel_ori.getOid());
+                    logicalModelVersion.setModifier(uid);
+                    logicalModelVersion.setVerNumber(now.getTime());
+                    logicalModelVersion.setVerStatus(0);
+                    logicalModelVersion.setModifyTime(now);
+
+                    logicalModelVersionDao.save(logicalModelVersion);
+
+                    logicalModel_ori.setLock(true);
+                    logicalModelDao.save(logicalModel_ori);
+
+                    result.put("method", "version");
+                    result.put("code", 0);
+                    result.put("oid", logicalModelVersion.getOid());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.put("code", -2);
+            }
+
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    public int delete(String oid, String userName) {
+        LogicalModel logicalModel = logicalModelDao.findFirstByOid(oid);
+        if (logicalModel != null) {
             //图片删除
-            List<String> images=logicalModel.getImage();
-            for(int i=0;i<images.size();i++){
-                String path=resourcePath+images.get(i);
+            List<String> images = logicalModel.getImage();
+            for (int i = 0; i < images.size(); i++) {
+                String path = resourcePath + images.get(i);
                 Utils.deleteFile(path);
             }
             //条目删除
@@ -224,12 +353,12 @@ public class LogicalModelService {
             userService.logicalModelMinusMinus(userName);
 
             //模型条目关联删除
-            String modelItemId=logicalModel.getRelateModelItem();
-            ModelItem modelItem=modelItemDao.findFirstByOid(modelItemId);
-            List<String> logicalModelIds=modelItem.getRelate().getLogicalModels();
-            for (String id:logicalModelIds
+            String modelItemId = logicalModel.getRelateModelItem();
+            ModelItem modelItem = modelItemDao.findFirstByOid(modelItemId);
+            List<String> logicalModelIds = modelItem.getRelate().getLogicalModels();
+            for (String id : logicalModelIds
                     ) {
-                if(id.equals(logicalModel.getOid())){
+                if (id.equals(logicalModel.getOid())) {
                     logicalModelIds.remove(id);
                     break;
                 }
@@ -238,30 +367,29 @@ public class LogicalModelService {
             modelItemDao.save(modelItem);
 
             return 1;
-        }
-        else{
+        } else {
             return -1;
         }
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO,String oid){
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid) {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        User user=userDao.findFirstByOid(oid);
-        Page<LogicalModel> modelItemPage=logicalModelDao.findByAuthor(user.getUserName(),pageable);
+        User user = userDao.findFirstByOid(oid);
+        Page<LogicalModel> modelItemPage = logicalModelDao.findByAuthor(user.getUserName(), pageable);
 
-        JSONObject result=new JSONObject();
+        JSONObject result = new JSONObject();
 
-        result.put("list",modelItemPage.getContent());
+        result.put("list", modelItemPage.getContent());
         result.put("total", modelItemPage.getTotalElements());
 
         return result;
     }
 
-    public JSONObject list(ModelItemFindDTO modelItemFindDTO,List<String> classes) {
+    public JSONObject list(ModelItemFindDTO modelItemFindDTO, List<String> classes) {
 
         JSONObject obj = new JSONObject();
         //TODO Sort是可以设置排序字段的
@@ -275,14 +403,14 @@ public class LogicalModelService {
 
         Page<LogicalModel> logicalModelPage = null;
 
-        if (searchText.equals("")&&classes.get(0).equals("all")) {
+        if (searchText.equals("") && classes.get(0).equals("all")) {
             logicalModelPage = logicalModelDao.findAll(pageable);
-        } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
+        } else if (!searchText.equals("") && classes.get(0).equals("all")) {
             logicalModelPage = logicalModelDao.findByNameContainsIgnoreCase(searchText, pageable);
-        } else if(searchText.equals("")&&!classes.get(0).equals("all")){
+        } else if (searchText.equals("") && !classes.get(0).equals("all")) {
             logicalModelPage = logicalModelDao.findByClassificationsIn(classes, pageable);
-        }else{
-            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText,classes, pageable);
+        } else {
+            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
         }
 
 
@@ -293,15 +421,15 @@ public class LogicalModelService {
         return obj;
     }
 
-    public String query(ModelItemFindDTO modelItemFindDTO,List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {
+    public String query(ModelItemFindDTO modelItemFindDTO, List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {
 
-        ModelDao modelDao=new ModelDao();
+        ModelDao modelDao = new ModelDao();
 
         BasicDBObject query = new BasicDBObject();
 
         //prop
         for (int i = 0; i < values.size(); i += 2) {
-            if(values.get(i).trim().equals("")&&values.get(i+1).trim().equals("")){
+            if (values.get(i).trim().equals("") && values.get(i + 1).trim().equals("")) {
 
                 continue;
             }
@@ -317,9 +445,9 @@ public class LogicalModelService {
                     //BasicDBObject condition2=new BasicDBObject("$regex",values.get(i+1));
                     BasicDBObject obj2 = new BasicDBObject(field, pattern1);
                     condition = new BasicDBObject(conn, Arrays.asList(obj1, obj2));
-                    if(i!=0&&connects.get(i-1).equals("NOT")){
-                        obj1=new BasicDBObject("$not",obj1);
-                        obj2=new BasicDBObject("$not",obj2);
+                    if (i != 0 && connects.get(i - 1).equals("NOT")) {
+                        obj1 = new BasicDBObject("$not", obj1);
+                        obj2 = new BasicDBObject("$not", obj2);
                         condition = new BasicDBObject("$or", Arrays.asList(obj1, obj2));
                     }
 
@@ -330,12 +458,12 @@ public class LogicalModelService {
                     condition = new BasicDBObject(field, pattern);
 
 
-                    if(i!=0&&connects.get(i-1).equals("NOT")){
+                    if (i != 0 && connects.get(i - 1).equals("NOT")) {
                         pattern = Pattern.compile("^.*" + values.get(i).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                        BasicDBObject condition1=new BasicDBObject("$not",pattern);
+                        BasicDBObject condition1 = new BasicDBObject("$not", pattern);
                         obj1 = new BasicDBObject(field, pattern);
                         pattern1 = Pattern.compile("^.*" + values.get(i + 1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                        BasicDBObject condition2=new BasicDBObject("$not",pattern1);
+                        BasicDBObject condition2 = new BasicDBObject("$not", pattern1);
                         obj2 = new BasicDBObject(field, pattern1);
 //                        obj1=new BasicDBObject("$not",obj1);
 //                        obj2=new BasicDBObject("$not",obj2);
@@ -349,16 +477,16 @@ public class LogicalModelService {
                     obj1 = new BasicDBObject(field, pattern);
                     //pattern1 = Pattern.compile("^((?!" + values.get(i + 1).trim() + ").)+$", Pattern.CASE_INSENSITIVE);
                     pattern1 = Pattern.compile("^.*" + values.get(i + 1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                    BasicDBObject condition2=new BasicDBObject("$not",pattern1);
+                    BasicDBObject condition2 = new BasicDBObject("$not", pattern1);
                     obj2 = new BasicDBObject(field, condition2);
                     //obj2=new BasicDBObject("$not",obj2);
 
-                    if(i!=0&&connects.get(i-1).equals("NOT")){
-                        pattern = Pattern.compile("^.*" + values.get(i+1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
+                    if (i != 0 && connects.get(i - 1).equals("NOT")) {
+                        pattern = Pattern.compile("^.*" + values.get(i + 1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
                         //BasicDBObject condition1=new BasicDBObject("$regex",values.get(i));
                         obj1 = new BasicDBObject(field, pattern);
                         pattern1 = Pattern.compile("^.*" + values.get(i).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                        condition2=new BasicDBObject("$not",pattern1);
+                        condition2 = new BasicDBObject("$not", pattern1);
                         obj2 = new BasicDBObject(field, condition2);
                     }
 
@@ -375,8 +503,8 @@ public class LogicalModelService {
         }
 
         //parents
-        BasicDBObject query_parents=new BasicDBObject();
-        if(!nodeID.get(0).equals("all")) {
+        BasicDBObject query_parents = new BasicDBObject();
+        if (!nodeID.get(0).equals("all")) {
             for (int i = 0; i < nodeID.size(); i++) {
                 BasicDBObject query1 = new BasicDBObject("classifications.", nodeID.get(i));
                 if (i == 0) {
@@ -389,41 +517,41 @@ public class LogicalModelService {
         }
 
         MongoCollection<Document> Col = modelDao.GetCollection("Portal", "logicalModel");
-        MongoCursor<Document> cursor = modelDao.RetrieveDocsLimit(Col, query, modelDao.getSort("count", modelItemFindDTO.getAsc()),modelItemFindDTO.getPage());
+        MongoCursor<Document> cursor = modelDao.RetrieveDocsLimit(Col, query, modelDao.getSort("count", modelItemFindDTO.getAsc()), modelItemFindDTO.getPage());
 
-        JSONObject output=new JSONObject();
-        
+        JSONObject output = new JSONObject();
+
         JSONArray list = new JSONArray();
-        int total=0;
+        int total = 0;
         while (cursor.hasNext()) {
 
             JSONObject jsonObj = new JSONObject();
             Document doc = cursor.next();
             Date CreateTime = doc.getDate("createTime");
             String sDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(CreateTime);
-            doc.put("createTime",sDate);
+            doc.put("createTime", sDate);
 
             list.add(JSONObject.parse(doc.toJson()));
             total++;
         }
-        output.put("total",total);
-        output.put("pages",Math.ceil(total));
-        output.put("list",list);
+        output.put("total", total);
+        output.put("pages", Math.ceil(total));
+        output.put("list", list);
 
         return output.toString();
     }
 
-    public JSONObject getLogicalModelsByUserId(String userId, int page, String sortType, int asc){
+    public JSONObject getLogicalModelsByUserId(String userId, int page, String sortType, int asc) {
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<LogicalModel> logicalModels = logicalModelDao.findByAuthor(userId,pageable);
+        Page<LogicalModel> logicalModels = logicalModelDao.findByAuthor(userId, pageable);
 
         JSONObject logicalModelObject = new JSONObject();
-        logicalModelObject.put("count",logicalModels.getTotalElements());
-        logicalModelObject.put("logicalModels",logicalModels.getContent());
+        logicalModelObject.put("count", logicalModels.getTotalElements());
+        logicalModelObject.put("logicalModels", logicalModels.getContent());
 
         return logicalModelObject;
 
@@ -462,17 +590,17 @@ public class LogicalModelService {
         return name;
     }
 
-    public JSONObject searchLogicalModelsByUserId(String searchText,String userId, int page, String sortType, int asc) {
+    public JSONObject searchLogicalModelsByUserId(String searchText, String userId, int page, String sortType, int asc) {
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<LogicalModel> modelItems = logicalModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+        Page<LogicalModel> modelItems = logicalModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userId, pageable);
 
         JSONObject modelItemObject = new JSONObject();
-        modelItemObject.put("count",modelItems.getTotalElements());
-        modelItemObject.put("logicalModels",modelItems.getContent());
+        modelItemObject.put("count", modelItems.getTotalElements());
+        modelItemObject.put("logicalModels", modelItems.getContent());
 
         return modelItemObject;
 

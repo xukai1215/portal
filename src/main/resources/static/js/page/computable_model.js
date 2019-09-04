@@ -3,7 +3,7 @@ new Vue({
     data: function () {
         return {
             activeIndex:'3-3',
-            activeName: 'Model Item',
+            activeName: 'AttributeSet',
 
             databrowser:[],
             dataid:'',
@@ -31,6 +31,60 @@ new Vue({
         }
     },
     methods: {
+
+        edit(){
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    data = JSON.parse(data);
+                    if (data.oid == "") {
+                        alert("Please login first");
+                        this.setSession("history",window.location.href);
+                        window.location.href = "/user/login";
+                    }
+                    else {
+                        let href=window.location.href;
+                        let hrefs=href.split('/');
+                        let oid=hrefs[hrefs.length-1].split("#")[0];
+                        $.ajax({
+                            type: "GET",
+                            url: "/computableModel/getUserOidByOid",
+                            data: {
+                                oid:oid
+                            },
+                            cache: false,
+                            async: false,
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            crossDomain: true,
+                            success: (json) => {
+                                // if(json.data==data.oid){
+                                window.sessionStorage.setItem("editComputableModel_id",oid)
+                                window.location.href="/user/createComputableModel";
+                                // }
+                                // else{
+                                //     alert("You are not the model item's author, please contact to the author to modify the model item.")
+                                // }
+                            }
+                        });
+                    }
+                }
+            })
+        },
+
+        setSession(name, value) {
+            window.sessionStorage.setItem(name, value);
+        },
+
         deploy(){
             this.contentBeforeDeploy=false;
             this.contentDeploying=true;
@@ -294,6 +348,85 @@ new Vue({
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
+        });
+
+
+        diagram = new OGMSDiagram();
+        diagram.init($('#ogmsDiagramContainer'),
+            {
+                width: 1000,       //! Width of panel
+                height: "100%",       //! Height of panel
+                enabled: false      //! Edit enabled
+            },
+            {
+                x: 500,            //! X postion of state information window
+                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop(),              //! Y postion of state information window
+                width: 520,         //! Width of state information window
+                height: 650         //! Height of state information window
+            },
+            {
+                x: 1000,           //! X postion of data reference information window
+                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop(),              //! Y postion of data reference information window
+                width: 300,         //! Width of data reference information window
+                height: 400         //! Height of data reference information window
+            },
+            '/static/MxGraph/images/modelState.png',    //! state IMG
+            '/static/MxGraph/images/grid.gif',          //! Grid IMG
+            '/static/MxGraph/images/connector.gif',     //! Connection center IMG
+            false                       //! Debug button
+        );
+
+        console.log(Behavior)
+
+        var behavior={};
+
+        if (Behavior.StateGroup[0].States== '') {
+            behavior.states = [];
+        }
+        else {
+            behavior.states = Behavior.StateGroup[0].States[0].State;
+        }
+
+        if (Behavior.StateGroup[0].StateTransitions == "") {
+            behavior.transition = [];
+        }
+        else {
+            behavior.transition = Behavior.StateGroup[0].StateTransitions[0].Add;
+        }
+
+        if (Behavior.RelatedDatasets == "") {
+            behavior.dataRef = [];
+        }
+        else {
+            behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
+        }
+
+        // for(i=0;i<behavior.states.length;i++){
+        //     var state=behavior.states[i];
+        //     if(state.hasOwnProperty("Event")){
+        //         if(state.Event.hasOwnProperty("name")){
+        //             behavior.states[i].events=[];
+        //             behavior.states[i].events.push(state.Event);
+        //         }
+        //         else{
+        //             behavior.states[i].events=state.Event;
+        //         }
+        //     }
+        // }
+        console.log(behavior)
+        let loadjson=JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
+        console.log(JSON.parse(loadjson))
+        diagram.loadJSON(loadjson);
+
+        diagram.onStatedbClick(function(state){
+            diagram.showStateWin({
+                x : 500,
+                y : $(window).scrollTop() + 60
+            },{
+                width : 520,
+                height : 650
+            });
+
         });
     }
 })

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version Checked</title>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <script src="/static/js/common/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div id="app">
+
+    <el-tabs type="border-card">
+        <el-tab-pane label="未审核的版本">
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        fixed
+                        prop="modifyTime"
+                        label="Date"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="Name"
+                        >
+                </el-table-column>
+                <el-table-column
+                        prop="type"
+                        label="Type"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="modifier"
+                        label="Modifier"
+                        width="200">
+                </el-table-column>
+
+                <el-table-column
+                        label="View"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button
+                                class="viewBtn"
+                                size="middle"
+                                type="primary"
+                                @click="view($event)">View
+                        </el-button>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="Operations"
+                        width="300">
+                    <template slot-scope="scope">
+                        <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
+                        <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="接受的版本">
+            <el-table
+                    :data="tableData2"
+                    style="width: 100%">
+                <el-table-column
+                        fixed
+                        prop="modifyTime"
+                        label="Date"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="Name"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="type"
+                        label="Type"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="modifier"
+                        label="Modifier"
+                        width="200">
+                </el-table-column>
+
+                <el-table-column
+                        label="View"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button
+                                class="viewAcceptBtn"
+                                size="middle"
+                                type="primary"
+                                @click="viewAccept($event)">View
+                        </el-button>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="拒绝的版本">
+            <el-table
+                    :data="tableData3"
+                    style="width: 100%">
+                <el-table-column
+                        fixed
+                        prop="modifyTime"
+                        label="Date"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="Name"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="type"
+                        label="Type"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="modifier"
+                        label="Modifier"
+                        width="200">
+                </el-table-column>
+
+                <el-table-column
+                        label="View"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button
+                                class="viewRejectBtn"
+                                size="middle"
+                                type="primary"
+                                @click="viewReject($event)">View
+                        </el-button>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </el-tab-pane>
+
+    </el-tabs>
+
+
+</div>
+
+</body>
+
+<script>
+    var vue = new Vue({
+        el: "#app",
+        data: {
+
+            tableData: [],
+            tableData2: [],
+            tableData3:[],
+        },
+        methods:
+            {
+                handleClick(row) {
+                    console.log(row);
+                },
+
+                getVersions(){
+                    $.ajax({
+                        type: "GET",
+                        url: "/version/getVersions",
+                        data: {},
+                        async: true,
+                        success: (json) => {
+
+                            this.tableData=json.data.uncheck;
+                            this.tableData2=json.data.accept;
+                            this.tableData3=json.data.reject;
+                        }
+                    })
+                },
+
+                view(event){
+                    let refLink=$(".viewBtn");
+                    for(i=0;i<refLink.length;i++){
+                        if(event.currentTarget===refLink[i]){
+                            if(this.tableData[i].type=="modelItem"){
+                                window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].originOid);
+                            }
+                            else{
+                                window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].oid);
+                            }
+
+                        }
+                    }
+                    //console.log(event.currentTarget);
+                },
+                viewAccept(event){
+                    let refLink=$(".viewAcceptBtn");
+                    for(i=0;i<refLink.length;i++){
+                        if(event.currentTarget===refLink[i]){
+                            window.open("/version/history/"+this.tableData2[i].type+"/"+this.tableData2[i].oid);
+                        }
+                    }
+                    //console.log(event.currentTarget);
+                },
+                viewReject(event){
+                    let refLink=$(".viewRejectBtn");
+                    for(i=0;i<refLink.length;i++){
+                        if(event.currentTarget===refLink[i]){
+                            window.open("/version/history/"+this.tableData3[i].type+"/"+this.tableData3[i].oid);
+                        }
+                    }
+                    //console.log(event.currentTarget);
+                },
+                accept(event){
+                    let accepts=$(".accept");
+
+                    for(i=0;i<accepts.length;i++){
+                        if(event.currentTarget===accepts[i]){
+                            let tableItem=this.tableData[i];
+                            let data={
+                                type:tableItem.type,
+                                oid:tableItem.oid,
+                                originOid:tableItem.originOid
+                            };
+                            $.ajax({
+                                type:"POST",
+                                url:"/version/accept",
+                                contentType: "application/json",
+                                data: JSON.stringify(data),
+                                async: true,
+                                success:(json)=>{
+                                    window.location.reload();
+                                }
+                            })
+                        }
+                    }
+
+                },
+                reject(event){
+                    let rejects=$(".reject");
+
+                    for(i=0;i<rejects.length;i++){
+                        if(event.currentTarget===rejects[i]){
+                            let tableItem=this.tableData[i];
+                            let data={
+                                type:tableItem.type,
+                                oid:tableItem.oid,
+                                originOid:tableItem.originOid
+                            }
+                            $.ajax({
+                                type:"POST",
+                                url:"/version/reject",
+                                contentType: "application/json",
+                                data:JSON.stringify(data),
+                                async: true,
+                                success:(json)=>{
+                                    window.location.reload();
+                                }
+                            })
+                        }
+                    }
+                }
+
+            }
+        ,
+        mounted() {
+
+            this.getVersions()
+
+        }
+    });
+
+</script>
+</html>

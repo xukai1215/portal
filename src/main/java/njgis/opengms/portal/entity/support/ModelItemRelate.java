@@ -2,7 +2,6 @@ package njgis.opengms.portal.entity.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +19,15 @@ import java.util.List;
 @AllArgsConstructor
 public class ModelItemRelate {
 
+    List<String> modelItems;
     List<String> conceptualModels;
     List<String> logicalModels;
     List<String> computableModels;
+
+    List<String> concepts;
+    List<String> spatialReferences;
+    List<String> templates;
+    List<String> units;
 
     public ModelItemRelate(){
         conceptualModels=new ArrayList<>();

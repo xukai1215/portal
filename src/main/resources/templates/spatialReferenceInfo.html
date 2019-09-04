@@ -2,18 +2,21 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Spatial Reference | OpenGMS</title>
-    <link rel="icon" type="image/x-icon" href="../../static/img/logo/favicon.ico">
-    <link href="../../static/css/base/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../static/element-ui/theme-chalk/index.css">
-    <!--<link rel="stylesheet" th:href="@{../../static/ol/ol.css}">-->
-    <link rel="stylesheet" th:href="@{../../static/leaflet/leaflet.css}">
-    <link rel="stylesheet" th:href="@{../../static/css/font-awesome/css/font-awesome.min.css}">
-    <link rel="stylesheet" th:href="@{../../static/css/base/style.css}">
-    <link rel="stylesheet" th:href="@{../../static/css/base/universal.css}">
-    <link rel="stylesheet" th:href="@{../../static/css/base/itemInfo.css}">
-    <link rel="stylesheet" th:href="@{../../static/css/page/model_item_info.css}">
-    <link rel="stylesheet" th:href="@{../../static/css/page/repositoryInfo.css}">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title th:text="${info.name}+' | Spatial Reference | OpenGMS'">Spatial Reference | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link href="/static/css/base/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" th:href="@{/static/ol/ol.css}">-->
+    <link rel="stylesheet" th:href="@{/static/leaflet/leaflet.css}">
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/style.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/universal.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
+    <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
+    <link rel="stylesheet" th:href="@{/static/css/page/repositoryInfo.css}">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
         #description h1{
             font-size: 24px;
@@ -60,24 +63,32 @@
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
+
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
             <div class="detail">
                 <div class="detail_title">
                     <h2 th:utext="${info.name}+'&nbsp&nbsp'" style="display: inline-block"></h2>
+                    <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
 
                     <div class="img">
-                        <avatar th:username="${info.name}" :size="90" :rounded="false" ></avatar>
-                        <!--<img class="calcImg" src="../../static/img/repository/semantics.png">-->
+                        <div th:switch="${info.image}" class="img">
+                            <avatar th:case="''" th:username="${info.name}" :size="90" :rounded="false"></avatar>
+                            <avatar th:case="null" th:username="${info.name}" :size="90" :rounded="false"></avatar>
+                            <img th:case="*" th:src="${image}">
+                        </div>
                     </div>
 
                     <div class="info">
                         <p th:text="${info.wkt==null?info.wkname:info.wkt}" style="word-break: break-word;"></p>
+                        <div class="tags">
+                            <span class="badge badge-info">Spatial Reference</span>
+                        </div>
                     </div>
 
-                    <div class="detail_option">
+                    <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
@@ -93,10 +104,12 @@
                     </div>
                 </div>
                 <div class="block_content" style="margin-top:20px;">
-                    <div>
+                    <div th:each="classS:${classifications}">
                         <span style="font-size:24px;margin-right: 8px">●</span>
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="classS:${classifications}" th:text="${classS}" :to="{ path: '/' }">Earth System Classification</el-breadcrumb-item>
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class}" :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                 </div>
@@ -109,7 +122,7 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
+                    <div th:if="${info.detail==null}" class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -132,15 +145,13 @@
                             </tr>
                         </table>
                     </div>
-
-
-
+                    <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
                 </div>
             </div>
 
-            <div class="text-center" >
-                <a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>
-            </div>
+            <!--<div th:if="${info.detail==null}"  class="text-center" >-->
+                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
+            <!--</div>-->
 
             <div id="cite" class="detail_block">
                 <div class="block_head">
@@ -167,30 +178,30 @@
         </div>
 
         <div class="right-panel el-col el-col-5">
-
-
             <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
-                        <h4>Contributor</h4>
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
                     </div>
                 </div>
                 <div class="block_content">
                     <div class="el-row"
                          style="height: 40px; display: flex; justify-content: center; align-items: center;">
                         <div class="el-col el-col-4 el-col-offset-3">
-                            <img src="../../static/img/icon/default.png"
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col el-col-20">
                             <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a href="/user/42"><h4 th:text="NNU_Group">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
                     <div class="el-row el-col-offset-3">
                         <div class="text-center">
-                            <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}"></h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}"></h5>
                         </div>
                     </div>
                 </div>
@@ -208,6 +219,35 @@
                 </div>
             </div>
 
+            <div id="Modifier" class="detail_block"
+                 th:if="${history!=true&&info.contributors!=null&&#lists.size(info.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(info.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/spatialReference/'+${info.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div id="QR" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -222,6 +262,10 @@
             </div>
 
         </div>
+
+        <div th:if="${history==true}"
+             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
+
     </div>
 
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
@@ -262,21 +306,26 @@
 
 </div>
 </body>
-<script type="text/javascript" src="../../static/js/common/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="../../static/js/common/bootstrap.min.js"></script>
-<script src="../../static/js/common/vue.min.js"></script>
-<script src="../../static/element-ui/index.js"></script>
-<script src="../../static/js/common/vue-avatar.min.js"></script>
-<script src="../../static/js/common/qrcode.min.js"></script>
-<script src="../../static/ol/proj4.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
+<script src="/static/js/common/qrcode.min.js"></script>
+<script src="/static/ol/proj4.js"></script>
 <!--<script src="../../static/ol/ol.js"></script>-->
-<script src="../../static/leaflet/leaflet.js"></script>
-<script src="../../static/leaflet/proj4leaflet.js"></script>
-<script type="text/javascript" src="../../static/js/page/repositoryInfo.js"></script>
+<script src="/static/leaflet/leaflet.js"></script>
+<script src="/static/leaflet/proj4leaflet.js"></script>
+<script type="text/javascript" src="/static/js/page/repositoryInfo.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+
 <script th:inline="javascript">
     var projcs = [[${info.wkt}]];
     var proj_name = [[${info.name}]];
 </script>
+<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
 <script>
     function submitFrom() {
         var arry = $("#addConceptLocalizationForm").serializeArray();
@@ -310,7 +359,7 @@
         proj4.defs(proj_name,projcs);
     }
     $.ajax({
-        url:"../../static/geoJson/world.json",
+        url:"/static/geoJson/world.json",
         type:"get",
         success:function (geojson) {
             console.log(geojson);

@@ -56,7 +56,7 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
         dataButtons = '<input id="schameSave"  class="btn btn-primary btn-lg" type="button" value="Save" />&nbsp;&nbsp;&nbsp;' ;
     }
 
-    container.append('<div id="ogmsGraphContainer" style="overflow:hidden;width:' + opts.width + 'px;height:' + opts.height + 'px;background:url(\'' + imgGridPath + '\')">' + 
+    container.append('<div id="ogmsGraphContainer" style="overflow:hidden;width:auto;height:' + opts.height + 'px;background:url(\'' + imgGridPath + '\')">' +
                 '</div>' + 
                 imgState + 
                 debugBtn + 
@@ -91,7 +91,7 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
                         '</div>' + 
                     '</form>' + 
                     '<div>' + 
-                    '<ul id="eventTabHead" class="nav nav-tabs" role="tablist">' + 
+                    '<ul id="eventTabHead" class="nav nav-tabs" role="tablist" style="margin-bottom: 10px">' +
                     '<li role="presentation" id="eventItemAdd" ><a id="enentAdd" href="#add" ' + eventAddButton + ' aria-controls="add" role="tab" ><i class="fa fa-plus"></i></a></li>' + 
                     ' </ul>' + 
                     '<div id="eventTabContent" class="tab-content">' + 
@@ -99,7 +99,7 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
                     '</div>' + 
                     '<div style="text-align: center">' + 
                     stateButtons + 
-                    '<input id="stateCancel"  class="btn btn-warning btn-lg" type="button" value="Cancel" />' + 
+                    '<input id="stateCancel"  class="btn btn-warning btn-lg" type="button" value="Cancel"  />' +
                     '</div>' + 
                     '</div>' + 
                     '<div id="ogmsDataSchame">' + 

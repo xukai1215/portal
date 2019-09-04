@@ -6,20 +6,15 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
-import njgis.opengms.portal.dao.ComputableModelDao;
-import njgis.opengms.portal.dao.ModelDao;
-import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.entity.ComputableModel;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.XmlTool;
 import njgis.opengms.portal.utils.ZipUtils;
 import njgis.opengms.portal.utils.deCode;
 import org.apache.commons.io.FileUtils;
@@ -27,20 +22,19 @@ import org.bson.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.IOUtils;
 
-import javax.rmi.CORBA.Util;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -66,6 +60,9 @@ public class ComputableModelService {
     ComputableModelDao computableModelDao;
 
     @Autowired
+    ComputableModelVersionDao computableModelVersionDao;
+
+    @Autowired
     ModelItemDao modelItemDao;
 
     @Autowired
@@ -79,7 +76,7 @@ public class ComputableModelService {
 
     ModelDao modelDao = new ModelDao();
 
-    @Value ("${resourcePath}")
+    @Value("${resourcePath}")
     private String resourcePath;
 
     @Value("${htmlLoadPath}")
@@ -87,8 +84,8 @@ public class ComputableModelService {
 
     public ModelAndView getPage(String id) {
         //条目信息
-        try{
-            System.out.println("1");
+        try {
+
             ComputableModel modelInfo = getByOid(id);
             modelInfo.setViewCount(modelInfo.getViewCount() + 1);
             computableModelDao.save(modelInfo);
@@ -115,7 +112,7 @@ public class ComputableModelService {
                     classResult.add(array1);
                 }
             }
-            System.out.println("2");
+
             //时间
             Date date = modelInfo.getCreateTime();
             Calendar calendar = Calendar.getInstance();
@@ -128,7 +125,7 @@ public class ComputableModelService {
             //资源信息
             JSONArray resourceArray = new JSONArray();
             List<String> resources = modelInfo.getResources();
-            System.out.println("3");
+
             if (resources != null) {
                 for (int i = 0; i < resources.size(); i++) {
 
@@ -141,16 +138,25 @@ public class ComputableModelService {
                     String name = arr[arr.length - 1].substring(14);
 
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", i);
                     jsonObject.put("name", name);
                     jsonObject.put("suffix", suffix);
-                    jsonObject.put("path",resources.get(i));
+                    jsonObject.put("path", resources.get(i));
                     resourceArray.add(jsonObject);
 
                 }
 
             }
-            System.out.println("4");
+
+            String lastModifyTime = simpleDateFormat.format(modelInfo.getLastModifyTime());
+
+            //修改者信息
+            String lastModifier = modelInfo.getLastModifier();
+            JSONObject modifierJson = null;
+            if (lastModifier != null) {
+                modifierJson = userService.getItemUserInfo(lastModifier);
+            }
+
+
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("computable_model");
             modelAndView.addObject("modelInfo", modelInfo);
@@ -159,12 +165,19 @@ public class ComputableModelService {
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
             modelAndView.addObject("resources", resourceArray);
-            modelAndView.addObject("loadPath",htmlLoadPath);
+            JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
+            if (mdlJson != null) {
+                JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
+                JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
+                modelAndView.addObject("behavior", behavior);
+            }
+            modelAndView.addObject("loadPath", htmlLoadPath);
+            modelAndView.addObject("lastModifier", modifierJson);
+            modelAndView.addObject("lastModifyTime", lastModifyTime);
 
-            System.out.println("5");
             return modelAndView;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new MyException(e.getMessage());
         }
@@ -274,7 +287,7 @@ public class ComputableModelService {
     public String deploy(String id) {
         //获取可以将部署包进行部署的任务服务器信息
         JSONObject result = new JSONObject();
-        String urlStr = "http://"+managerServer+"/GeoModeling/taskNode/getTaskForMicroService";
+        String urlStr = "http://" + managerServer + "/GeoModeling/taskNode/getTaskForMicroService";
         JSONObject serviceTaskResult = Utils.connentURL(Utils.Method.GET, urlStr);
         if (serviceTaskResult != null && serviceTaskResult.getInteger("code") == 1) {
             //task服务器API，部署包通过task server进行部署
@@ -304,7 +317,8 @@ public class ComputableModelService {
         ComputableModel computableModel = new ComputableModel();
 
         String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
-        List<String> resources = saveFiles(files, path, uid, "");
+        List<String> resources = new ArrayList<>();
+        saveFiles(files, path, uid, "",resources);
         if (resources == null) {
             result.put("code", -1);
         } else {
@@ -323,10 +337,10 @@ public class ComputableModelService {
                     FileInputStream file = new FileInputStream(filePath);
                     md5 = DigestUtils.md5DigestAsHex(IOUtils.readFully(file, -1, true));
 
-                    String mdlPath=null;
+                    String mdlPath = null;
                     String testDataDirectoryPath = null;
                     String destDirPath = path + "/unZip/" + computableModel.getOid();
-                    ZipUtils.unZip(new File(filePath),destDirPath);
+                    ZipUtils.unZip(new File(filePath), destDirPath);
                     File unZipDir = new File(destDirPath);
                     if (unZipDir.exists()) {
                         LinkedList<File> list = new LinkedList<File>();
@@ -334,15 +348,15 @@ public class ComputableModelService {
                         for (File file2 : dirFiles) {
                             if (file2.isDirectory()) {
                                 //我为了节省时间就直接复用许凯的代码了
-                                if(file2.getName().equals("testify")){
+                                if (file2.getName().equals("testify")) {
                                     testDataDirectoryPath = file2.getAbsolutePath();
-                                }else if(file2.getName().equals("model")){
+                                } else if (file2.getName().equals("model")) {
                                     list.add(file2);
                                 }
                             } else {
-                                String name=file2.getName();
-                                if(name.substring(name.length()-3,name.length()).equals("mdl")){
-                                    mdlPath=file2.getAbsolutePath();
+                                String name = file2.getName();
+                                if (name.substring(name.length() - 3, name.length()).equals("mdl")) {
+                                    mdlPath = file2.getAbsolutePath();
                                     break;
                                 }
                                 System.out.println("文件:" + file2.getAbsolutePath());
@@ -356,9 +370,9 @@ public class ComputableModelService {
                                 if (file2.isDirectory()) {
                                     continue;
                                 } else {
-                                    String name=file2.getName();
-                                    if(name.substring(name.length()-3,name.length()).equals("mdl")){
-                                        mdlPath=file2.getAbsolutePath();
+                                    String name = file2.getName();
+                                    if (name.substring(name.length() - 3, name.length()).equals("mdl")) {
+                                        mdlPath = file2.getAbsolutePath();
                                         break;
                                     }
                                     System.out.println("文件:" + file2.getAbsolutePath());
@@ -370,23 +384,23 @@ public class ComputableModelService {
                     }
 
                     //获取测试数据，并进行存储
-                    if(testDataDirectoryPath != null){
-                        String testData = generateTestData(testDataDirectoryPath,computableModel.getOid());
+                    if (testDataDirectoryPath != null) {
+                        String testData = generateTestData(testDataDirectoryPath, computableModel.getOid());
                         computableModel.setTestDataPath(testData);
-                    }else{
+                    } else {
                         computableModel.setTestDataPath("");
                     }
 
-                    String content="";
-                    if(mdlPath!=null){
+                    String content = "";
+                    if (mdlPath != null) {
                         try {
                             BufferedReader in = new BufferedReader(new FileReader(mdlPath));
-                            String str=in.readLine();
-                            if(str.indexOf("ModelClass")!=-1){
-                                content+=str;
+                            String str = in.readLine();
+                            if (str.indexOf("ModelClass") != -1) {
+                                content += str;
                             }
                             while ((str = in.readLine()) != null) {
-                                content+=str;
+                                content += str;
                             }
                             in.close();
                             System.out.println(content);
@@ -395,8 +409,16 @@ public class ComputableModelService {
                         }
 
                         computableModel.setMdl(content);
-                    }
-                    else{
+                        JSONObject mdlJson = XmlTool.documentToJSONObject(content);
+                        String type=mdlJson.getJSONArray("ModelClass").getJSONObject(0).getString("type");
+                        if(type!=null){
+                            mdlJson.getJSONArray("ModelClass").getJSONObject(0).put("style",type);
+                        }
+                        if(mdlJson.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+                            mdlJson.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+                        }
+                        computableModel.setMdlJson(mdlJson);
+                    } else {
                         System.out.println("mdl文件未找到!");
                     }
 
@@ -406,12 +428,11 @@ public class ComputableModelService {
                 computableModel.setMd5(md5);
 
 
-
-                JSONArray jsonArray=jsonObject.getJSONArray("authorship");
-                List<AuthorInfo> authorship=new ArrayList<>();
-                for(int i=0;i<jsonArray.size();i++){
-                    JSONObject author=jsonArray.getJSONObject(i);
-                    AuthorInfo authorInfo=new AuthorInfo();
+                JSONArray jsonArray = jsonObject.getJSONArray("authorship");
+                List<AuthorInfo> authorship = new ArrayList<>();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject author = jsonArray.getJSONObject(i);
+                    AuthorInfo authorInfo = new AuthorInfo();
                     authorInfo.setName(author.getString("name"));
                     authorInfo.setEmail(author.getString("email"));
                     authorInfo.setIns(author.getString("ins"));
@@ -456,6 +477,189 @@ public class ComputableModelService {
         return result;
     }
 
+    public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
+        JSONObject result = new JSONObject();
+        ComputableModel computableModel_ori = computableModelDao.findFirstByOid(jsonObject.getString("oid"));
+        ComputableModel computableModel = new ComputableModel();
+        BeanUtils.copyProperties(computableModel_ori, computableModel);
+
+        if (!computableModel_ori.isLock()) {
+            String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
+            //如果上传新文件
+            if (files.size() > 0) {
+                List<String> resources =new ArrayList<>();
+                saveFiles(files, path, uid, "",resources);
+                if (resources == null) {
+                    result.put("code", -1);
+                    return result;
+                }
+                computableModel.setResources(resources);
+                computableModel.setMdlJson(null);
+                try {
+                    String md5 = "";
+                    if (jsonObject.getString("contentType").equals("Package")) {
+                        String filePath = path + resources.get(0);
+                        FileInputStream file = new FileInputStream(filePath);
+                        md5 = DigestUtils.md5DigestAsHex(IOUtils.readFully(file, -1, true));
+
+                        String mdlPath = null;
+                        String testDataDirectoryPath = null;
+                        String destDirPath = path + "/unZip/" + computableModel.getOid();
+                        ZipUtils.unZip(new File(filePath), destDirPath);
+                        File unZipDir = new File(destDirPath);
+                        if (unZipDir.exists()) {
+                            LinkedList<File> list = new LinkedList<File>();
+                            File[] dirFiles = unZipDir.listFiles();
+                            for (File file2 : dirFiles) {
+                                if (file2.isDirectory()) {
+                                    //我为了节省时间就直接复用许凯的代码了
+                                    if (file2.getName().equals("testify")) {
+                                        testDataDirectoryPath = file2.getAbsolutePath();
+                                    } else if (file2.getName().equals("model")) {
+                                        list.add(file2);
+                                    }
+                                } else {
+                                    String name = file2.getName();
+                                    if (name.substring(name.length() - 3, name.length()).equals("mdl")) {
+                                        mdlPath = file2.getAbsolutePath();
+                                        break;
+                                    }
+                                    System.out.println("文件:" + file2.getAbsolutePath());
+                                }
+                            }
+                            File temp_file;
+                            while (!list.isEmpty()) {
+                                temp_file = list.removeFirst();
+                                dirFiles = temp_file.listFiles();
+                                for (File file2 : dirFiles) {
+                                    if (file2.isDirectory()) {
+                                        continue;
+                                    } else {
+                                        String name = file2.getName();
+                                        if (name.substring(name.length() - 3, name.length()).equals("mdl")) {
+                                            mdlPath = file2.getAbsolutePath();
+                                            break;
+                                        }
+                                        System.out.println("文件:" + file2.getAbsolutePath());
+                                    }
+                                }
+                            }
+                        } else {
+                            System.out.println("文件不存在!");
+                        }
+
+                        //获取测试数据，并进行存储
+                        if (testDataDirectoryPath != null) {
+                            String testData = generateTestData(testDataDirectoryPath, computableModel.getOid());
+                            computableModel.setTestDataPath(testData);
+                        } else {
+                            computableModel.setTestDataPath("");
+                        }
+
+                        String content = "";
+                        if (mdlPath != null) {
+                            try {
+                                BufferedReader in = new BufferedReader(new FileReader(mdlPath));
+                                String str = in.readLine();
+                                if (str.indexOf("ModelClass") != -1) {
+                                    content += str;
+                                }
+                                while ((str = in.readLine()) != null) {
+                                    content += str;
+                                }
+                                in.close();
+                                System.out.println(content);
+                            } catch (IOException e) {
+                                System.out.println(e);
+                            }
+
+                            computableModel.setMdl(content);
+                            JSONObject mdlJson = XmlTool.documentToJSONObject(content);
+                            computableModel.setMdlJson(mdlJson);
+                        } else {
+                            System.out.println("mdl文件未找到!");
+                        }
+
+                        Utils.deleteDirectory(destDirPath);
+                    }
+
+                    computableModel.setMd5(md5);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.put("code", -2);
+                }
+            }
+
+            computableModel.setName(jsonObject.getString("name"));
+            computableModel.setDetail(jsonObject.getString("detail"));
+            computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
+            computableModel.setDescription(jsonObject.getString("description"));
+            computableModel.setContentType(jsonObject.getString("contentType"));
+            computableModel.setUrl(jsonObject.getString("url"));
+
+            JSONArray jsonArray = jsonObject.getJSONArray("authorship");
+            List<AuthorInfo> authorship = new ArrayList<>();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject author = jsonArray.getJSONObject(i);
+                AuthorInfo authorInfo = new AuthorInfo();
+                authorInfo.setName(author.getString("name"));
+                authorInfo.setEmail(author.getString("email"));
+                authorInfo.setIns(author.getString("ins"));
+                authorInfo.setHomepage(author.getString("homepage"));
+                authorship.add(authorInfo);
+            }
+            computableModel.setAuthorship(authorship);
+
+            computableModel.setAuthor(uid);
+
+//                boolean isAuthor = jsonObject.getBoolean("isAuthor");
+            computableModel.setIsAuthor(true);
+//                if (isAuthor) {
+//                    computableModel.setRealAuthor(null);
+//                } else {
+//                    AuthorInfo authorInfo = new AuthorInfo();
+//                    authorInfo.setName(jsonObject.getJSONObject("author").getString("name"));
+//                    authorInfo.setIns(jsonObject.getJSONObject("author").getString("ins"));
+//                    authorInfo.setEmail(jsonObject.getJSONObject("author").getString("email"));
+//                    computableModel.setRealAuthor(authorInfo);
+//                }
+
+
+            Date now = new Date();
+            if (computableModel_ori.getAuthor().equals(uid)) {
+                computableModel.setLastModifyTime(now);
+                computableModelDao.save(computableModel);
+
+                result.put("method", "update");
+                result.put("code", 1);
+                result.put("id", computableModel.getOid());
+            } else {
+                ComputableModelVersion computableModelVersion = new ComputableModelVersion();
+                BeanUtils.copyProperties(computableModel, computableModelVersion, "id");
+                computableModelVersion.setOid(UUID.randomUUID().toString());
+                computableModelVersion.setOriginOid(computableModel_ori.getOid());
+                computableModelVersion.setModifier(uid);
+                computableModelVersion.setVerNumber(now.getTime());
+                computableModelVersion.setVerStatus(0);
+                computableModelVersion.setModifyTime(now);
+
+                computableModelVersionDao.save(computableModelVersion);
+
+                computableModel_ori.setLock(true);
+                computableModelDao.save(computableModel_ori);
+
+                result.put("method", "version");
+                result.put("code", 0);
+                result.put("oid", computableModelVersion.getOid());
+            }
+
+
+            return result;
+        } else {
+            return null;
+        }
+    }
+
     private String generateTestData(String testDataDirectory, String oid) throws IOException {
 
         File testDataFile = new File(testDataDirectory);
@@ -465,32 +669,32 @@ public class ComputableModelService {
                 return pathname.isDirectory();
             }
         });
-        if(tempTestDataDir.length == 0){
+        if (tempTestDataDir.length == 0) {
             return "";
-        }else{
+        } else {
             File defaultTest = tempTestDataDir[0];
             String configPath = defaultTest.getAbsolutePath() + File.separator + "config.xml";
             File configFile = new File(configPath);
-            if(configFile.exists()){
+            if (configFile.exists()) {
                 //读取config.xml文件信息，获取到同级目录下方是否有相对应的数据
-                boolean status = judgeConfigInformation(configFile,defaultTest.getAbsolutePath());
-                if(!status){
+                boolean status = judgeConfigInformation(configFile, defaultTest.getAbsolutePath());
+                if (!status) {
                     return "";
                 }
                 //拷贝文件
                 //String destPath = ComputableModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/testify/" + oid;
                 String destPath = resourcePath + "/computableModel/testify/" + oid;
-                FileUtils.copyDirectory(defaultTest.getAbsoluteFile(),new File(destPath));
+                FileUtils.copyDirectory(defaultTest.getAbsoluteFile(), new File(destPath));
                 String returnPath = oid + File.separator + "config.xml";
                 return returnPath;
-            }else{
+            } else {
                 return "";
             }
         }
 
     }
 
-    private boolean judgeConfigInformation(File configFile,String parentDirectory){
+    private boolean judgeConfigInformation(File configFile, String parentDirectory) {
         org.dom4j.Document result = null;
         SAXReader reader = new SAXReader();
         try {
@@ -500,45 +704,45 @@ public class ComputableModelService {
         }
         Element rootElement = result.getRootElement();
         List<Element> items = rootElement.elements();
-        if(items.size() > 0){
-            for(Element item : items){
+        if (items.size() > 0) {
+            for (Element item : items) {
                 String fileName = item.attributeValue("File");
                 String filePath = parentDirectory + File.separator + fileName;
                 File tempFile = new File(filePath);
-                if(tempFile.exists()){
+                if (tempFile.exists()) {
                     continue;
-                }else{
+                } else {
                     return false;
                 }
             }
-        }else{
+        } else {
             System.out.println("无测试案例数据");
             return false;
         }
         return true;
     }
 
-    public int delete(String oid,String userName){
-        ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+    public int delete(String oid, String userName) {
+        ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
 
-        if(computableModel!=null){
+        if (computableModel != null) {
             //删除资源
             String path = resourcePath + "/computableModel/" + computableModel.getContentType();
-            List<String> resources=computableModel.getResources();
-            for(int i=0;i<resources.size();i++){
-                Utils.delete(path+resources.get(i));
+            List<String> resources = computableModel.getResources();
+            for (int i = 0; i < resources.size(); i++) {
+                Utils.delete(path + resources.get(i));
             }
 
             //计算模型删除
             computableModelDao.delete(computableModel);
             userService.computableModelMinusMinus(userName);
             //模型条目关联删除
-            String modelItemId=computableModel.getRelateModelItem();
-            ModelItem modelItem=modelItemDao.findFirstByOid(modelItemId);
-            List<String> computableIds=modelItem.getRelate().getComputableModels();
-            for (String id:computableIds
+            String modelItemId = computableModel.getRelateModelItem();
+            ModelItem modelItem = modelItemDao.findFirstByOid(modelItemId);
+            List<String> computableIds = modelItem.getRelate().getComputableModels();
+            for (String id : computableIds
                     ) {
-                if(id.equals(computableModel.getOid())){
+                if (id.equals(computableModel.getOid())) {
                     computableIds.remove(id);
                     break;
                 }
@@ -547,39 +751,38 @@ public class ComputableModelService {
             modelItemDao.save(modelItem);
 
             return 1;
-        }
-        else{
+        } else {
             return -1;
         }
     }
 
-    public JSONObject searchComputableModelsByUserId(String searchText,String userId, int page, String sortType, int asc) {
+    public JSONObject searchComputableModelsByUserId(String searchText, String userId, int page, String sortType, int asc) {
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ComputableModel> modelItems = computableModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+        Page<ComputableModel> modelItems = computableModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userId, pageable);
 
         JSONObject modelItemObject = new JSONObject();
-        modelItemObject.put("count",modelItems.getTotalElements());
-        modelItemObject.put("computableModels",modelItems.getContent());
+        modelItemObject.put("count", modelItems.getTotalElements());
+        modelItemObject.put("computableModels", modelItems.getContent());
 
         return modelItemObject;
 
     }
 
-    public JSONObject getComputableModelsByUserId(String userId, int page, String sortType, int asc){
+    public JSONObject getComputableModelsByUserId(String userId, int page, String sortType, int asc) {
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ComputableModel> computableModels = computableModelDao.findByAuthor(userId,pageable);
+        Page<ComputableModel> computableModels = computableModelDao.findByAuthor(userId, pageable);
 
         JSONObject computableModelObject = new JSONObject();
-        computableModelObject.put("count",computableModels.getTotalElements());
-        computableModelObject.put("computableModels",computableModels.getContent());
+        computableModelObject.put("count", computableModels.getTotalElements());
+        computableModelObject.put("computableModels", computableModels.getContent());
 
         return computableModelObject;
 

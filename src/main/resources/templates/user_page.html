@@ -2,16 +2,20 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>User Page | OpenGMS</title>
 
-    <link rel="icon" type="image/x-icon" href="../static/img/logo/favicon.ico">
-    <link rel="stylesheet" href="../static/element-ui/theme-chalk/index.css">
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/css/base/style.css">
-    <link rel="stylesheet" href="../static/css/base/universal.css">
-    <link rel="stylesheet" href="../static/css/base/list.css">
-    <link rel="stylesheet" href="../static/css/page/user_page.css">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/page/user_page.css">
+    <link rel="stylesheet" href="/static/css/page/user_page2.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
 
         .user-interest .content-body span{
@@ -27,49 +31,43 @@
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
-    <div class="clearfix" style="margin:40px 0px;height: auto;">
+    <div class="clearfix" style="height: auto;background-color: #f3f3f3">
 
-        <div class="user_header container content" >
-            <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
-            <div class="user_info">
-                <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
-                <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>
-                <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
+        <div th:replace="fragments/user_page_head :: userPageComm"></div>
+        <!--x-->
+        <div id="downerContainer" class="fullContainer" >
+            <div class="bodyContainer">
 
-            </div>
-<!--x-->
-        </div>
-        <div class="user_main container" style="padding:0px">
-            <el-col class="main_left" :span="6">
-                <div class="user-models content">
-                    <div>
-                        <el-row class="model_row" style="margin-left: 10px;margin-right:10px;">
-                            <el-col :span="12" class="model_block text-center">
-                                <h4 class="fs-16">Model Item</h4>
-                                <span class="badge badge-success" th:text="${userInfo.modelItems}">7</span>
-                            </el-col>
-                            <el-col :span="12" class="text-center">
-                                <h4 class="fs-16">Data Item</h4>
-                                <span class="badge badge-info" th:text="${userInfo.dataItems}">20</span>
-                            </el-col>
-                        </el-row>
-                        <el-row class="model_row" style="border:none">
-                            <el-col :span="8" class="model_block text-center">
-                                <h4 class="fs-16">Conceptual Model</h4>
-                                <span class="badge badge-warning" th:text="${userInfo.conceptualModels}">8</span>
-                            </el-col>
-                            <el-col :span="8" class="model_block text-center">
-                                <h4 class="fs-16">Logical Model</h4>
-                                <span class="badge badge-primary" th:text="${userInfo.logicalModels}">4</span>
-                            </el-col>
-                            <el-col :span="8" class="text-center">
-                                <h4 class="fs-16">Computable Model</h4>
-                                <span class="badge badge-important" th:text="${userInfo.computableModels}">9</span>
-                            </el-col>
-                        </el-row>
+                <el-col class="main_left" :span="6">
+                    <div class="user-models content">
+                        <div>
+                            <el-row class="model_row" style="margin-left: 10px;margin-right:10px;">
+                                <el-col :span="12" class="model_block text-center">
+                                    <h4 class="fs-16">Model Item</h4>
+                                    <span class="badge badge-success" th:text="${userInfo.modelItems}">7</span>
+                                </el-col>
+                                <el-col :span="12" class="text-center">
+                                    <h4 class="fs-16">Data Item</h4>
+                                    <span class="badge badge-info" th:text="${userInfo.dataItems}">20</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="model_row" style="border:none">
+                                <el-col :span="8" class="model_block text-center">
+                                    <h4 class="fs-16">Conceptual Model</h4>
+                                    <span class="badge badge-warning" th:text="${userInfo.conceptualModels}">8</span>
+                                </el-col>
+                                <el-col :span="8" class="model_block text-center">
+                                    <h4 class="fs-16">Logical Model</h4>
+                                    <span class="badge badge-primary" th:text="${userInfo.logicalModels}">4</span>
+                                </el-col>
+                                <el-col :span="8" class="text-center">
+                                    <h4 class="fs-16">Computable Model</h4>
+                                    <span class="badge badge-important" th:text="${userInfo.computableModels}">9</span>
+                                </el-col>
+                            </el-row>
+                        </div>
                     </div>
-                </div>
-                <!--<div class="user-interest content">-->
+                    <!--<div class="user-interest content">-->
                     <!--<h4 class="content-head">Subject Areas</h4>-->
                     <!--<div class="content-body text-center">-->
                         <!--<span class="badge label-info" th:each="area:${userInfo.subjectAreas}" th:text="${area}" style="word-wrap:break-word; word-break:break-all;"></span>-->
@@ -128,7 +126,7 @@
                                     </div>
                                     <div class="detail_overview">
                                         <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                            <img :src="modelItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <img :src="modelItem.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
                                         </a>
 
                                         <div class="info">
@@ -168,7 +166,7 @@
                                     </div>
                                     <div class="detail_overview">
                                         <a class="img" :href="'/dataItem/'+ dataItem.oid" target="_blank">
-                                            <img :src="dataItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <img :src="dataItem.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
                                         </a>
 
                                         <div class="info">
@@ -208,7 +206,7 @@
                                     </div>
                                     <div class="detail_overview">
                                         <a class="img" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
-                                            <img :src="conceptualModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <img :src="conceptualModel.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
                                         </a>
 
                                         <div class="info">
@@ -248,7 +246,7 @@
                                     </div>
                                     <div class="detail_overview">
                                         <a class="img" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
-                                            <img :src="logicalModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <img :src="logicalModel.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
                                         </a>
 
                                         <div class="info">
@@ -288,7 +286,7 @@
                                     </div>
                                     <div class="detail_overview">
                                         <a class="img" :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                            <img :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <img :src="computableModel.image==''?'/static/img/model/model.png':'/static/img/model/model.png'">
                                         </a>
 
                                         <div class="info">
@@ -336,11 +334,11 @@
 
 </body>
 
-<script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
-<script src="../static/js/common/axios.min.js"></script>
-<script src="../static/element-ui/index.js"></script>
-<script src="../static/js/page/user_page.js"></script>
-<script src="../static/js/common/loadUser.js"></script>
-
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/user_page.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 </html>

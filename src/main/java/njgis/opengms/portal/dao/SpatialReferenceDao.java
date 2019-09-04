@@ -1,7 +1,6 @@
 package njgis.opengms.portal.dao;
 
-import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.entity.Concept;
+import njgis.opengms.portal.dto.community.SpatialResultDTO;
 import njgis.opengms.portal.entity.SpatialReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +24,8 @@ public interface SpatialReferenceDao extends MongoRepository<SpatialReference,St
     Page<SpatialReference> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
     Page<SpatialReference> findByParentIdIn(List<String> parentIds, Pageable pageable);
+
+    Page<SpatialResultDTO> findByAuthor(String author, Pageable pageable);
+
+    Page<SpatialResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 }

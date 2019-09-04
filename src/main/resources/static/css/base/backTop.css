@@ -1,0 +1,14 @@
+.backTop{
+    display: none;
+    position: fixed;
+    border-radius: 3px;
+    margin: auto;
+    left: 0;
+    right:0;
+    bottom: 70px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 5;
+    cursor: pointer;
+}

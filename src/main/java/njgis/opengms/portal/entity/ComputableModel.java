@@ -1,10 +1,7 @@
 package njgis.opengms.portal.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.ComputableModelRelate;
-import njgis.opengms.portal.entity.support.LogicalModelRelate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -52,6 +49,10 @@ public class ComputableModel {
     List<String> containerId;
     List<AuthorInfo> authorship;
 
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
+
 //    ComputableModelRelate relate;
 
     Date createTime;
@@ -61,6 +62,10 @@ public class ComputableModel {
     int viewCount=0;
     int thumbsUpCount=0;
 
+    boolean lock;
+
     String mdl;
     String testDataPath;
+
+    Object mdlJson;
 }

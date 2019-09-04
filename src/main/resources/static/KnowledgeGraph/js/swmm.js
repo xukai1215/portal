@@ -25,6 +25,60 @@ var app = new Vue({
     this.loadPage();
   },
   methods: {
+      myFunction()
+      {
+          $('#infoPanel').css('display', 'none');
+      },
+      myFunction1(){$
+          console.log("abc");
+
+          /*
+      * zzw.drag 2017-3
+      * js实现div可拖拽
+      * @params bar 可以点击拖动的元素
+      * @params box 拖动的整体元素 必须是position: absolute;
+      * 思想：鼠标的clienX/clientY相对值设置为父元素的left/top的相对值
+      */
+
+          var dragBox = function (drag, wrap) {
+
+              function getCss(ele, prop) {
+                  return parseInt(window.getComputedStyle(ele)[prop]);
+              }
+
+              var initX,
+                  initY,
+                  dragable = false,
+                  wrapLeft = getCss(wrap, "left"),
+                  wrapRight = getCss(wrap, "top");
+
+              drag.addEventListener("mousedown", function (e) {
+                  console.log(drag);
+                  dragable = true;
+                  initX = e.clientX;
+                  initY = e.clientY;
+              }, false);
+
+              document.addEventListener("mousemove", function (e) {
+                  if (dragable === true) {
+                      var nowX = e.clientX,
+                          nowY = e.clientY,
+                          disX = nowX - initX,
+                          disY = nowY - initY;
+                      wrap.style.left = wrapLeft + disX + "px";
+                      wrap.style.top = wrapRight + disY + "px";
+                  }
+              });
+
+              drag.addEventListener("mouseup", function (e) {
+                  dragable = false;
+                  wrapLeft = getCss(wrap, "left");
+                  wrapRight = getCss(wrap, "top");
+              }, false);
+
+          };
+          dragBox(document.querySelector("#bar"), document.querySelector("#infoPanel"));
+      },
     loadPage() {
       let that = this;
       $("#datetimepicker")
@@ -148,7 +202,7 @@ var app = new Vue({
         if (colorsObj.hasOwnProperty(key)) {
           return colorsObj[key];
         } else {
-          return "#e4e5e5";
+          return "#ada2a8";
         }
       };
 
@@ -240,6 +294,7 @@ var app = new Vue({
             that.nodeName = node.name;
             that.nodeCategory = node.category;
             that.infoPanelShow = true;
+              lockFlag = true;
             for (let i = 0; i < links.length; i++) {
               let link = links[i];
               if (link.source.id === node.id) {
@@ -248,28 +303,36 @@ var app = new Vue({
                 that.nodeLinks.push(link.source);
               }
             }
-            that.$nextTick(() => {
-              if (that.table) {
-                that.table.destroy();
-                that.table = null;
-              }
-              that.table = $("#linkTable").DataTable({
-                columns: [
-                  { data: "name", name: "NAME" },
-                  { data: "category", name: "TYPE" }
-                ],
-                bInfo: false,
-                searching: false,
-                bLengthChange: false,
-                data: that.nodeLinks
+              that.$nextTick(() => {
+                  if (that.table) {
+                      that.table.destroy();
+                      that.table = null;
+                  }
+                  that.table = $("#linkTable").DataTable({
+                      columns: [
+                          { data: "name", name: "NAME" },
+                          { data: "category", name: "TYPE" }
+                      ],
+                      bInfo: false,
+                      searching: true,
+                      showToggle: true,
+                      showColumns: true,
+                      bLengthChange: false,
+                      pagination:true,
+                      sidePagination: 'client',
+                      pageNumber: 1,
+                      pageSize: 5,
+                      data: that.nodeLinks,
+                      sScrollY:350,
+                      scrollY:true
+                  });
               });
-            });
-            return false;
+              return false;
           }
         }
         that.infoPanelShow = false;
         if (that.table) {
-          that.table.destroy();
+            that.table.destroy();
         }
         that.table = null;
 
@@ -387,14 +450,14 @@ var app = new Vue({
             connected.connectedNodes.length > 0 &&
             connected.connectedNodes.indexOf(d.id) < 0
           ) {
-            context.fillStyle = "#e4e5e5";
+            context.fillStyle = "#b9b9b9";
           } else {
             context.fillStyle = color(d.category);
           }
 
           context.fill();
 
-          context.strokeStyle = "#fff";
+          context.strokeStyle = null;
           context.stroke();
         }
         context.restore();
@@ -471,6 +534,7 @@ var app = new Vue({
       }
 
       function mouseClick() {
+        $('#infoPanel').css('display', 'block');
         let that = this;
         let point = d3.mouse(this);
         if (timeout) {
@@ -617,7 +681,7 @@ var app = new Vue({
                   shadowOffsetX: 0,
                   shadowOffsetY: 0,
                   textStyle: {
-                    color: "#222"
+                    color: "#b9b9b9"
                   }
                 }
               },
@@ -1068,18 +1132,21 @@ var app = new Vue({
       //   .style("visibility", "hidden")
       //   .style("top", "30px")
       //   .style("left", "55px");
-      let tooltip = d3
-        .select(".keywordsPanel")
-        .append("div")
-        .attr("class", "streamInfo")
-        .style("opacity", 0);
-      let svg = d3
-        .select("#keywordChart")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        let tooltip = d3
+            .select(".keywordsPanel")
+            .append("div")
+            .attr("class", "streamInfo")
+            .style("opacity", 0);
+        let svg = d3.select("#keywordChart").append("svg")
+        /*.attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)*/
+            .attr("width", '100%')
+            .attr("height", '100%')
+            .append("g")
+            // .attr("transform", "translate(0,0)")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr('viewBox', '0 0 1000 1000')//设置svg画布大小，该大小是一个相对的大小，并不是绝对尺寸
+            .attr('preserveAspectRatio', 'xMidYMid meet');//该属性指定SVG图形在屏幕的最左上角开始显示，并且保持等比缩放
       let legendSet = new Set(),
         yearSet = new Set();
       //   min = -10,

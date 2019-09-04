@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" />
     <title>XINANJIANG Model Knowledge Graph</title>
+    <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/amaze/css/amazeui.min.css}" />
     <link
       rel="stylesheet"
@@ -17,57 +18,23 @@
 	<link rel="stylesheet" th:href="@{/static/KnowledgeGraph/js/leaflet/leaflet.css}" />
     <link rel="stylesheet" th:href="@{/static/KnowledgeGraph/css/kgstyle.css}" />
     <link th:href="@{/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css}" rel="stylesheet" />
-    <style>
-      .am-g.am-datatable-footer {
-        display: flex;
-      }
-      .am-g.am-datatable-footer .am-u-sm-5 {
-        width: 0 !important;
-      }
-      .am-g.am-datatable-footer .am-u-sm-7 {
-        width: 100% !important;
-      }
-    </style>
-  </head>
+   </head>
   <body>
     <div class="container" id="app">
-      <div class="aside">
-        <div>
-          <i class="fa fa-globe fa-3x" style="color:#98df8a"></i>
-          <h4>XINANJIANG MODEL</h4>
+      <!--add new div-->
+      <div class="suspension">
+        <div class="suspension-box">
+          <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
+          <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+          <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+          <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
         </div>
-        <div class="tags">
-          <span class="tag">Distributed</span>
-          <span class="tag">Hydrologic Model</span>
+      </div>
+      <!--add new div-->
+      <div class="row no-gutters">
+        <div class="col-lg-11">
+
         </div>
-        <div class="desc">
-          The Xin'anjiang model is a hydrological model proposed by Hohai
-          University and a rare hydrological model with world influence in
-          China. The Xin'anjiang model is a dispersive model that can be used
-          for wet seasons in wet and sub-humid areas. When the basin area is
-          small, the Xin'anjiang model uses a lumped model, and when the area is
-          large, a block model is used. It divides the whole watershed into a
-          number of block unit basins, and calculates the production and sinking
-          flow for each unit basin, and derives the export flow process of the
-          unit basin. Then carry out the river flood calculation below the exit
-          and find the flow process of the river basin exit. By summing the
-          outflow processes of each unit basin, the total outflow process of the
-          basin is obtained.
-        </div>
-        <ul class="menu">
-          <li v-bind:class="{active:active===0}" @click="indexChange(0)">
-            index
-          </li>
-          <li v-bind:class="{active:active===1}" @click="indexChange(1)">
-            History
-          </li>
-          <li v-bind:class="{active:active===2}" @click="indexChange(2)">
-            Map
-          </li>
-          <li v-bind:class="{active:active===3}" @click="indexChange(3)">
-            Keywords
-          </li>
-        </ul>
       </div>
       <div class="main">
         <div class="graphPanel" v-show="active===0">
@@ -86,15 +53,19 @@
             class="am-panel am-panel-default am-animation-slide-right"
             id="infoPanel"
             v-if="infoPanelShow"
+            style="transform: translate(0px, 0px); transition: transform 0.5s ease-in-out;"
           >
-            <div class="am-panel-hd">
+            <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
               {{ nodeName }}
-              <a href="#" class="am-close pull-right">&times;</a>
+              <a @click="myFunction()" class="am-close pull-right">&times;</a>
             </div>
-            <div class="am-panel-bd">
+            <div id="content" class="am-panel-bd" >
               <table
-                class="am-table am-table-striped am-table-bordered am-table-compact"
-                id="linkTable"
+                      class="am-table am-table-striped am-table-bordered am-table-compact "
+                      data-classes="table table-bordered"
+                      data-pagination="true" data-page-size="10"
+                      data-pagination-loop="false"
+                      id="linkTable"
               >
                 <thead>
                   <tr>
@@ -163,6 +134,7 @@
       </div>
     </div>
   </body>
+  <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
@@ -172,6 +144,8 @@
   <script th:src="@{/static/KnowledgeGraph/js/echarts/echarts.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/leaflet/leaflet.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/geojsonhint.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
+  <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
   <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
   <!-- <script src="js/echarts//extension/modularity.js"></script> -->
   <script th:src="@{/static/KnowledgeGraph/js/xajModel.js}"></script>

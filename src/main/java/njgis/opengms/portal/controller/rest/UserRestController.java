@@ -5,25 +5,17 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.UserAddDTO;
 import njgis.opengms.portal.dto.UserUpdateDTO;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping (value = "/user")
@@ -85,9 +77,6 @@ public class UserRestController {
         return "0";
     }
 
-
-
-
     @RequestMapping(value = "/out", method = RequestMethod.GET)
     public ModelAndView logout(HttpServletRequest request) {
         System.out.println("out");
@@ -118,6 +107,7 @@ public class UserRestController {
         else{
 
             user.put("oid",session.getAttribute("oid").toString());
+            user.put("uid",session.getAttribute("uid").toString());
             user.put("name",session.getAttribute("name").toString());
             user.put("image",userService.getImage(session.getAttribute("oid").toString()));
             return user.toString();
@@ -160,14 +150,15 @@ public class UserRestController {
             modelAndView.setViewName("login");
             modelAndView.addObject("notice","You need to log in first to view another user's page.");
         }else {
-
-            Object object = ResultUtils.success(userService.getByOid(id)).getData();
-            JSONObject userInfo = (JSONObject) JSONObject.toJSON(object);
+            User user=userService.getByOid(id);
+//            Object object = ResultUtils.success(userService.getByOid(id)).getData();
+            JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
 
             System.out.println("user_page");
 
-            modelAndView.setViewName("user_page");
+            modelAndView.setViewName("user_page_overview");
             modelAndView.addObject("userInfo", userInfo);
+            System.out.println(userInfo);
             modelAndView.addObject("loadPath",htmlLoadPath);
             JSONArray array=userInfo.getJSONArray("subjectAreas");
             String areas="";

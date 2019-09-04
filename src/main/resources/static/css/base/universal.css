@@ -9,7 +9,7 @@ a{
     text-decoration: none;
 }
 
-li a{
+.navbar-right a{
     color:white;
 }
 li a:focus,li a:active,li a:hover{
@@ -86,10 +86,10 @@ dt{
     background-repeat: no-repeat;
     width:156px;
     height:60px;
-
     margin-left: 20px;
     margin-right: 60px;
 }
+
 
 .footer a {
     color: #c8c8ca;

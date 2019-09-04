@@ -2,7 +2,6 @@ package njgis.opengms.portal.entity;
 
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.ModelItemRelate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -46,8 +45,14 @@ public class ConceptualModel {
     List<String> image;
     List<AuthorInfo> authorship;
 
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
+
     Date createTime;
     Date lastModifyTime;
+
+    boolean lock;
 
     int shareCount=0;
     int viewCount=0;

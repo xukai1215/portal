@@ -3,14 +3,16 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dto.LogicalModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
-import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.service.ClassificationService;
-import njgis.opengms.portal.service.ConceptualModelService;
+import njgis.opengms.portal.entity.LogicalModel;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.LogicalModelService;
+import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
-import njgis.opengms.portal.utils.deCode;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +38,9 @@ public class LogicalModelRestController {
 
     @Autowired
     LogicalModelService logicalModelService;
+
+    @Autowired
+    ModelItemService modelItemService;
 
     @Autowired
     UserService userService;
@@ -59,7 +62,37 @@ public class LogicalModelRestController {
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
     JsonResult getInfo(@PathVariable ("id") String id){
-        return ResultUtils.success(logicalModelService.getByOid(id));
+
+        LogicalModel logicalModel=logicalModelService.getByOid(id);
+        ModelItem modelItem=modelItemService.getByOid(logicalModel.getRelateModelItem());
+        LogicalModelResultDTO logicalModelResultDTO=new LogicalModelResultDTO();
+        BeanUtils.copyProperties(logicalModel,logicalModelResultDTO);
+        logicalModelResultDTO.setRelateModelItemName(modelItem.getName());
+        //资源信息
+        JSONArray resourceArray = new JSONArray();
+        List<String> resources = logicalModel.getImage();
+
+        if (resources != null) {
+            for (int i = 0; i < resources.size(); i++) {
+
+                String path = resources.get(i);
+
+                String[] arr = path.split("\\.");
+                String suffix = arr[arr.length - 1];
+
+                arr = path.split("/");
+                String name = arr[arr.length - 1].substring(14);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name", name);
+                jsonObject.put("suffix", suffix);
+                jsonObject.put("path", resources.get(i));
+                resourceArray.add(jsonObject);
+            }
+        }
+        logicalModelResultDTO.setResourceJson(resourceArray);
+
+        return ResultUtils.success(logicalModelResultDTO);
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
@@ -139,6 +172,29 @@ public class LogicalModelRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value="/update",method = RequestMethod.POST)
+    JsonResult update(@RequestParam("logicalModel") String model, HttpServletRequest request){
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        List<MultipartFile> files=multipartRequest.getFiles("imgFiles");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=logicalModelService.update(files,jsonObject,uid);
+
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public JsonResult deleteLogicalModel(@RequestParam(value="oid") String oid, HttpServletRequest request){
         HttpSession session=request.getSession();
@@ -148,6 +204,15 @@ public class LogicalModelRestController {
         }
         String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(logicalModelService.delete(oid,userName));
+    }
+
+    @RequestMapping (value = "/getUserOidByOid", method = RequestMethod.GET)
+    public JsonResult getUserOidByOid(@RequestParam(value="oid") String oid){
+        LogicalModel logicalModel=logicalModelService.getByOid(oid);
+        String userId=logicalModel.getAuthor();
+        User user=userService.getByUid(userId);
+        return ResultUtils.success(user.getOid());
+
     }
 
 }

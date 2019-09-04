@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
@@ -52,6 +53,9 @@ public class ModelItemRestController {
         return modelAndView;
     }
 
+
+
+
     @RequestMapping(value="/add",method = RequestMethod.POST)
     public JsonResult addModelItem(@RequestBody ModelItemAddDTO modelItemAddDTO,HttpServletRequest request) {
         HttpSession session=request.getSession();
@@ -59,8 +63,9 @@ public class ModelItemRestController {
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-        String uid=session.getAttribute("uid").toString();
+
         System.out.println("add model item");
+
         String userName=session.getAttribute("uid").toString();
 
         ModelItem modelItem= modelItemService.insert(modelItemAddDTO,userName);
@@ -80,8 +85,20 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateModelItem(@RequestBody ModelItemUpdateDTO modelItemUpdateDTO){
-        return ResultUtils.success(modelItemService.update(modelItemUpdateDTO));
+    public JsonResult updateModelItem(@RequestBody ModelItemUpdateDTO modelItemUpdateDTO, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        JSONObject result=modelItemService.update(modelItemUpdateDTO,uid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
@@ -106,7 +123,24 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItemService.listByUserOid(modelItemFindDTO,oid));
     }
 
+    @RequestMapping(value="/getRelation",method = RequestMethod.GET)
+    JsonResult getRelation(@RequestParam(value = "type") String type,@RequestParam(value = "oid") String oid){
 
+        JSONArray result=modelItemService.getRelation(oid,type);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/setRelation",method = RequestMethod.POST)
+    JsonResult setRelation(@RequestParam(value="oid") String oid,
+                           @RequestParam(value="type") String type,
+                           @RequestParam(value = "relations[]") List<String> relations){
+
+        String result=modelItemService.setRelation(oid,type,relations);
+
+        return ResultUtils.success(result);
+
+    }
 
     @RequestMapping (value="/findNamesByName",method = RequestMethod.GET)
     JsonResult findNameByName(@RequestParam(value = "name") String name){

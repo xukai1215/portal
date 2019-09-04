@@ -16,7 +16,7 @@ new Vue({
             pageOption: {
                 paginationShow:false,
                 progressBar: true,
-                sortAsc: false,
+                sortAsc: true,
                 currentPage: 1,
                 pageSize: 10,
                 sortType: "default",
@@ -50,8 +50,7 @@ new Vue({
                         "oid": "b2f2fbfd-f21a-47ac-9e1f-a96ac0218bf1",
                         "label": "CustomizedWKT"
                     }]
-                }
-            ],
+                }],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -59,6 +58,26 @@ new Vue({
         }
     },
     methods: {
+        contribute(){
+            $.ajax({
+                url: '/user/load',
+                type: 'get',
+                // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
+                // dataType : 'json',
+                success: function (result) {
+                    var json = JSON.parse(result);
+                    if (json.oid != '') {
+                        window.location.href="/repository/createSpatialReference";
+                    }
+                    else{
+                        window.location.href="/user/login";
+                    }
+                },
+                error: function (e) {
+                    alert("load user error");
+                }
+            });
+        },
         search() {
             this.pageOption.currentPage = 1;
             this.getModels();
@@ -124,9 +143,9 @@ new Vue({
             query.page=data.page;
             query.sortType= this.pageOption.sortType;
             if(data.asc){
-                query.asc= 0;
+                query.asc= 1;
             }else{
-                query.asc = 1;
+                query.asc = 0;
             }
             query.searchText=data.searchText;
 

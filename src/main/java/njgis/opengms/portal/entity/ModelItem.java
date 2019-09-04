@@ -25,12 +25,18 @@ public class ModelItem {
     String status;
     String knowledgeGraph;
 
+
     List<String> classifications;
     List<String> keywords;
     List<Reference> references;
-    List<String> contributors;
     List<AuthorInfo> authorship;
     List<String> relatedData;
+
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
+
+    boolean lock;
 
     ModelItemRelate relate;
 

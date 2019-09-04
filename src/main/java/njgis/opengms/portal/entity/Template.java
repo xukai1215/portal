@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document
 @Data
@@ -13,84 +14,24 @@ public class Template {
     String id;
     String oid;
     String name;
+    List<String> classifications;
     String description;
-    String type;
-    String parentId;
-    String xml;
-
+    String detail;
+    String author;
+    String image;
     Date createTime;
-
+    Date lastModifyTime;
     int loadCount;
 
-    public String getId() {
-        return id;
-    }
+    String xml;
+    String type;
+    String parentId;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    //版本
+    String lastModifier;
+    List<String> contributors;
+    List<String> versions;
 
-    public String getOid() {
-        return oid;
-    }
+    boolean lock;
 
-    public void setOid(String oid) {
-        this.oid = oid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getXml() {
-        return xml;
-    }
-
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public int getLoadCount() {
-        return loadCount;
-    }
-
-    public void setLoadCount(int loadCount) {
-        this.loadCount = loadCount;
-    }
 }

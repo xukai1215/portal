@@ -16,7 +16,7 @@ new Vue({
             pageOption: {
                 paginationShow:false,
                 progressBar: true,
-                sortAsc: false,
+                sortAsc: true,
                 currentPage: 1,
                 pageSize: 10,
                 sortType: "default",
@@ -71,8 +71,7 @@ new Vue({
                         "oid": "8a189836-d563-440c-b5ea-c04778ac05f9",
                         "label": "Tabular Data Format",
                     }]
-            }
-            ],
+            }],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -80,6 +79,26 @@ new Vue({
         }
     },
     methods: {
+        contribute(){
+            $.ajax({
+                url: '/user/load',
+                type: 'get',
+                // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
+                // dataType : 'json',
+                success: function (result) {
+                    var json = JSON.parse(result);
+                    if (json.oid != '') {
+                        window.location.href="/repository/createTemplate";
+                    }
+                    else{
+                        window.location.href="/user/login";
+                    }
+                },
+                error: function (e) {
+                    alert("load user error");
+                }
+            });
+        },
         search() {
             this.pageOption.currentPage = 1;
             this.getModels();
@@ -144,9 +163,9 @@ new Vue({
             query.page=data.page;
             query.sortType= this.pageOption.sortType;
             if(data.asc){
-                query.asc= 0;
+                query.asc= 1;
             }else{
-                query.asc = 1;
+                query.asc = 0;
             }
             query.searchText=data.searchText;
 
