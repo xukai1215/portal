@@ -89,5 +89,9 @@ public class staticCreated implements ApplicationRunner {
 //
 //
 //        System.out.println("static data item html completed");
+
+
+
+
     }
 }
