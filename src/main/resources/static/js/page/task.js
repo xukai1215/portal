@@ -437,14 +437,7 @@ var vue = new Vue({
                 //todo 拼接url
                 this.modelInEvent.url="http://172.21.212.64:8081/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
                 this.modelInEvent.tag=da.item.fileName
-
-
-
-
-
-
-
-
+                
             }
 
 
