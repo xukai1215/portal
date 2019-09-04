@@ -417,7 +417,6 @@ new Vue({
                             this.pageOption.progressBar=false;
                             console.log(this.articles.result);
                         }, 500);
-                        console.log(this.articles.result);
                     } else {
                         console.log("search computable model failed.")
                     }
@@ -513,6 +512,7 @@ new Vue({
                               this.newestArticle.result=data.list;
                               this.pageOption.progressBar=false;
                           },500)
+                      console.log(this.newestArticle);
                   }else{
                       console.log("search data item failed.")
                   }
