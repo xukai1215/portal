@@ -187,7 +187,7 @@
                                         <div class="arrowDownerBig"></div>
                                     </div>
                                     <!--                                    此处v-for没有用但是加载速度会变快-->
-                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                    <div class="list-item" v-if="newestArticle.result" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
                                         <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" @click="articleClick(1)" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
@@ -233,7 +233,7 @@
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-                                    <div class="list-item" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                    <div class="list-item" v-if="newestArticle.result" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
                                         <div class="itemCardCol" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
@@ -279,7 +279,7 @@
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-                                    <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                    <div class="list-item" v-if="newestArticle.result" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
                                         <div class="itemCardCol" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
@@ -351,7 +351,12 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
                         </div>
-                        <div class="contentContainer" >
+                        <div class="contentContainer" style="flex-direction: column; padding-left: 25px">
+                            <h4 th-if="${not #strings.isEmpty(userInfo.phone)}" th:text="${userInfo.phone}"></h4>
+                            <h4 th-if="${not #strings.isEmpty(userInfo.weChat)}" th:text="${userInfo.weChat}"></h4>
+                            <h4 th-if="${not #strings.isEmpty(userInfo.faceBook)}" th:text="${userInfo.faceBook}"></h4>
+                            <h4 th-if="${not #strings.isEmpty(userInfo.weiBo)}" th:text="${userInfo.weiBo}"></h4>
+                            <h4 th-if="${not #strings.isEmpty(userInfo.personPage)}" th:text="${userInfo.personPage}"></h4>
                         </div>
                     </div>
                 </div>
@@ -405,7 +410,7 @@
                                     </div>
                                 </span>
                             </div>
-                            <div class="list-item" v-for="(modelItem,key) in modelItems.result">
+                            <div class="list-item" v-if="modelItems.result" v-for="(modelItem,key) in modelItems.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -467,7 +472,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(DataItem,key) in dataItems.result">
+                            <div class="list-item" v-if="dataItems.result" v-for="(DataItem,key) in dataItems.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -529,7 +534,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(conceptualModel,key) in conceptualModels.result">
+                            <div class="list-item" v-if="conceptualModel.result" v-for="(conceptualModel,key) in conceptualModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -591,7 +596,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(logicalModel,key) in logicalModels.result">
+                            <div class="list-item" v-if="logicalModels.result" v-for="(logicalModel,key) in logicalModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -653,7 +658,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" :key="computableModel.oid" v-for="(computableModel,key) in computableModels.result">
+                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -746,7 +751,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(article,key) in articles.result">
+                            <div class="list-item" v-if="articles.result" v-for="(article,key) in articles.result">
                                 <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
                                     <div class="cardUpper colArrange" style="background-color: #fafafa">
                                         <div class="cardHeadContainer" style="height: 72px;">
@@ -802,7 +807,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(project,key) in projects.result">
+                            <div class="list-item" v-if="projects.result" v-for="(project,key) in projects.result">
                                 <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
                                     <div class="cardUpper colArrange" style="background-color: #fafafa">
                                         <div class="cardHeadContainer" style="height: 72px;">
@@ -829,7 +834,7 @@
                                     </div>
 
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-<!--                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>-->
+                                        <!--                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>-->
                                     </div>
                                 </div>
 
@@ -858,7 +863,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-for="(conference,key) in conferences.result">
+                            <div class="list-item" v-if="conferences.result" v-for="(conference,key) in conferences.result">
                                 <div class="itemCardCol" style="width: 98%;height: 255px;margin-top: 8px;border: none;">
                                     <div class="cardUpper colArrange" style="background-color: #fafafa">
                                         <div class="cardHeadContainer" style="height: 72px;">
@@ -942,7 +947,7 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>
                         </div>
-                        <div class="list-item" v-for="(educationXpce,key) in educationExperience.result">
+                        <div class="list-item" v-if="educationExperience.result" v-for="(educationXpce,key) in educationExperience.result">
                             <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 160px; margin-top: 5px">
                                 <div class="cardContentContainer" style="width: 98%;margin:0; border: none;">
                                     <div>
