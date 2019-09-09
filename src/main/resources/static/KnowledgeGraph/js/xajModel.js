@@ -2,6 +2,7 @@ var app = new Vue({
   el: "#app",
   data: {
     active: 0,
+    lockFlag:false,
     infoPanelShow: false,
     queryYear: 2018,
     nodeId: "",
@@ -28,6 +29,7 @@ var app = new Vue({
       myFunction()
       {
           $('#infoPanel').css('display', 'none');
+          lockFlag=false;
       },
       myFunction1(){$
           console.log("abc");
@@ -198,7 +200,7 @@ var app = new Vue({
       let selectedNode = null;
       let selectedLink = null;
       let connected = { connectedNodes: [], connectedLinks: [] };
-      let lockFlag = false;
+
       let timeout = null;
 
       let context = graphCanvas.getContext("2d");
@@ -420,7 +422,7 @@ var app = new Vue({
       }
 
       function simulationUpdate() {
-        if (lockFlag) {
+        if (this.lockFlag) {
           return;
         }
         context.save();
