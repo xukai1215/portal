@@ -81,6 +81,7 @@ html, body {
 .graphPanel #echarts, .graphPanel #d3Canvas {
     width: 100%;
     height: 100%;
+    background: white;
 }
 
 div.tooltip {
@@ -103,7 +104,7 @@ div.tooltip {
     width: 204px;
     top: 20px;
     left: 20px;
-    border: 1px solid #f5ecec;/*选择框框色*/
+    border: 1px solid #d09f9f;/*选择框框色*/
     padding: 5px
 }
 
@@ -143,7 +144,7 @@ div.tooltip {
     height: 100%;
     overflow: hidden;
     position: relative;
-    background: #c8ccce
+    background: #f8f8f8
 }
 
 .historyPanel .btn-group {
@@ -212,7 +213,7 @@ div.tooltip {
 .keywordsPanel{
     width: 100%;
     height: 100%;
-    background: #c8ccce;
+    background: #f8f8f8;
     position: absolute;
 
 }
@@ -238,17 +239,17 @@ div.tooltip {
 }
 .suspension {
     position: absolute;
-    height: 60px;
-    width: 260px;
+    height: 65px;
+    width: 300px;
     top: 10px;
-    right: 100px;
-    border: 1px solid #f5ecec;/*选择框框色*/
+    right: 50px;
+    border: 1px solid #d4b8b8;/*选择框框色*/
     padding: 5px
 }
-.nav-item1{position: absolute; top: 10px;right: 200px}
-.nav-item2{position: absolute; top: 10px;right: 135px}
-.nav-item3{position: absolute; top: 10px;right: 93px}
-.nav-item4{position: absolute; top: 10px;right: 1px}
+#b1{position: absolute; top: 10px;right: 225px}
+#b2{position: absolute; top: 10px;right: 150px}
+#b3{position: absolute; top: 10px;right: 93px}
+#b4{position: absolute; top: 10px;right: 2px}
 .suspension-box{
     position: relative;
 }

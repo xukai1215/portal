@@ -2,8 +2,7 @@
 /*悬浮链接*/
 .suspension{position:fixed;z-index:55;right:0;width:70px;height:240px;}
 .suspension-box{position:relative;float:right;}
-.suspension .a-service{display:block;width:auto;height:auto;background-color:#c5b8b8;margin-bottom:4px;cursor:pointer;outline:none;}
-.suspension .a-service-phone{display:block;width:auto;height:auto;background-color:#c5b8b8;margin-bottom:4px;cursor:pointer;outline:none;}
-.suspension .a-qrcode{display:block;width:auto;height:auto;background-color:#c5b8b8;margin-bottom:4px;cursor:pointer;outline:none;}
-.suspension .a-cart{display:block;width:auto;height:auto;background-color:#c5b8b8;margin-bottom:4px;cursor:pointer;outline:none;}
-.suspension .a:hover{background:#b79494;}
+.suspension .a-service{display:block;width:auto;height:auto;margin-bottom:4px;cursor:pointer;outline:none;}
+.suspension .a-service-phone{display:block;width:auto;height:auto;margin-bottom:4px;cursor:pointer;outline:none;}
+.suspension .a-qrcode{display:block;width:auto;height:auto;margin-bottom:4px;cursor:pointer;outline:none;}
+.suspension .a-cart{display:block;width:auto;height:auto;margin-bottom:4px;cursor:pointer;outline:none;}
