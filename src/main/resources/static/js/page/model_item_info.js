@@ -195,24 +195,14 @@ new Vue({
                 this.selectedModels=[]
                 this.selectedModelsOid=[]
 
-
                 this.nomore=''
                 this.addRelatedModelsDialogVisible=true
 
-
-
-
-
-
             }
-
-
 
         },
 
         searchRelatedModels(){
-
-
 
             this.nomoreflag=false
             if(this.value1==='1'){
@@ -574,6 +564,9 @@ new Vue({
             this.tableData.forEach(function(item,index){
                 relateArr.push(item.oid);
             })
+            if(relateArr.length==0){
+                relateArr.push(null);
+            }
 
             var data = {
                 oid:oid,
