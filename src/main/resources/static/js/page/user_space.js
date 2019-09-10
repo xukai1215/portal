@@ -2364,6 +2364,35 @@ var vue = new Vue({
                 return;
             }
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
+
+                if (this.data_show) {
+                    // this.computerModelsDeploy = [];
+                    // this.resourceLoad = true;
+                    // this.curPage = pageNo;
+                    // this.getPageList();
+                    // this.page = pageNo;
+                    // this.getDataItems();
+
+                    this.resourceLoad = true;
+                    this.searchResult = [];
+                    //not result scroll
+                    //window.scrollTo(0, 0);
+                    this.curPage = pageNo;
+                    this.getPageList();
+                    this.page = pageNo;
+                    this.getDataItems();
+
+                } else {
+                    this.resourceLoad = true;
+                    this.searchResult = [];
+                    //not result scroll
+                    //window.scrollTo(0, 0);
+                    this.curPage = pageNo;
+                    this.getPageList();
+                    this.page = pageNo;
+                    this.getModels();
+                }
+
                 if(this.curIndex!=1)
                     this.pageControlIndex=this.curIndex;
                 else this.pageControlIndex='research';
