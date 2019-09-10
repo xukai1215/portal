@@ -1,20 +1,9 @@
 package njgis.opengms.portal.service;
 
-import njgis.opengms.portal.PortalApplication;
-import njgis.opengms.portal.entity.DataItem;
-import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.util.List;
 
 @Component
 public class staticCreated implements ApplicationRunner {
@@ -89,9 +78,9 @@ public class staticCreated implements ApplicationRunner {
 //
 //
 //        System.out.println("static data item html completed");
-
-
-
+//
+//
+//
 
     }
 }

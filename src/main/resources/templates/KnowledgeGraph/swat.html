@@ -5,16 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" />
   <title>SWAT Knowledge Graph</title>
+  <link rel="stylesheet" href="/static/css/base/bootstrap.min.css" />
   <link rel="stylesheet" href="/static/KnowledgeGraph/css/style.css"/>
+  <link rel="stylesheet" href="/static/KnowledgeGraph/css/amaze/extension/datetimepicker/css/amazeui.datetimepicker.css"/>
   <link rel="stylesheet" href="/static/KnowledgeGraph/css/amaze/css/amazeui.min.css" />
-  <link
-          rel="stylesheet"
-          href="/static/KnowledgeGraph/css/amaze/extension/datetimepicker/css/amazeui.datetimepicker.css"
-  />
-  <link
-          rel="stylesheet"
-          href="/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.css"
-  />
+  <link rel="stylesheet" href="/static/KnowledgeGraph/css/amaze/extension/datatables/amazeui.datatables.css"/>
   <link rel="stylesheet" href="/static/KnowledgeGraph/js/leaflet/leaflet.css" />
   <link rel="stylesheet" href="/static/KnowledgeGraph/css/kgstyle.css" />
   <link href="/static/KnowledgeGraph/css/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
@@ -24,10 +19,10 @@
   <!--add new div-->
   <div class="suspension">
     <div class="suspension-box">
-      <li class="nav-item1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
-      <li class="nav-item2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
-      <li class="nav-item3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
-      <li class="nav-item4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
+      <li type="button" class="btn btn-success" id="b1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
+      <li type="button" class="btn btn-success" id="b2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+      <li type="button" class="btn btn-success" id="b3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+      <li type="button" class="btn btn-success" id="b4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
     </div>
   </div>
   <!--add new div-->
@@ -144,6 +139,7 @@
 <script src="/static/KnowledgeGraph/js/geojsonhint.js"></script>
 <script src="/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js"></script>
 <script src="/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
 <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
 <!-- <script src="js/echarts//extension/modularity.js"></script> -->
 <script src="/static/KnowledgeGraph/js/swat.js"></script>
