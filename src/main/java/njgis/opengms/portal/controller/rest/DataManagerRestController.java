@@ -204,7 +204,7 @@ public class DataManagerRestController {
     JsonResult managerpics(@RequestParam("id") String id
                             ) {
 
-        String url="http://localhost:8081/dataResource/managerPics?id={id}";
+        String url="http://172.21.212.64:8081/dataResource/managerPics?id={id}";
         RestTemplate restTemplate=new RestTemplate();
 
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
@@ -226,7 +226,7 @@ public class DataManagerRestController {
     JsonResult managerdoc(@RequestParam("id") String id
     ) {
 
-        String url="http://localhost:8081/dataResource/managerDoc?id={id}";
+        String url="http://172.21.212.64:8081/dataResource/managerDoc?id={id}";
         RestTemplate restTemplate=new RestTemplate();
 
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
@@ -247,7 +247,7 @@ public class DataManagerRestController {
     JsonResult managerOther(@RequestParam("id") String id
     ) {
 
-        String url="http://localhost:8081/dataResource/managerOhr?id={id}";
+        String url="http://172.21.212.64:8081/dataResource/managerOhr?id={id}";
         RestTemplate restTemplate=new RestTemplate();
 
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
