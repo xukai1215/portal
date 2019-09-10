@@ -261,9 +261,14 @@ public class LogicalModelService {
                 }
 
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
-                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph";
+
+                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph.png";
                     MxGraphUtils mxGraphUtils = new MxGraphUtils();
-                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + name);
+                    int w=jsonObject.getInteger("w");
+                    int h=jsonObject.getInteger("h");
+                    String xml=jsonObject.getString("xml");
+                    mxGraphUtils.exportImage(w, h, xml, path + name);
+                    images=new ArrayList<>();
                     images.add("/logicalModel" + name);
                 }
 

@@ -12,6 +12,7 @@ import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.SvgUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.bson.Document;
 import org.springframework.beans.BeanUtils;
@@ -240,6 +241,17 @@ public class ConceptualModelService {
                         result.put("code", -1);
                     }
                 }
+
+                if(jsonObject.getString("contentType").equals("MxGraph")) {
+
+                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph.png";
+                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+name);
+                    //TODO update时删除所有图片，version时不删除，accept之后再删除
+                    images=new ArrayList<>();
+                    images.add("/conceptualModel" + name);
+
+                }
+
                 conceptualModel.setImage(images);
                 conceptualModel.setName(jsonObject.getString("name"));
                 conceptualModel.setDetail(jsonObject.getString("detail"));

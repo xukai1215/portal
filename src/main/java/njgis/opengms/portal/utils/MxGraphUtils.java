@@ -36,7 +36,12 @@ public class MxGraphUtils {
         parseXmlSax(xml, gc2);
         long t2 = System.currentTimeMillis();
 
-        ImageIO.write(image, "png", new File(path));
+        File file=new File(path);
+        if (!file.exists() && !file.isDirectory()) {
+            file.mkdirs();
+        }
+
+        ImageIO.write(image, "png", file);
         long t3 = System.currentTimeMillis();
 
     }

@@ -431,13 +431,18 @@ var vue = new Vue({
 
             let result=iframeWindow.getXml();
 
-            this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>"
+            if(this.logicalModel.contentType=="MxGraph") {
+                this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>";
+                this.logicalModel.cXml=iframeWindow.getCxml();
+                this.logicalModel.xml=result.xml;
+                this.logicalModel.w=result.w;
+                this.logicalModel.h=result.h;
+            }
+            else{
+                this.logicalModel.svg="";
+                this.logicalModel.cXml="";
+            }
 
-            this.logicalModel.cXml=iframeWindow.getCxml();
-
-            this.logicalModel.xml=result.xml;
-            this.logicalModel.w=result.w;
-            this.logicalModel.h=result.h;
 
             //添加图片
 

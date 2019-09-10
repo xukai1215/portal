@@ -93,8 +93,8 @@
                         </el-tab-pane>
                         <el-tab-pane label="Image" name="Image"  style="position: unset"  th:if="${modelInfo.contentType}=='MxGraph'">
                             <center>
-                                <div th:if="${modelInfo.svg!=null}" th:utext="${modelInfo.svg}"></div>
-                                <div th:if="${modelInfo.svg==null}">
+                                <div th:if="${#lists.size(modelInfo.image)}==0" th:utext="${modelInfo.svg}"></div>
+                                <div th:if="${#lists.size(modelInfo.image)}!=0">
                                     <img th:src="${loadPath}+${modelInfo.image[0]}">
 
                                 </div>
