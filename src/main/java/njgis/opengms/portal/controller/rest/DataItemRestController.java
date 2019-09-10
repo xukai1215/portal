@@ -77,6 +77,13 @@ public class DataItemRestController {
     }
 
 
+
+    @RequestMapping (value = "", method = RequestMethod.POST)
+    JsonResult add(@RequestBody DataItemAddDTO dataItemAddDTO) {
+        return ResultUtils.success(dataItemService.insert(dataItemAddDTO));
+    }
+
+
     /**
      * dataitems页面中的搜索
      * @param dataItemFindDTO

@@ -224,8 +224,10 @@ new Vue({
             }
         },
         clearSearchResult(){
+
             this.searchAddRelatedModels=[]
             this.nomore=''
+
         },
         loadAddMore(e){
 
