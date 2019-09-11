@@ -633,7 +633,7 @@ public class RepositoryService {
             BeanUtils.copyProperties(spatialUpdateDTO, spatialReference);
             //判断是否为新图片
             String uploadImage = spatialUpdateDTO.getUploadImage();
-            if (!uploadImage.contains("/spatial/") && !uploadImage.equals("")) {
+            if (!uploadImage.contains("/spatialReference/") && !uploadImage.equals("")) {
                 //删除旧图片
                 File file = new File(resourcePath + spatialReference.getImage());
                 if (file.exists() && file.isFile())

@@ -12,6 +12,9 @@ import njgis.opengms.portal.service.LogicalModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -44,6 +48,8 @@ public class LogicalModelRestController {
 
     @Autowired
     UserService userService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
     public ModelAndView getModelItems() {
@@ -154,11 +160,15 @@ public class LogicalModelRestController {
     }
 
     @RequestMapping (value="/add",method = RequestMethod.POST)
-    JsonResult add(@RequestParam("logicalModel") String model, HttpServletRequest request){
+    JsonResult add( HttpServletRequest request) throws IOException {
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files=multipartRequest.getFiles("imgFiles");
+        MultipartFile file=multipartRequest.getFile("logicalModel");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+
         JSONObject jsonObject=JSONObject.parseObject(model);
+        logger.info(jsonObject.toJSONString());
 
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
@@ -173,10 +183,12 @@ public class LogicalModelRestController {
     }
 
     @RequestMapping (value="/update",method = RequestMethod.POST)
-    JsonResult update(@RequestParam("logicalModel") String model, HttpServletRequest request){
+    JsonResult update( HttpServletRequest request) throws IOException {
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files=multipartRequest.getFiles("imgFiles");
+        MultipartFile file=multipartRequest.getFile("logicalModel");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
         JSONObject jsonObject=JSONObject.parseObject(model);
 
         HttpSession session=request.getSession();

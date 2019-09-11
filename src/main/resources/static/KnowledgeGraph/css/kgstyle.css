@@ -136,7 +136,8 @@ div.tooltip {
     /*cursor: move;*/
     z-index: 9999;
     background: #a7a4a4;
-    text-align: center
+    text-align: center;
+    display: none;
 }
 
 .container .main .historyPanel {
@@ -198,6 +199,7 @@ div.tooltip {
 .mapPanel {
     width: 100%;
     height: 100%;
+    background-color: white;
 }
 
 .mapPanel #leadletMap {
@@ -246,10 +248,10 @@ div.tooltip {
     border: 1px solid #d4b8b8;/*选择框框色*/
     padding: 5px
 }
-#b1{position: absolute; top: 10px;right: 236px}
-#b2{position: absolute; top: 10px;right: 158px}
-#b3{position: absolute; top: 10px;right: 98px}
-#b4{position: absolute; top: 10px;right: 2px}
+#b1{position: absolute; top: 10px;right: 236px;}
+#b2{position: absolute; top: 10px;right: 158px;}
+#b3{position: absolute; top: 10px;right: 98px;}
+#b4{position: absolute; top: 10px;right: 2px;}
 .suspension-box{
     position: relative;
 }
@@ -263,4 +265,17 @@ div.tooltip {
 }
 .am-g.am-datatable-footer .am-u-sm-7 {
     width: 100% !important;
+}
+
+.dataTables_scrollHeadInner{
+    width: 100% !important;
+}
+th{
+    width: 100% !important;
+}
+table.dataTables_scrollHeadInner {
+    clear: both;
+    /*margin-top: 6px !important;*/
+    margin-bottom: 6px !important;
+    max-width: none !important;
 }

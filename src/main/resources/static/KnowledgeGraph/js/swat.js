@@ -27,6 +27,25 @@ var app = new Vue({
     },
 
     methods: {
+        baseloading(){
+            //获取浏览器页面可见高度和宽度
+            let _PageHeight = document.documentElement.clientHeight,
+                _PageWidth = document.documentElement.clientWidth;
+            //计算loading框距离顶部和左部的距离（loading框的宽度为215px，高度为61px）
+            let _LoadingTop = _PageHeight > 61 ? (_PageHeight - 61) / 2 : 0,
+                _LoadingLeft = _PageWidth > 215 ? (_PageWidth - 215) / 2 : 0;
+            //利用innerhtml把拼接的加载div放到网页中
+            let html='';
+            html+='<div id="loadingDiv" style="position: absolute; z-index:1; cursor1: wait; left: ';
+            html+=_LoadingLeft;
+            html+='px; top:' ;
+            html+=_LoadingTop;
+            html+='px; width: auto; height: 57px; line-height: 57px; ';
+            html+='padding-left: 50px; padding-right: 5px; background: no-repeat scroll 5px 10px;color: #696969; ';
+            html+= 'font-family:\'Microsoft YaHei\';">页面加载中，请等待...</div>';
+            console.log(html);
+            document.getElementById('loading').innerHTML =html ;
+        },
         myFunction()
         {
             $('#infoPanel').css('display', 'none');
@@ -34,22 +53,13 @@ var app = new Vue({
         },
         myFunction1(){$
             console.log("abc");
-
-            /*
-        * zzw.drag 2017-3
-        * js实现div可拖拽
-        * @params bar 可以点击拖动的元素
-        * @params box 拖动的整体元素 必须是position: absolute;
-        * 思想：鼠标的clienX/clientY相对值设置为父元素的left/top的相对值
-        */
-
-            var dragBox = function (drag, wrap) {
+            let dragBox = function (drag, wrap) {
 
                 function getCss(ele, prop) {
                     return parseInt(window.getComputedStyle(ele)[prop]);
                 }
 
-                var initX,
+                let initX,
                     initY,
                     dragable = false,
                     wrapLeft = getCss(wrap, "left"),
@@ -64,7 +74,7 @@ var app = new Vue({
 
                 document.addEventListener("mousemove", function (e) {
                     if (dragable === true) {
-                        var nowX = e.clientX,
+                        let nowX = e.clientX,
                             nowY = e.clientY,
                             disX = nowX - initX,
                             disY = nowY - initY;
@@ -92,39 +102,96 @@ var app = new Vue({
                     maxView: "decade",
                     minView: "decade",
                     startDate: "1970-01-01",
-                    endDate: new Date()
+                    endDate: "2018-12-31"
                 })
                 .on("changeDate.datepicker.amui", function(event) {
+                    $("#d3Canvas").empty();
                     that.queryYear = event.date.getFullYear();
+                    that.baseloading();
                     that.getGraphData(that.queryYear);
-                });
 
+                });
+            that.baseloading();
             this.getGraphData(2018);
         },
         indexChange(index) {
-            // $("#d3Canvas").empty();
             this.active = index;
             switch (index) {
+                case 0:
+                    this.initclass();
+                    this.ChangeClass(index);
+                    break;
                 case 1:
-                    this.createHistoryTrendGraph();
+                    this.createHistoryTrendGraph(index);
+                    this.initclass();
+                    this.ChangeClass(index);
                     break;
                 case 2:
+                    if(this.locationOfModel.length === 0)
+                    {
+                        this.baseloading();//当点击map按钮时触发加载div事件
+                    }//当locationOfModel.length为0触发加载div不为0即上次已经加载过map，map可直接出现，则不需要加载div，所以在此进行判断
                     this.prepareLeafletMap();
+                    this.initclass();//将所有按钮颜色重置
+                    this.ChangeClass(index);//改变点击的按钮颜色
                     break;
                 case 3:
+                    if(this.keywordChart !=1)
+                    {
+                        this.baseloading();//当点击keywords按钮时触发加载div事件
+                    }//先对keywordchart进行是否为空的判断
                     this.createKeyWords();
+                    this.initclass();
+                    this.ChangeClass(index);
                     break;
             }
         },
+        ChangeClass(a)
+        {
+            switch (a) {
+                case 0:
+                    $("#b1").removeClass("btn-info");
+                    $("#b1").addClass("btn-success");
+                    break;
+                case 1:
+                    $("#b2").removeClass("btn-info");
+                    $("#b2").addClass("btn-success");
+                    break;
+                case 2:
+                    $("#b3").removeClass("btn-info");
+                    $("#b3").addClass("btn-success");
+                    break;
+                case 3:
+                    $("#b4").removeClass("btn-info");
+                    $("#b4").addClass("btn-success");
+                    break;
+            }
+
+        },
+        initclass()
+        {
+            $("#b1").removeClass("btn-success");
+            $("#b1").addClass("btn-info");
+            $("#b2").removeClass("btn-success");
+            $("#b2").addClass("btn-info");
+            $("#b3").removeClass("btn-success");
+            $("#b3").addClass("btn-info");
+            $("#b4").removeClass("btn-success");
+            $("#b4").addClass("btn-info");
+        },
         getGraphData(year) {
             let that = this;
+            //that.baseloading();
             $.ajax({
                 url:
                     "http://geomodeling.njnu.edu.cn/Knowledge/GetModelGraphBySearchTextServlet",
                 type: "get",
                 data: { type: "model", text: "swat", sTime: year, eTime: year },
                 success: function(graph) {
-                    that.createGraph(graph);
+                        //载入页面时才执行等待中，其他不执行
+                        let loadingMask = document.getElementById('loadingDiv');
+                        loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
+                        that.createGraph(graph);
                 }
             });
         },
@@ -178,7 +245,7 @@ var app = new Vue({
                 node.radius = that.getJenksBreaksIndex(kclass, node.value);
             });
 
-            $("#d3Canvas").empty();
+            /*$("#d3Canvas").empty();*/
             $(".tooltip").remove();
             $(".closePanel").empty();
             let height = $("#d3Canvas").height();
@@ -327,7 +394,7 @@ var app = new Vue({
                             pageSize: 5,
                             data: that.nodeLinks,
                             sScrollY:350,
-                            scrollY:true
+                            scrollY:true,
                         });
                     });
                         return false;
@@ -464,7 +531,11 @@ var app = new Vue({
                     context.stroke();
                 }
                 context.restore();
+                //let loadingMask = document.getElementById('loadingDiv');
+                //loadingMask.parentNode.removeChild(loadingMask);
+
             }
+
 
             function mouseMove() {
                 let point = d3.mouse(this);
@@ -901,6 +972,8 @@ var app = new Vue({
                         that.$nextTick(function() {
                             that.createLeafletMap();
                         });
+                        //let loadingMask = document.getElementById('loadingDiv');
+                        //loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
                     });
                     }
                 });
@@ -918,6 +991,8 @@ var app = new Vue({
                 type: "get",
                 async: false,
                 success: function(world) {
+                    let loadingMask = document.getElementById('loadingDiv');
+                    loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
                     landGeojson = world;
                 }
             });
@@ -1103,6 +1178,8 @@ var app = new Vue({
                     data: { id: "37ade37b-7728-442b-89f4-1eb34e4a63e9" },
                     type: "get",
                     success: function(data) {
+                        let loadingMask = document.getElementById('loadingDiv');
+                        loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
                         that.createD3StreamGraph(data);
                     }
                 });
@@ -1301,6 +1378,7 @@ var app = new Vue({
                         .duration(100)
                         .style("opacity", 0);
                 });
+            this.keywordChart=1;
         },
         getCountFromData(data, year, legend) {
             for (let obj of data) {
@@ -1312,312 +1390,3 @@ var app = new Vue({
         }
     }
 });
-
-// function getLinksByYear(sYear, eYsar, links) {
-//   let resultLink = [];
-//   for (let link of links) {
-//     let time = link.time * 1;
-//     if (time >= sYear && time <= eYsar) {
-//       resultLink.push(link);
-//     }
-//   }
-//   return resultLink;
-// }
-
-// function getNodesByLink(links, nodes) {
-//   let resultNodes = new Set();
-//   for (let link of links) {
-//     let sourceId = link.source;
-//     let targetId = link.target;
-//     for (let node of nodes) {
-//       if (node.id === sourceId || node.id === targetId) {
-//         resultNodes.add(node);
-//       }
-//     }
-//   }
-//   return Array.from(resultNodes);
-// }
-
-/**
- *
- function createGraph(graph) {
-    let links = getLinksByYear(2018, 2019, graph.links);
-    let nodes = getNodesByLink(links, graph.nodes);
-    let categoriesSet = new Set();
-    let countSet = new Set();
-    for (let obj of nodes) {
-      categoriesSet.add(obj.category);
-      countSet.add(obj.value);
-    }
-    let categories = Array.from(categoriesSet);
-    let countArray = Array.from(countSet);
-    let kclass = getJenksBreaks(countArray, 4);
-    let categoriesArray = [];
-    for (let categorie of categories) {
-      let obj = { name: categorie };
-      categoriesArray.push(obj);
-    }
-
-    nodes.forEach(function(node) {
-      if (nodes.length > 500) {
-        node.x = null;
-        node.y = null;
-      }
-      node.emphasis = {
-        label: {
-          show: false
-        }
-      };
-      node.symbolSize = getJenksBreaksIndex(kclass, node.value);
-      if (node.value > 5000) {
-        node.label = {
-          show: true
-        };
-      }
-    });
-    let myChart = echarts.init(document.getElementById("echarts"));
-    console.log(nodes, links);
-    if (nodes.length > 500) {
-      let option = {
-        title: {
-          text: "SWAT Knowledge Graph",
-          top: "bottom",
-          left: "right"
-        },
-        color: [
-          "#dd6b66",
-          "#759aa0",
-          "#e69d87",
-          "#8dc1a9",
-          "#ea7e53",
-          "#eedd78",
-          "#73a373",
-          "#73b9bc",
-          "#7289ab",
-          "#91ca8c",
-          "#f49f42"
-        ],
-        tooltip: {},
-        legend: [
-          {
-            // selectedMode: 'single',
-            data: categories,
-            textStyle: {
-              color: "#eee"
-            }
-          }
-        ],
-        series: [
-          {
-            name: "SWAT Knowledge Graph",
-            type: "graphGL",
-            data: nodes,
-            edges: links,
-            categories: categoriesArray,
-            roam: true,
-            lineStyle: {
-              color: "rgba(255,255,255,1)",
-              opacity: 0.05
-            },
-            itemStyle: {
-              opacity: 1
-              // borderColor: '#fff',
-              // borderWidth: 1
-            },
-            focusNodeAdjacency: false,
-            focusNodeAdjacencyOn: "click",
-            label: {
-              textStyle: {
-                color: "#fff"
-              }
-            },
-            emphasis: {
-              label: {
-                show: false
-              },
-              lineStyle: {
-                opacity: 0.5,
-                width: 4
-              }
-            },
-            forceAtlas2: {
-              steps: 5,
-              stopThreshold: 20,
-              jitterTolerence: 10,
-              edgeWeight: [0.2, 1],
-              gravity: 5,
-              edgeWeightInfluence: 0
-              // preventOverlap: true
-            }
-          }
-        ]
-      };
-      myChart.setOption(option);
-    } else {
-      let option = {
-        title: {
-          text: "SWAT Knowledge Graph",
-          top: "bottom",
-          left: "right"
-        },
-        color: [
-          "#dd6b66",
-          "#759aa0",
-          "#e69d87",
-          "#8dc1a9",
-          "#ea7e53",
-          "#eedd78",
-          "#73a373",
-          "#73b9bc",
-          "#7289ab",
-          "#91ca8c",
-          "#f49f42"
-        ],
-        tooltip: {},
-        legend: [
-          {
-            // selectedMode: 'single',
-            data: categories,
-            textStyle: {
-              color: "#eee"
-            }
-          }
-        ],
-        animationDuration: 1500,
-        animationEasingUpdate: "quinticInOut",
-        series: [
-          {
-            name: "SWAT Knowledge Graph",
-            type: "graph",
-            layout: "force",
-            data: nodes,
-            links: links,
-            categories: categoriesArray,
-            roam: true,
-            focusNodeAdjacency: true,
-            force: {
-              repulsion: 100
-            },
-            itemStyle: {
-              normal: {
-                borderColor: "#fff",
-                borderWidth: 1,
-                shadowBlur: 10,
-                shadowColor: "rgba(0, 0, 0, 0.3)"
-              }
-            },
-            label: {
-              position: "right",
-              formatter: "{b}"
-            },
-            lineStyle: {
-              color: "source",
-              curveness: 0.3
-            },
-            emphasis: {
-              lineStyle: {
-                width: 10
-              }
-            }
-          }
-        ]
-      };
-      myChart.setOption(option);
-    }
-  }
- */
-/**
- * series 可以添加
- *           modularity: true,
-
- // Specify resolution. Higher resolution will produce less communities
- modularity: {
-            resolution: 5,
-            // If sort the communities
-            sort: false
-          }
- */
-
-/**
- * 普通
- * {
-          name: "SWAT Knowledge Graph",
-          type: "graph",
-          layout: "force",
-          data: graph.nodes,
-          links: graph.links,
-          categories: categoriesArray,
-          roam: true,
-          focusNodeAdjacency: true,
-          itemStyle: {
-            normal: {
-              borderColor: "#fff",
-              borderWidth: 1,
-              shadowBlur: 10,
-              shadowColor: "rgba(0, 0, 0, 0.3)"
-            }
-          },
-          label: {
-            position: "right",
-            formatter: "{b}"
-          },
-          lineStyle: {
-            color: "source",
-            curveness: 0.3
-          },
-          emphasis: {
-            lineStyle: {
-              width: 10
-            }
-          }
-        }
- */
-
-/**
- * webgl
- * {
-          name: "SWAT Knowledge Graph",
-          type: "graphGL",
-          layout: "force",
-          data: nodes,
-          edges: links,
-          categories: categoriesArray,
-          roam: true,
-          lineStyle: {
-            // color: "source",
-            color: '#aaa',
-            curveness: 0.3
-          },
-          itemStyle: {
-            opacity: 1
-            // borderColor: '#fff',
-            // borderWidth: 1
-          },
-          focusNodeAdjacency: true,
-          focusNodeAdjacencyOn: "click",
-          label: {
-            show:false,
-            textStyle: {
-              color: "#fff"
-            }
-          },
-          emphasis: {
-            label: {
-              show: false
-            },
-            lineStyle: {
-              opacity: 0.5,
-              width: 4
-            }
-          },
-          forceAtlas2: {
-            steps: 5,
-            stopThreshold: 20,
-            jitterTolerence: 10,
-            edgeWeight: [0.2, 1],
-            gravity: 5,
-            edgeWeightInfluence: 0
-            // preventOverlap: true
-          }
-        }
- */

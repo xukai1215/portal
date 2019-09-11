@@ -20,16 +20,13 @@
       <div class="suspension">
         <div class="suspension-box">
           <li type="button" class="btn btn-success" id="b1" @click="indexChange(0)"><a style="display:block" href="#" class="a a-service ">index</a></li>
-          <li type="button" class="btn btn-success" id="b2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
-          <li type="button" class="btn btn-success" id="b3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
-          <li type="button" class="btn btn-success" id="b4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
+          <li type="button" class="btn btn-info" id="b2" @click="indexChange(1)"><a style="display:block" href="javascript:;" class="a a-service-phone ">History</a></li>
+          <li type="button" class="btn btn-info" id="b3" @click="indexChange(2)"><a style="display:block" href="javascript:;" class="a a-qrcode">Map</a></li>
+          <li type="button" class="btn btn-info" id="b4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
         </div>
       </div>
+      <div id="loading" ></div>
       <!--add new div-->
-      <div class="row no-gutters">
-        <div class="col-lg-11">
-        </div>
-      </div>
         <div class="main">
         <div class="graphPanel" v-show="active===0">
           <div id="searchPanel">
@@ -128,7 +125,6 @@
       </div>
     </div>
   </body>
-  <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
@@ -141,7 +137,5 @@
   <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
   <script src="/static/js/common/bootstrap.min.js"></script>
-  <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
-  <!-- <script src="js/echarts//extension/modularity.js"></script> -->
   <script th:src="@{/static/KnowledgeGraph/js/swmm.js}"></script>
 </html>

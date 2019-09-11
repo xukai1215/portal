@@ -1698,6 +1698,7 @@ var vue = new Vue({
             })
         },
         getSpatials(){
+            this.pageSize=10;
             var url = "/repository/getSpatialsByUserId";
             var name = "spatials";
 
@@ -1734,6 +1735,7 @@ var vue = new Vue({
             })
         },
         getTemplates(){
+            this.pageSize=10;
             var url = "/repository/getTemplatesByUserId";
             var name = "templates";
 
@@ -1770,6 +1772,7 @@ var vue = new Vue({
             })
         },
         getUnits(){
+            this.pageSize=10;
             var url = "/repository/getUnitsByUserId";
             var name = "units";
 
@@ -2039,12 +2042,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchConcepts();
+                        }
+                        else {
+                            this.getConcepts();
+                        }
                     }
                 })
             }
@@ -2077,12 +2080,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchSpatials();
+                        }
+                        else {
+                            this.getSpatials();
+                        }
                     }
                 })
             }
@@ -2115,12 +2118,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchTemplates();
+                        }
+                        else {
+                            this.getTemplates();
+                        }
                     }
                 })
             }
@@ -2153,12 +2156,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchUnits();
+                        }
+                        else {
+                            this.getUnits();
+                        }
                     }
                 })
             }
@@ -2366,7 +2369,7 @@ var vue = new Vue({
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
                 if(this.curIndex!=1)
                     this.pageControlIndex=this.curIndex;
-                else this.pageControlIndex='research';
+                else this.pageControlIndex='researc';
                 switch (this.pageControlIndex) {
                     // this.computerModelsDeploy = [];
                     // this.resourceLoad = true;
@@ -2626,13 +2629,6 @@ var vue = new Vue({
                         }
                     })
             }
-
-
-
-
-
-
-
 
         },
         next(){
