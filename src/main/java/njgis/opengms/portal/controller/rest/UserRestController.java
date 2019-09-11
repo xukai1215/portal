@@ -156,7 +156,8 @@ public class UserRestController {
             User user=userService.getByOid(id);
 //            Object object = ResultUtils.success(userService.getByOid(id)).getData();
             JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
-
+            String loginId= session.getAttribute("oid").toString();
+            userInfo.put("loginId",loginId);
             modelAndView.setViewName("user_page_overview");
             modelAndView.addObject("userInfo", userInfo);
             System.out.println(userInfo);

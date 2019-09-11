@@ -48,7 +48,7 @@
                         <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
                     </div>
                     <div style="height: 120px">
-                        <button id="editUserInfoButton" class="containerWithBorder noBackColor sizeAdaption colArrange"
+                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editUserInfoButton" class="containerWithBorder noBackColor sizeAdaption colArrange"
                                 data-toggle="modal" data-target="#editUserInfo" @click="editUserInfoClick">
                             <p id="pEditUserInfo" class="noMargin" style="font-size: 16px">Edit User Info</p>
                             <div id="editUserInfoHover" class="hoverLine"></div>
@@ -229,9 +229,10 @@
                         <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none;">
                             <div class="contentContainer" style="flex-direction: column;">
                                 <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" ><h4>Description</h4>
-                                    <button id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
+                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
                                         Add
-                                        <div class="hoverLine"></div></button>
+                                        <div class="hoverLine"></div>
+                                    </button>
                                 </div>
                                 <div id="descriptionInputContainer" class="contentContainer" style="justify-content: space-between; align-items: center;padding: 0 45px 0 30px">
                                     <input id="descriptionInput" >
@@ -239,7 +240,7 @@
                                 </div>
                                 <div id="descriptionShow" v-if="userPersonalInfo.description" class="contentContainer" style="justify-content: space-between;padding: 0 30px;">
                                     <h4 id="descriptionDetail">{{userPersonalInfo.description}}</h4>
-                                    <button id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">
+                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">
                                         Edit
                                         <div class="hoverLine"></div></button>
                                 </div>
@@ -253,7 +254,7 @@
                             <div class="contentContainer" style="min-height: 40px;justify-content: space-between">
                                 <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
                                     <h4>Research Interests & Skills</h4>
-                                    <button id="addResearchInterestButton" class="addEditButton" v-if="userPersonalInfo.researchInterests.length==0" style="margin-bottom: 10px" @click="addResearchInterestClick()"
+                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="userPersonalInfo.researchInterests.length==0" style="margin-bottom: 10px" @click="addResearchInterestClick()"
                                             data-toggle="modal" data-target="researchInterestInfo"  >Add
                                         <div class="hoverLine"></div>
                                     </button>
@@ -266,7 +267,7 @@
                                     <div id="researchInterestDetail" class="contentColContainer researchInterestDetail" >
                                         <h4 v-for="researchInterest in userPersonalInfo.researchInterests" style="margin: 0 0 5px">{{researchInterest}}</h4>
                                     </div>
-                                    <button id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests.length>0" class="addEditButton" @click="editResearchInterestClick()">
+                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests.length>0" class="addEditButton" @click="editResearchInterestClick()">
                                         Edit
                                         <div class="hoverLine"></div></button>
                                 </div>
