@@ -118,13 +118,13 @@ var app = new Vue({
             this.active = index;
             switch (index) {
                 case 0:
-                    this.initcolor();
-                    this.ChangeColor(index);
+                    this.initclass();
+                    this.ChangeClass(index);
                     break;
                 case 1:
                     this.createHistoryTrendGraph(index);
-                    this.initcolor();
-                    this.ChangeColor(index);
+                    this.initclass();
+                    this.ChangeClass(index);
                     break;
                 case 2:
                     if(this.locationOfModel.length === 0)
@@ -132,8 +132,8 @@ var app = new Vue({
                         this.baseloading();//当点击map按钮时触发加载div事件
                     }//当locationOfModel.length为0触发加载div不为0即上次已经加载过map，map可直接出现，则不需要加载div，所以在此进行判断
                     this.prepareLeafletMap();
-                    this.initcolor();//将所有按钮颜色重置
-                    this.ChangeColor(index);//改变点击的按钮颜色
+                    this.initclass();//将所有按钮颜色重置
+                    this.ChangeClass(index);//改变点击的按钮颜色
                     break;
                 case 3:
                     if(this.keywordChart !=1)
@@ -141,35 +141,43 @@ var app = new Vue({
                         this.baseloading();//当点击keywords按钮时触发加载div事件
                     }//先对keywordchart进行是否为空的判断
                     this.createKeyWords();
-                    this.initcolor();
-                    this.ChangeColor(index);
+                    this.initclass();
+                    this.ChangeClass(index);
                     break;
             }
         },
-        ChangeColor(a)
+        ChangeClass(a)
         {
             switch (a) {
                 case 0:
-                    $('#b1').css('background-color','#25B891');
+                    $("#b1").removeClass("btn-info");
+                    $("#b1").addClass("btn-success");
                     break;
                 case 1:
-                    $('#b2').css('background-color','#25B891');
+                    $("#b2").removeClass("btn-info");
+                    $("#b2").addClass("btn-success");
                     break;
                 case 2:
-                    $('#b3').css('background-color','#25B891');
+                    $("#b3").removeClass("btn-info");
+                    $("#b3").addClass("btn-success");
                     break;
                 case 3:
-                    $('#b4').css('background-color','#25B891');
+                    $("#b4").removeClass("btn-info");
+                    $("#b4").addClass("btn-success");
                     break;
             }
 
         },
-        initcolor()
+        initclass()
         {
-            $('#b1').css('background-color','#5cb85c');
-            $('#b2').css('background-color','#5cb85c');
-            $('#b3').css('background-color','#5cb85c');
-            $('#b4').css('background-color','#5cb85c');
+            $("#b1").removeClass("btn-success");
+            $("#b1").addClass("btn-info");
+            $("#b2").removeClass("btn-success");
+            $("#b2").addClass("btn-info");
+            $("#b3").removeClass("btn-success");
+            $("#b3").addClass("btn-info");
+            $("#b4").removeClass("btn-success");
+            $("#b4").addClass("btn-info");
         },
         getGraphData(year) {
             let that = this;
@@ -386,7 +394,7 @@ var app = new Vue({
                             pageSize: 5,
                             data: that.nodeLinks,
                             sScrollY:350,
-                            scrollY:true
+                            scrollY:true,
                         });
                     });
                         return false;
