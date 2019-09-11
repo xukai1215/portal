@@ -248,7 +248,7 @@ div.tooltip {
     border: 1px solid #d4b8b8;/*选择框框色*/
     padding: 5px
 }
-#b1{position: absolute; top: 10px;right: 236px; background-color: #25B891}
+#b1{position: absolute; top: 10px;right: 236px; background-color: #b86233}
 #b2{position: absolute; top: 10px;right: 158px;background-color: #5cb85c}
 #b3{position: absolute; top: 10px;right: 98px;background-color: #5cb85c}
 #b4{position: absolute; top: 10px;right: 2px;background-color: #5cb85c}
@@ -273,10 +273,9 @@ div.tooltip {
 th{
     width: 100% !important;
 }
-
-
-table{
-
-    cellspacing:0;
-    width:100%
+table.dataTables_scrollHeadInner {
+    clear: both;
+    /*margin-top: 6px !important;*/
+    margin-bottom: 6px !important;
+    max-width: none !important;
 }

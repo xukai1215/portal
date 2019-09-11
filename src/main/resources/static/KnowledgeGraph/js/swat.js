@@ -150,16 +150,16 @@ var app = new Vue({
         {
             switch (a) {
                 case 0:
-                    $('#b1').css('background-color','#25B891');
+                    $('#b1').css('background-color','#b86233');
                     break;
                 case 1:
-                    $('#b2').css('background-color','#25B891');
+                    $('#b2').css('background-color','#b86233');
                     break;
                 case 2:
-                    $('#b3').css('background-color','#25B891');
+                    $('#b3').css('background-color','#b86233');
                     break;
                 case 3:
-                    $('#b4').css('background-color','#25B891');
+                    $('#b4').css('background-color','#b86233');
                     break;
             }
 
@@ -386,7 +386,7 @@ var app = new Vue({
                             pageSize: 5,
                             data: that.nodeLinks,
                             sScrollY:350,
-                            scrollY:true
+                            scrollY:true,
                         });
                     });
                         return false;
