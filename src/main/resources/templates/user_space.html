@@ -3099,13 +3099,13 @@
                                             <span style="margin-right:20px">
                                                 <b>Create Time:</b>{{formatDate(task.runTime)}}
                                             </span>
-                                        <button class="btn btn-primary downloadAll"
-                                                @click="downloadAll(task.id,task.name,task.runTime)"
-                                                v-if="task.status==2">
-                                            Download All Files
-                                        </button>
-                                        <button class="btn btn-danger delete" click="deleteModel(task.id)">Delete
-                                        </button>
+                                        <!--<button class="btn btn-primary downloadAll"-->
+                                                <!--@click="downloadAll(task.id,task.name,task.runTime)"-->
+                                                <!--v-if="task.status==2">-->
+                                            <!--Download All Files-->
+                                        <!--</button>-->
+                                        <!--<button class="btn btn-danger delete" click="deleteModel(task.id)">Delete-->
+                                        <!--</button>-->
                                     </div>
                                 </div>
                                 <div class="panel-body">
@@ -3115,8 +3115,8 @@
                                     <h5 v-if="task.status==-1">
                                         Calculation Failure
                                     </h5>
-                                    <ul v-if="task.status==1">
-                                        <li class="flagcontent clearfix" v-for="data in task.data">
+                                    <ul v-if="task.status==2">
+                                        <li class="flagcontent clearfix" v-for="output in task.outputs">
                                                 <span style="margin-top: 5px; display: inline-block;">
                                                     {{output.event}}
                                                 </span>
@@ -3179,8 +3179,8 @@
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 
 
-<script src="/static/js/common/echarts.min.js"></script>
-<script src="/static/js/common/world.js"></script>
+<!--<script src="/static/js/common/echarts.min.js"></script>-->
+<!--<script src="/static/js/common/world.js"></script>-->
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 

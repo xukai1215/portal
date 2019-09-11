@@ -92,6 +92,8 @@ new Vue({
     },
     mounted(){
 
+        $("#mxgraph_popup").css("left","140px");
+
         let parentWidth=$("#pane-Image").width();
         let children=$("#pane-Image img");
         for(i=0;i<children.length;i++){

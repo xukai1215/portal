@@ -43,6 +43,12 @@ public class PortalApplicationTests {
     ModelItemDao modelItemDao;
 
     @Autowired
+    ConceptualModelDao conceptualModelDao;
+
+    @Autowired
+    LogicalModelDao logicalModelDao;
+
+    @Autowired
     ComputableModelDao computableModelDao;
 
     @Autowired
@@ -59,6 +65,27 @@ public class PortalApplicationTests {
 
     @Value("${resourcePath}")
     private String resourcePath;
+
+    
+
+    @Test
+    public void addImage(){
+        List<ConceptualModel> conceptualModelList=conceptualModelDao.findAll();
+        for(ConceptualModel conceptualModel:conceptualModelList){
+            if(conceptualModel.getImage()==null){
+                conceptualModel.setImage(new ArrayList<>());
+                conceptualModelDao.save(conceptualModel);
+            }
+        }        
+        
+        List<LogicalModel> logicalModelList=logicalModelDao.findAll();
+        for(LogicalModel logicalModel:logicalModelList){
+            if(logicalModel.getImage()==null){
+                logicalModel.setImage(new ArrayList<>());
+                logicalModelDao.save(logicalModel);
+            }
+        }
+    }
 
     @Test
     public void visitWebSite(){

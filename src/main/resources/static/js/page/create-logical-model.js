@@ -431,13 +431,18 @@ var vue = new Vue({
 
             let result=iframeWindow.getXml();
 
-            this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>"
+            if(this.logicalModel.contentType=="MxGraph") {
+                this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>";
+                this.logicalModel.cXml=iframeWindow.getCxml();
+                this.logicalModel.xml=result.xml;
+                this.logicalModel.w=result.w;
+                this.logicalModel.h=result.h;
+            }
+            else{
+                this.logicalModel.svg="";
+                this.logicalModel.cXml="";
+            }
 
-            this.logicalModel.cXml=iframeWindow.getCxml();
-
-            this.logicalModel.xml=result.xml;
-            this.logicalModel.w=result.w;
-            this.logicalModel.h=result.h;
 
             //添加图片
 
@@ -448,7 +453,10 @@ var vue = new Vue({
             }
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                this.formData.append("logicalModel", JSON.stringify(this.logicalModel))
+                let file = new File([JSON.stringify(this.logicalModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                this.formData.append("logicalModel", file)
                 $.ajax({
                     url: '/logicalModel/add',
                     type: 'post',
@@ -478,7 +486,12 @@ var vue = new Vue({
             else{
                 this.logicalModel.oid=oid;
                 this.logicalModel.resources=this.resources;
-                this.formData.append("logicalModel", JSON.stringify(this.logicalModel))
+
+                let file = new File([JSON.stringify(this.logicalModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+
+                this.formData.append("logicalModel", file)
                 $.ajax({
                     url: '/logicalModel/update',
                     type: 'post',
