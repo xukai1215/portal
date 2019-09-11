@@ -1698,6 +1698,7 @@ var vue = new Vue({
             })
         },
         getSpatials(){
+            this.pageSize=10;
             var url = "/repository/getSpatialsByUserId";
             var name = "spatials";
 
@@ -1734,6 +1735,7 @@ var vue = new Vue({
             })
         },
         getTemplates(){
+            this.pageSize=10;
             var url = "/repository/getTemplatesByUserId";
             var name = "templates";
 
@@ -1770,6 +1772,7 @@ var vue = new Vue({
             })
         },
         getUnits(){
+            this.pageSize=10;
             var url = "/repository/getUnitsByUserId";
             var name = "units";
 
@@ -2039,12 +2042,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchConcepts();
+                        }
+                        else {
+                            this.getConcepts();
+                        }
                     }
                 })
             }
@@ -2077,12 +2080,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchSpatials();
+                        }
+                        else {
+                            this.getSpatials();
+                        }
                     }
                 })
             }
@@ -2115,12 +2118,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchTemplates();
+                        }
+                        else {
+                            this.getTemplates();
+                        }
                     }
                 })
             }
@@ -2153,12 +2156,12 @@ var vue = new Vue({
                                 alert("delete failed!")
                             }
                         }
-                        // if (this.searchText.trim() != "") {
-                        //     this.searchModels();
-                        // }
-                        // else {
-                        //     this.getModels();
-                        // }
+                        if (this.searchText.trim() != "") {
+                            this.searchUnits();
+                        }
+                        else {
+                            this.getUnits();
+                        }
                     }
                 })
             }
@@ -2364,38 +2367,9 @@ var vue = new Vue({
                 return;
             }
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
-
-                if (this.data_show) {
-                    // this.computerModelsDeploy = [];
-                    // this.resourceLoad = true;
-                    // this.curPage = pageNo;
-                    // this.getPageList();
-                    // this.page = pageNo;
-                    // this.getDataItems();
-
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-                    this.getDataItems();
-
-                } else {
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-                    this.getModels();
-                }
-
                 if(this.curIndex!=1)
                     this.pageControlIndex=this.curIndex;
-                else this.pageControlIndex='research';
+                else this.pageControlIndex='researc';
                 switch (this.pageControlIndex) {
                     // this.computerModelsDeploy = [];
                     // this.resourceLoad = true;
@@ -2417,16 +2391,17 @@ var vue = new Vue({
                         this.getModels();
                         break;
                     //
-                    // case 3:
-                    //     this.resourceLoad = true;
-                    //     this.searchResult = [];
-                    //     //not result scroll
-                    //     //window.scrollTo(0, 0);
-                    //     this.curPage = pageNo;
-                    //     this.getPageList();
-                    //     this.page = pageNo;
-                    //     this.getDataItems();
-                    //     break;
+                    case '3-1':
+                    case '3-2':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getDataItems();
+                        break;
 
                     case '4-1':
                         this.resourceLoad = true;
@@ -2655,13 +2630,6 @@ var vue = new Vue({
                     })
             }
 
-
-
-
-
-
-
-
         },
         next(){
 
@@ -2671,6 +2639,7 @@ var vue = new Vue({
         },
 
         getDataItems(){
+            this.pageSize=10;
             var da={
                 userOid:this.userId,
                 page:this.page,
