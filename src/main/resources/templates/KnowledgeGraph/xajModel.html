@@ -25,12 +25,7 @@
           <li type="button" class="btn btn-success" id="b4" @click="indexChange(3)"><a style="display:block" href="#" class="a a-cart">Keywords</a></li>
         </div>
       </div>
-      <!--add new div-->
-      <div class="row no-gutters">
-        <div class="col-lg-11">
-
-        </div>
-      </div>
+      <div id="loading" ></div>
       <div class="main">
         <div class="graphPanel" v-show="active===0">
           <div id="searchPanel">
@@ -129,7 +124,6 @@
       </div>
     </div>
   </body>
-  <script th:src="@{/static/KnowledgeGraph/js/jquery-1.7.2.min.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/vue.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/jquery.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/js/d3.js}"></script>
@@ -142,7 +136,5 @@
   <script th:src="@{/static/KnowledgeGraph/assets/bootstrap/js/bootstrap.js}"></script>
   <script th:src="@{/static/KnowledgeGraph/assets/bootstrap-table/bootstrap-table.js}"></script>
   <script src="/static/js/common/bootstrap.min.js"></script>
-  <!-- <script src="js/echarts/extension/echarts-gl.js"></script> -->
-  <!-- <script src="js/echarts//extension/modularity.js"></script> -->
   <script th:src="@{/static/KnowledgeGraph/js/xajModel.js}"></script>
 </html>
