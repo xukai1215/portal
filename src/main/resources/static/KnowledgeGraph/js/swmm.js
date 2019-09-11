@@ -26,6 +26,25 @@ var app = new Vue({
     this.loadPage();
   },
   methods: {
+      baseloading(){
+          //获取浏览器页面可见高度和宽度
+          let _PageHeight = document.documentElement.clientHeight,
+              _PageWidth = document.documentElement.clientWidth;
+          //计算loading框距离顶部和左部的距离（loading框的宽度为215px，高度为61px）
+          let _LoadingTop = _PageHeight > 61 ? (_PageHeight - 61) / 2 : 0,
+              _LoadingLeft = _PageWidth > 215 ? (_PageWidth - 215) / 2 : 0;
+          //利用innerhtml把拼接的加载div放到网页中
+          let html='';
+          html+='<div id="loadingDiv" style="position: absolute; z-index:1; cursor1: wait; left: ';
+          html+=_LoadingLeft;
+          html+='px; top:' ;
+          html+=_LoadingTop;
+          html+='px; width: auto; height: 57px; line-height: 57px; ';
+          html+='padding-left: 50px; padding-right: 5px; background: no-repeat scroll 5px 10px;color: #696969; ';
+          html+= 'font-family:\'Microsoft YaHei\';">页面加载中，请等待...</div>';
+          console.log(html);
+          document.getElementById('loading').innerHTML =html ;
+      },
       myFunction()
       {
           $('#infoPanel').css('display', 'none');
@@ -33,22 +52,13 @@ var app = new Vue({
       },
       myFunction1(){$
           console.log("abc");
-
-          /*
-      * zzw.drag 2017-3
-      * js实现div可拖拽
-      * @params bar 可以点击拖动的元素
-      * @params box 拖动的整体元素 必须是position: absolute;
-      * 思想：鼠标的clienX/clientY相对值设置为父元素的left/top的相对值
-      */
-
-          var dragBox = function (drag, wrap) {
+          let dragBox = function (drag, wrap) {
 
               function getCss(ele, prop) {
                   return parseInt(window.getComputedStyle(ele)[prop]);
               }
 
-              var initX,
+              let initX,
                   initY,
                   dragable = false,
                   wrapLeft = getCss(wrap, "left"),
@@ -63,7 +73,7 @@ var app = new Vue({
 
               document.addEventListener("mousemove", function (e) {
                   if (dragable === true) {
-                      var nowX = e.clientX,
+                      let nowX = e.clientX,
                           nowY = e.clientY,
                           disX = nowX - initX,
                           disY = nowY - initY;
@@ -81,40 +91,85 @@ var app = new Vue({
           };
           dragBox(document.querySelector("#bar"), document.querySelector("#infoPanel"));
       },
-    loadPage() {
-      let that = this;
-      $("#datetimepicker")
-        .datetimepicker({
-          format: "yyyy ",
-          autoclose: true,
-          startView: "decade",
-          maxView: "decade",
-          minView: "decade",
-          startDate: "1970-01-01",
-          endDate: new Date()
-        })
-        .on("changeDate.datepicker.amui", function(event) {
-          that.queryYear = event.date.getFullYear();
-          that.getGraphData(that.queryYear);
-        });
+      loadPage() {
+          let that = this;
+          $("#datetimepicker")
+              .datetimepicker({
+                  format: "yyyy ",
+                  autoclose: true,
+                  startView: "decade",
+                  maxView: "decade",
+                  minView: "decade",
+                  startDate: "1970-01-01",
+                  endDate: "2018-12-31"
+              })
+              .on("changeDate.datepicker.amui", function(event) {
+                  $("#d3Canvas").empty();
+                  that.queryYear = event.date.getFullYear();
+                  that.baseloading();
+                  that.getGraphData(that.queryYear);
 
-      this.getGraphData(2018);
-    },
-    indexChange(index) {
-      // $("#d3Canvas").empty();
-      this.active = index;
-      switch (index) {
-        case 1:
-          this.createHistoryTrendGraph();
-          break;
-        case 2:
-          this.prepareLeafletMap();
-          break;
-        case 3:
-          this.createKeyWords();
-          break;
-      }
-    },
+              });
+          that.baseloading();
+          this.getGraphData(2018);
+      },
+      indexChange(index) {
+          this.active = index;
+          switch (index) {
+              case 0:
+                  this.initcolor();
+                  this.ChangeColor(index);
+                  break;
+              case 1:
+                  this.createHistoryTrendGraph(index);
+                  this.initcolor();
+                  this.ChangeColor(index);
+                  break;
+              case 2:
+                  if(this.locationOfModel.length === 0)
+                  {
+                      this.baseloading();//当点击map按钮时触发加载div事件
+                  }//当locationOfModel.length为0触发加载div不为0即上次已经加载过map，map可直接出现，则不需要加载div，所以在此进行判断
+                  this.prepareLeafletMap();
+                  this.initcolor();//将所有按钮颜色重置
+                  this.ChangeColor(index);//改变点击的按钮颜色
+                  break;
+              case 3:
+                  if(this.keywordChart !=1)
+                  {
+                      this.baseloading();//当点击keywords按钮时触发加载div事件
+                  }//先对keywordchart进行是否为空的判断
+                  this.createKeyWords();
+                  this.initcolor();
+                  this.ChangeColor(index);
+                  break;
+          }
+      },
+      ChangeColor(a)
+      {
+          switch (a) {
+              case 0:
+                  $('#b1').css('background-color','#25B891');
+                  break;
+              case 1:
+                  $('#b2').css('background-color','#25B891');
+                  break;
+              case 2:
+                  $('#b3').css('background-color','#25B891');
+                  break;
+              case 3:
+                  $('#b4').css('background-color','#25B891');
+                  break;
+          }
+
+      },
+      initcolor()
+      {
+          $('#b1').css('background-color','#5cb85c');
+          $('#b2').css('background-color','#5cb85c');
+          $('#b3').css('background-color','#5cb85c');
+          $('#b4').css('background-color','#5cb85c');
+      },
     getGraphData(year) {
       let that = this;
       $.ajax({
@@ -123,7 +178,9 @@ var app = new Vue({
         type: "get",
         data: { type: "model", text: "swmm", sTime: year, eTime: year },
         success: function(graph) {
-          that.createGraph(graph);
+            let loadingMask = document.getElementById('loadingDiv');
+            loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
+            that.createGraph(graph);
         }
       });
     },
@@ -917,6 +974,8 @@ var app = new Vue({
         type: "get",
         async: false,
         success: function(world) {
+            let loadingMask = document.getElementById('loadingDiv');
+            loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
           landGeojson = world;
         }
       });
@@ -1102,6 +1161,8 @@ var app = new Vue({
             data: { id: "064a849c-daec-47a7-97b9-ddd323a859b0" },
             type: "get",
             success: function(data) {
+                let loadingMask = document.getElementById('loadingDiv');
+                loadingMask.parentNode.removeChild(loadingMask);//当数据获取之后，清除掉数据加载div
               that.createD3StreamGraph(data);
             }
           });
@@ -1303,6 +1364,7 @@ var app = new Vue({
             .duration(100)
             .style("opacity", 0);
         });
+        this.keywordChart=1;
     },
     getCountFromData(data, year, legend) {
       for (let obj of data) {
