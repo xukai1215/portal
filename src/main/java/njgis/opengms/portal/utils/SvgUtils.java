@@ -11,7 +11,7 @@ import java.io.*;
 public class SvgUtils {
 
 
-    public static void convertSvg2Png(String svgCode, String destPath) throws IOException,TranscoderException
+    public static void convertSvg2Png(String svgCode, String destPath,String name) throws IOException,TranscoderException
     {
 
         File png=new File(destPath);
@@ -20,7 +20,7 @@ public class SvgUtils {
         }
         byte[] bytes = svgCode.getBytes("utf-8");
 
-        OutputStream out = new FileOutputStream(png);
+        OutputStream out = new FileOutputStream(new File(destPath+name));
         out = new BufferedOutputStream(out);
 
         Transcoder transcoder = new PNGTranscoder();

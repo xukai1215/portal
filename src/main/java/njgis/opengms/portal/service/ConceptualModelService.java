@@ -154,6 +154,15 @@ public class ConceptualModelService {
             result.put("code", -1);
         } else {
             try {
+                if(jsonObject.getString("contentType").equals("MxGraph")) {
+
+                    String name =new Date().getTime() + "_MxGraph.png";
+                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+ "/" + uid + "/" ,name);
+                    //TODO update时删除所有图片，version时不删除，accept之后再删除
+                    images=new ArrayList<>();
+                    images.add("/conceptualModel"+ "/" + uid + "/" + name);
+
+                }
                 conceptualModel.setImage(images);
                 conceptualModel.setOid(UUID.randomUUID().toString());
                 conceptualModel.setName(jsonObject.getString("name"));
@@ -244,11 +253,11 @@ public class ConceptualModelService {
 
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
 
-                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph.png";
-                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+name);
+                    String name =new Date().getTime() + "_MxGraph.png";
+                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+ "/" + uid + "/" ,name);
                     //TODO update时删除所有图片，version时不删除，accept之后再删除
                     images=new ArrayList<>();
-                    images.add("/conceptualModel" + name);
+                    images.add("/conceptualModel" + "/" + uid + "/"+ name);
 
                 }
 

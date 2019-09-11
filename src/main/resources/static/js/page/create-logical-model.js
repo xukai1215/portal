@@ -453,7 +453,10 @@ var vue = new Vue({
             }
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                this.formData.append("logicalModel", JSON.stringify(this.logicalModel))
+                let file = new File([JSON.stringify(this.logicalModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                this.formData.append("logicalModel", file)
                 $.ajax({
                     url: '/logicalModel/add',
                     type: 'post',
@@ -483,7 +486,12 @@ var vue = new Vue({
             else{
                 this.logicalModel.oid=oid;
                 this.logicalModel.resources=this.resources;
-                this.formData.append("logicalModel", JSON.stringify(this.logicalModel))
+
+                let file = new File([JSON.stringify(this.logicalModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+
+                this.formData.append("logicalModel", file)
                 $.ajax({
                     url: '/logicalModel/update',
                     type: 'post',

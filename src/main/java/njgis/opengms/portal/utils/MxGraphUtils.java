@@ -4,6 +4,8 @@ import com.mxgraph.canvas.mxGraphicsCanvas2D;
 import com.mxgraph.canvas.mxICanvas2D;
 import com.mxgraph.reader.mxSaxOutputHandler;
 import com.mxgraph.util.mxUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -16,13 +18,15 @@ import java.io.StringReader;
 
 public class MxGraphUtils {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 导出图片文件
      * @param w 图片宽
      * @param h 图片高
      * @param xml graph对应的xml代码
      */
-    public void exportImage(int w, int h,String xml,String path) throws Exception {
+    public void exportImage(int w, int h,String xml,String path,String name) throws Exception {
         long t0 = System.currentTimeMillis();
         BufferedImage image = mxUtils.createBufferedImage(w, h, Color.WHITE);
 
@@ -36,13 +40,19 @@ public class MxGraphUtils {
         parseXmlSax(xml, gc2);
         long t2 = System.currentTimeMillis();
 
+        logger.info("before mkdirs");
+
         File file=new File(path);
         if (!file.exists() && !file.isDirectory()) {
             file.mkdirs();
         }
 
-        ImageIO.write(image, "png", file);
+        logger.info("after mkdirs");
+
+        ImageIO.write(image, "png", new File(path+name));
         long t3 = System.currentTimeMillis();
+
+        logger.info("saved");
 
     }
     /**

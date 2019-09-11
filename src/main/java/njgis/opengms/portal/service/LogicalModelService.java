@@ -16,6 +16,8 @@ import njgis.opengms.portal.utils.MxGraphUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.deCode;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +65,9 @@ public class LogicalModelService {
 
     @Autowired
     UserService userService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -157,18 +162,19 @@ public class LogicalModelService {
         String path = resourcePath + "/logicalModel";
         List<String> images =new ArrayList<>();
         saveFiles(files, path, uid, "/logicalModel",images);
+        logger.info("savefiles");
         if (images == null) {
             result.put("code", -1);
         } else {
             try {
 
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
-                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph";
+                    String name = new Date().getTime() + "_MxGraph.png";
                     MxGraphUtils mxGraphUtils = new MxGraphUtils();
-                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + name);
-                    images.add("/logicalModel" + name);
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + "/" + uid + "/", name);
+                    images.add("/logicalModel" + "/" + uid + "/"+ name);
                 }
-
+                logger.info("exportImage");
 
                 logicalModel.setImage(images);
                 logicalModel.setOid(UUID.randomUUID().toString());
@@ -262,14 +268,14 @@ public class LogicalModelService {
 
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
 
-                    String name = "/" + uid + "/" + new Date().getTime() + "_MxGraph.png";
+                    String name = new Date().getTime() + "_MxGraph.png";
                     MxGraphUtils mxGraphUtils = new MxGraphUtils();
                     int w=jsonObject.getInteger("w");
                     int h=jsonObject.getInteger("h");
                     String xml=jsonObject.getString("xml");
-                    mxGraphUtils.exportImage(w, h, xml, path + name);
+                    mxGraphUtils.exportImage(w, h, xml, path + "/" + uid + "/",name);
                     images=new ArrayList<>();
-                    images.add("/logicalModel" + name);
+                    images.add("/logicalModel"+ "/" + uid + "/" + name);
                 }
 
                 logicalModel.setImage(images);
