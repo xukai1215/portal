@@ -1851,7 +1851,7 @@ var vue = new Vue({
                             if(this.page==1){
                                 this.pageInit();
                             }
-                        },150)
+                        },100)
 
 
 
@@ -2364,35 +2364,6 @@ var vue = new Vue({
                 return;
             }
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
-
-                if (this.data_show) {
-                    // this.computerModelsDeploy = [];
-                    // this.resourceLoad = true;
-                    // this.curPage = pageNo;
-                    // this.getPageList();
-                    // this.page = pageNo;
-                    // this.getDataItems();
-
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-                    this.getDataItems();
-
-                } else {
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-                    this.getModels();
-                }
-
                 if(this.curIndex!=1)
                     this.pageControlIndex=this.curIndex;
                 else this.pageControlIndex='research';
@@ -2417,16 +2388,17 @@ var vue = new Vue({
                         this.getModels();
                         break;
                     //
-                    // case 3:
-                    //     this.resourceLoad = true;
-                    //     this.searchResult = [];
-                    //     //not result scroll
-                    //     //window.scrollTo(0, 0);
-                    //     this.curPage = pageNo;
-                    //     this.getPageList();
-                    //     this.page = pageNo;
-                    //     this.getDataItems();
-                    //     break;
+                    case '3-1':
+                    case '3-2':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        this.getDataItems();
+                        break;
 
                     case '4-1':
                         this.resourceLoad = true;
@@ -2671,12 +2643,12 @@ var vue = new Vue({
         },
 
         getDataItems(){
+            this.pageSize=10;
             var da={
                 userOid:this.userId,
                 page:this.page,
                 pagesize:this.pageSize,
                 asc:this.sortAsc
-
             }
 
             this.loading=true
