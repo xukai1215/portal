@@ -333,6 +333,14 @@ public class UserService {
         return result;
     }
 
+    public JSONObject getUserInfoByOid(String oid){
+        User user = userDao.findFirstByOid(oid);
+        String userName=user.getUserName();
+        JSONObject result=new JSONObject();
+        result.put("userInfo",getUser(userName));
+        return result;
+    }
+
     public JSONObject getUser(String userName){
         User user = userDao.findFirstByUserName(userName);
         JSONObject userInfo=new JSONObject();
@@ -343,6 +351,9 @@ public class UserService {
         userInfo.put("phone",user.getPhone());
         userInfo.put("wiki",user.getWiki());
         userInfo.put("description",user.getDescription());
+        userInfo.put("researchInterests",user.getResearchInterests());
+        userInfo.put("lab",user.getLab());
+        userInfo.put("affiliation",user.getAffiliation());
         userInfo.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
 
         return userInfo;
@@ -355,6 +366,41 @@ public class UserService {
         userJson.put("oid", user.getOid());
         userJson.put("image", user.getImage().equals("")?"":htmlLoadPath+user.getImage());
         return userJson;
+    }
+
+    public String updateDescription(String description,String userName){
+        try{
+            User user=userDao.findFirstByUserName(userName);
+            if(user!=null){
+                user.setDescription(description);
+                userDao.save(user);
+                return "success";
+            }
+            else
+                return "no user";
+
+        }catch (Exception e){
+            return "fail";
+        }
+
+    }
+
+    public String updateResearchInterest(List<String> researchInterests,String userName){
+        try{
+            User user=userDao.findFirstByUserName(userName);
+            if(user!=null){
+                user.setResearchInterests(researchInterests);
+//                System.out.println(user.getResearchInterests());
+                userDao.save(user);
+                return "success";
+            }
+            else
+                return "no user";
+
+        }catch (Exception e){
+            return "fail";
+        }
+
     }
 
 

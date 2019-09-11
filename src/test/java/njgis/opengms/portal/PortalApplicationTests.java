@@ -6,6 +6,7 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.Affiliation;
 import njgis.opengms.portal.entity.support.AwardandHonor;
 import njgis.opengms.portal.entity.support.EducationExperience;
+import njgis.opengms.portal.entity.support.UserLab;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
@@ -123,6 +124,10 @@ public class PortalApplicationTests {
     public void addUserInfo(){
         List<User> userList=userDao.findAll();
         for (User user:userList){
+            if(user.getDescription()==null){
+                user.setDescription("");
+                userDao.save(user);
+            }
             if(user.getEmail()==null){
                 user.setEmail("");
                 userDao.save(user);
@@ -163,8 +168,11 @@ public class PortalApplicationTests {
                 user.setResearchInterests(researchInteresrsList);
                 userDao.save(user);
             }
+
             if(user.getLab()==null){
-                user.setLab("");
+
+                UserLab userLab=new UserLab();
+                user.setLab(userLab);
                 userDao.save(user);
                 Utils.count();
             }

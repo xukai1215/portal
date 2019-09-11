@@ -33,8 +33,8 @@ public class ConferenceService {
         int pageSize = conferenceFindDTO.getPageSize();
         Boolean asc = conferenceFindDTO.getAsc();
 
-//        根据访问数量排序
-        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, "creatDate");
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         User user=userDao.findFirstByOid(oid);
         Page<ConferenceResultDTO> conferenceResultDTOPage=conferenceDao.findByContributor(user.getUserName(),pageable);

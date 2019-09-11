@@ -45,8 +45,8 @@ public class User {
     List<Conference> conferences;
     List<EducationExperience> educationExperiences;
 
-//    List<Lab> labs;
-    String lab;
+    UserLab lab;
+//    String lab;
     List<Project> projects;
 
     int modelItems;

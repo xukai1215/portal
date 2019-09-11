@@ -39,6 +39,12 @@
     height: 10px;
 }
 
+.main{
+    font-family: sans-serif;
+    font-size:14px;
+    /*font-weight: 600;*/
+}
+
 .main li{
     float: left;
     width: 8%;
@@ -57,11 +63,13 @@
     text-decoration: none;
     overflow: hidden;
     transition: .4s;
+
     /*background-color: #080a0e;*/
 }
 
 .mainmenu{
     display: block;
+
 }
 
 .indentmenu{
@@ -119,6 +127,8 @@
     text-decoration: none;
     overflow: hidden;
     transition:.5s;
+    font-family: sans-serif;
+    font-size:14px;
 }
 
 .subLog{
@@ -380,7 +390,7 @@
         width: 62px !important;
     }
     #drop1{
-        width: 110px !important;
+        width: 113px !important;
     }
     #drop2{
         width: 68px !important;
@@ -391,12 +401,12 @@
 
     #subCommunity{
         left: 379px !important;
+
     }
 
     #subHelp{
         left: 487px !important;
     }
-
 
 }
 

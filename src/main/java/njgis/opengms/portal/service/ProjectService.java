@@ -34,7 +34,7 @@ public class ProjectService {
         int pageSize = projectFindDTO.getPageSize();
         Boolean asc = projectFindDTO.getAsc();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,"viewCount");
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,"creatDate");
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         User user=userDao.findFirstByOid(oid);
         Page<ProjectResultDTO> projectResultDTOpage=projectDao.findByContributor(user.getUserName(),pageable);

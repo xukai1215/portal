@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>User Page | OpenGMS</title>
 
@@ -18,6 +19,7 @@
     <link rel="stylesheet" href="/static/css/base/backTop.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
     <style>
 
         .user-interest .content-body span{
@@ -45,7 +47,142 @@
 
                         <h4 th:if="${areas!=''}" th:text="'Subject Areas: '+${areas}">Associate Professor</h4>
                     </div>
+                    <div style="height: 120px">
+                        <button id="editUserInfoButton" class="containerWithBorder noBackColor sizeAdaption colArrange"
+                                data-toggle="modal" data-target="#editUserInfo" @click="editUserInfoClick">
+                            <p id="pEditUserInfo" class="noMargin" style="font-size: 16px">Edit User Info</p>
+                            <div id="editUserInfoHover" class="hoverLine"></div>
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <div class="modal fade" id="editUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" id="modalContent">
+                        <div class="modal-header" style="background: deepskyblue">
+                            <h3 class="modal-title" id="myModalLabel" style="color:aliceblue;text-align: center">
+                                Edit User Info
+                            </h3>
+                        </div>
+                        <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                            <section class="panel">
+                                <header class="panel-heading custom-tab ">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#personalInfo" data-toggle="tab" style="font-size:14px;"><strong>Person</strong>&nbsp;&nbsp;Introduction</a>
+                                        </li>
+                                        <li class="">
+                                            <a href="#affiliationInfo" data-toggle="tab" style="font-size:14px;"><strong>Affiliation</strong>&nbsp;&nbsp;Information
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="personalInfo">
+                                            <div class="form-group flexCol">
+                                                <p for="userDescription"
+                                                       class="col-sm-8 control-label">Description</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userDescription"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group flexCol">
+                                                <p for="userRIS"
+                                                       class="col-sm-8 control-label">Research Interests & Skills</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userRIS"/>
+                                                    <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group flexCol">
+                                                <p for="userSubArea"
+                                                       class="col-sm-8 control-label">Subject Areas</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userSubArea"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="affiliationInfo">
+                                            <div class="form-group flexCol">
+                                                <p for="userAffInstitution"
+                                                   class="col-sm-8 control-label">Instituton</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userAffInstituton"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group flexCol">
+                                                <p for="userAffDepartment"
+                                                   class="col-sm-8 control-label">Department</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userAffDepartment"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group flexCol">
+                                                <p for="userAffPosition"
+                                                   class="col-sm-8 control-label">Position</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userAffPosition"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group flexCol">
+                                                <p for="userAffLocation"
+                                                   class="col-sm-8 control-label">Affiliation Location</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userAffLocation"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group flexCol">
+                                                <p for="userLaboratory"
+                                                   class="col-sm-8 control-label">Laboratory</p>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userLaboratory"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group flexCol">
+                                                <p for="userLabPosition"
+                                                   class="col-sm-8 control-label">Lab Position</p>
+                                                <div class="col-sm-12">
+                                                    <label style="font-size: 16px;font-weight: 500;cursor: pointer" for="userLabLeader" >Leader</label>
+                                                    <div class="chooseBox">
+                                                        <input type="radio" name="labPosition" id="userLabLeader" value="0"/>
+                                                        <span></span>
+                                                    </div>
+                                                    <label style="font-size: 16px;font-weight: 500;margin-left: 100px;cursor: pointer" for="userLabMember">Member</label>
+                                                    <div class="chooseBox">
+                                                        <input type="radio" name="labPosition" id="userLabMember" value="1"/>
+                                                        <span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" style="font-size:15px" @click="saveUserInfoClick()">
+                                Save
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                    style="font-size:15px">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
             </div>
 
             <div id="middleContainer" class="fullContainer">
@@ -87,12 +224,25 @@
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
                             <div>
                                 <button id="viewMoreIntroduction" class="viewMoreButton" @click="menu_Click(4)" style="">View More</button>
-
                             </div>
                         </div>
-                        <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0">
+                        <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none;">
                             <div class="contentContainer" style="flex-direction: column;">
-                                <h4 th:text="${userInfo.description}" style="margin: 0 15px 0"></h4>
+                                <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" ><h4>Description</h4>
+                                    <button id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
+                                        Add
+                                        <div class="hoverLine"></div></button>
+                                </div>
+                                <div id="descriptionInputContainer" class="contentContainer" style="justify-content: space-between; align-items: center;padding: 0 45px 0 30px">
+                                    <input id="descriptionInput" >
+                                    <button id="descriptionConfirm" class="confirmButton" @click="descriptionConfirm()">√</button>
+                                </div>
+                                <div id="descriptionShow" v-if="userPersonalInfo.description" class="contentContainer" style="justify-content: space-between;padding: 0 30px;">
+                                    <h4 id="descriptionDetail">{{userPersonalInfo.description}}</h4>
+                                    <button id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">
+                                        Edit
+                                        <div class="hoverLine"></div></button>
+                                </div>
                             </div>
                             <!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
                             <!--                           <div>-->
@@ -100,10 +250,88 @@
                             <!--                           </div>-->
                             <!--                       </div>-->
                             <div class="innerBorder"></div>
-                            <div class="contentContainer" style="flex-direction: column;height: 40px">
-                                <h4 style="margin: 0 30px 0;color:#828282 ">Research Interests & Skills</h4>
-                                <p style="margin: 0 15px 0" th:each="String : ${userInfo.researchInterests}" th:text="${String}">Geo</p>
-
+                            <div class="contentContainer" style="min-height: 40px;justify-content: space-between">
+                                <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
+                                    <h4>Research Interests & Skills</h4>
+                                    <button id="addResearchInterestButton" class="addEditButton" v-if="userPersonalInfo.researchInterests.length==0" style="margin-bottom: 10px" @click="addResearchInterestClick()"
+                                            data-toggle="modal" data-target="researchInterestInfo"  >Add
+                                        <div class="hoverLine"></div>
+                                    </button>
+                                </div>
+                                <div id="researchInterestInputContainer">
+                                    <input id="researchInterestInput" type="text"/>
+                                </div>
+                                <button id="researchInterestConfirm" class="confirmButton" @click="researchInterestConfirm()">√</button>
+                                <div class="contentContainer" style="justify-content: space-between; padding: 0 30px">
+                                    <div id="researchInterestDetail" class="contentColContainer researchInterestDetail" >
+                                        <h4 v-for="researchInterest in userPersonalInfo.researchInterests" style="margin: 0 0 5px">{{researchInterest}}</h4>
+                                    </div>
+                                    <button id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests.length>0" class="addEditButton" @click="editResearchInterestClick()">
+                                        Edit
+                                        <div class="hoverLine"></div></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="researchInterestInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background: deepskyblue">
+                                        <h3 class="modal-title" style="color:aliceblue;text-align: center">
+                                            Update Research Interests & Skills
+                                        </h3>
+                                    </div>
+                                    <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                        <section class="panel">
+                                            <div class="panel-body">
+                                                <div class="tab-content">
+                                                    <div class="tab-pane active" id="manually">
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control"
+                                                                       id="researchInterestDetail1"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control"
+                                                                       id="researchInterestDetail2"/>
+                                                                <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control"
+                                                                       id="researchInterestDetail3"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control"
+                                                                       id="researchInterestDetail4"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control"
+                                                                       id="researchInterestDetail5"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" style="font-size:15px" @click="addArticleClick">
+                                            Save
+                                        </button>
+                                        <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"
+                                                style="font-size:15px">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
                             </div>
                         </div>
                     </div>
@@ -125,7 +353,14 @@
                                 <div class="rightCard">
                                     <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
                                     <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.modelItems}">1000</h2><h5>&nbspitems</h5></div>
+                                    <div class="statsCard">
+                                        <h2 style="color: #339fff;">{{modelItems.total}}</h2>
+                                        <h5>&nbspitems</h5>
+                                    </div>
+                                    <div class="seeDetails">
+                                        <p>See Details</p>
+                                        <div class="hoverLine"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer" >
@@ -136,23 +371,56 @@
                                 <div class="rightCard">
                                     <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
                                     <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard"><h2 style="color: #36c9ff;" th:text="${userInfo.dataItems}">1000</h2><h5>&nbspitems</h5></div>
+                                    <div class="statsCard">
+                                        <h2 style="color: #36c9ff;">{{dataItems.total}}</h2>
+                                        <h5>&nbspitems</h5>
+                                    </div>
+                                    <div class="seeDetails">
+                                        <p>See Details</p>
+                                        <div class="hoverLine"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="conceptualModel" class="itemCardCol" @click="conceptualModelClick()" style="width: 30%;cursor: pointer">
-                                <div class="titleCard"><h3 style="font-size: 21px">Conceptual Model</h3></div>
-                                <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                <div class="statsCard"><h2 style="color: #ff9526;" th:text="${userInfo.conceptualModels}">1000</h2><h5>&nbspitems</h5></div>
+                            <div id="conceptualModel" class="itemCardRow" @click="conceptualModelClick()" style="display: block; width: 30%;cursor: pointer">
+                                <div class="rightCard">
+                                    <div class="titleCard"><h3 style="font-size: 21px">Conceptual Model</h3></div>
+                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                    <div class="statsCard">
+                                        <h2 style="color: #ff9526;">{{conceptualModels.total}}</h2>
+                                        <h5>&nbspitems</h5>
+                                    </div>
+                                    <div class="seeDetails">
+                                        <p>See Details</p>
+                                        <div class="hoverLine"></div>
+                                    </div>
+                                </div>
+
                             </div>
-                            <div id="logicalModel" class="itemCardCol" @click="logicalModelClick" style="width: 30%;cursor: pointer">
-                                <div class="titleCard"><h3 style="font-size: 21px">Logical Model</h3></div>
-                                <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                <div class="statsCard"><h2 style="color: #339fff;" th:text="${userInfo.logicalModels}">1000</h2><h5>&nbspitems</h5></div>
+                            <div id="logicalModel" class="itemCardRow" @click="logicalModelClick" style="display: block;width: 30%;cursor: pointer">
+                                <div class="rightCard">
+                                    <div class="titleCard"><h3 style="font-size: 21px">Logical Model</h3></div>
+                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                    <div class="statsCard">
+                                        <h2 style="color: #339fff;">{{logicalModels.total}}</h2>
+                                        <h5>&nbspitems</h5>
+                                    </div>
+                                    <div class="seeDetails">
+                                        <p>See Details</p>
+                                        <div class="hoverLine"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div id="computableModel" class="itemCardCol" @click="computableModelClick()" style="width: 30%;cursor: pointer">
-                                <div class="titleCard"><h3 style="font-size: 21px">Computable Model</h3></div>
-                                <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                <div class="statsCard"><h2 style="color: #aa0b15;" th:text="${userInfo.computableModels}">1000</h2><h5>&nbspitems</h5></div>
+                            <div id="computableModel" class="itemCardRow" @click="computableModelClick()" style="display: block;width: 30%;cursor: pointer">
+                                <div class="rightCard">
+                                    <div class="titleCard"><h3 style="font-size: 21px">Computable Model</h3></div>
+                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                    <div class="statsCard"><h2 style="color: #aa0b15;">{{computableModels.total}}</h2>
+                                        <h5>&nbspitems</h5></div>
+                                    <div class="seeDetails">
+                                        <p>See Details</p>
+                                        <div class="hoverLine"></div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -187,8 +455,8 @@
                                         <div class="arrowDownerBig"></div>
                                     </div>
                                     <!--                                    此处v-for没有用但是加载速度会变快-->
-                                    <div class="list-item" v-if="newestArticle.result" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
+                                    <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" v-if="articles.result" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" @click="articleClick(1)" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
@@ -222,7 +490,7 @@
                                 <div class="subTitle" style="border:1px solid #c2c2c2 ;border-radius: 4px 4px 0 0 ">
                                     <h3 style="margin: 0 0 0 15px " >Projects</h3>
                                     <div class="statsNumber2" style="height: 30px;margin-left: 25px;padding: 0 5px">
-                                        <h3 th:text="${userInfo.articlesCount}" style="color: #0f9afa;margin: 0">10000</h3>
+                                        <h3 th:text="${userInfo.projectsCount}" style="color: #0f9afa;margin: 0">10000</h3>
                                     </div>
                                     <div class="innerBorder" style="border-bottom-color: #ffffff;margin: 0 5px"></div>
                                 </div>
@@ -233,8 +501,8 @@
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-                                    <div class="list-item" v-if="newestArticle.result" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
+                                    <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" v-if="projects.result" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
@@ -268,7 +536,7 @@
                                 <div class="subTitle" style="border:1px solid #c2c2c2 ;border-radius: 4px 4px 0 0 ">
                                     <h3 style="margin: 0 0 0 15px " >Conferences</h3>
                                     <div class="statsNumber2" style="height: 30px;margin-left: 25px;padding: 0 5px">
-                                        <h3 th:text="${userInfo.articlesCount}" style="color: #0f9afa;margin: 0">10000</h3>
+                                        <h3 th:text="${userInfo.conferencesCount}" style="color: #0f9afa;margin: 0">10000</h3>
                                     </div>
                                     <div class="innerBorder" style="border-bottom-color: #ffffff;margin: 0 5px"></div>
                                 </div>
@@ -279,8 +547,8 @@
                                         </div>
                                         <div class="arrowDownerBig"></div>
                                     </div>
-                                    <div class="list-item" v-if="newestArticle.result" v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
+                                    <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
+                                        <div class="itemCardCol" v-if="conferences.result" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
@@ -321,11 +589,11 @@
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
                         </div>
                         <div class="contentContainer colArrange" >
-                            <div class="contentContainer" style="height: 80px;padding-left: 0px; ">
-                                <div class="contentColContainer" style="width: 300px;align-items: flex-start;padding-left: 10px;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                    <h3 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.name}"></h3>
-                                    <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.department}"></h4>
-                                    <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.position}"></h4>
+                            <div class="contentContainer" style="min-height: 210px;padding-left: 10px; ">
+                                <div class="contentColContainer" style="width: 300px;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                    <h3 th:if="${not #strings.isEmpty(userInfo.affiliation.name)}" th:text="${userInfo.affiliation.name}"></h3>
+                                    <p style="color: rgb(130,130,130);" th:if="${not #strings.isEmpty(userInfo.affiliation.department)}">Department :</p> <h4 th:text="${userInfo.affiliation.department}"></h4>
+                                    <p style="color: rgb(130,130,130);" th:if="${not #strings.isEmpty(userInfo.affiliation.position)}">Position :</p> <h4  th:text="${userInfo.affiliation.position}"></h4>
                                     <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
                                 </div>
                                 <div class="institutionIcon">
@@ -333,13 +601,13 @@
                                 </div>
                             </div>
                             <!--                            <div class="innerBorder"></div>-->
-                            <div class="contentContainer colArrange" style="height: 100px">
+                            <div class="contentContainer colArrange" style="height: 100px;">
                                 <div class="itemCardCol wzhFilter_Lab"
-                                     style="justify-content: flex-start;margin-top: 0;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >
+                                     style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >
                                     <div class="greyShade" style="padding-left: 18px">
                                         <div class="containerWithBorder"> <h3 style="color: #f0f0f0;margin: 0">Laboratory</h3></div>
-                                        <h4 style="color: #f1f1f1;margin-left: 0px" th:text="${userInfo.lab}"></h4>
-                                        <h4 style="color: #f1f1f1;margin-left: 0px">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>
+                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab.name">{{userPersonalInfo.lab.name}}</h4>
+                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>
                                     </div>
 
                                 </div>
@@ -352,11 +620,11 @@
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
                         </div>
                         <div class="contentContainer" style="flex-direction: column; padding-left: 25px">
-                            <h4 th-if="${not #strings.isEmpty(userInfo.phone)}" th:text="${userInfo.phone}"></h4>
-                            <h4 th-if="${not #strings.isEmpty(userInfo.weChat)}" th:text="${userInfo.weChat}"></h4>
-                            <h4 th-if="${not #strings.isEmpty(userInfo.faceBook)}" th:text="${userInfo.faceBook}"></h4>
-                            <h4 th-if="${not #strings.isEmpty(userInfo.weiBo)}" th:text="${userInfo.weiBo}"></h4>
-                            <h4 th-if="${not #strings.isEmpty(userInfo.personPage)}" th:text="${userInfo.personPage}"></h4>
+                            <h4 th:if="${not #strings.isEmpty(userInfo.phone)}" >Phone Number: <span th:text="${userInfo.phone}"></span></h4>
+                            <h4 th:if="${not #strings.isEmpty(userInfo.weChat)}">WeChat: <span th:text="${userInfo.weChat}"></span></h4>
+                            <h4 th:if="${not #strings.isEmpty(userInfo.faceBook)}">Facebook: <span th:text="${userInfo.faceBook}"></span></h4>
+                            <h4 th:if="${not #strings.isEmpty(userInfo.weiBo)}">Weibo: <span th:text="${userInfo.weiBo}"></span></h4>
+                            <h4 th:if="${not #strings.isEmpty(userInfo.personPage)}">Person Page:<span th:text="${userInfo.personPage}"></span></h4>
                         </div>
                     </div>
                 </div>
@@ -367,7 +635,7 @@
                 <div id="modelStats" class="leftContentContainer" style="width: 290px">
                     <div  class="contentColContainer">
                         <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Model Stats</h4></div>
+                            <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Resources Stats</h4></div>
                         </div>
                     </div>
                     <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
@@ -376,19 +644,19 @@
                             <!--                                <p>99999</p></div></a></li>-->
                             <li><a id="tab-Model Item" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==1}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="modelItemClick()">Model Item<div class="statsNumber" :class="{statsNumberFullColor:showIndex==1}">
-                                <p th:text="${userInfo.modelItems}">1000</p></div></a></li>
+                                <p>{{modelItems.total}}</p></div></a></li>
                             <li><a id="tab-Data Item" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==2}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="datalItemClick()">Data item <div class="statsNumber" :class="{statsNumberFullColor:showIndex==2}">
-                                <p th:text="${userInfo.dataItems}">1000</p></div></a></li>
+                                <p>0</p></div></a></li>
                             <li><a id="tab-Conceptual Model" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==3}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptualModelClick()">Conceptual Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==3}">
-                                <p th:text="${userInfo.conceptualModels}">1000</p></div></a></li>
+                                <p>{{conceptualModels.total}}</p></div></a></li>
                             <li><a id="Logical Model" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==4}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="logicalModelClick()">Logical Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==4}">
-                                <p th:text="${userInfo.logicalModels}">1000</p></div></a></li>
+                                <p>{{logicalModels.total}}</p></div></a></li>
                             <li><a id="Computable Model" aria-controls="pane-Computable Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==5}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="computableModelClick()">Computable Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==5}">
-                                <p th:text="${userInfo.computableModels}">999</p></div></a></li>
+                                <p>{{computableModels.total}}</p></div></a></li>
                         </ul>
                     </div>
 
@@ -534,7 +802,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-if="conceptualModel.result" v-for="(conceptualModel,key) in conceptualModels.result">
+                            <div class="list-item" v-if="conceptualModels.result" v-for="(conceptualModel,key) in conceptualModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -730,13 +998,13 @@
                             <!--                                <p>99999</p></div></a></li>-->
                             <li><a aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==1}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="articleClick(1)">Articles<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==1}">
-                                <p th:text="${userInfo.articlesCount}">1000</p></div></a></li>
+                                <p>{{articles.total}}</p></div></a></li>
                             <li><a aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==2}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="projectClick(2)">Projects<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==2}">
-                                <p>100</p></div></a></li>
+                                <p>{{projects.total}}</p></div></a></li>
                             <li><a aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:researchIndex==3}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conferenceClick(3)">Conferences<div class="statsNumber" :class="{statsNumberFullColor:researchIndex==3}">
-                                <p>100</p></div></a></li>
+                                <p>{{conferences.total}}</p></div></a></li>
 
                         </ul>
 
@@ -926,14 +1194,14 @@
                         </div>
                         <div class="contentColContainer leftJusitifyCol noMargin" style="width: 100%;padding-bottom: 10px">
                             <h4 style="margin: 10px 30px 0;color:#828282 ">Affiliation</h4>
-                            <div style="flex-direction: column;padding-left: 28px">
-                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.name}"></h4>
-                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.department}"></h4>
-                                <h4 th:if="${userInfo.affiliation}" th:text="${userInfo.affiliation.position}"></h4>
+                            <div style="flex-direction: column;padding: 0px 28px 20px">
+                                <h3 th:if="${not #strings.isEmpty(userInfo.affiliation.name)}" th:text="${userInfo.affiliation.name}"></h3>
+                                <h4 th:if="${not #strings.isEmpty(userInfo.affiliation.department)}" th:text="${userInfo.affiliation.department}"></h4>
+                                <h4 th:if="${not #strings.isEmpty(userInfo.affiliation.position)}" th:text="${userInfo.affiliation.position}"></h4>
                             </div>
                             <div class="innerBorder"></div>
                             <h4 style="margin: 10px 30px 0;color:#828282 ">Subject Areas</h4>
-                            <div style="flex-direction: column;padding-left: 28px">
+                            <div style="flex-direction: column;padding: 0px 28px 20px">
                                 <h4 th:each="element:${userInfo.subjectAreas}" th:text="${element}">Geo</h4>
                             </div>
                             <div class="innerBorder"></div>
@@ -948,7 +1216,7 @@
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>
                         </div>
                         <div class="list-item" v-if="educationExperience.result" v-for="(educationXpce,key) in educationExperience.result">
-                            <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 160px; margin-top: 5px">
+                            <div class="itemCardCol" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">
                                 <div class="cardContentContainer" style="width: 98%;margin:0; border: none;">
                                     <div>
                                         <p><span>Institution or University:</span> &nbsp&nbsp{{educationXpce.institution}}</p>
@@ -965,8 +1233,8 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Awards & honors</h4></div>
                         </div>
-                        <div class="itemCardCol" style="width: 98%;background-color: white;min-height: 80px; margin-top: 5px">
-                            <div class="list-item" v-for="(awardHonor,key) in awardandHonor.result">
+                        <div class="list-item" v-if="awardandHonor.result" v-for="(awardHonor,key) in awardandHonor.result">
+                            <div class="itemCardCol" style="width: 98%;background-color: #fafafa;min-height: 80px; margin-top: 5px">
                                 <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
                                     <div>
                                         <p><span>Name:</span> &nbsp&nbsp{{awardHonor.name}}</p>
@@ -985,8 +1253,8 @@
                             <div></div>
                         </div>
                         <div class="contentColContainer" style="flex: 1; box-shadow: none">
-                            <div class="infoContainer">
-                                <h3 th:text="${userInfo.lab}" style="font-weight: 600;"></h3>
+                            <div class="infoContainer" v-if="userPersonalInfo.lab.name">
+                                <h3 style="font-weight: 600;">{{userPersonalInfo.lab.name}}</h3>
                             </div>
                             <div class="infoContainer">
                                 <p>Lab Leader</p>
@@ -1046,9 +1314,10 @@
 <script src="../static/js/common/axios.min.js"></script>
 <script src="../static/element-ui/index.js"></script>
 <script type="text/javascript" src="../../static/js/common/bootstrap.min.js"></script>
-<script src="../static/js/page/user_page.js"></script>
 <script src="../static/js/common/loadUser.js"></script>
 <script src="../static/js/common/navbar.js"></script>
 <script src="../static/js/common/backTop.js/"></script>
-
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="../static/js/page/user_page.js"></script>
 </html>

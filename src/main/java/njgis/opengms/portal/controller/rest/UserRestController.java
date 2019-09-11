@@ -3,6 +3,8 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dto.DescriptionDTO;
+import njgis.opengms.portal.dto.ResearchInterestDTO;
 import njgis.opengms.portal.dto.UserAddDTO;
 import njgis.opengms.portal.dto.UserUpdateDTO;
 import njgis.opengms.portal.entity.User;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 @RequestMapping (value = "/user")
@@ -154,8 +157,6 @@ public class UserRestController {
 //            Object object = ResultUtils.success(userService.getByOid(id)).getData();
             JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
 
-            System.out.println("user_page");
-
             modelAndView.setViewName("user_page_overview");
             modelAndView.addObject("userInfo", userInfo);
             System.out.println(userInfo);
@@ -201,8 +202,17 @@ public class UserRestController {
 
             String userId = session.getAttribute("uid").toString();
             JSONObject result = userService.getUserInfo(userId);
+            System.out.println("/getUserInfo"+result);
             return ResultUtils.success(result);
         }
+    }
+
+    @RequestMapping(value = "/getUserInfoInUserPage", method = RequestMethod.GET)
+    public JsonResult getUserInfoInUserPage(@RequestParam(value="oid") String oid) {
+            JSONObject result = userService.getUserInfoByOid(oid);
+            System.out.println("/getUserInfoInUserPage"+result);
+            return ResultUtils.success(result);
+
     }
 
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
@@ -312,6 +322,35 @@ public class UserRestController {
     }
     //get oid
 
+    @RequestMapping(value="/updateDescription",method = RequestMethod.POST)
+    JsonResult updateUserDescription(@RequestBody DescriptionDTO descriptionDTO, HttpServletRequest httpServletRequest){
+        System.out.println(descriptionDTO);
+        System.out.println("/addDescription");
+        String description=descriptionDTO.getDescription();
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateDescription(description,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/updateResearchInterest",method = RequestMethod.POST)
+    JsonResult updateUserResearchInterest(@RequestBody ResearchInterestDTO researchInterestDTO, HttpServletRequest httpServletRequest){
+        System.out.println(researchInterestDTO);
+        System.out.println("/updateResearchInterest");
+        List<String> researchInterests=researchInterestDTO.getResearchInterests();
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateResearchInterest(researchInterests,userName);
+
+        return ResultUtils.success(result);
+    }
 
 
 

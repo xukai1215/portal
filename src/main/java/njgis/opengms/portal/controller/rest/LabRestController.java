@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -16,7 +17,11 @@ public class LabRestController {
 
     @RequestMapping(value="/findByName",method = RequestMethod.GET)
     JsonResult findByLabName(String oid){
-        return ResultUtils.success(labService.findBylabName(oid));
+        JSONObject result=labService.findBylabName(oid);
+        if(result.get("lab")=="null")
+            return ResultUtils.error(-1,"lab is null");
+        else
+        return ResultUtils.success(result);
     }
 
 
