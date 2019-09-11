@@ -818,7 +818,7 @@ var vue = new Vue({
         cls:[],
         clsStr:'',
         parId:"",
-        related:[],
+        related:[""],
         relatedOid:[],
 
         conceptInfo:{}
@@ -967,6 +967,17 @@ var vue = new Vue({
                             this.pageOption.progressBar = false;
                             this.pageOption.paginationShow=true;
                         }, timeoutTime);
+                        // var selected = $('.selectConcept');
+                        // var unselected = $('.unSelectConcept');
+                        // for(var i=0; i<this.relatedOid.length; i++){
+                        //     for(var j=0; j<this.pageOption.searchResult.length; j++){
+                        //         if(this.relatedOid[i] == this.pageOption.searchResult[j].oid){
+                        //             // selected[j].style.display = "none";
+                        //             // unselected[j].style.display = "block";
+                        //             this.pageOption.searchResult[j].exist=true;
+                        //         }
+                        //     }
+                        // }
                     }
                     else {
                         console.log("query error!")
