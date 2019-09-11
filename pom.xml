@@ -152,10 +152,7 @@
             <groupId>abc</groupId>
             <artifactId>abc</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</systemPath>
         </dependency>
-
 
 
         <!-- svg 转 png  -->
@@ -258,6 +255,30 @@
                 <configuration>
                     <fork>true</fork>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <id>install-external</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <file>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>abc</groupId>
+                            <artifactId>abc</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <!-- 配置将哪些资源文件(静态文件/模板文件/mapper文件)加载到tomcat输出目录里 -->

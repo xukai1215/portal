@@ -168,7 +168,7 @@ public class LogicalModelRestController {
         String model=IOUtils.toString(file.getInputStream(),"utf-8");
 
         JSONObject jsonObject=JSONObject.parseObject(model);
-        logger.info("getModel");
+        logger.info(jsonObject.toJSONString());
 
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();

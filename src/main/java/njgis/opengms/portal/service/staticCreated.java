@@ -5,6 +5,7 @@ import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -15,7 +16,7 @@ import java.io.FileWriter;
 import java.util.List;
 
 @Component
-public class staticCreated {//implements ApplicationRunner {
+public class staticCreated implements ApplicationRunner {
 
     @Autowired
     DataItemService dataItemService;
@@ -26,7 +27,7 @@ public class staticCreated {//implements ApplicationRunner {
      * @param args
      * @throws Exception
      */
-    //@Override
+    @Override
     public void run(ApplicationArguments args) throws Exception {
 
         //生成静态html

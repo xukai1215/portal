@@ -167,10 +167,11 @@ public class LogicalModelService {
             result.put("code", -1);
         } else {
             try {
-
+                logger.info(jsonObject.getString("contentType"));
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
                     String name = new Date().getTime() + "_MxGraph.png";
                     MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    logger.info("before export");
                     mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + "/" + uid + "/", name);
                     images.add("/logicalModel" + "/" + uid + "/"+ name);
                 }
@@ -227,6 +228,8 @@ public class LogicalModelService {
                 result.put("code", 1);
                 result.put("id", logicalModel.getOid());
             } catch (Exception e) {
+                logger.info(e.getMessage());
+                logger.info(e.toString());
                 e.printStackTrace();
                 result.put("code", -2);
             }
