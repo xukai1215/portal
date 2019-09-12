@@ -307,8 +307,8 @@
                                                                         <div v-cloak class="list-item" v-for="(concept,key) in pageOption.searchResult">
                                                                             <div class="detail_title">
                                                                                 <span :oid="concept.oid" id="conceptName" style="font-size: 18px">{{concept.description_EN==''?concept.alias:concept.name}}&nbsp&nbsp</span>
-                                                                                <button type="button" id="selectConcept" @click="addRelated($event)" style="float: right">+</button>
-                                                                                <button type="button" id="unSelectConcept" @click="deleteRelated($event)" style="float: right;display: none">-</button>
+                                                                                <button v-show="!concept.exist" type="button" id="selectConcept" @click="addRelated(key)" style="float: right">+</button>
+                                                                                <button v-show="concept.exist" type="button" id="unSelectConcept" @click="deleteRelated(key)" style="float: right;">-</button>
                                                                             </div>
                                                                             <div class="detail_overview">
                                                                                 <a class="img" :href="'/repository/concept/'+ concept.oid" target="_blank">
