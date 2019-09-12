@@ -942,7 +942,6 @@ var vue = new Vue({
                 this.$refs.tree1.setCurrentKey(null);
             }
 
-            let sendDate = (new Date()).getTime();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -952,32 +951,24 @@ var vue = new Vue({
                 success: (json) => {
                     if (json.code == 0) {
                         let data = json.data;
-                        let receiveDate = (new Date()).getTime();
-                        let responseTimeMs = receiveDate - sendDate;
-                        let timeoutTime=0;
-                        console.log(responseTimeMs)
-                        if(responseTimeMs<450){
-                            timeoutTime=450-responseTimeMs;
+                        this.pageOption.total = data.total;
+                        for (var i = 0; i < data.list.length; i++){
+                            data.list[i].exist=false;
                         }
-                        setTimeout(() => {
-                            this.pageOption.total = data.total;
-                            // this.pageOption.pages = data.pages;
-                            this.pageOption.searchResult = data.list;
-                            // this.pageOption.users = data.users;
-                            this.pageOption.progressBar = false;
-                            this.pageOption.paginationShow=true;
-                        }, timeoutTime);
-                        // var selected = $('.selectConcept');
-                        // var unselected = $('.unSelectConcept');
-                        // for(var i=0; i<this.relatedOid.length; i++){
-                        //     for(var j=0; j<this.pageOption.searchResult.length; j++){
-                        //         if(this.relatedOid[i] == this.pageOption.searchResult[j].oid){
-                        //             // selected[j].style.display = "none";
-                        //             // unselected[j].style.display = "block";
-                        //             this.pageOption.searchResult[j].exist=true;
-                        //         }
-                        //     }
-                        // }
+                        this.pageOption.searchResult = data.list;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow=true;
+
+                        for(var i=0; i<this.pageOption.searchResult.length; i++){
+                            for(var j=0; j<this.relatedOid.length; j++){
+                                if(this.relatedOid[j] == this.pageOption.searchResult[i].oid){
+                                    this.pageOption.searchResult[i].exist=true;
+                                    break;
+                                }else {
+                                    this.pageOption.searchResult[i].exist=false;
+                                }
+                            }
+                        }
                     }
                     else {
                         console.log("query error!")
@@ -1004,14 +995,12 @@ var vue = new Vue({
 
         //添加related
         addRelated(event){
-            console.log(event);
-            event.target.parentNode.childNodes[2].style.display="none";
-            event.target.parentNode.childNodes[4].style.display="block";
-            // $("#selectConcept").hide();
-            // $("#unSelectConcept").show();
 
-            con = event.target.parentNode.childNodes[0].innerText;
-            oid = event.target.parentNode.childNodes[0].attributes.oid.nodeValue;
+            console.log(event);
+            this.pageOption.searchResult[event].exist=true;
+
+            con = this.pageOption.searchResult[event].name;
+            oid = this.pageOption.searchResult[event].oid;
 
             this.related.push(con);
             this.relatedOid.push(oid);
@@ -1024,11 +1013,11 @@ var vue = new Vue({
             });
         },
         deleteRelated(event){
-            event.target.parentNode.childNodes[4].style.display="none";
-            event.target.parentNode.childNodes[2].style.display="block";
+            console.log(event);
+            this.pageOption.searchResult[event].exist=false;
 
-            con = event.target.parentNode.childNodes[0].innerText;
-            oid = event.target.parentNode.childNodes[0].attributes.oid.nodeValue;
+            con = this.pageOption.searchResult[event].name;
+            oid = this.pageOption.searchResult[event].oid;
 
             this.related = this.related.filter(function (item) {
                 return item!=con;
