@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-    <title th:text="${info.name}+' | Concept & Semantic | OpenGMS'">Concept & Semantic | OpenGMS</title>
+    <title th:text="${info.name}+' | C | OpenGMS'">Concept & Semantic | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link href="/static/css/base/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css">
@@ -160,7 +160,7 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text">
-                        <span th:text="NNU_Group+'.('+${year}+').'+${info.name}+','">
+                        <span th:text="${user.name}+' ('+${year}+'). '+${info.name}+', Concept & Semantic, OpenGMS,'">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                         </span>
                         <a th:href="'http://geomodeling.njnu.edu.cn/repository/concept/'+${info.oid}"

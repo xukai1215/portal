@@ -13,6 +13,7 @@ import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
@@ -328,6 +329,22 @@ public class ModelItemService {
             meta_keywords = keywords.toString().replace("[", ", ").replace("]", "");
         }
 
+        //authorship
+        String authorshipString="";
+        List<AuthorInfo> authorshipList=modelInfo.getAuthorship();
+        if(authorshipList!=null){
+            for (AuthorInfo author:authorshipList
+                 ) {
+                if(authorshipString.equals("")){
+                    authorshipString+=author.getName();
+                }
+                else{
+                    authorshipString+=", "+author.getName();
+                }
+
+            }
+        }
+
 
 
         ModelAndView modelAndView=new ModelAndView();
@@ -347,6 +364,7 @@ public class ModelItemService {
         modelAndView.addObject("templates",templateArray);
         modelAndView.addObject("units",unitArray);
         modelAndView.addObject("user", userJson);
+        modelAndView.addObject("authorship", authorshipString);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelInfo.getReferences())));

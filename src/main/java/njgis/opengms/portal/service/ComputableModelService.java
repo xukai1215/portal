@@ -156,6 +156,22 @@ public class ComputableModelService {
                 modifierJson = userService.getItemUserInfo(lastModifier);
             }
 
+            //authorship
+            String authorshipString="";
+            List<AuthorInfo> authorshipList=modelInfo.getAuthorship();
+            if(authorshipList!=null){
+                for (AuthorInfo author:authorshipList
+                        ) {
+                    if(authorshipString.equals("")){
+                        authorshipString+=author.getName();
+                    }
+                    else{
+                        authorshipString+=", "+author.getName();
+                    }
+
+                }
+            }
+
 
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("computable_model");
@@ -164,6 +180,7 @@ public class ComputableModelService {
             modelAndView.addObject("date", dateResult);
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
+            modelAndView.addObject("authorship", authorshipString);
             modelAndView.addObject("resources", resourceArray);
             JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
             if (mdlJson != null) {
@@ -410,6 +427,9 @@ public class ComputableModelService {
 
                         computableModel.setMdl(content);
                         JSONObject mdlJson = XmlTool.documentToJSONObject(content);
+                        //处理mdl格式错误
+                        JSONObject runtime=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0);
+
                         String type=mdlJson.getJSONArray("ModelClass").getJSONObject(0).getString("type");
                         if(type!=null){
                             mdlJson.getJSONArray("ModelClass").getJSONObject(0).put("style",type);
@@ -417,6 +437,37 @@ public class ComputableModelService {
                         if(mdlJson.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
                             mdlJson.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
                         }
+
+                        JSONArray HCinsert=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+                        if(HCinsert!=null){
+
+                            JSONArray HCadd= new JSONArray();
+
+                            for(int j=0;j<HCinsert.size();j++){
+                                JSONObject obj=HCinsert.getJSONObject(j);
+                                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+                                    HCadd.add(obj);
+                                }
+                            }
+
+                            runtime.getJSONArray("HardwareConfigures").getJSONObject(0).put("Add",HCadd);
+                        }
+
+                        JSONArray SCinsert=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+                        if(SCinsert!=null){
+
+                            JSONArray SCadd= new JSONArray();
+
+                            for(int j=0;j<HCinsert.size();j++){
+                                JSONObject obj=HCinsert.getJSONObject(j);
+                                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+                                    SCadd.add(obj);
+                                }
+                            }
+
+                            runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).put("Add",SCadd);
+                        }
+                        //End
                         computableModel.setMdlJson(mdlJson);
                     } else {
                         System.out.println("mdl文件未找到!");

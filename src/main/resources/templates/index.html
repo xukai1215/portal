@@ -37,7 +37,32 @@
             margin-right: 30px;
         }
 
-        </style>
+        #div1{
+            position: relative;
+            width: 100%;
+            margin: 20px auto;
+            height: 160px;
+            overflow: hidden;
+        }
+        #div1 ul{
+            position: absolute;
+            left: 0;
+        }
+        #div1 a{
+            position: absolute;
+            z-index: 2;
+            text-decoration: none;
+            /*top: 45%;*/
+            /*display: none;*/
+        }
+        #div1 ul li{
+            padding: 5px;
+            list-style: none;
+            width: 100px;
+            height: 150px;
+            float: left;
+        }
+    </style>
 </head>
 
 <style>
@@ -364,7 +389,7 @@
                         <el-button type="warning" style="margin-top: 32px" size="medium"
                             @click="window.open('http://geomodeling.njnu.edu.cn/Online_Saga/saga-tools')">Saga
                         </el-button>
-                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/hydro-model-integration/main')">SWMM
+                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/hydro-model-integration/main')">Hydrology
                         </el-button>
                         <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/FGM-theme/')">Forest Growth
                         </el-button>
@@ -894,168 +919,34 @@
 
                 <div style="border-radius: 20px" class="el-row">
 
-                    <!-- <el-carousel :interval="100000" type="card" arrow="always" class="partent"  >
-                        <el-carousel-item >
-                                <center><img src="/static/img/producer/HuangBo.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center> <img src="/static/img/producer/ljz.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>  <img src="/static/img/producer/nzt.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center><img src="/static/img/producer/lixia.jpg" style="width: 80px" class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>  <img src="/static/img/producer/zhangdong.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>  <img src="/static/img/producer/wch.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>  <img src="/static/img/producer/szy.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>   <img src="/static/img/producer/dq.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>    <img src="/static/img/producer/ls.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>    <img src="/static/img/producer/yuanwp.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-                        <el-carousel-item >
-                                <center>   <img src="/static/img/producer/llh.jpg" style="width: 80px"class="colreacherimg"></center>
-                                <br/><center><p>name:xxx</p></center>
-                                <center><p>major:xxx</p></center>
-                        </el-carousel-item>
-
-
-
-
-                </el-carousel> -->
-
                     <center>
-                        <marquee id="photoWall" direction="left" onmouseover="this.stop()" onmouseout="this.start()" scrollamount="6"
-                            loop='-1'>
+                        <div id="div1">
+                            <ul>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1217/1561.htm"><img src="/static/img/producer/members/cm.jpg" class="colreacherimg" title="Cao Min"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1217/1778.htm"><img src="/static/img/producer/members/dq.jpg" class="colreacherimg" title="Dai Qiang"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1217/1787.htm"><img src="/static/img/producer/members/GuoFei.jpg" class="colreacherimg" title="Guo Fei"></a></li>
+                                <li><a target="_blank" href="https://www.grm.cuhk.edu.hk/eng/people/ppl/fac_HuangBo.html"><img src="/static/img/producer/members/HuangBo.jpg" class="colreacherimg" title="Huang Bo"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1213/2742.htm"><img src="/static/img/producer/members/Liujunz.jpg" class="colreacherimg" title="Liu Junzhi"></a></li>
+                                <li><a target="_blank" href="http://www.sysu.edu.cn/2012/en/academics/academics03/289.htm"><img src="/static/img/producer/members/lixia.jpg" class="colreacherimg" title="Li Xia"></a></li>
+                                <li><a target="_blank" href="http://sourcedb.egi.cas.cn/zw/zjrc/bssds/201311/t20131104_3967275.html"><img src="/static/img/producer/members/llh.jpg" class="colreacherimg" title="Li Longhui"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1216/1825.htm"><img src="/static/img/producer/members/ls.jpg" class="colreacherimg" title="Li Shuo"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1213/2740.htm"><img src="/static/img/producer/members/ningliang.jpg" class="colreacherimg" title="Ning Liang"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1216/1832.htm"><img src="/static/img/producer/members/nzt.jpg" class="colreacherimg" title="Nan ZhuoTong"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1216/1839.htm"><img src="/static/img/producer/members/Songzhiy.jpg" class="colreacherimg" title="Song ZhiYao"></a></li>
+                                <li><a target="_blank" href="http://gs.hhu.edu.cn/2013/1128/c3509a43625/page.htm"><img src="/static/img/producer/members/wch.jpg" class="colreacherimg" title="Wang Chuanhai"></a></li>
+                                <li><a target="_blank" href="https://www.kent.edu/geography/profile/xinyue-ye"><img src="/static/img/producer/members/xinyueye.jpg" class="colreacherimg" title="Ye Xinyue"></a></li>
+                                <li><a target="_blank" href=""><img src="/static/img/producer/members/XunShi.jpg" class="colreacherimg" title="Shi Xun"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1216/2144.htm"><img src="/static/img/producer/members/YuanLW.jpg" class="colreacherimg" title="Yuan Linwang"></a></li>
+                                <li><a target="_blank" href="http://atmos.sysu.edu.cn/User/146.html"><img src="/static/img/producer/members/yuanwp.jpg" class="colreacherimg" title="Yuan Wenping"></a></li>
+                                <li><a target="_blank" href="http://people.ucas.ac.cn/~0001344"><img src="/static/img/producer/members/yuetianxiang.jpg" class="colreacherimg" title="Yue Tianxiang"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1216/2139.htm"><img src="/static/img/producer/members/Zhangjingb.jpg" class="colreacherimg" title="Zhang Jinbo"></a></li>
+                                <li><a target="_blank" href="http://www.nhri.cn/art/2014/9/3/art_79_344.html"><img src="/static/img/producer/members/zhangjs.jpg" class="colreacherimg" title="Zhang Jinshan"></a></li>
+                                <li><a target="_blank" href="http://dky.njnu.edu.cn/info/1216/1902.htm"><img src="/static/img/producer/members/Zhangshul.jpg" class="colreacherimg" title="Zhang Shuliang"></a></li>
+
+                            </ul>
+                        </div>
 
 
-                            <div class="marcontent el-row">
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/cm.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Cao Min">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/dq.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Dai Qiang">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/GuoFei.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Guo Fei">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/HuangBo.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Huang Bo">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/Liujunz.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Liu Junzhi">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/lixia.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Li Xia">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/llh.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Li Longhui">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/ls.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Li Shuo">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/ningliang.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Ning Liang">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/nzt.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Nan ZhuoTong">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/Songzhiy.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Song ZhiYao">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/wch.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Wang Chuanhai">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/xinyueye.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Ye Xinyue">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/XunShi.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Shi Xun">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/YuanLW.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Yuan Linwang">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/yuanwp.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Yuan Wenping">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/yuetianxiang.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Yue Tianxiang">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/Zhangjingb.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Zhang Jinbo">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/zhangjs.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Zhang Jinshan">
-                                </div>
-                                <div class="el-col el-col-1">
-                                    <img src="/static/img/producer/members/Zhangshul.jpg" style="width: 80px"
-                                        class="colreacherimg" title="Zhang Shuliang">
-                                </div>
-
-                            </div>
-
-                        </marquee>
                     </center>
 
 
@@ -1064,7 +955,7 @@
 
                 <center><q>Not limited to these avatars. Please <a href="" style="color:blue">contact us</a> if you
                         would
-                        like to shown in this banner.</q>
+                        like to be listed in this banner after contributing.</q>
                 </center>
 
 
@@ -1079,30 +970,33 @@
                     <i class="fa fa-cube"></i>
                 </div> -->
                     <!-- <h4>-🤝-</h4> -->
-                    <h2>Accompanies</h2>
+                    <h2>Cooperation partners</h2>
                     <!-- <p>Multi-disciplinary knowledge provided by dispersal modeling researchers. knowledge provided by dispersal modeling researchers.</p> -->
                 </div>
             </div>
             <div id="partnerContainer" style="width:100%" class="el-row">
-                <div class="el-col el-col-6" >
-                    <a href="https://csdms.colorado.edu/wiki/Model_download_portal" target="_blank">
+                <div class="el-col el-col-5" >
+                    <a href="https://csdms.colorado.edu/" target="_blank">
                         <img src="/static/img/team/CSDMS.png" style="width: 80%;height: 50px;margin-top:20px">
                     </a>
 
                 </div>
-                <div class="el-col el-col-6">
+                <div class="el-col el-col-3">
                     <a href="https://www.openmi.org/" target="_blank">
                         <img src="/static/img/team/openMI.png" style="width:180px;height:70px">
                     </a>
                 </div>
-                <div class="el-col el-col-6">
+                <div class="el-col el-col-4">
                     <a href="http://www.opengeospatial.org/" target="_blank">
                         <img src="/static/img/team/ogc.png" style="width:140px;height: 80px;margin-top: 10px">
                     </a>
-
-
                 </div>
-                <div class="el-col el-col-6">
+                <div class="el-col el-col-8">
+                    <a href="http://www.nsfc.gov.cn/" target="_blank">
+                        <img src="/static/img/team/NNSFC.png" style="width:450px;height: 80px;margin-top: 10px">
+                    </a>
+                </div>
+                <div class="el-col el-col-4">
                     <a href="http://www.njnu.edu.cn/" target="_blank">
                         <img src="/static/img/team/NJNU.jpg" style="width: 100px;height: 80px;margin-top: 10px">
                     </a>
@@ -1127,6 +1021,7 @@
     </div>
 
 </body>
+
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/index/bootstrap.min.js"></script>
 

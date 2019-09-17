@@ -149,7 +149,7 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text">
-                        <span th:text="NNU_Group+'.('+${year}+').'+${info.name}+','">
+                        <span th:text="${user.name}+' ('+${year}+'). '+${info.name}+', Data Template, OpenGMS,'">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                         </span>
                         <a th:href="'http://geomodeling.njnu.edu.cn/repository/template/'+${info.oid}"

@@ -6,6 +6,7 @@ import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.RepositoryQueryDTO;
 import njgis.opengms.portal.dto.community.*;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -1037,6 +1038,7 @@ public class RepositoryService {
         }
 
         String lastModifyTime=sdf.format(unit.getLastModifyTime());
+
 
 
         modelAndView.addObject("classifications", classResult);

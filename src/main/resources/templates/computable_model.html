@@ -312,7 +312,8 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text" class="width:100%">
-                            <span th:text="${user.name}+'.('+${year}+').'+${modelInfo.name}+','">
+                        <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Computable Model, OpenGMS,'"></span>
+                            <span th:if="${authorship==''}" th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Computable Model, OpenGMS,'">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
                         <a th:href="'http://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}"

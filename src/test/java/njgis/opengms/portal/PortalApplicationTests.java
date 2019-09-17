@@ -1,5 +1,6 @@
 package njgis.opengms.portal;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
@@ -445,12 +446,43 @@ public class PortalApplicationTests {
                 try {
                     JSONObject jsonObject = XmlTool.documentToJSONObject(computableModel.getMdl());
                     String type=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getString("type");
+                    JSONObject runtime=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0);
                     if(type!=null){
                         jsonObject.getJSONArray("ModelClass").getJSONObject(0).put("style",type);
                     }
                     if(jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
                         jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
                     }
+                    JSONArray HCinsert=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+                    if(HCinsert!=null){
+
+                        JSONArray HCadd= new JSONArray();
+
+                        for(int j=0;j<HCinsert.size();j++){
+                            JSONObject obj=HCinsert.getJSONObject(j);
+                            if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+                                HCadd.add(obj);
+                            }
+                        }
+
+                        runtime.getJSONArray("HardwareConfigures").getJSONObject(0).put("Add",HCadd);
+                    }
+
+                    JSONArray SCinsert=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+                    if(SCinsert!=null){
+
+                        JSONArray SCadd= new JSONArray();
+
+                        for(int j=0;j<HCinsert.size();j++){
+                            JSONObject obj=HCinsert.getJSONObject(j);
+                            if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+                                SCadd.add(obj);
+                            }
+                        }
+
+                        runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).put("Add",SCadd);
+                    }
+
                     computableModel.setMdlJson(jsonObject);
                     computableModelDao.save(computableModel);
                 }
