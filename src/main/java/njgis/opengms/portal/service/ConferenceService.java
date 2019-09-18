@@ -42,7 +42,7 @@ public class ConferenceService {
         result.put("list",conferenceResultDTOPage.getContent());
         result.put("total", conferenceResultDTOPage.getTotalElements());
 
-        System.out.println("ConferenceSercice");
+        System.out.println("ConferenceService");
         return result;
     }
 

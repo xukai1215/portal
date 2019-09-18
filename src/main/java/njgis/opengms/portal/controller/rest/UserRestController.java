@@ -3,12 +3,10 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dto.DescriptionDTO;
-import njgis.opengms.portal.dto.ResearchInterestDTO;
-import njgis.opengms.portal.dto.UserAddDTO;
-import njgis.opengms.portal.dto.UserUpdateDTO;
+import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.DataItemService;
+import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,9 @@ public class UserRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LabService labService;
 
     @Autowired
     DataItemService dataItemService;
@@ -325,8 +326,7 @@ public class UserRestController {
 
     @RequestMapping(value="/updateDescription",method = RequestMethod.POST)
     JsonResult updateUserDescription(@RequestBody DescriptionDTO descriptionDTO, HttpServletRequest httpServletRequest){
-        System.out.println(descriptionDTO);
-        System.out.println("/addDescription");
+        System.out.println("/updateDescription"+descriptionDTO);
         String description=descriptionDTO.getDescription();
         HttpSession httpSession=httpServletRequest.getSession();
         String userName=httpSession.getAttribute("uid").toString();
@@ -353,7 +353,74 @@ public class UserRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value="/updateAffiliation",method = RequestMethod.POST)
+    JsonResult updateUserAffiliation(@RequestBody AffiliationDTO affiliationDTO, HttpServletRequest httpServletRequest){
+        System.out.println("/updateAffiliation"+affiliationDTO);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateAffiliation(affiliationDTO,userName);
 
+        return ResultUtils.success(result);
+    }
 
+    @RequestMapping(value="/updateLab",method = RequestMethod.POST)
+    JsonResult updateUserLab(@RequestBody UserLabDTO labDTO, HttpServletRequest httpServletRequest){
+        System.out.println("/updateLab"+labDTO);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+
+        JSONObject labResult=labService.updateByLabName(labDTO,userName);
+        String result=userService.updateLab(labDTO,userName);
+        System.out.println("labResult"+labResult);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/updateSubjectAreas",method = RequestMethod.POST)
+    JsonResult updateUserSubjectAreas(@RequestBody SubjectAreasDTO subjectAreasDTO, HttpServletRequest httpServletRequest){
+        System.out.println(subjectAreasDTO);
+        System.out.println("/updateSubjectAreas");
+        List<String> subjectAreas=subjectAreasDTO.getSubjectAreas();
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateSubjectAreas(subjectAreas,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/updateEduExperience",method = RequestMethod.POST)
+    JsonResult updateUserEduExperience(@RequestBody EducationExperienceDTO educationExperienceDTO, HttpServletRequest httpServletRequest){
+        System.out.println("/updateEduEx"+educationExperienceDTO);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateEduExperience(educationExperienceDTO,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/updateAwdHonor",method = RequestMethod.POST)
+    JsonResult updateUserEduExperience(@RequestBody AwdHonorDTO awdHonorDTO, HttpServletRequest httpServletRequest){
+        System.out.println("/updateEduEx"+awdHonorDTO);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateAwdHonor(awdHonorDTO,userName);
+
+        return ResultUtils.success(result);
+    }
 
 }

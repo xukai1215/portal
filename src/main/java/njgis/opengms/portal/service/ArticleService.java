@@ -124,7 +124,8 @@ public class ArticleService {
         Article article=articleDao.findFirstByOid(oid);
         if(article!=null){
             articleDao.deleteArticleByOid(oid);
-            userService.modelItemMinusMinus(userName);
+            userService.articleMinusMinus(userName);
+            System.out.println("'delete success");
             return 1;
         }
         else
@@ -150,6 +151,7 @@ public class ArticleService {
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
 
+        System.out.println("articleService");
         return result;
     }
 }

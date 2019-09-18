@@ -21,6 +21,7 @@ new Vue({
 
                 description:'',
                 researchInterests:[],
+                subjectAreas:[],
 
                 pageOption:{
                     progressBar:true,
@@ -30,6 +31,7 @@ new Vue({
                 },
 
                 userPersonalInfo:{
+                    name:'',
                     description:'',
                     subjectAreas:'',
                     affiliation:{
@@ -39,6 +41,23 @@ new Vue({
                         location: '',
                     },
                     researchInterests:[],
+                    eduExperiences:[
+                        {
+                            institution:'',
+                            department:'',
+                            acaDegree:'',
+                            startTime:'',
+                            endTime:'',
+                            location:''
+                        }
+                    ],
+                    awdHonors:[
+                        {
+                            name:'',
+                            awardAgency:'',
+                            awardTime:''
+                        }
+                    ],
                     lab:{
                         name:'',
                         position:'',
@@ -77,27 +96,6 @@ new Vue({
                     result:[],
                 },
 
-                newestArticle:{
-                    result:[],
-                },
-
-                userLab:{
-                    labInfo:[],
-                    labLeader:[],
-                    labMember:[],
-                },
-
-                articleAdd:{
-                    title:'aa',
-                    author:[],
-                    journal:'ss',
-                    startPage:1,
-                    endPage:2,
-                    date:2019,
-                    link:'aa',
-                },
-
-
                 projects:{
                     projectName:'',
                     currentPage:1,
@@ -112,6 +110,43 @@ new Vue({
                     result:[],
                 },
 
+                newestArticle:{
+                    result:[],
+                },
+
+                userLab:{
+                    labInfo:[],
+                    labMember:[],
+                },
+
+                articleToBack:{
+                    title:'aa',
+                    author:[],
+                    journal:'ss',
+                    startPage:1,
+                    endPage:2,
+                    date:2019,
+                    link:'aa',
+                },
+
+                projectToBack:{
+                    name:'',
+                    startTime: '',
+                    endTime:'',
+                    role:'',
+                    fundAgency: '',
+                    amount: 1,
+                },
+
+                conferenceToBack: {
+                    title: '',
+                    theme: '',
+                    role: '',
+                    location: '',
+                    startTime: '',
+                    endTime: '',
+                },
+
                 awardandHonor:{
                     currentPage:1,
                     total:0,
@@ -122,7 +157,40 @@ new Vue({
                     currentPage:1,
                     total:0,
                     result:[],
-                }
+                },
+
+                affiliation:{
+                    name:'',
+                    department:'',
+                    position:'',
+                    location: '',
+                },
+
+                lab:{
+                    name:'',
+                    position:'',
+                },
+
+                eduExperience: {
+                    institution:'',
+                    department:'',
+                    acaDegree:'',
+                    startTime:'',
+                    endTime:'',
+                    location:''
+                },
+
+                awdHonor: {
+                        name:'',
+                        awardAgency:'',
+                        awardTime:''
+                    },
+
+                addorEdit:'Add',
+
+                space:[],
+
+                editOid:'',
             }
         },
 
@@ -194,6 +262,27 @@ new Vue({
         //     this.showIndex=index;
         // },
 
+        articleClick(index){
+            this.bodyIndex=3;
+            this.researchIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            this.articleHandleCurrentChange(1);
+        },
+
+        projectClick(index){
+            this.bodyIndex=3;
+            this.researchIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            this.projectHandleCurrentChange(1);
+        },
+
+        conferenceClick(index){
+            this.bodyIndex=3;
+            this.researchIndex=index;
+            $('html,body').animate({scrollTop: '0px'}, 220);
+            this.conferenceHandleCurrentChange(1);
+        },
+
         labClick(){
             this.bodyIndex=4;
             $('html,body').animate({scrollTop: '0px'}, 200);
@@ -222,6 +311,8 @@ new Vue({
             $('#userAffInstituton').val(this.userPersonalInfo.affiliation.name);
             $('#userAffDepartment').val(this.userPersonalInfo.affiliation.department);
             $('#userAffPosition').val(this.userPersonalInfo.affiliation.position);
+            $('#userAffLocation').val(this.userPersonalInfo.affiliation.location);
+
             $('#userLaboratory').val(this.userPersonalInfo.lab.name);
             if(this.userPersonalInfo.lab.position=="leader"){
                 $("input[type='radio'][name='labPosition'][value='0']").attr("checked",true);
@@ -238,49 +329,143 @@ new Vue({
             for (i = 0; i < tags.length; i++) { $('#userRIS').tagEditor('removeTag', tags[i]); }
             this.researchInterests=tags;
 
+            this.affiliation.name=$('#userAffInstituton').val();
+            this.affiliation.department=$('#userAffDepartment').val();
+            this.affiliation.position=$('#userAffPosition').val();
+            this.affiliation.location=$('#userAffLocation').val();
+
+            this.lab.name=$('userLabName').val();
+            if ($("input[type='radio'][name='labPosition']:checked").val()=='0') {
+                this.lab.position='leader';
+            }
+            else if($("input[type='radio'][name='labPosition']:checked").val()=='1'){
+                this.lab.position='member';
+            }
+            this.descriptionAddToBack();
+            this.researchInterestAddToBack();
+            this.affiliationAddtoBack();
+            // this.labAddtoBack();
+            alert('Save success!')
+
+            // $('#editUserInfo').attr('aria-hidden','true');
+            // $('#editUserInfo').removeClass('fade in');
+            // $('body').removeClass('modal-open');
+            // $('#editUserInfo').addClass('fade');
+            $("#editUserInfo").modal("hide")
+            // $('.modal-backdrop').remove();
+        },
+
+        editPersonalIntroClick(){
+            $('#userIntroDescription').val(this.userPersonalInfo.description);
+            $("#userIntroRIS").tagEditor("destroy");
+            $('#userIntroRIS').tagEditor({
+                initialTags: this.userPersonalInfo.researchInterests,
+                forceLowercase: false,
+            });
+            $("#userIntroSubArea").tagEditor("destroy");
+            $('#userIntroSubArea').tagEditor({
+                initialTags: this.userPersonalInfo.subjectAreas,
+                forceLowercase: false,
+            });
+        },
+
+        savePersonalIntroClick(){
+            this.description=$('#userIntroDescription').val();
+            var tags = $('#userIntroRIS').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#userRIS').tagEditor('removeTag', tags[i]); }
+            this.researchInterests=tags;
+            var tags = $('#userIntroSubArea').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#userIntroSubArea').tagEditor('removeTag', tags[i]); }
+            this.subjectAreas=tags;
 
             this.descriptionAddToBack();
             this.researchInterestAddToBack();
-            // this.affiliationAddtoBack();
-            // this.labAddtoBack();
-            alert('Save success!')
-            $('#editUserInfo').css('display','none')
+            this.subjectAreasAddtoBack();
+
+            alert('Save success!');
+            $("#editUserIntro").modal("hide")
         },
 
-        articleClick(index){
-            this.bodyIndex=3;
-            this.researchIndex=index;
-            $('html,body').animate({scrollTop: '0px'}, 220);
-            this.articleHandleCurrentChange(1);
+        editAffiliationClick(){
+            $('#userAffInstituton').val(this.userPersonalInfo.affiliation.name);
+            $('#userAffDepartment').val(this.userPersonalInfo.affiliation.department);
+            $('#userAffPosition').val(this.userPersonalInfo.affiliation.position);
+            $('#userAffLocation').val(this.userPersonalInfo.affiliation.location);
         },
 
-        projectClick(index){
-            this.bodyIndex=3;
-            this.researchIndex=index;
-            $('html,body').animate({scrollTop: '0px'}, 220);
-            this.projectHandleCurrentChange(1);
+        addAffiliationClick(){
+
         },
 
-        conferenceClick(index){
-            this.bodyIndex=3;
-            this.researchIndex=index;
-            $('html,body').animate({scrollTop: '0px'}, 220);
-            this.conferenceHandleCurrentChange(1);
+        saveAffiliationClick(){
+            this.affiliation.name=$('#userAffInstituton').val();
+            this.affiliation.department=$('#userAffDepartment').val();
+            this.affiliation.position=$('#userAffPosition').val();
+            this.affiliation.location=$('#userAffLocation').val();
+            if(this.affiliation.name.trim()=='')
+                alert("Please insert you institution");
+            else {
+                this.affiliationAddtoBack();
+                alert('Save success!');
+                $("#editUserAffiliation").modal("hide")
+            }
+
         },
 
-        addArticleClick(){
-            this.articleAdd.title=$("#titleInput").val();
-            firstAuthor=$("#firstAuthorInput").val();
-            secAuthor=$("#secAuthorInput").val();
-            this.articleAdd.author[0]=firstAuthor;
-            this.articleAdd.author[1]=secAuthor;
-            this.articleAdd.journal=$("#journalInput").val();
-            this.articleAdd.startPage=$("#startPageInput").val();
-            this.articleAdd.endPage=$("#endPageInput").val();
-            this.articleAdd.date=$("#dateInput").val();
-            this.articleAdd.link=$("#linkInput").val();
-            console.log(this.articleAdd);
-            this.ArticleAddToBack();
+        editLabClick(){
+            $('#userLaboratory').val(this.userPersonalInfo.lab.name);
+            if(this.userPersonalInfo.lab.position=="leader"){
+                $("input[type='radio'][name='labPosition'][value='0']").attr("checked",true);
+            }else if(this.userPersonalInfo.lab.position=="member"){
+                $("input[type='radio'][name='labPosition'][value='1']").attr("checked",true);
+            }
+        },
+
+        addLabClick(){
+
+        },
+
+        saveLabClick(){
+            this.userPersonalInfo.lab.name=$('#userLaboratory').val();
+            if ($("input[type='radio'][name='labPosition']:checked").val()=='0') {
+                this.userPersonalInfo.lab.position='leader';
+            }
+            else if($("input[type='radio'][name='labPosition']:checked").val()=='1'){
+                this.userPersonalInfo.lab.position='member';
+            }
+            if(this.userPersonalInfo.lab.name==''||this.userPersonalInfo.lab.position==''){
+                alert('Please insert your lab name and leader!')
+            }
+            else {
+                this.labAddtoBack();
+                alert('Save success!');
+                $("#editUserLab").modal("hide")
+            }
+
+        },
+
+        saveEduExperience(){
+            this.eduExperience.institution=$('#userEduInstitution').val();
+            this.eduExperience.department=$('#userEduDepartment').val();
+            this.eduExperience.acaDegree=$('#userEduAcaDegree').val();
+            this.eduExperience.startTime=$('#userEduStartTime').val();
+            this.eduExperience.endTime=$('#userEduEndTime').val();
+            this.eduExperience.location=$('#userEduLocation').val();
+
+            this.eduExperienceAddtoBack();
+            alert('Save success!');
+            $("#editEduXpce").modal("hide")
+        },
+
+        saveAwdHonor(){
+            this.awdHonor.name=$('#userAwdName').val();
+            this.awdHonor.awardAgency=$('#userAwdAgency').val();
+            this.awdHonor.awardTime=$('#userAwdTime').val();
+
+            console.log(this.awdHonor);
+            this.awdHonorAddtoBack();
+            alert('Save success!');
+            $("#editAwdHonor").modal("hide")
         },
 
         addDescriptionClick(){
@@ -359,7 +544,7 @@ new Vue({
                         const data = json.data;
                         setTimeout(() => {
                             this.userPersonalInfo = data.userInfo;
-                            console.log(this.userPersonalInfo.researchInterests.length)
+                            console.log(this.userPersonalInfo)
                         }, 0);
                     } else {
                         console.log("UserInfo get wrong.")
@@ -666,67 +851,68 @@ new Vue({
             })
         },
 
-        awardandHonorLoad(val) {
-            this.awardandHonor.currentPage=val;
-            // $('html,body').animate({scrollTop: '0px'}, 220);
-            const hrefs=window.location.href.split("/");
-            $.ajax({
-                type:"GET",
-                url:"/awardandHonor/listByUserOid",
-                data:{
-                    page:this.awardandHonor.currentPage-1,
-                    asc: this.pageOption.sortAsc,
-                    pageSize: 3,
-                    oid:hrefs[hrefs.length-1],
-                },
-                async:true,
-                success:(json)=>{
-                    if(json.code==0){
-                        const data=json.data;
-                        setTimeout(
-                            ()=>{
-                                this.awardandHonor.total=data.total;
-                                this.awardandHonor.result=data.list;
-                                this.pageOption.progressBar=false;
-                            },500)
-                    }else{
-                        console.log("search data item failed.")
-                    }
-                }
-            })
-
-        },
-
-        educationExperienceLoad(val) {
-            this.educationExperience.currentPage=val;
-            // $('html,body').animate({scrollTop: '0px'}, 220);
-            const hrefs=window.location.href.split("/");
-            $.ajax({
-                type:"GET",
-                url:"/educationExperience/listByUserOid",
-                data:{
-                    page:this.educationExperience.currentPage-1,
-                    asc: this.pageOption.sortAsc,
-                    pageSize: 3,
-                    oid:hrefs[hrefs.length-1],
-                },
-                async:true,
-                success:(json)=>{
-                    if(json.code==0){
-                        const data=json.data;
-                        setTimeout(
-                            ()=>{
-                                this.educationExperience.total=data.total;
-                                this.educationExperience.result=data.list;
-                                this.pageOption.progressBar=false;
-                            },500)
-                    }else{
-                        console.log("search data item failed.")
-                    }
-                }
-            })
-
-        },
+        // awardandHonorLoad(val) {
+        //     this.awardandHonor.currentPage=val;
+        //     // $('html,body').animate({scrollTop: '0px'}, 220);
+        //     const hrefs=window.location.href.split("/");
+        //     $.ajax({
+        //         type:"GET",
+        //         url:"/awardandHonor/listByUserOid",
+        //         data:{
+        //             page:this.awardandHonor.currentPage-1,
+        //             asc: this.pageOption.sortAsc,
+        //             pageSize: 3,
+        //             oid:hrefs[hrefs.length-1],
+        //         },
+        //         async:true,
+        //         success:(json)=>{
+        //             if(json.code==0){
+        //                 const data=json.data;
+        //                 setTimeout(
+        //                     ()=>{
+        //                         this.awardandHonor.total=data.total;
+        //                         this.awardandHonor.result=data.list;
+        //                         this.pageOption.progressBar=false;
+        //                     },500)
+        //             }else{
+        //                 console.log("search data item failed.")
+        //             }
+        //         }
+        //     })
+        //
+        // },
+        //
+        // educationExperienceLoad(val) {
+        //     this.educationExperience.currentPage=val;
+        //     // $('html,body').animate({scrollTop: '0px'}, 220);
+        //     const hrefs=window.location.href.split("/");
+        //     $.ajax({
+        //         type:"GET",
+        //         url:"/educationExperience/listByUserOid",
+        //         data:{
+        //             page:this.educationExperience.currentPage-1,
+        //             asc: this.pageOption.sortAsc,
+        //             pageSize: 3,
+        //             oid:hrefs[hrefs.length-1],
+        //         },
+        //         async:true,
+        //         success:(json)=>{
+        //             if(json.code==0){
+        //                 const data=json.data;
+        //                 setTimeout(
+        //                     ()=>{
+        //                         this.educationExperience.total=data.total;
+        //                         this.educationExperience.result=data.list;
+        //                         this.pageOption.progressBar=false;
+        //                         console.log(this.educationExperience.result);
+        //                     },500)
+        //             }else{
+        //                 console.log("search data item failed.")
+        //             }
+        //         }
+        //     })
+        //
+        // },
 
         labLoad(){
             const hrefs=window.location.href.split('/');
@@ -745,13 +931,13 @@ new Vue({
                         setTimeout(
                             ()=>{
                                 this.userLab.labInfo=data.lab;
-                                this.userLab.leader=data.labLeader;
+                                // this.userLab.leader=data.labLeader;
                                 this.userLab.members=data.labMembers;
                                 // this.pageOption.progressBar=false;
                                 console.log(this.userLab.labInfo);
-                                console.log(this.userLab.leader);
+                                // console.log(this.userLab.leader);
                                 console.log(this.userLab.members);
-                            },500)
+                            },200)
                     }else{
                         console.log("search data item failed.")
                     }
@@ -759,32 +945,394 @@ new Vue({
             })
         },
 
-        ArticleAddToBack(){
-            var obj=
-                {
-                    title:this.articleAdd.title,
-                    authors:this.articleAdd.author,
-                    journal:this.articleAdd.journal,
-                    startPage:this.articleAdd.startPage,
-                    endPage:this.articleAdd.endPage,
-                    date:this.articleAdd.date,
-                    link:this.articleAdd.link,
-                }
-            $.ajax({
-                url: "/article/add",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(obj),
+        addArticleClick(){
+            this.addorEdit='Add';
+            $("#articleTitle").val('');
+            $('#articleAuthor').tagEditor('destroy');
+            $('#articleAuthor').tagEditor({
+                initialTags:  [''],
+                forceLowercase: false,
+            });
+            $("#articleJournal").val('');
+            $("#articleStartPage").val('');
+            $("#articleEndPage").val('');
+            $("#articleDate").val('');
+            $("#articleLink").val('');
+        },
 
-                async:true,
-                success:(json)=>{
-                    if(json.code==0){
-                        alert("Add Success");
+        editArticleClick(key,oid){
+            this.addorEdit='Edit';
+            this.editOid=oid;
+            $("#articleTitle").val(this.articles.result[key].title);
+            $('#articleAuthor').tagEditor('destroy');
+            $('#articleAuthor').tagEditor({
+                initialTags: this.articles.result[key].authors,
+                forceLowercase: false,
+            });
+            $("#articleJournal").val(this.articles.result[key].journal);
+            $("#articleStartPage").val(this.articles.result[key].startPage);
+            $("#articleEndPage").val(this.articles.result[key].endPage);
+            $("#articleDate").val(this.articles.result[key].date);
+            $("#articleLink").val(this.articles.result[key].link);
+        },
+
+        updateArticleConfirmClick(){
+
+            this.articleToBack.title=$("#articleTitle").val();
+            var tags = $('#articleAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            this.articleToBack.author=tags;
+            this.articleToBack.journal=$("#articleJournal").val();
+            this.articleToBack.startPage=$("#articleStartPage").val();
+            this.articleToBack.endPage=$("#articleEndPage").val();
+            this.articleToBack.date=$("#articleDate").val();
+            this.articleToBack.link=$("#articleLink").val();
+            // console.log(this.articleToBack);
+            if(this.addorEdit=='Add'){
+                this.ArticleAddToBack();
+            }
+            else if(this.addorEdit=='Edit'){
+                this.editArticle();
+            }
+            $('#articleInfo').modal('hide')
+        },
+
+        addProjectClick(){
+            this.addorEdit='Add';
+            $("#projectName").val('');
+            $('#startTime').tagEditor('destroy');
+            $("#endTime").val('');
+            $("#role").val('');
+            $("#fundAgency").val('');
+            $("#amount").val('');
+        },
+
+        editProjectClick(key,oid){
+            this.editOid=oid;
+            this.addorEdit='Edit';
+            $("#projectName").val(this.projects.result[key].projectName);
+            $("#startTime").val(this.projects.result[key].startTime);
+            $("#endTime").val(this.projects.result[key].endTime);
+            $("#role").val(this.projects.result[key].role);
+            $("#fundAgency").val(this.projects.result[key].fundAgency);
+            $("#amount").val(this.projects.result[key].amount);
+        },
+
+        updateProjectConfirmClick(){
+            this.projectToBack.name=$("#projectName").val();
+            this.projectToBack.startTime=$("#startTime").val();
+            this.projectToBack.endTime=$("#endTime").val();
+            this.projectToBack.role=$("#role").val();
+            this.projectToBack.fundAgency=$("#fundAgency").val();
+            this.projectToBack.amount=$("#amount").val();
+            if(this.addorEdit=='Add'){
+                this.ProjectAddToBack();
+            }
+            else if(this.addorEdit=='Edit'){
+                this.editProject();
+            }
+            $('#projectInfo').modal('hide')
+        },
+
+        addConferenceClick(){
+            this.addorEdit='Add';
+            $("#conferenceTitle").val('');
+            $("#theme").val('');
+            $("#conferStartTime").val('');
+            $("#conferEndTime").val('');
+            $("#conferenceLocation").val('');
+            $("#conferenceRole").val('');
+        },
+
+        editConferenceClick(key,oid){
+            this.editOid=oid;
+            this.addorEdit='Edit';
+            $("#conferenceTitle").val(this.conferences.result[key].title);
+            $("#theme").val(this.conferences.result[key].theme);
+            $("#conferStartTime").val(this.conferences.result[key].startTime);
+            $("#conferEndTime").val(this.conferences.result[key].endTime);
+            $("#conferenceLocation").val(this.conferences.result[key].location);
+            $("#conferenceRole").val(this.conferences.result[key].role);
+        },
+
+        updateConferenceConfirmClick(){
+            this.conferenceToBack.title=$("#conferenceTitle").val();
+            this.conferenceToBack.startTime=$("#conferStartTime").val();
+            this.conferenceToBack.endTime=$("#conferEndTime").val();
+            this.conferenceToBack.role=$("#conferenceRole").val();
+            this.conferenceToBack.theme=$("#theme").val();
+            this.conferenceToBack.role=$("#conferenceRole").val();
+            console.log(this.conferenceToBack)
+            if(this.addorEdit=='Add'){
+                this.ConferenceAddToBack();
+            }
+            else if(this.addorEdit=='Edit'){
+                this.editConference();
+            }
+            $('#conferenceInfo').modal('hide')
+        },
+
+        deleteResearchItemClick(index,oid){
+            console.log(oid);
+            this.deleteResearchItem(index,oid);
+        },
+
+        deleteResearchItem(index,oid){
+            var urls={
+                1:"/article/deleteByOid",
+                2:"/project/deleteByOid",
+                3:"/conference/deleteByOid",
+            }
+            if (confirm("Are you sure to delete this item?")){
+                var url=urls[index];
+                console.log(url,oid);
+                let data={
+                    oid:oid
+                };
+
+                $.ajax({
+                    type:"POST",
+                    url:url,
+                    data:data,
+                    // contentType: "application/json; charset=utf-8",
+                    cache: false,
+                    async: true,
+                    // dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (json) => {
+                        if(json.code==-1){
+                            alert("Please log in first!")
+                        }
+                        else{
+                            if(json.data==1){
+                                alert("delete successfully!")
+                                if(index==1)
+                                    this.articleHandleCurrentChange(1);
+                                if(index==2)
+                                    this.projectHandleCurrentChange(1);
+                                if(index==3)
+                                    this.conferenceHandleCurrentChange(1);
+                            }
+                            else{
+                                alert("delete failed!")
+                            }
+                        }
+
+                    },
+                    error:(json)=>{
+                        console.log(json);
                     }
-                }
 
-            })
 
+
+                })
+            }
+        },
+
+        ArticleAddToBack(){
+            if(this.articleToBack.title.trim()==""||this.articleToBack.author.length==0)
+                alert("Please enter the Title and at least one Author.");
+            else
+            {
+                let obj=
+                    {
+                        title:this.articleToBack.title,
+                        authors:this.articleToBack.author,
+                        journal:this.articleToBack.journal,
+                        startPage:this.articleToBack.startPage,
+                        endPage:this.articleToBack.endPage,
+                        date:this.articleToBack.date,
+                        link:this.articleToBack.link,
+                    }
+                $.ajax({
+                    url: "/article/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Add Success");
+                            this.articleHandleCurrentChange(1);
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+            }
+
+        },
+
+        editArticle(){
+            // var urls={
+            //     1:"/article/editByOid",
+            //     2:"/project/editByOid",
+            //     3:"/conference/editByOid",
+            // }
+            // var url=urls[this.researchIndex];
+            if(this.articleToBack.title.trim()==""||this.articleToBack.author.length==0)
+                alert("Please enter the Title and at least one Author.");
+            else {
+                let obj =
+                    {
+                        title:this.articleToBack.title,
+                        authors:this.articleToBack.author,
+                        journal:this.articleToBack.journal,
+                        startPage:this.articleToBack.startPage,
+                        endPage:this.articleToBack.endPage,
+                        date:this.articleToBack.date,
+                        link:this.articleToBack.link,
+                        oid:this.editOid,
+                    }
+                $.ajax({
+                    url: "/article/editByOid",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Edit Success");
+                            this.articleHandleCurrentChange(1);
+                        } else alert("Edit Error");//此处error信息不明确，记得后加
+                    }
+                })
+            }
+        },
+
+        ProjectAddToBack(){
+            if(this.projectToBack.name.trim()=="")
+                alert("Please enter the project Name.");
+            else
+            {
+                let obj=
+                    {
+                        projectName:this.projectToBack.name,
+                        startTime:this.projectToBack.startTime,
+                        endTime:this.projectToBack.endTime,
+                        role:this.projectToBack.role,
+                        fundAgency:this.projectToBack.fundAgency,
+                        amount:this.projectToBack.amount,
+                    }
+                $.ajax({
+                    url: "/project/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Add Success");
+                            this.projectHandleCurrentChange(1);
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+            }
+
+        },
+
+        editProject(){
+            if(this.projectToBack.name.trim()=="")
+                alert("Please enter the project Name.");
+            else {
+                let obj =
+                    {
+                        projectName:this.projectToBack.name,
+                        startTime:this.projectToBack.startTime,
+                        endTime:this.projectToBack.endTime,
+                        role:this.projectToBack.role,
+                        fundAgency:this.projectToBack.fundAgency,
+                        amount:this.projectToBack.amount,
+                        oid:this.editOid,
+                    }
+                $.ajax({
+                    url: "/project/editByOid",
+                    type: "POST",
+                    contentType: "application/json",
+                    data:  JSON.stringify(obj),
+
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Edit Success");
+                            this.projectHandleCurrentChange(1);
+                        } else alert("Edit Error");//此处error信息不明确，记得后加
+                    }
+                })
+            }
+        },
+
+        ConferenceAddToBack(){
+            if(this.conferenceToBack.title=="")
+                alert("Please enter the project name.");
+            else
+            {
+                let obj=
+                    {
+                        title:this.conferenceToBack.title,
+                        theme:this.conferenceToBack.theme,
+                        conferenceRole:this.conferenceToBack.role,
+                        location:this.conferenceToBack.location,
+                        startTime:this.conferenceToBack.startTime,
+                        endTime:this.conferenceToBack.endTime
+                    }
+                $.ajax({
+                    url: "/conference/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Add Success");
+                            this.conferenceHandleCurrentChange(1);
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+            }
+
+        },
+
+        editConference(){
+            if(this.conferenceToBack.title.trim()=="")
+                alert("Please enter the conference Title.");
+            else {
+                let obj =
+                    {
+                        title:this.conferenceToBack.title,
+                        theme:this.conferenceToBack.theme,
+                        conferenceRole:this.conferenceToBack.role,
+                        location:this.conferenceToBack.location,
+                        startTime:this.conferenceToBack.startTime,
+                        endTime:this.conferenceToBack.endTime,
+                        oid:this.editOid,
+                    }
+                $.ajax({
+                    url: "/conference/editByOid",
+                    type: "POST",
+                    contentType: "application/json",
+                    data:  JSON.stringify(obj),
+
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Edit Success");
+                            this.conferenceHandleCurrentChange(1);
+                        } else alert("Edit Error");//此处error信息不明确，记得后加
+                    }
+                })
+            }
         },
 
         descriptionAddToBack(){
@@ -826,28 +1374,121 @@ new Vue({
 
         },
 
-        // affiliationAddtoBack(){
-        //     var  obj={
-        //         name:this.affiliation.name,
-        //         department: this.affiliation.department,
-        //         position:this.affiliation.position,
-        //         location:this.affiliation.location
-        //     };
-        //     $.ajax({
-        //         data:JSON.stringify(obj),
-        //         url:"/affiliation/add",
-        //         type:'POST',
-        //         async:true,
-        //         contentType: "application/json",
-        //         success:(json)=>{
-        //             if(json.code==0){
-        //                 this.getUserInfo();
-        //                 // alert("Add Success");
-        //             }
-        //         }
-        //
-        //     })
-        // }
+        affiliationAddtoBack(){
+            var  obj={
+                name:this.affiliation.name,
+                department: this.affiliation.department,
+                position:this.affiliation.position,
+                location:this.affiliation.location
+            };
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateAffiliation",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+        },
+
+        labAddtoBack(){
+            var  obj={
+                name:this.userPersonalInfo.lab.name,
+                position:'member'
+            };
+            console.log(obj)
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateLab",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        this.labLoad();
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+        },
+
+        subjectAreasAddtoBack(){
+            var  obj={
+                subjectAreas:this.subjectAreas,
+            };
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateSubjectAreas",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+        },
+
+        eduExperienceAddtoBack(){
+            var  obj={
+                institution:this.eduExperience.institution,
+                department:this.eduExperience.department,
+                acaDegree: this.eduExperience.acaDegree,
+                startTime: this.eduExperience.startTime,
+                endTime:this.eduExperience.endTime,
+                location:this.eduExperience.location
+            };
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateEduExperience",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+
+        },
+
+        awdHonorAddtoBack(){
+            var  obj={
+                name:this.awdHonor.name,
+                awardAgency:this.awdHonor.awardAgency,
+                awardTime:this.awdHonor.awardTime
+            };
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateAwdHonor",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+
+        },
 
     },
 
@@ -862,8 +1503,8 @@ new Vue({
         this.projectHandleCurrentChange(1);
         this.conferenceHandleCurrentChange(1);
         this.articleNewestLoad();
-        this.awardandHonorLoad(1);
-        this.educationExperienceLoad(1);
+        // this.awardandHonorLoad(1);
+        // this.educationExperienceLoad(1);
         this.labLoad();
     },
 
@@ -879,7 +1520,21 @@ new Vue({
             placeholder:"Press enter after import one item.",
         })
 
+        $("#userIntroRIS").tagEditor({
+            forceLowercase: false,
+            placeholder:"Press enter after import one item.",
+        })
 
+        $("#userIntroSubArea").tagEditor({
+                forceLowercase: false,
+                placeholder:"Press enter after import one item.",
+            }
+
+        )
+
+        $("#articleAuthor").tagEditor({
+            forceLowercase: false
+        })
 
         // window.document.onclick(){
         //

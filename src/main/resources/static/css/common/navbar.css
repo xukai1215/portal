@@ -161,6 +161,8 @@
     text-decoration: none;
     overflow: hidden;
     transition:.5s;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
 .zmax{
@@ -209,6 +211,8 @@
     text-decoration: none;
     overflow: hidden;
     transition:.5s;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
 .phoneSubSUb li{

@@ -75,13 +75,18 @@ public class ArticleRestController {
     }
 
     @RequestMapping(value="/deleteByOid",method=RequestMethod.POST)
-    public JsonResult deleteByOid(String oid,HttpServletRequest request){
+    public JsonResult deleteByOid(@RequestParam(value="oid") String oid, HttpServletRequest request){
+
         HttpSession session=request.getSession();
         String userName=session.getAttribute("uid").toString();
+
+        System.out.println("/deleteByOid"+oid+userName);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }else{
-            return ResultUtils.success(articleService.deleteByOid(oid,userName));
+            JsonResult result= ResultUtils.success(articleService.deleteByOid(oid,userName));
+            System.out.println(result);
+            return result;
         }
     }
 

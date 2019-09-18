@@ -303,7 +303,7 @@ var vue = new Vue({
         },
 
         ArticleAddToBack(){
-            if(this.articleToBack.title==""||this.articleToBack.author=="")
+            if(this.articleToBack.title.trim()==""||this.articleToBack.author.length=="")
                 alert("Please enter the Title and at least one Author.");
             else
                 {
