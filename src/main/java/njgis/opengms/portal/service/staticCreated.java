@@ -1,9 +1,14 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.entity.DataItem;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -19,6 +24,15 @@ public class staticCreated {//implements ApplicationRunner {
 
     @Autowired
     DataItemService dataItemService;
+
+    @Autowired
+    ModelItemService modelItemService;
+
+    @Autowired
+    UserService userService;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
     /***
      * 启动项目生成静态html,data items
@@ -68,8 +82,54 @@ public class staticCreated {//implements ApplicationRunner {
             List<DataItem> allId=dataItemService.generatehtmls(j);
 
             for (int i = 0; i <allId.size() ; i++) {
+
+                DataItem dataItem=dataItemService.getById(allId.get(i).getId());
+
+                //用户信息
+
+                JSONObject userJson = userService.getItemUserInfoByOid(dataItem.getAuthor());
+
+                //authorship
+                String authorshipString="";
+                List<AuthorInfo> authorshipList=dataItem.getAuthorship();
+                if(authorshipList!=null){
+                    for (AuthorInfo author:authorshipList
+                            ) {
+                        if(authorshipString.equals("")){
+                            authorshipString+=author.getName();
+                        }
+                        else{
+                            authorshipString+=", "+author.getName();
+                        }
+
+                    }
+                }
+                //related models
+                JSONArray modelItemArray=new JSONArray();
+                List<String> relatedModels=dataItem.getRelatedModels();
+                if(relatedModels!=null) {
+                    for (String oid : relatedModels) {
+                        try {
+                            ModelItem modelItem = modelItemService.getByOid(oid);
+                            JSONObject modelItemJson = new JSONObject();
+                            modelItemJson.put("name", modelItem.getName());
+                            modelItemJson.put("oid", modelItem.getOid());
+                            modelItemJson.put("description", modelItem.getDescription());
+                            modelItemJson.put("image", modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+                            modelItemArray.add(modelItemJson);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
                 Context context=new Context();
-                context.setVariable("datainfo",ResultUtils.success(dataItemService.getById(allId.get(i).getId())));
+                context.setVariable("datainfo",ResultUtils.success(dataItem));
+                context.setVariable("user",userJson);
+                context.setVariable("relatedModels",modelItemArray);
+                context.setVariable("authorship",authorshipString);
 
 
                 FileWriter writer=new FileWriter(path+"/templates/dataItems/"+allId.get(i).getId()+".html");

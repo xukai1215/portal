@@ -47,8 +47,26 @@ var  data_item_info= new Vue({
             searchAddModelPage:0,
 
             selectedModels:[],
-            selectedModelsOid:[]
+            selectedModelsOid:[],
 
+            //Relation 弹出框
+            dialogTableVisible:false,
+            relateSearch:"",
+            relateType:"",
+            relateTitle:"",
+            tableMaxHeight:400,
+            tableData: [],
+
+            pageOption: {
+                paginationShow:false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
+
+                total: 264,
+                searchResult: [],
+            },
 
 
 
@@ -56,6 +74,188 @@ var  data_item_info= new Vue({
         
     } ,
     methods: {
+
+        //Relation 相关
+        getRelation(){
+            //从地址栏拿到oid
+            let arr=window.location.href.split("/");
+            let id=arr[arr.length-1].split("#")[0];
+            let data = {
+                id:id,
+            };
+            $.ajax({
+                type: "GET",
+                url: "/dataItem/getRelation",
+                data: data,
+                async: true,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.tableData=data;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+        handlePageChange(val) {
+
+            this.pageOption.currentPage = val;
+
+            this.search();
+        },
+
+        handleDelete(index,row){
+            console.log(index,row);
+            let table=new Array();
+            for(i=0;i<this.tableData.length;i++){
+                table.push(this.tableData[i]);
+            }
+            table.splice(index,1);
+            this.tableData=table;
+
+        },
+
+        handleEdit(index,row){
+            console.log(row);
+            let flag=false;
+            for(i=0;i<this.tableData.length;i++){
+                let tableRow=this.tableData[i];
+                if(tableRow.oid==row.oid){
+                    flag=true;
+                    break;
+                }
+            }
+            if(!flag){
+                this.tableData.push(row);
+            }
+        },
+
+        confirm(){
+            //从地址栏拿到oid
+            let arr=window.location.href.split("/");
+            let id=arr[arr.length-1].split("#")[0];
+
+            let relateArr=[];
+            this.tableData.forEach(function(item,index){
+                relateArr.push(item.oid);
+            })
+            if(relateArr.length==0){
+                relateArr.push(null);
+            }
+
+            var data = {
+                id:id,
+                relations:relateArr
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/dataItem/setRelation",
+                data: data,
+                async: true,
+                success: (json) => {
+                    alert("Success!");
+                    this.dialogTableVisible=false;
+                    window.location.reload();
+                },
+                error:(json)=>{
+                    alert("Error!")
+                }
+            })
+        },
+
+        handleClose(done) {
+            this.$confirm('Are you sure to close？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {});
+        },
+
+        addRelation(order){
+
+            this.tableData=[];
+            this.pageOption.searchResult=[];
+            this.relateSearch="";
+            this.getRelation();
+            this.search();
+            this.dialogTableVisible=true;
+        },
+        jump(){
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields:{
+                    withCredentials: true
+                },
+                crossDomain:true,
+                success: (data) => {
+                    data=JSON.parse(data);
+                    if (data.oid == "") {
+                        alert("Please login first");
+                        window.location.href = "/user/login";
+                    }
+                    else{
+                        // let arr=window.location.href.split("/");
+                        // let bindOid=arr[arr.length-1].split("#")[0];
+                        // this.setSession("bindOid",bindOid);
+
+                        window.open("/user/userSpace", "_blank")
+
+                    }
+                }
+            })
+        },
+        search(){
+            var data = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage - 1,
+                pageSize: this.pageOption.pageSize,
+                searchText: this.relateSearch,
+                sortType:"default",
+                classifications: ["all"],
+            };
+            let url,contentType;
+
+                    url="/modelItem/list";
+                    contentType="application/x-www-form-urlencoded";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                async: true,
+                contentType:contentType,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption.total = data.total;
+                        this.pageOption.pages = data.pages;
+                        this.pageOption.searchResult = data.list;
+                        this.pageOption.users = data.users;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow=true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+        //end relation
+
+
         handleDownload(index,row){
             // console.log(index,row);
         },
@@ -427,14 +627,14 @@ var  data_item_info= new Vue({
             var that=this;
             this.dataCategory=[];
             let curentId=document.location.href.split("/");
-            axios.get("/dataItem/category/",{
-                params:{
-                    id:curentId[curentId.length-1]
-                }
-            })
-                .then(res=>{
-                   that.dataCategory=res.data.data;
-                })
+            // axios.get("/dataItem/category/",{
+            //     params:{
+            //         id:curentId[curentId.length-1]
+            //     }
+            // })
+            //     .then(res=>{
+            //        that.dataCategory=res.data.data;
+            //     })
         },
         clickDataItemInfo(id){
             //todo jump to the dataitems,and choose the id category
@@ -450,7 +650,7 @@ var  data_item_info= new Vue({
             return curentId[0]+"//"+curentId[2]+"/modelItem/"+item.oid;
         },
         handleClose(done) {
-            this.$confirm('are u sure close this dialog？')
+            this.$confirm('Are you sure to close this dialog？')
                 .then(_ => {
                     done();
                 })
@@ -719,24 +919,20 @@ var  data_item_info= new Vue({
         var url=currenturl.split("/")
         this.currentDataId=url[url.length-1]
 
-        var cite=document.getElementById("citeurl");
-        cite.src='http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
-        cite.innerText='<http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
-
-
+        // var cite=document.getElementById("citeurl");
+        // cite.src='http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
+        // cite.innerText='<http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
 
         var dataitemid=currenturl.split("/");
         var alldata=new Array();
 
-
-
-        axios.get("/dataItem/viewcount",{
-            params:{
-                    id:dataitemid[dataitemid.length-1]
-                    }
-        }).then(res=>{
-            that.viewCount=res.data
-        })
+        // axios.get("/dataItem/viewcount",{
+        //     params:{
+        //             id:dataitemid[dataitemid.length-1]
+        //             }
+        // }).then(res=>{
+        //     that.viewCount=res.data
+        // })
 
 
         var that=this;
@@ -776,37 +972,22 @@ var  data_item_info= new Vue({
                 that.useroid=res.data.oid;
             })
 
-        axios.get("/dataItem/briefrelatedmodels",{
-            params:{
-                id:dataitemid[dataitemid.length-1]
-            }
-        })
-            .then((res)=>{
-                that.related3Models=res.data.data
-
-                if(that.related3Models.length===0){
-                    that.relatedModelIsNull =true;
-                    that.relatedModelNotNull=false
-                }else {
-                    that.relatedModelNotNull=true
-                    that.relatedModelIsNull=false;
-                }
-            })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // axios.get("/dataItem/briefrelatedmodels",{
+        //     params:{
+        //         id:dataitemid[dataitemid.length-1]
+        //     }
+        // })
+        //     .then((res)=>{
+        //         that.related3Models=res.data.data
+        //
+        //         if(that.related3Models.length===0){
+        //             that.relatedModelIsNull =true;
+        //             that.relatedModelNotNull=false
+        //         }else {
+        //             that.relatedModelNotNull=true
+        //             that.relatedModelIsNull=false;
+        //         }
+        //     })
 
         new QRCode(document.getElementById("qrcode"), {
             text: window.location.href,

@@ -331,13 +331,20 @@ var vue = new Vue({
             unitObj.detail = detail.trim();
             console.log(unitObj)
 
+            let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
+                let file = new File([JSON.stringify(unitObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/addUnit",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(unitObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
 
                         if (result.code == "0") {
@@ -350,12 +357,18 @@ var vue = new Vue({
                 })
             } else {
                 unitObj["oid"] = oid;
+                let file = new File([JSON.stringify(unitObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/updateUnit",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(unitObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
 
                     success: function (result) {
                         if (result.code === 0) {

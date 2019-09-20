@@ -1,18 +1,23 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.models.auth.In;
-import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.datacontainer.AddDataResource;
+import njgis.opengms.portal.dao.CategoryDao;
+import njgis.opengms.portal.dao.ModelItemDao;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.comments.CommentsAddDTO;
 import njgis.opengms.portal.dto.comments.CommentsUpdateDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
-import njgis.opengms.portal.dto.dataItem.DataitemClassificationsDTO;
+import njgis.opengms.portal.entity.Categorys;
+import njgis.opengms.portal.entity.DataItem;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.service.DataItemService;
+import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName DataItemController
@@ -51,10 +49,22 @@ public class DataItemRestController {
     DataItemService dataItemService;
 
     @Autowired
+    ModelItemService modelItemService;
+
+    @Autowired
+    ModelItemDao modelItemDao;
+
+    @Autowired
+    CategoryDao categoryDao;
+
+    @Autowired
     UserService userService;
 
     @Value ("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
 
 //data item start
@@ -94,7 +104,11 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.listBySearch(dataItemFindDTO));
     }
 
-
+    //kai's function
+    @RequestMapping(value="/searchByName",method = RequestMethod.POST)
+    JsonResult searchByName(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO));
+    }
 
     /**
      * dataItems页面，分页和分类的唯一标识
@@ -124,6 +138,25 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.getHubs(hubnbm));
     }
 
+    @RequestMapping(value="/getRelation",method = RequestMethod.GET)
+    JsonResult getRelation(@RequestParam(value = "id") String id){
+
+        JSONArray result=dataItemService.getRelation(id);
+
+        return ResultUtils.success(result);
+
+    }
+
+    @RequestMapping(value="/setRelation",method = RequestMethod.POST)
+    JsonResult setRelation(@RequestParam(value="id") String id,
+                           @RequestParam(value = "relations[]") List<String> relations){
+
+        String result=dataItemService.setRelation(id,relations);
+
+        return ResultUtils.success(result);
+
+    }
+
 
 
 //data item end
@@ -145,7 +178,72 @@ public class DataItemRestController {
 
         ModelAndView view = new ModelAndView();
 
-        view.setViewName("/dataItems/"+id);
+//        view.setViewName("/dataItems/"+id);
+
+        DataItem dataItem=dataItemService.getById(id);
+
+        //用户信息
+
+        JSONObject userJson = userService.getItemUserInfoByOid(dataItem.getAuthor());
+
+        //authorship
+        String authorshipString="";
+        List<AuthorInfo> authorshipList=dataItem.getAuthorship();
+        if(authorshipList!=null){
+            for (AuthorInfo author:authorshipList
+                    ) {
+                if(authorshipString.equals("")){
+                    authorshipString+=author.getName();
+                }
+                else{
+                    authorshipString+=", "+author.getName();
+                }
+
+            }
+        }
+        //related models
+        JSONArray modelItemArray=new JSONArray();
+        List<String> relatedModels=dataItem.getRelatedModels();
+        if(relatedModels!=null) {
+            for (String mid : relatedModels) {
+                try {
+                    ModelItem modelItem = modelItemDao.findFirstById(mid);
+                    JSONObject modelItemJson = new JSONObject();
+                    modelItemJson.put("name", modelItem.getName());
+                    modelItemJson.put("oid", modelItem.getOid());
+                    modelItemJson.put("description", modelItem.getDescription());
+                    modelItemJson.put("image", modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+                    modelItemArray.add(modelItemJson);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        //category
+        List<String> classifications=new ArrayList<>();
+        List<String> categories=dataItem.getClassifications();
+        for(String category:categories){
+            Categorys categorys=categoryDao.findFirstById(category);
+            String name=categorys.getCategory();
+            if(name.equals("...All")){
+                Categorys categorysParent=categoryDao.findFirstById(categorys.getParentCategory());
+                classifications.add(categorysParent.getCategory());
+            }
+            else{
+                classifications.add(name);
+            }
+        }
+
+        view.setViewName("data_item_info");
+        view.addObject("datainfo",ResultUtils.success(dataItem));
+        view.addObject("user",userJson);
+        view.addObject("classifications",classifications);
+        view.addObject("relatedModels",modelItemArray);
+        view.addObject("authorship",authorshipString);
+
         return view;
     }
 

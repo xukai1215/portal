@@ -1,33 +1,13 @@
 
-.list_panel{
-     border:#e6e6e6 1px solid;
-     border-style:none none solid none;
-     /*margin: 0 15px;*/
-     padding: 15px;
- }
 
-.list_panel:last-child{
-    border:#e6e6e6 1px none;
-    /*margin: 0 15px;*/
-    padding: 15px;
-    margin-bottom:-15px;
-}
 
-.list_panel:first-child{
-    border:#e6e6e6 1px none;
-    border-style:none none solid none;
-    /*margin: 0 15px;*/
-    padding: 15px;
-    margin-top:-10px;
-}
+/*!*每一项related model 的card*!*/
+/*.models_margin_style{*/
+    /*margin-top: 10px;*/
+    /*margin-bottom: 10px;*/
+/*}*/
 
-/*每一项related model 的card*/
-.models_margin_style{
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-/* 挑到related模型*/
-.selectedModels{
-    border: orange 2px solid;
-}
+/*!* 挑到related模型*!*/
+/*.selectedModels{*/
+    /*border: orange 2px solid;*/
+/*}*/

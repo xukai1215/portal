@@ -86,6 +86,9 @@ public class ModelItemService {
     @Autowired
     UnitDao unitDao;
 
+    @Autowired
+    DataItemDao dataItemDao;
+
 
 
     @Value("${resourcePath}")
@@ -303,6 +306,20 @@ public class ModelItemService {
             }
         }
 
+        JSONArray dataItemArray=new JSONArray();
+        List<String> dataItems=modelInfo.getRelatedData();
+        if(dataItems!=null){
+            for(String dataId:dataItems){
+                DataItem dataItem=dataItemDao.findFirstById(dataId);
+                JSONObject dataJson=new JSONObject();
+                dataJson.put("name",dataItem.getName());
+                dataJson.put("id",dataItem.getId());
+                dataJson.put("description",dataItem.getDescription());
+                dataItemArray.add(dataJson);
+            }
+        }
+
+
         //用户信息
         JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
 
@@ -363,6 +380,7 @@ public class ModelItemService {
         modelAndView.addObject("spatialReferences",spatialReferenceArray);
         modelAndView.addObject("templates",templateArray);
         modelAndView.addObject("units",unitArray);
+        modelAndView.addObject("dataItems",dataItemArray);
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("authorship", authorshipString);
         modelAndView.addObject("lastModifier", modifierJson);
@@ -567,6 +585,19 @@ public class ModelItemService {
         List<String> list=new ArrayList<>();
 
         switch (type){
+            case "dataItem":
+                list=modelItem.getRelatedData();
+                if(list!=null){
+                    for(String id:list){
+                        DataItem dataItem=dataItemDao.findFirstById(id);
+                        JSONObject item=new JSONObject();
+                        item.put("oid",dataItem.getId());
+                        item.put("name",dataItem.getName());
+                        item.put("author",userService.getByOid(dataItem.getAuthor()));
+                        result.add(item);
+                    }
+                }
+                break;
             case "modelItem":
                 list=relation.getModelItems();
                 if(list!=null) {
@@ -683,6 +714,9 @@ public class ModelItemService {
         ModelItemRelate relate=modelItem.getRelate();
 
         switch (type){
+            case "dataItem":
+                modelItem.setRelatedData(relations);
+                break;
             case "modelItem":
                 relate.setModelItems(relations);
                 break;
@@ -845,8 +879,11 @@ public class ModelItemService {
             userObj.put("oid",user.getOid());
             userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
             userObj.put("name",user.getName());
-            modelItems.get(i).setAuthor(user.getName());
+
             users.add(userObj);
+
+            modelItems.get(i).setAuthor(user.getName());
+
         }
 
         obj.put("list", modelItems);

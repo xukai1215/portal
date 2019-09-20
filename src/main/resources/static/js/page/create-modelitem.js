@@ -871,13 +871,20 @@ var vue = new Vue({
             modelItemObj.detail = detail.trim();
             console.log(modelItemObj)
 
+            let formData=new FormData();
+
             if ((oid === "0") || (oid === "") || (oid == null)) {
+                let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info",file);
                 $.ajax({
                     url: "/modelItem/add",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(modelItemObj),
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
 
                         if (result.code == "0") {
@@ -889,13 +896,20 @@ var vue = new Vue({
                     }
                 })
             } else {
+
                 modelItemObj["oid"] = oid;
+
+                let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info",file);
                 $.ajax({
                     url: "/modelItem/update",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(modelItemObj),
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
 
                     success: function (result) {
                         if (result.code === 0) {

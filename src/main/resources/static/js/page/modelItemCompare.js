@@ -153,7 +153,7 @@ new Vue({
             return curentId[0]+"//"+curentId[2]+"/dataItem/"+item.id;
         },
         handleClose(done) {
-            this.$confirm('are u sure close this dialog？')
+            this.$confirm('Are you sure to close this dialog？')
                 .then(_ => {
                     done();
                 })

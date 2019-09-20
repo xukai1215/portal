@@ -428,17 +428,18 @@ public class ComputableModelService {
                         computableModel.setMdl(content);
                         JSONObject mdlJson = XmlTool.documentToJSONObject(content);
                         //处理mdl格式错误
-                        JSONObject runtime=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0);
+                        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+                        JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
 
-                        String type=mdlJson.getJSONArray("ModelClass").getJSONObject(0).getString("type");
+                        String type=modelClass.getString("type");
                         if(type!=null){
-                            mdlJson.getJSONArray("ModelClass").getJSONObject(0).put("style",type);
+                            modelClass.put("style",type);
                         }
-                        if(mdlJson.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
-                            mdlJson.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+                        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+                            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
                         }
 
-                        JSONArray HCinsert=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+                        JSONArray HCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
                         if(HCinsert!=null){
 
                             JSONArray HCadd= new JSONArray();
@@ -453,7 +454,7 @@ public class ComputableModelService {
                             runtime.getJSONArray("HardwareConfigures").getJSONObject(0).put("Add",HCadd);
                         }
 
-                        JSONArray SCinsert=jsonObject.getJSONArray("ModelClass").getJSONObject(0).getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+                        JSONArray SCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
                         if(SCinsert!=null){
 
                             JSONArray SCadd= new JSONArray();
@@ -467,6 +468,11 @@ public class ComputableModelService {
 
                             runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).put("Add",SCadd);
                         }
+
+                        modelClass.getJSONArray("Runtime").remove(0);
+                        modelClass.getJSONArray("Runtime").add(runtime);
+                        mdlJson.getJSONArray("ModelClass").remove(0);
+                        mdlJson.getJSONArray("ModelClass").add(modelClass);
                         //End
                         computableModel.setMdlJson(mdlJson);
                     } else {

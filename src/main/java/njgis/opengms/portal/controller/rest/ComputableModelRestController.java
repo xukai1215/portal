@@ -12,6 +12,7 @@ import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -51,10 +53,12 @@ public class ComputableModelRestController {
 
 
     @RequestMapping (value="/add",method = RequestMethod.POST)
-    JsonResult add(@RequestParam("computableModel") String model, HttpServletRequest request){
+    JsonResult add(HttpServletRequest request) throws IOException {
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files=multipartRequest.getFiles("resources");
+        MultipartFile file=multipartRequest.getFile("computableModel");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
         JSONObject jsonObject=JSONObject.parseObject(model);
 
         HttpSession session=request.getSession();
@@ -70,10 +74,12 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping (value="/update",method = RequestMethod.POST)
-    JsonResult update(@RequestParam("computableModel") String model, HttpServletRequest request){
+    JsonResult update(HttpServletRequest request) throws IOException {
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files=multipartRequest.getFiles("resources");
+        MultipartFile file=multipartRequest.getFile("computableModel");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
         JSONObject jsonObject=JSONObject.parseObject(model);
 
         HttpSession session=request.getSession();

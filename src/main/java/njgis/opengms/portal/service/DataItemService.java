@@ -1,5 +1,7 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
@@ -8,6 +10,7 @@ import njgis.opengms.portal.dto.comments.CommentsAddDTO;
 import njgis.opengms.portal.dto.comments.CommentsUpdateDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -15,6 +18,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -49,6 +53,9 @@ public class DataItemService {
 
     @Autowired
     UserDao userDao;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
 
 
     public void update(String id, DataItemUpdateDTO dataItemUpdateDTO) {
@@ -455,12 +462,79 @@ public class DataItemService {
 
     }
 
+    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO){
+
+        int page= dataItemFindDTO.getPage();
+        int pageSize = dataItemFindDTO.getPageSize();
+        String searchText = dataItemFindDTO.getSearchContent().get(0);
+
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<DataItemResultDTO> dataItemPage=dataItemDao.findByNameLike(pageable,searchText);
+
+        List<DataItemResultDTO> dataItems=dataItemPage.getContent();
+        JSONArray users=new JSONArray();
+
+        for(int i=0;i< dataItems.size();i++){
+            DataItemResultDTO dataItem=dataItems.get(i);
+            String oid=dataItem.getAuthor();
+            User user=userDao.findFirstByOid(oid);
+            JSONObject userObj=new JSONObject();
+            userObj.put("oid",user.getOid());
+            userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
+            userObj.put("name",user.getName());
+            users.add(userObj);
+
+            dataItems.get(i).setAuthor(user.getName());
+            dataItems.get(i).setOid(dataItem.getId());
+
+        }
+
+        JSONObject result=new JSONObject();
+        result.put("list", dataItems);
+        result.put("total", dataItemPage.getTotalElements());
+        result.put("pages", dataItemPage.getTotalPages());
+        result.put("users",users);
+
+        return result;
+
+    }
+
 
 
     //分类
 
+    public JSONObject findByCategory(String categorysId,Integer page,boolean asc,Integer pageSize){
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        List<String> cates=new ArrayList<>();
+        cates.add(categorysId);
+        Page<DataItemResultDTO> dataItemResultDTOPage = dataItemDao.findByClassificationsIn(pageable,cates);
+        List<DataItemResultDTO> dataItemResultDTOList=dataItemResultDTOPage.getContent();
 
-    public Page<Map<String,Object>>findByCateg(String categorysId,Integer page,boolean asc,Integer pageSize){
+        JSONArray users=new JSONArray();
+        for(DataItemResultDTO data:dataItemResultDTOList){
+            String author=data.getAuthor();
+            User user=userDao.findFirstByOid(author);
+            JSONObject userJson=new JSONObject();
+            userJson.put("name",user.getName());
+            userJson.put("oid",user.getOid());
+            String img=user.getImage();
+            userJson.put("image",img.equals("")?"":htmlLoadPath+user.getImage());
+            users.add(userJson);
+        }
+
+        JSONObject result=new JSONObject();
+        result.put("content",dataItemResultDTOPage.getContent());
+        result.put("totalElements",dataItemResultDTOPage.getTotalElements());
+        result.put("users",users);
+
+        return result;
+
+    }
+
+
+    public JSONObject findByCateg(String categorysId,Integer page,boolean asc,Integer pageSize){
 
 
         List<String> category= new ArrayList<>();
@@ -503,21 +577,29 @@ public class DataItemService {
 
 
         //从dataItem中取得项
-        for(int i=start;i<end;i++){
+        JSONArray users=new JSONArray();
+        for(int i=start;i<end;i++) {
 
-            everyData=new HashMap<>();
-            it=getById(category.get(i));
-            everyData.put("name",it.getName());
-            everyData.put("id",it.getId());
-            everyData.put("description",it.getDescription());
-            everyData.put("keywords",it.getKeywords());
-            everyData.put("createTime",it.getCreateTime());
-            everyData.put("viewCount",it.getViewCount());
+            everyData = new HashMap<>();
+            it = getById(category.get(i));
+            everyData.put("name", it.getName());
+            everyData.put("id", it.getId());
+            everyData.put("description", it.getDescription());
+            everyData.put("keywords", it.getKeywords());
+            everyData.put("createTime", it.getCreateTime());
+            everyData.put("viewCount", it.getViewCount());
 
-            User user=userDao.findFirstByOid(getById(category.get(i)).getAuthor());
-            everyData.put("author",user.getName());
-            everyData.put("image",user.getImage());
-                resultList.add( everyData);
+            User user = userDao.findFirstByOid(getById(category.get(i)).getAuthor());
+            JSONObject userJson = new JSONObject();
+            userJson.put("name", user.getName());
+            userJson.put("oid",user.getOid());
+            String img=user.getImage();
+            userJson.put("image",img.equals("")?"":htmlLoadPath+user.getImage());
+            users.add(userJson);
+
+            everyData.put("author", user.getName());
+//            everyData.put("image", user.getImage());
+            resultList.add(everyData);
 
 
         }
@@ -531,40 +613,43 @@ public class DataItemService {
             flist=resultList;
         }else {
 
-            if(ind+pageSize>resultList.size()){
-                int exp=resultList.size()%pageSize;
+            if (ind + pageSize > resultList.size()) {
+                int exp = resultList.size() % pageSize;
 
 
-                if((ind%pageSize)==exp){
-                    flist.add(resultList.get(ind)) ;
+                if ((ind % pageSize) == exp) {
+                    flist.add(resultList.get(ind));
 
-                }else{
-                    flist=resultList.subList(ind,ind+exp);
+                } else {
+                    flist = resultList.subList(ind, ind + exp);
                 }
 
-            }else {
-                flist=resultList.subList(ind,ind+pageSize);
+            } else {
+                flist = resultList.subList(ind, ind + pageSize);
             }
 
-    }
+        }
 
 
-        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC,"viewCount");
 
         Page pageResult =new PageImpl(flist,new PageRequest(page-1,pageSize,sort),category.size());
 
+        JSONObject result=new JSONObject();
+        result.put("content",pageResult.getContent());
+        result.put("totalElements",pageResult.getTotalElements());
+        result.put("users",users);
 
-        return pageResult ;
-    };
+        return result;
+
+    }
 
 
     public  List<String> findByCa(String categorysId){
 
         Categorys resultList= new Categorys();
 
-
         resultList=getCategoryById(categorysId);
-
 
         return resultList.getDataItem();
     }
@@ -1099,10 +1184,32 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
     }
 
 
+    public JSONArray getRelation(String id){
 
+        JSONArray result=new JSONArray();
+        DataItem dataItem=dataItemDao.findFirstById(id);
+        List<String> relatedModels=dataItem.getRelatedModels();
 
+        for(String oid:relatedModels){
+            ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+            JSONObject object=new JSONObject();
+            object.put("oid",modelItem.getOid());
+            object.put("name",modelItem.getName());
+            User user=userDao.findFirstByUserName(modelItem.getAuthor());
+            object.put("author",user.getName());
+            result.add(object);
+        }
 
+        return result;
+    }
 
+    public String setRelation(String id, List<String> relations){
 
+        DataItem dataItem=dataItemDao.findFirstById(id);
+        dataItem.setRelatedModels(relations);
+        dataItemDao.save(dataItem);
+        return "suc";
+
+    }
 
 }

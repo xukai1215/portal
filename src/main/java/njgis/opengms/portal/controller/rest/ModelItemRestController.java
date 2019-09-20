@@ -11,13 +11,17 @@ import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -57,7 +61,14 @@ public class ModelItemRestController {
 
 
     @RequestMapping(value="/add",method = RequestMethod.POST)
-    public JsonResult addModelItem(@RequestBody ModelItemAddDTO modelItemAddDTO,HttpServletRequest request) {
+    public JsonResult addModelItem(HttpServletRequest request) throws IOException {
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        ModelItemAddDTO modelItemAddDTO=JSONObject.toJavaObject(jsonObject,ModelItemAddDTO.class);
+
         HttpSession session=request.getSession();
 
         if(session.getAttribute("uid")==null){
@@ -85,7 +96,14 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateModelItem(@RequestBody ModelItemUpdateDTO modelItemUpdateDTO, HttpServletRequest request){
+    public JsonResult updateModelItem(HttpServletRequest request) throws IOException{
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        ModelItemUpdateDTO modelItemUpdateDTO=JSONObject.toJavaObject(jsonObject,ModelItemUpdateDTO.class);
+
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)

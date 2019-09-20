@@ -326,13 +326,20 @@ var vue = new Vue({
             spatialObj.detail = detail.trim();
             console.log(spatialObj)
 
+            let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
+                let file = new File([JSON.stringify(spatialObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/addSpatialReference",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(spatialObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
 
                         if (result.code == "0") {
@@ -346,12 +353,18 @@ var vue = new Vue({
             }
             else {
                 spatialObj["oid"] = oid;
+                let file = new File([JSON.stringify(spatialObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/updateSpatialReference",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(spatialObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
 
                     success: function (result) {
                         if (result.code === 0) {
