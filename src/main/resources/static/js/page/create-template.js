@@ -347,6 +347,11 @@ var vue = new Vue({
             templateObj.description = $("#descInput").val();
             templateObj.xml = $("#xml").val();
 
+            if(templateObj.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
+
             var detail = tinyMCE.activeEditor.getContent();
             templateObj.detail = detail.trim();
             console.log(templateObj)

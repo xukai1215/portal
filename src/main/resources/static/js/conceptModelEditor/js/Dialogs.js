@@ -785,10 +785,10 @@ var AddIconDialog = function(editorUi)
     this.init = function()
     {
     	$.ajax({
-            url:"http://geomodeling.njnu.edu.cn/GeoModeling/getIconRelationServlet",
+            url:"/geoIcon/parentList",
             type:"get",
 			success:function (result) {
-				var info = JSON.parse(result);
+				var info = result.data;
 				for(var i=0;i<info.length;i++){
 					var option = document.createElement("option");
 					option.value = info[i].id;
@@ -796,11 +796,11 @@ var AddIconDialog = function(editorUi)
 					select.appendChild(option);
 				}
                 $.ajax({
-                    url:"http://geomodeling.njnu.edu.cn/GeoModeling/geoIconListServlet",
+                    url:"/geoIcon/list",
                     type:"get",
                     data:{"uid":tempNameId,"page":"1","sortType":"name"},
                     success:function (data) {
-                        var result = JSON.parse(data);
+                        var result = data.data;
                         if(result.count===0){
                             $("#infoTable").empty();
                             if(language==="en"){
@@ -828,11 +828,11 @@ var AddIconDialog = function(editorUi)
                 tempNameId=nameId;
             }
             $.ajax({
-                url:"http://localhost:8081/GeoModelingNew/geoIconListServlet",
+                url:"/geoIcon/list",
                 type:"get",
                 data:{"uid":tempNameId,"page":"1","sortType":"name"},
                 success:function (data) {
-                    var result = JSON.parse(data);
+                    var result = data.data;
                     if(result.count===0){
                         $("#infoTable").empty();
                         if(language==="en"){

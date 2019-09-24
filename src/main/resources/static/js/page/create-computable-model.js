@@ -449,6 +449,10 @@ var vue = new Vue({
                 alert("please bind model item (Step1)")
                 return;
             }
+            if(this.computableModel.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
             this.computableModel.contentType=$("input[name='ContentType']:checked").val();
             this.computableModel.isAuthor=$("input[name='author_confirm']:checked").val();
 

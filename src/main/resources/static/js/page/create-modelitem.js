@@ -838,6 +838,7 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+
             modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
             modelItemObj.keywords = $("#tagInput").val().split(",");
@@ -846,6 +847,15 @@ var vue = new Vue({
             modelItemObj.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
+            if(modelItemObj.name.trim()=="")
+            {
+                alert("please enter name");
+                return;
+            }
+            else if(modelItemObj.classifications.length==0){
+                alert("please select classification");
+                return;
+            }
             // modelItemObj.Providers = [];
             // getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.Providers)
 

@@ -978,11 +978,6 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
         return data;
     }
 
-
-
-
-
-
     if(more-5 >relatedModels.size()||more-5 == relatedModels.size()){
         modelsInfo=new HashMap<>();
         modelsInfo.put("all","all");

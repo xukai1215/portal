@@ -146,12 +146,12 @@ function regetIcon(page) {
         firstPage =  false;
     }else{
         $.ajax({
-            url:"http://localhost:8081/GeoModelingNew/geoIconListServlet",
+            url:"/geoIcon/list",
             type:"get",
             async:false,
             data:{"uid":tempNameId,"page":page,"sortType":"name"},
             success:function (data) {
-                var result = JSON.parse(data);
+                var result = data.data;
                 createIcon(result.geoIcons,"infoTable");
             }
         })

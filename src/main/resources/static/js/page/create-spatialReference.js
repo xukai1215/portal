@@ -326,6 +326,11 @@ var vue = new Vue({
             spatialObj.detail = detail.trim();
             console.log(spatialObj)
 
+            if(spatialObj.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
+
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(spatialObj)],'ant.txt',{

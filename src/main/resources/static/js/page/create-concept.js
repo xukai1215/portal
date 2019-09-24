@@ -1272,6 +1272,11 @@ var vue = new Vue({
             conceptObj.detail = detail.trim();
             console.log(conceptObj)
 
+            if(conceptObj.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
+
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(conceptObj)],'ant.txt',{

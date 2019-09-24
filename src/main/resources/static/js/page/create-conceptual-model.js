@@ -443,6 +443,10 @@ var vue = new Vue({
                 alert("please bind model item (Step1)")
                 return;
             }
+            if(this.conceptualModel.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
             this.conceptualModel.contentType=$("input[name='ContentType']:checked").val();
             this.conceptualModel.isAuthor=$("input[name='author_confirm']:checked").val();
             var detail = tinyMCE.activeEditor.getContent();

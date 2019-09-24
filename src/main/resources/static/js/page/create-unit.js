@@ -331,6 +331,11 @@ var vue = new Vue({
             unitObj.detail = detail.trim();
             console.log(unitObj)
 
+            if(unitObj.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
+
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(unitObj)],'ant.txt',{

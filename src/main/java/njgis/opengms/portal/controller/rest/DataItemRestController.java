@@ -207,7 +207,7 @@ public class DataItemRestController {
         if(relatedModels!=null) {
             for (String mid : relatedModels) {
                 try {
-                    ModelItem modelItem = modelItemDao.findFirstById(mid);
+                    ModelItem modelItem = modelItemDao.findFirstByOid(mid);
                     JSONObject modelItemJson = new JSONObject();
                     modelItemJson.put("name", modelItem.getName());
                     modelItemJson.put("oid", modelItem.getOid());
