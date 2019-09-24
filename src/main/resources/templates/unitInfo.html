@@ -155,10 +155,11 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text">
-                        <span th:text="NNU_Group+'.('+${year}+').'+${info.name}+','">
+
+                        <span th:text="${user.name}+' ('+${year}+'). '+${info.name}+', Unit & Metric, OpenGMS,'">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                         </span>
-                        <a th:href="'http://geomodeling.njnu.edu.cn/repository/unit/'+${info.oid}"
+                        <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/repository/unit/'+${info.oid}"
                            th:text="'http://geomodeling.njnu.edu.cn/repository/unit/'+${info.oid}">
                             http://geomodeling.njnu.edu.cn/modelitem/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>

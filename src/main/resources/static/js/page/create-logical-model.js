@@ -418,6 +418,10 @@ var vue = new Vue({
                 alert("please bind model item (Step1)")
                 return;
             }
+            if(this.logicalModel.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
             this.logicalModel.contentType=$("input[name='ContentType']:checked").val();
             this.logicalModel.isAuthor=$("input[name='author_confirm']:checked").val();
             var detail = tinyMCE.activeEditor.getContent();

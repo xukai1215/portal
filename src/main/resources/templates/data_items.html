@@ -29,6 +29,12 @@
         .content-body .list-item:not(:first-child) {
             margin-top: -1px;
         }
+        .bootstrap-tagsinput{
+            min-height:36px;
+        }
+        .bootstrap-tagsinput input{
+            min-height:26px;
+        }
     </style>
 
 </head>
@@ -212,7 +218,7 @@
                 </div>
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
 
-                    <span > <strong>{{this.ca!=''&&this.searchText.length==0?( this.ca=="We collect data from public hubs.."?"We collect data from public hubs..":"Current Category: "+this.ca):''}} </strong> <strong>{{this.searchText.length!=0&&this.ca==''?"Current Keywords: "+this.searchText:''}} </strong>  <strong style="float: right">{{this.datacount!=0 ?(this.datacount===-1?'loading...':this.datacount+' items'):'no data'}}</strong></span><br>
+                    <span > <strong>{{ca!=''&&searchText.length==0?( ca=="We collect data from public hubs.."?"We collect data from public hubs..":"Current Category: "+ca):''}} </strong> <strong>{{searchText.length!=0&&ca==''?"Current Keywords: "+searchText:''}} </strong>  <strong style="float: right">{{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}</strong></span><br>
                     <span>  </span>
                     <span></span>
 
@@ -251,9 +257,11 @@
 
                                     <div class="detail_bottom">
                                         <div style="display:inline-block;float: left;">
-                                            <img :src="item.image==''?'/static/img/icon/default.png':item.image" class="round_icon"
+                                            <a :href="'/user/'+users[index].oid">
+                                            <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
                                                  style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
-                                            <a href="javascript:void(0)" style="display: inline-block;margin-left: 5px;"><h4>{{item.author}}</h4></a>
+                                            </a>
+                                            <a :href="'/user/'+users[index].oid" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
 
 
                                             <h4 style="display: inline-block;margin-left: 10px">contributed at {{formatDate(item.createTime)}}</h4>
@@ -333,5 +341,6 @@
 
 <script src="/static/js/page/data_items.js"></script>
 <script  async src="/static/js/common/loadUser.js" ></script>
-<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 </html>

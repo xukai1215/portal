@@ -1,5 +1,5 @@
-
-
+//element-ui 切换英文，勿删！
+ELEMENT.locale(ELEMENT.lang.en)
 // 获得下拉一级菜单
 // 获得下拉二级菜单
 // var menu=bar.children;

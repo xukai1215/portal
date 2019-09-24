@@ -443,6 +443,10 @@ var vue = new Vue({
                 alert("please bind model item (Step1)")
                 return;
             }
+            if(this.conceptualModel.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
             this.conceptualModel.contentType=$("input[name='ContentType']:checked").val();
             this.conceptualModel.isAuthor=$("input[name='author_confirm']:checked").val();
             var detail = tinyMCE.activeEditor.getContent();
@@ -473,7 +477,10 @@ var vue = new Vue({
             }
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                this.formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
+                let file = new File([JSON.stringify(this.conceptualModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                this.formData.append("conceptualModel",file)
                 $.ajax({
                     url: '/conceptualModel/add',
                     type: 'post',
@@ -503,7 +510,10 @@ var vue = new Vue({
             else{
                 this.conceptualModel.oid = oid;
                 this.conceptualModel.resources=this.resources;
-                this.formData.append("conceptualModel",JSON.stringify(this.conceptualModel))
+                let file = new File([JSON.stringify(this.conceptualModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                this.formData.append("conceptualModel",file)
                 $.ajax({
                     url: '/conceptualModel/update',
                     type: 'post',

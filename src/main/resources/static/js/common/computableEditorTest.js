@@ -3,7 +3,7 @@
  */
 let host = 'localhost';
 let port = '80';
-let domain = `http://localhost/GeoModelingNew`;
+let domain = `http://geomodeling.njnu.edu.cn/GeoModeling`;
 let testUrl = `${domain}/TestFileServlet`;
 let mdlUrl = `${domain}/TaskInfoServlet`;
 // let fileUploadUrl = `${domain}/UploadDataServlet`;

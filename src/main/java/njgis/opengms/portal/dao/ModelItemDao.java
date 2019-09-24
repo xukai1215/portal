@@ -18,6 +18,8 @@ import java.util.List;
  */
 public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
+    ModelItem findFirstById(String id);
+
     ModelItem findFirstByOid(String id);
 
     ModelItem findFirstByName(String name);

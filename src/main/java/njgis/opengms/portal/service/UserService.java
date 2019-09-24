@@ -368,6 +368,15 @@ public class UserService {
         return userJson;
     }
 
+    public JSONObject getItemUserInfoByOid(String oid){
+        User user = userDao.findFirstByOid(oid);
+        JSONObject userJson = new JSONObject();
+        userJson.put("name", user.getName());
+        userJson.put("oid", user.getOid());
+        userJson.put("image", user.getImage().equals("")?"":htmlLoadPath+user.getImage());
+        return userJson;
+    }
+
     public String updateDescription(String description,String userName){
         try{
             User user=userDao.findFirstByUserName(userName);

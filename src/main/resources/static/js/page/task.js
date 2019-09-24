@@ -242,7 +242,7 @@ var vue = new Vue({
             console.log(this.modelInEvent)
             const loading = this.$loading({
                 lock: true,
-                text: "Loading",
+                text: "Model is running, you can check running state and get the results of this model in \"User Space\" -> \"Task\"",
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
