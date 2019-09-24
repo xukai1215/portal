@@ -1660,6 +1660,254 @@
                             <!--                        </div>-->
                         </div>
                     </div>
+
+                    <div class="itemContainer" :class="{showActive:showIndex==6}">
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Concept & Semantic</h4></div>
+                            </div>
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                    <div class="cardUpper">
+                                        <div class="imgPallet">
+                                            <a  :href="'/concept/'+ concept.oid" target="_blank">
+                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            </a>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
+                                                <div>
+                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    </a>
+                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                <div class="modelInfo">
+                                                    <p>{{computableModel.description}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                        <!--                                        </div>-->
+                                        <div style="padding-right: 10px">
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="computableModelHandleCurrentChange"
+                                            :current-page="computableModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="computableModels.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
+                                    </el-pagination>
+                                </div>
+                            </div>
+                            <!--                        </div>-->
+                        </div>
+                    </div>
+
+                    <div class="itemContainer" :class="{showActive:showIndex==7}">
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Spatial Reference</h4></div>
+                            </div>
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                    <div class="cardUpper">
+                                        <div class="imgPallet">
+                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            </a>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
+                                                <div>
+                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    </a>
+                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                <div class="modelInfo">
+                                                    <p>{{computableModel.description}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                        <!--                                        </div>-->
+                                        <div style="padding-right: 10px">
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="computableModelHandleCurrentChange"
+                                            :current-page="computableModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="computableModels.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
+                                    </el-pagination>
+                                </div>
+                            </div>
+                            <!--                        </div>-->
+                        </div>
+                    </div>
+
+                    <div class="itemContainer" :class="{showActive:showIndex==8}">
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Data Template</h4></div>
+                            </div>
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                    <div class="cardUpper">
+                                        <div class="imgPallet">
+                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            </a>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
+                                                <div>
+                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    </a>
+                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                <div class="modelInfo">
+                                                    <p>{{computableModel.description}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                        <!--                                        </div>-->
+                                        <div style="padding-right: 10px">
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="computableModelHandleCurrentChange"
+                                            :current-page="computableModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="computableModels.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
+                                    </el-pagination>
+                                </div>
+                            </div>
+                            <!--                        </div>-->
+                        </div>
+                    </div>
+
+                    <div class="itemContainer" :class="{showActive:showIndex==9}">
+                        <div  class="contentColContainer" style="margin-bottom: 0">
+                            <div class="subTitle" >
+                                <div><h4 style="margin-top: 10px;color: #999999;">Unit & Metric</h4></div>
+                            </div>
+                        </div>
+                        <div class="contentColContainer modelTable" style="margin-top: 0">
+                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                    <div class="cardUpper">
+                                        <div class="imgPallet">
+                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            </a>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
+                                                <div>
+                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    </a>
+                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                </div>
+                                            </div>
+                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                <div class="modelInfo">
+                                                    <p>{{computableModel.description}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
+                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                        <!--                                        </div>-->
+                                        <div style="padding-right: 10px">
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <div>
+                                <div class="text-center" style="margin:15px 0;">
+                                    <el-pagination
+                                            @current-change="computableModelHandleCurrentChange"
+                                            :current-page="computableModels.currentPage"
+                                            :page-size="pageOption.pageSize"
+                                            layout="total, prev, pager, next, jumper"
+                                            :total="computableModels.total"
+                                            :pager-count="pageOption.pageCount"
+                                            background>
+                                    </el-pagination>
+                                </div>
+                            </div>
+                            <!--                        </div>-->
+                        </div>
+                    </div>
                 </div>
             </div>
 
