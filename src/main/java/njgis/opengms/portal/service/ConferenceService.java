@@ -42,7 +42,7 @@ public class ConferenceService {
         result.put("list",conferenceResultDTOPage.getContent());
         result.put("total", conferenceResultDTOPage.getTotalElements());
 
-        System.out.println("ConferenceService");
+//        System.out.println("ConferenceService");
         return result;
     }
 
@@ -79,7 +79,7 @@ public class ConferenceService {
         result.put("list",conferenceResultPage.getContent());
         result.put("total", conferenceResultPage.getTotalElements());
 
-        System.out.println(result);
+//        System.out.println(result);
         return result;
 
     }
@@ -92,7 +92,7 @@ public class ConferenceService {
         conference.setContributor(contributor);
         conference.setOid(UUID.randomUUID().toString());
 
-        System.out.println("add");
+//        System.out.println("add");
 
         return conferenceDao.insert(conference);
 

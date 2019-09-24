@@ -411,7 +411,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value="/updateAwdHonor",method = RequestMethod.POST)
-    JsonResult updateUserEduExperience(@RequestBody AwdHonorDTO awdHonorDTO, HttpServletRequest httpServletRequest){
+    JsonResult updateUserAwdHonor(@RequestBody AwdHonorDTO awdHonorDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updateEduEx"+awdHonorDTO);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName=httpSession.getAttribute("uid").toString();
@@ -419,6 +419,19 @@ public class UserRestController {
             return ResultUtils.error(-1,"no login");
         }
         String result=userService.updateAwdHonor(awdHonorDTO,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/updateContact",method = RequestMethod.POST)
+    JsonResult updateContact(@RequestBody ContactDTO contactDTO, HttpServletRequest httpServletRequest){
+        System.out.println("/updatecontact"+contactDTO);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateContact(contactDTO,userName);
 
         return ResultUtils.success(result);
     }

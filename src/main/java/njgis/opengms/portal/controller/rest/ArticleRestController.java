@@ -25,6 +25,7 @@ public class ArticleRestController {
 
     @RequestMapping(value="/searchByTitle",method=RequestMethod.GET)
     JsonResult searchByTitle(ArticleFindDTO articleFindDTO, HttpServletRequest request){
+        System.out.println("/searchArticle"+articleFindDTO);
         HttpSession session=request.getSession();
         String userName=session.getAttribute("uid").toString();
 

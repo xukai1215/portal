@@ -43,7 +43,7 @@ var jscolor = {
 	detectDir : function() {
 		var base = location.href;
 
-		var e = document.getElementsByTagName('base');
+		var e = document.getElementsByTagName('static.css.other.base');
 		for(var i=0; i<e.length; i+=1) {
 			if(e[i].href) { base = e[i].href; }
 		}

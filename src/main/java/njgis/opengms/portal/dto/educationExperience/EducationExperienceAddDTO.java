@@ -5,8 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class EducationExperienceResultDTO {
-    String oid;
+public class EducationExperienceAddDTO {
     String academicDegree;
     String institution;
     String department;

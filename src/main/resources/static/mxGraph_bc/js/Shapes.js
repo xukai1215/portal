@@ -844,7 +844,7 @@
 		var s = Math.max(0, Math.min(h, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
 		var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'position', this.position))));
 		var dx2 = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'position2', this.position2))));
-		var base = Math.max(0, Math.min(w, parseFloat(mxUtils.getValue(this.style, 'base', this.base))));
+		var base = Math.max(0, Math.min(w, parseFloat(mxUtils.getValue(this.style, 'static.css.other.base', this.base))));
 		
 		this.addPoints(c, [new mxPoint(0, 0), new mxPoint(w, 0), new mxPoint(w, h - s),
 			new mxPoint(Math.min(w, dx + base), h - s), new mxPoint(dx2, h),
@@ -3321,12 +3321,12 @@
 				{
 					var size = Math.max(0, Math.min(bounds.height, mxUtils.getValue(this.state.style, 'size', CalloutShape.prototype.size)));
 					var position = Math.max(0, Math.min(1, mxUtils.getValue(this.state.style, 'position', CalloutShape.prototype.position)));
-					var base = Math.max(0, Math.min(bounds.width, mxUtils.getValue(this.state.style, 'base', CalloutShape.prototype.base)));
+					var base = Math.max(0, Math.min(bounds.width, mxUtils.getValue(this.state.style, 'static.css.other.base', CalloutShape.prototype.base)));
 					
 					return new mxPoint(bounds.x + position * bounds.width, bounds.y + bounds.height - size);
 				}, function(bounds, pt)
 				{
-					var base = Math.max(0, Math.min(bounds.width, mxUtils.getValue(this.state.style, 'base', CalloutShape.prototype.base)));
+					var base = Math.max(0, Math.min(bounds.width, mxUtils.getValue(this.state.style, 'static.css.other.base', CalloutShape.prototype.base)));
 					this.state.style['size'] = Math.round(Math.max(0, Math.min(bounds.height, bounds.y + bounds.height - pt.y)));
 					this.state.style['position'] = Math.round(Math.max(0, Math.min(1, (pt.x - bounds.x) / bounds.width)) * 100) / 100;
 				}), createHandle(state, ['position2'], function(bounds)
@@ -3337,18 +3337,18 @@
 				}, function(bounds, pt)
 				{
 					this.state.style['position2'] = Math.round(Math.max(0, Math.min(1, (pt.x - bounds.x) / bounds.width)) * 100) / 100;
-				}), createHandle(state, ['base'], function(bounds)
+				}), createHandle(state, ['static.css.other.base'], function(bounds)
 				{
 					var size = Math.max(0, Math.min(bounds.height, mxUtils.getValue(this.state.style, 'size', CalloutShape.prototype.size)));
 					var position = Math.max(0, Math.min(1, mxUtils.getValue(this.state.style, 'position', CalloutShape.prototype.position)));
-					var base = Math.max(0, Math.min(bounds.width, mxUtils.getValue(this.state.style, 'base', CalloutShape.prototype.base)));
+					var base = Math.max(0, Math.min(bounds.width, mxUtils.getValue(this.state.style, 'static.css.other.base', CalloutShape.prototype.base)));
 					
 					return new mxPoint(bounds.x + Math.min(bounds.width, position * bounds.width + base), bounds.y + bounds.height - size);
 				}, function(bounds, pt)
 				{
 					var position = Math.max(0, Math.min(1, mxUtils.getValue(this.state.style, 'position', CalloutShape.prototype.position)));
 
-					this.state.style['base'] = Math.round(Math.max(0, Math.min(bounds.width, pt.x - bounds.x - position * bounds.width)));
+					this.state.style['static.css.other.base'] = Math.round(Math.max(0, Math.min(bounds.width, pt.x - bounds.x - position * bounds.width)));
 				})];
 				
 				if (mxUtils.getValue(state.style, mxConstants.STYLE_ROUNDED, false))

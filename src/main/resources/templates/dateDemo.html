@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+  <link media="screen" href="/static/css/other/dcalendar.picker.css"/>
+</head>
+<body>
+<div class="col-md-6">
+					<h3>日历-calendar</h3>
+					<table id='mycalendar' class='calendar'></table>
+				</div>
+				<h3>日期选择器-datepicker</h3>
+                <input id='mydatepicker' type='text'/>
+
+</body>
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/js/common/dcalendar.picker.js"></script>
+<script type="text/javascript">
+		$('#mydatepicker').dcalendarpicker();
+	</script>
+</html>

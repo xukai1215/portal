@@ -67,7 +67,7 @@ public class ArticleService {
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
 
-        System.out.println(result);
+//        System.out.println(result);
         return result;
 
     }
@@ -86,6 +86,7 @@ public class ArticleService {
         JSONObject result=new JSONObject();
         result.put("list",articleResultDTOPage.getContent());
         result.put("total",articleResultDTOPage.getTotalElements());
+//        System.out.println(result);
         return result;
 
     }
@@ -97,8 +98,6 @@ public class ArticleService {
         article.setCreatDate(now);
         article.setContributor(contributor);
         article.setOid(UUID.randomUUID().toString());
-
-        System.out.println("add");
 
         return articleDao.insert(article);
 
@@ -125,7 +124,7 @@ public class ArticleService {
         if(article!=null){
             articleDao.deleteArticleByOid(oid);
             userService.articleMinusMinus(userName);
-            System.out.println("'delete success");
+//            System.out.println("'delete success");
             return 1;
         }
         else
@@ -142,7 +141,7 @@ public class ArticleService {
         Boolean asc = articleFindDTO.getAsc();
 
 //        根据访问数量排序
-        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, articleFindDTO.getSortElement());
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         User user=userDao.findFirstByOid(oid);
         Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(user.getUserName(),pageable);
@@ -151,7 +150,7 @@ public class ArticleService {
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
 
-        System.out.println("articleService");
+//        System.out.println("articleService");
         return result;
     }
 }

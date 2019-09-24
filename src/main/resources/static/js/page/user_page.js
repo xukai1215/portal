@@ -62,6 +62,12 @@ new Vue({
                         name:'',
                         position:'',
                     },
+
+                    phone:'',
+                    email:'',
+                    faceBook:'',
+                    personPage:'',
+                    weChat:''
                 },
 
                 modelItems:{
@@ -90,24 +96,52 @@ new Vue({
                     result:[],
                 },
 
-                articles:{
+                concepts:{
                     currentPage:1,
                     total:0,
                     result:[],
+                },
+
+                spatials:{
+                    currentPage:1,
+                    total:0,
+                    result:[],
+                },
+
+                templates:{
+                    currentPage:1,
+                    total:0,
+                    result:[],
+                },
+
+                units:{
+                    currentPage:1,
+                    total:0,
+                    result:[],
+                },
+
+                articles:{
+                    currentPage:1,
+                    total:0,
+                    result:[{
+                    }
+                    ],
                 },
 
                 projects:{
                     projectName:'',
                     currentPage:1,
                     total:0,
-                    result:[],
+                    result:[{
+                    }],
                 },
 
                 conferences:{
                     title:'',
                     currentPage:1,
                     total:0,
-                    result:[],
+                    result:[{
+                    }],
                 },
 
                 newestArticle:{
@@ -147,6 +181,15 @@ new Vue({
                     endTime: '',
                 },
 
+                eduExpAddToBack:{
+                    institution:'',
+                    department:'',
+                    acaDegree:'',
+                    startTime:'',
+                    endTime:'',
+                    location:''
+                },
+
                 awardandHonor:{
                     currentPage:1,
                     total:0,
@@ -156,7 +199,15 @@ new Vue({
                 educationExperience:{
                     currentPage:1,
                     total:0,
-                    result:[],
+                    result:[{
+                        institution:'',
+                        department:'',
+                        acaDegree:'',
+                        startTime:'',
+                        endTime:'',
+                        location:''
+                    }
+                    ],
                 },
 
                 affiliation:{
@@ -186,11 +237,17 @@ new Vue({
                         awardTime:''
                     },
 
+                searchText:'',
+
                 addorEdit:'Add',
 
                 space:[],
 
                 editOid:'',
+
+                clickCount:0,
+
+                value1: '',
             }
         },
 
@@ -220,13 +277,34 @@ new Vue({
         //     }
         // },
 
+        date2String(date){
+            let year=date.getFullYear();
+            let month=date.getMonth()+1;
+            let day=date.getDate();
+            if(day<10){
+               day='0'+day;
+            }
+            if(month<10){
+                month='0'+month;
+            }
+            console.log('month'+month)
+            return month+'/'+day+'/'+year;
+        },
+
+        // 后台传过来的date型被转换成相同式样的String
+        // 这里再改成yyyy/mm/dd
+        dateString2String(date){
+            let newDate=date.split('-');
+            let newDay=newDate[2].split('T')[0];
+            newDate=newDate[0]+'/'+newDate[1]+'/'+newDay;
+            return newDate;
+        },
+
         modelItemClick() {
             this.bodyIndex=2;
             this.showIndex=1;
             this.modelItemHandleCurrentChange(1);
         },
-
-
 
         datalItemClick(){
             this.bodyIndex=2;
@@ -255,6 +333,30 @@ new Vue({
             this.computableModelHandleCurrentChange(1);
 
             // console.log(this.computableModels.total)
+        },
+
+        conceptClick(){
+            this.bodyIndex=2;
+            this.showIndex=6;
+            this.conceptHandleCurrentChange(1);
+        },
+
+        spatialClick(){
+            this.bodyIndex=2;
+            this.showIndex=7;
+            this.spatialHandleCurrentChange(1);
+        },
+
+        templateClick(){
+            this.bodyIndex=2;
+            this.showIndex=8;
+            this.templateHandleCurrentChange(1);
+        },
+
+        unitClick(){
+            this.bodyIndex=2;
+            this.showIndex=9;
+            this.unitHandleCurrentChange(1);
         },
 
         // statsCardClick(index){
@@ -291,6 +393,16 @@ new Vue({
         menu_Click(index){
             this.bodyIndex=index;
             $('html,body').animate({scrollTop: '0px'}, 200);
+            this.articleHandleCurrentChange(1);
+            this.projectHandleCurrentChange(1);
+            this.conferenceHandleCurrentChange(1);
+        },
+
+        moreDetails(height){
+            this.bodyIndex=4;
+            var height=+height+'px';
+            console.log(height)
+            $('html,body').animate({scrollTop: height}, 200);
         },
 
         // resource按钮单独做以每次都显示model item
@@ -444,17 +556,25 @@ new Vue({
 
         },
 
+        addEduXpceClick(){
+            $('#userEduInstitution').val('');
+            $('#userEduDepartment').val('');
+            $('#userEduAcaDegree').val('');
+            $('#userEduStartTime').val('');
+            $('#userEduEndTime').val('');
+            $('#userEduLocation').val('');
+        },
+
         saveEduExperience(){
-            this.eduExperience.institution=$('#userEduInstitution').val();
-            this.eduExperience.department=$('#userEduDepartment').val();
-            this.eduExperience.acaDegree=$('#userEduAcaDegree').val();
-            this.eduExperience.startTime=$('#userEduStartTime').val();
-            this.eduExperience.endTime=$('#userEduEndTime').val();
-            this.eduExperience.location=$('#userEduLocation').val();
+            this.eduExpAddToBack.institution=$('#userEduInstitution').val();
+            this.eduExpAddToBack.department=$('#userEduDepartment').val();
+            this.eduExpAddToBack.acaDegree=$('#userEduAcaDegree').val();
+            this.eduExpAddToBack.startTime=new Date($('#userEduStartTime').val());
+            this.eduExpAddToBack.endTime=new Date($('#userEduEndTime').val());
+            this.eduExpAddToBack.location=$('#userEduLocation').val();
+            console.log(this.eduExpAddToBack);
 
             this.eduExperienceAddtoBack();
-            alert('Save success!');
-            $("#editEduXpce").modal("hide")
         },
 
         saveAwdHonor(){
@@ -480,7 +600,7 @@ new Vue({
             $('#editDescriptionButton').css({display:'none'});
             $('#descriptionInputContainer').css({display:'block'});
             $('#descriptionInput').val(this.userPersonalInfo.description);
-            $('#descriptionInput').animate({width:'87%'},500);
+            $('#descriptionInput').animate({width:'90.7%'},500);
         },
 
         descriptionConfirm(){
@@ -526,6 +646,24 @@ new Vue({
             $('#editResearchInterestButton').css({display:'flex'});
             this.researchInterestAddToBack();
 
+        },
+
+        editContactClick(){
+            $('#userPhone').val(this.userPersonalInfo.phone);
+            $('#userEmail').val(this.userPersonalInfo.email);
+            $('#userWeChat').val(this.userPersonalInfo.weChat);
+            $('#userFacebook').val(this.userPersonalInfo.faceBook);
+            $('#userPersonPage').val(this.userPersonalInfo.personPage);
+        },
+
+        saveContactClick(){
+           this.userPersonalInfo.phone=$('#userPhone').val();
+           this.userPersonalInfo.email=$('#userEmail').val();
+           this.userPersonalInfo.weChat=$('#userWeChat').val();
+           this.userPersonalInfo.faceBook=$('#userFacebook').val();
+           this.userPersonalInfo.personPage=$('#userPersonPage').val();
+
+           this.contactAddToBack();
         },
 
         sectionDisplayControl(){
@@ -680,7 +818,7 @@ new Vue({
                             this.logicalModels.result = data.list;
                             this.pageOption.progressBar = false;
                             console.log('logical'+this.logicalModels.result);
-                        }, 500);
+                            }, 500);
                     } else {
                         console.log("search logical model failed.")
                     }
@@ -713,13 +851,14 @@ new Vue({
                                 this.computableModels.result = data.list;
                                 this.pageOption.progressBar = false;
                                 console.log('computer'+this.computableModels.result);
-                            }, 500);
+                                }, 500);
                     } else {
                         console.log("search computable model failed.")
                     }
                 }
             })
         },
+
         articleHandleCurrentChange: function (val) {
             this.articles.currentPage=val;
             this.barIndex=1;
@@ -731,6 +870,7 @@ new Vue({
                     page:this.articles.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.articles.sortAsc,
+                    sortElement:'creatDate',
                     oid:hrefs[hrefs.length - 1],
                 },
                 async:true,
@@ -851,68 +991,77 @@ new Vue({
             })
         },
 
-        // awardandHonorLoad(val) {
-        //     this.awardandHonor.currentPage=val;
-        //     // $('html,body').animate({scrollTop: '0px'}, 220);
-        //     const hrefs=window.location.href.split("/");
-        //     $.ajax({
-        //         type:"GET",
-        //         url:"/awardandHonor/listByUserOid",
-        //         data:{
-        //             page:this.awardandHonor.currentPage-1,
-        //             asc: this.pageOption.sortAsc,
-        //             pageSize: 3,
-        //             oid:hrefs[hrefs.length-1],
-        //         },
-        //         async:true,
-        //         success:(json)=>{
-        //             if(json.code==0){
-        //                 const data=json.data;
-        //                 setTimeout(
-        //                     ()=>{
-        //                         this.awardandHonor.total=data.total;
-        //                         this.awardandHonor.result=data.list;
-        //                         this.pageOption.progressBar=false;
-        //                     },500)
-        //             }else{
-        //                 console.log("search data item failed.")
-        //             }
-        //         }
-        //     })
-        //
-        // },
-        //
-        // educationExperienceLoad(val) {
-        //     this.educationExperience.currentPage=val;
-        //     // $('html,body').animate({scrollTop: '0px'}, 220);
-        //     const hrefs=window.location.href.split("/");
-        //     $.ajax({
-        //         type:"GET",
-        //         url:"/educationExperience/listByUserOid",
-        //         data:{
-        //             page:this.educationExperience.currentPage-1,
-        //             asc: this.pageOption.sortAsc,
-        //             pageSize: 3,
-        //             oid:hrefs[hrefs.length-1],
-        //         },
-        //         async:true,
-        //         success:(json)=>{
-        //             if(json.code==0){
-        //                 const data=json.data;
-        //                 setTimeout(
-        //                     ()=>{
-        //                         this.educationExperience.total=data.total;
-        //                         this.educationExperience.result=data.list;
-        //                         this.pageOption.progressBar=false;
-        //                         console.log(this.educationExperience.result);
-        //                     },500)
-        //             }else{
-        //                 console.log("search data item failed.")
-        //             }
-        //         }
-        //     })
-        //
-        // },
+        addAwdHonorClick(){
+
+        },
+
+        awardandHonorLoad(val) {
+            this.awardandHonor.currentPage=val;
+            // $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split("/");
+            $.ajax({
+                type:"GET",
+                url:"/awardandHonor/listByUserOid",
+                data:{
+                    page:this.awardandHonor.currentPage-1,
+                    asc: this.pageOption.sortAsc,
+                    pageSize: 3,
+                    oid:hrefs[hrefs.length-1],
+                },
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        const data=json.data;
+                        setTimeout(
+                            ()=>{
+                                this.awardandHonor.total=data.total;
+                                this.awardandHonor.result=data.list;
+                                this.pageOption.progressBar=false;
+                            },500)
+                    }else{
+                        console.log("search data item failed.")
+                    }
+                }
+            })
+
+        },
+
+        educationExperienceLoad(val) {
+            this.educationExperience.currentPage=val;
+            // $('html,body').animate({scrollTop: '0px'}, 220);
+            const hrefs=window.location.href.split("/");
+            $.ajax({
+                type:"GET",
+                url:"/educationExperience/listByUserOid",
+                data:{
+                    page:this.educationExperience.currentPage-1,
+                    asc: this.pageOption.sortAsc,
+                    pageSize: 3,
+                    sortElement:'endTime',
+                    oid:hrefs[hrefs.length-1],
+                },
+                async:true,
+                success:(json)=>{
+                    if(json.code==0){
+                        const data=json.data;
+                        setTimeout(
+                            ()=>{
+                                this.educationExperience.total=data.total;
+                                this.educationExperience.result=data.list;
+                                for(let i=0;i<this.educationExperience.total,this.educationExperience.result[i].startTime,this.educationExperience.result[i].endTime;i++){
+                                    this.educationExperience.result[i].startTime=this.dateString2String(this.educationExperience.result[i].startTime);
+                                    this.educationExperience.result[i].endTime=this.dateString2String(this.educationExperience.result[i].endTime);
+                                }
+                                this.pageOption.progressBar=false;
+                                console.log(this.educationExperience.result);
+                            },500)
+                    }else{
+                        console.log("search data item failed.")
+                    }
+                }
+            })
+
+        },
 
         labLoad(){
             const hrefs=window.location.href.split('/');
@@ -1011,8 +1160,8 @@ new Vue({
             this.editOid=oid;
             this.addorEdit='Edit';
             $("#projectName").val(this.projects.result[key].projectName);
-            $("#startTime").val(this.projects.result[key].startTime);
-            $("#endTime").val(this.projects.result[key].endTime);
+            $("#userProjectStartTime").val(this.projects.result[key].startTime);
+            $("#userProjectEndTime").val(this.projects.result[key].endTime);
             $("#role").val(this.projects.result[key].role);
             $("#fundAgency").val(this.projects.result[key].fundAgency);
             $("#amount").val(this.projects.result[key].amount);
@@ -1020,8 +1169,8 @@ new Vue({
 
         updateProjectConfirmClick(){
             this.projectToBack.name=$("#projectName").val();
-            this.projectToBack.startTime=$("#startTime").val();
-            this.projectToBack.endTime=$("#endTime").val();
+            this.projectToBack.startTime=$("#userProjectStartTime").val();
+            this.projectToBack.endTime=$("#userProjectEndTime").val();
             this.projectToBack.role=$("#role").val();
             this.projectToBack.fundAgency=$("#fundAgency").val();
             this.projectToBack.amount=$("#amount").val();
@@ -1049,16 +1198,16 @@ new Vue({
             this.addorEdit='Edit';
             $("#conferenceTitle").val(this.conferences.result[key].title);
             $("#theme").val(this.conferences.result[key].theme);
-            $("#conferStartTime").val(this.conferences.result[key].startTime);
-            $("#conferEndTime").val(this.conferences.result[key].endTime);
+            $("#userConferStartTime").val(this.conferences.result[key].startTime);
+            $("#userConferEndTime").val(this.conferences.result[key].endTime);
             $("#conferenceLocation").val(this.conferences.result[key].location);
             $("#conferenceRole").val(this.conferences.result[key].role);
         },
 
         updateConferenceConfirmClick(){
             this.conferenceToBack.title=$("#conferenceTitle").val();
-            this.conferenceToBack.startTime=$("#conferStartTime").val();
-            this.conferenceToBack.endTime=$("#conferEndTime").val();
+            this.conferenceToBack.startTime=$("#userConferStartTime").val();
+            this.conferenceToBack.endTime=$("#userConferEndTime").val();
             this.conferenceToBack.role=$("#conferenceRole").val();
             this.conferenceToBack.theme=$("#theme").val();
             this.conferenceToBack.role=$("#conferenceRole").val();
@@ -1071,6 +1220,206 @@ new Vue({
             }
             $('#conferenceInfo').modal('hide')
         },
+
+        // searchArticlesClick(){
+        //     ++this.clickCount;
+        //     if (this.clickCount%2==1){
+        //         $('#articleSearchContainer').css('display','flex');
+        //         $('#searchArticle').animate({width:'88%'},500);
+        //         $('.searchInput').val('');
+        //     }
+        //     if (this.clickCount%2==0){
+        //         $('#searchArticle').animate({width:'0'},500);
+        //         setTimeout(()=>{
+        //             console.log('aaaddd');
+        //             $('#articleSearchContainer').css('display','none');
+        //             },500);
+        //
+        //     }
+        //
+        // },
+
+        searchProjectsClick(){
+            ++this.clickCount;
+            if (this.clickCount%2==1){
+                $('#projectSearchContainer').css('display','flex');
+                $('#searchProject').animate({width:'88%'},500);
+                $('.searchInput').val('');
+            }
+            if (this.clickCount%2==0){
+                $('#searchProject').animate({width:'0'},500);
+                setTimeout(()=>{
+                    console.log('aaaddd');
+                    $('#projectSearchContainer').css('display','none');
+                },500);
+
+            }
+
+        },
+
+        searchConferencesClick(){
+            ++this.clickCount;
+            if (this.clickCount%2==1){
+                $('#conferenceSearchContainer').css('display','flex');
+                $('#searchConference').animate({width:'88%'},500);
+                $('.searchInput').val('');
+            }
+            if (this.clickCount%2==0){
+                $('#searchConference').animate({width:'0'},500);
+                setTimeout(()=>{
+                    console.log('aaaddd');
+                    $('#conferenceSearchContainer').css('display','none');
+                },500);
+
+            }
+
+        },
+
+
+        searchItems(index){
+
+            if (index==1){
+                this.searchText=$('#searchArticle').val();
+                this.searchArticles();
+            }
+
+            if (index==2){
+                this.searchText=$('#searchProject').val();
+                this.searchProjects();
+            }
+            if (index==3){
+                this.searchText=$('#searchConference').val();
+                this.searchConferences();
+            }
+
+        },
+
+        searchArticles(){
+            // var urls={
+            //     1:"/article/searchByTitle",
+            //     2:"/project/searchByName",
+            //     3:"/conference/searchByTitle",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:"GET",
+                url:"/article/searchByTitle",
+                data:{
+                    page:this.articles.currentPage-1,
+                    pageSize:this.pageOption.pageSize,
+                    asc:this.articles.sortAsc,
+                    sortElement:"creatDate",
+                    searchText:this.searchText
+
+                },
+                cache: false,
+                async: true,
+                // dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        // this.articles.total=data.total;
+                        // this.articles.result=data.list;
+                        Vue.set(this.articles ,'total', data.total);
+                        Vue.set(this.articles ,'result', data.list);
+                        this.pageOption.progressBar=false;
+                        console.log(this.articles);
+                        console.log(this.articles.total);
+                        }
+                }
+
+            })
+        },
+
+        searchProjects(){
+            // var urls={
+            //     1:"/article/searchByTitle",
+            //     2:"/project/searchByName",
+            //     3:"/conference/searchByTitle",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:"GET",
+                url:"/project/searchByName",
+                data:{
+                    page:this.projects.currentPage-1,
+                    pageSize:this.pageOption.pageSize,
+                    asc:this.projects.sortAsc,
+                    sortElement:"creatDate",
+                    searchText:this.searchText
+
+                },
+                cache: false,
+                async: true,
+                // dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        this.projects.total=data.total;
+                        this.projects.result=data.list;
+                        this.pageOption.progressBar=false;
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            })
+        },
+
+        searchConferences(){
+            // var urls={
+            //     1:"/article/searchByTitle",
+            //     2:"/project/searchByName",
+            //     3:"/conference/searchByTitle",
+            // }
+            // var url=urls[this.researchIndex];
+            $.ajax({
+                type:"GET",
+                url:"/conference/searchByTitle",
+                data:{
+                    page:this.conferences.currentPage-1,
+                    pageSize:this.pageOption.pageSize,
+                    asc:this.conferences.sortAsc,
+                    sortElement:"creatDate",
+                    searchText:this.searchText
+
+                },
+                cache: false,
+                async: true,
+                // dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        this.conferences.total=data.total;
+                        this.conferences.result=data.list;
+                        this.pageOption.progressBar=false;
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            })
+        },
+
+
 
         deleteResearchItemClick(index,oid){
             console.log(oid);
@@ -1115,6 +1464,49 @@ new Vue({
                                     this.projectHandleCurrentChange(1);
                                 if(index==3)
                                     this.conferenceHandleCurrentChange(1);
+                            }
+                            else{
+                                alert("delete failed!")
+                            }
+                        }
+
+                    },
+                    error:(json)=>{
+                        console.log(json);
+                    }
+
+
+
+                })
+            }
+        },
+
+        deleteEduExp(oid){
+            if (confirm("Are you sure to delete this item?")){
+                let data={
+                    oid:oid
+                };
+
+                $.ajax({
+                    type:"POST",
+                    url:'/educationExperience/deleteByOid',
+                    data:data,
+                    // contentType: "application/json; charset=utf-8",
+                    cache: false,
+                    async: true,
+                    // dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (json) => {
+                        if(json.code==-1){
+                            alert("Please log in first!")
+                        }
+                        else{
+                            if(json.data==1){
+                                alert("delete successfully!")
+                                this.educationExperienceLoad(1);
                             }
                             else{
                                 alert("delete failed!")
@@ -1442,28 +1834,38 @@ new Vue({
         },
 
         eduExperienceAddtoBack(){
-            var  obj={
-                institution:this.eduExperience.institution,
-                department:this.eduExperience.department,
-                acaDegree: this.eduExperience.acaDegree,
-                startTime: this.eduExperience.startTime,
-                endTime:this.eduExperience.endTime,
-                location:this.eduExperience.location
-            };
-            $.ajax({
-                data:JSON.stringify(obj),
-                url:"/user/updateEduExperience",
-                type:'POST',
-                async:true,
-                contentType: "application/json",
-                success:(json)=>{
-                    if(json.code==0){
-                        this.getUserInfo();
-                        // alert("Add Success");
+            if(this.eduExpAddToBack.institution.trim()==""||this.eduExpAddToBack.startTime=="")
+                alert("Please enter the Institution and startTime.");
+            else
+            {
+                let obj=
+                    {
+                        institution:this.eduExpAddToBack.institution,
+                        department:this.eduExpAddToBack.department,
+                        acaDegree: this.eduExpAddToBack.acaDegree,
+                        startTime: this.eduExpAddToBack.startTime,
+                        endTime:this.eduExpAddToBack.endTime,
+                        location:this.eduExpAddToBack.location
                     }
-                }
+                $.ajax({
+                    url: "/educationExperience/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
 
-            })
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Save Success");
+                            this.educationExperienceLoad(1);
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+
+                $("#editEduXpce").modal("hide")
+            }
 
         },
 
@@ -1482,13 +1884,38 @@ new Vue({
                 success:(json)=>{
                     if(json.code==0){
                         this.getUserInfo();
-                        // alert("Add Success");
+                        // alert("Save success");
                     }
                 }
 
             })
 
         },
+
+        contactAddToBack(){
+            var  obj={
+               phone: this.userPersonalInfo.phone,
+               email: this.userPersonalInfo.email,
+               weChat: this.userPersonalInfo.weChat,
+               faceBook: this.userPersonalInfo.faceBook,
+               persinPage: this.userPersonalInfo.personPage,
+            };
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateContact",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        alert("Save success");
+                    }
+                }
+            })
+            $('#editUserContact').modal('hide');
+
+},
 
     },
 
@@ -1504,11 +1931,35 @@ new Vue({
         this.conferenceHandleCurrentChange(1);
         this.articleNewestLoad();
         // this.awardandHonorLoad(1);
-        // this.educationExperienceLoad(1);
+        this.educationExperienceLoad(1);
         this.labLoad();
     },
 
     mounted() {
+
+        $('#userEduStartTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
+
+        $('#userEduEndTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
+
+        $('#userProjectStartTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
+
+        $('#userProjectEndTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
+
+        $('#userConferStartTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
+
+        $('#userConferEndTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
 
         $("#researchInterestInput").tagEditor({
             forceLowercase: false,
@@ -1534,7 +1985,9 @@ new Vue({
 
         $("#articleAuthor").tagEditor({
             forceLowercase: false
-        })
+        });
+
+        this.clickCount=0;
 
         // window.document.onclick(){
         //

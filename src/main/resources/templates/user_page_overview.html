@@ -20,6 +20,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/dcalendar.picker.css"/>
+    <link media="screen" href="/static/css/other/tempusdominus-bootstrap-4.css"/>
     <style>
 
         .user-interest .content-body span{
@@ -214,156 +216,342 @@
         <div id="downerContainer" class="fullContainer"  >
             <!--  overview-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==1}"  >
-                <div role="brief introduction" class="leftContentContainer">
-                    <div id="selfIntroduction" class="contentColContainer">
-                        <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
-                            <div>
-                                <button id="viewMoreIntroduction" class="viewMoreButton" @click="menu_Click(4)" style="">View More</button>
+                <div role="brief introduction" class="fullContentContainer">
+                    <div class="splitBlock">
+                        <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">PERSONAL INFO</h4>
+                        </div>
+                        <div>
+                            <button id="viewMoreIntroduction" class="viewMoreButton" @click="menu_Click(4)" style="">View More</button>
+                        </div>
+                    </div>
+                    <div id="selfIntroduction">
+                        <div class="contentColContainer" style="margin-top: 0;">
+                            <div class="subTitle" style="">
+                                <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
+
+                            </div>
+                            <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none">
+                                <div class="contentContainer" style="flex-direction: column;padding: 10px 0;min-height: 80px">
+                                    <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" ><p style="font-size: 16px">Description</p>
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
+                                            Add
+                                            <div class="hoverLine"></div>
+                                        </button>
+                                    </div>
+                                    <div id="descriptionInputContainer" class="contentContainer" style="justify-content: space-between; align-items: center;padding: 0 45px 0 30px">
+                                        <input id="descriptionInput" >
+                                        <button id="descriptionConfirm" class="confirmButton" @click="descriptionConfirm()">√</button>
+                                    </div>
+                                    <div id="descriptionShow" v-if="userPersonalInfo.description" class="contentContainer" style="justify-content: space-between;padding: 0 30px;">
+                                        <h4 id="descriptionDetail">{{userPersonalInfo.description}}</h4>
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">
+                                            Edit
+                                            <div class="hoverLine"></div></button>
+                                    </div>
+                                </div>
+                                <!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
+                                <!--                           <div>-->
+                                <!--                               <h4 style="font-style:italic;font-weight: 500;color: #999999;">Research Interests & Skills</h4>-->
+                                <!--                           </div>-->
+                                <!--                       </div>-->
+                                <div class="innerBorder"></div>
+                                <div class="contentContainer" style="min-height: 50px;justify-content: space-between;padding-top: 10px;min-height: 80px">
+                                    <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
+                                        <p style="font-size: 16px">Research Interests & Skills</p>
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="userPersonalInfo.researchInterests.length==0" style="margin-bottom: 10px" @click="addResearchInterestClick()"
+                                                data-toggle="modal" data-target="researchInterestInfo"  >Add
+                                            <div class="hoverLine"></div>
+                                        </button>
+                                    </div>
+                                    <div id="researchInterestInputContainer">
+                                        <input id="researchInterestInput" type="text"/>
+                                    </div>
+                                    <button id="researchInterestConfirm" class="confirmButton" @click="researchInterestConfirm()">√</button>
+                                    <div class="contentContainer" style="justify-content: space-between; padding: 0 30px">
+                                        <div id="researchInterestDetail" class="contentColContainer researchInterestDetail" >
+                                            <h4 v-for="researchInterest in userPersonalInfo.researchInterests" style="margin: 0 0 5px">{{researchInterest}}</h4>
+                                        </div>
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests.length>0" class="addEditButton" @click="editResearchInterestClick()">
+                                            Edit
+                                            <div class="hoverLine"></div></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="affiliation" class="contentColContainer">
+                            <div class="subTitle" style="">
+                                <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
+                            </div>
+                            <div class="contentContainer colArrange" >
+                                <div id="affiliationInfoContainer" class="contentContainer affiliationInfoContainer" style=" ">
+                                    <div class="contentColContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                        <h3 v-if="userPersonalInfo.affiliation" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
+                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Department :</p> <h4>{{userPersonalInfo.affiliation.department}}</h4>
+<!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>-->
+<!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>-->
+                                        <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
+                                    </div>
+<!--                                    <div class="institutionIcon">-->
+<!--                                        <img style="width: 60px;height: 60px" src="/static/img/icon/institutionIcon.png">-->
+<!--                                    </div>-->
+                                </div>
+                                <div class="innerBorder"></div>
+<!--                                    <div class="itemCardCol wzhFilter_Lab"-->
+<!--                                         style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >-->
+                                <div class="contentColContainer affiliationInfoContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                    <h4 style="color: #828282;margin-left: -3px">Laboratory</h4>
+                                    <h4 style="" v-if="userPersonalInfo.lab.name">{{userPersonalInfo.lab.name}}</h4>
+                                </div>
+<!--                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>-->
+
+<!--                                    </div>-->
+
                             </div>
                         </div>
-                        <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none;">
-                            <div class="contentContainer" style="flex-direction: column;padding-top: 10px">
-                                <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" ><p style="font-size: 16px">Description</p>
-                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
-                                        Add
-                                        <div class="hoverLine"></div>
-                                    </button>
+<!--                        <div id="eduAndAwd" class="contentContainer backInherit" style="justify-content: center">-->
+<!--                            <div role="eduExperience" class="contentColContainer" style="width: 49.5%">-->
+<!--                                <div class="subTitle" style="">-->
+<!--                                    <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>-->
+<!--                                </div>-->
+<!--                                <div class="list-item" v-if="userPersonalInfo.eduExperiences.length>0">-->
+<!--                                    <div class="itemCardCol" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">-->
+<!--                                        <div class="cardContentContainer" style="width: 98%;margin:0; border: none;">-->
+<!--                                            <div>-->
+<!--                                                <p><span>Institution or University:</span> &nbsp&nbsp{{userPersonalInfo.eduExperiences[0].institution}}</p>-->
+<!--                                                <p><span>Department:</span> &nbsp&nbsp{{userPersonalInfo.eduExperiences[0].department}}</p>-->
+<!--                                                <p><span>Academic Degree:</span> &nbsp&nbsp{{userPersonalInfo.eduExperiences[0].academicDegree}}</p>-->
+<!--                                                <p><span>Time:</span> &nbsp&nbsp {{userPersonalInfo.eduExperiences[0].startTime}}~{{userPersonalInfo.eduExperiences[0].endTime}}</p>-->
+<!--                                                <p><span>Location:</span> &nbsp&nbsp{{userPersonalInfo.eduExperiences[0].location}}</p>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="viewMoreFooter">-->
+<!--                                    <div class="innerBorder"></div>-->
+<!--                                    <p style="font-style:italic;font-weight: 600;color: #999999;cursor: pointer" @click="moreDetails(630)">More Details<span style="color: #10adff">&ndash;&gt;</span></p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div role="awd&Honor" class="contentColContainer" style="width: 49.5%">-->
+<!--                                <div class="subTitle" style="">-->
+<!--                                    <div><h4 style="margin-top: 10px;margin-left: 10px">Awards & honors</h4></div>-->
+<!--                                </div>-->
+<!--                                <div class="contentContainer center colCenter backInherit" v-if="userPersonalInfo.awdHonors.length>0" style="height: 175px;">-->
+<!--                                    <div class="itemCardCol" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">-->
+<!--                                        <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">-->
+<!--                                            <div>-->
+<!--                                                <p><span>Name:</span> &nbsp&nbsp{{userPersonalInfo.awdHonors[0].name}}</p>-->
+<!--                                                <p><span>Award Agency:</span> &nbsp&nbsp{{userPersonalInfo.awdHonors[0].awardAgency}}</p>-->
+<!--                                                <p><span>Award Time:</span> &nbsp&nbsp{{userPersonalInfo.awdHonors[0].awardTime}}</p>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="viewMoreFooter">-->
+<!--                                    <div class="innerBorder"></div>-->
+<!--                                    <p style="font-style:italic;font-weight: 600;color: #999999;cursor: pointer" @click="moreDetails(1150)">More Details<span style="color: #10adff">&ndash;&gt;</span></p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+
+                    <div class="splitBlock">
+                        <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">RESOURCES</h4>
+                        </div>
+                        <div>
+                            <button id="viewMoreResources" class="viewMoreButton" @click="menu_Click(2)" style="">View More</button>
+                        </div>
+                    </div>
+                    <div class="contentContainer backInherit">
+                        <div id="modelItems" class="contentColContainer" >
+                            <div class="subTitle" style="">
+                                <div><h4 style="margin-top: 10px;margin-left: 10px">Models</h4></div>
+                            </div>
+                            <div id="modelStatsTable" class="contentColContainer noMargin noBorder7Shadow">
+                                <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 97%;margin-top: 7px;cursor: pointer">
+                                    <div class="leftCard">
+                                        <div style="margin-left: 10px;margin-top: 11px">
+                                            <img src="../static/img/model/model.png"></div>
+                                    </div>
+                                    <div class="rightCard">
+                                        <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
+                                        <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                        <div class="statsCard">
+                                            <div style="width: 85px">
+                                                <h2 style="color: #339fff;text-align: center">{{modelItems.total}}</h2>
+                                            </div>
+                                            <div style="width: 42px">
+                                                <h5>&nbspitems</h5>
+                                            </div>
+                                        </div>
+                                        <div class="seeDetails">
+                                            <p>See Details</p>
+                                            <div class="hoverLine"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div id="descriptionInputContainer" class="contentContainer" style="justify-content: space-between; align-items: center;padding: 0 45px 0 30px">
-                                    <input id="descriptionInput" >
-                                    <button id="descriptionConfirm" class="confirmButton" @click="descriptionConfirm()">√</button>
+                                <div id="conceptualModel" class="itemCardRow" @click="conceptualModelClick()" style="width: 97%;margin-top:7px;cursor: pointer">
+                                    <div class="leftCard">
+                                        <div style="margin-left: 10px;margin-top: 11px">
+                                            <img src="../static/img/model/model.png"></div>
+                                    </div>
+                                    <div class="rightCard">
+                                        <div class="titleCard"><h3 style="font-size: 21px">Conceptual Models</h3></div>
+                                        <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                        <div class="statsCard">
+                                            <div style="width: 85px">
+                                                <h2 style="color: #ff9526;text-align: center">{{conceptualModels.total}}</h2>
+                                            </div>
+                                            <div style="width: 42px">
+                                                <h5>&nbspitems</h5>
+                                            </div>
+                                        </div>
+                                        <div class="seeDetails">
+                                            <p>See Details</p>
+                                            <div class="hoverLine"></div>
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div id="descriptionShow" v-if="userPersonalInfo.description" class="contentContainer" style="justify-content: space-between;padding: 0 30px;">
-                                    <h4 id="descriptionDetail">{{userPersonalInfo.description}}</h4>
-                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">
-                                        Edit
-                                        <div class="hoverLine"></div></button>
+                                <div id="logicalModel" class="itemCardRow" @click="logicalModelClick" style="width: 97%;margin-top: 7px;cursor: pointer">
+                                    <div class="leftCard">
+                                        <div style="margin-left: 10px;margin-top: 11px">
+                                            <img src="../static/img/model/model.png"></div>
+                                    </div>
+                                    <div class="rightCard">
+                                        <div class="titleCard"><h3 style="font-size: 21px">Logical Models</h3></div>
+                                        <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                        <div class="statsCard">
+                                            <div style="width: 85px">
+                                                <h2 style="color: #339fff;text-align: center">{{logicalModels.total}}</h2>
+                                            </div>
+                                            <div style="width: 42px">
+                                                <h5>&nbspitems</h5>
+                                            </div>
+                                        </div>
+                                        <div class="seeDetails">
+                                            <p>See Details</p>
+                                            <div class="hoverLine"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="computableModel" class="itemCardRow" @click="computableModelClick()" style="width: 97%;margin: 7px 0 10px;cursor: pointer">
+                                    <div class="leftCard">
+                                        <div style="margin-left: 10px;margin-top: 11px">
+                                            <img src="../static/img/model/model.png"></div>
+                                    </div>
+                                    <div class="rightCard">
+                                        <div class="titleCard"><h3 style="font-size: 21px">Computable Models</h3></div>
+                                        <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                        <div class="statsCard">
+                                            <div style="width: 85px">
+                                                <h2 style="color: #aa0b15;text-align: center">{{computableModels.total}}</h2>
+                                            </div>
+                                            <div style="width: 42px">
+                                                <h5>&nbspitems</h5>
+                                            </div>
+                                        </div>
+                                        <div class="seeDetails">
+                                            <p>See Details</p>
+                                            <div class="hoverLine"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
-                            <!--                           <div>-->
-                            <!--                               <h4 style="font-style:italic;font-weight: 500;color: #999999;">Research Interests & Skills</h4>-->
-                            <!--                           </div>-->
-                            <!--                       </div>-->
+                        </div>
+                        <div class="contentColContainer backInherit noMargin noBorder7Shadow" style="width: 50%">
+                            <div id="dataItemContainer" class="contentColContainer">
+                                <div class="subTitle" style="">
+                                    <div><h4 style="margin-top: 10px;margin-left: 10px">Data</h4></div>
+                                </div>
+                                <div class="contentColContainer noMargin noBorder7Shadow" style="width: 100%">
+                                    <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 97%;margin: 7px 0 5px;cursor: pointer" >
+                                        <div class="leftCard">
+                                            <div style="margin-left: 10px;margin-top: 11px">
+                                                <img src="../static/img/model/model.png"></div>
+                                        </div>
+                                        <div class="rightCard">
+                                            <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
+                                            <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
+                                            <div class="statsCard">
+                                                <div style="width: 85px">
+                                                    <h2 style="color: #36c9ff;text-align: center">{{dataItems.total}}</h2>
+                                                </div>
+                                                <div style="width: 42px">
+                                                    <h5>&nbspitems</h5>
+                                                </div>
+                                            </div>
+                                            <div class="seeDetails">
+                                                <p>See Details</p>
+                                                <div class="hoverLine"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="innerBorder"></div>
-                            <div class="contentContainer" style="min-height: 40px;justify-content: space-between;padding-top: 10px">
-                                <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
-                                    <p style="font-size: 16px">Research Interests & Skills</p>
-                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="userPersonalInfo.researchInterests.length==0" style="margin-bottom: 10px" @click="addResearchInterestClick()"
-                                            data-toggle="modal" data-target="researchInterestInfo"  >Add
-                                        <div class="hoverLine"></div>
-                                    </button>
+                            <div id="community" class="contentColContainer" >
+                                <div class="subTitle" style="">
+                                    <div><h4 style="margin-top: 10px;margin-left: 10px">Communities</h4></div>
                                 </div>
-                                <div id="researchInterestInputContainer">
-                                    <input id="researchInterestInput" type="text"/>
-                                </div>
-                                <button id="researchInterestConfirm" class="confirmButton" @click="researchInterestConfirm()">√</button>
-                                <div class="contentContainer" style="justify-content: space-between; padding: 0 30px">
-                                    <div id="researchInterestDetail" class="contentColContainer researchInterestDetail" >
-                                        <h4 v-for="researchInterest in userPersonalInfo.researchInterests" style="margin: 0 0 5px">{{researchInterest}}</h4>
+                                <div class="contentColContainer noMargin noBorder7Shadow" style="width: 100%;">
+                                    <div id="concept" class="itemCardRow commnityCard" @click="modelItemClick()" style="width: 97%;margin-top: 7px;cursor: pointer">
+                                        <div class="titleCardRow" style="width: 50%">
+                                            <h3 style="font-size: 21px">Concept & Semantic</h3></div>
+                                        <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
+                                        <div class="statsCard colArrange" style="width: 50%">
+                                            <h2 style="color: #339fff;">{{modelItems.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                            <div class="seeDetails">
+                                                <p>See Details</p>
+                                                <div class="hoverLine"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests.length>0" class="addEditButton" @click="editResearchInterestClick()">
-                                        Edit
-                                        <div class="hoverLine"></div></button>
+                                    <div id="reference" class="itemCardRow commnityCard" @click="conceptualModelClick()" style="width: 97%;margin-top:7px;cursor: pointer">
+                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Spatial Reference</h3></div>
+                                            <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
+                                            <div class="statsCard colArrange" style="width: 50%">
+                                                <h2 style="color: #ff9526;">{{conceptualModels.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                                <div class="seeDetails">
+                                                    <p>See Details</p>
+                                                    <div class="hoverLine"></div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div id="template" class="itemCardRow commnityCard" @click="logicalModelClick" style="width: 97%;margin-top: 7px;cursor: pointer">
+                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Data Template</h3></div>
+                                            <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
+                                            <div class="statsCard colArrange" style="width: 50%">
+                                                <h2 style="color: #339fff;">{{logicalModels.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                                <div class="seeDetails">
+                                                    <p>See Details</p>
+                                                    <div class="hoverLine"></div>
+                                                </div>
+                                            </div>
+
+                                    </div>
+                                    <div id="unit" class="itemCardRow commnityCard" @click="computableModelClick()" style="width: 97%;margin: 7px 0 10px;cursor: pointer">
+                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Unit & Metric</h3></div>
+                                            <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
+                                            <div class="statsCard colArrange" style="width: 50%">
+                                                <h2 style="color: #aa0b15;">{{computableModels.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                                <div class="seeDetails">
+                                                    <p>See Details</p>
+                                                    <div class="hoverLine"></div>
+                                                </div>
+                                            </div>
+
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="modelItems" class="contentColContainer" >
-                        <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px">Resources</h4></div>
-                            <div>
-                                <button id="viewMoreModel" class="viewMoreButton" @click="menu_Click(2)" style="" >View More</button>
-                            </div>
-                        </div>
-                        <div id="modelStatsTable" class="contentContainer" >
 
-                            <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer">
-                                <div class="leftCard">
-                                    <div style="margin-left: 10px;margin-top: 11px">
-                                        <img src="../static/img/model/model.png"></div>
-                                </div>
-                                <div class="rightCard">
-                                    <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
-                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard">
-                                        <h2 style="color: #339fff;">{{modelItems.total}}</h2>
-                                        <h5>&nbspitems</h5>
-                                    </div>
-                                    <div class="seeDetails">
-                                        <p>See Details</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 46%;margin-top: 3px;cursor: pointer" >
-                                <div class="leftCard">
-                                    <div style="margin-left: 10px;margin-top: 11px">
-                                        <img src="../static/img/model/model.png"></div>
-                                </div>
-                                <div class="rightCard">
-                                    <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
-                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard">
-                                        <h2 style="color: #36c9ff;">{{dataItems.total}}</h2>
-                                        <h5>&nbspitems</h5>
-                                    </div>
-                                    <div class="seeDetails">
-                                        <p>See Details</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="conceptualModel" class="itemCardRow" @click="conceptualModelClick()" style="display: block; width: 30%;cursor: pointer">
-                                <div class="rightCard">
-                                    <div class="titleCard"><h3 style="font-size: 21px">Conceptual Models</h3></div>
-                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard">
-                                        <h2 style="color: #ff9526;">{{conceptualModels.total}}</h2>
-                                        <h5>&nbspitems</h5>
-                                    </div>
-                                    <div class="seeDetails">
-                                        <p>See Details</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div id="logicalModel" class="itemCardRow" @click="logicalModelClick" style="display: block;width: 30%;cursor: pointer">
-                                <div class="rightCard">
-                                    <div class="titleCard"><h3 style="font-size: 21px">Logical Models</h3></div>
-                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard">
-                                        <h2 style="color: #339fff;">{{logicalModels.total}}</h2>
-                                        <h5>&nbspitems</h5>
-                                    </div>
-                                    <div class="seeDetails">
-                                        <p>See Details</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="computableModel" class="itemCardRow" @click="computableModelClick()" style="display: block;width: 30%;cursor: pointer">
-                                <div class="rightCard">
-                                    <div class="titleCard"><h3 style="font-size: 21px">Computable Models</h3></div>
-                                    <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
-                                    <div class="statsCard"><h2 style="color: #aa0b15;">{{computableModels.total}}</h2>
-                                        <h5>&nbspitems</h5></div>
-                                    <div class="seeDetails">
-                                        <p>See Details</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                     <div class="splitBlock">
                         <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">RESEARCH</h4>
                         </div>
-                        <div class="arrowDownerBig"></div>
                     </div>
 
                     <div id="researchIntroduction" class="contentColContainer" style="margin-top: 0px">
@@ -385,13 +573,13 @@
                                 <!--                                <div class="innerBorder" style="border-bottom-color: #c2c2c2;"></div>-->
                                 <div class="cardDowner colArrange" style="padding-bottom: 15px;justify-content: flex-start;width: 100%">
                                     <div class="splitBlock" style="background-color: #ffffff">
-                                        <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Hottest</h4>
+                                        <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Newest</h4>
                                         </div>
-                                        <div class="arrowDownerBig"></div>
+<!--                                        <div class="arrowDownerBig"></div>-->
                                     </div>
                                     <!--                                    此处v-for没有用但是加载速度会变快-->
                                     <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" v-if="articles.result" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
+                                        <div class="itemCardCol" v-if="articles.result.length>0" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" @click="articleClick(1)" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
@@ -434,10 +622,9 @@
                                     <div class="splitBlock" style="background-color: #ffffff">
                                         <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Newest</h4>
                                         </div>
-                                        <div class="arrowDownerBig"></div>
                                     </div>
                                     <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" v-if="projects.result" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
+                                        <div class="itemCardCol" v-if="projects.result.length>0" @click="projectClick(2)" style="width: 96%;height: 240px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
@@ -480,10 +667,9 @@
                                     <div class="splitBlock" style="background-color: #ffffff">
                                         <div><h4 style="font-family:times, serif; font-size: 22px; font-weight: 500;color: #808080; margin-left:10px">Newest</h4>
                                         </div>
-                                        <div class="arrowDownerBig"></div>
                                     </div>
                                     <div class="list-item"  v-for="newestArticle in newestArticle.result" style="display: flex;justify-content: center">
-                                        <div class="itemCardCol" v-if="conferences.result" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
+                                        <div class="itemCardCol" v-if="conferences.result.length>0" @click="conferenceClick(3)" style="width: 96%;height: 255px;margin-top: 8px;border: none;cursor: pointer">
                                             <div class="cardUpper colArrange" style="background-color: #fafafa">
                                                 <div class="cardHeadContainer" style="height: 72px;">
                                                     <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
@@ -518,52 +704,20 @@
                     </div>
                 </div>
 
-                <div class="rigntContentContainer" >
-                    <div id="affiliation" class="contentColContainer">
-                        <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
-                        </div>
-                        <div class="contentContainer colArrange" >
-                            <div class="contentContainer" style="min-height: 210px;padding-left: 10px; ">
-                                <div class="contentColContainer" style="width: 300px;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                    <h3 v-if="userPersonalInfo.affiliation" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
-                                    <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Department :</p> <h4>{{userPersonalInfo.affiliation.department}}</h4>
-                                    <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>
-                                    <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>
-                                    <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
-                                </div>
-                                <div class="institutionIcon">
-                                    <img style="width: 60px;height: 60px" src="/static/img/icon/institutionIcon.png">
-                                </div>
-                            </div>
-                            <!--                            <div class="innerBorder"></div>-->
-                            <div class="contentContainer colArrange" style="height: 100px;">
-                                <div class="itemCardCol wzhFilter_Lab"
-                                     style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >
-                                    <div class="greyShade" style="padding-left: 18px">
-                                        <div class="containerWithBorder"> <h3 style="color: #f0f0f0;margin: 0">Laboratory</h3></div>
-                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab.name">{{userPersonalInfo.lab.name}}</h4>
-<!--                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>-->
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div id="contactInfoAll" class="contentColContainer">
-                        <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
-                        </div>
-                        <div class="contentContainer" style="flex-direction: column; padding-left: 25px">
-                            <h4 th:if="${not #strings.isEmpty(userInfo.phone)}" >Phone Number: <span th:text="${userInfo.phone}"></span></h4>
-                            <h4 th:if="${not #strings.isEmpty(userInfo.weChat)}">WeChat: <span th:text="${userInfo.weChat}"></span></h4>
-                            <h4 th:if="${not #strings.isEmpty(userInfo.faceBook)}">Facebook: <span th:text="${userInfo.faceBook}"></span></h4>
-                            <h4 th:if="${not #strings.isEmpty(userInfo.weiBo)}">Weibo: <span th:text="${userInfo.weiBo}"></span></h4>
-                            <h4 th:if="${not #strings.isEmpty(userInfo.personPage)}">Person Page:<span th:text="${userInfo.personPage}"></span></h4>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="rigntContentContainer" >-->
+<!--                    <div id="contactInfoAll" class="contentColContainer">-->
+<!--                        <div class="subTitle" style="">-->
+<!--                            <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>-->
+<!--                        </div>-->
+<!--                        <div class="contentContainer" style="flex-direction: column; padding-left: 25px">-->
+<!--                            <h4 th:if="${not #strings.isEmpty(userInfo.phone)}" >Phone Number: <span th:text="${userInfo.phone}"></span></h4>-->
+<!--                            <h4 th:if="${not #strings.isEmpty(userInfo.weChat)}">WeChat: <span th:text="${userInfo.weChat}"></span></h4>-->
+<!--                            <h4 th:if="${not #strings.isEmpty(userInfo.faceBook)}">Facebook: <span th:text="${userInfo.faceBook}"></span></h4>-->
+<!--                            <h4 th:if="${not #strings.isEmpty(userInfo.weiBo)}">Weibo: <span th:text="${userInfo.weiBo}"></span></h4>-->
+<!--                            <h4 th:if="${not #strings.isEmpty(userInfo.personPage)}">Person Page:<span th:text="${userInfo.personPage}"></span></h4>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
 
 
@@ -609,15 +763,15 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Education Experience</h4></div>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="addEduXpce"
-                                    v-if="userPersonalInfo.eduExperiences.length>0" class="addEditButton"
+                                    v-if="educationExperience.total>0" class="addEditButton"
                                     data-toggle="modal" data-target="#editEduXpce"  @click="addEduXpceClick()">
                                 Add
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div class="list-item" v-if="userPersonalInfo.eduExperiences.length>0" v-for="(eduExperience,key) in userPersonalInfo.eduExperiences">
-                            <div class="itemCardCol" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">
-                                <div class="cardContentContainer" style="width: 98%;margin:0; border: none;">
+                        <div class="list-item" v-if="educationExperience.total>0" v-for="(eduExperience,key) in educationExperience.result">
+                            <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">
+                                <div class="cardContentContainer" style="width: 92%;margin:0; border: none;">
                                     <div>
                                         <p><span>Institution or University:</span> &nbsp&nbsp{{eduExperience.institution}}</p>
                                         <p><span>Department:</span> &nbsp&nbsp{{eduExperience.department}}</p>
@@ -626,9 +780,15 @@
                                         <p><span>Location:</span> &nbsp&nbsp{{eduExperience.location}}</p>
                                     </div>
                                 </div>
+                                <div class="deleteEduContainer">
+                                    <button class="squareButton alertBack" @click="deleteEduExp(eduExperience.oid)">
+                                        <div>×</div>
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
-                        <div v-if="userPersonalInfo.eduExperiences.length==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
+                        <div v-if="educationExperience.total==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
                             <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addEduXpceClick()" data-toggle="modal" data-target="#editEduXpce">
                                 <h2 style="font-weight: 600">Add</h2>
@@ -732,6 +892,7 @@
                                     <h3 class="modal-title" style="color:aliceblue;text-align: center">
                                         My Education Experience
                                     </h3>
+
                                 </div>
                                 <div class="modal-body" style="font-size: 20px;overflow: hidden">
                                     <section class="panel">
@@ -754,29 +915,33 @@
                                                                id="userEduDepartment"/>
                                                     </div>
                                                 </div>
-
+                                                <label style="margin-left: 15px;width: 100%">Time</label>
+                                                <div class="timeInputContainer">
+                                                    <input id='userEduStartTime' class="timeInput" type='text' placeholder="start time"/>
+                                                    <p>~</p>
+                                                    <input id='userEduEndTime' class="timeInput" type='text' placeholder="end time"/>
+                                                </div>
                                                 <div class="form-group flexCol">
                                                     <label for="userEduAcaDegree"
                                                            class="col-sm-8 control-label inputTitle">Academic Degree</label>
                                                     <div class="col-sm-12">
                                                         <input type="text" class="form-control"
                                                                id="userEduAcaDegree"/>
-                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
                                                     </div>
                                                 </div>
+<!--                                                <div class="form-group flexCol">-->
+<!--                                                    <label for="userEduStartTime"-->
+<!--                                                           class="col-sm-8 control-label inputTitle">Time</label>-->
+<!--                                                    <div class="col-sm-12 rowArrange">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="userEduStartTime" style="width: 47%;float: left;"/>-->
+<!--                                                        ~-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="userEduEndTime" style="width: 47%;float: right"/>-->
 
-                                                <div class="form-group flexCol">
-                                                    <label for="userEduStartTime"
-                                                           class="col-sm-8 control-label inputTitle">Time</label>
-                                                    <div class="col-sm-12 rowArrange">
-                                                        <input type="text" class="form-control"
-                                                               id="userEduStartTime" style="width: 47%;float: left;"/>
-                                                        ~
-                                                        <input type="text" class="form-control"
-                                                               id="userEduEndTime" style="width: 47%;float: right"/>
-                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
-                                                    </div>
-                                                </div>
+<!--                                                    </div>-->
+
+<!--                                                </div>-->
 
                                                 <div class="form-group flexCol">
                                                     <label for="userEduLocation"
@@ -1040,22 +1205,84 @@
                     <div id="contactInfo" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-style:italic;font-width:800px">Contact</h4></div>
+                            <button th:if="${userInfo.oid==userInfo.loginId}" id="editContact"
+                                    class="addEditButton" data-toggle="modal" data-target="#editUserContact"  @click="editContactClick()">
+                                Edit
+                                <div class="hoverLine"></div>
+                            </button>
                         </div>
                         <div id="contactTable" class="contentContainer" >
-                            <div class="itemCardCol" data-target="#phoneNum" data-toggle="collapse" style="width: 50%;height: 100px;align-items: center">
-                                <div style="width: 80px; height: 80px;background-color: white;margin-top: 2px"><img class="modelImg" src="../../../static/img/carousels/phone.jpg"> </div>
-                                <div id="phoneNum" class="collapse" >
-                                    <p th:text="${userInfo.phone}">111</p>
+                            <div class="rigntContentContainer" >
+                                <div class="contentContainer" style="flex-direction: column; padding-left: 25px">
+                                    <h4 v-if="userPersonalInfo.email">E-mail: <a :href="'mailto:'+userPersonalInfo.email">{{userPersonalInfo.email}}</a></h4>
+                                    <h4 v-if="userPersonalInfo.phone" >Phone Number: <span>{{userPersonalInfo.phone}}</span></h4>
+                                    <h4 v-if="userPersonalInfo.weChat">WeChat: <span>{{userPersonalInfo.weChat}}</span></h4>
+                                    <h4 v-if="userPersonalInfo.faceBook">Facebook: <span>{{userPersonalInfo.faceBook}}</span></h4>
+                                    <h4 v-if="userPersonalInfo.personPage">Person Page:<span>{{userPersonalInfo.personPage}}</span></h4>
                                 </div>
                             </div>
-                            <div class="itemCardCol" style="width: 35%;height: 100px">
-                                <p th:text="${userInfo.weChat}">111</p>
-                            </div>
-                            <div class="itemCardRow" style="width: 50%;height: 100px">
+                        </div>
+                        <div class="modal fade" id="editUserContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background: deepskyblue">
+                                        <h3 class="modal-title" style="color:aliceblue;text-align: center">
+                                            My Laboratory Info
+                                        </h3>
+                                    </div>
+                                    <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                        <section class="panel sizeAdaption">
+                                        <div class="tab-pane" >
+                                            <div class="form-group flexCol">
+                                                <label for="userphone"
+                                                       class="col-sm-8 control-label inputTitle">Phone Num</label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userPhone"/>
+                                                </div>
 
-                            </div>
-                            <div class="itemCardRow" style="width: 35%;height: 100px">
+                                                <label for="userEmail"
+                                                       class="col-sm-8 control-label inputTitle">Email</label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userEmail"/>
+                                                </div>
 
+                                                <label for="userWeChat"
+                                                             class="col-sm-8 control-label inputTitle">WeChat</label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userWeChat"/>
+                                                </div>
+
+                                                <label for="userFacebook"
+                                                             class="col-sm-8 control-label inputTitle">Facebook</label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userFacebook"/>
+                                                </div>
+
+                                                <label for="userPersonPage"
+                                                             class="col-sm-8 control-label inputTitle">Personal Page</label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userPersonPage"/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </section>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-success" style="font-size:15px" @click="saveContactClick()">
+                                                Save
+                                            </button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                    style="font-size:15px">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1072,6 +1299,7 @@
                         </div>
                     </div>
                     <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
+                        <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Model & Data</h4></div>
                         <ul>
                             <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
                             <!--                                <p>99999</p></div></a></li>-->
@@ -1093,6 +1321,26 @@
                         </ul>
                     </div>
 
+                    <div  id="communityClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
+                        <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Community</h4></div>
+                        <ul>
+                            <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
+                            <!--                                <p>99999</p></div></a></li>-->
+                            <li><a id="tab-Concept" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==6}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptClick()">Concept & Semantic<div class="statsNumber" :class="{statsNumberFullColor:showIndex==6}">
+                                <p>{{concepts.total}}</p></div></a></li>
+                            <li><a id="tab-SpaReference" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==7}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="spatialClick()">Spatial Reference<div class="statsNumber" :class="{statsNumberFullColor:showIndex==7}">
+                                <p>{{spatials.total}}</p></div></a></li>
+                            <li><a id="tab-DataTemplate" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==8}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="templateClick()">Data Template<div class="statsNumber" :class="{statsNumberFullColor:showIndex==8}">
+                                <p>{{templates.total}}</p></div></a></li>
+                            <li><a id="tab-Unit" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==9}"
+                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="unitClick()">Unit & Metric<div class="statsNumber" :class="{statsNumberFullColor:showIndex==9}">
+                                <p>{{units.total}}</p></div></a></li>
+                        </ul>
+                    </div>
+
                 </div>
 
                 <div class="rigntContentContainer" style="width:900px">
@@ -1100,7 +1348,6 @@
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
                                 <div><h4 style="margin-top: 10px;color: #999999;">Model Items</h4></div>
-
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1448,9 +1695,20 @@
                     <div class="itemContainer" :class="{showActive:researchIndex==1}" >
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Articles</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 60%">
+                                    <h4 style="margin-top: 10px">Articles</h4>
+<!--                                    <div class="searchIcon confirmButton" style="margin-top: 0;margin-bottom: 0" @click="searchArticlesClick()">-->
+<!--                                        <div class="hoverLine"></div>-->
+<!--                                    </div>-->
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchArticle" class="searchInput" @keydown.enter="searchItems(1)"/>
+                                            <button class="confirmButton noMargin" @click="searchItems(1)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <button th:if="${userInfo.oid==userInfo.loginId}" id="addArticle"
-                                        v-if="articles.result.length>0" class="addEditButton sizeAdaption"
+                                        v-if="articles.total>0" class="addEditButton sizeAdaption"
                                         data-toggle="modal" data-target="#articleInfo"  @click="addArticleClick()">
                                     Add Article
                                     <div class="hoverLine"></div>
@@ -1458,15 +1716,13 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-if="articles.result" v-for="(article,key) in articles.result">
+                            <div class="list-item" v-if="articles.total>0" v-for="(article,key) in articles.result">
                                 <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
                                     <div class="cardUpper colArrange" style="background-color: #fafafa">
                                         <div class="cardHeadContainer" style="height: 72px;">
                                             <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-
                                                     <h4>{{article.title}}</h4>
-
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
@@ -1498,6 +1754,7 @@
                                 </div>
 
                             </div>
+                            <h4 v-if="articles.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
@@ -1540,16 +1797,16 @@
                                                     <div class="tab-pane active" >
                                                         <div class="form-group">
                                                             <label for="articleTitle"
-                                                                   class="col-sm-2 control-label">Title</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Title</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="articleTitle"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="articleAuthor"
-                                                                   class="col-sm-2 control-label">Author</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Author</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="articleAuthor"/>
                                                                 <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
@@ -1558,24 +1815,24 @@
 
                                                         <div class="form-group">
                                                             <label for="articleDate"
-                                                                   class="col-sm-2 control-label">Date</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Date</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="articleDate"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="articleJournal"
-                                                                   class="col-sm-2 control-label">Journal</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Journal</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="articleJournal"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="articleStartPage"
-                                                                   class="col-sm-2 control-label">Pages</label>
-                                                            <div class="col-sm-10" style="display: flex;justify-content: space-between">
+                                                                   class="col-sm-4 control-label">Pages</label>
+                                                            <div class="col-sm-12" style="display: flex;justify-content: space-between">
                                                                 <input type="text" class="form-control" style="width: 45%"
                                                                        id="articleStartPage"/>-
                                                                 <input type="text" class="form-control" style="width: 45%"
@@ -1584,8 +1841,8 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="articleLink"
-                                                                   class="col-sm-2 control-label">Link</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Link</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="articleLink"/>
                                                             </div>
@@ -1631,9 +1888,17 @@
                     <div class="itemContainer" :class="{showActive:researchIndex==2}" >
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Projects</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 60%">
+                                    <div><h4 style="margin-top: 10px;">Projects</h4></div>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer   searchInputContainer">
+                                            <input id="searchProject" class="searchInput" @keydown.enter="searchItems(2)"/>
+                                            <button class="confirmButton noMargin" @click="searchItems(2)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <button th:if="${userInfo.oid==userInfo.loginId}" id="addProject"
-                                        v-if="projects.result.length>0" class="addEditButton sizeAdaption"
+                                        v-if="projects.total>0" class="addEditButton sizeAdaption"
                                         data-toggle="modal" data-target="#projectInfo"  @click="addProjectClick()">
                                     Add Project
                                     <div class="hoverLine"></div>
@@ -1681,6 +1946,7 @@
                                 </div>
 
                             </div>
+                            <h4 v-if="projects.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
@@ -1723,50 +1989,58 @@
                                                     <div class="tab-pane active" >
                                                         <div class="form-group flexCenter">
                                                             <label for="projectName"
-                                                                   class="col-sm-2 control-label">Name</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Name</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="projectName"/>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group flexCenter">
-                                                            <label for="startTime"
-                                                                   class="col-sm-2 control-label">Start Time</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="text" class="form-control"
-                                                                       id="startTime"/>
-                                                                <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
-                                                            </div>
-                                                        </div>
 
-                                                        <div class="form-group flexCenter">
-                                                            <label for="endTime"
-                                                                   class="col-sm-2 control-label">End Time</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="text" class="form-control"
-                                                                       id="endTime"/>
-                                                            </div>
+                                                        <label for="userProjectStartTime"
+                                                               class="col-sm-4 control-label">Time</label>
+                                                        <div class="timeInputContainer" >
+                                                            <input id='userProjectStartTime' class="timeInput" type='text' placeholder="start time"/>
+                                                            <p>~</p>
+                                                            <input id='userProjectEndTime' class="timeInput" type='text' placeholder="end time"/>
                                                         </div>
+<!--                                                        <div class="form-group flexCenter">-->
+<!--                                                            <label for="startTime"-->
+<!--                                                                   class="col-sm-2 control-label">Start Time</label>-->
+<!--                                                            <div class="col-sm-10">-->
+<!--                                                                <input type="text" class="form-control"-->
+<!--                                                                       id="startTime"/>-->
+<!--                                                                &lt;!&ndash;                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>&ndash;&gt;-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                        <div class="form-group flexCenter">-->
+<!--                                                            <label for="endTime"-->
+<!--                                                                   class="col-sm-2 control-label">End Time</label>-->
+<!--                                                            <div class="col-sm-10">-->
+<!--                                                                <input type="text" class="form-control"-->
+<!--                                                                       id="endTime"/>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
                                                         <div class="form-group flexCenter">
                                                             <label for="role"
-                                                                   class="col-sm-2 control-label">Role</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Role</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="role"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group flexCenter">
                                                             <label for="fundAgency"
-                                                                   class="col-sm-2 control-label">Fund Agency</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Fund Agency</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="fundAgency"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group flexCenter">
                                                             <label for="amount"
-                                                                   class="col-sm-2 control-label">Amount</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Amount</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="amount"/>
                                                             </div>
@@ -1795,9 +2069,17 @@
                     <div class="itemContainer" :class="{showActive:researchIndex==3}" >
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Conferences</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 60%">
+                                    <div><h4 style="margin-top: 10px;">Conferences</h4></div>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer searchInputContainer">
+                                            <input id="searchConference" class="searchInput"  @keydown.enter="searchItems(3)"/>
+                                            <button class="confirmButton noMargin" @click="searchItems(3)"></button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <button th:if="${userInfo.oid==userInfo.loginId}" id="addConference"
-                                        v-if="conferences.result.length>0" class="addEditButton sizeAdaption"
+                                        v-if="conferences.total>0" class="addEditButton sizeAdaption"
                                         data-toggle="modal" data-target="#conferenceInfo"  @click="addConferenceClick()">
                                     Add Conference
                                     <div class="hoverLine"></div>
@@ -1846,6 +2128,7 @@
                                 </div>
 
                             </div>
+                            <h4 v-if="conferences.total==0" style="color:#999999;margin-top: 20px;">No result found</h4>
                             <!--                                                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
@@ -1878,56 +2161,43 @@
                                                     <div class="tab-pane active" >
                                                         <div class="form-group flexCenter">
                                                             <label for="conferenceTitle"
-                                                                   class="col-sm-2 control-label">Title</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Title</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="conferenceTitle"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group flexCenter">
                                                             <label for="theme"
-                                                                   class="col-sm-2 control-label">Theme</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Theme</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="theme"/>
                                                             </div>
                                                         </div>
+                                                        <label for="userConferStartTime"
+                                                               class="col-sm-4 control-label">Time</label>
+                                                        <div class="timeInputContainer" >
+                                                            <input id='userConferStartTime' class="timeInput" type='text' placeholder="start time"/>
+                                                            <p>~</p>
+                                                            <input id='userConferEndTime' class="timeInput" type='text' placeholder="end time"/>
+                                                        </div>
                                                         <div class="form-group flexCenter">
                                                             <label for="conferenceRole"
-                                                                   class="col-sm-2 control-label">Role</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Role</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="conferenceRole"/>
                                                             </div>
                                                         </div>
                                                         <div class="form-group flexCenter">
                                                             <label for="conferenceLocation"
-                                                                   class="col-sm-2 control-label">Location</label>
-                                                            <div class="col-sm-10">
+                                                                   class="col-sm-4 control-label">Location</label>
+                                                            <div class="col-sm-12">
                                                                 <input type="text" class="form-control"
                                                                        id="conferenceLocation"/>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group flexCenter">
-                                                            <label for="conferStartTime"
-                                                                   class="col-sm-2 control-label">Start Time</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="text" class="form-control"
-                                                                       id="conferStartTime"/>
-                                                                <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group flexCenter">
-                                                            <label for="conferEndTime"
-                                                                   class="col-sm-2 control-label">End Time</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="text" class="form-control"
-                                                                       id="conferEndTime"/>
-                                                            </div>
-                                                        </div>
-
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -1971,6 +2241,10 @@
 <script src="../static/js/common/navbar.js"></script>
 <script src="../static/js/common/backTop.js/"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script type="text/javascript" src="/static/js/common/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="/static/js/common/moment-timezone-with-data-2012-2022.min.js"></script>
+<script type="text/javascript" src="/static/js/common/tempusdominus-bootstrap-4.js"></script>
+<script type="text/javascript" src="/static/js/common/dcalendar.picker.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="../static/js/page/user_page.js"></script>
 </html>

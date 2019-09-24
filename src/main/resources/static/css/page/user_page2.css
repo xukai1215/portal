@@ -107,7 +107,7 @@ button:focus{
 
 .wzhFilter_userInfo::before{
     display: inline-block;
-    filter: blur(10px);
+    filter: blur(8px);
     content: '';
     top: 0;
     left: 0;
@@ -243,6 +243,15 @@ button:focus{
     margin: 0;
 }
 
+.fullContentContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: stretch;
+    background-color: #f3f3f3;
+}
+
 .leftContentContainer{
     display: flex;
     flex-direction: column;
@@ -295,13 +304,17 @@ button:focus{
 
 .contentContainer{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     flex-wrap: wrap;
     font-family: sans-serif;
     width:100% ;
     /*flex-grow: 1;*/
     /*height: 148px;*/
     background-color: #fbfbfb;
+}
+
+.affiliationInfoContainer{
+    padding: 0 30px;
 }
 
 #selfIntroduction{
@@ -313,11 +326,38 @@ button:focus{
 }
 
 #modelItems{
-    height: 330px;
+    margin-top: 0;
+    width: 49.5%;
+}
+
+#dataItemContainer{
+    margin-top: 0;
+    width: 99%;
+}
+
+#dataItem{
+
+}
+
+#community{
+    width: 99%;
+}
+
+.commnityCard{
+    height: 67px !important;
+    justify-content: space-between !important;
+    align-items: center!important;
+    padding: 0 27px !important;
 }
 
 #affiliation{
-    min-height: 450px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /*min-height: 450px;*/
+}
+
+#eduAndAwd{
+    margin-bottom: 3px;
 }
 
 #researchIntroduction{
@@ -415,6 +455,46 @@ button:focus{
     margin: 0;
 }
 
+.timeInputContainer{
+    width: 100%;
+    padding: 0 15px;
+    display: inline-flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+input::placeholder{
+    font-style:italic;
+    margin: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #999999;
+}
+
+.timeInput{
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.timeInput:focus{
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+}
 
 .itemCardRow{
     display: flex;
@@ -422,9 +502,9 @@ button:focus{
     justify-content: center;
     align-items: stretch;
     height: 115px;
-    margin: 0 10px ;
     border-radius: 3px;
     background-color: rgba(232, 232, 232, 0.6);
+    padding: 0 15px;
     /*box-shadow: 0px 1px 2px    rgba(0,0,0,0.3);*/
     font-family: sans-serif;
     border: 1px solid #d8dbe2;
@@ -439,6 +519,14 @@ button:focus{
 }
 
 .itemCardRow:hover .statsCard{
+    height: 0;
+}
+
+.itemCardRow:hover .statsCard h2{
+    display: none;
+}
+
+.itemCardRow:hover .statsCard h5{
     display: none;
 }
 
@@ -451,6 +539,20 @@ button:focus{
 }
 
 .itemCardRow:hover .seeDetails p{
+    font-family: sans-serif;
+    font-size: 19px;
+    display: block;
+}
+
+.itemCardRow:hover .seeDetailsCol{
+    display: flex;
+    margin-top: 10px;
+    color: rgb(16, 173, 255);
+    height: 40px;
+    z-index:500;
+}
+
+.itemCardRow:hover .seeDetailsCol p{
     font-family: sans-serif;
     font-size: 19px;
     display: block;
@@ -523,9 +625,31 @@ button:focus{
 
 /*}*/
 
+.searchIcon{
+    margin-left: 15px;
+    margin-left: 10px;
+    cursor: pointer;
+
+}
+
+.searchInput{
+    height: 32px;
+    width: 350px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    font: normal 16px sans-serif;
+    color: #555;
+    padding-left: 10px;
+}
+
+.searchContainer{
+    width: 70%;
+}
+
 .leftCard{
     width: 100px;
     height: 115px;
+
 }
 
 .rightCard{
@@ -541,6 +665,21 @@ button:focus{
     align-items: center;
     height: 55px;
 
+}
+
+.titleCardRow{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 55px;
+}
+
+.titleCard h3{
+    margin: 0 !important;
+}
+
+.titleCardRow h3{
+    margin: 0 !important;
 }
 
 .statsCard{
@@ -573,7 +712,7 @@ button:focus{
 
 .seeDetails{
     /*display: none;*/
-    margin-left: 50px;
+    margin-left: 163px;
     flex-direction:column ;
     padding: 0 8px 3px;
     justify-content: center;
@@ -585,7 +724,11 @@ button:focus{
     width: 120px;
     height: 0;
     transition-property: height;
-    transition: .5s;
+    transition: .4s;
+}
+
+.statsCard .seeDetails{
+    margin: 0 0px !important;
 }
 
 .seeDetails p{
@@ -593,6 +736,30 @@ button:focus{
 }
 
 .seeDetails:hover .hoverLine{
+    width: 101%;
+    border-color:rgb(16, 173, 255) ;
+}
+
+.seeDetailsCol{
+    flex-direction:column ;
+    padding: 0 8px 3px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    border-width: 2px ;
+    border-style: solid;
+    color: transparent;
+    width: 0;
+    height: 40px;
+    transition-property: width;
+    transition: .2s;
+}
+
+.seeDetailsCol p{
+    display: none;
+}
+
+.seeDetailsCol:hover .hoverLine{
     width: 101%;
     border-color:rgb(16, 173, 255) ;
 }
@@ -621,6 +788,18 @@ button:focus{
     /*background-color:-------------------------------------`1-**-                                                                           #2cc76b*/
 }
 
+.viewMoreFooter{
+    width: 100%;
+    height: 25px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.viewMoreFooter .innerBorder{
+    width: 76% !important;
+}
 
 .addEditButton{
     display: flex;
@@ -676,12 +855,12 @@ button:focus{
 .splitBlock{
     /*width: 100%;*/
     display: flex;
-    justify-content:flex-start;
+    justify-content:space-between;
     align-items: center;
     height: 30px;
     background-color: #dadada;
     margin: 0 5px;
-    padding: 0px 5px ;
+    padding: 0px 20px 0 15px;
 }
 
 .arrowDownerBig{
@@ -954,8 +1133,13 @@ button:focus{
     flex-direction: column;
 }
 
+.colCenter{
+    align-items: center;
+}
+
 .rowArrange{
     display: flex;
+    flex-direction: row ;
     justify-content: space-between;
 }
 
@@ -1009,7 +1193,7 @@ button:focus{
 }
 
 .noMargin{
-    margin: 0;
+    margin: 0 !important;
 }
 
 #descriptionInputContainer{
@@ -1017,15 +1201,34 @@ button:focus{
     transition: .3s;
 }
 
+#articleSearchContainer{
+    /*display: none;*/
+    justify-content: flex-start;
+}
+
+#projectSearchContainer{
+    /*display: none;*/
+    justify-content: flex-start;
+}
+
+#conferenceSearchContainer{
+    /*display: none;*/
+    justify-content: flex-start;
+}
+
+.searchInputContainer{
+    justify-content: flex-end;
+}
+
 #researchInterestInputContainer{
-    width: 78%;
+    width: 85%;
     margin-left: 30px;
     display: none;
     transition: .3s;
 }
 
 #descriptionConfirm{
-    margin-left: 20px;
+    margin-left: 43px;
 }
 
 
@@ -1039,7 +1242,7 @@ button:focus{
     width: 50%;
     height: 32px;
     margin-top: 2px;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
     border:1px solid #ccc;
     font: normal 16px sans-serif;
     color: #555;
@@ -1085,6 +1288,8 @@ button:focus{
 }
 
 .sizeAdaption{
+    min-width: auto !important;
+    min-height: auto !important;
     width: auto !important;
     height: auto !important;
     padding:  5px 10px ;
@@ -1228,4 +1433,19 @@ input[type="radio"]:checked + span {
 .safeBack{
     background-color: inherit;
     color: #5cb85c;
+}
+
+.panel{
+    min-height: 490px;
+}
+
+.deleteEduContainer{
+    display: flex;
+    width: 15%;
+    justify-content: flex-end;
+    padding-top: 11px;
+    padding-right: 15px;
+}
+
+#editUserContact{
 }

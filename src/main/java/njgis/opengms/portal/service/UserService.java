@@ -353,6 +353,9 @@ public class UserService {
         userInfo.put("userName",user.getUserName());
         userInfo.put("email",user.getEmail());
         userInfo.put("phone",user.getPhone());
+        userInfo.put("weChat",user.getWeChat());
+        userInfo.put("faceBook",user.getFaceBook());
+        userInfo.put("personPage",user.getPersonPage());
         userInfo.put("wiki",user.getWiki());
         userInfo.put("description",user.getDescription());
         userInfo.put("researchInterests",user.getResearchInterests());
@@ -496,6 +499,25 @@ public class UserService {
                 user.setAwardsHonors(awardandHonorList);
                 Date now=new Date();
                 user.setUpdateTime(now);
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    public String updateContact(ContactDTO contactDTO, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                user.setPhone(contactDTO.getPhone());
+                user.setEmail(contactDTO.getEmail());
+                user.setFaceBook(contactDTO.getFaceBook());
+                user.setWeChat(contactDTO.getWeChat());
+                user.setPersonPage(contactDTO.getPersonPage());
                 userDao.save(user);
                 return "success";
             } else
