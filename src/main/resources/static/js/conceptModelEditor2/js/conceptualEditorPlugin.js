@@ -29,7 +29,7 @@ function createIcon(array,id) {
         div.style.marginTop = "6px";
         var img = document.createElement("img");
         img.id = array[i].icon_id;
-        img.src = "http://localhost/GeoModelingNew/showIconServlet?uid="+array[i].icon_id;
+        img.src = "http://geomodeling.njnu.edu.cn/GeoModeling/showIconServlet?uid="+array[i].icon_id;
         img.width = "100";
         img.height = "100";
         div.appendChild(img);
@@ -146,12 +146,12 @@ function regetIcon(page) {
         firstPage =  false;
     }else{
         $.ajax({
-            url:"http://localhost:8081/GeoModelingNew/geoIconListServlet",
+            url:"/geoIcon/list",
             type:"get",
             async:false,
             data:{"uid":tempNameId,"page":page,"sortType":"name"},
             success:function (data) {
-                var result = JSON.parse(data);
+                var result = data.data;
                 createIcon(result.geoIcons,"infoTable");
             }
         })

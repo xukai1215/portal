@@ -907,19 +907,19 @@ div.el-carousel__container{
 
 }
 .colreacherimg{
-
+  width:80px;
   border-radius: 40px;
-  width:500px;
+
   height:100px;
 }
 
 .colreacherimg:hover{
 
-  transform: scale(1.2);
-  -webkit-transform: scale(1.2);
-  -moz-transform: scale(1.2);
-  -o-transform: scale(1.2);
-  -ms-transform: scale(1.2); 
+  /*transform: scale(1.2);*/
+  /*-webkit-transform: scale(1.2);*/
+  /*-moz-transform: scale(1.2);*/
+  /*-o-transform: scale(1.2);*/
+  /*-ms-transform: scale(1.2); */
 }
 
 

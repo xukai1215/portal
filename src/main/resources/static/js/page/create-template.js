@@ -347,17 +347,29 @@ var vue = new Vue({
             templateObj.description = $("#descInput").val();
             templateObj.xml = $("#xml").val();
 
+            if(templateObj.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
+
             var detail = tinyMCE.activeEditor.getContent();
             templateObj.detail = detail.trim();
             console.log(templateObj)
 
+            let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
+                let file = new File([JSON.stringify(templateObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/addTemplate",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(templateObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
 
                         if (result.code == "0") {
@@ -372,12 +384,18 @@ var vue = new Vue({
                 })
             }else {
                 templateObj["oid"] = oid;
+                let file = new File([JSON.stringify(templateObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/updateTemplate",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(templateObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
                         if (result.code === 0) {
                             if (result.data.method === "update") {

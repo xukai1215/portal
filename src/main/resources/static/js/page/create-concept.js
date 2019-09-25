@@ -1272,13 +1272,25 @@ var vue = new Vue({
             conceptObj.detail = detail.trim();
             console.log(conceptObj)
 
+            if(conceptObj.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
+
+            let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
+                let file = new File([JSON.stringify(conceptObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/addConcept",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(conceptObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
 
                         if (result.code == "0") {
@@ -1291,12 +1303,18 @@ var vue = new Vue({
                 })
             } else {
                 conceptObj["oid"] = oid;
+                let file = new File([JSON.stringify(conceptObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info", file)
                 $.ajax({
                     url: "/repository/updateConcept",
                     type: "POST",
-                    async: true,
-                    contentType: "application/json",
-                    data: JSON.stringify(conceptObj),
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
                     success: function (result) {
                         if (result.code === 0) {
                             if (result.data.method === "update") {

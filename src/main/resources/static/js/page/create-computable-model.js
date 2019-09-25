@@ -449,6 +449,10 @@ var vue = new Vue({
                 alert("please bind model item (Step1)")
                 return;
             }
+            if(this.computableModel.name.trim()==""){
+                alert("please enter name")
+                return;
+            }
             this.computableModel.contentType=$("input[name='ContentType']:checked").val();
             this.computableModel.isAuthor=$("input[name='author_confirm']:checked").val();
 
@@ -466,7 +470,11 @@ var vue = new Vue({
             }
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                this.formData.append("computableModel", JSON.stringify(this.computableModel))
+
+                let file = new File([JSON.stringify(this.computableModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                this.formData.append("computableModel", file)
 
                 $("#step").css("display", "none");
                 $(".uploading").css("display", "block");
@@ -502,7 +510,11 @@ var vue = new Vue({
             }
             else{
                 this.computableModel.oid=oid;
-                this.formData.append("computableModel", JSON.stringify(this.computableModel))
+
+                let file = new File([JSON.stringify(this.computableModel)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                this.formData.append("computableModel", file)
 
                 $("#step").css("display", "none");
                 $(".uploading").css("display", "block");

@@ -1,14 +1,12 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.entity.DataItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @InterfaceName DataItemDao
@@ -21,10 +19,11 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
 
 
-
+    DataItem findFirstById(String id);
 
     Page<DataItem> findByAuthorAndNameContaining(Pageable pageable, String author, String name);
 
+    Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
 
 
     //test
@@ -36,8 +35,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
     //用户中心所有用户上传的数据条目列表
     Page<DataItem> findByAuthor(Pageable pageable,String author);
 
-
-
+    Page<DataItemResultDTO> findByNameLike(Pageable pageable, String name);
 
     List<DataItem> findAllByAuthor(String author);
     List<DataItem> findAllByClassificationsContaining(List<String> classifications);

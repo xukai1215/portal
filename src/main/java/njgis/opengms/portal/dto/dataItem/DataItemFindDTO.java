@@ -13,9 +13,9 @@ import java.util.List;
  */
 @Data
 public class DataItemFindDTO {
-    private Integer page = 1;
-    private Integer pageSize = 10;
-    private Boolean asc = false;
+    Integer page = 1;
+    Integer pageSize = 10;
+    Boolean asc = false;
     List<String> classifications;
     String categoryId;
     List<String> searchContent;

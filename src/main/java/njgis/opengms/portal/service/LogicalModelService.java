@@ -129,6 +129,22 @@ public class LogicalModelService {
             modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
+        //authorship
+        String authorshipString="";
+        List<AuthorInfo> authorshipList=modelInfo.getAuthorship();
+        if(authorshipList!=null){
+            for (AuthorInfo author:authorshipList
+                    ) {
+                if(authorshipString.equals("")){
+                    authorshipString+=author.getName();
+                }
+                else{
+                    authorshipString+=", "+author.getName();
+                }
+
+            }
+        }
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("logical_model");
         modelAndView.addObject("modelInfo", modelInfo);
@@ -138,6 +154,7 @@ public class LogicalModelService {
         modelAndView.addObject("date", dateResult);
         modelAndView.addObject("year", calendar.get(Calendar.YEAR));
         modelAndView.addObject("user", userJson);
+        modelAndView.addObject("authorship", authorshipString);
         modelAndView.addObject("loadPath", htmlLoadPath);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);

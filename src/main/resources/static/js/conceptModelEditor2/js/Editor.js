@@ -888,7 +888,7 @@ var PrintDialog = function(editorUi,title)
         var w = Math.ceil(gb.width*scale);
         var h = Math.ceil(gb.height*scale);
         $.ajax({
-			url:"http://localhost/GeoModelingNew/ExportImgServlet",
+			url:"http://geomodeling.njnu.edu.cn/GeoModeling/ExportImgServlet",
 			type:"post",
 			data:{"w":w,"h":h,"svg":svg},
 			success:function (result) {
