@@ -1,4 +1,4 @@
-package njgis.opengms.portal.dto.community;
+package njgis.opengms.portal.dto.Concept;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

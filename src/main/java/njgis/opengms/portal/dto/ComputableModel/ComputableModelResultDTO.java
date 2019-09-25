@@ -1,4 +1,4 @@
-package njgis.opengms.portal.dto;
+package njgis.opengms.portal.dto.ComputableModel;
 
 import com.alibaba.fastjson.JSONArray;
 import lombok.AllArgsConstructor;

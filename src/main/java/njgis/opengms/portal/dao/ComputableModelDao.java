@@ -1,7 +1,7 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.entity.ComputableModel;
-import njgis.opengms.portal.entity.ModelItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -39,4 +39,5 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     Page<ComputableModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 
+    Page<ComputableModelResultDTO> findComModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 }

@@ -703,7 +703,7 @@ input::placeholder{
 
 .cardDowner{
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     border-radius: 0 0 4px 4px ;
@@ -892,6 +892,28 @@ input::placeholder{
 
 .itemContainer{
     display: none;
+}
+
+.listItemContainer{
+    width: 100%;
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+.listItemContainer::-webkit-scrollbar{
+    width: 6px;
+}
+
+.listItemContainer::-webkit-scrollbar-thumb{
+    width: 6px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 3.5px;
+    background-color: #cccccc;
+}
+
+.listItemContainer::-webkit-scrollbar-track{
+
 }
 
 .flexActive{
@@ -1441,11 +1463,15 @@ input[type="radio"]:checked + span {
 
 .deleteEduContainer{
     display: flex;
-    width: 15%;
+    width: 16%;
     justify-content: flex-end;
     padding-top: 11px;
     padding-right: 15px;
 }
 
 #editUserContact{
+}
+
+#awdTimeInputContainer .datepicker{
+    width: 100%;
 }

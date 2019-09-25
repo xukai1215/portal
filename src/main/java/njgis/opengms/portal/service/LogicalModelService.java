@@ -6,6 +6,9 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
+import njgis.opengms.portal.dto.LogicalModel.LogicalModelFindDTO;
+import njgis.opengms.portal.dto.LogicalModel.LogicalModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
@@ -420,6 +423,7 @@ public class LogicalModelService {
         return result;
     }
 
+
     public JSONObject list(ModelItemFindDTO modelItemFindDTO, List<String> classes) {
 
         JSONObject obj = new JSONObject();
@@ -634,6 +638,25 @@ public class LogicalModelService {
         modelItemObject.put("logicalModels", modelItems.getContent());
 
         return modelItemObject;
+
+    }
+
+    public JSONObject searchByTitleByOid(LogicalModelFindDTO logicalModelFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=logicalModelFindDTO.getPage();
+        int pageSize = logicalModelFindDTO.getPageSize();
+        String sortElement=logicalModelFindDTO.getSortElement();
+        Boolean asc = logicalModelFindDTO.getAsc();
+        String name= logicalModelFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<LogicalModelResultDTO> logicalModelResultDTOPage=logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",logicalModelResultDTOPage.getContent());
+        result.put("total",logicalModelResultDTOPage.getTotalElements());
+        return result;
 
     }
 }

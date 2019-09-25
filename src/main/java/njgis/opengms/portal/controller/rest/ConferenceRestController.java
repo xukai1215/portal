@@ -37,6 +37,11 @@ public class ConferenceRestController {
         return ResultUtils.success(conferenceService.searchByTitle(conferenceFindDTO,userName));
     }
 
+    @RequestMapping(value="/searchByTitleByOid",method=RequestMethod.GET)
+    JsonResult searchByTitle(ConferenceFindDTO conferenceFindDTO, String oid){
+         return ResultUtils.success(conferenceService.searchByTitleByOid(conferenceFindDTO,oid));
+    }
+
     @RequestMapping(value = "/getByUserOidBySort",method = RequestMethod.GET)
     JsonResult getByUserOidBySort(ConferenceFindDTO conferenceFindDTO, HttpServletRequest request){
 //        ArticleFindDTO articleFindDTO=new ArticleFindDTO();

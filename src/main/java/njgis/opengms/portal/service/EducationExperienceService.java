@@ -53,7 +53,6 @@ public class EducationExperienceService {
         int pageSize = educationExperienceFindDTO.getPageSize();
         Boolean asc = educationExperienceFindDTO.getAsc();
 
-//        根据访问数量排序
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, educationExperienceFindDTO.getSortElement());
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         User user=userDao.findFirstByOid(oid);
@@ -63,7 +62,7 @@ public class EducationExperienceService {
         result.put("list",educationExperienceResultDTOPage.getContent());
         result.put("total",educationExperienceResultDTOPage.getTotalElements());
 
-//        System.out.println("eduexp"+result);
+        System.out.println("eduexp"+result);
         return result;
     }
 

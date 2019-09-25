@@ -99,7 +99,9 @@ new Vue({
                 concepts:{
                     currentPage:1,
                     total:0,
-                    result:[],
+                    result:[{
+                        createTime:'',
+                    }],
                 },
 
                 spatials:{
@@ -188,6 +190,12 @@ new Vue({
                     startTime:'',
                     endTime:'',
                     location:''
+                },
+
+                awdhonrAddToBack:{
+                    name:'',
+                    awardAgency:'',
+                    awardTime:''
                 },
 
                 awardandHonor:{
@@ -339,24 +347,28 @@ new Vue({
             this.bodyIndex=2;
             this.showIndex=6;
             this.conceptHandleCurrentChange(1);
+            $('html,body').animate({scrollTop: '230px'}, 220);
         },
 
         spatialClick(){
             this.bodyIndex=2;
             this.showIndex=7;
             this.spatialHandleCurrentChange(1);
+            $('html,body').animate({scrollTop: '230px'}, 220);
         },
 
         templateClick(){
             this.bodyIndex=2;
             this.showIndex=8;
             this.templateHandleCurrentChange(1);
+            $('html,body').animate({scrollTop: '230px'}, 220);
         },
 
         unitClick(){
             this.bodyIndex=2;
             this.showIndex=9;
             this.unitHandleCurrentChange(1);
+            $('html,body').animate({scrollTop: '230px'}, 220);
         },
 
         // statsCardClick(index){
@@ -580,12 +592,10 @@ new Vue({
         saveAwdHonor(){
             this.awdHonor.name=$('#userAwdName').val();
             this.awdHonor.awardAgency=$('#userAwdAgency').val();
-            this.awdHonor.awardTime=$('#userAwdTime').val();
+            this.awdHonor.awardTime=new Date($('#userAwdTime').val());
 
             console.log(this.awdHonor);
             this.awdHonorAddtoBack();
-            alert('Save success!');
-            $("#editAwdHonor").modal("hide")
         },
 
         addDescriptionClick(){
@@ -727,6 +737,7 @@ new Vue({
             })
 
         },
+
         dataItemHandleCurrentChange: function (val) {
             this.dataItems.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
@@ -759,6 +770,7 @@ new Vue({
                 }
             })
         },
+
         conceptualModelHandleCurrentChange: function (val) {
             this.conceptualModels.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
@@ -792,6 +804,7 @@ new Vue({
                 }
             })
         },
+
         logicalModelHandleCurrentChange: function (val) {
             this.logicalModels.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
@@ -825,6 +838,7 @@ new Vue({
                 }
             })
         },
+
         computableModelHandleCurrentChange: function (val) {
             this.computableModels.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
@@ -854,6 +868,189 @@ new Vue({
                                 }, 500);
                     } else {
                         console.log("search computable model failed.")
+                    }
+                }
+            })
+        },
+
+        conceptHandleCurrentChange(val){
+            this.concepts.currentPage = val;
+            const hrefs = window.location.href.split("/");
+            let name='concepts';
+            $.ajax({
+                type: "Get",
+                url: "/repository/listConceptsByUserOid",
+                data: {
+                    page: this.concepts.currentPage - 1,
+                    asc: this.pageOption.sortAsc,
+                    sortElement:"createTime",
+                    pageSize: this.pageOption.pageSize,
+                    oid: hrefs[hrefs.length - 1],
+                },
+                cache: false,
+                async: true,
+
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        const data = json.data;
+                        if (data.count > 0) {
+                            setTimeout(() => {
+                                this.concepts.total = data.count;
+                                this.searchCount = Number.parseInt(data["count"]);
+                                this.concepts.result = data[name];
+                                this.pageOption.progressBar = false;
+                            }, 200)
+                            console.log(data);
+
+                        } else {
+                            console.log("search concept failed.")
+
+                        }
+                    }
+                }
+            })
+        },
+
+        spatialHandleCurrentChange(val){
+            this.spatials.currentPage = val;
+            const hrefs = window.location.href.split("/");
+            var url = "/repository/listSpatialsByOid";
+            var name = "spatials";
+
+            $.ajax({
+                type: "Get",
+                url: url,
+                data: {
+                    page: this.spatials.currentPage - 1,
+                    asc: this.pageOption.sortAsc,
+                    sortElement:"createTime",
+                    pageSize: this.pageOption.pageSize,
+                    oid: hrefs[hrefs.length - 1],
+                },
+                cache: false,
+                async: true,
+
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        if(data[name].length>0){
+                            setTimeout(()=>{
+                                const data = json.data;
+                                this.spatials.total= data.count;
+                                this.searchCount = Number.parseInt(data["count"]);
+                                this.spatials.result = data[name];
+                                this.pageOption.progressBar = false;
+                            },200)
+
+                        }else {
+                            console.log("search concept failed.")
+                        }
+                    }
+                }
+            })
+        },
+
+        templateHandleCurrentChange(val){
+            this.templates.currentPage = val;
+            const hrefs = window.location.href.split("/");
+            var url = "/repository/listTemplatesByOid";
+            var name = "templates";
+
+            $.ajax({
+                type: "Get",
+                url: url,
+                data: {
+                    page: this.templates.currentPage - 1,
+                    asc: this.pageOption.sortAsc,
+                    sortElement:"createTime",
+                    pageSize: this.pageOption.pageSize,
+                    oid: hrefs[hrefs.length - 1],
+                },
+                cache: false,
+                async: true,
+
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        if(data[name].length>0){
+                            setTimeout(()=>{
+                                const data = json.data;
+                                this.templates.total= data.count;
+                                this.searchCount = Number.parseInt(data["count"]);
+                                this.templates.result = data[name];
+                                this.pageOption.progressBar = false;
+                            },200)
+
+                        }else {
+                            console.log("search concept failed.")
+                        }
+                    }
+                }
+            })
+        },
+
+        unitHandleCurrentChange(val){
+            this.units.currentPage = val;
+            const hrefs = window.location.href.split("/");
+            var url = "/repository/listUnitsByOid";
+            var name = "units";
+
+            $.ajax({
+                type: "Get",
+                url: url,
+                data: {
+                    page: this.units.currentPage - 1,
+                    asc: this.pageOption.sortAsc,
+                    sortElement:"createTime",
+                    pageSize: this.pageOption.pageSize,
+                    oid: hrefs[hrefs.length - 1],
+                },
+                cache: false,
+                async: true,
+
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        if(data[name].length>0){
+                            setTimeout(()=>{
+                                const data = json.data;
+                                this.units.total= data.count;
+                                this.searchCount = Number.parseInt(data["count"]);
+                                this.units.result = data[name];
+                                this.pageOption.progressBar = false;
+                            },200)
+
+                        }else {
+                            console.log("search concept failed.")
+                        }
                     }
                 }
             })
@@ -896,6 +1093,7 @@ new Vue({
             })
 
         },
+
         projectHandleCurrentChange: function (val) {
             this.projects.currentPage=val;
             const hrefs=window.location.href.split('/');
@@ -995,6 +1193,16 @@ new Vue({
 
         },
 
+        awdTimeClick(){
+            $('.panel').animate({height:'480px'},200);
+        },
+
+        awdfoldClick(){
+            this.clickCount++;
+            if(this.clickCount%2==0)
+                $('.panel').animate({height:'280px'},200);
+        },
+
         awardandHonorLoad(val) {
             this.awardandHonor.currentPage=val;
             // $('html,body').animate({scrollTop: '0px'}, 220);
@@ -1005,6 +1213,7 @@ new Vue({
                 data:{
                     page:this.awardandHonor.currentPage-1,
                     asc: this.pageOption.sortAsc,
+                    sortElement:'awardTime',
                     pageSize: 3,
                     oid:hrefs[hrefs.length-1],
                 },
@@ -1012,12 +1221,14 @@ new Vue({
                 success:(json)=>{
                     if(json.code==0){
                         const data=json.data;
+                        if (data.total>0)
                         setTimeout(
                             ()=>{
                                 this.awardandHonor.total=data.total;
                                 this.awardandHonor.result=data.list;
                                 this.pageOption.progressBar=false;
                             },500)
+
                     }else{
                         console.log("search data item failed.")
                     }
@@ -1044,14 +1255,17 @@ new Vue({
                 success:(json)=>{
                     if(json.code==0){
                         const data=json.data;
-                        setTimeout(
+                        if (data.total>0)
+                            setTimeout(
                             ()=>{
                                 this.educationExperience.total=data.total;
                                 this.educationExperience.result=data.list;
-                                for(let i=0;i<this.educationExperience.total,this.educationExperience.result[i].startTime,this.educationExperience.result[i].endTime;i++){
-                                    this.educationExperience.result[i].startTime=this.dateString2String(this.educationExperience.result[i].startTime);
-                                    this.educationExperience.result[i].endTime=this.dateString2String(this.educationExperience.result[i].endTime);
-                                }
+                                // for(let i=0;i<this.educationExperience.total;i++){
+                                //     if(this.educationExperience.result[i].startTime)
+                                //         this.educationExperience.result[i].startTime=this.dateString2String(this.educationExperience.result[i].startTime);
+                                //     if (this.educationExperience.result[i].endTime)
+                                //         this.educationExperience.result[i].endTime=this.dateString2String(this.educationExperience.result[i].endTime);
+                                // }
                                 this.pageOption.progressBar=false;
                                 console.log(this.educationExperience.result);
                             },500)
@@ -1294,6 +1508,127 @@ new Vue({
 
         },
 
+        searchResource(index){
+            var urls={
+                1:'/modelItem/searchByNameByOid',
+                2:'/dataItem/searchByNameByOid',
+                3:'/conceptualModel/searchByNameByOid',
+                4:'/logicalModel/searchByNameByOid',
+                5:'/computableModel/searchByNameByOid',
+                6:'/concept/searchByNameByOid',
+                7:'/spatial/searchByNameByOid',
+                8:'/template/searchByNameByOid',
+                9:'/unit/searchByNameByOid',
+            }
+            let hrefs = window.location.href.split("/");
+            switch (index) {
+                case 1:
+                    this.searchText=$('#searchModel').val();
+                    break;
+                case 2:
+                    this.searchText=$('#searchData').val();
+                    break;
+                case 3:
+                    this.searchText=$('#searchConceptualModel').val();
+                    break;
+                case 4:
+                    this.searchText=$('#searchLogicalModel').val();
+                    break;
+                case 5:
+                    this.searchText=$('#searchComputableModel').val();
+                    break;
+                case 6:
+                    this.searchText=$('#searchConcept').val();
+                    break;
+                case 7:
+                    this.searchText=$('#searchSpatial').val();
+                    break;
+                case 8:
+                    this.searchText=$('#searchTemplate').val();
+                    break;
+                case 9:
+                    this.searchText=$('#searchUnit').val();
+                    break;
+            }
+            $.ajax({
+                type:"GET",
+                url:urls[index],
+                data:{
+                    page:this.modelItems.currentPage-1,
+                    pageSize:this.pageOption.pageSize,
+                    asc:this.modelItems.sortAsc,
+                    sortElement:"createTime",
+                    searchText:this.searchText,
+                    oid:hrefs[hrefs.length-1]
+                },
+                cache: false,
+                async: true,
+                // dataType: "json",
+                xhrFields:{
+                    withCredentials:true
+                },
+                success:(json)=>{
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        const data = json.data;
+                        // this.articles.total=data.total;
+                        // this.articles.result=data.list;
+                        switch (index) {
+                            case 1:
+                                Vue.set(this.modelItems ,'total', data.total);
+                                Vue.set(this.modelItems ,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 2:
+                                Vue.set(this.dataItems ,'total', data.total);
+                                Vue.set(this.dataItems ,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 3:
+                                Vue.set(this.conceptualModels ,'total', data.total);
+                                Vue.set(this.conceptualModels,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 4:
+                                Vue.set(this.logicalModels,'total', data.total);
+                                Vue.set(this.logicalModels,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 5:
+                                Vue.set(this.computableModels ,'total', data.total);
+                                Vue.set(this.computableModels,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 6:
+                                Vue.set(this.concepts,'total', data.total);
+                                Vue.set(this.concepts,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 7:
+                                Vue.set(this.spatials ,'total', data.total);
+                                Vue.set(this.spatials,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 8:
+                                Vue.set(this.templates ,'total', data.total);
+                                Vue.set(this.templates,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+                            case 9:
+                                Vue.set(this.units ,'total', data.total);
+                                Vue.set(this.units,'result', data.list);
+                                this.pageOption.progressBar=false;
+                                break;
+
+                        }
+                    }
+                }
+
+            })
+        },
+
         searchArticles(){
             // var urls={
             //     1:"/article/searchByTitle",
@@ -1301,16 +1636,17 @@ new Vue({
             //     3:"/conference/searchByTitle",
             // }
             // var url=urls[this.researchIndex];
+            let hrefs = window.location.href.split("/");
             $.ajax({
                 type:"GET",
-                url:"/article/searchByTitle",
+                url:"/article/searchByTitleByOid",
                 data:{
                     page:this.articles.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.articles.sortAsc,
                     sortElement:"creatDate",
-                    searchText:this.searchText
-
+                    searchText:this.searchText,
+                    oid:hrefs[hrefs.length-1]
                 },
                 cache: false,
                 async: true,
@@ -1329,6 +1665,7 @@ new Vue({
                         Vue.set(this.articles ,'total', data.total);
                         Vue.set(this.articles ,'result', data.list);
                         this.pageOption.progressBar=false;
+                        console.log(data);
                         console.log(this.articles);
                         console.log(this.articles.total);
                         }
@@ -1344,16 +1681,17 @@ new Vue({
             //     3:"/conference/searchByTitle",
             // }
             // var url=urls[this.researchIndex];
+            let hrefs = window.location.href.split("/");
             $.ajax({
                 type:"GET",
-                url:"/project/searchByName",
+                url:"/project/searchByNameByOid",
                 data:{
                     page:this.projects.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.projects.sortAsc,
                     sortElement:"creatDate",
-                    searchText:this.searchText
-
+                    searchText:this.searchText,
+                    oid:hrefs[hrefs.length-1]
                 },
                 cache: false,
                 async: true,
@@ -1385,16 +1723,17 @@ new Vue({
             //     3:"/conference/searchByTitle",
             // }
             // var url=urls[this.researchIndex];
+            let hrefs = window.location.href.split("/");
             $.ajax({
                 type:"GET",
-                url:"/conference/searchByTitle",
+                url:"/conference/searchByTitleByOid",
                 data:{
                     page:this.conferences.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.conferences.sortAsc,
                     sortElement:"creatDate",
-                    searchText:this.searchText
-
+                    searchText:this.searchText,
+                    oid:hrefs[hrefs.length-1]
                 },
                 cache: false,
                 async: true,
@@ -1507,6 +1846,49 @@ new Vue({
                             if(json.data==1){
                                 alert("delete successfully!")
                                 this.educationExperienceLoad(1);
+                            }
+                            else{
+                                alert("delete failed!")
+                            }
+                        }
+
+                    },
+                    error:(json)=>{
+                        console.log(json);
+                    }
+
+
+
+                })
+            }
+        },
+
+        deleteAwdHonor(oid){
+            if (confirm("Are you sure to delete this item?")){
+                let data={
+                    oid:oid
+                };
+
+                $.ajax({
+                    type:"POST",
+                    url:'/awardandHonor/deleteByOid',
+                    data:data,
+                    // contentType: "application/json; charset=utf-8",
+                    cache: false,
+                    async: true,
+                    // dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (json) => {
+                        if(json.code==-1){
+                            alert("Please log in first!")
+                        }
+                        else{
+                            if(json.data==1){
+                                alert("delete successfully!")
+                                this.awardandHonorLoad(1);
                             }
                             else{
                                 alert("delete failed!")
@@ -1863,13 +2245,16 @@ new Vue({
                     }
 
                 })
+                $("#editEduXpce").modal("hide");
 
-                $("#editEduXpce").modal("hide")
             }
 
         },
 
         awdHonorAddtoBack(){
+            if(this.awdHonor.name.trim()==""||this.awdHonor.awardAgency.trim()=="")
+                alert("Please enter the award name and award agency.");
+            else{
             var  obj={
                 name:this.awdHonor.name,
                 awardAgency:this.awdHonor.awardAgency,
@@ -1877,18 +2262,22 @@ new Vue({
             };
             $.ajax({
                 data:JSON.stringify(obj),
-                url:"/user/updateAwdHonor",
+                url:"/awardandHonor/add",
                 type:'POST',
                 async:true,
                 contentType: "application/json",
                 success:(json)=>{
                     if(json.code==0){
-                        this.getUserInfo();
-                        // alert("Save success");
+                        alert("Save Success");
+                        this.awardandHonorLoad(1);
                     }
+                    else alert("Add Error");//此处error信息不明确，记得后加
                 }
 
             })
+
+            $("#editAwdHonor").modal("hide");
+            }
 
         },
 
@@ -1926,11 +2315,15 @@ new Vue({
         this.logicalModelHandleCurrentChange(1);
         this.conceptualModelHandleCurrentChange(1);
         this.computableModelHandleCurrentChange(1);
+        this.conceptHandleCurrentChange(1);
+        this.spatialHandleCurrentChange(1);
+        this.templateHandleCurrentChange(1);
+        this.unitHandleCurrentChange(1);
         this.articleHandleCurrentChange(1);
         this.projectHandleCurrentChange(1);
         this.conferenceHandleCurrentChange(1);
         this.articleNewestLoad();
-        // this.awardandHonorLoad(1);
+        this.awardandHonorLoad(1);
         this.educationExperienceLoad(1);
         this.labLoad();
     },
@@ -1958,6 +2351,10 @@ new Vue({
         });
 
         $('#userConferEndTime').dcalendarpicker({
+            format:'yyyy/mm/dd'
+        });
+
+        $('#userAwdTime').dcalendarpicker({
             format:'yyyy/mm/dd'
         });
 

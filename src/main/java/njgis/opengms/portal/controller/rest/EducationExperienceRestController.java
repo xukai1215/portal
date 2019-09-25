@@ -43,7 +43,6 @@ public class EducationExperienceRestController {
         HttpSession session=request.getSession();
         String userName=session.getAttribute("uid").toString();
 
-        System.out.println("/deleteEduByOid"+oid+userName);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }else{

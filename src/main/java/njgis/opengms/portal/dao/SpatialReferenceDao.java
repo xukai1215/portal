@@ -1,6 +1,6 @@
 package njgis.opengms.portal.dao;
 
-import njgis.opengms.portal.dto.community.SpatialResultDTO;
+import njgis.opengms.portal.dto.Spatial.SpatialResultDTO;
 import njgis.opengms.portal.entity.SpatialReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

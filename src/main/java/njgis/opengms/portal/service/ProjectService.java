@@ -65,6 +65,25 @@ public class ProjectService {
 
     }
 
+    public JSONObject searchByTitleByOid(ProjectFindDTO projectFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=projectFindDTO.getPage();
+        int pageSize = projectFindDTO.getPageSize();
+        String sortElement=projectFindDTO.getSortElement();
+        Boolean asc = projectFindDTO.getAsc();
+        String name= projectFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ProjectResultDTO> projectResultDTOPage=projectDao.findByProjectNameContainsIgnoreCaseAndContributor(name,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",projectResultDTOPage.getContent());
+        result.put("total",projectResultDTOPage.getTotalElements());
+        return result;
+
+    }
+
     public Project addNewProject(ProjectAddDTO projectAddDTO, String contributor){
         Project project=new Project();
         BeanUtils.copyProperties(projectAddDTO,project);

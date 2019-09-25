@@ -64,6 +64,25 @@ public class ConferenceService {
 
     }
 
+    public JSONObject searchByTitleByOid(ConferenceFindDTO conferenceFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=conferenceFindDTO.getPage();
+        int pageSize = conferenceFindDTO.getPageSize();
+        String sortElement=conferenceFindDTO.getSortElement();
+        Boolean asc = conferenceFindDTO.getAsc();
+        String title= conferenceFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ConferenceResultDTO> conferenceResultDTOPage=conferenceDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",conferenceResultDTOPage.getContent());
+        result.put("total",conferenceResultDTOPage.getTotalElements());
+        return result;
+
+    }
+
     public JSONObject getByUserOidBySort(ConferenceFindDTO conferenceFindDTO , String userName ){
         int page=conferenceFindDTO.getPage();
         int pageSize = conferenceFindDTO.getPageSize();

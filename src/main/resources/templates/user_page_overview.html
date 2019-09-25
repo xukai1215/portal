@@ -495,34 +495,34 @@
                                     <div><h4 style="margin-top: 10px;margin-left: 10px">Communities</h4></div>
                                 </div>
                                 <div class="contentColContainer noMargin noBorder7Shadow" style="width: 100%;">
-                                    <div id="concept" class="itemCardRow commnityCard" @click="modelItemClick()" style="width: 97%;margin-top: 7px;cursor: pointer">
+                                    <div id="concept" class="itemCardRow commnityCard" @click="conceptClick()" style="width: 97%;margin-top: 7px;cursor: pointer">
                                         <div class="titleCardRow" style="width: 50%">
                                             <h3 style="font-size: 21px">Concept & Semantic</h3></div>
                                         <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                         <div class="statsCard colArrange" style="width: 50%">
-                                            <h2 style="color: #339fff;">{{modelItems.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                            <h2 style="color: #339fff;">{{concepts.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
                                             <div class="seeDetails">
                                                 <p>See Details</p>
                                                 <div class="hoverLine"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="reference" class="itemCardRow commnityCard" @click="conceptualModelClick()" style="width: 97%;margin-top:7px;cursor: pointer">
+                                    <div id="reference" class="itemCardRow commnityCard" @click="spatialClick()" style="width: 97%;margin-top:7px;cursor: pointer">
                                             <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Spatial Reference</h3></div>
                                             <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard colArrange" style="width: 50%">
-                                                <h2 style="color: #ff9526;">{{conceptualModels.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                                <h2 style="color: #ff9526;">{{spatials.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
                                                 <div class="seeDetails">
                                                     <p>See Details</p>
                                                     <div class="hoverLine"></div>
                                                 </div>
                                             </div>
                                     </div>
-                                    <div id="template" class="itemCardRow commnityCard" @click="logicalModelClick" style="width: 97%;margin-top: 7px;cursor: pointer">
+                                    <div id="template" class="itemCardRow commnityCard" @click="templateClick" style="width: 97%;margin-top: 7px;cursor: pointer">
                                             <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Data Template</h3></div>
                                             <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard colArrange" style="width: 50%">
-                                                <h2 style="color: #339fff;">{{logicalModels.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                                <h2 style="color: #339fff;">{{templates.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
                                                 <div class="seeDetails">
                                                     <p>See Details</p>
                                                     <div class="hoverLine"></div>
@@ -530,11 +530,11 @@
                                             </div>
 
                                     </div>
-                                    <div id="unit" class="itemCardRow commnityCard" @click="computableModelClick()" style="width: 97%;margin: 7px 0 10px;cursor: pointer">
+                                    <div id="unit" class="itemCardRow commnityCard" @click="unitClick()" style="width: 97%;margin: 7px 0 10px;cursor: pointer">
                                             <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Unit & Metric</h3></div>
                                             <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard colArrange" style="width: 50%">
-                                                <h2 style="color: #aa0b15;">{{computableModels.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
+                                                <h2 style="color: #aa0b15;">{{units.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
                                                 <div class="seeDetails">
                                                     <p>See Details</p>
                                                     <div class="hoverLine"></div>
@@ -769,23 +769,25 @@
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div class="list-item" v-if="educationExperience.total>0" v-for="(eduExperience,key) in educationExperience.result">
-                            <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">
-                                <div class="cardContentContainer" style="width: 92%;margin:0; border: none;">
-                                    <div>
-                                        <p><span>Institution or University:</span> &nbsp&nbsp{{eduExperience.institution}}</p>
-                                        <p><span>Department:</span> &nbsp&nbsp{{eduExperience.department}}</p>
-                                        <p><span>Academic Degree:</span> &nbsp&nbsp{{eduExperience.academicDegree}}</p>
-                                        <p><span>Time:</span> &nbsp&nbsp {{eduExperience.startTime}}~{{eduExperience.endTime}}</p>
-                                        <p><span>Location:</span> &nbsp&nbsp{{eduExperience.location}}</p>
+                        <div class="listItemContainer">
+                            <div class="list-item" v-if="educationExperience.total>0" v-for="(eduExperience,key) in educationExperience.result">
+                                <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">
+                                    <div class="cardContentContainer" style="width: 92%;margin:0; border: none;">
+                                        <div>
+                                            <p><span>Institution or University:</span> &nbsp&nbsp{{eduExperience.institution}}</p>
+                                            <p><span>Department:</span> &nbsp&nbsp{{eduExperience.department}}</p>
+                                            <p><span>Academic Degree:</span> &nbsp&nbsp{{eduExperience.academicDegree}}</p>
+                                            <p><span>Time:</span> &nbsp&nbsp {{eduExperience.startTime.substring(0,10)}}~{{eduExperience.endTime.substring(0,10)}}</p>
+                                            <p><span>Location:</span> &nbsp&nbsp{{eduExperience.location}}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="deleteEduContainer">
-                                    <button class="squareButton alertBack" @click="deleteEduExp(eduExperience.oid)">
-                                        <div>×</div>
-                                    </button>
-                                </div>
+                                    <div class="deleteEduContainer">
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" class="squareButton alertBack" @click="deleteEduExp(eduExperience.oid)">
+                                            <div>×</div>
+                                        </button>
+                                    </div>
 
+                                </div>
                             </div>
                         </div>
                         <div v-if="educationExperience.total==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
@@ -801,25 +803,32 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Awards & honors</h4></div>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="addAwdHonor"
-                                    v-if="userPersonalInfo.awdHonors.length>0" class="addEditButton"
+                                    v-if="awardandHonor.total>0" class="addEditButton"
                                     data-toggle="modal" data-target="#editAwdHonor"  @click="addAwdHonorClick()">
                                 Add
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div class="list-item" v-if="userPersonalInfo.awdHonors.length>0" v-for="(awardHonor,key) in userPersonalInfo.awdHonors">
-                            <div class="itemCardCol" style="width: 98%;background-color: #fafafa;min-height: 80px; margin-top: 5px">
-                                <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
-                                    <div>
-                                        <p><span>Name:</span> &nbsp&nbsp{{awardHonor.name}}</p>
-                                        <p><span>Award Agency:</span> &nbsp&nbsp{{awardHonor.awardAgency}}</p>
-                                        <p><span>Award Time:</span> &nbsp&nbsp{{awardHonor.awardTime}}</p>
+                        <div class="listItemContainer">
+                            <div class="list-item" v-if="awardandHonor.result" v-for="(awardHonor,key) in awardandHonor.result">
+                                <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 80px; margin-top: 5px">
+                                    <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
+                                        <div>
+                                            <p><span>Name:</span> &nbsp&nbsp{{awardHonor.name}}</p>
+                                            <p><span>Award Agency:</span> &nbsp&nbsp{{awardHonor.awardAgency}}</p>
+                                            <p><span>Award Time:</span> &nbsp&nbsp{{awardHonor.awardTime.substring(0,10)}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="deleteEduContainer">
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" class="squareButton alertBack" @click="deleteAwdHonor(awardHonor.oid)">
+                                            <div>×</div>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div v-if="userPersonalInfo.awdHonors.length==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
+                            <div th:if="${userInfo.oid==userInfo.loginId}" v-if="awardandHonor.total==0" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addAwdHonorClick()" data-toggle="modal" data-target="#editAwdHonor">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Awards & Honors</h4>
@@ -885,6 +894,7 @@
                         </div>
                         <!-- /.modal-dialog -->
                     </div>
+
                     <div class="modal fade" id="editEduXpce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -970,6 +980,7 @@
                         </div>
                         <!-- /.modal-dialog -->
                     </div>
+
                     <div class="modal fade" id="editAwdHonor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -979,7 +990,7 @@
                                     </h3>
                                 </div>
                                 <div class="modal-body" style="font-size: 20px;overflow: hidden">
-                                    <section class="panel">
+                                    <section class="panel" style="min-height: 280px !important;" @click="awdfoldClick()">
                                         <div class="tab-content">
                                             <div class="tab-pane active" >
                                                 <div class="form-group flexCol">
@@ -1000,14 +1011,10 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group flexCol">
-                                                    <label for="userAwdTime"
-                                                           class="col-sm-8 control-label inputTitle">Award Time</label>
-                                                    <div class="col-sm-12">
-                                                        <input type="text" class="form-control"
-                                                               id="userAwdTime"/>
-                                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
-                                                    </div>
+                                                <label for="userAwdTime"
+                                                       class="col-sm-4 control-label">Award Time</label>
+                                                <div class="timeInputContainer" id="awdTimeInputContainer">
+                                                    <input id='userAwdTime' class="timeInput" type='text' placeholder="award time" @click="awdTimeClick()"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -1347,7 +1354,15 @@
                     <div class="itemContainer" :class="{showActive:showIndex==1}" >
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Model Items</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Model Items</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchModel" class="searchInput" @keydown.enter="searchResource(1)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(1)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1416,7 +1431,15 @@
                     <div class="itemContainer" :class="{showActive:showIndex==2}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Data Items</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Data Items</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchData" class="searchInput" @keydown.enter="searchResource(2)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(2)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1478,7 +1501,15 @@
                     <div class="itemContainer" :class="{showActive:showIndex==3}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Conceptual Model</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 66%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Conceptual Model</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchConceptualModel" class="searchInput" @keydown.enter="searchResource(3)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(3)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1510,8 +1541,7 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <div class="tags" v-if="conceptualModel.keywords.length>0">
-                                            <span class="badge badge-info" v-for="keyword in conceptualModel.keywords">{{keyword.toUpperCase()}}</span>
+                                        <div class="tags">
                                         </div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)+' '+conceptualModel.createTime.substring(11,19)}}
@@ -1540,7 +1570,15 @@
                     <div class="itemContainer" :class="{showActive:showIndex==4}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Logical Model</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Logical Model</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchLogicalModel" class="searchInput" @keydown.enter="searchResource(4)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(4)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1572,9 +1610,7 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                        <div class="tags" v-if="logicalModel.keywords.length>0">-->
-                                        <!--                                            <span class="badge badge-info" v-for="keyword in logicalModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                        </div>-->
+                                        <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}
                                         </div>
@@ -1602,7 +1638,15 @@
                     <div class="itemContainer" :class="{showActive:showIndex==5}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Computable Model</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 66%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Computable Model</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchComputableModel" class="searchInput" @keydown.enter="searchResource(5)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(5)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1634,9 +1678,7 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
-                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                        </div>-->
+                                        <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
                                         </div>
@@ -1664,33 +1706,41 @@
                     <div class="itemContainer" :class="{showActive:showIndex==6}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Concept & Semantic</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 68%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Concept & Semantic</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchConcept" class="searchInput" @keydown.enter="searchResource(6)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(6)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                            <div class="list-item" :key="concept.oid" v-if="concepts.result" v-for="(concept,key) in concepts.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
                                             <a  :href="'/concept/'+ concept.oid" target="_blank">
-                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                                <img  class="modelImg" :src="concept.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
                                             </a>
                                         </div>
                                         <div style="flex: 1;">
                                             <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
                                                 <div>
-                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    <a  :href="'/concept/'+ concept.oid" target="_blank">
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{concept.name}}</h4>
                                                     </a>
-                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
+                                                    <div :class="concept.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{concept.viewCount}}
                                                 </div>
                                             </div>
                                             <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
                                                 <div class="modelInfo">
-                                                    <p>{{computableModel.description}}</p>
+                                                    <p>{{concept.description}}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -1699,8 +1749,9 @@
                                         <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
                                         <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
                                         <!--                                        </div>-->
+                                        <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                            <a v-if="concept.createTime" class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{concept.createTime.substring(0,10)+' '+concept.createTime.substring(11,19)}}
                                         </div>
                                     </div>
                                 </div>
@@ -1709,11 +1760,11 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="computableModelHandleCurrentChange"
-                                            :current-page="computableModels.currentPage"
+                                            @current-change="conceptHandleCurrentChange"
+                                            :current-page="concepts.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
-                                            :total="computableModels.total"
+                                            :total="concepts.total"
                                             :pager-count="pageOption.pageCount"
                                             background>
                                     </el-pagination>
@@ -1726,11 +1777,19 @@
                     <div class="itemContainer" :class="{showActive:showIndex==7}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Spatial Reference</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 68%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Spatial Reference</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchSpatial" class="searchInput" @keydown.enter="searchResource(7)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(7)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                            <div class="list-item" :key="spatial.oid" v-if="spatials.result" v-for="(spatial,key) in spatials.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -1742,27 +1801,25 @@
                                             <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
                                                 <div>
                                                     <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{spatial.name}}</h4>
                                                     </a>
                                                     <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{spatial.viewCount}}
                                                 </div>
                                             </div>
                                             <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
                                                 <div class="modelInfo">
-                                                    <p>{{computableModel.description}}</p>
+                                                    <p>{{spatial.description}}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
-                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                        </div>-->
+                                        <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{spatial.createTime.substring(0,10)+' '+spatial.createTime.substring(11,19)}}
                                         </div>
                                     </div>
                                 </div>
@@ -1771,11 +1828,11 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="computableModelHandleCurrentChange"
-                                            :current-page="computableModels.currentPage"
+                                            @current-change="spatialHandleCurrentChange"
+                                            :current-page="spatials.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
-                                            :total="computableModels.total"
+                                            :total="spatials.total"
                                             :pager-count="pageOption.pageCount"
                                             background>
                                     </el-pagination>
@@ -1788,43 +1845,49 @@
                     <div class="itemContainer" :class="{showActive:showIndex==8}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Data Template</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Data Template</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchTemplate" class="searchInput" @keydown.enter="searchResource(8)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(8)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                            <div class="list-item" :key="template.oid" v-if="templates.result" v-for="(template,key) in templates.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
-                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <a  :href="'/template/'+ template.oid" target="_blank">
+                                                <img  class="modelImg" :src="template.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
                                             </a>
                                         </div>
                                         <div style="flex: 1;">
                                             <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
                                                 <div>
-                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    <a  :href="'/template/'+ template.oid" target="_blank">
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{template.name}}</h4>
                                                     </a>
                                                     <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{template.viewCount}}
                                                 </div>
                                             </div>
                                             <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
                                                 <div class="modelInfo">
-                                                    <p>{{computableModel.description}}</p>
+                                                    <p>{{template.description}}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
-                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                        </div>-->
+                                        <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{template.createTime.substring(0,10)+' '+template.createTime.substring(11,19)}}
                                         </div>
                                     </div>
                                 </div>
@@ -1833,11 +1896,11 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="computableModelHandleCurrentChange"
-                                            :current-page="computableModels.currentPage"
+                                            @current-change="templateHandleCurrentChange"
+                                            :current-page="templates.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
-                                            :total="computableModels.total"
+                                            :total="templates.total"
                                             :pager-count="pageOption.pageCount"
                                             background>
                                     </el-pagination>
@@ -1850,43 +1913,49 @@
                     <div class="itemContainer" :class="{showActive:showIndex==9}">
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
-                                <div><h4 style="margin-top: 10px;color: #999999;">Unit & Metric</h4></div>
+                                <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
+                                    <h4 style="margin-top: 10px;color: #999999;">Unit & Metric</h4>
+                                    <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
+                                        <div class="contentContainer  searchInputContainer">
+                                            <input id="searchUnit" class="searchInput" @keydown.enter="searchResource(9)"/>
+                                            <button class="confirmButton noMargin" @click="searchResource(9)" ></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
+                            <div class="list-item" :key="unit.oid" v-if="units.result" v-for="(unit,key) in units.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
-                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
+                                            <a  :href="'/unit/'+ unit.oid" target="_blank">
+                                                <img  class="modelImg" :src="unit.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
                                             </a>
                                         </div>
                                         <div style="flex: 1;">
                                             <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
                                                 <div>
                                                     <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{unit.name}}</h4>
                                                     </a>
                                                     <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{unit.viewCount}}
                                                 </div>
                                             </div>
                                             <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
                                                 <div class="modelInfo">
-                                                    <p>{{computableModel.description}}</p>
+                                                    <p>{{unit.description}}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
-                                        <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
-                                        <!--                                        </div>-->
+                                        <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{unit.createTime.substring(0,10)+' '+unit.createTime.substring(11,19)}}
                                         </div>
                                     </div>
                                 </div>
@@ -1895,11 +1964,11 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="computableModelHandleCurrentChange"
-                                            :current-page="computableModels.currentPage"
+                                            @current-change="unitHandleCurrentChange"
+                                            :current-page="units.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
-                                            :total="computableModels.total"
+                                            :total="units.total"
                                             :pager-count="pageOption.pageCount"
                                             background>
                                     </el-pagination>
@@ -1994,10 +2063,10 @@
                                     </div>
 
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                         <div class="viewCount">
                                             <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{article.viewCount}}
                                         </div>
+                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                     </div>
                                 </div>
 
@@ -2186,10 +2255,10 @@
                                     </div>
 
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                         <div class="viewCount">
                                             <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}
                                         </div>
+                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                     </div>
                                 </div>
 
@@ -2368,10 +2437,10 @@
                                     </div>
 
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                         <div class="viewCount">
                                             <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}
                                         </div>
+                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                     </div>
                                 </div>
 

@@ -1,6 +1,6 @@
 package njgis.opengms.portal.dao;
 
-import njgis.opengms.portal.dto.community.UnitResultDTO;
+import njgis.opengms.portal.dto.Unit.UnitResultDTO;
 import njgis.opengms.portal.entity.Unit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

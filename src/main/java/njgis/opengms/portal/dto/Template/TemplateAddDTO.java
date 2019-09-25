@@ -1,13 +1,13 @@
-package njgis.opengms.portal.dto.community;
+package njgis.opengms.portal.dto.Template;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
 /**
- * @ClassName SpatialResultDTO
+ * @ClassName TemplateAddDTO
  * @Description todo
  * @Author ZHSH
  * @Date 2019/7/29
@@ -18,16 +18,14 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpatialResultDTO {
-    String oid;
+public class TemplateAddDTO {
+
     String name;
-    String image;
     String description;
-    String author;
+    List<String> classifications;
+    String xml;
 
-    Date createTime;
+    String uploadImage;
+    String detail;
 
-    String wkname;
-    String wkt;
-    int viewCount=0;
 }

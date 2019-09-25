@@ -2,6 +2,7 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
@@ -501,6 +502,25 @@ public class DataItemService {
     }
 
 
+    //search
+    public JSONObject searchByTitleByOid(DataItemFindDTO dataItemFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=dataItemFindDTO.getPage();
+        int pageSize = dataItemFindDTO.getPageSize();
+        String sortElement=dataItemFindDTO.getSortElement();
+        Boolean asc = dataItemFindDTO.getAsc();
+        String name= dataItemFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<DataItemResultDTO> dataItemResultDTOPage=dataItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",dataItemResultDTOPage.getContent());
+        result.put("total",dataItemResultDTOPage.getTotalElements());
+        return result;
+
+    }
 
     //分类
 

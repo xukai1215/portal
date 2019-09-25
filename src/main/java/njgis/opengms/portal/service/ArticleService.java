@@ -58,8 +58,6 @@ public class ArticleService {
         String sortElement=articleFindDTO.getSortElement();
         Boolean asc = articleFindDTO.getAsc();
 
-
-//        根据创建时间排序
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(userName,pageable);
@@ -86,7 +84,27 @@ public class ArticleService {
         JSONObject result=new JSONObject();
         result.put("list",articleResultDTOPage.getContent());
         result.put("total",articleResultDTOPage.getTotalElements());
-//        System.out.println(result);
+        System.out.println(result);
+        return result;
+
+    }
+
+    public JSONObject searchByTitleByOid(ArticleFindDTO articleFindDTO,String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=articleFindDTO.getPage();
+        int pageSize = articleFindDTO.getPageSize();
+        String sortElement=articleFindDTO.getSortElement();
+        Boolean asc = articleFindDTO.getAsc();
+        String title= articleFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ArticleResultDTO> articleResultDTOPage=articleDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",articleResultDTOPage.getContent());
+        result.put("total",articleResultDTOPage.getTotalElements());
+        System.out.println(result);
         return result;
 
     }

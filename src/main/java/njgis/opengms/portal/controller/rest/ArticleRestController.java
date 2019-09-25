@@ -36,6 +36,11 @@ public class ArticleRestController {
         return ResultUtils.success(articleService.searchByTitle(articleFindDTO,userName));
     }
 
+    @RequestMapping(value="/searchByTitleByOid",method=RequestMethod.GET)
+    JsonResult searchByTitle(ArticleFindDTO articleFindDTO, String oid){
+        return ResultUtils.success(articleService.searchByTitleByOid(articleFindDTO,oid));
+    }
+
 //    @RequestParam(value="pageSize") int pageSize,
 //    @RequestParam(value="page") int page,
 //    @RequestParam(value="sortElement") String sortElement,

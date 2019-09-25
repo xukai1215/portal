@@ -1,11 +1,11 @@
-package njgis.opengms.portal.dto.community;
+package njgis.opengms.portal.dto.Concept;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName UnitUpdateDTO
+ * @ClassName ConceptUpdateDTO
  * @Description todo
  * @Author ZHSH
  * @Date 2019/8/1
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UnitUpdateDTO extends UnitAddDTO{
+public class ConceptUpdateDTO extends ConceptAddDTO {
     String oid;
 }
