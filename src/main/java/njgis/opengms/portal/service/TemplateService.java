@@ -28,7 +28,7 @@ public class TemplateService {
         Boolean asc = templateFindDTO.getAsc();
         String name= templateFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<TemplateResultDTO> templateResultDTOPage=templateDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 

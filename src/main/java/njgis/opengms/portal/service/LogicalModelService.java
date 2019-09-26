@@ -6,7 +6,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.LogicalModel.LogicalModelFindDTO;
 import njgis.opengms.portal.dto.LogicalModel.LogicalModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
@@ -649,7 +648,7 @@ public class LogicalModelService {
         Boolean asc = logicalModelFindDTO.getAsc();
         String name= logicalModelFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<LogicalModelResultDTO> logicalModelResultDTOPage=logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 

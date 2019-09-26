@@ -29,7 +29,7 @@ public class SpatialService {
         Boolean asc = spatialFindDTO.getAsc();
         String name= spatialFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<SpatialResultDTO> conceptResultDTOPage=spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 

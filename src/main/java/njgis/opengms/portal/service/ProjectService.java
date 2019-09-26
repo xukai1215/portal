@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,15 @@ public class ProjectService {
 
     @Autowired
     ProjectDao projectDao;
+
+    public Boolean findExisted(String titleName){
+        List<Project> allProjects = projectDao.findAll();
+        for (int i=0;i<allProjects.size();i++){
+            if (titleName.equals(allProjects.get(i).getProjectName()))
+                return true;
+        }
+        return false;
+    }
 
     public JSONObject listByUserOid(ProjectFindDTO projectFindDTO,String oid){
         int page = projectFindDTO.getPage();
@@ -54,7 +64,7 @@ public class ProjectService {
         Boolean asc = projectFindDTO.getAsc();
         String name= projectFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ProjectResultDTO> projectResultDTOPage=projectDao.findByProjectNameContainsIgnoreCaseAndContributor(name,userName,pageable);
 
@@ -73,7 +83,7 @@ public class ProjectService {
         Boolean asc = projectFindDTO.getAsc();
         String name= projectFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ProjectResultDTO> projectResultDTOPage=projectDao.findByProjectNameContainsIgnoreCaseAndContributor(name,userName,pageable);
 
@@ -84,17 +94,21 @@ public class ProjectService {
 
     }
 
-    public Project addNewProject(ProjectAddDTO projectAddDTO, String contributor){
-        Project project=new Project();
-        BeanUtils.copyProperties(projectAddDTO,project);
-        Date now=new Date();
-        project.setCreatDate(now);
-        project.setContributor(contributor);
-        project.setOid(UUID.randomUUID().toString());
+    public int addNewProject(ProjectAddDTO projectAddDTO, String contributor){
+        if (findExisted(projectAddDTO.getProjectName()))
+            return 2;
+        else{
+            Project project=new Project();
+            BeanUtils.copyProperties(projectAddDTO,project);
+            Date now=new Date();
+            project.setCreatDate(now);
+            project.setContributor(contributor);
+            project.setOid(UUID.randomUUID().toString());
+            projectDao.insert(project);
 
-        System.out.println("add");
+            return 1;
+        }
 
-        return projectDao.insert(project);
 
     }
 

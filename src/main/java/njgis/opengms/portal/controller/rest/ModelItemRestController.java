@@ -234,7 +234,7 @@ public class ModelItemRestController {
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
     JsonResult searchByTitle(ModelItemFindDTO modelItemFindDTO, String oid){
-        System.out.println("/searchModelByOid");
+//        System.out.println("/searchModelByOid"+modelItemFindDTO);
         return ResultUtils.success(modelItemService.searchByTitleByOid(modelItemFindDTO,oid));
     }
 

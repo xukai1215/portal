@@ -26,6 +26,7 @@ new Vue({
                 pageOption:{
                     progressBar:true,
                     sortAsc:false,
+                    currentPage:1,
                     pageSize:6,
                     pageCount:10,
                 },
@@ -256,6 +257,10 @@ new Vue({
                 clickCount:0,
 
                 value1: '',
+
+                isInSearch:0,
+
+                resourceIndex:1,
             }
         },
 
@@ -311,18 +316,24 @@ new Vue({
         modelItemClick() {
             this.bodyIndex=2;
             this.showIndex=1;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.modelItemHandleCurrentChange(1);
         },
 
         datalItemClick(){
             this.bodyIndex=2;
             this.showIndex=2;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.dataItemHandleCurrentChange(1);
         },
 
         conceptualModelClick(){
             this.bodyIndex=2;
             this.showIndex=3;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.conceptualModelHandleCurrentChange(1);
 
         },
@@ -330,6 +341,8 @@ new Vue({
         logicalModelClick: function () {
             this.bodyIndex=2;
             this.showIndex=4;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.logicalModelHandleCurrentChange(1);
 
             // console.log(this.logicalModels.result)
@@ -338,6 +351,8 @@ new Vue({
         computableModelClick(){
             this.bodyIndex=2;
             this.showIndex=5;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.computableModelHandleCurrentChange(1);
 
             // console.log(this.computableModels.total)
@@ -346,6 +361,8 @@ new Vue({
         conceptClick(){
             this.bodyIndex=2;
             this.showIndex=6;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.conceptHandleCurrentChange(1);
             $('html,body').animate({scrollTop: '230px'}, 220);
         },
@@ -353,6 +370,8 @@ new Vue({
         spatialClick(){
             this.bodyIndex=2;
             this.showIndex=7;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.spatialHandleCurrentChange(1);
             $('html,body').animate({scrollTop: '230px'}, 220);
         },
@@ -360,6 +379,8 @@ new Vue({
         templateClick(){
             this.bodyIndex=2;
             this.showIndex=8;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.templateHandleCurrentChange(1);
             $('html,body').animate({scrollTop: '230px'}, 220);
         },
@@ -367,6 +388,8 @@ new Vue({
         unitClick(){
             this.bodyIndex=2;
             this.showIndex=9;
+            this.resourceIndex=this.showIndex;
+            this.isInSearch=0;
             this.unitHandleCurrentChange(1);
             $('html,body').animate({scrollTop: '230px'}, 220);
         },
@@ -379,6 +402,7 @@ new Vue({
         articleClick(index){
             this.bodyIndex=3;
             this.researchIndex=index;
+            this.isInSearch=0;
             $('html,body').animate({scrollTop: '0px'}, 220);
             this.articleHandleCurrentChange(1);
         },
@@ -386,6 +410,7 @@ new Vue({
         projectClick(index){
             this.bodyIndex=3;
             this.researchIndex=index;
+            this.isInSearch=0;
             $('html,body').animate({scrollTop: '0px'}, 220);
             this.projectHandleCurrentChange(1);
         },
@@ -393,6 +418,7 @@ new Vue({
         conferenceClick(index){
             this.bodyIndex=3;
             this.researchIndex=index;
+            this.isInSearch=0;
             $('html,body').animate({scrollTop: '0px'}, 220);
             this.conferenceHandleCurrentChange(1);
         },
@@ -702,9 +728,10 @@ new Vue({
             })
         },
 
+
         modelItemHandleCurrentChange: function (val) {
             // console.log(this.modelItems.currentPage);
-            this.modelItems.currentPage = val;
+            this.pageOption.currentPage = val;
             // console.log(this.modelItems.currentPage);
             $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs = window.location.href.split("/");
@@ -712,7 +739,7 @@ new Vue({
                 type: "GET",
                 url: "/modelItem/listByUserOid",
                 data: {
-                    page: this.modelItems.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
                     oid: hrefs[hrefs.length - 1],
@@ -739,14 +766,14 @@ new Vue({
         },
 
         dataItemHandleCurrentChange: function (val) {
-            this.dataItems.currentPage = val;
+            this.pageOption.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/user/getDataItems",
                 data: {
-                    page: this.dataItems.currentPage,
+                    page: this.pageOption.currentPage-1,
                     asc: -1,
                     pagesize: this.pageOption.pageSize,
                     userOid: hrefs[hrefs.length - 1],
@@ -772,14 +799,14 @@ new Vue({
         },
 
         conceptualModelHandleCurrentChange: function (val) {
-            this.conceptualModels.currentPage = val;
+            this.pageOption.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/conceptualModel/listByUserOid",
                 data: {
-                    page: this.conceptualModels.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
                     oid: hrefs[hrefs.length - 1],
@@ -806,7 +833,7 @@ new Vue({
         },
 
         logicalModelHandleCurrentChange: function (val) {
-            this.logicalModels.currentPage = val;
+            this.pageOption.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
 
             const hrefs = window.location.href.split("/");
@@ -814,7 +841,7 @@ new Vue({
                 type: "GET",
                 url: "/logicalModel/listByUserOid",
                 data: {
-                    page: this.logicalModels.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
                     oid: hrefs[hrefs.length - 1],
@@ -840,14 +867,14 @@ new Vue({
         },
 
         computableModelHandleCurrentChange: function (val) {
-            this.computableModels.currentPage = val;
+            this.pageOption.currentPage = val;
             $('html,body').animate({scrollTop: '0px'}, 220);
             const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
                 url: "/computableModel/listByUserOid",
                 data: {
-                    page: this.computableModels.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
                     oid: hrefs[hrefs.length - 1],
@@ -874,14 +901,14 @@ new Vue({
         },
 
         conceptHandleCurrentChange(val){
-            this.concepts.currentPage = val;
+            this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
             let name='concepts';
             $.ajax({
                 type: "Get",
                 url: "/repository/listConceptsByUserOid",
                 data: {
-                    page: this.concepts.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     sortElement:"createTime",
                     pageSize: this.pageOption.pageSize,
@@ -907,8 +934,7 @@ new Vue({
                                 this.concepts.result = data[name];
                                 this.pageOption.progressBar = false;
                             }, 200)
-                            console.log(data);
-
+                            console.log(this.pageOption.currentPage);
                         } else {
                             console.log("search concept failed.")
 
@@ -919,7 +945,7 @@ new Vue({
         },
 
         spatialHandleCurrentChange(val){
-            this.spatials.currentPage = val;
+            this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
             var url = "/repository/listSpatialsByOid";
             var name = "spatials";
@@ -928,7 +954,7 @@ new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.spatials.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     sortElement:"createTime",
                     pageSize: this.pageOption.pageSize,
@@ -955,7 +981,7 @@ new Vue({
                                 this.spatials.result = data[name];
                                 this.pageOption.progressBar = false;
                             },200)
-
+                            console.log(this.pageOption.currentPage);
                         }else {
                             console.log("search concept failed.")
                         }
@@ -965,7 +991,7 @@ new Vue({
         },
 
         templateHandleCurrentChange(val){
-            this.templates.currentPage = val;
+            this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
             var url = "/repository/listTemplatesByOid";
             var name = "templates";
@@ -974,7 +1000,7 @@ new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.templates.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     sortElement:"createTime",
                     pageSize: this.pageOption.pageSize,
@@ -1011,7 +1037,7 @@ new Vue({
         },
 
         unitHandleCurrentChange(val){
-            this.units.currentPage = val;
+            this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
             var url = "/repository/listUnitsByOid";
             var name = "units";
@@ -1020,7 +1046,7 @@ new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.units.currentPage - 1,
+                    page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     sortElement:"createTime",
                     pageSize: this.pageOption.pageSize,
@@ -1056,15 +1082,74 @@ new Vue({
             })
         },
 
+        resourceHandleCurrentChange(val){
+            this.pageOption.currentPage=val;
+            switch (this.resourceIndex) {
+                case 1:
+                    if (this.isInSearch==0){
+                        console.log(this.pageOption.currentPage)
+                        this.modelItemHandleCurrentChange(this.pageOption.currentPage);
+                    }
+                    else this.searchResource();
+                    break;
+                case 2:
+                    if (this.isInSearch==0)
+                        this.dataItemHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+                case 3:
+                    if (this.isInSearch==0)
+                        this.conceptualModelHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+                case 4:
+                    if (this.isInSearch==0)
+                        this.logicalModelHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+                case 5:
+                    if (this.isInSearch==0)
+                        this.computableModelHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+                case 6:
+                    if (this.isInSearch==0){
+                        console.log(this.pageOption.currentPage);
+                        this.conceptHandleCurrentChange(this.pageOption.currentPage);
+                    }
+                    else this.searchResource();
+                    break;
+                case 7:
+                    if (this.isInSearch==0)
+                        this.spatialHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+                case 8:
+                    if (this.isInSearch==0)
+                        this.templateHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+                case 9:
+                    if (this.isInSearch==0)
+                        this.unitHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchResource();
+                    break;
+
+
+            }
+
+        },
+
+
         articleHandleCurrentChange: function (val) {
-            this.articles.currentPage=val;
+            this.pageOption.currentPage=val;
             this.barIndex=1;
             const hrefs=window.location.href.split('/');
             $.ajax({
                 type:"GET",
                 url:"/article/listByUserOid",
                 data:{
-                    page:this.articles.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.articles.sortAsc,
                     sortElement:'creatDate',
@@ -1095,15 +1180,16 @@ new Vue({
         },
 
         projectHandleCurrentChange: function (val) {
-            this.projects.currentPage=val;
+            this.pageOption.currentPage=val;
             const hrefs=window.location.href.split('/');
             $.ajax({
                 type:"GET",
                 url:"/project/listByUserOid",
                 data:{
-                    page:this.projects.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.projects.sortAsc,
+                    sortElement:"creatDate",
                     oid:hrefs[hrefs.length - 1],
                 },
                 async:true,
@@ -1130,15 +1216,16 @@ new Vue({
         },
 
         conferenceHandleCurrentChange(val) {
-            this.conferences.currentPage=val;
+            this.pageOption.currentPage=val;
             const hrefs=window.location.href.split("/");
             $.ajax({
                 type:"GET",
                 url:"/conference/listByUserOid",
                 data:{
-                    page:this.conferences.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
+                    sortElement:"creatDate",
                     oid:hrefs[hrefs.length-1],
                 },
                 async:true,
@@ -1156,6 +1243,29 @@ new Vue({
                     }
                 }
             })
+
+        },
+
+        researchHandleCurrentChange(val){
+            this.pageOption.currentPage=val;
+            switch (this.researchIndex) {
+                case 1:
+                    if(this.isInSearch==0)
+                        this.articleHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchArticles();
+                    break;
+                case 2:
+                    if(this.isInSearch==0)
+                        this.projectHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchProjects();
+                    break;
+                case 3:
+                    if(this.isInSearch==0)
+                        this.conferenceHandleCurrentChange(this.pageOption.currentPage);
+                    else this.searchConferences();
+                    break;
+
+            }
 
         },
 
@@ -1490,8 +1600,10 @@ new Vue({
         },
 
 
-        searchItems(index){
+        searchResearchClick(index){
 
+            this.pageOption.currentPage=1;
+            this.isInSearch=1;
             if (index==1){
                 this.searchText=$('#searchArticle').val();
                 this.searchArticles();
@@ -1508,19 +1620,10 @@ new Vue({
 
         },
 
-        searchResource(index){
-            var urls={
-                1:'/modelItem/searchByNameByOid',
-                2:'/dataItem/searchByNameByOid',
-                3:'/conceptualModel/searchByNameByOid',
-                4:'/logicalModel/searchByNameByOid',
-                5:'/computableModel/searchByNameByOid',
-                6:'/concept/searchByNameByOid',
-                7:'/spatial/searchByNameByOid',
-                8:'/template/searchByNameByOid',
-                9:'/unit/searchByNameByOid',
-            }
-            let hrefs = window.location.href.split("/");
+        searchResourceClick(index){
+            this.pageOption.currentPage=1;
+            this.resourceIndex=index;
+            this.isInSearch=1;
             switch (index) {
                 case 1:
                     this.searchText=$('#searchModel').val();
@@ -1550,14 +1653,32 @@ new Vue({
                     this.searchText=$('#searchUnit').val();
                     break;
             }
+            this.searchResource();
+
+        },
+
+        searchResource(){
+            $('html,body').animate({scrollTop:'0px'},200);
+            var urls={
+                1:'/modelItem/searchByNameByOid',
+                2:'/dataItem/searchByNameByOid',
+                3:'/conceptualModel/searchByNameByOid',
+                4:'/logicalModel/searchByNameByOid',
+                5:'/computableModel/searchByNameByOid',
+                6:'/concept/searchByNameByOid',
+                7:'/spatial/searchByNameByOid',
+                8:'/template/searchByNameByOid',
+                9:'/unit/searchByNameByOid',
+            }
+            let hrefs = window.location.href.split("/");
             $.ajax({
                 type:"GET",
-                url:urls[index],
+                url:urls[this.resourceIndex],
                 data:{
-                    page:this.modelItems.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
-                    asc:this.modelItems.sortAsc,
-                    sortElement:"createTime",
+                    asc:this.pageOption.sortAsc,
+                    sortElement:"viewCount",
                     searchText:this.searchText,
                     oid:hrefs[hrefs.length-1]
                 },
@@ -1575,7 +1696,7 @@ new Vue({
                         const data = json.data;
                         // this.articles.total=data.total;
                         // this.articles.result=data.list;
-                        switch (index) {
+                        switch (this.resourceIndex) {
                             case 1:
                                 Vue.set(this.modelItems ,'total', data.total);
                                 Vue.set(this.modelItems ,'result', data.list);
@@ -1627,6 +1748,7 @@ new Vue({
                 }
 
             })
+
         },
 
         searchArticles(){
@@ -1641,7 +1763,7 @@ new Vue({
                 type:"GET",
                 url:"/article/searchByTitleByOid",
                 data:{
-                    page:this.articles.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.articles.sortAsc,
                     sortElement:"creatDate",
@@ -1686,7 +1808,7 @@ new Vue({
                 type:"GET",
                 url:"/project/searchByNameByOid",
                 data:{
-                    page:this.projects.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.projects.sortAsc,
                     sortElement:"creatDate",
@@ -1728,7 +1850,7 @@ new Vue({
                 type:"GET",
                 url:"/conference/searchByTitleByOid",
                 data:{
-                    page:this.conferences.currentPage-1,
+                    page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.conferences.sortAsc,
                     sortElement:"creatDate",
@@ -1930,8 +2052,13 @@ new Vue({
                     async:true,
                     success:(json)=>{
                         if(json.code==0){
-                            alert("Add Success");
-                            this.articleHandleCurrentChange(1);
+                            console.log(json.data);
+                            if(json.data==1){
+                                alert("Add Success");
+                                this.articleHandleCurrentChange(1);
+                            }
+                            else if (json.data==2)
+                                alert("You have uploaded an article with this Title ever.")
                         }
                         else alert("Add Error");//此处error信息不明确，记得后加
                     }
@@ -2002,8 +2129,12 @@ new Vue({
                     async:true,
                     success:(json)=>{
                         if(json.code==0){
-                            alert("Add Success");
-                            this.projectHandleCurrentChange(1);
+                            if(json.data==1){
+                                alert("Add Success");
+                                this.projectHandleCurrentChange(1);
+                            }
+                            else if (json.data==2)
+                                alert("You have uploaded a project with this Title ever.")
                         }
                         else alert("Add Error");//此处error信息不明确，记得后加
                     }
@@ -2067,8 +2198,12 @@ new Vue({
                     async:true,
                     success:(json)=>{
                         if(json.code==0){
-                            alert("Add Success");
-                            this.conferenceHandleCurrentChange(1);
+                            if(json.data==1){
+                                alert("Add Success");
+                                this.conferenceHandleCurrentChange(1);
+                            }
+                            else if (json.data==2)
+                                alert("You have uploaded a Conference with this Title ever.")
                         }
                         else alert("Add Error");//此处error信息不明确，记得后加
                     }

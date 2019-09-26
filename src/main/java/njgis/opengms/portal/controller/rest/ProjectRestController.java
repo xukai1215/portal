@@ -64,8 +64,8 @@ public class ProjectRestController {
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        Project project=projectService.addNewProject(projectAddDTO,userName);
-        return ResultUtils.success(project.getOid());
+        int index=projectService.addNewProject(projectAddDTO,userName);
+        return ResultUtils.success(index);
     }
 
     @RequestMapping(value="/editByOid",method=RequestMethod.POST)

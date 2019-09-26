@@ -820,7 +820,7 @@ public class ModelItemService {
         result.put("list",modelItemPage.getContent());
         result.put("total", modelItemPage.getTotalElements());
 
-        System.out.println(result);
+//        System.out.println(result);
         return result;
     }
 
@@ -1176,13 +1176,14 @@ public class ModelItemService {
         Boolean asc = modelItemFindDTO.getAsc();
         String name= modelItemFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ModelItemResultDTO> modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 
         JSONObject result=new JSONObject();
         result.put("list",modelItemResultDTOPage.getContent());
         result.put("total",modelItemResultDTOPage.getTotalElements());
+//        System.out.println(result);
         return result;
 
     }

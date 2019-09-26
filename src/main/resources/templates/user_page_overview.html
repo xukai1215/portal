@@ -1305,6 +1305,15 @@
                             <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Resources Stats</h4></div>
                         </div>
                     </div>
+<!--                    <div  class="sortByContainer">-->
+<!--                        <p style="color: #797979;font-size: 16px;font-style: italic;">Sort by:</p>-->
+<!--                        <div class="rowArrange colCenter" style="margin-top: 5px">-->
+<!--                            <div class="chooseBox" @click="reSort()"><input type="radio" name="sortBy"><span></span></div>-->
+<!--                            <p>View Count</p>-->
+<!--                            <div class="chooseBox" @click="reSort()"><input type="radio" name="sortBy"><span></span></div>-->
+<!--                            <p>Create Date</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
                         <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Model & Data</h4></div>
                         <ul>
@@ -1358,8 +1367,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Model Items</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchModel" class="searchInput" @keydown.enter="searchResource(1)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(1)" ></button>
+                                            <input id="searchModel" class="searchInput" @keydown.enter="searchResourceClick(1)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(1)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1414,8 +1423,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="modelItemHandleCurrentChange"
-                                            :current-page="modelItems.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="modelItems.total"
@@ -1435,8 +1444,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Data Items</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchData" class="searchInput" @keydown.enter="searchResource(2)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(2)" ></button>
+                                            <input id="searchData" class="searchInput" @keydown.enter="searchResourceClick(2)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(2)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1485,7 +1494,7 @@
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
                                             @current-change="dataItemHandleCurrentChange"
-                                            :current-page="dataItems.currentPage"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="dataItems.total"
@@ -1505,8 +1514,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Conceptual Model</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchConceptualModel" class="searchInput" @keydown.enter="searchResource(3)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(3)" ></button>
+                                            <input id="searchConceptualModel" class="searchInput" @keydown.enter="searchResourceClick(3)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(3)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1553,8 +1562,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="conceptualModelHandleCurrentChange"
-                                            :current-page="conceptualModels.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="conceptualModels.total"
@@ -1574,8 +1583,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Logical Model</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchLogicalModel" class="searchInput" @keydown.enter="searchResource(4)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(4)" ></button>
+                                            <input id="searchLogicalModel" class="searchInput" @keydown.enter="searchResourceClick(4)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(4)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1621,8 +1630,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="logicalModelHandleCurrentChange"
-                                            :current-page="logicalModels.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="logicalModels.total"
@@ -1642,8 +1651,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Computable Model</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchComputableModel" class="searchInput" @keydown.enter="searchResource(5)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(5)" ></button>
+                                            <input id="searchComputableModel" class="searchInput" @keydown.enter="searchResourceClick(5)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(5)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1689,8 +1698,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="computableModelHandleCurrentChange"
-                                            :current-page="computableModels.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="computableModels.total"
@@ -1710,8 +1719,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Concept & Semantic</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchConcept" class="searchInput" @keydown.enter="searchResource(6)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(6)" ></button>
+                                            <input id="searchConcept" class="searchInput" @keydown.enter="searchResourceClick(6)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(6)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1729,7 +1738,7 @@
                                         <div style="flex: 1;">
                                             <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
                                                 <div>
-                                                    <a  :href="'/concept/'+ concept.oid" target="_blank">
+                                                    <a  :href="'/repository/concept/'+ concept.oid" target="_blank">
                                                         <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{concept.name}}</h4>
                                                     </a>
                                                     <div :class="concept.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
@@ -1760,8 +1769,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="conceptHandleCurrentChange"
-                                            :current-page="concepts.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="concepts.total"
@@ -1781,8 +1790,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Spatial Reference</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchSpatial" class="searchInput" @keydown.enter="searchResource(7)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(7)" ></button>
+                                            <input id="searchSpatial" class="searchInput" @keydown.enter="searchResourceClick(7)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(7)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1800,7 +1809,7 @@
                                         <div style="flex: 1;">
                                             <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
                                                 <div>
-                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                    <a  :href="'/repository/computableModel/'+ computableModel.oid" target="_blank">
                                                         <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{spatial.name}}</h4>
                                                     </a>
                                                     <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
@@ -1828,8 +1837,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="spatialHandleCurrentChange"
-                                            :current-page="spatials.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="spatials.total"
@@ -1849,8 +1858,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Data Template</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchTemplate" class="searchInput" @keydown.enter="searchResource(8)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(8)" ></button>
+                                            <input id="searchTemplate" class="searchInput" @keydown.enter="searchResourceClick(8)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(8)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1861,7 +1870,7 @@
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
-                                            <a  :href="'/template/'+ template.oid" target="_blank">
+                                            <a  :href="'/repository/template/'+ template.oid" target="_blank">
                                                 <img  class="modelImg" :src="template.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
                                             </a>
                                         </div>
@@ -1896,8 +1905,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="templateHandleCurrentChange"
-                                            :current-page="templates.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="templates.total"
@@ -1917,8 +1926,8 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Unit & Metric</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchUnit" class="searchInput" @keydown.enter="searchResource(9)"/>
-                                            <button class="confirmButton noMargin" @click="searchResource(9)" ></button>
+                                            <input id="searchUnit" class="searchInput" @keydown.enter="searchResourceClick(9)"/>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(9)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1929,7 +1938,7 @@
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
-                                            <a  :href="'/unit/'+ unit.oid" target="_blank">
+                                            <a  :href="'/repository/unit/'+ unit.oid" target="_blank">
                                                 <img  class="modelImg" :src="unit.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
                                             </a>
                                         </div>
@@ -1964,8 +1973,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="unitHandleCurrentChange"
-                                            :current-page="units.currentPage"
+                                            @current-change="resourceHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="units.total"
@@ -2019,8 +2028,8 @@
 <!--                                    </div>-->
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchArticle" class="searchInput" @keydown.enter="searchItems(1)"/>
-                                            <button class="confirmButton noMargin" @click="searchItems(1)" ></button>
+                                            <input id="searchArticle" class="searchInput" @keydown.enter="searchResearchClick(1)"/>
+                                            <button class="confirmButton noMargin" @click="searchResearchClick(1)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -2076,8 +2085,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="articleHandleCurrentChange"
-                                            :current-page="articles.currentPage"
+                                            @current-change="researchHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="articles.total"
@@ -2209,8 +2218,8 @@
                                     <div><h4 style="margin-top: 10px;">Projects</h4></div>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer   searchInputContainer">
-                                            <input id="searchProject" class="searchInput" @keydown.enter="searchItems(2)"/>
-                                            <button class="confirmButton noMargin" @click="searchItems(2)" ></button>
+                                            <input id="searchProject" class="searchInput" @keydown.enter="searchResearchClick(2)"/>
+                                            <button class="confirmButton noMargin" @click="searchResearchClick(2)" ></button>
                                         </div>
                                     </div>
                                 </div>
@@ -2268,8 +2277,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="projectHandleCurrentChange"
-                                            :current-page="projects.currentPage"
+                                            @current-change="researchHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="projects.total"
@@ -2390,8 +2399,8 @@
                                     <div><h4 style="margin-top: 10px;">Conferences</h4></div>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer searchInputContainer">
-                                            <input id="searchConference" class="searchInput"  @keydown.enter="searchItems(3)"/>
-                                            <button class="confirmButton noMargin" @click="searchItems(3)"></button>
+                                            <input id="searchConference" class="searchInput"  @keydown.enter="searchResearchClick(3)"/>
+                                            <button class="confirmButton noMargin" @click="searchResearchClick(3)"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -2450,8 +2459,8 @@
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
-                                            @current-change="conferenceHandleCurrentChange"
-                                            :current-page="conferences.currentPage"
+                                            @current-change="researchHandleCurrentChange"
+                                            :current-page="pageOption.currentPage"
                                             :page-size="pageOption.pageSize"
                                             layout="total, prev, pager, next, jumper"
                                             :total="conferences.total"
@@ -2555,6 +2564,7 @@
 <script src="../static/element-ui/index.js"></script>
 <script type="text/javascript" src="../../static/js/common/bootstrap.min.js"></script>
 <script src="../static/js/common/loadUser.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="../static/js/common/navbar.js"></script>
 <script src="../static/js/common/backTop.js/"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>

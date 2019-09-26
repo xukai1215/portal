@@ -2,7 +2,6 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
@@ -511,7 +510,7 @@ public class DataItemService {
         Boolean asc = dataItemFindDTO.getAsc();
         String name= dataItemFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<DataItemResultDTO> dataItemResultDTOPage=dataItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 

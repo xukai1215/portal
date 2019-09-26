@@ -896,7 +896,7 @@ input::placeholder{
 
 .listItemContainer{
     width: 100%;
-    max-height: 520px;
+    max-height: 530px;
     overflow-y: auto;
 }
 
@@ -1336,6 +1336,7 @@ input::placeholder{
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    margin: 0 5px 0 0;
     width: 14px;
     height: 14px;
     margin-left: 10px;
@@ -1474,4 +1475,20 @@ input[type="radio"]:checked + span {
 
 #awdTimeInputContainer .datepicker{
     width: 100%;
+}
+
+.sortByContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 5px 3px;
+    padding: 0 20px;
+    height: 55px;
+    background-color: white;
+    border-radius: 2px;
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
+    /*color: #828282;*/
+    font-family: sans-serif;
+    color: #686868;
 }

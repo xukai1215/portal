@@ -28,7 +28,7 @@ public class ConceptService {
         Boolean asc = conceptFindDTO.getAsc();
         String name= conceptFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<ConceptResultDTO> conceptResultDTOPage=conceptDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 

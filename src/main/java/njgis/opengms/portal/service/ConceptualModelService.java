@@ -601,7 +601,7 @@ public class ConceptualModelService {
         Boolean asc = conceptualModelFindDTO.getAsc();
         String title= conceptualModelFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ConceptualModelResultDTO> articleResultDTOPage=conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthor(title,userName,pageable);
 

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,6 +28,15 @@ public class ConferenceService {
     UserService userService;
     @Autowired
     ConferenceDao conferenceDao;
+
+    public Boolean findExisted(String titleName){
+        List<Conference> allConferences = conferenceDao.findAll();
+        for (int i=0;i<allConferences.size();i++){
+            if (titleName.equals(allConferences.get(i).getTitle()))
+                return true;
+        }
+        return false;
+    }
 
     public JSONObject listByUserOid(ConferenceFindDTO conferenceFindDTO, String oid){
         int page=conferenceFindDTO.getPage();
@@ -53,7 +63,7 @@ public class ConferenceService {
         Boolean asc = conferenceFindDTO.getAsc();
         String title= conferenceFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ConferenceResultDTO> conferenceResultDTOPage=conferenceDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
 
@@ -72,7 +82,7 @@ public class ConferenceService {
         Boolean asc = conferenceFindDTO.getAsc();
         String title= conferenceFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ConferenceResultDTO> conferenceResultDTOPage=conferenceDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
 
@@ -103,17 +113,22 @@ public class ConferenceService {
 
     }
 
-    public Conference addNewconference(ConferenceAddDTO conferenceAddDTO, String contributor){
-        Conference conference=new Conference();
-        BeanUtils.copyProperties(conferenceAddDTO,conference);
-        Date now=new Date();
-        conference.setCreatDate(now);
-        conference.setContributor(contributor);
-        conference.setOid(UUID.randomUUID().toString());
-
+    public int addNewconference(ConferenceAddDTO conferenceAddDTO, String contributor){
+        if (findExisted(conferenceAddDTO.getTitle()))
+            return 2;
+        else{
+            Conference conference=new Conference();
+            BeanUtils.copyProperties(conferenceAddDTO,conference);
+            Date now=new Date();
+            conference.setCreatDate(now);
+            conference.setContributor(contributor);
+            conference.setOid(UUID.randomUUID().toString());
 //        System.out.println("add");
+            conferenceDao.insert(conference);
 
-        return conferenceDao.insert(conference);
+            return 1;
+        }
+
 
     }
 

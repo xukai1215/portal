@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -56,11 +57,11 @@ public class EducationExperienceService {
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, educationExperienceFindDTO.getSortElement());
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         User user=userDao.findFirstByOid(oid);
-        Page<EducationExperienceResultDTO> educationExperienceResultDTOPage=educationExperienceDao.findByContributor(user.getUserName(),pageable);
+        List<EducationExperienceResultDTO> educationExperienceResultDTOList=educationExperienceDao.findByContributor(user.getUserName(),sort);
 
         JSONObject result=new JSONObject();
-        result.put("list",educationExperienceResultDTOPage.getContent());
-        result.put("total",educationExperienceResultDTOPage.getTotalElements());
+        result.put("list",educationExperienceResultDTOList);
+        result.put("total",educationExperienceResultDTOList.size());
 
         System.out.println("eduexp"+result);
         return result;

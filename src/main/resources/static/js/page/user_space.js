@@ -155,6 +155,8 @@ var vue = new Vue({
 
         editOid:'',
 
+        isInSearch:0,
+
     },
 
     methods: {
@@ -661,7 +663,7 @@ var vue = new Vue({
 
 
         getTasksInfo() {
-
+            this.isInSearch=0;
             $.ajax({
                 type: "Get",
                 url: "/user/getUserInfo",
@@ -1216,6 +1218,7 @@ var vue = new Vue({
 
         searchModels() {
             this.pageSize=10;
+            this.isInSearch=1;
             var url = "";
             var name = "";
             if (this.curIndex=='2-1') {
@@ -1270,7 +1273,9 @@ var vue = new Vue({
                             this.totalNum = data.count;
                             this.searchCount = Number.parseInt(data["count"]);
                             this.searchResult = data[name];
-                            this.pageInit();
+                            if (this.page == 1) {
+                                this.pageInit();
+                            }
 
                         }
 
@@ -1280,6 +1285,7 @@ var vue = new Vue({
         },
         searchDataItem() {
             this.pageSize=10;
+            this.isInSearch=1;
             var that = this;
             var da={
                 userOid:this.userId,
@@ -1296,6 +1302,9 @@ var vue = new Vue({
                         if(res.status==200){
                             if(res.data.data!=null){
                                 that.searchResult = res.data.data.content;
+                                if (this.page == 1) {
+                                    this.pageInit();
+                                }
                             }else{
                                 alert("no result")
                             }
@@ -1308,6 +1317,7 @@ var vue = new Vue({
         },
         searchConcepts(){
             this.pageSize=10;
+            this.isInSearch=1;
             var url = "/repository/searchConceptsByUserId";
             var name = "concepts";
             $.ajax({
@@ -1338,13 +1348,16 @@ var vue = new Vue({
                         this.totalNum = data.count;
                         this.searchCount = Number.parseInt(data["count"]);
                         this.searchResult = data[name];
-                        this.pageInit();
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
                     }
                 }
             })
         },
         searchSpatials(){
             this.pageSize=10;
+            this.isInSearch=1;
             var url = "/repository/searchSpatialsByUserId";
             var name = "spatials";
             $.ajax({
@@ -1375,13 +1388,16 @@ var vue = new Vue({
                         this.totalNum = data.count;
                         this.searchCount = Number.parseInt(data["count"]);
                         this.searchResult = data[name];
-                        this.pageInit();
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
                     }
                 }
             })
         },
         searchTemplates(){
             this.pageSize=10;
+            this.isInSearch=1;
             var url = "/repository/searchTemplatesByUserId";
             var name = "templates";
             $.ajax({
@@ -1412,13 +1428,16 @@ var vue = new Vue({
                         this.totalNum = data.count;
                         this.searchCount = Number.parseInt(data["count"]);
                         this.searchResult = data[name];
-                        this.pageInit();
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
                     }
                 }
             })
         },
         searchUnits(){
             this.pageSize=10;
+            this.isInSearch=1;
             var url = "/repository/searchUnitsByUserId";
             var name = "units";
             $.ajax({
@@ -1449,7 +1468,9 @@ var vue = new Vue({
                         this.totalNum = data.count;
                         this.searchCount = Number.parseInt(data["count"]);
                         this.searchResult = data[name];
-                        this.pageInit();
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
                     }
                 }
             })
@@ -1457,6 +1478,7 @@ var vue = new Vue({
 
         searchArticles(){
             this.pageSize=5;
+            this.isInSearch=1;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1501,6 +1523,7 @@ var vue = new Vue({
 
         searchProjects(){
             this.pageSize=5;
+            this.isInSearch=1;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1545,6 +1568,7 @@ var vue = new Vue({
 
         searchConferences(){
             this.pageSize=5;
+            this.isInSearch=1;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1589,6 +1613,7 @@ var vue = new Vue({
 
         getModels() {
             this.pageSize=10;
+            this.isInSearch=0;
             var url = "";
             var name = "";
             console.log(this.searchResult);
@@ -1663,6 +1688,7 @@ var vue = new Vue({
         },
         getConcepts(){
             this.pageSize=10;
+            this.isInSearch=0;
             var url = "/repository/getConceptsByUserId";
             var name = "concepts";
 
@@ -1700,6 +1726,7 @@ var vue = new Vue({
         },
         getSpatials(){
             this.pageSize=10;
+            this.isInSearch=0;
             var url = "/repository/getSpatialsByUserId";
             var name = "spatials";
 
@@ -1737,6 +1764,7 @@ var vue = new Vue({
         },
         getTemplates(){
             this.pageSize=10;
+            this.isInSearch=0;
             var url = "/repository/getTemplatesByUserId";
             var name = "templates";
 
@@ -1774,6 +1802,7 @@ var vue = new Vue({
         },
         getUnits(){
             this.pageSize=10;
+            this.isInSearch=0;
             var url = "/repository/getUnitsByUserId";
             var name = "units";
 
@@ -1813,6 +1842,7 @@ var vue = new Vue({
         getArticleResult(){
             this.pageSize=5;
             this.researchItems=[];
+            this.isInSearch=0;
             // var urls={
             //     1:"/article/getByUserOidBySort",
             //     2:"/project/getByUserOidBySort",
@@ -2389,7 +2419,9 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
+                        if(this.isInSearch==0)
                         this.getModels();
+                        else this.searchModels();
                         break;
                     //
                     case '3-1':
@@ -2401,7 +2433,9 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
+                        if(this.isInSearch==0)
                         this.getDataItems();
+                        else this.searchDataItem();
                         break;
 
                     case '4-1':
@@ -2412,7 +2446,9 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
+                        if(this.isInSearch==0)
                         this.getConcepts();
+                        else this.searchConcepts();
                         break;
                     case '4-2':
                         this.resourceLoad = true;
@@ -2422,7 +2458,9 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
+                        if(this.isInSearch==0)
                         this.getSpatials();
+                        else this.searchSpatials()
                         break;
                     case '4-3':
                         this.resourceLoad = true;
@@ -2432,7 +2470,9 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
+                        if(this.isInSearch==0)
                         this.getTemplates();
+                        else this.searchTemplates();
                         break;
                     case '4-4':
                         this.resourceLoad = true;
@@ -2442,7 +2482,9 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
+                        if(this.isInSearch==0)
                         this.getUnits();
+                        else this.searchUnits();
                         break;
 
 
@@ -2456,6 +2498,7 @@ var vue = new Vue({
                         this.page = pageNo;
                         switch (this.researchIndex) {
                             case 1:this.getArticleResult();
+                            console.log('article')
                             break;
                             case 2:this.getProjectResult();
                             break;
@@ -2641,6 +2684,7 @@ var vue = new Vue({
 
         getDataItems(){
             this.pageSize=10;
+            this.isInSearch=0;
             var da={
                 userOid:this.userId,
                 page:this.page,

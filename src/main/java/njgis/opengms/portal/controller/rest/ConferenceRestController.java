@@ -65,9 +65,9 @@ public class ConferenceRestController {
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        Conference conference=conferenceService.addNewconference(conferenceAddDTO,userName);
+        int index=conferenceService.addNewconference(conferenceAddDTO,userName);
 //        System.out.println("/addConference");
-        return ResultUtils.success(conference.getOid());
+        return ResultUtils.success(index);
     }
 
     @RequestMapping(value="/editByOid",method=RequestMethod.POST)

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,6 +33,15 @@ public class ArticleService {
 
     @Autowired
     UserService userService;
+
+    public Boolean findExisted(String titleName){
+        List<Article> allArticles = articleDao.findAll();
+        for (int i=0;i<allArticles.size();i++){
+            if (titleName.equals(allArticles.get(i).getTitle()))
+                return true;
+        }
+        return false;
+    }
 
     public JSONObject findNewestArticle(ArticleFindDTO articleFindDTO ,String oid ){
         int page=articleFindDTO.getPage();
@@ -77,7 +87,7 @@ public class ArticleService {
         Boolean asc = articleFindDTO.getAsc();
         String title= articleFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ArticleResultDTO> articleResultDTOPage=articleDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
 
@@ -97,7 +107,7 @@ public class ArticleService {
         Boolean asc = articleFindDTO.getAsc();
         String title= articleFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ArticleResultDTO> articleResultDTOPage=articleDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
 
@@ -109,15 +119,21 @@ public class ArticleService {
 
     }
 
-    public Article addNewArticle(ArticleAddDTO articleAddDTO, String contributor){
-        Article article=new Article();
-        BeanUtils.copyProperties(articleAddDTO,article);
-        Date now=new Date();
-        article.setCreatDate(now);
-        article.setContributor(contributor);
-        article.setOid(UUID.randomUUID().toString());
+    public int addNewArticle(ArticleAddDTO articleAddDTO, String contributor){
+        if (findExisted(articleAddDTO.getTitle()))
+            return 2;
+        else{
+            Article article=new Article();
+            BeanUtils.copyProperties(articleAddDTO,article);
+            Date now=new Date();
+            article.setCreatDate(now);
+            article.setContributor(contributor);
+            article.setOid(UUID.randomUUID().toString());
+            articleDao.insert(article);
 
-        return articleDao.insert(article);
+            return 1;
+        }
+
 
     }
 

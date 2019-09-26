@@ -68,8 +68,8 @@ public class ArticleRestController {
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        Article article=articleService.addNewArticle(articleAddDTO,userName);
-        return ResultUtils.success(article.getOid());
+        int index=articleService.addNewArticle(articleAddDTO,userName);
+        return ResultUtils.success(index);
     }
 
     @RequestMapping(value="/editByOid",method=RequestMethod.POST)

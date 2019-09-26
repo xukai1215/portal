@@ -1058,7 +1058,7 @@ public class ComputableModelService {
         Boolean asc = computableModelFindDTO.getAsc();
         String name= computableModelFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ComputableModelResultDTO> computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 
