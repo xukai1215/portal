@@ -23,6 +23,8 @@ public class DataItemFindDTO {
     String dataId;
     List<String> relatedModels;
 
+    String sortElement;
+    String searchText;
     //用做多条件查询
     //private List<String> properties;
 

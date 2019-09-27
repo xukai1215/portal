@@ -3,23 +3,31 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.Concept.ConceptAddDTO;
+import njgis.opengms.portal.dto.Concept.ConceptFindDTO;
+import njgis.opengms.portal.dto.Concept.ConceptUpdateDTO;
 import njgis.opengms.portal.dto.RepositoryQueryDTO;
-import njgis.opengms.portal.dto.community.*;
+import njgis.opengms.portal.dto.Spatial.SpatialAddDTO;
+import njgis.opengms.portal.dto.Spatial.SpatialFindDTO;
+import njgis.opengms.portal.dto.Spatial.SpatialUpdateDTO;
+import njgis.opengms.portal.dto.Template.TemplateAddDTO;
+import njgis.opengms.portal.dto.Template.TemplateFindDTO;
+import njgis.opengms.portal.dto.Template.TemplateUpdateDTO;
+import njgis.opengms.portal.dto.Unit.UnitAddDTO;
+import njgis.opengms.portal.dto.Unit.UnitFindDTO;
+import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.RepositoryService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/repository")
@@ -30,6 +38,9 @@ public class RepositoryRestController {
 
     @Autowired
     ConceptDao conceptDao;
+
+    @Autowired
+    ConceptService conceptService;
 
     @Autowired
     ConceptVersionDao conceptVersionDao;
@@ -139,14 +150,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/addConcept",method = RequestMethod.POST)
-    public JsonResult addConcept( HttpServletRequest request) throws IOException {
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        ConceptAddDTO conceptAddDTO=JSONObject.toJavaObject(jsonObject,ConceptAddDTO.class);
-
+    public JsonResult addConcept(@RequestBody ConceptAddDTO conceptAddDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
 
         if(session.getAttribute("uid")==null){
@@ -163,13 +167,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateConcept",method = RequestMethod.POST)
-    public JsonResult updateConcept(HttpServletRequest request) throws IOException{
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        ConceptUpdateDTO conceptUpdateDTO=JSONObject.toJavaObject(jsonObject,ConceptUpdateDTO.class);
-
+    public JsonResult updateConcept(@RequestBody ConceptUpdateDTO conceptUpdateDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -235,6 +233,15 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+
+    @RequestMapping (value = "/listConceptsByUserOid",method = RequestMethod.GET)
+    JsonResult listByUserOid(ConceptFindDTO conceptFindDTO,
+                             @RequestParam(value="oid") String oid){
+//        System.out.println("concept"+conceptFindDTO);
+        String uid=userService.getByOid(oid).getUserName();
+        return ResultUtils.success(repositoryService.getConceptsByUserId(uid,conceptFindDTO));
+    }
+
     @RequestMapping(value = "/searchConceptsByUserId",method = RequestMethod.GET)
     public JsonResult searchConceptsByUserId(HttpServletRequest request,
                                              @RequestParam(value="searchText") String searchText,
@@ -260,8 +267,6 @@ public class RepositoryRestController {
         return ResultUtils.success(user.getOid());
 
     }
-
-
 
 
     //spatialReference
@@ -299,14 +304,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/addSpatialReference", method = RequestMethod.POST)
-    public JsonResult addSpatialReference(HttpServletRequest request) throws IOException{
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        SpatialAddDTO spatialAddDTO=JSONObject.toJavaObject(jsonObject,SpatialAddDTO.class);
-
+    public JsonResult addSpatialReference(@RequestBody SpatialAddDTO spatialAddDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
 
         if(session.getAttribute("uid")==null){
@@ -322,14 +320,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateSpatialReference",method = RequestMethod.POST)
-    public JsonResult updateSpatialReference(HttpServletRequest request) throws IOException{
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        SpatialUpdateDTO spatialUpdateDTO=JSONObject.toJavaObject(jsonObject,SpatialUpdateDTO.class);
-
+    public JsonResult updateSpatialReference(@RequestBody SpatialUpdateDTO spatialUpdateDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -392,6 +383,14 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/listSpatialsByOid",method = RequestMethod.GET)
+    JsonResult listSpatialByUserOid(SpatialFindDTO spatialFindDTO,
+                                    @RequestParam(value="oid") String oid){
+//        System.out.println("spatial"+spatialFindDTO);
+        String uid=userService.getByOid(oid).getUserName();
+        return ResultUtils.success(repositoryService.getSpatialsByUserId(uid,spatialFindDTO));
+    }
+
     @RequestMapping(value = "/searchSpatialsByUserId",method = RequestMethod.GET)
     public JsonResult searchSpatialsByUserId(HttpServletRequest request,
                                              @RequestParam(value="searchText") String searchText,
@@ -452,14 +451,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/addTemplate", method = RequestMethod.POST)
-    public JsonResult addTemplate(HttpServletRequest request) throws IOException {
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        TemplateAddDTO templateAddDTO=JSONObject.toJavaObject(jsonObject,TemplateAddDTO.class);
-
+    public JsonResult addTemplate(@RequestBody TemplateAddDTO templateAddDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
 
         if(session.getAttribute("uid")==null){
@@ -475,14 +467,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateTemplate",method = RequestMethod.POST)
-    public JsonResult updateTemplate(HttpServletRequest request) throws IOException{
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        TemplateUpdateDTO templateUpdateDTO=JSONObject.toJavaObject(jsonObject,TemplateUpdateDTO.class);
-
+    public JsonResult updateTemplate(@RequestBody TemplateUpdateDTO templateUpdateDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -521,9 +506,9 @@ public class RepositoryRestController {
 
     @RequestMapping(value = "/getTemplatesByUserId",method = RequestMethod.GET)
     public JsonResult getTemplatesByUserId(HttpServletRequest request,
-                                          @RequestParam(value="page") int page,
-                                          @RequestParam(value="sortType") String sortType,
-                                          @RequestParam(value="asc") int sortAsc){
+                                           @RequestParam(value="page") int page,
+                                           @RequestParam(value="sortType") String sortType,
+                                           @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
@@ -535,12 +520,19 @@ public class RepositoryRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping (value = "/listTemplatesByOid",method = RequestMethod.GET)
+    JsonResult listSpatialByUserOid(TemplateFindDTO templateFindDTO,
+                                    @RequestParam(value="oid") String oid){
+        String uid=userService.getByOid(oid).getUserName();
+        return ResultUtils.success(repositoryService.getTemplatesByUserId(uid,templateFindDTO));
+    }
+
     @RequestMapping(value = "/searchTemplatesByUserId",method = RequestMethod.GET)
     public JsonResult searchTemplatesByUserId(HttpServletRequest request,
-                                             @RequestParam(value="searchText") String searchText,
-                                             @RequestParam(value="page") int page,
-                                             @RequestParam(value="sortType") String sortType,
-                                             @RequestParam(value="asc") int sortAsc){
+                                              @RequestParam(value="searchText") String searchText,
+                                              @RequestParam(value="page") int page,
+                                              @RequestParam(value="sortType") String sortType,
+                                              @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
@@ -560,7 +552,6 @@ public class RepositoryRestController {
         return ResultUtils.success(user.getOid());
 
     }
-
 
 
     //unit
@@ -597,14 +588,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/addUnit", method = RequestMethod.POST)
-    public JsonResult addUnit(HttpServletRequest request) throws IOException{
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        UnitAddDTO unitAddDTO=JSONObject.toJavaObject(jsonObject,UnitAddDTO.class);
-
+    public JsonResult addUnit(@RequestBody UnitAddDTO unitAddDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
 
         if(session.getAttribute("uid")==null){
@@ -620,14 +604,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateUnit",method = RequestMethod.POST)
-    public JsonResult updateUnit(HttpServletRequest request) throws IOException{
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        UnitUpdateDTO unitUpdateDTO=JSONObject.toJavaObject(jsonObject,UnitUpdateDTO.class);
-
+    public JsonResult updateUnit(@RequestBody UnitUpdateDTO unitUpdateDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -676,9 +653,9 @@ public class RepositoryRestController {
 
     @RequestMapping(value = "/getUnitsByUserId",method = RequestMethod.GET)
     public JsonResult getUnitsByUserId(HttpServletRequest request,
-                                          @RequestParam(value="page") int page,
-                                          @RequestParam(value="sortType") String sortType,
-                                          @RequestParam(value="asc") int sortAsc){
+                                       @RequestParam(value="page") int page,
+                                       @RequestParam(value="sortType") String sortType,
+                                       @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
@@ -692,10 +669,10 @@ public class RepositoryRestController {
 
     @RequestMapping(value = "/searchUnitsByUserId",method = RequestMethod.GET)
     public JsonResult searchUnitsByUserId(HttpServletRequest request,
-                                             @RequestParam(value="searchText") String searchText,
-                                             @RequestParam(value="page") int page,
-                                             @RequestParam(value="sortType") String sortType,
-                                             @RequestParam(value="asc") int sortAsc){
+                                          @RequestParam(value="searchText") String searchText,
+                                          @RequestParam(value="page") int page,
+                                          @RequestParam(value="sortType") String sortType,
+                                          @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
@@ -714,6 +691,13 @@ public class RepositoryRestController {
         User user=userService.getByUid(userId);
         return ResultUtils.success(user.getOid());
 
+    }
+
+    @RequestMapping (value = "/listUnitsByOid",method = RequestMethod.GET)
+    JsonResult listUnitsByUserOid(UnitFindDTO unitFindDTO,
+                                  @RequestParam(value="oid") String oid){
+        String uid=userService.getByOid(oid).getUserName();
+        return ResultUtils.success(repositoryService.getUnitsByUserId(uid,unitFindDTO));
     }
 
     //Contributers

@@ -58420,7 +58420,7 @@ var seriesModelMixin = {
                         tooltip: false,
                         itemName: 0
                     },
-                    dimsDef: ['base']
+                    dimsDef: ['static.css.other.base']
                 }, {
                     name: otherAxisDim,
                     type: getDimensionTypeByAxis(otherAxisType),

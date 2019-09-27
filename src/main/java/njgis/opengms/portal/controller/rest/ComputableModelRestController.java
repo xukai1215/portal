@@ -3,7 +3,8 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dto.ComputableModelResultDTO;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
@@ -209,6 +210,11 @@ public class ComputableModelRestController {
         String result=computableModelService.searchComputerModelsForDeploy(searchText,page,sortType,sortAsc);
 
         return result;
+    }
+
+    @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
+    JsonResult searchByTitle(ComputableModelFindDTO computableModelFindDTO, String oid){
+        return ResultUtils.success(computableModelService.searchByTitleByOid(computableModelFindDTO,oid));
     }
 
     @RequestMapping (value="/searchComputableModelsByUserId",method = RequestMethod.GET)

@@ -15,7 +15,7 @@ public class AwardandHonor {
     String id;
     String oid;
     String name;
-    String awardTime;
+    Date awardTime;
     String contributor;
     //    String type;
     String awardAgency;

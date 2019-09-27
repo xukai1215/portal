@@ -18,8 +18,8 @@ public class EducationExperience {
     String academicDegree;
     String institution;
     String department;
-    String startTime;
-    String endTime;
+    Date startTime;
+    Date endTime;
     String eduLocation;
     String contributor;
     Date creatDate;

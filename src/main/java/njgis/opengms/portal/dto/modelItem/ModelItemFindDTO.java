@@ -2,8 +2,6 @@ package njgis.opengms.portal.dto.modelItem;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @ClassName DataItemFindDTO
  * @Description todo
@@ -19,4 +17,6 @@ public class ModelItemFindDTO {
     //用做多条件查询
     //private List<String> classifications;
     private String searchText;
+    private String sortElement;
+
 }

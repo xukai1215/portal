@@ -1,11 +1,11 @@
-package njgis.opengms.portal.dto.community;
+package njgis.opengms.portal.dto.Spatial;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName TemplateUpdateDTO
+ * @ClassName SpatialUpdateDTO
  * @Description todo
  * @Author ZHSH
  * @Date 2019/8/1
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TemplateUpdateDTO extends TemplateAddDTO{
+public class SpatialUpdateDTO extends SpatialAddDTO{
     String oid;
 }

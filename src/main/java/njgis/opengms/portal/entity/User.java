@@ -65,5 +65,6 @@ public class User {
 
     Affiliation affiliation;
     Date createTime;
+    Date updateTime;
 
 }
