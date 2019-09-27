@@ -49,175 +49,467 @@ function getMouseClass(e){
     return mouseClass;
 }
 
+function subMenuDropDpwn(target){
+    let childrenCount=target.children('ul').children('li').length;
+    console.log(childrenCount);
+    let timeLength=childrenCount*60;
+    let height=childrenCount*45+5;
+    target.children().animate({height:height},timeLength,'swing');
+    // target.children('ul').children().css('display','block')
+    let li=target.children('ul').children('li');
+    for (let i=0;i<childrenCount;i++){
+        setTimeout(()=>{li.eq(i).css('display','block');},(i+1)*50) ;
+    }
+
+}
+
+function fullSubMenuDropDpwn(target){
+    let childrenCount=target.children('ul').children('li').length;
+    console.log(childrenCount);
+    let timeLength=childrenCount*60+5;
+    let height=(childrenCount-1)*50+2;
+    target.children().animate({height:height},timeLength,'swing');
+    // target.children('ul').children().css('display','block')
+    let li=target.children('ul').children('li');
+    for (let i=0;i<childrenCount;i++){
+        setTimeout(()=>{li.eq(i).css('display','block');},(i+1)*50) ;
+    }
+    setTimeout(()=>{
+        target.children('ul').children('#phoneLogin').animate({height:'50'},150);
+        target.children('ul').children('#phoneLogin').css('background-color','#00abff')
+    },timeLength)
+
+
+}
+
+function subMenuFoldUp(target){
+    let childrenCount=target.children('ul').children('li').length;
+    let timeLength=childrenCount*45;
+    (function fold(){
+        target.children().animate({height:0},timeLength,'linear');
+        a=Date.now();
+    })()
+    // target.children('ul').children().css('display','none')
+    let li=target.children('ul').children('li');
+    for (let i=childrenCount-1,t=1;i>=0;i--,t++){
+        setTimeout(()=>{li.eq(i).css('display','none');},t*40) ;
+    }
+    target.children('ul').children('#phoneLogin').css('height','0')
+    target.children('ul').children('#phoneLogin').css('height','0')
+}
+
 // 悬浮一级菜单
-dropm1.onmouseover = function (e) {
-    sub1.style.display = 'block';
-    // communityArrow1.style.transform='rotate(315deg)';
-    // communityArrow1.style.marginTop='10 px';
-};
-dropm1.onmouseout = function (e) {
-    sub1.style.display = 'none';
-    // communityArrow1.style.transform='rotate(135deg)';
-};
-// 悬浮下拉子菜单
-submenu1.onmouseover = function (e) {
-    sub1.style.display = 'block';
-};
-submenu1.onmouseout = function (e) {
-    sub1.style.display = 'none';
-    getMouseClass(e);
-};
+var tFoldComm, tFoldHelp,tFoldLog,tFoldls, tFoldLmu,tFoldleftC,tDropleftC,tFoldleftH,tDropleftH,t,a;
 
-dropm2.onmouseover = function (e) {
-    sub2.style.display = 'block';
-};
-dropm2.onmouseout = function (e) {
-    sub2.style.display = 'none';
-};
-submenu2.onmouseover = function (e) {
-    sub2.style.display = 'block';
-};
-submenu2.onmouseout = function (e) {
-    sub2.style.display = 'none';
-};
+//community drop down and fold up
+$('#drop1').mouseenter(()=>{
+    clearTimeout(tFoldComm);
+    //clearTimeout(tFoldHelp);
+    $('#drop1').css('borderBottomColor','#00c0ff');
+    $('#drop1').children().css('color','#00c0ff');
+    target=$('.sub:eq(0)');
+    subMenuDropDpwn(target);
+})
 
+$('#drop1').mouseleave(()=>{
+    let target=$('.sub:eq(0)');
+    tFoldComm = setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#drop1').css('borderBottomColor','#080a0e');
+        $('#drop1').children().css('color','#f5f5f5');
+    },150);
 
-dropmls.onmouseover = function (e) {
-    subls.style.display = 'block';
-};
-dropmls.onmouseout = function (e) {
-    subls.style.display = 'none';
-};
-submenuls.onmouseover = function (e) {
-    subls.style.display = 'block';
-};
-submenuls.onmouseout = function (e) {
-    subls.style.display = 'none';
-};
+})
 
-// 左侧菜单
-dropmmu.onclick = function (e) {
-    submu.style.display = 'block';
+$('#subCommunity').mouseenter(()=>{
+    clearTimeout(tFoldComm);
+    $('#drop1').css('borderBottomColor','#00c0ff');
+    $('#drop1').children().css('color','#00c0ff');
+    target=$('#subCommunity');
+    subMenuDropDpwn(target);
+})
+
+$('#subCommunity').mouseleave(()=>{
+    let target=$('#subCommunity');
+    t=Date.now();
+    tFoldComm=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#drop1').css('borderBottomColor','#080a0e');
+        $('#drop1').children().css('color','#f5f5f5');
+    },150)
+
+})
+
+//help drop down and fold up
+$('#drop2').mouseenter(()=>{
+    //clearTimeout(tFoldComm);
+    clearTimeout(tFoldHelp);
+    let target=$('.sub:eq(1)');
+    $('#drop2').css('borderBottomColor','#00c0ff');
+    $('#drop2').children().css('color','#00c0ff');
+    subMenuDropDpwn(target);
+})
+
+$('#drop2').mouseleave(()=>{
+    let target= $('.sub:eq(1)');
+    tFoldHelp=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#drop2').css('borderBottomColor','#080a0e');
+        $('#drop2').children().css('color','#f5f5f5');
+    },150);
+
+})
+
+$('#subHelp').mouseenter(()=>{
+    clearTimeout(tFoldHelp);
+    $('#drop2').css('borderBottomColor','#00c0ff');
+    $('#drop2').children().css('color','#00c0ff');
+    let target=$('#subHelp');
+    subMenuDropDpwn(target);
+})
+
+$('#subHelp').mouseleave(()=>{
+    let target=$('#subHelp');
+    tFoldHelp=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#drop2').css('borderBottomColor','#080a0e');
+        $('#drop2').children().css('color','#f5f5f5');
+    },150)
+})
+
+//user page and space route drop down and fold up
+$('.loged').mouseenter(()=>{
+    //clearTimeout(tFoldComm);
+    clearTimeout(tFoldLog);
+    let target=$('#logedSub');
+    subMenuDropDpwn(target);
+})
+
+$('.loged').mouseleave(()=>{
+    let target= $('#logedSub');
+    tFoldLog=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },200);
+
+})
+
+$('#logedSub').mouseenter(()=>{
+    clearTimeout(tFoldLog);
+    let target=$('#logedSub');
+    subMenuDropDpwn(target);
+    console.log('drop')
+})
+
+$('#logedSub').mouseleave(()=>{
+    let target=$('#logedSub');
+    tFoldLog=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },200)
+})
+
+//haif-width log in/sign up drop down and fold up
+$('.login2').mouseenter(()=>{
+    clearTimeout(tFoldls);
+    let target=$('.sub:eq(2)');
+    subMenuDropDpwn(target);
+})
+
+$('.login2').mouseleave(()=>{
+    let target= $('.sub:eq(2)');
+    tFoldls=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },200);
+})
+
+$('#subls').mouseenter(()=>{
+    clearTimeout(tFoldls);
+    let target=$('.sub:eq(2)');
+    subMenuDropDpwn(target);
+})
+
+$('#subls').mouseleave(()=>{
+    let target=$('.sub:eq(2)');
+    tFoldls=setTimeout(()=>{
+        subMenuFoldUp(target);
+        console.log('fold')
+    },200)
+})
+
+//left sub menu drop down and fold up
+$('#dropmu').click((e)=>{
+    clearTimeout(tFoldLmu);
+    let target=$('.sub:eq(3)');
+    let display=target.children('ul').children().css('display');
+    if (display=='none'){
+        target.css('display','block')
+        subMenuDropDpwn(target);
+    }
+
+    else
+        subMenuFoldUp(target);
     if(e.stopPropagation){
         e.stopPropagation();
     }else{
         e.cancelBubble = true;
     }
-};
-submenumu.onmouseover = function (e) {
-    submu.style.display = 'block';
-    // submu.ul.style.margin-top= '3 px';
-};
-submenumu.onmouseout = function (e) {
-    //    setTimeout(function(){
-    var a= getMouseClass(e);
-    // },500);
-    if(a!= 'show')
-        submu.style.display = 'none';
-};
+})
 
+$('section').click(()=>{
+    clearTimeout(tFoldLmu);
+    let target=$('.sub:eq(3)');
+    subMenuFoldUp(target);
+})
 
-leftdropmc.onmouseover =  (e) => {
-    // clearTimeout(timer1);
-    lsubc.style.display = 'block';
-};
-leftdropmc.onmouseout = function (e) {
-    // if(getMouseClass(e)!=subsub)
-    // {
-    lsubc.style.display = 'none';
-    // }
-};
-subleftc.onmouseover = function (e) {
-    lsubc.style.display = 'block';
-};
-subleftc.onmouseout = function (e) {
-    // var timer1=setTimeout(function(){lsubc.style.display = 'none'},1000)
-    lsubc.style.display = 'none';
-    //  submu.style.display = 'none';
-    if(e&&e.stopPropagation){
+//community in left sub menu  drop down and fold up
+$('#leftcommunity').mouseenter(()=>{
+    clearTimeout(tFoldleftC);
+    let target= $('#leftCommunitySub');
+    tFoldleftC=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120);
+})
+
+$('#leftcommunity').mouseleave(()=>{
+    clearTimeout(tDropleftC)
+    let target= $('#leftCommunitySub');
+    tFoldleftC=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },100);
+})
+
+$('#leftCommunitySub').mouseenter(()=>{
+    clearTimeout(tFoldleftC);
+    $('#leftcommunity').children('a').css('color','#00C0FF');
+    let target= $('#leftCommunitySub')
+    tFoldleftC=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120);
+})
+
+$('#leftCommunitySub').mouseleave(()=>{
+    clearTimeout(tDropleftC);
+    let target=$('#leftCommunitySub');
+    tFoldleftC=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#leftcommunity').children('a').css('color','#f5f5f5');
+    },100)
+})
+
+//help in left sub menu  drop down and fold up
+$('#lefthelp').mouseenter(()=>{
+    clearTimeout(tFoldleftH);
+    let target=$('#leftHelpSub');
+    tDropleftC=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120)
+
+})
+
+$('#lefthelp').mouseleave(()=>{
+    clearTimeout(tDropleftH);
+    let target= $('#leftHelpSub');
+    tFoldleftH=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },100);
+})
+
+$('#leftHelpSub').mouseenter(()=>{
+    clearTimeout(tFoldleftH);
+    $('#lefthelp').children('a').css('color','#00c0ff');
+    let target=$('#leftHelpSub');
+    tDropleftC=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120)
+})
+
+$('#leftHelpSub').mouseleave(()=>{
+    clearTimeout(tDropleftH);
+    let target=$('#leftHelpSub');
+    tFoldleftH=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#lefthelp').children('a').css('color','#f5f5f5');
+    },100)
+})
+
+//full sub menu in phone drop down
+$('#dropstrip').click((e)=>{
+    clearTimeout(tFoldLmu);
+    let target=$('#phonesub');
+    let display=target.children('ul').children().css('display');
+
+    if (display=='none'){
+        target.css('display','block');
+        subMenuFoldUp($('#phoneUserSub'));
+        fullSubMenuDropDpwn(target);
+    }
+
+    else{
+        subMenuFoldUp(target);
+        let target2=$('#phoneSubCom');
+        let target3=$('#phoneSubHelp');
+        subMenuFoldUp(target);
+        subMenuFoldUp(target2);
+        subMenuFoldUp(target3);
+        $('#phoneHelp').css('margin-top','0px');
+        $('#aboutUs').css('margin-top','0px');
+    }
+    if(e.stopPropagation){
         e.stopPropagation();
     }else{
         e.cancelBubble = true;
     }
+})
 
-};
+$('#phoneCommunity').click((e)=>{
+    let target=$('#phoneSubCom');
+    let display=target.children('ul').children().css('display');
 
-leftdropmh.onmouseover =  (e) => {
-    // clearTimeout(timer1);
-    lsubh.style.display = 'block';
-};
-leftdropmh.onmouseout = function (e) {
-    // if(getMouseClass(e)!=subsub)
-    // {
-    lsubh.style.display = 'none';
-    // }
-};
-sublefth.onmouseover = function (e) {
-    lsubh.style.display = 'block';
-};
-sublefth.onmouseout = function (e) {
-    // var timer1=setTimeout(function(){lsubc.style.display = 'none'},1000)
-    lsubh.style.display = 'none';
-    //  submu.style.display = 'none';
-    if(e&&e.stopPropagation){
+    if (display=='none'){
+        clearTimeout(timeout1);
+        target.css('display','block')
+        fullSubMenuDropDpwn(target);
+        $('#phoneHelp').animate({marginTop:250},190);
+    }
+
+    else{
+        $('#phoneHelp').css('margin-top','0px');
+        var timeout1=setTimeout(()=>{
+            subMenuFoldUp(target);
+        },175);
+
+
+
+    }
+
+    if(e.stopPropagation){
         e.stopPropagation();
     }else{
         e.cancelBubble = true;
     }
+})
 
-};
+$('#phoneHelp').click((e)=>{
+    let target=$('#phoneSubHelp');
+    let display=target.children('ul').children().css('display');
+
+    if (display=='none'){
+        clearTimeout(timeout2);
+        target.css('display','block')
+        fullSubMenuDropDpwn(target);
+        $('#aboutUs').animate({marginTop:150},115);
+    }
+
+    else{
+        $('#aboutUs').css('margin-top','0px');
+        var timeout2=setTimeout(()=>{
+            subMenuFoldUp(target);
+        },255);
+    }
+    if(e.stopPropagation){
+        e.stopPropagation();
+    }else{
+        e.cancelBubble = true;
+    }
+})
+
+//full user sub menu on phone drop down
+$('#phoneUserDrop').click((e)=>{
+    let target=$('#phoneUserSub');
+    let display=target.children('ul').children().css('display');
+
+    if (display=='none'){
+        target.css('display','block')
+        $('#mainBar').children('ul').css('background-color','#141414')
+        subMenuFoldUp($('#phonesub'));
+        fullSubMenuDropDpwn(target);
+    }
+
+    else{
+        subMenuFoldUp(target);
+        $('.main').css('backGroundColor','#0f0f0f')
+    }
+    if(e.stopPropagation){
+        e.stopPropagation();
+    }else{
+        e.cancelBubble = true;
+    }
+})
+
+//click blank(section) fold full sub menu
+$('section').click(()=>{
+    clearTimeout(tFoldLmu);
+    let target=$('#phonesub');
+    let target2=$('#phoneSubCom');
+    let target3=$('#phoneSubHelp');
+    subMenuFoldUp(target);
+    subMenuFoldUp(target2);
+    subMenuFoldUp(target3);
+    subMenuFoldUp($('#phoneUserSub'));
+    $('#phoneHelp').css('margin-top','0px');
+    $('#aboutUs').css('margin-top','0px');
+})
+// dropm1.onmouseover = function (e) {
+//
+//     sub1.style.display = 'block';
+//     // communityArrow1.style.transform='rotate(315deg)';
+//     // communityArrow1.style.marginTop='10 px';
+// };
+// dropm1.onmouseout = function (e) {
+//     sub1.style.display = 'none';
+//     // communityArrow1.style.transform='rotate(135deg)';
+// };
 
 //用户信息下拉
-userLogedDrop.onmouseover = function (e) {
-    subLoged.style.display = 'block';
-};
-userLogedDrop.onmouseout = function (e) {
-    subLoged.style.display = 'none';
-};
-logedSub.onmouseover = function (e) {
-    subLoged.style.display = 'block';
-};
-logedSub.onmouseout = function (e) {
-    subLoged.style.display = 'none';
-};
+// userLogedDrop.onmouseover = function (e) {
+//     subLoged.style.display = 'block';
+// };
+// userLogedDrop.onmouseout = function (e) {
+//     subLoged.style.display = 'none';
+// };
+// logedSub.onmouseover = function (e) {
+//     subLoged.style.display = 'block';
+// };
+// logedSub.onmouseout = function (e) {
+//     subLoged.style.display = 'none';
+// };
 
 // 这两个函数似乎class.也是可以的
 
-dropstrip.onclick = function (e) {
-    if(fullsub.style.display === 'none')
-    {
-        fullsub.style.display = 'block';
-    }else{
-        fullsub.style.display = 'none';
-    }
-    if(phoneUserSub.style.display==='block')
-    {
-        phoneUserSub.style.display='none';
-    }
-    if(e&&e.stopPropagation){
-        e.stopPropagation();
-    }else{
-        e.cancelBubble = true;
-    }
-};
-
-phoneUserDrop.onclick = function (e) {
-    if(phoneUserSub.style.display === 'none')
-    {
-        phoneUserSub.style.display = 'block';
-    }else{
-        phoneUserSub.style.display = 'none';
-    }
-    if(fullsub.style.display==='block')
-    {
-        fullsub.style.display='none';
-    }
-    if(e&&e.stopPropagation){
-        e.stopPropagation();
-    }else{
-        e.cancelBubble = true;
-    }
-};
+// dropstrip.onclick = function (e) {
+//     if(fullsub.style.display === 'none')
+//     {
+//         fullsub.style.display = 'block';
+//     }else{
+//         fullsub.style.display = 'none';
+//     }
+//     if(phoneUserSub.style.display==='block')
+//     {
+//         phoneUserSub.style.display='none';
+//     }
+//     if(e&&e.stopPropagation){
+//         e.stopPropagation();
+//     }else{
+//         e.cancelBubble = true;
+//     }
+// };
+//
+// phoneUserDrop.onclick = function (e) {
+//     if(phoneUserSub.style.display === 'none')
+//     {
+//         phoneUserSub.style.display = 'block';
+//     }else{
+//         phoneUserSub.style.display = 'none';
+//     }
+//     if(fullsub.style.display==='block')
+//     {
+//         fullsub.style.display='none';
+//     }
+//     if(e&&e.stopPropagation){
+//         e.stopPropagation();
+//     }else{
+//         e.cancelBubble = true;
+//     }
+// };
 
 
 // phoneDropCom.onclick = function (e) {
@@ -249,11 +541,6 @@ phoneUserDrop.onclick = function (e) {
 // };
 //
 // 点击空白，菜单收回
-document.onclick = function (e) {
-    submu.style.display = 'none';
-    // fullsub.style.display = 'none';
-    console.log(windowWidth);
-};
 
 var windowWidth;
 window.onresize= ()=> {
