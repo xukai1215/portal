@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,6 +33,15 @@ public class ArticleService {
 
     @Autowired
     UserService userService;
+
+    public Boolean findExisted(String titleName){
+        List<Article> allArticles = articleDao.findAll();
+        for (int i=0;i<allArticles.size();i++){
+            if (titleName.equals(allArticles.get(i).getTitle()))
+                return true;
+        }
+        return false;
+    }
 
     public JSONObject findNewestArticle(ArticleFindDTO articleFindDTO ,String oid ){
         int page=articleFindDTO.getPage();
@@ -58,8 +68,6 @@ public class ArticleService {
         String sortElement=articleFindDTO.getSortElement();
         Boolean asc = articleFindDTO.getAsc();
 
-
-//        根据创建时间排序
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(userName,pageable);
@@ -67,7 +75,7 @@ public class ArticleService {
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
 
-        System.out.println(result);
+//        System.out.println(result);
         return result;
 
     }
@@ -79,28 +87,53 @@ public class ArticleService {
         Boolean asc = articleFindDTO.getAsc();
         String title= articleFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.ASC,sortElement);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ArticleResultDTO> articleResultDTOPage=articleDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
 
         JSONObject result=new JSONObject();
         result.put("list",articleResultDTOPage.getContent());
         result.put("total",articleResultDTOPage.getTotalElements());
+        System.out.println(result);
         return result;
 
     }
 
-    public Article addNewArticle(ArticleAddDTO articleAddDTO, String contributor){
-        Article article=new Article();
-        BeanUtils.copyProperties(articleAddDTO,article);
-        Date now=new Date();
-        article.setCreatDate(now);
-        article.setContributor(contributor);
-        article.setOid(UUID.randomUUID().toString());
+    public JSONObject searchByTitleByOid(ArticleFindDTO articleFindDTO,String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=articleFindDTO.getPage();
+        int pageSize = articleFindDTO.getPageSize();
+        String sortElement=articleFindDTO.getSortElement();
+        Boolean asc = articleFindDTO.getAsc();
+        String title= articleFindDTO.getSearchText();
 
-        System.out.println("add");
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ArticleResultDTO> articleResultDTOPage=articleDao.findByTitleContainsIgnoreCaseAndContributor(title,userName,pageable);
 
-        return articleDao.insert(article);
+        JSONObject result=new JSONObject();
+        result.put("list",articleResultDTOPage.getContent());
+        result.put("total",articleResultDTOPage.getTotalElements());
+        System.out.println(result);
+        return result;
+
+    }
+
+    public int addNewArticle(ArticleAddDTO articleAddDTO, String contributor){
+        if (findExisted(articleAddDTO.getTitle()))
+            return 2;
+        else{
+            Article article=new Article();
+            BeanUtils.copyProperties(articleAddDTO,article);
+            Date now=new Date();
+            article.setCreatDate(now);
+            article.setContributor(contributor);
+            article.setOid(UUID.randomUUID().toString());
+            articleDao.insert(article);
+
+            return 1;
+        }
+
 
     }
 
@@ -124,7 +157,8 @@ public class ArticleService {
         Article article=articleDao.findFirstByOid(oid);
         if(article!=null){
             articleDao.deleteArticleByOid(oid);
-            userService.modelItemMinusMinus(userName);
+            userService.articleMinusMinus(userName);
+//            System.out.println("'delete success");
             return 1;
         }
         else
@@ -141,7 +175,7 @@ public class ArticleService {
         Boolean asc = articleFindDTO.getAsc();
 
 //        根据访问数量排序
-        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, articleFindDTO.getSortElement());
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         User user=userDao.findFirstByOid(oid);
         Page<ArticleResultDTO> articleResultPage=articleDao.findByContributor(user.getUserName(),pageable);
@@ -150,6 +184,7 @@ public class ArticleService {
         result.put("list",articleResultPage.getContent());
         result.put("total", articleResultPage.getTotalElements());
 
+//        System.out.println("articleService");
         return result;
     }
 }

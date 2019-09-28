@@ -110,6 +110,15 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO));
     }
 
+
+    @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
+    JsonResult searchByTitle(DataItemFindDTO modelItemFindDTO, String oid){
+        return ResultUtils.success(dataItemService.searchByTitleByOid(modelItemFindDTO,oid));
+    }
+
+
+
+
     /**
      * dataItems页面，分页和分类的唯一标识
      * @param categorysId

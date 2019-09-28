@@ -8,7 +8,7 @@ import java.util.Date;
 public class AwardandHonorResultDTO {
     String oid;
     String name;
-    String awardTime;
+    Date awardTime;
     //    String type;
     String awardAgency;
     Date creatDate;

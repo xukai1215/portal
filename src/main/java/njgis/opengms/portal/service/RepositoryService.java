@@ -3,8 +3,23 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.Concept.ConceptAddDTO;
+import njgis.opengms.portal.dto.Concept.ConceptFindDTO;
+import njgis.opengms.portal.dto.Concept.ConceptResultDTO;
+import njgis.opengms.portal.dto.Concept.ConceptUpdateDTO;
 import njgis.opengms.portal.dto.RepositoryQueryDTO;
-import njgis.opengms.portal.dto.community.*;
+import njgis.opengms.portal.dto.Spatial.SpatialAddDTO;
+import njgis.opengms.portal.dto.Spatial.SpatialFindDTO;
+import njgis.opengms.portal.dto.Spatial.SpatialResultDTO;
+import njgis.opengms.portal.dto.Spatial.SpatialUpdateDTO;
+import njgis.opengms.portal.dto.Template.TemplateAddDTO;
+import njgis.opengms.portal.dto.Template.TemplateFindDTO;
+import njgis.opengms.portal.dto.Template.TemplateResultDTO;
+import njgis.opengms.portal.dto.Template.TemplateUpdateDTO;
+import njgis.opengms.portal.dto.Unit.UnitAddDTO;
+import njgis.opengms.portal.dto.Unit.UnitFindDTO;
+import njgis.opengms.portal.dto.Unit.UnitResultDTO;
+import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -25,6 +40,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+
 
 @Service
 public class RepositoryService {
@@ -258,6 +275,25 @@ public class RepositoryService {
         Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<ConceptResultDTO> concepts = conceptDao.findByAuthor(userId, pageable);
+
+        JSONObject ConceptObject = new JSONObject();
+        ConceptObject.put("count", concepts.getTotalElements());
+        ConceptObject.put("concepts", concepts.getContent());
+        return ConceptObject;
+
+    }
+
+    public JSONObject getConceptsByUserId(String userId, ConceptFindDTO conceptFindDTO) {
+        boolean asc=conceptFindDTO.getAsc();
+        String sortElement=conceptFindDTO.getSortElement();
+        int page=conceptFindDTO.getPage();
+        int pageSize=conceptFindDTO.getPageSize();
+
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<ConceptResultDTO> concepts = conceptDao.findByAuthor(userId, pageable);
 
@@ -582,6 +618,26 @@ public class RepositoryService {
 
     }
 
+    public JSONObject getSpatialsByUserId(String userId, SpatialFindDTO spatialFIndDTO) {
+        boolean asc=spatialFIndDTO.getAsc();
+        String sortElement=spatialFIndDTO.getSortElement();
+        int page=spatialFIndDTO.getPage();
+        int pageSize=spatialFIndDTO.getPageSize();
+
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<SpatialResultDTO> spatials = spatialReferenceDao.findByAuthor(userId, pageable);
+
+        JSONObject SpatialObject = new JSONObject();
+        SpatialObject.put("count", spatials.getTotalElements());
+        SpatialObject.put("spatials", spatials.getContent());
+
+        return SpatialObject;
+
+    }
+
     public JSONObject searchSpatialsByUserId(String searchText, String userId, int page, String sortType, int asc) {
 
         Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
@@ -831,6 +887,26 @@ public class RepositoryService {
         Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<TemplateResultDTO> templates = templateDao.findByAuthor(userId, pageable);
+
+        JSONObject TemplateObject = new JSONObject();
+        TemplateObject.put("count", templates.getTotalElements());
+        TemplateObject.put("templates", templates.getContent());
+
+        return TemplateObject;
+
+    }
+
+    public JSONObject getTemplatesByUserId(String userId, TemplateFindDTO templateFindDTO) {
+        boolean asc=templateFindDTO.getAsc();
+        String sortElement=templateFindDTO.getSortElement();
+        int page=templateFindDTO.getPage();
+        int pageSize=templateFindDTO.getPageSize();
+
+        Sort sort = new Sort(asc  ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<TemplateResultDTO> templates = templateDao.findByAuthor(userId, pageable);
 
@@ -1119,6 +1195,26 @@ public class RepositoryService {
         Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
 
         Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<UnitResultDTO> units = unitDao.findByAuthor(userId, pageable);
+
+        JSONObject UnitObject = new JSONObject();
+        UnitObject.put("count", units.getTotalElements());
+        UnitObject.put("units", units.getContent());
+
+        return UnitObject;
+
+    }
+
+    public JSONObject getUnitsByUserId(String userId, UnitFindDTO unitFindDTO) {
+        boolean asc=unitFindDTO.getAsc();
+        String sortElement=unitFindDTO.getSortElement();
+        int page=unitFindDTO.getPage();
+        int pageSize=unitFindDTO.getPageSize();
+
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<UnitResultDTO> units = unitDao.findByAuthor(userId, pageable);
 

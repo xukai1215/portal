@@ -24,6 +24,11 @@ public class LabRestController {
         return ResultUtils.success(result);
     }
 
+//    JsonResult addByLabName(UserLabDTO String userName){
+//        JSONObject result=labService.addByLabName(labName,userName);
+//        return ResultUtils.success(result);
+//    }
+
 
 
 }

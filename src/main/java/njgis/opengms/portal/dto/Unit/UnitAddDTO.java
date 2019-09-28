@@ -1,12 +1,13 @@
-package njgis.opengms.portal.dto.community;
+package njgis.opengms.portal.dto.Unit;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
+
 /**
- * @ClassName TemplateResultDTO
+ * @ClassName UnitAddDTO
  * @Description todo
  * @Author ZHSH
  * @Date 2019/7/29
@@ -17,14 +18,11 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TemplateResultDTO {
-    String oid;
+public class UnitAddDTO {
     String name;
-    String image;
     String description;
-    String author;
-    String detail;
-    Date createTime;
+    List<String> classifications;
 
-    int viewCount=0;
+    String uploadImage;
+    String detail;
 }

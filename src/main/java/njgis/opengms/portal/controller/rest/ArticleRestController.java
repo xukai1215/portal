@@ -25,6 +25,7 @@ public class ArticleRestController {
 
     @RequestMapping(value="/searchByTitle",method=RequestMethod.GET)
     JsonResult searchByTitle(ArticleFindDTO articleFindDTO, HttpServletRequest request){
+        System.out.println("/searchArticle"+articleFindDTO);
         HttpSession session=request.getSession();
         String userName=session.getAttribute("uid").toString();
 
@@ -33,6 +34,11 @@ public class ArticleRestController {
         }
 
         return ResultUtils.success(articleService.searchByTitle(articleFindDTO,userName));
+    }
+
+    @RequestMapping(value="/searchByTitleByOid",method=RequestMethod.GET)
+    JsonResult searchByTitle(ArticleFindDTO articleFindDTO, String oid){
+        return ResultUtils.success(articleService.searchByTitleByOid(articleFindDTO,oid));
     }
 
 //    @RequestParam(value="pageSize") int pageSize,
@@ -62,8 +68,8 @@ public class ArticleRestController {
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        Article article=articleService.addNewArticle(articleAddDTO,userName);
-        return ResultUtils.success(article.getOid());
+        int index=articleService.addNewArticle(articleAddDTO,userName);
+        return ResultUtils.success(index);
     }
 
     @RequestMapping(value="/editByOid",method=RequestMethod.POST)
@@ -75,13 +81,18 @@ public class ArticleRestController {
     }
 
     @RequestMapping(value="/deleteByOid",method=RequestMethod.POST)
-    public JsonResult deleteByOid(String oid,HttpServletRequest request){
+    public JsonResult deleteByOid(@RequestParam(value="oid") String oid, HttpServletRequest request){
+
         HttpSession session=request.getSession();
         String userName=session.getAttribute("uid").toString();
+
+        System.out.println("/deleteByOid"+oid+userName);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }else{
-            return ResultUtils.success(articleService.deleteByOid(oid,userName));
+            JsonResult result= ResultUtils.success(articleService.deleteByOid(oid,userName));
+            System.out.println(result);
+            return result;
         }
     }
 

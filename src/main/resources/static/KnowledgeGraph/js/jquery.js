@@ -10056,7 +10056,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 			// Set the base href for the created document
 			// so any parsed elements with URLs
 			// are based on the document's URL (gh-2965)
-			base = context.createElement( "base" );
+			base = context.createElement( "static.css.other.base" );
 			base.href = document.location.href;
 			context.head.appendChild( base );
 		} else {

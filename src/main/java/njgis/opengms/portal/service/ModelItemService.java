@@ -820,6 +820,7 @@ public class ModelItemService {
         result.put("list",modelItemPage.getContent());
         result.put("total", modelItemPage.getTotalElements());
 
+//        System.out.println(result);
         return result;
     }
 
@@ -1164,6 +1165,26 @@ public class ModelItemService {
         modelItemObject.put("modelItems",modelItems.getContent());
 
         return modelItemObject;
+
+    }
+
+    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String sortElement=modelItemFindDTO.getSortElement();
+        Boolean asc = modelItemFindDTO.getAsc();
+        String name= modelItemFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ModelItemResultDTO> modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",modelItemResultDTOPage.getContent());
+        result.put("total",modelItemResultDTOPage.getTotalElements());
+//        System.out.println(result);
+        return result;
 
     }
 

@@ -3,7 +3,8 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dto.ConceptualModelResultDTO;
+import njgis.opengms.portal.dto.ConceptualModel.ConceptualModelFindDTO;
+import njgis.opengms.portal.dto.ConceptualModel.ConceptualModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.ConceptualModel;
 import njgis.opengms.portal.entity.ModelItem;
@@ -136,6 +137,12 @@ public class ConceptualModelRestController {
         JSONObject result=conceptualModelService.searchConceptualModelsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
+    JsonResult searchByTitle(ConceptualModelFindDTO conceptualModelFindDTO, String oid){
+        System.out.println("222000");
+        return ResultUtils.success(conceptualModelService.searchByTitleByOid(conceptualModelFindDTO,oid));
     }
 
     @RequestMapping (value="/getConceptualModelsByUserId",method = RequestMethod.GET)

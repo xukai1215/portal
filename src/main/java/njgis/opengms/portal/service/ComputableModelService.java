@@ -7,6 +7,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
@@ -1044,6 +1046,26 @@ public class ComputableModelService {
         computableModelObject.put("computableModels", computableModels.getContent());
 
         return computableModelObject.toString();
+
+    }
+
+
+    public JSONObject searchByTitleByOid(ComputableModelFindDTO computableModelFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=computableModelFindDTO.getPage();
+        int pageSize = computableModelFindDTO.getPageSize();
+        String sortElement=computableModelFindDTO.getSortElement();
+        Boolean asc = computableModelFindDTO.getAsc();
+        String name= computableModelFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ComputableModelResultDTO> computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",computableModelResultDTOPage.getContent());
+        result.put("total",computableModelResultDTOPage.getTotalElements());
+        return result;
 
     }
 

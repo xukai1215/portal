@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -171,9 +172,15 @@ public class PortalApplicationTests {
             }
 
             if(user.getLab()==null){
-
                 UserLab userLab=new UserLab();
                 user.setLab(userLab);
+                userDao.save(user);
+                Utils.count();
+            }
+
+            if(user.getUpdateTime()==null){
+                Date updateTime=user.getCreateTime();
+                user.setUpdateTime(updateTime);
                 userDao.save(user);
                 Utils.count();
             }

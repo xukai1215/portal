@@ -6,6 +6,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.ConceptualModel.ConceptualModelFindDTO;
+import njgis.opengms.portal.dto.ConceptualModel.ConceptualModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
@@ -590,6 +592,27 @@ public class ConceptualModelService {
         return modelItemObject;
 
     }
+
+    public JSONObject searchByTitleByOid(ConceptualModelFindDTO conceptualModelFindDTO, String oid){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=conceptualModelFindDTO.getPage();
+        int pageSize = conceptualModelFindDTO.getPageSize();
+        String sortElement=conceptualModelFindDTO.getSortElement();
+        Boolean asc = conceptualModelFindDTO.getAsc();
+        String title= conceptualModelFindDTO.getSearchText();
+
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
+        Page<ConceptualModelResultDTO> articleResultDTOPage=conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthor(title,userName,pageable);
+
+        JSONObject result=new JSONObject();
+        result.put("list",articleResultDTOPage.getContent());
+        result.put("total",articleResultDTOPage.getTotalElements());
+        System.out.println(result);
+        return result;
+
+    }
+
 
     String getConn(String str) {
         String conn = "";

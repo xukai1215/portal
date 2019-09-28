@@ -3,7 +3,8 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dto.LogicalModelResultDTO;
+import njgis.opengms.portal.dto.LogicalModel.LogicalModelFindDTO;
+import njgis.opengms.portal.dto.LogicalModel.LogicalModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.LogicalModel;
 import njgis.opengms.portal.entity.ModelItem;
@@ -157,6 +158,12 @@ public class LogicalModelRestController {
         JSONObject result=logicalModelService.searchLogicalModelsByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
+    JsonResult searchByTitle(LogicalModelFindDTO logicalModelFindDTO, String oid){
+        System.out.println("/searchModelByOid");
+        return ResultUtils.success(logicalModelService.searchByTitleByOid(logicalModelFindDTO,oid));
     }
 
     @RequestMapping (value="/add",method = RequestMethod.POST)

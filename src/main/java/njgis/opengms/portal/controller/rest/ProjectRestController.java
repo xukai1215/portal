@@ -45,6 +45,12 @@ public class ProjectRestController {
         return ResultUtils.success(projectService.searchByTitle(projectFindDTO,userName));
     }
 
+
+    @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
+    JsonResult searchByTitle(ProjectFindDTO projectFindDTO, String oid){
+        return ResultUtils.success(projectService.searchByTitleByOid(projectFindDTO,oid));
+    }
+
     @RequestMapping(value="/listByUserOid",method = RequestMethod.GET)
     JsonResult listByUserOid(ProjectFindDTO projectFindDTO, @RequestParam(value="oid")String oid){
         return ResultUtils.success(projectService.listByUserOid(projectFindDTO,oid));
@@ -58,8 +64,8 @@ public class ProjectRestController {
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        Project project=projectService.addNewProject(projectAddDTO,userName);
-        return ResultUtils.success(project.getOid());
+        int index=projectService.addNewProject(projectAddDTO,userName);
+        return ResultUtils.success(index);
     }
 
     @RequestMapping(value="/editByOid",method=RequestMethod.POST)

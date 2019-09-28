@@ -426,9 +426,11 @@ new Vue({
 
                     break;
             }
+            console.log(data)
             this.Query(data, this.queryType);
         },
         Query(data, type) {
+            console.log(data)
             let sendDate = (new Date()).getTime();
             $.ajax({
                 type: "POST",

@@ -1,6 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
+<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
 <body>
 <div th:fragment="unlog">
     <style>
@@ -74,11 +74,11 @@
                     <li><a class="login" href="/user/register">Sign Up</a></li>
                 </div>
                 <div class="login2">
-                    <li id="dropls"><a class="login2" style="cursor:pointer">L/S</a></li>
+                    <li id="dropls"><a style="cursor:pointer"><p style="font-size: 13px">Log in</p><div class="innerBorder"></div><p style="font-size: 13px">Sign up</p></a></li>
                 </div>
                 <div class="loged" >
                     <li id="userLoged" style="float: right">
-                        <a class="" href="/user/userSpace">
+                        <a class="" >
                             <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
                             <div id="userName" style="display: inline-block">Hello!!!!!!!!!</div>
                         </a>
@@ -128,8 +128,8 @@
 <!--        大屏幕-->
         <div class="subLog zmax" id="logedSub" style="right: 0px">
             <ul>
-                <li><a id="userSpaceDir" href="/user/userSpace">User Space</a></li>
-                <li><a id="userPageDir" href="">User Page</a></li>
+                <li><a id="userSpaceDir" href="/user/userSpace">My Space</a></li>
+                <li><a id="userPageDir" href="">My Page</a></li>
                 <li><a href="/user/out">Log Out</a></li>
                 <!--                        <li><a href="">Thematic Center</a></li>-->
             </ul>
@@ -138,8 +138,8 @@
         <div id="phoneUserSub" class="fullSub" style="display: none">
             <ul>
                 <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;"></span></p></li>
-                <li><a href="/user/userSpace">User Space</a></li>
-                <li><a id="phoneUserPageDir" href="">User Page</a></li>
+                <li><a href="/user/userSpace">My Space</a></li>
+                <li><a id="phoneUserPageDir" href="">My Page</a></li>
                 <li style="background-color: rgb(0,192,255)"><a href="/user/out">Log Out</a></li>
                 <!--                        <li><a href="">Thematic Center</a></li>-->
             </ul>
@@ -191,25 +191,30 @@
                 <li><a href="/modelItem/repository">Model</a></li>
                 <li><a href="/dataItem/repository">Data</a></li>
                 <li id="phoneCommunity"><a type="button" data-toggle="collapse" data-target="#phoneSubCom" style="cursor: pointer">Community <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
-                <div id="phoneSubCom" class="phoneSubSUb collapse" >
-                    <li><a href="/repository/concept">Concept & Semantic</a></li>
-                    <li><a href="/repository/spatialReference">Spatial Reference</a></li>
-                    <li><a href="/repository/template">Data Template</a></li>
-                    <li><a href="/repository/unit">Unit & Metric</a></li>
-                    <li><a href="/repository/thematic">Thematic Center</a></li>
-                </div>
+                <div id="phoneSubCom" class="phoneSubSUb" >
+                    <ul>
+                        <li><a href="/repository/concept">Concept & Semantic</a></li>
+                        <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                        <li><a href="/repository/template">Data Template</a></li>
+                        <li><a href="/repository/unit">Unit & Metric</a></li>
+                        <li><a href="/repository/thematic">Thematic Center</a></li>
+                    </ul>
+                    </div>
                 <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" style="cursor: pointer">Help <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
-                <div id="phoneSubHelp" class="phoneSubSUb collapse">
-                    <li><a href="/help/demo" class="subsub">Demo</a></li>
-                    <li><a href="/help/manual">Manual</a></li>
-                    <li><a href="/help/document">Document</a></li>
+                <div id="phoneSubHelp" class="phoneSubSUb">
+                    <ul>
+                        <li><a href="/help/demo" class="subsub">Demo</a></li>
+                        <li><a href="/help/manual">Manual</a></li>
+                        <li><a href="/help/document">Document</a></li>
+                    </ul>
                 </div>
-                <li><a href="http://opengmsteam.com/">About us</a></li>
-                <li id="phoneLogin" style="background-color: rgb(0,192,255)">
-<!--                    <a href="" style="padding: 0px">-->
-                    <button style="float: left;width: 50%;height:50px; background-color: rgb(0,192,255);border-width: 0;color: white" onclick="window.location.href = '/user/login'">Log In</button><button style="float: left;width: 50%;height:50px; background-color: rgb(0,192,255);border-width: 0;color: white" onclick="window.location.href = '/user/regiester'">Sigh Up</button>
-<!--                </a>-->
-                </li>
+                <li id="aboutUs"><a href="http://opengmsteam.com/">About us</a></li>
+                <div id="phoneLogin">
+<!--                        <a href="" style="padding: 0px">-->
+                    <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/login">Log In</a></li>
+                    <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/register">Sigh Up</a></li>
+<!--                    </a>-->
+                </div>
             </ul>
         </div>
 
@@ -258,4 +263,6 @@
 
 </div>
 </body>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+</script> <script src="/static/js/common/navbar.js"></script>
 </html>

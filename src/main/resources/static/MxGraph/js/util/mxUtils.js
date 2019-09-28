@@ -3798,7 +3798,7 @@ var mxUtils =
 		{
 			var html = '<html><head>';
 
-			var base = document.getElementsByTagName('base');
+			var base = document.getElementsByTagName('static.css.other.base');
 			
 			for (var i = 0; i < base.length; i++)
 			{
@@ -3834,7 +3834,7 @@ var mxUtils =
 		{
 			doc.writeln('<html><head>');
 			
-			var base = document.getElementsByTagName('base');
+			var base = document.getElementsByTagName('static.css.other.base');
 			
 			for (var i = 0; i < base.length; i++)
 			{

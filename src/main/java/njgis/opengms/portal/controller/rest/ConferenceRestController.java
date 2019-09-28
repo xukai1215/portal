@@ -37,6 +37,11 @@ public class ConferenceRestController {
         return ResultUtils.success(conferenceService.searchByTitle(conferenceFindDTO,userName));
     }
 
+    @RequestMapping(value="/searchByTitleByOid",method=RequestMethod.GET)
+    JsonResult searchByTitle(ConferenceFindDTO conferenceFindDTO, String oid){
+         return ResultUtils.success(conferenceService.searchByTitleByOid(conferenceFindDTO,oid));
+    }
+
     @RequestMapping(value = "/getByUserOidBySort",method = RequestMethod.GET)
     JsonResult getByUserOidBySort(ConferenceFindDTO conferenceFindDTO, HttpServletRequest request){
 //        ArticleFindDTO articleFindDTO=new ArticleFindDTO();
@@ -54,22 +59,22 @@ public class ConferenceRestController {
 
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public JsonResult addNewArticle(@RequestBody ConferenceAddDTO conferenceAddDTO, HttpServletRequest httpServletRequest){
-        System.out.println(conferenceAddDTO);
+//        System.out.println(conferenceAddDTO);
         HttpSession session=httpServletRequest.getSession();
         String userName=session.getAttribute("uid").toString();
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        Conference conference=conferenceService.addNewconference(conferenceAddDTO,userName);
-        System.out.println("/addConference");
-        return ResultUtils.success(conference.getOid());
+        int index=conferenceService.addNewconference(conferenceAddDTO,userName);
+//        System.out.println("/addConference");
+        return ResultUtils.success(index);
     }
 
     @RequestMapping(value="/editByOid",method=RequestMethod.POST)
     public JsonResult editArticle(@RequestBody ConferenceAddDTO conferenceAddDTO){
         String oid=conferenceAddDTO.getOid();
         Conference conference=conferenceService.editConference(conferenceAddDTO,oid);
-        System.out.println("editConfer");
+//        System.out.println("editConfer");
         return ResultUtils.success(conference.getOid());
 
     }

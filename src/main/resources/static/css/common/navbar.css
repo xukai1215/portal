@@ -42,6 +42,7 @@
 .main{
     font-family: sans-serif;
     font-size:14px;
+    transition: .5s;
     /*font-weight: 600;*/
 }
 
@@ -92,7 +93,8 @@
 }
 
 .sub{
-    display: none;
+
+    height: 0;
     position: absolute;
     top: 62px;
     transition: .5s;
@@ -103,6 +105,7 @@
 }
 
 .sub>ul{
+    width: 200px;
     background-color: rgba(0, 0, 0, 0.85) !important;
     margin-top: 2.5px !important;
     box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.5) ;
@@ -110,7 +113,7 @@
 }
 
 .sub li{
-    display: block;
+    display: none;
     width: 200px;
     height: 45px;
     transition:.5s;
@@ -132,19 +135,21 @@
 }
 
 .subLog{
-    display: none;
+    /*display: none;*/
+    height: 0;
     position: absolute;
     top: 62px;
 }
 
 .subLog>ul{
+    width: 150px;
     background-color: rgba(0, 0,0, 0.87) !important;
     margin-top: 2px !important;
     box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.4) ;
 }
 
 .subLog li{
-    display: block;
+    display: none;
     width: 150px;
     height: 50px;
     transition:.5s;
@@ -161,6 +166,12 @@
     text-decoration: none;
     overflow: hidden;
     transition:.5s;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+#subls li{
+    width: 115px;
 }
 
 .zmax{
@@ -188,15 +199,16 @@
 }
 
 .fullSub{
+    height: 0;
     position: relative;
     width:100%;
 }
 
 .fullSub li{
-    display: block;
+    display: none;
     width: 100%;
     height: 50px;
-    transition:.5s;
+    transition:.4s;
     background-color: rgba(0,0,0,1);
 }
 
@@ -209,9 +221,16 @@
     text-decoration: none;
     overflow: hidden;
     transition:.5s;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.phoneSubSUb{
+    height: 0;
 }
 
 .phoneSubSUb li{
+    display: none;
     background-color: rgba(0,0,0,0.92);
 }
 
@@ -262,7 +281,7 @@
     width: 64px;
     height: 62px;
     margin-top: 0;
-    background-color: rgb(0,192,255);
+    background-color: #00abff;
     border-bottom:3px solid;
     border-bottom-color:rgb(0,192,255)
 }
@@ -270,7 +289,6 @@
     display: block;
     color: whitesmoke;
     text-align: center;
-    margin-top: 10px;
     padding:16px 2px;
     text-decoration: none;
     overflow: hidden;
@@ -311,6 +329,14 @@
     float: right;
     margin-right: 10px;
 }
+
+.innerBorder{
+    align-self: center;
+    width: 95.5%;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+
 /*设置悬停样式，除了命名为.login组件*/
 .main li:hover:not(.mainBarLogo){
     border-bottom-color: rgb(0,192,255);
@@ -359,6 +385,31 @@
 
 .phoneLoged{
     display:none;
+}
+
+#phoneLogin{
+    height: 0px;
+    width: 100%;
+    display: block;
+    position: absolute;
+    overflow: hidden;
+    background-color: #000000;
+}
+
+#phoneLogin>li{
+    display: block;
+    width: 100%;
+    transition: .4s;
+    background-color: rgba(0,0,0,1);
+}
+
+#phoneLogin>li:hover #phoneLogin a{
+    color: whitesmoke !important;
+}
+
+#phoneLogin>li a{
+    color: whitesmoke !important;
+
 }
 
 /* .fullsub a:hover{
@@ -455,6 +506,9 @@
 
     }
 
+    #mainBar ul {
+        background-color: #0f0f0f;
+    }
     /*.loged{*/
     /*    display: none;*/
     /*}*/
@@ -462,6 +516,8 @@
     /*.phoneLoged{*/
     /*    display: block;*/
     /*}*/
+
+
 }
 
 .clickBlue{

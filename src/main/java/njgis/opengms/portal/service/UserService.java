@@ -3,9 +3,12 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.dto.UserAddDTO;
-import njgis.opengms.portal.dto.UserUpdateDTO;
+import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.Affiliation;
+import njgis.opengms.portal.entity.support.AwardandHonor;
+import njgis.opengms.portal.entity.support.EducationExperience;
+import njgis.opengms.portal.entity.support.UserLab;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -188,7 +191,7 @@ public class UserService {
         user.setUnits(--count);
         userDao.save(user);
     }
-    public void articleItemMinusMinus(String userName){
+    public void articleMinusMinus(String userName){
         User user = userDao.findFirstByUserName(userName);
         int count=user.getArticlesCount();
         user.setArticlesCount(--count);
@@ -347,13 +350,19 @@ public class UserService {
         userInfo.put("organizations",user.getOrganizations());
         userInfo.put("subjectAreas",user.getSubjectAreas());
         userInfo.put("name",user.getName());
+        userInfo.put("userName",user.getUserName());
         userInfo.put("email",user.getEmail());
         userInfo.put("phone",user.getPhone());
+        userInfo.put("weChat",user.getWeChat());
+        userInfo.put("faceBook",user.getFaceBook());
+        userInfo.put("personPage",user.getPersonPage());
         userInfo.put("wiki",user.getWiki());
         userInfo.put("description",user.getDescription());
         userInfo.put("researchInterests",user.getResearchInterests());
         userInfo.put("lab",user.getLab());
         userInfo.put("affiliation",user.getAffiliation());
+        userInfo.put("eduExperiences",user.getEducationExperiences());
+        userInfo.put("awdHonors",user.getAwardsHonors());
         userInfo.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
 
         return userInfo;
@@ -409,8 +418,125 @@ public class UserService {
         }catch (Exception e){
             return "fail";
         }
-
     }
+
+
+    public String updateAffiliation(AffiliationDTO affiliationDTO, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                Affiliation affiliation=new Affiliation();
+                BeanUtils.copyProperties(affiliationDTO,affiliation);
+                user.setAffiliation(affiliation);
+                Date now=new Date();
+                user.setUpdateTime(now);
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    public String updateLab(UserLabDTO userLabDTO, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                UserLab userLab=new UserLab();
+                BeanUtils.copyProperties(userLabDTO,userLab);
+                user.setLab(userLab);
+                Date now=new Date();
+                user.setUpdateTime(now);
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    public String updateSubjectAreas(List<String> subjectAreas,String userName){
+        try{
+            User user=userDao.findFirstByUserName(userName);
+            if(user!=null){
+                user.setSubjectAreas(subjectAreas);
+//                System.out.println(user.getResearchInterests());
+                userDao.save(user);
+                return "success";
+            }
+            else
+                return "no user";
+
+        }catch (Exception e){
+            return "fail";
+        }
+    }
+
+    public String updateEduExperience(EducationExperienceDTO educationExperienceDTO, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                EducationExperience educationExperience=new EducationExperience();
+                BeanUtils.copyProperties(educationExperienceDTO,educationExperience);
+                List<EducationExperience> educationExperienceList=user.getEducationExperiences();
+                educationExperienceList.add(educationExperience);
+                user.setEducationExperiences(educationExperienceList);
+                Date now=new Date();
+                user.setUpdateTime(now);
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    public String updateAwdHonor(AwdHonorDTO awdHonorDTO, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                AwardandHonor awardandHonor=new AwardandHonor();
+                BeanUtils.copyProperties(awdHonorDTO,awardandHonor);
+                List<AwardandHonor> awardandHonorList=user.getAwardsHonors();
+                awardandHonorList.add(awardandHonor);
+                user.setAwardsHonors(awardandHonorList);
+                Date now=new Date();
+                user.setUpdateTime(now);
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    public String updateContact(ContactDTO contactDTO, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                user.setPhone(contactDTO.getPhone());
+                user.setEmail(contactDTO.getEmail());
+                user.setFaceBook(contactDTO.getFaceBook());
+                user.setWeChat(contactDTO.getWeChat());
+                user.setPersonPage(contactDTO.getPersonPage());
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
 
 
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .arrowDownerBig{
+
+            position: absolute;
+            margin-left:500px;
+            margin-top: 500px;
+            margin-bottom:6px ;
+            border-top: 2px solid #999999;
+            border-right: 2px solid #999999;
+            width: 50px;
+            height: 50px;
+            color: #555555;
+            transform: rotate(135deg);
+            cursor: pointer;
+            z-index: 5;
+            background-color: #bfffff;
+            transition-delay: .5s;
+        }
+
+        .arrowDownerBig:hover{
+            transform: rotate(315deg);
+            transform-origin: 75% 25%;
+            transition-delay: 1s;
+        }
+
+        .backPic{
+            width: 100%;
+            height: 1000px;
+            background-image: url("/static/img/carousels/example6_press.jpeg");
+            background-color: transparent;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+
+        #text:hover{
+            transform:translateZ(200px);
+        }
+    </style>
+</head>
+<body>
+<div class="backPic">
+    <div id="text">
+        <h2>AAA</h2>
+    </div>
+
+
+</div>
+
+</body>
+<script src="../static/js/common/jquery-3.3.1.min.js"></script>
+<script src="../static/js/common/vue.min.js"></script>
+
+</html>
