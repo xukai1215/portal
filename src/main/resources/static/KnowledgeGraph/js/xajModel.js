@@ -41,7 +41,7 @@ var app = new Vue({
           html+=_LoadingTop;
           html+='px; width: auto; height: 57px; line-height: 57px; ';
           html+='padding-left: 50px; padding-right: 5px; background: no-repeat scroll 5px 10px;color: #696969; ';
-          html+= 'font-family:\'Microsoft YaHei\';">页面加载中，请等待...</div>';
+          html+= 'font-family:\'Microsoft YaHei\';">Loading......</div>';
           console.log(html);
           document.getElementById('loading').innerHTML =html ;
       },

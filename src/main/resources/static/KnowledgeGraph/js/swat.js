@@ -42,16 +42,16 @@ var app = new Vue({
             html+=_LoadingTop;
             html+='px; width: auto; height: 57px; line-height: 57px; ';
             html+='padding-left: 50px; padding-right: 5px; background: no-repeat scroll 5px 10px;color: #696969; ';
-            html+= 'font-family:\'Microsoft YaHei\';">页面加载中，请等待...</div>';
+            html+= 'font-family:\'Microsoft YaHei\';">Loading......</div>';
             console.log(html);
             document.getElementById('loading').innerHTML =html ;
         },
-        myFunction()
+        turnover()
         {
             $('#infoPanel').css('display', 'none');
             lockFlag=false;
         },
-        myFunction1(){$
+        panelmove(){$
             console.log("abc");
             let dragBox = function (drag, wrap) {
 
@@ -132,8 +132,8 @@ var app = new Vue({
                         this.baseloading();//当点击map按钮时触发加载div事件
                     }//当locationOfModel.length为0触发加载div不为0即上次已经加载过map，map可直接出现，则不需要加载div，所以在此进行判断
                     this.prepareLeafletMap();
-                    this.initclass();//将所有按钮颜色重置
-                    this.ChangeClass(index);//改变点击的按钮颜色
+                    this.initclass();//将所有按钮类型重置
+                    this.ChangeClass(index);//改变点击的按钮类型
                     break;
                 case 3:
                     if(this.keywordChart !=1)
@@ -395,6 +395,9 @@ var app = new Vue({
                             data: that.nodeLinks,
                             sScrollY:350,
                             scrollY:true,
+                            bSort:false,
+                            serverSide : false
+                            // width:100
                         });
                     });
                         return false;
