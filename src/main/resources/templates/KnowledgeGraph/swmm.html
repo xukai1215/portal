@@ -46,9 +46,9 @@
             v-if="infoPanelShow"
             style="transform: translate(0px, 0px); transition: transform 0.5s ease-in-out;"
           >
-            <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
+            <div id="bar" @mouseover="panelmove()" class="am-panel-hd">
               {{ nodeName }}
-              <a @click="myFunction()" class="am-close pull-right">&times;</a>
+              <a @click="turnover()" class="am-close pull-right">&times;</a>
             </div>
             <div id="content" class="am-panel-bd" >
               <table
