@@ -63,7 +63,7 @@ public class EducationExperienceService {
         result.put("list",educationExperienceResultDTOList);
         result.put("total",educationExperienceResultDTOList.size());
 
-        System.out.println("eduexp"+result);
+//        System.out.println("eduexp"+result);
         return result;
     }
 

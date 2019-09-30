@@ -1,7 +1,16 @@
+@font-face {
+    font-family: 'aktiv-grotesk';
+    src: url("../fonts/aktivgroteskbold-webfont.woff2.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body{
     margin:0px;
+    overflow-y:scroll;
     /*font-family: 'Lato', sans-serif;*/
 }
+
 h2{
     margin-top:10px;
 }

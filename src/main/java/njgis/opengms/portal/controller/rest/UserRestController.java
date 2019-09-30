@@ -153,6 +153,7 @@ public class UserRestController {
         if(session.getAttribute("uid")==null){
             modelAndView.setViewName("login");
             modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
         }else {
             User user=userService.getByOid(id);
 //            Object object = ResultUtils.success(userService.getByOid(id)).getData();
@@ -174,6 +175,8 @@ public class UserRestController {
                 }
             }
             modelAndView.addObject("areas",areas);
+
+            modelAndView.addObject("logged", "1");
         }
 
         return modelAndView;

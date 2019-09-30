@@ -31,6 +31,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
@@ -76,13 +78,18 @@ public class DataItemRestController {
      * @return modelAndView
      */
     @RequestMapping("/repository")
-    public ModelAndView getModelItems( ){
+    public ModelAndView getModelItems(HttpServletRequest req ){
 
         System.out.println("data-items-page");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("data_items");
 
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
     }
 
@@ -112,8 +119,9 @@ public class DataItemRestController {
 
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
-    JsonResult searchByTitle(DataItemFindDTO modelItemFindDTO, String oid){
-        return ResultUtils.success(dataItemService.searchByTitleByOid(modelItemFindDTO,oid));
+    JsonResult searchByTitle(DataItemFindDTO dataItemFindDTO, String oid){
+        System.out.println("data"+dataItemFindDTO);
+        return ResultUtils.success(dataItemService.searchByTitleByOid(dataItemFindDTO,oid));
     }
 
 
@@ -183,7 +191,7 @@ public class DataItemRestController {
      * @return
      */
     @RequestMapping (value = "/{id}", method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id){
+    ModelAndView get(@PathVariable ("id") String id,HttpServletRequest req){
 
         ModelAndView view = new ModelAndView();
 
@@ -252,6 +260,11 @@ public class DataItemRestController {
         view.addObject("classifications",classifications);
         view.addObject("relatedModels",modelItemArray);
         view.addObject("authorship",authorshipString);
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            view.addObject("unlogged", "1");
+        else
+            view.addObject("logged", "0");
 
         return view;
     }

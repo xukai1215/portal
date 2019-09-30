@@ -37,7 +37,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     Page<DataItemResultDTO> findByNameLike(Pageable pageable, String name);
 
-    Page<DataItemResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String userName, Pageable pageable);
+    Page<DataItemResultDTO> findByNameContainsIgnoreCaseAndUserName(String name, String userName, Pageable pageable);
 
 
     List<DataItem> findAllByAuthor(String author);

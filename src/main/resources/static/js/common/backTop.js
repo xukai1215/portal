@@ -3,6 +3,7 @@ function gotoTop(minHeight){
     // 定义点击返回顶部图标后向上滚动的动画
     $(".backTop").click(
         function(){$('html,body').animate({scrollTop:'0px'},1200);
+
         })
 
     // 获取页面的最小高度，无传入值则默认为600像素
@@ -16,6 +17,7 @@ function gotoTop(minHeight){
 
         // 当窗口的滚动条的垂直距离大于页面的最小高度时，让返回顶部图标渐现，否则渐隐
         if( s > minHeight){
+            console.log(s)
             $(".backTop").fadeIn(500);
         }else{
             $(".backTop").fadeOut(500);
@@ -32,6 +34,7 @@ function gotoTop(minHeight){
 
     $(".backTopUserpage").click(
         function(){$('html,body').animate({scrollTop:'0px'},300);
+            console.log('backTop')
         })
 
 // 获取页面的最小高度，无传入值则默认为600像素

@@ -48,13 +48,19 @@ public class ModelItemRestController {
 
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
-    public ModelAndView getModelItems() {
+    public ModelAndView getModelItems(HttpServletRequest req) {
         System.out.println("model items");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("model_items");
 
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
+
     }
 
 
@@ -120,8 +126,8 @@ public class ModelItemRestController {
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id){
-        return modelItemService.getPage(id);
+    ModelAndView get(@PathVariable ("id") String id,HttpServletRequest request){
+        return modelItemService.getPage(id,request);
     }
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
@@ -234,7 +240,7 @@ public class ModelItemRestController {
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
     JsonResult searchByTitle(ModelItemFindDTO modelItemFindDTO, String oid){
-//        System.out.println("/searchModelByOid"+modelItemFindDTO);
+        System.out.println("/searchModelByOid"+modelItemFindDTO);
         return ResultUtils.success(modelItemService.searchByTitleByOid(modelItemFindDTO,oid));
     }
 

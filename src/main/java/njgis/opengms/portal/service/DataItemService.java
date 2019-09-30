@@ -512,11 +512,12 @@ public class DataItemService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<DataItemResultDTO> dataItemResultDTOPage=dataItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        Page<DataItemResultDTO> dataItemResultDTOPage=dataItemDao.findByNameContainsIgnoreCaseAndUserName(name,userName,pageable);
 
         JSONObject result=new JSONObject();
         result.put("list",dataItemResultDTOPage.getContent());
         result.put("total",dataItemResultDTOPage.getTotalElements());
+        System.out.println(result);
         return result;
 
     }
