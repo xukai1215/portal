@@ -21,7 +21,7 @@ public class EducationExperienceRestController {
 
     @RequestMapping(value = "/listByUserOid",method = RequestMethod.GET)
     JsonResult listByUserOid(EducationExperienceFindDTO educationExperienceFindDTO, @RequestParam(value="oid") String oid){
-        System.out.println("edex"+educationExperienceFindDTO);
+//        System.out.println("edex"+educationExperienceFindDTO);
         return ResultUtils.success(educationExperienceService.listByUserOid(educationExperienceFindDTO,oid));
     }
 

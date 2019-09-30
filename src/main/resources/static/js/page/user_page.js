@@ -742,6 +742,7 @@ new Vue({
                     page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
                     pageSize: this.pageOption.pageSize,
+                    sortElement:'viewCount',
                     oid: hrefs[hrefs.length - 1],
                 },
                 async: true,
@@ -771,20 +772,24 @@ new Vue({
             const hrefs = window.location.href.split("/");
             $.ajax({
                 type: "GET",
-                url: "/user/getDataItems",
+                url: "/dataItem/searchByNameByOid",
                 data: {
                     page: this.pageOption.currentPage-1,
-                    asc: -1,
-                    pagesize: this.pageOption.pageSize,
-                    userOid: hrefs[hrefs.length - 1],
+                    asc: this.pageOption.sortAsc,
+                    pageSize: 6,
+                    oid: hrefs[hrefs.length - 1],
+                    sortElement:'viewCount',
+                    searchText:'',
                 },
                 async: true,
                 success: (json) => {
 
                     if (json.code == 0) {
+                        console.log(json.data)
                         const data = json.data;
 
                         setTimeout(() => {
+
 
                             this.dataItems.total = data.total;
                             this.dataItems.result = data.list;
@@ -1705,6 +1710,7 @@ new Vue({
                             case 2:
                                 Vue.set(this.dataItems ,'total', data.total);
                                 Vue.set(this.dataItems ,'result', data.list);
+                                console.log(this.dataItems.result)
                                 this.pageOption.progressBar=false;
                                 break;
                             case 3:
@@ -2446,7 +2452,7 @@ new Vue({
     created(){
         this.getUserInfo();
         this.modelItemHandleCurrentChange(1);
-        // // this.dataItemHandleCurrentChange(1);
+        this.dataItemHandleCurrentChange(1);
         this.logicalModelHandleCurrentChange(1);
         this.conceptualModelHandleCurrentChange(1);
         this.computableModelHandleCurrentChange(1);
@@ -2628,6 +2634,12 @@ function showItem(){
     // };
 
 })();
+
+
+$(".backTopUserpage").click(
+    function(){$('html,body').animate({scrollTop:'0px'},300);
+        console.log('backTop')
+    })
 
 
 

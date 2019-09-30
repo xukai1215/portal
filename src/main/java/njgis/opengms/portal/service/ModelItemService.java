@@ -29,6 +29,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -97,7 +99,7 @@ public class ModelItemService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
         //getpage函数通过id获取需要的页面
-    public ModelAndView getPage(String id){
+    public ModelAndView getPage(String id, HttpServletRequest request){
         //条目信息
         ModelItem modelInfo=getByOid(id);
         modelInfo.setViewCount(modelInfo.getViewCount()+1);
@@ -387,6 +389,11 @@ public class ModelItemService {
         modelAndView.addObject("lastModifyTime", lastModifyTime);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelInfo.getReferences())));
 
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
     }
 
@@ -810,7 +817,8 @@ public class ModelItemService {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        String sortElement=modelItemFindDTO.getSortElement();
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user=userDao.findFirstByOid(oid);
         Page<ModelItemResultDTO> modelItemPage=modelItemDao.findByAuthor(user.getUserName(),pageable);

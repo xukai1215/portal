@@ -16,7 +16,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.*;
 
@@ -537,6 +540,18 @@ public class UserService {
         }
     }
 
+    public ModelAndView judgeLogin(HttpServletRequest req) {
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = req.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("navbar");
+            modelAndView.addObject("login","no");
+        }else {
+            modelAndView.setViewName("navbar");
+            modelAndView.addObject("login","yes");
+        }
 
+        return modelAndView;
+    }
 
 }

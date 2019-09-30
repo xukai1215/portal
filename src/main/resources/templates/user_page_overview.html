@@ -374,7 +374,7 @@
                                             <img src="../static/img/model/model.png"></div>
                                     </div>
                                     <div class="rightCard">
-                                        <div class="titleCard"><h3 style="font-size: 21px">Model Items</h3></div>
+                                        <div class="titleCard"><h3 style="font-size: 23px">Model Item</h3></div>
                                         <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                                         <div class="statsCard">
                                             <div style="width: 85px">
@@ -396,7 +396,7 @@
                                             <img src="../static/img/model/model.png"></div>
                                     </div>
                                     <div class="rightCard">
-                                        <div class="titleCard"><h3 style="font-size: 21px">Conceptual Models</h3></div>
+                                        <div class="titleCard"><h3 style="font-size: 23px">Conceptual Models</h3></div>
                                         <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                                         <div class="statsCard">
                                             <div style="width: 85px">
@@ -441,7 +441,7 @@
                                             <img src="../static/img/model/model.png"></div>
                                     </div>
                                     <div class="rightCard">
-                                        <div class="titleCard"><h3 style="font-size: 21px">Computable Models</h3></div>
+                                        <div class="titleCard"><h3 style="font-size: 23px">Computable Models</h3></div>
                                         <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                                         <div class="statsCard">
                                             <div style="width: 85px">
@@ -471,7 +471,7 @@
                                                 <img src="../static/img/model/model.png"></div>
                                         </div>
                                         <div class="rightCard">
-                                            <div class="titleCard"><h3 style="font-size: 21px">Data Items</h3></div>
+                                            <div class="titleCard"><h3 style="font-size: 23px">Data Item</h3></div>
                                             <div class="innerBorder" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard">
                                                 <div style="width: 85px">
@@ -497,7 +497,7 @@
                                 <div class="contentColContainer noMargin noBorder7Shadow" style="width: 100%;">
                                     <div id="concept" class="itemCardRow commnityCard" @click="conceptClick()" style="width: 97%;margin-top: 7px;cursor: pointer">
                                         <div class="titleCardRow" style="width: 50%">
-                                            <h3 style="font-size: 21px">Concept & Semantic</h3></div>
+                                            <h3 style="font-size: 23px">Concept & Semantic</h3></div>
                                         <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                         <div class="statsCard colArrange" style="width: 50%">
                                             <h2 style="color: #339fff;">{{concepts.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
@@ -508,7 +508,7 @@
                                         </div>
                                     </div>
                                     <div id="reference" class="itemCardRow commnityCard" @click="spatialClick()" style="width: 97%;margin-top:7px;cursor: pointer">
-                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Spatial Reference</h3></div>
+                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 23px">Spatial Reference</h3></div>
                                             <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard colArrange" style="width: 50%">
                                                 <h2 style="color: #ff9526;">{{spatials.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
@@ -519,7 +519,7 @@
                                             </div>
                                     </div>
                                     <div id="template" class="itemCardRow commnityCard" @click="templateClick" style="width: 97%;margin-top: 7px;cursor: pointer">
-                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Data Template</h3></div>
+                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 23px">Data Template</h3></div>
                                             <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard colArrange" style="width: 50%">
                                                 <h2 style="color: #339fff;">{{templates.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
@@ -531,7 +531,7 @@
 
                                     </div>
                                     <div id="unit" class="itemCardRow commnityCard" @click="unitClick()" style="width: 97%;margin: 7px 0 10px;cursor: pointer">
-                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 21px">Unit & Metric</h3></div>
+                                            <div class="titleCardRow" style="width: 50%"><h3 style="font-size: 23px">Unit & Metric</h3></div>
                                             <div class="innerBorderCol" style="border-bottom-color: #c2c2c2"></div>
                                             <div class="statsCard colArrange" style="width: 50%">
                                                 <h2 style="color: #aa0b15;">{{units.total}}<span style="font-size: 14px;color: #2b2b2b">&nbspitems</span></h2>
@@ -601,6 +601,7 @@
                                             </div>
 
                                             <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                <div></div>
                                                 <a :href="articles.result[0].link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                             </div>
                                         </div>
@@ -646,6 +647,7 @@
                                             </div>
 
                                             <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                <div></div>
                                                 <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                             </div>
                                         </div>
@@ -692,6 +694,7 @@
                                             </div>
 
                                             <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                                <div></div>
                                                 <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                             </div>
                                         </div>
@@ -1142,10 +1145,11 @@
                             <!--                            </div>-->
                             <div class="infoContainer" v-if="userLab.labInfo">
                                 <p>Lab Members</p>
-                                <div v-for="member in userLab.members">
-                                    <a v-if="member.userName!=userPersonalInfo.userName" :href="'/user/'+member.oid" target="_blank">
-                                        <h4>{{member.userName}}</h4>
+                                <div v-for="member in userLab.members" class="rowArrange">
+                                    <a :href="'/user/'+member.oid" target="_blank">
+                                        <h4>{{member.name}}</h4>
                                     </a>
+                                    <div class="bluePoint" v-if="member.name==userPersonalInfo.name"></div>
                                 </div>
                             </div>
                         </div>
@@ -1166,14 +1170,15 @@
                                             My Laboratory Info
                                         </h3>
                                     </div>
-                                    <div class="modal-body" style="font-size: 20px;overflow: hidden"><section class="panel">
+                                    <div class="modal-body" style="font-size: 20px;overflow: hidden">
+                                        <section class="panel sizeAdaption">
                                         <div class="tab-pane" id="LabInfo">
                                             <div class="form-group flexCol">
                                                 <label for="userLaboratory"
                                                        class="col-sm-8 control-label inputTitle">Laboratory</label>
                                                 <div class="col-sm-12">
-                                                    <input type="text" class="form-control"
-                                                           id="userLaboratory"/>
+                                                    <textarea type="text" class="form-control"
+                                                              id="userLaboratory"></textarea>
                                                 </div>
                                             </div>
                                             <!--                                                <div class="form-group flexCol">-->
@@ -1234,25 +1239,25 @@
                                 <div class="modal-content">
                                     <div class="modal-header" style="background: deepskyblue">
                                         <h3 class="modal-title" style="color:aliceblue;text-align: center">
-                                            My Laboratory Info
+                                            My Contact Info
                                         </h3>
                                     </div>
                                     <div class="modal-body" style="font-size: 20px;overflow: hidden">
                                         <section class="panel sizeAdaption">
                                         <div class="tab-pane" >
                                             <div class="form-group flexCol">
+                                                <label for="userEmail"
+                                                       class="col-sm-12 control-label inputTitle">Email<span style="font-size: 14px;color: #555555">( Email is on of your identities that can not be modified )</span></label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control"
+                                                           id="userEmail" disabled="disabled"/>
+                                                </div>
+
                                                 <label for="userphone"
                                                        class="col-sm-8 control-label inputTitle">Phone Num</label>
                                                 <div class="col-sm-12">
                                                     <input type="text" class="form-control"
                                                            id="userPhone"/>
-                                                </div>
-
-                                                <label for="userEmail"
-                                                       class="col-sm-8 control-label inputTitle">Email</label>
-                                                <div class="col-sm-12">
-                                                    <input type="text" class="form-control"
-                                                           id="userEmail"/>
                                                 </div>
 
                                                 <label for="userWeChat"
@@ -1324,7 +1329,7 @@
                                 <p>{{modelItems.total}}</p></div></a></li>
                             <li><a id="tab-Data Item" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==2}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="datalItemClick()">Data item <div class="statsNumber" :class="{statsNumberFullColor:showIndex==2}">
-                                <p>0</p></div></a></li>
+                                <p>{{dataItems.total}}</p></div></a></li>
                             <li><a id="tab-Conceptual Model" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==3}"
                                    style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptualModelClick()">Conceptual Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==3}">
                                 <p>{{conceptualModels.total}}</p></div></a></li>
@@ -1364,7 +1369,7 @@
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
                                 <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
-                                    <h4 style="margin-top: 10px;color: #999999;">Model Items</h4>
+                                    <h4 style="margin-top: 10px;color: #999999;">Model Item</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchModel" class="searchInput" @keydown.enter="searchResourceClick(1)"/>
@@ -1441,7 +1446,7 @@
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
                                 <div class="colCenter" style="display: flex;justify-content: flex-start;width: 62.2%">
-                                    <h4 style="margin-top: 10px;color: #999999;">Data Items</h4>
+                                    <h4 style="margin-top: 10px;color: #999999;">Data Item</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchData" class="searchInput" @keydown.enter="searchResourceClick(2)"/>
@@ -1452,7 +1457,7 @@
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" v-if="dataItems.result" v-for="(DataItem,key) in dataItems.result">
+                            <div class="list-item" v-if="dataItems.result" v-for="(dataItem,key) in dataItems.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -1480,9 +1485,9 @@
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <div class="tags" v-if="dataItem.keywords.length>0">
-                                            <span class="badge badge-info" v-for="keyword in dataItem.keywords">{{keyword.toUpperCase()}}</span>
-                                        </div>
+<!--                                        <div class="tags" v-if="dataItem.keywords.length>0">-->
+<!--                                            <span class="badge badge-info" v-for="keyword in dataItem.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                        </div>-->
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}
                                         </div>
@@ -2566,12 +2571,12 @@
 <script src="../static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="../static/js/common/navbar.js"></script>
-<script src="../static/js/common/backTop.js/"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script type="text/javascript" src="/static/js/common/moment-with-locales.min.js"></script>
 <script type="text/javascript" src="/static/js/common/moment-timezone-with-data-2012-2022.min.js"></script>
 <script type="text/javascript" src="/static/js/common/tempusdominus-bootstrap-4.js"></script>
 <script type="text/javascript" src="/static/js/common/dcalendar.picker.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
-<script src="../static/js/page/user_page.js"></script>
+<script src="/static/js/common/backTop.js/"></script>
+<script src="/static/js/page/user_page.js"></script>
 </html>
