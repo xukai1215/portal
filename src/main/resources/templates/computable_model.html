@@ -52,6 +52,8 @@
 
                     <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'
                        @click="edit"></a>
+
+
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
@@ -76,7 +78,16 @@
                     <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
-                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
+                        <span th:if="${modelInfo.contentType=='Package'}">
+                            <button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"
+                                       @click="dialogVisible = true">Deploy
+                            </button>
+                            <button  th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button" @click="invoke()">
+                                Invoke
+                            </button>
+                        </span>
+
+                        <a href="javascript:void(0)" class="fa fa-eye " aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
                     </div>
 
@@ -89,14 +100,6 @@
                     <div class="head_text">
                         <h4>Resource</h4>
                     </div>
-                    <span class="pull-right" style="margin:-10px 0 0;" th:if="${modelInfo.contentType=='Package'}">
-                            <el-button th:unless="${modelInfo.deploy==true}" type="primary"
-                                       @click="dialogVisible = true">Deploy
-                            </el-button>
-                            <el-button th:if="${modelInfo.deploy==true}" type="success" @click="invoke()">
-                                Invoke
-                            </el-button>
-                        </span>
                 </div>
                 <div class="block_content" style="margin-right: 0;">
 
