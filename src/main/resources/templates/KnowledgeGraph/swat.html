@@ -44,17 +44,17 @@
               id="infoPanel"
               v-if="infoPanelShow"
       >
-        <div id="bar" @mouseover="myFunction1()" class="am-panel-hd">
+        <div id="bar" @mouseover="panelmove()" class="am-panel-hd">
           {{ nodeName }}
-          <a @click="myFunction()" class="am-close pull-right">&times;</a>
+          <a @click="turnover()" class="am-close pull-right">&times;</a>
         </div>
         <div id="content" class="am-panel-bd" >
-          <table
+          <table  id="linkTable"
                   class="am-table am-table-striped am-table-bordered am-table-compact "
+                  style="width: 100% !important;"
                   data-classes="table table-bordered"
                   data-pagination="true" data-page-size="10"
                   data-pagination-loop="false"
-                  id="linkTable"
           >
             <thead>
             <tr>

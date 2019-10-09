@@ -912,8 +912,20 @@ input::placeholder{
     background-color: #cccccc;
 }
 
-.listItemContainer::-webkit-scrollbar-track{
+.listItemContainer::-webkit-scrollbar-thumb:focus{
+    background-color: #a8a8a8;
+}
 
+.listItemContainer::-webkit-scrollbar-track{
+    width: 6px;
+
+    /*background-color: #a8a8a8;*/
+}
+
+.listItemContainer::-webkit-scrollbar-track:hover{
+    width: 6px;
+    background-color: #ededed;
+    transition: .4s;
 }
 
 .flexActive{
@@ -1491,4 +1503,14 @@ input[type="radio"]:checked + span {
     /*color: #828282;*/
     font-family: sans-serif;
     color: #686868;
+}
+
+.bluePoint{
+    width: 8px;
+    height: 8px;
+    margin-top: 4px;
+    border-radius: 4px;
+    background-color: #0f9ae0;
+
+
 }

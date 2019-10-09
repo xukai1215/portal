@@ -46,7 +46,7 @@ public class AwardandHonorService {
         result.put("list",awardandHonorResultDTOPage.getContent());
         result.put("total", awardandHonorResultDTOPage.getTotalElements());
 
-        System.out.println(result);
+//        System.out.println(result);
         return result;
 
     }
@@ -66,7 +66,7 @@ public class AwardandHonorService {
         result.put("list",awardandHonorResultDTO);
         result.put("total",awardandHonorResultDTO.size());
 
-        System.out.println("awd"+result);
+//        System.out.println("awd"+result);
         return result;
     }
 

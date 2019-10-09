@@ -111,12 +111,17 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
-    public ModelAndView getModelItems() {
+    public ModelAndView getModelItems(HttpServletRequest req) {
         System.out.println("computable model");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("computable_models");
 
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
     }
 

@@ -21,7 +21,6 @@ import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitResultDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -37,6 +36,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -126,7 +127,7 @@ public class RepositoryService {
     }
 
     //concept
-    public ModelAndView getConceptPage(String id) {
+    public ModelAndView getConceptPage(String id, HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("conceptInfo");
 
@@ -230,6 +231,11 @@ public class RepositoryService {
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
 
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
     }
 
@@ -448,7 +454,7 @@ public class RepositoryService {
 
 
     //spatialReference
-    public ModelAndView getSpatialReferencePage(String id) {
+    public ModelAndView getSpatialReferencePage(String id,HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("spatialReferenceInfo");
 
@@ -540,6 +546,11 @@ public class RepositoryService {
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
 
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
     }
 
@@ -752,7 +763,7 @@ public class RepositoryService {
 
 
     //Template
-    public ModelAndView getTemplatePage(String id) {
+    public ModelAndView getTemplatePage(String id,HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("templateInfo");
 
@@ -841,7 +852,11 @@ public class RepositoryService {
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
-
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
         return modelAndView;
     }
 
@@ -1033,7 +1048,7 @@ public class RepositoryService {
 
 
     //Unit
-    public ModelAndView getUnitPage(String id) {
+    public ModelAndView getUnitPage(String id,HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("unitInfo");
 
@@ -1124,6 +1139,12 @@ public class RepositoryService {
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
+
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
 
         return modelAndView;
     }

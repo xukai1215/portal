@@ -271,8 +271,8 @@ div.tooltip {
     width: 100% !important;
 }
 th{
-    width: 100% !important;
-}
+     width: 100% !important;
+ }
 table.dataTables_scrollHeadInner {
     clear: both;
     /*margin-top: 6px !important;*/
