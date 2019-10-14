@@ -188,8 +188,13 @@ var vue = new Vue({
         },
         download(event) {
             //下载接口
-            this.eventChoosing = event;
-            window.open("/dispatchRequest/download?url=" + this.eventChoosing.url);
+            if(event.url!=undefined) {
+                this.eventChoosing = event;
+                window.open("/dispatchRequest/download?url=" + this.eventChoosing.url);
+            }
+            else{
+                this.$message.error("No data can be downloaded.");
+            }
         },
         upload(event) {
             //上传接口
@@ -275,8 +280,8 @@ var vue = new Vue({
                                 }
                             } else {
                                 if (url === null || url === undefined) {
-                                    this.$message.error("部分输入数据未配置");
-                                    throw new Error("部分输入数据未配置");
+                                    this.$message.error("Some input data is not provided");
+                                    throw new Error("Some input data is not provided");
                                 }
                                 json.inputs.push({
                                     statename,
@@ -333,11 +338,11 @@ var vue = new Vue({
                     loading.close();
                 }
                 if (data.status === -1) {
-                    this.$message.error("模型运行出错");
+                    this.$message.error("Some error occured when this model is running!");
                     clearInterval(interval);
                     loading.close();
                 } else if (data.status === 2) {
-                    this.$message.success("模型运行成功");
+                    this.$message.success("The model runs successfully!");
                     clearInterval(interval);
                     let outputs = data.outputdata;
 
@@ -455,7 +460,7 @@ var vue = new Vue({
         this.oid = id;
         let { data } = await (await fetch("/task/TaskInit/" + id)).json();
         if(data==null||data==undefined){
-            alert("初始化错误")
+            alert("Initialization error!")
         }
         this.info = data;
         console.log(this.info);

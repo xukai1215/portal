@@ -11,8 +11,8 @@ import java.util.concurrent.Future;
 public class AsyncTask extends AbstractTask {
 
     @Async
-    public Future<String> getRecordCallback(JSONObject param) throws  Exception{
-        JSONObject result=super.getRecord(param);
+    public Future<String> getRecordCallback(JSONObject param,String managerServerIpAndPort) throws  Exception{
+        JSONObject result=super.getRecord(param,managerServerIpAndPort);
         return new AsyncResult<>(result.toJSONString());
     }
 }

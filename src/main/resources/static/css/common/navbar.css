@@ -46,7 +46,7 @@
     /*font-weight: 600;*/
 }
 
-.main li{
+.main  li{
     float: left;
     width: 8%;
     height: 52px;
@@ -56,7 +56,7 @@
     border-bottom-color:#080a0e;
 }
 
-.main li a{
+.main  li a{
     display: block;
     color: whitesmoke;
     text-align: center;

@@ -1,11 +1,11 @@
 body{
   min-width: 1200px;
 }
-.main {
+.taskMain {
   /*min-width: 1200px;*/
 
 }
-.main .slider {
+.taskMain .slider {
   border-right: solid 2px rgb(156, 154, 154);
   min-height: 700px;
 
@@ -17,7 +17,7 @@ body{
 
 
 
-.main .content {
+.taskMain .content {
   overflow: hidden;
 
   padding: 10px 10px 10px 30px;
