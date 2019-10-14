@@ -343,7 +343,7 @@ public class TaskService {
 
     public JSONObject searchTasksByUserId(String searchText,String userId, int page, String sortType, int asc) {
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
@@ -373,7 +373,8 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
-                    futures.add(asyncTask.getRecordCallback(param));
+
+                    futures.add(asyncTask.getRecordCallback(param,managerServerIpAndPort));
                 }
             }
 

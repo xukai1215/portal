@@ -29,7 +29,7 @@
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div class="main">
+    <div class="taskMain">
         <el-row type="flex" justify="center">
             <el-col :span="4">
                 <div class="slider scrollbar">
@@ -38,11 +38,11 @@
                         <!--<img src="/static/haha/img/default.png">-->
                     </div>
                     <h3 class="model_title"> {{info.modelInfo.name}}</h3>
-                    <span  >Owner by <span  style="    cursor: pointer;
-    font-size: 2rem;" @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>
-                    <br>
-                    <br>
-                    <span class="model_date">Created at {{dateFormat(info.modelInfo.date)}}</span>
+                    <!--<span  >Owner by <span  style="    cursor: pointer;-->
+    <!--font-size: 2rem;" @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>-->
+                    <!--<br>-->
+                    <!--<br>-->
+                    <span class="model_date">Updated at {{dateFormat(info.modelInfo.date)}}</span>
                     <h4 class="desc-title">Introduction</h4>
                     <p class="desc">{{info.modelInfo.des}}</p>
                     <div class="btn-list">
@@ -93,7 +93,7 @@
 
                                                     <el-col :span="9" class="_event-desc">
 
-                                                    <span class="event-name" title="modelInEvent.eventName">
+                                                    <span class="event-name" :title="modelInEvent.eventName">
                                                         <span
                                                                 v-show="!modelInEvent.optional"
                                                                 style="color:red">*</span>
@@ -115,9 +115,9 @@
 
                                                             <el-button plain round type="primary"
                                                                        @click="selectFromMyData(inEventIndex,modelInEvent)"
-                                                            icon="el-icon-user-solid"
+
                                                             circle>
-                                                                <i class="el-icon-menu"></i>
+                                                                <i class="fa fa-th-large"></i>
                                                             </el-button>&nbsp;
 
                                                             <el-dialog
@@ -285,17 +285,18 @@
                             </el-upload>
                         </el-dialog>
 
-                        <el-dialog title="Person center Data" :visible.sync="showDataChose">
+                        <el-dialog title="Personal Center Data" :visible.sync="showDataChose" width="70%">
                             <el-table :data="dataFromDataContainer" stripe v-loading="tableLoading">
-                                <el-table-column property="createDate" label="Date" width="150">
+                                <el-table-column property="createDate" label="Date" width="200">
                                     <template slot-scope="scope">
-                                        dateFormat(scope.row.createDate)
+                                        {{dateFormat(scope.row.createDate)}}
                                     </template>
                                 </el-table-column>
-                                <el-table-column property="type" label="Type" width="200"></el-table-column>
+                                <el-table-column property="type" label="Type" width="150"></el-table-column>
 
                                 <el-table-column
                                         label="Name"
+
                                 >
                                     <template slot-scope="scope">
                                         {{scope.row.fileName+"."+scope.row.suffix}}
@@ -304,7 +305,7 @@
 
                                 <el-table-column
                                         prop="fromWhere"
-                                        label="source"
+                                        label="Source"
                                         width="200"
                                         :filters="[{ text: 'PORTAL', value: 'PORTAL' }, { text: 'MODELCONTAINER', value: 'MODELCONTAINER' },{ text: 'ONLINESAGA', value: 'ONLINESAGA ' }]"
                                         :filter-method="filterTag"
@@ -319,20 +320,23 @@
 
                                 <el-table-column
                                         label="Operation"
+                                        width="200"
                                 >
                                     <template slot-scope="scope">
-                                        <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">
-                                            Download
-                                        </el-button>
                                         <el-button @click="handleDataChooseClick(scope.row)" type="primary"
                                                    size="small">Select
                                         </el-button>
+                                        <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">
+                                            Download
+                                        </el-button>
+
                                     </template>
                                 </el-table-column>
                             </el-table>
 
                             <el-pagination
                                     class="my-pagination"
+                                    style="margin-top:10px"
                                     small
                                     layout="prev, pager, next"
                                     @current-change="handleCurrentChange"

@@ -1,17 +1,12 @@
 package njgis.opengms.portal.AbstractTask;
 
 import com.alibaba.fastjson.JSONObject;
-import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.utils.Utils;
-import org.springframework.beans.factory.annotation.Value;
 
 public abstract class AbstractTask {
 
-    @Value("${managerServerIpAndPort}")
-    private String managerServer;
-
-    public JSONObject getRecord(JSONObject param) throws Exception{
-        JSONObject result = Utils.postJSON("http://"+managerServer+"/GeoModeling/computableModel/refreshTaskRecord", param);
+    public JSONObject getRecord(JSONObject param,String managerServerIpAndPort) throws Exception{
+        JSONObject result = Utils.postJSON("http://"+managerServerIpAndPort+"/GeoModeling/computableModel/refreshTaskRecord", param);
 
         ////update model status to Started, Started: 1, Finished: 2, Inited: 0, Error: -1
         JSONObject data = result.getJSONObject("data");

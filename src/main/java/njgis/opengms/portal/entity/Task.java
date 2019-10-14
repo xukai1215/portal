@@ -23,7 +23,7 @@ public class Task {
 
     Date runTime;
 
-    int status;
+    int status;//Started: 1, Finished: 2, Inited: 0, Error: -1
 
     List<TaskData> inputs;
     List<TaskData> outputs;

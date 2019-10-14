@@ -200,6 +200,7 @@ var vue = new Vue({
 
         handleSelect(index,indexPath){
             console.log(index)
+            this.resourceLoad = true;
             this.curIndex=index;
             switch (index){
                 case '1':
@@ -1217,6 +1218,7 @@ var vue = new Vue({
         },
 
         searchModels() {
+            this.resourceLoad = true;
             this.pageSize=10;
             this.isInSearch=1;
             var url = "";
@@ -1237,9 +1239,10 @@ var vue = new Vue({
                 url = "/computableModel/searchComputableModelsByUserId";
                 name = "computableModels";
             }
-            else if (this.curIndex=='5') {
+            else if (this.curIndex=='6') {
                 url = "/task/searchTasksByUserId";
                 name = "tasks";
+                this.sortAsc=-1;
             }
 
             if(this.deploys_show){
@@ -3023,7 +3026,7 @@ var vue = new Vue({
         //删除
         delete_data_dataManager(){
 
-            if(confirm("are u sure to delete?")){
+            if(confirm("Are you sure to delete?")){
                 let tha=this
                 axios.delete("/dataManager/delete",{
                     params:{

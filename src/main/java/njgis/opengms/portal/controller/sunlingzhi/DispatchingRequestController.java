@@ -6,6 +6,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -33,8 +34,9 @@ import java.util.Map;
 @RequestMapping (value = "/dispatchRequest")
 public class DispatchingRequestController {
 
-
-
+    //远程数据容器地址
+    @Value("${dataContainerIpAndPort}")
+    String dataContainerIpAndPort;
 
     @RequestMapping (value="/upload",method = RequestMethod.POST)
     JsonResult upload(@RequestParam("file")MultipartFile file,
@@ -65,7 +67,7 @@ public class DispatchingRequestController {
     JsonResult uploadToDataContainer(@RequestParam("file")MultipartFile file,
                                      @RequestParam("author")String author) throws IOException {
         RestTemplate restTemplate=new RestTemplate();
-        String url="http://172.21.212.64:8081/file/upload/store_dataResource_files";
+        String url="http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files";
         File temp=File.createTempFile("temp",FilenameUtils.getExtension(file.getOriginalFilename()));
         file.transferTo(temp);
         FileSystemResource resource = new FileSystemResource(temp);
@@ -98,7 +100,7 @@ public class DispatchingRequestController {
 
 
         HttpEntity entity = new HttpEntity<>(requestParam,headers);
-        url="http://172.21.212.64:8081/dataResource";
+        url="http://" + dataContainerIpAndPort + "/dataResource";
         ResponseEntity<JSONObject> responseEntity1=restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
         if (responseEntity1.getStatusCode()!=HttpStatus.OK){
             throw new MyException("远程服务出错");
@@ -114,7 +116,7 @@ public class DispatchingRequestController {
                    @RequestParam("authorName") String authorName
     ) throws IOException {
 
-        String url="http://172.21.212.64:8081/dataResource?page={page}&pageSize={pageSize}&type=author&value={authorName}";
+        String url="http://" + dataContainerIpAndPort + "/dataResource?page={page}&pageSize={pageSize}&type=author&value={authorName}";
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,page,pageSize,authorName);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {

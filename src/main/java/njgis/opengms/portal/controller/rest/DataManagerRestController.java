@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class DataManagerRestController {
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     JsonResult listData(@RequestParam("author") String author,@RequestParam("type") String type) {
 
-        String url=dataContainerIpAndPort+"dataResource/listByCondition?value={author}&type={type}";
+        String url="http://"+dataContainerIpAndPort+"/dataResource/listByCondition?value={author}&type={type}";
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,author,type);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
@@ -156,7 +155,7 @@ public class DataManagerRestController {
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
     JsonResult deleteData(@RequestParam("id") String id) {
 
-        String url=dataContainerIpAndPort+"dataResource/"+id;
+        String url="http://"+dataContainerIpAndPort+"/dataResource/"+id;
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.DELETE,null,JSONObject.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
@@ -204,7 +203,7 @@ public class DataManagerRestController {
     JsonResult managerpics(@RequestParam("id") String id
                             ) {
 
-        String url="http://172.21.212.64:8081/dataResource/managerPics?id={id}";
+        String url="http://"+dataContainerIpAndPort+"/dataResource/managerPics?id={id}";
         RestTemplate restTemplate=new RestTemplate();
 
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
@@ -226,7 +225,7 @@ public class DataManagerRestController {
     JsonResult managerdoc(@RequestParam("id") String id
     ) {
 
-        String url="http://172.21.212.64:8081/dataResource/managerDoc?id={id}";
+        String url="http://"+dataContainerIpAndPort+"/dataResource/managerDoc?id={id}";
         RestTemplate restTemplate=new RestTemplate();
 
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);
@@ -247,7 +246,7 @@ public class DataManagerRestController {
     JsonResult managerOther(@RequestParam("id") String id
     ) {
 
-        String url="http://172.21.212.64:8081/dataResource/managerOhr?id={id}";
+        String url="http://"+dataContainerIpAndPort+"/dataResource/managerOhr?id={id}";
         RestTemplate restTemplate=new RestTemplate();
 
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,id);

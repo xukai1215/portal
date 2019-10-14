@@ -131,6 +131,8 @@
                 </div>
             </div>
 
+
+
             <div id="related_models" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -449,6 +451,60 @@
                 </el-tabs>
             </div>
 
+            <div th:if="${#lists.size(references)}!=0" id="references" class="detail_block">
+                <input id="ref" th:value="${references}" style="display: none;">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>References</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <el-table
+                            :data="refTableData"
+                            border
+                            stripe
+                            style="width: 100%">
+                        <el-table-column
+                                prop="title"
+                                sortable
+                                label="Title"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                prop="author"
+                                sortable
+                                label="Author"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                sortable
+                                label="Date">
+                        </el-table-column>
+                        <el-table-column
+                                prop="journal"
+                                sortable
+                                label="Journal">
+                        </el-table-column>
+                        <el-table-column
+                                prop="pages"
+                                sortable
+                                label="Pages">
+                        </el-table-column>
+                        <el-table-column
+                                label="Links">
+                            <template slot-scope="scope">
+                                <el-button
+                                        class="refLink"
+                                        size="mini"
+                                        type="danger"
+                                        @click="link($event)">View
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </div>
 
             <!--<div id="related" class="detail_block">-->
                 <!--<div class="block_head">-->
@@ -621,60 +677,7 @@
             <!--</div>-->
 
 
-            <div th:if="${#lists.size(references)}!=0" id="references" class="detail_block">
-                <input id="ref" th:value="${references}" style="display: none;">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>References</h4>
-                    </div>
-                </div>
-                <div class="block_content">
-                    <el-table
-                            :data="refTableData"
-                            border
-                            stripe
-                            style="width: 100%">
-                        <el-table-column
-                                prop="title"
-                                sortable
-                                label="Title"
-                                width="200">
-                        </el-table-column>
-                        <el-table-column
-                                prop="author"
-                                sortable
-                                label="Author"
-                                width="200">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                sortable
-                                label="Date">
-                        </el-table-column>
-                        <el-table-column
-                                prop="journal"
-                                sortable
-                                label="Journal">
-                        </el-table-column>
-                        <el-table-column
-                                prop="pages"
-                                sortable
-                                label="Pages">
-                        </el-table-column>
-                        <el-table-column
-                                label="Links">
-                            <template slot-scope="scope">
-                                <el-button
-                                        class="refLink"
-                                        size="mini"
-                                        type="danger"
-                                        @click="link($event)">View
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-            </div>
+
 
             <div id="cite" class="detail_block">
                 <div class="block_head">
