@@ -261,6 +261,8 @@ new Vue({
                 isInSearch:0,
 
                 resourceIndex:1,
+
+                isAwdTimeDate:false,
             }
         },
 
@@ -491,6 +493,7 @@ new Vue({
             else if($("input[type='radio'][name='labPosition']:checked").val()=='1'){
                 this.lab.position='member';
             }
+
             this.descriptionAddToBack();
             this.researchInterestAddToBack();
             this.affiliationAddtoBack();
@@ -521,6 +524,7 @@ new Vue({
 
         savePersonalIntroClick(){
             this.description=$('#userIntroDescription').val();
+            console.log( this.description=$('#userIntroDescription').val())
             var tags = $('#userIntroRIS').tagEditor('getTags')[0].tags;
             for (i = 0; i < tags.length; i++) { $('#userRIS').tagEditor('removeTag', tags[i]); }
             this.researchInterests=tags;
@@ -528,9 +532,10 @@ new Vue({
             for (i = 0; i < tags.length; i++) { $('#userIntroSubArea').tagEditor('removeTag', tags[i]); }
             this.subjectAreas=tags;
 
-            this.descriptionAddToBack();
-            this.researchInterestAddToBack();
-            this.subjectAreasAddtoBack();
+            this.userInfoAddToBack();
+            // this.descriptionAddToBack();
+            // setTimeout(this.researchInterestAddToBack(),1)
+            // setTimeout(this.subjectAreasAddtoBack(),5);
 
             alert('Save success!');
             $("#editUserIntro").modal("hide")
@@ -576,6 +581,7 @@ new Vue({
         },
 
         saveLabClick(){
+            console.log($('#userLaboratory').val());
             this.userPersonalInfo.lab.name=$('#userLaboratory').val();
             if ($("input[type='radio'][name='labPosition']:checked").val()=='0') {
                 this.userPersonalInfo.lab.position='leader';
@@ -584,7 +590,7 @@ new Vue({
                 this.userPersonalInfo.lab.position='member';
             }
             if(this.userPersonalInfo.lab.name==''||this.userPersonalInfo.lab.position==''){
-                alert('Please insert your lab name and leader!')
+                alert('Please insert your lab name')
             }
             else {
                 this.labAddtoBack();
@@ -785,7 +791,6 @@ new Vue({
                 success: (json) => {
 
                     if (json.code == 0) {
-                        console.log(json.data)
                         const data = json.data;
 
                         setTimeout(() => {
@@ -826,7 +831,6 @@ new Vue({
 
                             this.conceptualModels.total = data.total;
                             this.conceptualModels.result = data.list;
-                            console.log(this.conceptualModels.result);
                             this.pageOption.progressBar = false;
 
                         }, 500);
@@ -862,7 +866,6 @@ new Vue({
                             this.logicalModels.total = data.total;
                             this.logicalModels.result = data.list;
                             this.pageOption.progressBar = false;
-                            console.log('logical'+this.logicalModels.result);
                             }, 500);
                     } else {
                         console.log("search logical model failed.")
@@ -889,14 +892,13 @@ new Vue({
 
                     if (json.code == 0) {
                         const data = json.data;
-                        console.log(data.list);
+                        // console.log(data.list);
                         if(data.list.length!=0)
                             setTimeout(() => {
 
                                 this.computableModels.total = data.total;
                                 this.computableModels.result = data.list;
                                 this.pageOption.progressBar = false;
-                                console.log('computer'+this.computableModels.result);
                                 }, 500);
                     } else {
                         console.log("search computable model failed.")
@@ -939,9 +941,9 @@ new Vue({
                                 this.concepts.result = data[name];
                                 this.pageOption.progressBar = false;
                             }, 200)
-                            console.log(this.pageOption.currentPage);
+                            // console.log(this.pageOption.currentPage);
                         } else {
-                            console.log("search concept failed.")
+                            // console.log("search concept failed.")
 
                         }
                     }
@@ -986,9 +988,9 @@ new Vue({
                                 this.spatials.result = data[name];
                                 this.pageOption.progressBar = false;
                             },200)
-                            console.log(this.pageOption.currentPage);
+                            // console.log(this.pageOption.currentPage);
                         }else {
-                            console.log("search concept failed.")
+                            // console.log("search spatial failed.")
                         }
                     }
                 }
@@ -1034,7 +1036,7 @@ new Vue({
                             },200)
 
                         }else {
-                            console.log("search concept failed.")
+                            // console.log("search template failed.")
                         }
                     }
                 }
@@ -1080,7 +1082,7 @@ new Vue({
                             },200)
 
                         }else {
-                            console.log("search concept failed.")
+                            // console.log("search unit failed.")
                         }
                     }
                 }
@@ -1092,7 +1094,6 @@ new Vue({
             switch (this.resourceIndex) {
                 case 1:
                     if (this.isInSearch==0){
-                        console.log(this.pageOption.currentPage)
                         this.modelItemHandleCurrentChange(this.pageOption.currentPage);
                     }
                     else this.searchResource();
@@ -1119,7 +1120,7 @@ new Vue({
                     break;
                 case 6:
                     if (this.isInSearch==0){
-                        console.log(this.pageOption.currentPage);
+                        // console.log(this.pageOption.currentPage);
                         this.conceptHandleCurrentChange(this.pageOption.currentPage);
                     }
                     else this.searchResource();
@@ -1165,14 +1166,11 @@ new Vue({
 
                     if (json.code == 0) {
                         const data=json.data;
-                        console.log(data.list.length);
                         setTimeout(() => {
 
                             this.articles.total=data.total;
                             this.articles.result=data.list;
                             this.pageOption.progressBar=false;
-                            console.log(this.articles.result);
-                            console.log(this.articles.result.length);
                         }, 500);
                     } else {
                         console.log("search computable model failed.")
@@ -1207,7 +1205,6 @@ new Vue({
                             this.projects.total=data.total;
                             this.projects.result=data.list;
                             this.pageOption.progressBar=false;
-                            console.log(this.projects.result)
 
                         }, 500);
                     } else {
@@ -1295,7 +1292,7 @@ new Vue({
                                 this.newestArticle.result=data.list;
                                 this.pageOption.progressBar=false;
                             },500)
-                        console.log(this.newestArticle);
+                        // console.log(this.newestArticle);
                     }else{
                         console.log("search data item failed.")
                     }
@@ -1337,12 +1334,18 @@ new Vue({
                     if(json.code==0){
                         const data=json.data;
                         if (data.total>0)
-                        setTimeout(
-                            ()=>{
-                                this.awardandHonor.total=data.total;
-                                this.awardandHonor.result=data.list;
-                                this.pageOption.progressBar=false;
-                            },500)
+                        {
+                            setTimeout(
+                                ()=>{
+                                    this.awardandHonor.total=data.total;
+                                    this.awardandHonor.result=data.list;
+                                    this.pageOption.progressBar=false;
+                                    // console.log(this.awardandHonor.result)
+                                },500)
+                        } else{
+                            this.awardandHonor.total=data.total;
+
+                        }
 
                     }else{
                         console.log("search data item failed.")
@@ -1382,8 +1385,11 @@ new Vue({
                                 //         this.educationExperience.result[i].endTime=this.dateString2String(this.educationExperience.result[i].endTime);
                                 // }
                                 this.pageOption.progressBar=false;
-                                console.log(this.educationExperience.result);
+                                // console.log(this.educationExperience);
                             },500)
+                        else{
+                            this.educationExperience.total=data.total;
+                        }
                     }else{
                         console.log("search data item failed.")
                     }
@@ -1412,9 +1418,7 @@ new Vue({
                                 // this.userLab.leader=data.labLeader;
                                 this.userLab.members=data.labMembers;
                                 // this.pageOption.progressBar=false;
-                                console.log(this.userLab.labInfo);
                                 // console.log(this.userLab.leader);
-                                console.log(this.userLab.members);
                             },200)
                     }else{
                         console.log("search data item failed.")
@@ -1540,7 +1544,7 @@ new Vue({
             this.conferenceToBack.role=$("#conferenceRole").val();
             this.conferenceToBack.theme=$("#theme").val();
             this.conferenceToBack.role=$("#conferenceRole").val();
-            console.log(this.conferenceToBack)
+            // console.log(this.conferenceToBack)
             if(this.addorEdit=='Add'){
                 this.ConferenceAddToBack();
             }
@@ -1578,7 +1582,6 @@ new Vue({
             if (this.clickCount%2==0){
                 $('#searchProject').animate({width:'0'},500);
                 setTimeout(()=>{
-                    console.log('aaaddd');
                     $('#projectSearchContainer').css('display','none');
                 },500);
 
@@ -1596,7 +1599,6 @@ new Vue({
             if (this.clickCount%2==0){
                 $('#searchConference').animate({width:'0'},500);
                 setTimeout(()=>{
-                    console.log('aaaddd');
                     $('#conferenceSearchContainer').css('display','none');
                 },500);
 
@@ -1710,7 +1712,6 @@ new Vue({
                             case 2:
                                 Vue.set(this.dataItems ,'total', data.total);
                                 Vue.set(this.dataItems ,'result', data.list);
-                                console.log(this.dataItems.result)
                                 this.pageOption.progressBar=false;
                                 break;
                             case 3:
@@ -1793,9 +1794,8 @@ new Vue({
                         Vue.set(this.articles ,'total', data.total);
                         Vue.set(this.articles ,'result', data.list);
                         this.pageOption.progressBar=false;
-                        console.log(data);
-                        console.log(this.articles);
-                        console.log(this.articles.total);
+                        // console.log(data);
+
                         }
                 }
 
@@ -1889,7 +1889,7 @@ new Vue({
 
 
         deleteResearchItemClick(index,oid){
-            console.log(oid);
+            // console.log(oid);
             this.deleteResearchItem(index,oid);
         },
 
@@ -1901,7 +1901,6 @@ new Vue({
             }
             if (confirm("Are you sure to delete this item?")){
                 var url=urls[index];
-                console.log(url,oid);
                 let data={
                     oid:oid
                 };
@@ -1939,7 +1938,7 @@ new Vue({
 
                     },
                     error:(json)=>{
-                        console.log(json);
+                        // console.log(json);
                     }
 
 
@@ -1982,7 +1981,7 @@ new Vue({
 
                     },
                     error:(json)=>{
-                        console.log(json);
+                        // console.log(json);
                     }
 
 
@@ -2025,7 +2024,7 @@ new Vue({
 
                     },
                     error:(json)=>{
-                        console.log(json);
+                        // console.log(json);
                     }
 
 
@@ -2058,7 +2057,7 @@ new Vue({
                     async:true,
                     success:(json)=>{
                         if(json.code==0){
-                            console.log(json.data);
+                            // console.log(json.data);
                             if(json.data==1){
                                 alert("Add Success");
                                 this.articleHandleCurrentChange(1);
@@ -2252,7 +2251,6 @@ new Vue({
 
         descriptionAddToBack(){
             var  obj={description:this.description};
-            console.log(obj);
             $.ajax({
                 data:JSON.stringify(obj),
                 url:"/user/updateDescription",
@@ -2312,12 +2310,34 @@ new Vue({
             })
         },
 
+        userInfoAddToBack(){
+            var  obj={
+                description:this.description,
+                researchInterests:this.researchInterests,
+                subjectAreas:this.subjectAreas,
+            };
+            $.ajax({
+                data:JSON.stringify(obj),
+                url:"/user/updateUserIntro",
+                type:'POST',
+                async:true,
+                contentType:"application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+
+        },
+
         labAddtoBack(){
             var  obj={
                 name:this.userPersonalInfo.lab.name,
                 position:'member'
             };
-            console.log(obj)
             $.ajax({
                 data:JSON.stringify(obj),
                 url:"/user/updateLab",
@@ -2357,18 +2377,18 @@ new Vue({
         },
 
         eduExperienceAddtoBack(){
-            if(this.eduExpAddToBack.institution.trim()==""||this.eduExpAddToBack.startTime=="")
-                alert("Please enter the Institution and startTime.");
+            if(this.eduExpAddToBack.institution.trim()==""||isNaN(this.eduExpAddToBack.startTime.getDate())||isNaN(this.eduExpAddToBack.endTime.getDate()))
+                alert("Please enter the Institution and Time.");
             else
             {
                 let obj=
                     {
                         institution:this.eduExpAddToBack.institution,
                         department:this.eduExpAddToBack.department,
-                        acaDegree: this.eduExpAddToBack.acaDegree,
+                        academicDegree: this.eduExpAddToBack.acaDegree,
                         startTime: this.eduExpAddToBack.startTime,
                         endTime:this.eduExpAddToBack.endTime,
-                        location:this.eduExpAddToBack.location
+                        eduLocation:this.eduExpAddToBack.location
                     }
                 $.ajax({
                     url: "/educationExperience/add",
@@ -2428,7 +2448,7 @@ new Vue({
                email: this.userPersonalInfo.email,
                weChat: this.userPersonalInfo.weChat,
                faceBook: this.userPersonalInfo.faceBook,
-               persinPage: this.userPersonalInfo.personPage,
+               personPage: this.userPersonalInfo.personPage,
             };
             $.ajax({
                 data:JSON.stringify(obj),
@@ -2544,9 +2564,9 @@ var menuChoose=document.getElementsByClassName('menuItem'),
     chooseBox=document.getElementsByClassName('chooseBox')
 
 function showItem(){
-    console.log('99');
-    console.log(menuChoose);
-    console.log(contents);
+    // console.log('99');
+    // console.log(menuChoose);
+    // console.log(contents);
 
 }
 
@@ -2564,8 +2584,8 @@ function showItem(){
             menuBorder[i].style.borderBottomWidth = '2px';
         };
         menuChoose[i].onclick = function show() {
-            console.log(contents);
-            console.log(this);
+            // console.log(contents);
+            // console.log(this);
             for (let i = 0; i < menuChoose.length; i++) {
 
                 if (this === menuChoose[i]) {
@@ -2638,8 +2658,8 @@ function showItem(){
 
 $(".backTopUserpage").click(
     function(){$('html,body').animate({scrollTop:'0px'},300);
-        console.log('backTop')
-    })
+    }
+    )
 
 
 

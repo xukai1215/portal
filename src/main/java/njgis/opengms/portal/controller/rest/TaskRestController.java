@@ -42,10 +42,12 @@ public class TaskRestController {
         if (session.getAttribute("uid") == null) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("login");
+            modelAndView.addObject("unlogged", "1");
             return modelAndView;
         } else {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("haha");
+            modelAndView.addObject("logged", "0");
             return modelAndView;
         }
 

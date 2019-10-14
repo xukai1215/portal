@@ -44,14 +44,13 @@ var dropm1 = document.getElementById('drop1'), dropm2 = document.getElementById(
 function getMouseClass(e){
     var mouseClass=e.target.getAttribute("class");
     // alert("click ad"+mouseClass);
-    console.log(mouseClass);
     console.log(e.target);
     return mouseClass;
 }
 
 function subMenuDropDpwn(target,timerDrop,timerFold){
     let childrenCount=target.children('ul').children('li').length;
-    console.log(childrenCount);
+    // console.log(childrenCount);
     let timeLength=childrenCount*60;
     let height=childrenCount*45+5;
     // target.animate({height:height},timeLength,'swing');
@@ -70,7 +69,7 @@ function subMenuDropDpwn(target,timerDrop,timerFold){
 
 function fullSubMenuDropDpwn(target){
     let childrenCount=target.children('ul').children('li').length;
-    console.log(childrenCount);
+    // console.log(childrenCount);
     let timeLength=childrenCount*60+5;
     let height=(childrenCount-1)*50+2;
     target.children().animate({height:height},timeLength,'swing');
@@ -120,7 +119,7 @@ function fullSubMenuFoldUp(target){
     // clearTimeout(timerDrop);
     for (let i=childrenCount-1,t=1;i>=0;i--,t++){
         timerFold=setTimeout(()=>{
-            console.log('fold'+li.eq(i).children('a').text())
+            // console.log('fold'+li.eq(i).children('a').text())
             li.eq(i).css('display','none');
         },t*45) ;
     }
@@ -234,7 +233,6 @@ $('#logedSub').mouseenter(()=>{
     clearTimeout(tFoldLog);
     let target=$('#logedSub');
     subMenuDropDpwn(target);
-    console.log('drop')
 })
 
 $('#logedSub').mouseleave(()=>{
@@ -268,7 +266,6 @@ $('#subls').mouseleave(()=>{
     let target=$('.sub:eq(2)');
     tFoldls=setTimeout(()=>{
         subMenuFoldUp(target);
-        console.log('fold')
     },200)
 })
 
@@ -291,10 +288,12 @@ $('#dropmu').click((e)=>{
     }
 })
 
-$('section').click(()=>{
-    clearTimeout(tFoldLmu);
-    let target=$('.sub:eq(3)');
-    subMenuFoldUp(target);
+$('html').click((e)=>{
+    if($(e.target).closest("#leftUl").length == 0){
+        clearTimeout(tFoldLmu);
+        let target=$('.sub:eq(3)');
+        subMenuFoldUp(target);
+    }
 })
 
 //community in left sub menu  drop down and fold up
@@ -613,7 +612,6 @@ function watchWidth() {
 (function changeBorder (){
     for(let i=0;i<clickMenu.length;i++){
         clickMenu[i].onclick=function showBlueBorder(){
-            console.log('this'+this);
             if(i!=9&&i!=8&&i!=3&&i!=4){
 
                 for(let i=0;i<clickMenu.length;i++ )
@@ -629,7 +627,6 @@ function watchWidth() {
 
     for(let i=0;i<5;i++) {
         clickSubMenu[i].onclick = function showCommunityBorder() {
-            console.log(clickSubMenu);
             for (let i = 0; i < clickMenu.length; i++)
                 if (i == 3)
                     clickMenu[i].classList.add('clickBlue');
@@ -642,7 +639,7 @@ function watchWidth() {
     for(let i=5;i<8;i++) {
 
         clickSubMenu[i].onclick = function showHelpBorder() {
-            console.log('567');
+            // console.log('567');
             for (let i = 0; i < clickMenu.length; i++)
                 if (i == 4)
                     clickMenu[i].classList.add('clickBlue');
@@ -661,10 +658,18 @@ function watchWidth() {
 (function(){
     var href=window.location.pathname;
     var hrefElement=href.split('/')[1];
-    console.log(hrefElement);
-    console.log('123');
-    switch (hrefElement) {
-        case 'home':{
+    var reg=RegExp(/model/i);
+    console.log(hrefElement)
+    if(hrefElement.match(reg)){
+        for(let i=0;i<clickMenu.length;i++){
+            if(i==1)
+                clickMenu[i].classList.add('clickBlue');
+            else
+                clickMenu[i].classList.remove('clickBlue');
+        }
+    }
+    switch (true) {
+        case hrefElement=='home'||hrefElement=='':{
             for(let i=0;i<clickMenu.length;i++){
                 if(i==0)
                     clickMenu[i].classList.add('clickBlue');
@@ -675,7 +680,7 @@ function watchWidth() {
         }
 
 
-        case 'modelItem':{
+        case (hrefElement.match(reg)|| {}).input:{
             for(let i=0;i<clickMenu.length;i++){
                 if(i==1)
                     clickMenu[i].classList.add('clickBlue');
@@ -685,7 +690,7 @@ function watchWidth() {
         break;
         }
 
-        case 'dataItem':{
+        case hrefElement=='dataItem':{
             for(let i=0;i<clickMenu.length;i++){
                 if(i==2)
                     clickMenu[i].classList.add('clickBlue');
@@ -695,7 +700,7 @@ function watchWidth() {
             break;
         }
 
-        case 'repository':{
+        case hrefElement=='repository':{
             for(let i=0;i<clickMenu.length;i++){
                 if(i==3)
                     clickMenu[i].classList.add('clickBlue');
@@ -706,13 +711,17 @@ function watchWidth() {
         }
 
 
-        case 'help':{
+        case hrefElement=='help':{
             for(let i=0;i<clickMenu.length;i++){
                 if(i==4)
                     clickMenu[i].classList.add('clickBlue');
                 else
                     clickMenu[i].classList.remove('clickBlue');
             }
+            break;
+        }
+
+        default:{
             break;
         }
 

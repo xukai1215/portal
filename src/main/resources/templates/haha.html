@@ -30,59 +30,64 @@
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
     <div class="taskMain">
-        <el-row type="flex" justify="center">
-            <el-col :span="4">
-                <div class="slider scrollbar">
-                    <div class="image">
-                        <i class="fa fa-database"></i>
-                        <!--<img src="/static/haha/img/default.png">-->
+        <el-row type="flex" justify="space-around">
+            <el-col :span="5" role="modelIntro" style="min-width: 180px" id="modelSider">
+                <div id="introContainer" class="slider scrollbar" :class="isFixed== true?'fixed':''">
+                    <div class="introHeader">
+                        <div class="image">
+                            <i class="fa fa-database"></i>
+                            <!--<img src="/static/haha/img/default.png">-->
+                        </div>
+                        <div>
+                            <h3 class="model_title"> {{info.modelInfo.name}}</h3>
+                            <span  >Contributed by <span  style="cursor: pointer; font-size: 2rem;"
+                                                    @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>
+                            <br>
+                        </div>
                     </div>
-                    <h3 class="model_title"> {{info.modelInfo.name}}</h3>
-                    <!--<span  >Owner by <span  style="    cursor: pointer;-->
-    <!--font-size: 2rem;" @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>-->
-                    <!--<br>-->
-                    <!--<br>-->
-                    <span class="model_date">Updated at {{dateFormat(info.modelInfo.date)}}</span>
-                    <h4 class="desc-title">Introduction</h4>
-                    <p class="desc">{{info.modelInfo.des}}</p>
                     <div class="btn-list">
-                        <el-button plain round type="primary" @click="loadTest('1')"
-                                   :disabled="!info.modelInfo.hasTest">Load test data
+                        <el-button plain type="primary" @click="loadTest('1')" :disabled="!info.modelInfo.hasTest"
+                                   style="min-width: 120px">
+                            Load test data
                         </el-button>
 
 
-
-                        <el-button plain round type="primary" @click="invoke()">
+                        <el-button plain type="primary" @click="invoke()" style="min-width: 121px">
                             <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                         </el-button>
+
                     </div>
-
-
-
-
-
+                    <div class="introContent">
+                        <h4 class="desc-title">Introduction</h4>
+                        <p class="desc">{{info.modelInfo.des}}</p>
+                        <br>
+                        <span class="model_date">Updated at <span style="font-weight: 600">{{dateFormat(info.modelInfo.date)}}</span></span>
+                    </div>
                 </div>
             </el-col>
-            <el-col :span="16">
+            <div class="colBorder"></div>
+            <el-col :span="18">
                 <div class="content">
                     <div class="_main">
-                        <el-row class="_title">
-                            <el-col>
+                        <el-row class="_title" >
+                            <el-row type="flex" align="middle">
                                 <i class="fa fa-cogs"></i>
-                                {{info.modelInfo.name}} Model Config
-                            </el-col>
+                                <p style="font-size: 18px;margin-bottom: 0">&nbsp&nbspModel Config</p>
+                            </el-row>
 
                         </el-row>
 
-                        <el-row>
-                            <el-row class="state-container" v-for="(state,index) in info.modelInfo.states" :key="index">
-                                <el-col :span="6">
-                                    <div class="state-name"> {{state.name}}</div>
-                                    <div class="state-desc"> {{state.desc}}</div>
+                        <el-row >
+                            <el-row type="flex" class="state-container" v-for="(state,index) in info.modelInfo.states" :key="index"
+                                    justify="start" style="flex-wrap:wrap">
+                                <div class="leftContainer">
+                                    <div class="modelState">
+                                        <p class="state-name"> {{state.name}}</p>
+                                        <p class="state-desc"> {{state.desc}}</p>
 
-
-                                </el-col>
-                                <el-col :span="18">
+                                    </div>
+                                </div>
+                                <div class="dataContainer">
                                     <div class="_params-group">
                                         <el-row v-if="inEventList(state).length!==0" class="_title">Input</el-row>
                                         <div class="_items">
@@ -209,7 +214,7 @@
                                             </el-row>
                                         </div>
                                     </div>
-                                </el-col>
+                                </div>
 
                             </el-row>
 
