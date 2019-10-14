@@ -37,7 +37,7 @@
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
-    <div id="userPage" class="clearfix" style="height: auto;background-color: #f3f3f3">
+    <div id="userPage" class="clearfix" style="height: auto;background-color: #f3f3f3" v-cloak>
         <div class="titlePic">
                 <div id="upperContainer" class="fullContainer">
                     <!--/*@thymesVar id="areas" type=""*/-->
@@ -258,7 +258,7 @@
                                 <div class="contentContainer" style="min-height: 50px;justify-content: space-between;padding-top: 10px;min-height: 80px">
                                     <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
                                         <p style="font-size: 16px">Research Interests & Skills</p>
-                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="userPersonalInfo.researchInterests.length==0" style="margin-bottom: 10px" @click="addResearchInterestClick()"
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="!userPersonalInfo.researchInterests||userPersonalInfo.researchInterests==''" style="margin-bottom: 10px" @click="addResearchInterestClick()"
                                                 data-toggle="modal" data-target="researchInterestInfo"  >Add
                                             <div class="hoverLine"></div>
                                         </button>
@@ -271,7 +271,7 @@
                                         <div id="researchInterestDetail" class="contentColContainer researchInterestDetail" >
                                             <h4 v-for="researchInterest in userPersonalInfo.researchInterests" style="margin: 0 0 5px">{{researchInterest}}</h4>
                                         </div>
-                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests.length>0" class="addEditButton" @click="editResearchInterestClick()">
+                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests!=''" class="addEditButton" @click="editResearchInterestClick()">
                                             Edit
                                             <div class="hoverLine"></div></button>
                                     </div>
@@ -285,9 +285,9 @@
                             </div>
                             <div class="contentContainer colArrange" >
                                 <div id="affiliationInfoContainer" class="contentContainer affiliationInfoContainer" style=" ">
-                                    <div class="contentColContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                    <div v-if="userPersonalInfo.affiliation" class="contentColContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
                                         <h3 v-if="userPersonalInfo.affiliation" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
-                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Department :</p> <h4>{{userPersonalInfo.affiliation.department}}</h4>
+                                        <p style="color: rgb(130,130,130);">Department :</p> <h4 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation.department">{{userPersonalInfo.affiliation.department}}</h4>
 <!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>-->
 <!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>-->
                                         <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
@@ -301,7 +301,7 @@
 <!--                                         style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >-->
                                 <div class="contentColContainer affiliationInfoContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
                                     <h4 style="color: #828282;margin-left: -3px">Laboratory</h4>
-                                    <h4 style="" v-if="userPersonalInfo.lab.name">{{userPersonalInfo.lab.name}}</h4>
+                                    <h4 style="" v-if="userPersonalInfo.lab">{{userPersonalInfo.lab.name}}</h4>
                                 </div>
 <!--                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>-->
 
@@ -731,15 +731,15 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Personal Introduction</h4></div>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="editPersonalIntro"
-                                    v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests.length>0" class="addEditButton"
+                                    v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests" class="addEditButton"
                                     data-toggle="modal" data-target="#editUserIntro"  @click="editPersonalIntroClick()">
                                 Edit
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests.length>0" class="contentColContainer leftJusitifyCol noMargin" style="width: 100%;padding-bottom: 10px">
+                        <div v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests" class="contentColContainer leftJusitifyCol noMargin" style="width: 100%;padding-bottom: 10px">
                             <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Description</p>
-                            <div  style="flex-direction: column;padding: 0px 28px 15px">
+                            <div v-if="userPersonalInfo.description" style="flex-direction: column;padding: 0px 28px 15px">
                                 <h4>{{userPersonalInfo.description}}</h4>
                             </div>
                             <div class="innerBorder"></div>
@@ -754,7 +754,7 @@
                             </div>
                         </div>
                         <div  v-else style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
+                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addUserIntroClick()" data-toggle="modal" data-target="#editUserIntro">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Personal Introduction</h4>
@@ -777,11 +777,11 @@
                                 <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 160px; margin-top: 5px">
                                     <div class="cardContentContainer" style="width: 92%;margin:0; border: none;">
                                         <div>
-                                            <p><span>Institution or University:</span> &nbsp&nbsp{{eduExperience.institution}}</p>
-                                            <p><span>Department:</span> &nbsp&nbsp{{eduExperience.department}}</p>
-                                            <p><span>Academic Degree:</span> &nbsp&nbsp{{eduExperience.academicDegree}}</p>
-                                            <p><span>Time:</span> &nbsp&nbsp {{eduExperience.startTime.substring(0,10)}}~{{eduExperience.endTime.substring(0,10)}}</p>
-                                            <p><span>Location:</span> &nbsp&nbsp{{eduExperience.location}}</p>
+                                            <p><span>Institution or University:</span><span v-if="educationExperience.institution!=''"> &nbsp&nbsp{{eduExperience.institution}}</span></p>
+                                            <p><span>Department:</span><span v-if="educationExperience.department!=''"> &nbsp&nbsp{{eduExperience.department}}</span></p>
+                                            <p><span>Academic Degree:</span><span v-if="educationExperience.academicDegree!=''"> &nbsp&nbsp{{eduExperience.academicDegree}}</span></p>
+                                            <p><span>Time:</span><span> &nbsp&nbsp {{eduExperience.startTime.substring(0,10)}}~{{eduExperience.endTime.substring(0,10)}}</span></p>
+                                            <p><span>Location:</span><span v-if="educationExperience.eduLocation!=''"> &nbsp&nbsp{{eduExperience.eduLocation}}</span></p>
                                         </div>
                                     </div>
                                     <div class="deleteEduContainer">
@@ -793,8 +793,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="educationExperience.total==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
+                        <div v-if="!educationExperience.total" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
+                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addEduXpceClick()" data-toggle="modal" data-target="#editEduXpce">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Education Experience</h4>
@@ -813,13 +813,13 @@
                             </button>
                         </div>
                         <div class="listItemContainer">
-                            <div class="list-item" v-if="awardandHonor.result" v-for="(awardHonor,key) in awardandHonor.result">
+                            <div class="list-item" v-if="awardandHonor.total>0" v-for="(awardHonor,key) in awardandHonor.result">
                                 <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 80px; margin-top: 5px">
                                     <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
                                         <div>
                                             <p><span>Name:</span> &nbsp&nbsp{{awardHonor.name}}</p>
                                             <p><span>Award Agency:</span> &nbsp&nbsp{{awardHonor.awardAgency}}</p>
-                                            <p><span>Award Time:</span> &nbsp&nbsp{{awardHonor.awardTime.substring(0,10)}}</p>
+                                            <p><span>Award Time:</span><span v-if="awardHonor.awardTime!=null"> &nbsp&nbsp{{awardHonor.awardTime.substring(0,10)}}</span></p>
                                         </div>
                                     </div>
                                     <div class="deleteEduContainer">
@@ -830,8 +830,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="userPersonalInfo.awdHonors.length==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" v-if="awardandHonor.total==0" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
+                        <div v-if="!userPersonalInfo.awdHonors" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
+                            <div th:if="${userInfo.oid==userInfo.loginId}" v-if="awardandHonor.total==0" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addAwdHonorClick()" data-toggle="modal" data-target="#editAwdHonor">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Awards & Honors</h4>
@@ -1044,7 +1044,7 @@
                         <div class="subTitle">
                             <h4 style="margin: 10px;color:#828282 ">Affiliation</h4>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="editAffiliation"
-                                    v-if="userPersonalInfo.affiliation.name!=''||userPersonalInfo.affiliation.name" class="addEditButton"
+                                    v-if="userPersonalInfo.affiliation.name" class="addEditButton"
                                     data-toggle="modal" data-target="#editUserAffiliation"  @click="editAffiliationClick()">
                                 Edit
                                 <div class="hoverLine"></div>
@@ -1052,12 +1052,12 @@
                         </div>
                         <div v-if="userPersonalInfo.affiliation.name" style="flex-direction: column;padding: 0px 3px 20px;width: 90%">
                             <h3 style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
-                            <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Department :</p> <h4>{{userPersonalInfo.affiliation.department}}</h4>
-                            <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>
-                            <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>
+                            <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation.department">Department :</p> <h4>{{userPersonalInfo.affiliation.department}}</h4>
+                            <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation.position">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>
+                            <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation.location">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>
                         </div>
                         <div  v-else style="flex-direction: column;padding: 0px 3px 20px;width: 70%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
+                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addAffiliationClick()" data-toggle="modal" data-target="#editUserAffiliation">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Affiliation Info</h4>
@@ -1128,7 +1128,7 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-width:800px">Laboratory</h4></div>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="editLab"
-                                    v-if="userPersonalInfo.lab" class="addEditButton"
+                                    v-if="userPersonalInfo.lab.name" class="addEditButton"
                                     data-toggle="modal" data-target="#editUserLab"  @click="editLabClick()">
                                 Edit
                                 <div class="hoverLine"></div>
@@ -1154,7 +1154,7 @@
                             </div>
                         </div>
                         <div  v-else style="flex-direction: column;padding: 0px 3px 20px;width: 70%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaff;cursor: pointer;width: 50%;border-radius: 4px"
+                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addLabClick()" data-toggle="modal" data-target="#editUserLab">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Laboratory Info</h4>
@@ -1226,11 +1226,11 @@
                         <div id="contactTable" class="contentContainer" >
                             <div class="rigntContentContainer" >
                                 <div class="contentContainer" style="flex-direction: column; padding-left: 25px">
-                                    <h4 v-if="userPersonalInfo.email">E-mail: <a :href="'mailto:'+userPersonalInfo.email">{{userPersonalInfo.email}}</a></h4>
+                                    <h4 v-if="userPersonalInfo.email">E-mail: <a style="text-decoration:underline" :href="'mailto:'+userPersonalInfo.email">{{userPersonalInfo.email}}</a></h4>
                                     <h4 v-if="userPersonalInfo.phone" >Phone Number: <span>{{userPersonalInfo.phone}}</span></h4>
                                     <h4 v-if="userPersonalInfo.weChat">WeChat: <span>{{userPersonalInfo.weChat}}</span></h4>
                                     <h4 v-if="userPersonalInfo.faceBook">Facebook: <span>{{userPersonalInfo.faceBook}}</span></h4>
-                                    <h4 v-if="userPersonalInfo.personPage">Person Page:<span>{{userPersonalInfo.personPage}}</span></h4>
+                                    <h4 v-if="userPersonalInfo.personPage">Person Page: <span>{{userPersonalInfo.personPage}}</span></h4>
                                 </div>
                             </div>
                         </div>
@@ -2039,7 +2039,7 @@
                                     </div>
                                 </div>
                                 <button th:if="${userInfo.oid==userInfo.loginId}" id="addArticle"
-                                        v-if="articles.total>0" class="addEditButton sizeAdaption"
+                                         class="addEditButton sizeAdaption"
                                         data-toggle="modal" data-target="#articleInfo"  @click="addArticleClick()">
                                     Add Article
                                     <div class="hoverLine"></div>
@@ -2229,7 +2229,7 @@
                                     </div>
                                 </div>
                                 <button th:if="${userInfo.oid==userInfo.loginId}" id="addProject"
-                                        v-if="projects.total>0" class="addEditButton sizeAdaption"
+                                        class="addEditButton sizeAdaption"
                                         data-toggle="modal" data-target="#projectInfo"  @click="addProjectClick()">
                                     Add Project
                                     <div class="hoverLine"></div>
@@ -2410,7 +2410,7 @@
                                     </div>
                                 </div>
                                 <button th:if="${userInfo.oid==userInfo.loginId}" id="addConference"
-                                        v-if="conferences.total>0" class="addEditButton sizeAdaption"
+                                        class="addEditButton sizeAdaption"
                                         data-toggle="modal" data-target="#conferenceInfo"  @click="addConferenceClick()">
                                     Add Conference
                                     <div class="hoverLine"></div>

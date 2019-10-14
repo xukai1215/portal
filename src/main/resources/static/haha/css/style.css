@@ -1,42 +1,71 @@
 body{
-  min-width: 1200px;
+  /*min-width: 1200px;*/
 }
 .taskMain {
   /*min-width: 1200px;*/
 
 }
-.taskMain .slider {
-  border-right: solid 2px rgb(156, 154, 154);
-  min-height: 700px;
 
+.slider {
+  /*border-right: solid 2px rgb(156, 154, 154);*/
+  width: inherit;
+  min-height: 700px;
+  min-width: 180px;
   overflow-y: auto;
   overflow-x: hidden;
   word-wrap: break-word;
-  padding: 10px 10px;
+  /*padding: 10px 10px 10px 10%;*/
+  position: absolute;
+  overflow: hidden;
 }
 
+.introHeader{
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 10px;
+}
 
+.colBorder{
+  height: inherit;
+  border-right: solid 1px rgb(156, 154, 154);
+}
 
-.taskMain .content {
+.main .content {
   overflow: hidden;
 
   padding: 10px 10px 10px 30px;
 }
 
 .image {
+  min-width: 70px;
   max-width: 90%;
   max-height: 45%;
   overflow: hidden;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
 }
 .image > img {
   max-width: 100%;
   overflow: hidden;
 }
-.slider > p {
+
+.slider h3{
+  font-family: sans-serif;
+  font-weight: 600;
+}
+
+.slider h4{
+  font-family: sans-serif;
+}
+
+.slider p {
   font-size: 16px;
+  text-align: justify;
+  font-family: sans-serif;
 }
 .btn-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
   margin: 0px;
   padding: 0px;
 }
@@ -81,6 +110,14 @@ body{
   padding-bottom: 1rem;
 
 }
+
+.introContent{
+  /*height: auto;*/
+  border-top: 1px solid rgba(0,150,255,0.5);
+  padding: 0 5px;
+  overflow: hidden;
+}
+
 .state-container{
   border-top: double 4px #999;
   padding: 2rem 0;
@@ -118,7 +155,7 @@ body{
 }
 
 .model_title{
-  margin: 3rem 0 3rem;
+  margin: 4.5rem 0 1rem;
 }
 model_date{
   font-size: 0.6rem;
@@ -127,7 +164,7 @@ model_date{
 }
 .desc-title{
   font-size: 2rem;
-  margin: 2rem 0;
+  margin: 2.5rem 0 1rem 0;
 }
 .state-name{
     font-size: 1.6rem;
@@ -169,12 +206,44 @@ model_date{
   text-align: center;
 }
 .image i{
-  font-size: 10rem;
-  margin-left: 4rem;
+  font-size: 8rem;
+  /*margin-left: 4rem;*/
   margin-top: 4rem;
   color: #3DA0DB;
 }
 
 .selectData{
   border: orange 2px solid;
+}
+
+.fixed{
+  position:fixed;
+  margin-top: -80px;
+}
+
+.fixed li{
+
+}
+
+.leftContainer{
+  min-width: 215px;
+  width: 25%;
+  margin-right: 2%;
+  padding-right: 5%;
+}
+
+.modelState{
+  width: 100%;
+  min-width: 210px;
+  border: 1px solid #cdf2bb;
+  background-color:#f0f9eb;
+  border-radius: 4px;
+  word-wrap: break-word;
+  padding-top: 2rem ;
+  padding-left: 5px;
+  height: auto;
+}
+
+.dataContainer{
+  width:72%;
 }

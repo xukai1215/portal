@@ -27,7 +27,7 @@ public class EducationExperienceRestController {
 
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public JsonResult addNewEduExp(@RequestBody EducationExperienceAddDTO educationExperienceAddDTO, HttpServletRequest httpServletRequest){
-//        System.out.println("/addedu"+educationExperienceAddDTO);
+        System.out.println("/addedu"+educationExperienceAddDTO);
         HttpSession session=httpServletRequest.getSession();
         String userName=session.getAttribute("uid").toString();
         if(userName==null){

@@ -50,11 +50,35 @@ var vue = new Vue({
         sortAsc:false,
         selectData:[],
         keyInput:'',
-        modelInEvent:{}
-
+        modelInEvent:{},
+        isFixed:false,
+        introHeight:1
     },
     computed: {},
     methods: {
+
+        initSize(){
+            this.$nextTick(() =>{
+                let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                let totalHeight= $('.content').css('height')
+
+                if(scrollTop>60){
+                    this.isFixed = true;
+                }else{
+                    this.isFixed = false;
+                }
+                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
+                    $('.introContent').css('display','none')
+                }else{
+                    $('.introContent').css('display','block')
+                }
+
+
+
+            })
+
+        },
+
         dateFormat(date, format) {
             let dateObj = new Date(date);
             let fmt = format || "yyyy-MM-dd hh:mm:ss";
@@ -455,6 +479,9 @@ var vue = new Vue({
 
     },
     async mounted() {
+        this.introHeight=$('.introContent').attr('height');
+
+        console.log(this.introHeight)
         let ids = window.location.href.split("/");
         let id = ids[ids.length - 1];
         this.oid = id;
@@ -476,8 +503,28 @@ var vue = new Vue({
 
             })
 
+        window.addEventListener('scroll',this.initSize);
+        window.addEventListener('resize',this.initSize);
 
 
+    },
 
+    destory(){
+        window.removeEventListener('scroll',this.initSize);
+        window.removeEventListener('resize',this.initSize);
     }
 });
+
+(function () {
+    $(window).resize(function(){
+        let introHeaderHeight=$('.introHeader').css('width')
+        console.log(introHeaderHeight)
+        if(parseInt(introHeaderHeight)<240){
+            $('.image').css('display','none')
+        }else{
+            $('.image').css('display','block')
+        }
+    })
+
+
+})()

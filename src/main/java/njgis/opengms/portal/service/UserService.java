@@ -255,6 +255,10 @@ public class UserService {
             user1.setDescription("");
             user1.setPhone("");
             user1.setWiki("");
+            Affiliation affiliation=new Affiliation();
+            user1.setAffiliation(affiliation);
+            UserLab lab=new UserLab();
+            user1.setLab(lab);
             userDao.insert(user1);
             return 1;
         }
@@ -394,7 +398,7 @@ public class UserService {
             User user=userDao.findFirstByUserName(userName);
             if(user!=null){
                 user.setDescription(description);
-                userDao.save(user);
+                System.out.println("1"+userDao.save(user));
                 return "success";
             }
             else
@@ -413,6 +417,7 @@ public class UserService {
                 user.setResearchInterests(researchInterests);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
+                System.out.println("2"+userDao.save(user));
                 return "success";
             }
             else
@@ -469,6 +474,7 @@ public class UserService {
                 user.setSubjectAreas(subjectAreas);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
+                System.out.println("3"+userDao.save(user));
                 return "success";
             }
             else

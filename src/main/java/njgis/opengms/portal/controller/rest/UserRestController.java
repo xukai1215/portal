@@ -327,12 +327,36 @@ public class UserRestController {
     }
     //get oid
 
+    @RequestMapping(value="/updateUserIntro",method = RequestMethod.POST)
+    JsonResult updateUserDescription(@RequestBody UserIntroDTO userIntroDTO,HttpServletRequest httpServletRequest){
+        System.out.println(userIntroDTO);
+        String description=userIntroDTO.getDescription();
+        List<String> researchInterests=userIntroDTO.getResearchInterests();
+        List<String> subjectAreas=userIntroDTO.getSubjectAreas();
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result1=userService.updateDescription(description,userName);
+        String result2=userService.updateResearchInterest(researchInterests,userName);
+        String result3=userService.updateSubjectAreas(subjectAreas,userName);
+
+        JSONObject result=new JSONObject();
+        result.put("des",result1);
+        result.put("res",result2);
+        result.put("sub",result3);
+        return ResultUtils.success(result);
+    }
+
     @RequestMapping(value="/updateDescription",method = RequestMethod.POST)
     JsonResult updateUserDescription(@RequestBody DescriptionDTO descriptionDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updateDescription"+descriptionDTO);
         String description=descriptionDTO.getDescription();
         HttpSession httpSession=httpServletRequest.getSession();
         String userName=httpSession.getAttribute("uid").toString();
+        System.out.println(userName);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
