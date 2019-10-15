@@ -52,7 +52,6 @@ public class ComputableModelRestController {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
-
     @RequestMapping (value="/add",method = RequestMethod.POST)
     JsonResult add(HttpServletRequest request) throws IOException {
 
@@ -126,9 +125,9 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id){
+    ModelAndView get(@PathVariable ("id") String id ,HttpServletRequest httpServletRequest){
 
-        return computableModelService.getPage(id);
+        return computableModelService.getPage(id,httpServletRequest);
 
     }
 

@@ -607,6 +607,11 @@
       -webkit-box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
       box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
     }
+
+    .panel{
+      border-top:3px solid
+    }
+
     .panel.panel-default {
       border-top-color: #F5F5F5;
       border-top-width: 1px;
@@ -1461,7 +1466,7 @@ ul,li{
   margin: 0;
 }
 
-.panel-heading span{
+.panel-heading>span{
   color: #000000
 }
 

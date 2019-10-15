@@ -1308,6 +1308,10 @@ input::placeholder{
     margin-bottom: 7px;
 }
 
+.confirmButton:hover i{
+   font-weight: 600;
+}
+
 #descriptionDetail{
     max-width: 90%;
     margin-right: 5px;
@@ -1450,6 +1454,10 @@ input[type="radio"]:checked + span {
 }
 
 .squareButton:hover{
+    font-weight: 700;
+}
+
+.squareButton:hover i{
     font-weight: 700;
 }
 

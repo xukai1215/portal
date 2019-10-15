@@ -398,7 +398,7 @@ public class UserService {
             User user=userDao.findFirstByUserName(userName);
             if(user!=null){
                 user.setDescription(description);
-                System.out.println("1"+userDao.save(user));
+                userDao.save(user);
                 return "success";
             }
             else
@@ -417,7 +417,6 @@ public class UserService {
                 user.setResearchInterests(researchInterests);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
-                System.out.println("2"+userDao.save(user));
                 return "success";
             }
             else
@@ -474,7 +473,6 @@ public class UserService {
                 user.setSubjectAreas(subjectAreas);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
-                System.out.println("3"+userDao.save(user));
                 return "success";
             }
             else

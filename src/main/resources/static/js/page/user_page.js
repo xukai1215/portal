@@ -250,6 +250,7 @@ new Vue({
 
                 addorEdit:'Add',
 
+
                 space:[],
 
                 editOid:'',

@@ -16,6 +16,7 @@ var vue = new Vue({
         },
         showUpload: false,
         showDataChose: false,
+        shareIndex:false,
         total: 100,
         dataFromDataContainer: [
             {
@@ -40,7 +41,7 @@ var vue = new Vue({
         inEvent: [],
         outEvent: [],
         oid: null,
-
+        taskId:null,
         fileList:[],
 
         //select data from user
@@ -56,7 +57,11 @@ var vue = new Vue({
         keyInput:'',
         modelInEvent:{},
         isFixed:false,
-        introHeight:1
+        introHeight:1,
+
+        downloadUrl:'',
+
+        clipBoard:'',
     },
     computed: {},
     methods: {
@@ -65,13 +70,14 @@ var vue = new Vue({
             this.$nextTick(() =>{
                 let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
                 let totalHeight= $('.content').css('height')
-
+                let introHeight=$('.introHeader').css('height')+$('.introContent').css('height')
+                let toBottomHeight= parseInt(totalHeight)-parseInt(scrollTop)-parseInt(introHeight)
                 if(scrollTop>60){
                     this.isFixed = true;
                 }else{
                     this.isFixed = false;
                 }
-                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
+                if(toBottomHeight<300){
                     $('.introContent').css('display','none')
                 }else{
                     $('.introContent').css('display','block')
@@ -155,11 +161,9 @@ var vue = new Vue({
         },
         init() {},
         inEventList(state) {
-            let stateInfo= state.event.filter(value => {
+            return state.event.filter(value => {
                 return value.eventType === "response";
             });
-            console.log(stateInfo)
-            return stateInfo
         },
         outEventList(state) {
             return state.event.filter(value => {
@@ -213,9 +217,30 @@ var vue = new Vue({
             });
             loading.close();
         },
+
         goPersonCenter(oid){
             window.open("/user/"+oid);
         },
+
+        share(url){
+            this.shareIndex=true;
+            this.downloadUrl='http://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+
+        },
+
+        copyLink(){
+            console.log(this.clipBoard);
+            this.clipBoard.on('success', function () {
+                alert('Copy link successly')
+                this.clipBoard.destroy()
+            });
+            this.clipBoard.on('error', function () {
+                alert("复制失败")
+                this.clipBoard.destroy()
+            });
+            this.shareIndex=false
+        },
+
         download(event) {
             //下载接口
             if(event.url!=undefined) {
@@ -272,130 +297,6 @@ var vue = new Vue({
             };
         },
 
-        async invoke() {
-
-            console.log(this.modelInEvent)
-            const loading = this.$loading({
-                lock: true,
-                text: "Model is running, you can check running state and get the results of this model in \"User Space\" -> \"Task\"",
-                spinner: "el-icon-loading",
-                background: "rgba(0, 0, 0, 0.7)"
-            });
-            let json = {
-                oid: this.oid,
-                ip: this.info.taskInfo.ip,
-                port: this.info.taskInfo.port,
-                pid: this.info.taskInfo.pid,
-                inputs: []
-            };
-
-            try{
-                this.info.modelInfo.states.forEach(state => {
-                    let statename = state.name;
-                    state.event.forEach((el) => {
-                        let event = el.eventName;
-                        let tag = el.tag;
-                        let url = el.url;
-                        if (el.eventType == "response") {
-                            if (el.optional) {
-                                if(url === null || url === undefined){
-
-                                }else{
-                                    json.inputs.push({
-                                        statename,
-                                        event,
-                                        url,
-                                        tag
-                                    });
-                                }
-                            } else {
-                                if (url === null || url === undefined) {
-                                    this.$message.error("Some input data is not provided");
-                                    throw new Error("Some input data is not provided");
-                                }
-                                json.inputs.push({
-                                    statename,
-                                    event,
-                                    url,
-                                    tag
-                                });
-                            }
-                        }
-                    });
-                });
-            }catch(e){
-                loading.close();
-                return;
-            }
-
-
-            let { data, code, msg } = await (await fetch("/task/invoke", {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(json)
-            })).json();
-
-            if (code == -1) {
-                this.$message.error(msg);
-                window.open("/user/login");
-            }
-
-            if (code == -2) {
-                this.$message.error(msg);
-                loading.close();
-                return;
-            }
-
-            let tid = data;
-
-            let interval = setInterval(async () => {
-                let { code, data, msg } = await (await fetch("/task/getResult", {
-                    method: "post",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        ip: this.info.taskInfo.ip,
-                        port: this.info.taskInfo.port,
-                        tid: tid
-                    })
-                })).json();
-                if (code === -1) {
-                    this.$message.error(msg);
-                    clearInterval(interval);
-                    loading.close();
-                }
-                if (data.status === -1) {
-                    this.$message.error("Some error occured when this model is running!");
-                    clearInterval(interval);
-                    loading.close();
-                } else if (data.status === 2) {
-                    this.$message.success("The model runs successfully!");
-                    clearInterval(interval);
-                    let outputs = data.outputdata;
-
-                    outputs.forEach(el => {
-                        let statename = el.statename;
-                        let eventName = el.event;
-                        let state = this.info.modelInfo.states.find(state => {
-                            return state.name == statename;
-                        });
-                        if (state == undefined) return;
-                        let event = state.event.find(event => {
-                            return event.eventName == eventName;
-                        });
-                        if (event == undefined) return;
-                        this.$set(event, "tag", el.tag);
-                        this.$set(event, "url", el.url);
-                    });
-
-                    loading.close();
-                } else {
-                }
-            }, 3000);
-        },
 
 
         selectFromMyData(key,modelInEvent) {
@@ -478,7 +379,7 @@ var vue = new Vue({
                 //todo 拼接url
                 this.modelInEvent.url="http://172.21.212.64:8081/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
                 this.modelInEvent.tag=da.item.fileName
-                
+
             }
 
 
@@ -493,11 +394,15 @@ var vue = new Vue({
     async mounted() {
         this.introHeight=$('.introContent').attr('height');
 
-        console.log(this.introHeight)
-        let ids = window.location.href.split("/");
-        let id = ids[ids.length - 1];
-        this.oid = id;
-        let { data } = await (await fetch("/task/TaskInit/" + id)).json();
+        let hrefs = window.location.href.split("/");
+        let ids = hrefs[hrefs.length - 1];
+        let twoIds=ids.split('&')
+        let modelId=twoIds[0];
+        let taskId=twoIds[1];
+        this.oid = modelId;
+        this.taskId = taskId;
+        console.log(modelId)
+        let { data } = await (await fetch("/task/TaskOutputInit/" + ids)).json();
         if(data==null||data==undefined){
             alert("Initialization error!")
         }
@@ -515,6 +420,8 @@ var vue = new Vue({
 
             })
 
+        this.clipBoard = new ClipboardJS(".copyLinkBtn");
+
         window.addEventListener('scroll',this.initSize);
         window.addEventListener('resize',this.initSize);
 
@@ -530,7 +437,6 @@ var vue = new Vue({
 (function () {
     $(window).resize(function(){
         let introHeaderHeight=$('.introHeader').css('width')
-        console.log(introHeaderHeight)
         if(parseInt(introHeaderHeight)<240){
             $('.image').css('display','none')
         }else{

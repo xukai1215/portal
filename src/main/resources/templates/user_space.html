@@ -2288,18 +2288,8 @@
                                 <a class="panel-title" :href="'/task/'+task.computableId" style="font-weight: bold">
                                     {{task.computableName}}
                                 </a>
-                                <div class="pull-right" :attr.uid="task.msr_id" style="margin-top: -3px;">
-                                            <span style="margin-right:20px">
-                                                <b>Create Time:</b>{{formatDate(task.runTime)}}
-                                            </span>
-                                    <!--<button class="btn btn-primary downloadAll"-->
-                                    <!--@click="downloadAll(task.id,task.name,task.runTime)"-->
-                                    <!--v-if="task.status==2">-->
-                                    <!--Download All Files-->
-                                    <!--</button>-->
-                                    <!--<button class="btn btn-danger delete" click="deleteModel(task.id)">Delete-->
-                                    <!--</button>-->
-                                </div>
+                                <el-button type="primary" style="float: right;margin-right: 3px;background-color: rgb(0,200,255)" @click="checkOutput(task.computableId,task.taskId)">Check Output</el-button>
+
                             </div>
                             <div class="panel-body">
                                 <h5 v-if="task.status==0||task.status==1">
@@ -2319,6 +2309,18 @@
 
                                     </li>
                                 </ul>
+                            </div>
+                            <div class="pull-right" :attr.uid="task.msr_id" style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
+                                            <span style="margin-right:20px">
+                                                <b>Create Time:</b>{{formatDate(task.runTime)}}
+                                            </span>
+                                <!--<button class="btn btn-primary downloadAll"-->
+                                <!--@click="downloadAll(task.id,task.name,task.runTime)"-->
+                                <!--v-if="task.status==2">-->
+                                <!--Download All Files-->
+                                <!--</button>-->
+                                <!--<button class="btn btn-danger delete" click="deleteModel(task.id)">Delete-->
+                                <!--</button>-->
                             </div>
                         </div>
                     </div>

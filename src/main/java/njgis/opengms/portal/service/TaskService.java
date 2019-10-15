@@ -115,6 +115,66 @@ public class TaskService {
         return modelAndView;
     }
 
+    public JSONObject initTaskOutput(String ids,String userName){
+        String[] twoIds=ids.split("&");
+
+        String modelId= twoIds[0];
+        String taskId= twoIds[1];
+
+        ComputableModel modelInfo = computableModelService.getByOid(modelId);
+        modelInfo.setViewCount(modelInfo.getViewCount() + 1);
+        computableModelDao.save(modelInfo);
+
+        User user = userDao.findFirstByUserName(modelInfo.getAuthor());
+        JSONObject userJson = new JSONObject();
+        userJson.put("compute_model_user_name", user.getUserName());
+        userJson.put("compute_model_user_oid", user.getOid());
+        userJson.put("userName", userName);
+
+        //获得task信息
+        Task task=findByTaskId(taskId);
+
+        JsonResult jsonResult = generateTask(modelId, userName);
+        JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
+
+        JSONObject model_Info = new JSONObject();
+        JSONObject taskInfo = new JSONObject();
+        JSONObject dxInfo = new JSONObject();
+        JSONObject dxServer = data.getJSONObject("dxServer");
+
+        model_Info.put("name", modelInfo.getName());
+        model_Info.put("des", modelInfo.getDescription());
+        model_Info.put("date", modelInfo.getCreateTime());
+        dxInfo.put("dxIP", dxServer.getString("ip"));
+        dxInfo.put("dxPort", dxServer.getString("port"));
+        dxInfo.put("dxType", dxServer.getString("type"));
+        taskInfo.put("ip", data.getString("ip"));
+        taskInfo.put("port", data.getString("port"));
+        taskInfo.put("pid", data.getString("pid"));
+        taskInfo.put("outputs", task.getOutputs());
+
+        boolean hasTest;
+        if(modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")){
+            hasTest = false;
+        }else{
+            hasTest = true;
+        }
+        model_Info.put("hasTest", hasTest);
+        JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
+        JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
+        JSONArray states = mdlObj.getJSONArray("states");
+        model_Info.put("states",states);
+        //拼接
+        JSONObject result = new JSONObject();
+        result.put("userInfo",userJson);
+        result.put("modelInfo",model_Info);
+        result.put("taskInfo",taskInfo);
+        result.put("dxInfo",dxInfo);
+        System.out.println(result);
+        return result;
+    }
+
+
     public JSONObject initTask(String oid, String userName){
         //条目信息
         ComputableModel modelInfo = computableModelService.getByOid(oid);
@@ -135,6 +195,7 @@ public class TaskService {
         JsonResult jsonResult = generateTask(oid, userName);
 
         JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
+        System.out.println("task"+jsonResult);
         JSONObject dxServer = data.getJSONObject("dxServer");
         taskInfo.put("ip", data.getString("ip"));
         taskInfo.put("port", data.getString("port"));

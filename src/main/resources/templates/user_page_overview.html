@@ -1373,7 +1373,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchModel" class="searchInput" @keydown.enter="searchResourceClick(1)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(1)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(1)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1424,6 +1426,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <h4 v-if="modelItems.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
@@ -1450,7 +1453,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchData" class="searchInput" @keydown.enter="searchResourceClick(2)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(2)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(2)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1495,6 +1500,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="dataItems.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1520,7 +1526,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchConceptualModel" class="searchInput" @keydown.enter="searchResourceClick(3)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(3)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(3)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1564,6 +1572,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="conceptualModels.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1589,7 +1598,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchLogicalModel" class="searchInput" @keydown.enter="searchResourceClick(4)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(4)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(4)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1632,6 +1643,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="logicalModels.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1657,7 +1669,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchComputableModel" class="searchInput" @keydown.enter="searchResourceClick(5)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(5)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(5)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1700,6 +1714,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="computableModels.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1725,14 +1740,16 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchConcept" class="searchInput" @keydown.enter="searchResourceClick(6)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(6)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(6)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
-                            <div class="list-item" :key="concept.oid" v-if="concepts.result" v-for="(concept,key) in concepts.result">
+                            <div class="list-item" :key="concept.oid" v-if="concepts.total" v-for="(concept,key) in concepts.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="imgPallet">
@@ -1771,6 +1788,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="concepts.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1796,7 +1814,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchSpatial" class="searchInput" @keydown.enter="searchResourceClick(7)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(7)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(7)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1839,6 +1859,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="spatials.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1864,7 +1885,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchTemplate" class="searchInput" @keydown.enter="searchResourceClick(8)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(8)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(8)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1907,6 +1930,7 @@
                                 </div>
                             </div>
                             <!--                        <div class="splitBlock" style="background-color:#e5e5e5;width: 99% ">-->
+                            <h4 v-if="templates.total==0" style="color: #999999;margin-top: 20px;">No result found</h4>
                             <div>
                                 <div class="text-center" style="margin:15px 0;">
                                     <el-pagination
@@ -1932,7 +1956,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchUnit" class="searchInput" @keydown.enter="searchResourceClick(9)"/>
-                                            <button class="confirmButton noMargin" @click="searchResourceClick(9)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResourceClick(9)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -2034,7 +2060,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
                                             <input id="searchArticle" class="searchInput" @keydown.enter="searchResearchClick(1)"/>
-                                            <button class="confirmButton noMargin" @click="searchResearchClick(1)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResearchClick(1)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -2061,7 +2089,7 @@
                                                         <div>×</div>
                                                     </button>
                                                     <button class="squareButton safeBack" @click="editArticleClick(key,article.oid)" data-toggle="modal" data-target="#articleInfo">
-                                                        <div>edit</div>
+                                                        <i class="fa fa-pencil-square-o" style="font-size: 25px;margin-left: 3px"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -2224,7 +2252,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer   searchInputContainer">
                                             <input id="searchProject" class="searchInput" @keydown.enter="searchResearchClick(2)"/>
-                                            <button class="confirmButton noMargin" @click="searchResearchClick(2)" ></button>
+                                            <button class="confirmButton noMargin" @click="searchResearchClick(2)" >
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -2253,7 +2283,7 @@
                                                         <div>×</div>
                                                     </button>
                                                     <button class="squareButton safeBack" @click="editProjectClick(key,project.oid)" data-toggle="modal" data-target="#projectInfo">
-                                                        <div>edit</div>
+                                                        <i class="fa fa-pencil-square-o" style="font-size: 25px;margin-left: 3px"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -2405,7 +2435,9 @@
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer searchInputContainer">
                                             <input id="searchConference" class="searchInput"  @keydown.enter="searchResearchClick(3)"/>
-                                            <button class="confirmButton noMargin" @click="searchResearchClick(3)"></button>
+                                            <button class="confirmButton noMargin" @click="searchResearchClick(3)">
+                                                <i class="fa fa-search"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -2434,7 +2466,7 @@
                                                         <div>×</div>
                                                     </button>
                                                     <button class="squareButton safeBack" @click="editConferenceClick(key,conference.oid)" data-toggle="modal" data-target="#conferenceInfo">
-                                                        <div>edit</div>
+                                                        <i class="fa fa-pencil-square-o" style="font-size: 25px;margin-left: 3px"></i>
                                                     </button>
                                                 </div>
                                             </div>

@@ -31,14 +31,14 @@
     <div th:replace="fragments/navbar :: unlog"></div>
     <div class="taskMain">
         <el-row type="flex" justify="space-around">
-            <el-col :span="5" role="modelIntro" style="min-width: 180px" id="modelSider">
+            <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">
                 <div id="introContainer" class="slider scrollbar" :class="isFixed== true?'fixed':''">
                     <div class="introHeader">
                         <div class="image">
                             <i class="fa fa-database"></i>
                             <!--<img src="/static/haha/img/default.png">-->
                         </div>
-                        <div>
+                        <div style="margin-left: 8px">
                             <h3 class="model_title"> {{info.modelInfo.name}}</h3>
                             <span  >Contributed by <span  style="cursor: pointer; font-size: 2rem;"
                                                     @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>
@@ -66,7 +66,7 @@
                 </div>
             </el-col>
             <div class="colBorder"></div>
-            <el-col :span="18">
+            <el-col :span="18" style="margin-left: 8px">
                 <div class="content">
                     <div class="_main">
                         <el-row class="_title" >
@@ -131,7 +131,7 @@
                                                                     width="30%"
                                                                     height="50%"
 
-                                                                    style="overflow-y: scroll"
+                                                                    style="overflow-y: scroll;"
                                                             >
 
                                                                 <!--<el-input   placeholder="search user data.."  @keyup.native=""></el-input>-->
@@ -158,7 +158,7 @@
 
 
                                                             <el-button plain round type="primary"
-                                                                       @click="upload(modelInEvent)">
+                                                                       @click="showUpload(modelInEvent)">
                                                                 <i class="fa fa-cloud-upload"></i>
                                                             </el-button>
                                                             <el-button plain round type="success"
@@ -284,7 +284,7 @@
 
                         <el-dialog title="Choose Data" :visible.sync="showUpload" width="30%">
                             <el-upload ref="upload" drag action="/dispatchRequest/upload" :data="uploadData()"
-                                       :before-remove="beforeRemove"
+                                       :before-remove="beforeRemove" :file-list="fileList"
                                        :on-success="onSuccess">
                                 <el-button slot="trigger" size="small" type="primary">Choose File</el-button>
                             </el-upload>

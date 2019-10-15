@@ -2403,7 +2403,7 @@ var vue = new Vue({
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
                 if(this.curIndex!=1)
                     this.pageControlIndex=this.curIndex;
-                else this.pageControlIndex='researc';
+                else this.pageControlIndex='research';
                 switch (this.pageControlIndex) {
                     // this.computerModelsDeploy = [];
                     // this.resourceLoad = true;
@@ -2490,6 +2490,18 @@ var vue = new Vue({
                         else this.searchUnits();
                         break;
 
+                    case '6':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        if(this.isInSearch==0)
+                            this.getModels();
+                        else this.searchModels();
+                        break;
 
                     case 'research':
                         this.resourceLoad = true;
@@ -3424,7 +3436,13 @@ var vue = new Vue({
                         that.loading=false
                     }
                 })
+        },
+
+        checkOutput(modelId,taskId){
+            window.open('/task/output/'+modelId+'&'+taskId);
         }
+
+
 
 
     },

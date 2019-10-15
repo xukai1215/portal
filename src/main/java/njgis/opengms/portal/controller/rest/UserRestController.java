@@ -329,7 +329,6 @@ public class UserRestController {
 
     @RequestMapping(value="/updateUserIntro",method = RequestMethod.POST)
     JsonResult updateUserDescription(@RequestBody UserIntroDTO userIntroDTO,HttpServletRequest httpServletRequest){
-        System.out.println(userIntroDTO);
         String description=userIntroDTO.getDescription();
         List<String> researchInterests=userIntroDTO.getResearchInterests();
         List<String> subjectAreas=userIntroDTO.getSubjectAreas();

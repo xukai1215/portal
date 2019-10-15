@@ -6,11 +6,16 @@ body{
 
 }
 
+.el-dialog{
+  max-height: 70%;
+  overflow-y: auto;
+}
+
 .slider {
   /*border-right: solid 2px rgb(156, 154, 154);*/
   width: inherit;
   min-height: 700px;
-  min-width: 180px;
+  min-width: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   word-wrap: break-word;
@@ -246,4 +251,8 @@ model_date{
 
 .dataContainer{
   width:72%;
+}
+
+.el-loading-spinner p{
+  font-size: 20px;
 }

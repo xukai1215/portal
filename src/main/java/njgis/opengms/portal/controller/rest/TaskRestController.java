@@ -39,6 +39,7 @@ public class TaskRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     ModelAndView getTask(@PathVariable("id") String id, HttpServletRequest request) {
         HttpSession session = request.getSession();
+        System.out.println("hh");
         if (session.getAttribute("uid") == null) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("login");
@@ -51,6 +52,34 @@ public class TaskRestController {
             return modelAndView;
         }
 
+    }
+
+    @RequestMapping(value = "/output/{id}", method = RequestMethod.GET)
+    ModelAndView getTaskOutput(@PathVariable("id") String id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("uid") == null) {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("login");
+            modelAndView.addObject("unlogged", "1");
+            return modelAndView;
+        } else {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("taskOutput");
+            modelAndView.addObject("logged", "0");
+            return modelAndView;
+        }
+
+    }
+
+    @RequestMapping(value = "/TaskOutputInit/{id}", method = RequestMethod.GET)
+    JsonResult initTaskOutput(@PathVariable("id") String ids, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String userName = request.getSession().getAttribute("uid").toString();
+            return ResultUtils.success(taskService.initTaskOutput(ids, userName));
+        }
     }
 
     @RequestMapping(value = "/TaskInit/{id}", method = RequestMethod.GET)
