@@ -507,8 +507,10 @@
                                 <dl>
                                     <!--<dt>Affiliation :</dt>-->
                                     <!--<dd th:text="${author.ins}"></dd>-->
+                                    <div th:if="${author.email!='unknow'&&author.email!=''}">
                                     <dt>Email :</dt>
                                     <dd th:text="${author.email}">njgis@163.com</dd>
+                                    </div>
                                     <dt>Home Page :</dt>
                                     <dd ><a th:href="${author.homepage}">View</a></dd>
                                 </dl>

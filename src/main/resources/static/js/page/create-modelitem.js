@@ -379,6 +379,13 @@ var vue = new Vue({
     },
     mounted() {
 
+        $("input[name='Status']").iCheck({
+            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-green',
+            increaseArea: '0%' // optional
+
+        });
+
         $.ajax({
             type: "GET",
             url: "/user/load",
@@ -459,6 +466,13 @@ var vue = new Vue({
                 success: (result) => {
                     console.log(result)
                     var basicInfo = result.data;
+
+                    if(basicInfo.status=="public"){
+                        $("input[name='Status']").eq(0).iCheck('check');
+                    }
+                    else{
+                        $("input[name='Status']").eq(1).iCheck('check');
+                    }
 
                     //cls
                     this.cls = basicInfo.classifications;
@@ -838,7 +852,7 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
-
+            modelItemObj.status=$("input[name='Status']:checked").val();
             modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
             modelItemObj.keywords = $("#tagInput").val().split(",");

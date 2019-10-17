@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DataItemMeta;
+import njgis.opengms.portal.entity.support.DataMeta;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,11 +30,11 @@ public class DataItem   {
     String id;
     String name;
     String type;
+    String contentType;
     String description;
     String detail;
     String author;
     String userName;
-
 
     String reference;
 
@@ -44,6 +45,8 @@ public class DataItem   {
 
     List<String> relatedModels;
 
+    List<DataMeta> dataList;
+
     Date createTime;
     Date lastModifyTime;
 
@@ -53,7 +56,7 @@ public class DataItem   {
 
     List<String> contributers;
 
-     DataItemMeta meta;
+    DataItemMeta meta;
 
     List<Comments> comments;
 
