@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.Comments;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DataItemMeta;
-import org.springframework.data.annotation.Id;
+import njgis.opengms.portal.entity.support.DataMeta;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +24,7 @@ public class DataItemAddDTO {
 
     String name;
     String type;
+    String contentType;
     String description;
     String detail;
     String author;
@@ -37,7 +37,7 @@ public class DataItemAddDTO {
     List<String> contributers;
     List<AuthorInfo> authorship;
 
-
+    List<DataMeta> dataList;
 
     int shareCount=0;
     int viewCount=0;

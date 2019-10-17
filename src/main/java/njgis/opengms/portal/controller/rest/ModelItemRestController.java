@@ -46,7 +46,6 @@ public class ModelItemRestController {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
-
     @RequestMapping(value="/repository",method = RequestMethod.GET)
     public ModelAndView getModelItems(HttpServletRequest req) {
         System.out.println("model items");

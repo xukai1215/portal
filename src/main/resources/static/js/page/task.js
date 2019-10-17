@@ -366,7 +366,7 @@ var vue = new Vue({
                     clearInterval(interval);
                     loading.close();
                 } else if (data.status === 2) {
-                    this.$message.success("The model runs successfully!");
+                    this.$message.success("The model has run successfully!");
                     clearInterval(interval);
                     let outputs = data.outputdata;
 

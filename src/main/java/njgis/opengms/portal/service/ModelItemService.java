@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
 
 public class ModelItemService {
 
+
     @Autowired
     ClassificationService classificationService;
 
@@ -470,7 +471,7 @@ public class ModelItemService {
         Date now = new Date();
         modelItem.setCreateTime(now);
         modelItem.setLastModifyTime(now);
-        modelItem.setStatus("public");
+        modelItem.setStatus(modelItemAddDTO.getStatus());
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
 
@@ -1100,16 +1101,38 @@ public class ModelItemService {
             query = new BasicDBObject("$and", Arrays.asList(query, query_parents));
         }
 
+        long start = System.currentTimeMillis();
+
         MongoCollection<Document> Col = modelDao.GetCollection("Portal", "modelItem");
+
+        long total=0;
+        if(query.size()==0){
+            total=modelItemDao.count();
+        }
+//        String jsonStr=JSONObject.toJSONString(query);
+//        Document countDoc=Document.parse(jsonStr);
+//        MongoClient mongoClient=new MongoClient("172.21.213.33",27017);
+//        MongoTemplate mongoTemplate=new MongoTemplate(new SimpleMongoDbFactory(mongoClient,"Portal"));
+//        long total=mongoTemplate.getCollection("modelItem").count(countDoc);
         FindIterable<Document> findIterable = modelDao.RetrieveDocs(Col, query, modelDao.getSort("viewCount", modelItemFindDTO.getAsc()));
-        int total=0;
+
         MongoCursor<Document> findCursor=findIterable.iterator();
-        while(findCursor.hasNext()){
-            Document document=findCursor.next();
-            total++;
+
+        long time1=System.currentTimeMillis();
+        System.out.println("findCursor Define:"+(time1-start));
+        if(total==0) {
+            //查询结果为全部对象时，不遍历
+            while (findCursor.hasNext()) {
+                Document document = findCursor.next();
+                total++;
+            }
         }
 
-        MongoCursor<Document> cursor=findIterable.limit(10).skip((modelItemFindDTO.getPage())*10).iterator();
+        findCursor.close();
+        long time2=System.currentTimeMillis();
+        System.out.println("count Time:"+(time2-time1));
+
+        MongoCursor<Document> cursor=findIterable.limit(10).skip(modelItemFindDTO.getPage()*10).iterator();
         JSONObject output=new JSONObject();
         JSONArray list = new JSONArray();
         while (cursor.hasNext()) {
@@ -1123,6 +1146,10 @@ public class ModelItemService {
             list.add(JSONObject.parse(doc.toJson()));
 
         }
+        cursor.close();
+
+        long time3=System.currentTimeMillis();
+        System.out.println("read for result Time:"+(time3-time2));
 
         //users
         JSONArray users=new JSONArray();
@@ -1135,10 +1162,14 @@ public class ModelItemService {
             users.add(userObj);
         }
 
+        long time4=System.currentTimeMillis();
+        System.out.println("user Time:"+(time4-time3));
+
         output.put("total",total);
         output.put("pages",Math.ceil(total));
         output.put("list",list);
         output.put("users",users);
+
 
 
         return output;

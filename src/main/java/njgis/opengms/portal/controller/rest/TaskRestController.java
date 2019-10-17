@@ -53,6 +53,12 @@ public class TaskRestController {
 
     }
 
+//    @RequestMapping(value="/info",method = RequestMethod.GET)
+//    JsonResult getInfo(@RequestParam("oid") String oid){
+//        taskService.
+//
+//    }
+
     @RequestMapping(value = "/TaskInit/{id}", method = RequestMethod.GET)
     @ApiOperation (value = "Task初始化API，获取模型描述信息，State信息，task以及Dx相关信息")
     JsonResult initTask(@PathVariable("id") String id, HttpServletRequest request){

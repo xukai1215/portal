@@ -38,6 +38,9 @@ public class DispatchingRequestController {
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
+    @Value("${managerServerIpAndPort}")
+    String managerServerIpAndPort;
+
     @RequestMapping (value="/upload",method = RequestMethod.POST)
     JsonResult upload(@RequestParam("file")MultipartFile file,
                       @RequestParam("host")String host,
@@ -46,7 +49,7 @@ public class DispatchingRequestController {
                       @RequestParam("userName")String userName
 
                       ) throws IOException {
-        String url="http://localhost:8084/GeoModeling/computableModel/uploadData";
+        String url="http://"+managerServerIpAndPort+"/GeoModeling/computableModel/uploadData";
         Map<String,String> a=new HashMap<>();
         a.put("host",host);
         a.put("port",port);

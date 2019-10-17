@@ -375,9 +375,9 @@
                     <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
-                                aria-expanded="true">[Expand]</a></span>
-                        <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</div>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse collapse" aria-expanded="true"
+                                aria-expanded="true" th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
                              style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>

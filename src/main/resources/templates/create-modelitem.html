@@ -19,15 +19,17 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
+
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/iCheck/skins/flat/green.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
 
     <style>
-        input.spinner{
-            background:url(/static/img/input-spinner.gif) right no-repeat !important;
+        input.spinner {
+            background: url(/static/img/input-spinner.gif) right no-repeat !important;
         }
 
         .btn-block {
@@ -110,6 +112,28 @@
                                                         </div>
                                                         <div class="col-sm-8">
                                                             <div id="RepositoryParentsPanel">
+                                                                <div class="form-horizontal">
+                                                                    <div class="form-group">
+                                                                        <label class="col-sm-2 control-label">
+                                                                            Status
+                                                                        </label>
+                                                                        <div class="input-group col-md-5">
+                                                                            <label style="margin-top:8px;margin-left: 20px; font-size: 16px">
+                                                                                <input type="radio" name="Status"
+                                                                                       value="public"
+                                                                                       checked="checked"/>
+                                                                                <label style="float:left; margin-left: 5px;">Public</label>
+                                                                            </label>
+                                                                            <label style="margin-left: 20px; font-size: 16px">
+                                                                                <input type="radio" name="Status"
+                                                                                       value="private"
+                                                                                       />
+                                                                                <label style="float:left; margin-left: 5px;">Private</label>
+                                                                            </label>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="form-horizontal">
                                                                     <div class="form-group">
                                                                         <label for="parentNode"
@@ -590,19 +614,15 @@
 <script type="text/javascript" src="/static/data-tables/DT_bootstrap.js"></script>
 
 
-
 <script>
     $(document).ready(function () {
-
-
-
-
 
 
     });
 </script>
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/element-ui/index.js"></script>
+<script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>
 <script src="/static/js/page/create-modelitem.js"></script>
 
 </html>
