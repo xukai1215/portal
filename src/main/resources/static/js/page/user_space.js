@@ -1,3 +1,5 @@
+//element-ui 切换英文，勿删！
+ELEMENT.locale(ELEMENT.lang.en)
 var vue = new Vue({
     el: "#app",
     data: {
@@ -157,9 +159,219 @@ var vue = new Vue({
 
         isInSearch:0,
 
+        taskSharingVisible:false,
+        taskDataList: [],
+        taskSharingActive:0,
+        stateFilters:[],
+        multipleSelection: [],
+        taskDataForm:{
+            name:'',
+            type:"option1",
+            contentType:"resource",
+            description:"",
+            detail:"",
+            reference:"",
+            keywords:[],
+            contributers:[],
+            classifications:[],
+            displays:[],
+            authorship:[],
+            comments:[],
+
+            categoryText:[],
+
+        },
+
     },
 
     methods: {
+        chooseTaskDataCate(item,e){
+            let exist=false;
+            let cls=this.taskDataForm.classifications;
+            for(i=0;i<cls.length;i++){
+                if(cls[i]==item.id)
+                {
+                    e.target.style.color='black';
+                    cls.splice(i,1);
+                    this.taskDataForm.classifications.splice(i,1);
+                    this.taskDataForm.categoryText.splice(i,1);
+                    exist=true;
+                    break;
+                }
+            }
+            if(!exist) {
+                e.target.style.color='deepskyblue';
+                this.taskDataForm.categoryText.push(e.target.innerText);
+                this.taskDataForm.classifications.push(item.id);
+            }
+
+        },
+
+        taskSharingPre() {
+            let len=$(".taskSharingStep").length;
+            if(this.taskSharingActive!=0)
+                this.taskSharingActive--;
+        },
+        taskSharingFinish(){
+            this.taskSharingActive=4;
+
+            this.taskDataForm.detail = tinyMCE.activeEditor.getContent();
+            this.taskDataForm.keywords = $("#taskDataKeywords").tagsinput('items');
+            this.taskDataForm.author = this.userId;
+
+            // this.dataItemAddDTO.meta.coordinateSystem = $("#coordinateSystem").val();
+            // this.dataItemAddDTO.meta.geographicProjection = $("#geographicProjection").val();
+            // this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
+            // this.dataItemAddDTO.meta.boundingRectangle=[];
+
+            var authorship=[]
+            this.getUserData($("#providersPanel .user-contents .form-control"), authorship);
+            this.taskDataForm.authorship=authorship;
+
+            axios.post("/dataItem/",this.taskDataForm)
+                .then(res=> {
+                    if (res.status == 200) {
+
+                    }
+                });
+        },
+        taskSharingNext() {
+            let len=$(".taskSharingStep").length;
+            if(this.taskSharingActive<len)
+                this.taskSharingActive++;
+            if(this.taskSharingActive==1){
+                if($("#taskDataShareDialog .tag-editor").length==0) {
+                    $("#taskDataKeywords").tagEditor({
+                        forceLowercase: false
+                    })
+                }
+            }
+
+            if(this.taskSharingActive==1){
+                tinymce.init({
+                    selector: "textarea#taskDataDetail",
+                    height: 205,
+                    theme: 'modern',
+                    plugins: ['link', 'table', 'image', 'media'],
+                    image_title: true,
+                    // enable automatic uploads of images represented by blob or data URIs
+                    automatic_uploads: true,
+                    // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                    // images_upload_url: 'postAcceptor.php',
+                    // here we add custom filepicker only to Image dialog
+                    file_picker_types: 'image',
+
+                    file_picker_callback: function (cb, value, meta) {
+                        var input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.setAttribute('accept', 'image/*');
+                        input.onchange = function () {
+                            var file = input.files[0];
+
+                            var reader = new FileReader();
+                            reader.readAsDataURL(file);
+                            reader.onload = function () {
+                                var img = reader.result.toString();
+                                cb(img, {title: file.name});
+                            }
+                        };
+                        input.click();
+                    },
+                    images_dataimg_filter: function (img) {
+                        return img.hasAttribute('internal-blob');
+                    }
+                });
+            }
+        },
+        sharingTaskData(task){
+            this.taskSharingActive=0;
+            this.taskDataList=[];
+            let inputs=task.inputs;
+            let outputs=task.outputs;
+            for(let input of inputs){
+                input.type="Input";
+                this.taskDataList.push(input);
+
+                let exist=false;
+                for(let filter of this.stateFilters){
+                    if(filter.value==input.statename){
+                        exist=true;
+                    }
+                }
+
+                if(!exist){
+                    let obj={};
+                    obj.text=input.statename;
+                    obj.value=input.statename;
+                    this.stateFilters.push(obj);
+                }
+            }
+            for(let output of outputs){
+                output.type="Output";
+                this.taskDataList.push(output);
+
+                let exist=false;
+                for(let filter of this.stateFilters){
+                    if(filter.value==output.statename){
+                        exist=true;
+                    }
+                }
+
+                if(!exist){
+                    let obj={};
+                    obj.text=output.statename;
+                    obj.value=output.statename;
+                    this.stateFilters.push(obj);
+                }
+            }
+
+
+
+            this.taskSharingVisible=true;
+
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        filterType(value, row) {
+            return row.type === value;
+        },
+        filterState(value, row) {
+            return row.statename === value;
+        },
+
+        getUserData(UsersInfo, prop) {
+            let index=0;
+            for(i=0;i<UsersInfo.length;i+=4){
+                let value1 = UsersInfo.eq(i)[0].value.trim();
+                let value2 = UsersInfo.eq(i)[0].value.trim();
+                let value3 = UsersInfo.eq(i)[0].value.trim();
+                let value4 = UsersInfo.eq(i)[0].value.trim();
+                if(value1==''&&value2==''&&value3==''&&value4==''){
+                    index=i+4;
+                }
+
+            }
+            for (i = prop.length; i > 0; i--) {
+                prop.pop();
+            }
+            var result = "{";
+            for (; index < UsersInfo.length; index++) {
+                //
+                var Info = UsersInfo.eq(index)[0];
+                if (index % 4 == 3) {
+                    if (result) {
+                        result += "'" + Info.name + "':'" + Info.value + "'}"
+                        prop.push(eval('(' + result + ')'));
+                    }
+                    result = "{";
+                }
+                else {
+                    result += "'" + Info.name + "':'" + Info.value + "',";
+                }
+
+            }
+        },
         filterTag(value, row) {
             return row.fromWhere === value;
         },
@@ -245,6 +457,7 @@ var vue = new Vue({
                     this.panye(1);
                     this.addAllData()
                     this.pageControlIndex=this.curIndex;
+                    break;
                 case '4-1':
                     this.searchText = '';
                     this.searchResult = [];
@@ -2290,31 +2503,7 @@ var vue = new Vue({
         },
 
         downloadSingle(url) {
-            window.open(url);
-            // var form = document.createElement("form");
-            // form.style.display = "none";
-            //
-            // form.setAttribute("target", "");
-            // form.setAttribute('method', 'get');
-            // form.setAttribute('action', "http://geomodeling.njnu.edu.cn/GeoModeling/DownloadSingleDataServlet");
-            //
-            // var input1 = document.createElement("input");
-            // input1.setAttribute('type', 'hidden');
-            // input1.setAttribute('name', 'recordId');
-            // input1.setAttribute('value', recordId);
-            //
-            // var input2 = document.createElement("input");
-            // input2.setAttribute('type', 'hidden');
-            // input2.setAttribute('name', 'dataId');
-            // input2.setAttribute('value', dataId);
-            //
-            // form.appendChild(input1);
-            // form.appendChild(input2);
-            //
-            // document.body.appendChild(form);  //将表单放置在web中
-            // //将查询参数控件提交到表单上
-            // form.submit();
-            // form.remove();
+            window.open("/dispatchRequest/download?url=" + url);
 
         },
 
@@ -2733,7 +2922,7 @@ var vue = new Vue({
         deleteDataitems(id){
 
             //todo 删除category中的 id
-            var cfm=confirm("are you sure to delete?");
+            var cfm=confirm("Are you sure to delete?");
 
             if(cfm==true){
                 axios.get("/dataItem/del/",{
@@ -2810,6 +2999,7 @@ var vue = new Vue({
             this.ctegorys.push(item.id)
 
         },
+
         toDataItem(){
             this.handleSelect('3-2',null);
             this.defaultActive='3-1';
@@ -2999,7 +3189,7 @@ var vue = new Vue({
 
 
         handleClose(done){
-            this.$confirm('are you sure to close？')
+            this.$confirm('Are you sure to close？')
                 .then(_ => {
                     done();
                 })
@@ -3450,6 +3640,7 @@ var vue = new Vue({
         this.getArticleResult();
     },
     mounted() {
+
 
         $("#title").text("User Space")
 
@@ -4010,6 +4201,78 @@ var vue = new Vue({
         });
 
 
+        //authorship
+        $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
+
+
+        //作者添加
+        var user_num = 0;
+        $(document).on("click", ".user-add", function () {
+            user_num++;
+            var content_box = $(this).parent().children('div');
+            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+            str += user_num;
+            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+            str += user_num;
+            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
+                "                                                                                                    <div>\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Name:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"name\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Affiliation:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"ins\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Email:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"email\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Homepage:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                "                                                                                                            <input type='text'\n" +
+                "                                                                                                                   name=\"homepage\"\n" +
+                "                                                                                                                   class='form-control'>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>\n" +
+                "                                                                                                </div></div> </div> </div>"
+            content_box.append(str)
+        })
+
+        $(document).on("keyup", ".username", function () {
+
+            if ($(this).val()) {
+                $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html($(this).val());
+            }
+            else {
+                $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
+            }
+        })
+
 
 
     }
@@ -4082,63 +4345,6 @@ $(function () {
 
     });
 
-    //authorship
-    //作者添加
-    var user_num = 1;
-    $(".user-add").click(function () {
-        user_num++;
-        var content_box = $(this).parent().children('div');
-        var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-        str += user_num;
-        str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-        str += user_num;
-        str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-            "                                                                                                    <div>\n" +
-            "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-            "                                                                                                               style='font-weight: bold;'>\n" +
-            "                                                                                                            Name:\n" +
-            "                                                                                                        </lable>\n" +
-            "                                                                                                        <div class='input-group col-sm-10'>\n" +
-            "                                                                                                            <input type='text'\n" +
-            "                                                                                                                   name=\"name\"\n" +
-            "                                                                                                                   class='form-control'>\n" +
-            "                                                                                                        </div>\n" +
-            "                                                                                                    </div>\n" +
-            // "                                                                                                    <div style=\"margin-top:10px\">\n" +
-            // "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-            // "                                                                                                               style='font-weight: bold;'>\n" +
-            // "                                                                                                            Affiliation:\n" +
-            // "                                                                                                        </lable>\n" +
-            // "                                                                                                        <div class='input-group col-sm-10'>\n" +
-            // "                                                                                                            <input type='text'\n" +
-            // "                                                                                                                   name=\"affiliation\"\n" +
-            // "                                                                                                                   class='form-control'>\n" +
-            // "                                                                                                        </div>\n" +
-            // "                                                                                                    </div>\n" +
-            "                                                                                                    <div style=\"margin-top:10px\">\n" +
-            "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-            "                                                                                                               style='font-weight: bold;'>\n" +
-            "                                                                                                            Email:\n" +
-            "                                                                                                        </lable>\n" +
-            "                                                                                                        <div class='input-group col-sm-10'>\n" +
-            "                                                                                                            <input type='text'\n" +
-            "                                                                                                                   name=\"email\"\n" +
-            "                                                                                                                   class='form-control'>\n" +
-            "                                                                                                        </div>\n" +
-            "                                                                                                    </div>\n" +
-            "                                                                                                    <div style=\"margin-top:10px\">\n" +
-            "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-            "                                                                                                               style='font-weight: bold;'>\n" +
-            "                                                                                                            Home Page:\n" +
-            "                                                                                                        </lable>\n" +
-            "                                                                                                        <div class='input-group col-sm-10'>\n" +
-            "                                                                                                            <input type='text'\n" +
-            "                                                                                                                   name=\"homepage\"\n" +
-            "                                                                                                                   class='form-control'>\n" +
-            "                                                                                                        </div>\n" +
-            "                                                                                                    </div>\n" +
-            "                                                                                                </div></div> </div> </div>"
-        content_box.append(str)
-    })
+
 
 })

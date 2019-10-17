@@ -87,6 +87,20 @@
             padding: 10px;
         }
 
+        .el-input .tag-editor{
+            min-height:65px;
+            height:auto;
+            border-radius: 4px;
+            border-color:#dcdfe6;
+        }
+        .el-input .tag-editor:hover {
+            border-color: #c0c4cc;
+        }
+        .el-input .tag-editor:focus-within {
+            border-color: #409EFF;
+            outline: 0;
+        }
+
         [v-cloak] {
             display: none;
         }
@@ -1190,7 +1204,8 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-body" style="height: 61px;">
-                        <div class="form-group">
+                        <div class="form-horizontal">
+                            <div class="form-group">
                             <div class="col-md-4">
 
                                 <button class="btn btn-warning" @click="menuClick(7)">
@@ -1207,6 +1222,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -2355,6 +2371,210 @@
                 </div>
             </div>
         </div>
+            <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Sharing as Data Item" :visible.sync="taskSharingVisible" :before-close="handleClose">
+                <el-steps style="margin-bottom: 15px;" align-center  :active="taskSharingActive" finish-status="success">
+                    <el-step class="taskSharingStep" title="Select Data"></el-step>
+                    <el-step class="taskSharingStep" title="Basic Info"></el-step>
+                    <el-step class="taskSharingStep" title="Detailed Description"></el-step>
+                    <el-step class="taskSharingStep" title="Authorship"></el-step>
+                </el-steps>
+
+                <el-card :style="{display:(taskSharingActive==0?'block':'none')}" shadow="never">
+                    <el-table
+                        ref="multipleTable"
+                        :data="taskDataList"
+                        tooltip-effect="dark"
+
+                        style="width: 100%"
+                        @selection-change="handleSelectionChange">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="type"
+                            label="Type"
+                            width="120"
+                            :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"
+                            :filter-method="filterType"
+                            filter-placement="bottom-start"
+                            filter-multiple="false"
+                            show-overflow-tooltip>
+                        <template slot-scope="scope">
+                            <el-tag
+                                    :type="scope.row.type === 'Input' ? 'primary' : 'success'"
+                                    disable-transitions>{{scope.row.type}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Name"
+                            >
+                        <template slot-scope="scope">{{ scope.row.tag }}</template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="event"
+                            label="Event"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            prop="statename"
+                            label="State"
+                            :filters="stateFilters"
+                            :filter-method="filterState"
+                            filter-placement="bottom-start"
+                            show-overflow-tooltip>
+                    </el-table-column>
+
+
+                    <el-table-column
+                            label="Download"
+                            width="120">
+                        <template slot-scope="scope">
+                            <el-button
+                            size="mini"
+                            type="default"
+                            @click="downloadSingle(scope.row.url)">
+                                Download
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                </el-card>
+                <el-card :style="{display:(taskSharingActive==1?'block':'none')}" shadow="never">
+                    <el-col :span="6" style="overflow-y: scroll;height: 550px;">
+                        <el-collapse>
+
+                            <el-collapse-item v-for="(item,index) in categoryTree"
+                                              :title=item.key :name=index :key="index">
+
+                                <el-button v-for="it in item.value" type="text"
+                                           @click="chooseTaskDataCate(it,$event)">{{it.category}}
+                                </el-button>
+
+                            </el-collapse-item>
+                        </el-collapse>
+                    </el-col>
+                    <el-col :span="18" class="col-md-9 col-sm-8">
+                        <el-form label-position="right" label-width="90px" :model="taskDataForm">
+                            <el-form-item label="Categories" required>
+                                <el-input v-model="taskDataForm.categoryText" type="textarea" rows="2" :disabled="true"></el-input>
+                            </el-form-item>
+                            <el-form-item label="Name" required>
+                                <el-input v-model="taskDataForm.name"></el-input>
+                            </el-form-item>
+                            <el-form-item label="Keywords" required>
+                                <el-input v-model="taskDataForm.keywords" id="taskDataKeywords"></el-input>
+                            </el-form-item>
+                            <el-form-item label="Overview" required>
+                                <el-input v-model="taskDataForm.description" type="textarea" rows="5"></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                </el-card>
+                <el-card :style="{display:(taskSharingActive==2?'block':'none')}" shadow="never" >
+                    <textarea id="taskDataDetail"
+                              placeholder="Input detail about the data here."></textarea>
+                </el-card>
+                <el-card :style="{display:(taskSharingActive>=3?'block':'none')}" shadow="never" >
+                    <div class="panel" style="border:none">
+
+                        <div class="panel-body">
+                            <div class="col-md-10 col-md-offset-1">
+
+                                <div class="panel-group " id="accordion2">
+                                    <div id="providersPanel" class="panel">
+
+                                        <div id="provider_body"
+                                             class="panel-collapse collapse in"
+                                             style="height: auto;">
+                                            <div class="panel-body providers"
+                                                 style="padding:0px">
+                                                <div class='panel panel-primary'>
+                                                    <div class='panel-heading info-head'>
+                                                        <h4 class='panel-title'>
+                                                            <a class='accordion-toggle collapsed'
+                                                               style="color:white"
+                                                               data-toggle='collapse'
+                                                               data-target='#user1'
+                                                               href="javascript:;">
+                                                                NEW
+                                                            </a>
+                                                        </h4>
+                                                        <a href="javascript:;"
+                                                           class="fa fa-times author_close"
+                                                           style="float:right;margin-top:8px;color:white"></a>
+                                                    </div>
+                                                    <div id='user1'
+                                                         class='panel-collapse collapse in'>
+                                                        <div class='panel-body user-contents'>
+                                                            <div class='user-attr'>
+                                                                <div>
+                                                                    <lable class='control-label col-sm-2 text-center'
+                                                                           style='font-weight: bold;'>
+                                                                        Name:
+                                                                    </lable>
+                                                                    <div class='input-group col-sm-10'>
+                                                                        <input type='text'
+                                                                               name="name"
+                                                                               class='form-control'>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="margin-top:10px">
+                                                                    <lable class='control-label col-sm-2 text-center'
+                                                                           style='font-weight: bold;'>
+                                                                        Affiliation:
+                                                                    </lable>
+                                                                    <div class='input-group col-sm-10'>
+                                                                        <input type='text'
+                                                                               name="ins"
+                                                                               class='form-control'>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="margin-top:10px">
+                                                                    <lable class='control-label col-sm-2 text-center'
+                                                                           style='font-weight: bold;'>
+                                                                        Email:
+                                                                    </lable>
+                                                                    <div class='input-group col-sm-10'>
+                                                                        <input type='text'
+                                                                               name="email"
+                                                                               class='form-control'>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="margin-top:10px">
+                                                                    <lable class='control-label col-sm-2 text-center'
+                                                                           style='font-weight: bold;'>
+                                                                        Homepage:
+                                                                    </lable>
+                                                                    <div class='input-group col-sm-10'>
+                                                                        <input type='text'
+                                                                               name="homepage"
+                                                                               class='form-control'>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button"
+                                                    class="btn btn-success btn-lg btn-block user-add"
+                                                    style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-card>
+
+
+                <el-button circle icon="el-icon-arrow-left" :style="{visibility:(taskSharingActive>0?'visible':'hidden')}" class="el-button--primary" style="margin-top: 12px;position: absolute;left:4%;top:55px;" @click="taskSharingPre"></el-button>
+                <el-button circle icon="el-icon-arrow-right" v-if="taskSharingActive<3" class="el-button--primary" style="margin-top: 12px;position: absolute;right:4%;top:55px;" @click="taskSharingNext"></el-button>
+                <el-button circle icon="el-icon-check" v-if="taskSharingActive>=3" class="el-button--success" style="margin-top: 12px;position: absolute;right:4%;top:55px;" @click="taskSharingFinish"></el-button>
+            </el-dialog>
         <!-- end task -->
     </div>
 
@@ -2386,7 +2606,7 @@
 
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
-
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/page/user_space.js"></script>
 
 </html>

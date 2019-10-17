@@ -39,7 +39,6 @@ public class TaskRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     ModelAndView getTask(@PathVariable("id") String id, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        System.out.println("hh");
         if (session.getAttribute("uid") == null) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("login");
@@ -81,6 +80,12 @@ public class TaskRestController {
             return ResultUtils.success(taskService.initTaskOutput(ids, userName));
         }
     }
+
+//    @RequestMapping(value="/info",method = RequestMethod.GET)
+//    JsonResult getInfo(@RequestParam("oid") String oid){
+//        taskService.
+//
+//    }
 
     @RequestMapping(value = "/TaskInit/{id}", method = RequestMethod.GET)
     @ApiOperation (value = "Task初始化API，获取模型描述信息，State信息，task以及Dx相关信息")
