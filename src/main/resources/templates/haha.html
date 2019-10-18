@@ -16,10 +16,15 @@
     <!--<link rel="stylesheet" href="/static/css/other/computable-test.css">-->
     <!--<link rel="stylesheet" href="/static/css/other/jquery.gritter.css">-->
     <!--<link rel="stylesheet" href="/static/css/page/logical_model.css">-->
+    <link rel="stylesheet" href="../static/css/components/file-manager.css">
     <link rel="stylesheet" href="/static/haha/css/style.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
+
+        .el-button--text{
+            color:black;
+        }
 
         input[type=file] {
             display: none;
@@ -119,7 +124,7 @@
                                                         <div class="_btn-group">
 
                                                             <el-button plain round type="primary"
-                                                                       @click="selectFromMyData(inEventIndex,modelInEvent)"
+                                                                       @click="selectFromDataItem(modelInEvent)"
 
                                                             circle>
                                                                 <i class="fa fa-th-large"></i>
@@ -349,23 +354,95 @@
                             </el-pagination>
                         </el-dialog>
 
-                        <el-dialog  top="20px" width="70%" title="select from data item" :visible.sync="dataItemVisible">
-                            <el-col :span="6" style="overflow-y: scroll;height: 550px;">
-                                <el-collapse>
+                        <el-dialog  top="40px" width="70%" title="select from data item" :visible.sync="dataItemVisible">
+                            <el-card>
+                                <el-col :span="6" style="overflow-y: scroll;height: 550px;">
+                                    <el-collapse>
 
-                                    <el-collapse-item v-for="(item,index) in categoryTree"
-                                                      :title=item.key :name=index :key="index">
+                                        <el-collapse-item v-for="(item,index) in categoryTree"
+                                                          :title=item.key :name=index :key="index">
 
-                                        <el-button class="taskDataCate" v-for="it in item.value" type="text"
-                                                   @click="searchDataItem(it,$event)">{{it.category}}
-                                        </el-button>
+                                            <el-button class="taskDataCate" v-for="it in item.value" type="text"
+                                                       @click="chooseCate(it,$event)">{{it.category}}
+                                            </el-button>
 
-                                    </el-collapse-item>
-                                </el-collapse>
-                            </el-col>
-                            <el-col :span="18" class="col-md-9 col-sm-8">
+                                        </el-collapse-item>
+                                    </el-collapse>
+                                </el-col>
+                                <el-col :span="18" class="col-md-9 col-sm-8">
+                                    <el-input placeholder="Please enter name..." v-model="dataItemSearchText" class="input-with-select">
+                                        <el-button slot="append" icon="el-icon-search" @click="searchDataItem()"></el-button>
+                                    </el-input>
+                                    <el-table
+                                            :data="pageOption.searchResult"
+                                            style="margin-top:17px;"
+                                            >
+                                        <el-table-column type="expand">
+                                            <template slot-scope="props">
+                                                <el-card v-for="item,key in props.row.dataList"
+                                                         :title="item.name" class="dataitemisol" shadow="never" :id="item.url"
+                                                         :key="key" @click.native="clickData(item,$event)">
 
-                            </el-col>
+                                                    <el-row>
+                                                        <el-col :span="6">&nbsp</el-col>
+                                                        <el-col :span="12"><img :src="'/static/img/filebrowser/'+item.suffix+'.svg'"
+                                                                                style="height: 60%;width:100%"></el-col>
+                                                        <el-col :span="6">&nbsp</el-col>
+                                                    </el-row>
+                                                    <el-row>
+                                                        <el-col :span="2">&nbsp</el-col>
+                                                        <el-col :span="20">
+
+                                                            <p style="text-align: center;word-break: break-all;"
+                                                               >{{item.name+(item.suffix!='unknow'?item.suffix:'')}}</p>
+                                                        </el-col>
+                                                        <el-col :span="2">&nbsp</el-col>
+
+                                                    </el-row>
+
+                                                    <!--menu item -->
+
+
+                                                </el-card>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Name">
+                                            <template slot-scope="props">
+                                                <a :href="'/dataItem/'+props.row.id" target="_blank">{{props.row.name}}</a>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Contributor"
+                                        >
+                                            <template slot-scope="scope">
+                                                <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column fixed="right" label="Operation" width="100">
+                                            <template slot-scope="scope">
+                                                <el-button
+                                                        size="mini"
+                                                        @click="handleView(scope.$index, scope.row)">View
+                                                </el-button>
+
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <el-pagination style="text-align: center;margin-top:20px"
+                                                   @current-change="handlePageChange"
+                                                   :current-page="pageOption.page"
+                                                   layout="total, prev, pager, next, jumper"
+                                                   :page-size="5"
+                                                   :total="pageOption.total">
+                                    </el-pagination>
+                                </el-col>
+                            </el-card>
+
+                            <span slot="footer" class="dialog-footer">
+    <el-button @click="downloadData()">Download</el-button>
+    <el-button type="primary" @click="confirmData()">Confirm</el-button>
+  </span>
                         </el-dialog>
                     </div>
                 </div>

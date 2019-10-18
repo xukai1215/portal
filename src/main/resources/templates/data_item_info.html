@@ -596,8 +596,8 @@
                              style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
-                                    <dt>Affiliation：</dt>
-                                    <dd th:text="${author.ins}"></dd>
+                                    <dt th:if="${author.ins!=''&&author.ins!=null}">Affiliation：</dt>
+                                    <dd th:if="${author.ins!=''&&author.ins!=null}" th:text="${author.ins}"></dd>
                                     <div th:if="${author.email!='unknow'&&author.email!=''}">
                                         <dt>Email：</dt>
                                         <dd th:text="${author.email}">njgis@163.com</dd>
