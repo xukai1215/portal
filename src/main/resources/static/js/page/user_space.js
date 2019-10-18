@@ -164,6 +164,7 @@ var vue = new Vue({
         taskSharingActive:0,
         stateFilters:[],
         multipleSelection: [],
+        taskCollapseActiveNames:[],
         taskDataForm:{
             name:'',
             type:"option1",
@@ -171,12 +172,14 @@ var vue = new Vue({
             description:"",
             detail:"",
             reference:"",
+            author:"",
             keywords:[],
             contributers:[],
             classifications:[],
             displays:[],
             authorship:[],
             comments:[],
+            dataList:[],
 
             categoryText:[],
 
@@ -213,10 +216,17 @@ var vue = new Vue({
                 this.taskSharingActive--;
         },
         taskSharingFinish(){
+
             this.taskSharingActive=4;
 
+            for(let select of this.multipleSelection) {
+                select.name=select.tag;
+                select.suffix='unknow';
+                this.taskDataForm.dataList.push(select);
+            }
+
             this.taskDataForm.detail = tinyMCE.activeEditor.getContent();
-            this.taskDataForm.keywords = $("#taskDataKeywords").tagsinput('items');
+            this.taskDataForm.keywords = $("#taskDataKeywords").val().split(",");
             this.taskDataForm.author = this.userId;
 
             // this.dataItemAddDTO.meta.coordinateSystem = $("#coordinateSystem").val();
@@ -224,18 +234,69 @@ var vue = new Vue({
             // this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
             // this.dataItemAddDTO.meta.boundingRectangle=[];
 
-            var authorship=[]
+            let authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), authorship);
             this.taskDataForm.authorship=authorship;
+            console.log(this.taskDataForm)
 
             axios.post("/dataItem/",this.taskDataForm)
                 .then(res=> {
+                    console.log(res);
                     if (res.status == 200) {
 
+                        this.openConfirmBox("Create successfully! Do you want to view this Data Item?","Message",res.data.data.id);
+                        this.taskSharingVisible=false;
                     }
-                });
+                })
+        },
+        showWaring(text){
+            this.$message({
+                showClose: true,
+                message: text,
+                type: 'warning'
+            });
         },
         taskSharingNext() {
+
+            //检查
+            switch(this.taskSharingActive) {
+                case 0:
+                    if (this.multipleSelection.length == 0) {
+                        this.showWaring('Please select data first!');
+                        return;
+                    }
+                    break;
+                case 1:
+                    if(this.taskDataForm.classifications.length==0){
+                        this.showWaring('Please choose categories from sidebar')
+                        return;
+                    }
+                    if(this.taskDataForm.name.trim()==''){
+                        this.showWaring('Please enter name');
+                        return;
+                    }
+                    if($("#taskDataKeywords").val().split(",")[0]==''){
+                        this.showWaring('Please enter keywords');
+                        return;
+                    }
+                    if(this.taskDataForm.description==''){
+                        this.showWaring('Please enter overview');
+                        return;
+                    }
+                    break;
+                case 2:
+                    if(tinyMCE.activeEditor.getContent().trim()==''){
+                        this.showWaring('Please enter detailed description');
+                        return;
+                    }
+                    break;
+
+            }
+
+
+
+
+            //翻页
             let len=$(".taskSharingStep").length;
             if(this.taskSharingActive<len)
                 this.taskSharingActive++;
@@ -284,8 +345,10 @@ var vue = new Vue({
             }
         },
         sharingTaskData(task){
+
+            this.initTaskDataForm();
+
             this.taskSharingActive=0;
-            this.taskDataList=[];
             let inputs=task.inputs;
             let outputs=task.outputs;
             for(let input of inputs){
@@ -325,8 +388,6 @@ var vue = new Vue({
                 }
             }
 
-
-
             this.taskSharingVisible=true;
 
         },
@@ -339,7 +400,60 @@ var vue = new Vue({
         filterState(value, row) {
             return row.statename === value;
         },
+        initTaskDataForm(){
+            this.taskDataList=[];
+            this.taskSharingActive=0;
+            this.stateFilters=[];
+            this.multipleSelection=[];
+            this.taskCollapseActiveNames=[];
+            this.taskDataForm={
+                name:'',
+                type:"option1",
+                contentType:"resource",
+                description:"",
+                detail:"",
+                reference:"",
+                author:"",
+                keywords:[],
+                contributers:[],
+                classifications:[],
+                displays:[],
+                authorship:[],
+                comments:[],
+                dataList:[],
 
+                categoryText:[],
+            };
+            $(".taskDataCate").children().css("color","black");
+            $('#taskDataKeywords').tagEditor('destroy');
+            $("#taskDataKeywords").tagEditor({
+                initialTags:[''],
+                forceLowercase: false
+            });
+            tinyMCE.activeEditor.setContent("");
+            $(".taskDataAuthorship").remove();
+            $(".user-add").click();
+        },
+
+        openConfirmBox(content,title,id) {
+            this.$confirm(content, title, {
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                type: 'success'//'warning'
+            }).then(() => {
+                window.open("/dataItem/"+id);
+            }).catch(() => {
+
+            });
+        },
+        openAlertBox(content,title) {
+            this.$alert(content, title, {
+                confirmButtonText: 'OK',
+                callback: action => {
+
+                }
+            });
+        },
         getUserData(UsersInfo, prop) {
             let index=0;
             for(i=0;i<UsersInfo.length;i+=4){
@@ -4192,7 +4306,7 @@ var vue = new Vue({
         $(document).on("click", ".user-add", function () {
             user_num++;
             var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+            var str = "<div class='panel panel-primary taskDataAuthorship'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
             str += user_num;
             str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
             str += user_num;

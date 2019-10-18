@@ -2305,7 +2305,7 @@
                                     {{task.computableName}}
                                 </a>
                                 <div class="pull-right" :attr.uid="task.msr_id" style="">
-                                    <button class="btn btn-info btn-sm" @click="sharingTaskData(task)"><i class="fa fa-share-square-o" aria-hidden="true"></i>Sharing as Data Item</button>
+                                    <button class="btn btn-info btn-sm" @click="sharingTaskData(task)"><i class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item</button>
                                             <span style="margin-right:20px">
                                                 <b>Create Time:</b>{{formatDate(task.runTime)}}
                                             </span>
@@ -2370,7 +2370,7 @@
                 </div>
             </div>
         </div>
-            <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Sharing as Data Item" :visible.sync="taskSharingVisible" :before-close="handleClose">
+            <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Share as Data Item" :visible.sync="taskSharingVisible" :before-close="handleClose">
                 <el-steps style="margin-bottom: 15px;" align-center  :active="taskSharingActive" finish-status="success">
                     <el-step class="taskSharingStep" title="Select Data"></el-step>
                     <el-step class="taskSharingStep" title="Basic Info"></el-step>
@@ -2441,12 +2441,12 @@
                 </el-card>
                 <el-card :style="{display:(taskSharingActive==1?'block':'none')}" shadow="never">
                     <el-col :span="6" style="overflow-y: scroll;height: 550px;">
-                        <el-collapse>
+                        <el-collapse v-model="taskCollapseActiveNames">
 
                             <el-collapse-item v-for="(item,index) in categoryTree"
                                               :title=item.key :name=index :key="index">
 
-                                <el-button v-for="it in item.value" type="text"
+                                <el-button class="taskDataCate" v-for="it in item.value" type="text"
                                            @click="chooseTaskDataCate(it,$event)">{{it.category}}
                                 </el-button>
 
@@ -2465,7 +2465,7 @@
                                 <el-input v-model="taskDataForm.keywords" id="taskDataKeywords"></el-input>
                             </el-form-item>
                             <el-form-item label="Overview" required>
-                                <el-input v-model="taskDataForm.description" type="textarea" rows="5"></el-input>
+                                <el-input v-model="taskDataForm.description" type="textarea" rows="4"></el-input>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -2488,7 +2488,8 @@
                                              style="height: auto;">
                                             <div class="panel-body providers"
                                                  style="padding:0px">
-                                                <div class='panel panel-primary'>
+                                                <!--single authorship-->
+                                                <div class='panel panel-primary taskDataAuthorship'>
                                                     <div class='panel-heading info-head'>
                                                         <h4 class='panel-title'>
                                                             <a class='accordion-toggle collapsed'
@@ -2572,7 +2573,8 @@
 
                 <el-button circle icon="el-icon-arrow-left" :style="{visibility:(taskSharingActive>0?'visible':'hidden')}" class="el-button--primary" style="margin-top: 12px;position: absolute;left:4%;top:55px;" @click="taskSharingPre"></el-button>
                 <el-button circle icon="el-icon-arrow-right" v-if="taskSharingActive<3" class="el-button--primary" style="margin-top: 12px;position: absolute;right:4%;top:55px;" @click="taskSharingNext"></el-button>
-                <el-button circle icon="el-icon-check" v-if="taskSharingActive>=3" class="el-button--success" style="margin-top: 12px;position: absolute;right:4%;top:55px;" @click="taskSharingFinish"></el-button>
+                <el-button circle icon="el-icon-check" v-if="taskSharingActive==3" class="el-button--success" style="margin-top: 12px;position: absolute;right:4%;top:55px;" @click="taskSharingFinish"></el-button>
+                <el-button circle disabled icon="el-icon-loading" v-if="taskSharingActive>3" class="el-button--info" style="margin-top: 12px;position: absolute;right:4%;top:55px;"></el-button>
             </el-dialog>
         <!-- end task -->
     </div>

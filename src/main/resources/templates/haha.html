@@ -348,6 +348,25 @@
                                     :total="total">
                             </el-pagination>
                         </el-dialog>
+
+                        <el-dialog  top="20px" width="70%" title="select from data item" :visible.sync="dataItemVisible">
+                            <el-col :span="6" style="overflow-y: scroll;height: 550px;">
+                                <el-collapse>
+
+                                    <el-collapse-item v-for="(item,index) in categoryTree"
+                                                      :title=item.key :name=index :key="index">
+
+                                        <el-button class="taskDataCate" v-for="it in item.value" type="text"
+                                                   @click="searchDataItem(it,$event)">{{it.category}}
+                                        </el-button>
+
+                                    </el-collapse-item>
+                                </el-collapse>
+                            </el-col>
+                            <el-col :span="18" class="col-md-9 col-sm-8">
+
+                            </el-col>
+                        </el-dialog>
                     </div>
                 </div>
             </el-col>

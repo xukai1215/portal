@@ -52,10 +52,17 @@ var vue = new Vue({
         keyInput:'',
         modelInEvent:{},
         isFixed:false,
-        introHeight:1
+        introHeight:1,
+
+        dataItemVisible:false,
+        categoryTree:[],
     },
     computed: {},
     methods: {
+
+        searchDataItem(){
+
+        },
 
         initSize(){
             this.$nextTick(() =>{
@@ -479,6 +486,26 @@ var vue = new Vue({
 
     },
     async mounted() {
+
+        var tha=this
+        axios.get("/dataItem/createTree")
+            .then(res=>{
+                tha.tObj=res.data;
+                for(var e in tha.tObj){
+                    var a={
+                        key:e,
+                        value:tha.tObj[e]
+                    }
+                    if(e!='Data Resouces Hubs'){
+                        tha.categoryTree.push(a);
+                    }
+
+
+                }
+
+            })
+
+
         this.introHeight=$('.introContent').attr('height');
 
         console.log(this.introHeight)
