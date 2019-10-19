@@ -10,7 +10,10 @@ var vue = new Vue({
             dxInfo: {},
             modelInfo: {},
             taskInfo: {
-
+                ip:'',
+                pid:'',
+                pott:'',
+                outputs:[],
             },
             userInfo: {}
         },
@@ -60,6 +63,10 @@ var vue = new Vue({
         introHeight:1,
 
         downloadUrl:'',
+
+        renameIndex:false,
+        oldTag:'',
+        outputTag:'',
 
         clipBoard:'',
     },
@@ -227,6 +234,45 @@ var vue = new Vue({
             this.downloadUrl='http://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
 
         },
+
+        renameClick(tag){
+            this.renameIndex=true;
+            this.outputTag=tag;
+            oldTag=tag;
+        },
+
+        renameTag(){
+
+            for(let i=0;i<this.info.taskInfo.outputs.length;i++){
+                console.log(this.info.taskInfo.outputs[i].tag===oldTag)
+                if(this.info.taskInfo.outputs[i].tag===oldTag){
+                    this.info.taskInfo.outputs[i].tag=this.outputTag;
+                    this.renameTagToBack();
+                }
+            }
+
+        },
+
+        renameTagToBack(){
+            $.ajax({
+                data:{
+                    taskId:this.taskId,
+                    outputs:this.info.taskInfo.outputs},
+                url:'/task/renameTag',
+                type:'POST',
+                async:true,
+                // tranditional:true,
+                // dataType: "json",
+                success:(json)=>{
+                    if(json.code==0){
+                        alert("Add Success");
+                    }
+                }
+                }
+
+            )
+        },
+
 
         copyLink(){
             console.log(this.clipBoard);

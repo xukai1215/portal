@@ -115,6 +115,14 @@ public class TaskService {
         return modelAndView;
     }
 
+    public String renameTag(String taskId,List<TaskData> outputs){
+        Task task=new Task();
+        task=taskDao.findFirstByTaskId(taskId);
+//        task.setOutputs(outputs);
+        taskDao.save(task);
+        return "suc";
+    }
+
     public JSONObject initTaskOutput(String ids,String userName){
         String[] twoIds=ids.split("&");
 

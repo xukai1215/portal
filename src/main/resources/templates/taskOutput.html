@@ -100,13 +100,13 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
-                                                        <el-input v-if="output.event==modelOutEvent.eventName" class="model-input" :value="output.tag"
+                                                        <el-input id="dataNameInput" v-if="output.event==modelOutEvent.eventName" class="model-input" :value="output.tag"
                                                                   readonly>
                                                         </el-input>
                                                     </el-col>
                                                     <el-col :span="5">
                                                         <div class="_btn-group" v-for="output in info.taskInfo.outputs">
-                                                            <el-button v-if="output.event==modelOutEvent.eventName" plain round type="primary"
+                                                            <el-button v-if="output.event==modelOutEvent.eventName" plain round type="success"
                                                                        @click="share(output.url)" >
                                                                 <i class="fa fa-share-square-o"></i>
                                                             </el-button>
@@ -132,75 +132,14 @@
 
                         </el-row>
 
-
-                        <!-- <el-tabs v-model="activeTab" tab-position="left">
-                            <el-tab-pane v-for="(state,index) in modelInfo.states" :key="index" :label="state.name"
-                                :name="state.name">
-                                <div class="_state-desc">
-                                    {{state.des}}
-                                </div>
-                                <div class="_params-group">
-                                    <el-row v-if="inEventList(state).length!==0" class="_title">Input</el-row>
-                                    <div class="_items">
-                                        <el-row v-for="(modelInEvent,inEventIndex) in inEventList(state)" :key="inEventIndex"
-                                            class="_item">
-                                            <el-col :span="16" class="_event-desc"><span v-show="!modelInEvent.isOptional" style="color:red">*</span> {{modelInEvent.name}}
-
-                                                    <br>
-                                                    {{modelInEvent.des}}</el-col>
-                                            <el-col :span="3" :offset="1">
-                                                <el-input :value="modelInEvent.tag" readonly>
-                                                </el-input>
-                                            </el-col>
-                                            <el-col :span="4">
-                                                <div class="_btn-group">
-                                                    <el-button plain round type="primary" @click="check(modelInEvent)">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                    </el-button>
-                                                    <el-button plain round type="warning" @click="upload(modelInEvent)">
-                                                        <i class="fa fa-download"></i>
-                                                    </el-button>
-                                                    <el-button plain round type="success" @click="download(modelInEvent)"
-                                                        v-if="modelInEvent.singleVSservice">
-                                                        <i class="fa fa-area-chart"></i>
-                                                    </el-button>
-                                                </div>
-                                            </el-col>
-
-
-
-                                        </el-row>
-                                    </div>
-                                </div>
-
-                                <div class="_params-group">
-                                    <el-row v-if="outEventList(state).length!==0" class="_title">Output</el-row>
-                                    <div class="_items">
-                                        <el-row v-for="(modelOutEvent,outEventIndex) in outEventList(state)"
-                                            :key="outEventIndex" class="_item">
-                                            <el-col :span="16" class="_event-desc">{{modelOutEvent.des}}</el-col>
-                                        </el-row>
-                                    </div>
-                                </div>
-                            </el-tab-pane>
-
-                        </el-tabs> -->
-
-                        <!--item-->
-
-<!--                        <el-col :span="3" :offset="21" class="_save-btn">-->
-<!--                            <el-button plain type="primary" @click="invoke()">-->
-<!--                                <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke-->
-<!--                            </el-button>-->
-<!--                        </el-col>-->
-
-                        <el-dialog title="Choose Data" :visible.sync="showUpload" width="30%">
-                            <el-upload ref="upload" drag action="/dispatchRequest/upload" :data="uploadData()"
-                                       :before-remove="beforeRemove" :file-list="fileList"
-                                       :on-success="onSuccess">
-                                <el-button slot="trigger" size="small" type="primary">Choose File</el-button>
-                            </el-upload>
-                        </el-dialog>
+<!--                        <el-dialog title="Rename Output Data Tag" :visible.sync="renameIndex" width="40%">-->
+<!--                            <h4>Data Tag: </h4>-->
+<!--                            <el-input id="outputRenameInput" v-model="outputTag"></el-input>-->
+<!--                            <span slot="footer" class="dialog-footer">-->
+<!--                                <el-button slot="trigger" type="primary" @click="renameTag">Confirm</el-button>-->
+<!--                                <el-button slot="trigger" type="warning" @click="renameIndex=false">Cancel</el-button>-->
+<!--                            </span>-->
+<!--                        </el-dialog>-->
 
                         <el-dialog title="Share My Output Data" :visible.sync="shareIndex" width="40%">
                             <h4>url: </h4>

@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Affiliation;
-import njgis.opengms.portal.entity.support.AwardandHonor;
-import njgis.opengms.portal.entity.support.EducationExperience;
-import njgis.opengms.portal.entity.support.UserLab;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
@@ -181,6 +178,13 @@ public class PortalApplicationTests {
             if(user.getUpdateTime()==null){
                 Date updateTime=user.getCreateTime();
                 user.setUpdateTime(updateTime);
+                userDao.save(user);
+                Utils.count();
+            }
+
+            if(user.getRunTask()==null){
+                List<UserTaskInfo> userTaskInfo=new ArrayList<>();
+                user.setRunTask(userTaskInfo);
                 userDao.save(user);
                 Utils.count();
             }

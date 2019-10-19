@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.service.UserService;
@@ -79,6 +80,18 @@ public class UserRestController {
         }
 
         return "0";
+    }
+
+
+    @RequestMapping(value="/addTaskInfo", method = RequestMethod.POST)
+    public JsonResult addTaskInfo(@RequestBody UserTaskInfo userTaskInfo, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName=session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            return ResultUtils.success(userService.addTaskInfo(userName,userTaskInfo));
+        }
     }
 
     @RequestMapping(value = "/out", method = RequestMethod.GET)
@@ -218,6 +231,24 @@ public class UserRestController {
             System.out.println("/getUserInfoInUserPage"+result);
             return ResultUtils.success(result);
 
+    }
+
+    @RequestMapping(value = "/getUserTaskInfoa", method = RequestMethod.GET)
+    public JsonResult getUserTaskInfoa(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        JSONObject jsonObject = new JSONObject();
+        if(session.getAttribute("uid")==null){
+            jsonObject.put("result","error");
+            jsonObject.put("message","please login");
+
+            return ResultUtils.success(jsonObject);
+
+        }else{
+
+            String userId = session.getAttribute("uid").toString();
+            JSONObject result = userService.getUserInfo(userId);
+            return ResultUtils.success(result);
+        }
     }
 
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)

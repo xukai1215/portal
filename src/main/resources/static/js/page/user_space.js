@@ -29,8 +29,17 @@ var vue = new Vue({
         indexStep:-1,
         newStep:-1,
 
-        userInfo: {},
+        userInfo: {
+            runTask:[
+                {
 
+                }
+            ]
+        },
+
+        userTaskInfo:[{
+            content:{},
+        }],
 
         ScreenMaxHeight: "0px",
         load: true,
@@ -122,6 +131,9 @@ var vue = new Vue({
         researchIndex:1,
         pageControlIndex:'',
 
+        dataChosenIndex:1,
+        detailsIndex:1,
+
         articleToBack:{
             title:'aa',
             author:[],
@@ -182,9 +194,41 @@ var vue = new Vue({
 
         },
 
+        packageContent:{},
+
+        showDataChose : true,
     },
 
     methods: {
+        dateFormat(date, format) {
+            let dateObj = new Date(date);
+            let fmt = format || "yyyy-MM-dd hh:mm:ss";
+            //author: meizz
+            var o = {
+                "M+": dateObj.getMonth() + 1, //月份
+                "d+": dateObj.getDate(), //日
+                "h+": dateObj.getHours(), //小时
+                "m+": dateObj.getMinutes(), //分
+                "s+": dateObj.getSeconds(), //秒
+                "q+": Math.floor((dateObj.getMonth() + 3) / 3), //季度
+                S: dateObj.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(
+                    RegExp.$1,
+                    (dateObj.getFullYear() + "").substr(4 - RegExp.$1.length)
+                );
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(
+                        RegExp.$1,
+                        RegExp.$1.length == 1
+                            ? o[k]
+                            : ("00" + o[k]).substr(("" + o[k]).length)
+                    );
+            return fmt;
+        },
+
         chooseTaskDataCate(item,e){
             let exist=false;
             let cls=this.taskDataForm.classifications;
@@ -522,34 +566,34 @@ var vue = new Vue({
             if(this.articleToBack.title.trim()==""||this.articleToBack.author.length=="")
                 alert("Please enter the Title and at least one Author.");
             else
-                {
-            let obj=
-                {
-                    title:this.articleToBack.title,
-                    authors:this.articleToBack.author,
-                    journal:this.articleToBack.journal,
-                    startPage:this.articleToBack.startPage,
-                    endPage:this.articleToBack.endPage,
-                    date:this.articleToBack.date,
-                    link:this.articleToBack.link,
-                }
-            $.ajax({
-                url: "/article/add",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(obj),
-
-                async:true,
-                success:(json)=>{
-                    if(json.code==0){
-                        alert("Add Success");
-                        this.getArticleResult();
-                        $("#articleInfo")[0].style.display="none";
+            {
+                let obj=
+                    {
+                        title:this.articleToBack.title,
+                        authors:this.articleToBack.author,
+                        journal:this.articleToBack.journal,
+                        startPage:this.articleToBack.startPage,
+                        endPage:this.articleToBack.endPage,
+                        date:this.articleToBack.date,
+                        link:this.articleToBack.link,
                     }
-                    else alert("Add Error");//此处error信息不明确，记得后加
-                }
+                $.ajax({
+                    url: "/article/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
 
-            })
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            alert("Add Success");
+                            this.getArticleResult();
+                            $("#articleInfo")[0].style.display="none";
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
             }
 
         },
@@ -709,6 +753,14 @@ var vue = new Vue({
             this.conferenceToBack.startTime=$("#conferStartTimeEdit").val();
             this.conferenceToBack.endTime=$("#conferEndTimeEdit").val();
             this.editConference();
+        },
+
+        myDataClick(index){
+            this.dataChosenIndex=index;
+        },
+
+        outputDataClick(index){
+            this.dataChosenIndex=index;
         },
 
         editArticle(){
@@ -944,7 +996,12 @@ var vue = new Vue({
                     // chart.setOption(this.resourceOption);
 
                     this.userInfo = modelInfo;
+
+                    //取出taskinfo放入userTaskInfo
+                    this.getUserTaskInfo()
+
                     let orgs = this.userInfo.organizations;
+
                     if (orgs.length != 0) {
                         this.userInfo.orgStr = orgs[0];
                         for (i = 1; i < orgs.length; i++) {
@@ -1226,6 +1283,10 @@ var vue = new Vue({
             window.location.href = '../deploy-modelService/deploy-modelService.html';
         },
 
+        getUserTaskInfo(){
+            this.userTaskInfo=this.userInfo.runTask;
+            console.log(this.userTaskInfo)
+        },
 
         menuClick(num) {
             switch (num) {
@@ -1241,11 +1302,12 @@ var vue = new Vue({
                     this.data_upload=false;
                     this.data_show=false;
                     this.user_position = this.curIndex,
-                    //update searchText
-                    this.searchText = '';
+                        //update searchText
+                        this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getTasksInfo();
+
                     break;
                 case 2:
                     this.childIndex=1;
@@ -1353,7 +1415,7 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.user_position = this.curIndex,
-                    this.resourceLoad = false;
+                        this.resourceLoad = false;
                     this.data_upload=false;
                     this.data_show=true;
 
@@ -1726,7 +1788,7 @@ var vue = new Vue({
                         const data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.total;
-                       Vue.set(this.researchItems ,'list',data.list) ;
+                        Vue.set(this.researchItems ,'list',data.list) ;
 
                         console.log(this.researchItems );
                         if (this.page == 1) {
@@ -2612,7 +2674,7 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         if(this.isInSearch==0)
-                        this.getModels();
+                            this.getModels();
                         else this.searchModels();
                         break;
                     //
@@ -2626,7 +2688,7 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         if(this.isInSearch==0)
-                        this.getDataItems();
+                            this.getDataItems();
                         else this.searchDataItem();
                         break;
 
@@ -2639,7 +2701,7 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         if(this.isInSearch==0)
-                        this.getConcepts();
+                            this.getConcepts();
                         else this.searchConcepts();
                         break;
                     case '4-2':
@@ -2651,7 +2713,7 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         if(this.isInSearch==0)
-                        this.getSpatials();
+                            this.getSpatials();
                         else this.searchSpatials()
                         break;
                     case '4-3':
@@ -2663,7 +2725,7 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         if(this.isInSearch==0)
-                        this.getTemplates();
+                            this.getTemplates();
                         else this.searchTemplates();
                         break;
                     case '4-4':
@@ -2675,7 +2737,7 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         if(this.isInSearch==0)
-                        this.getUnits();
+                            this.getUnits();
                         else this.searchUnits();
                         break;
 
@@ -2702,12 +2764,12 @@ var vue = new Vue({
                         this.page = pageNo;
                         switch (this.researchIndex) {
                             case 1:this.getArticleResult();
-                            console.log('article')
-                            break;
+                                console.log('article')
+                                break;
                             case 2:this.getProjectResult();
-                            break;
+                                break;
                             case 3:this.getConferenceResult();
-                            break;
+                                break;
                         }
                         break;
 
@@ -3054,9 +3116,57 @@ var vue = new Vue({
                 this.downloadDataSetName.push(eval.fileName)
             }
 
+            if(eval.taskId!=null){
+                console.log(eval.taskId)
+                this.detailsIndex=2
+                this.getOneOfUserTasks(eval.taskId);
+            }
 
 
         },
+
+        backToPackage(){
+            this.detailsIndex=1;
+        },
+
+        getOneOfUserTasks(taskId){
+            $.ajax({
+                type:'GET',
+                url:"/task/getTaskByTaskId",
+                // contentType:'application/json',
+
+                data:
+                    {
+                        id:taskId,
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        setTimeout(()=>{
+                            const data = json.data;
+                            this.resourceLoad = false;
+                            // this.researchItems = data.list;
+                            this.packageContent=data;
+                            console.log(this.packageContent)
+                        },100)
+
+
+
+                    }
+                }
+            })
+        },
+
         userDownload(){
             //todo 依据数组downloadDataSet批量下载
 
@@ -3085,6 +3195,7 @@ var vue = new Vue({
 
 
         },
+
         addAllData(){
             let that=this
             axios.get("/dataManager/list",{
@@ -3104,6 +3215,7 @@ var vue = new Vue({
                     that.managerloading=false
                 })
         },
+
         addDataClass($event,item){
             this.rightMenuShow=false
 
@@ -3116,6 +3228,7 @@ var vue = new Vue({
 
 
         },
+
         removeClass($event,item){
 
 
@@ -3152,6 +3265,21 @@ var vue = new Vue({
 
 
         },
+
+        openWzhRightMenu(e){
+            e.preventDefault();
+
+            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            console.log(e)
+
+            var dom = document.getElementsByClassName("wzhRightMenu");
+
+            dom[0].style.top = e.pageY -250+"px"
+            dom[0].style.left = e.pageX-230 +"px";
+            console.log(e.style)
+            $('.wzhRightMenu').animate({height:'120'},150);
+        },
+
         //上传
         upload_data_dataManager(){
 
@@ -4344,6 +4472,15 @@ $(function () {
 
 
     });
+
+    $('body').click((e)=>{
+        $('.wzhRightMenu').animate({height:'0'},50);
+        if(e.stopPropagation){
+            e.stopPropagation();
+        }else{
+            e.cancelBubble = true;
+        }
+    })
 
 
 

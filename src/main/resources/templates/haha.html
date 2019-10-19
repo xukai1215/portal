@@ -158,7 +158,7 @@
 
 
                                                             <el-button plain round type="primary"
-                                                                       @click="showUpload(modelInEvent)">
+                                                                       @click="upload(modelInEvent)">
                                                                 <i class="fa fa-cloud-upload"></i>
                                                             </el-button>
                                                             <el-button plain round type="success"
@@ -291,7 +291,336 @@
                         </el-dialog>
 
                         <el-dialog title="Personal Center Data" :visible.sync="showDataChose" width="70%">
-                            <el-table :data="dataFromDataContainer" stripe v-loading="tableLoading">
+                            <div class="researchTitle">
+                                <ul class="researchMenu flexRowContainer">
+                                    <li :class="{researchMenuChoosed:dataChosenIndex==1}" style="cursor: pointer;" @click="myDataClick(1)">My Data</li>
+                                    <li :class="{researchMenuChoosed:dataChosenIndex==2}" style="cursor: pointer;" @click="outputDataClick(2)">Output Data</li>
+                                </ul>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==1}">
+                                <div class="panel panel-success" style="border: none;height: 650px;overflow: hidden">
+                                    <!--<div class="panel-heading">-->
+                                    <!--<h3 class="panel-title">-->
+                                    <!--Manager my data below.-->
+                                    <!--</h3>-->
+                                    <!--</div>-->
+                                    <div>
+                                        <el-card class="filebrowserfunction">
+
+                                            <el-row id="" class="filebrowser">
+
+                                                <!-- 用户自己上传的数据-->
+                                                <el-col :span="15">
+                                                    <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
+                                                    <!--//todo upload-->
+                                                    <button class="dwload btn btn-primary btn-md" data-toggle="modal"
+                                                            data-target="#managerUpload">
+                                                        <i class="glyphicon glyphicon-upload">&nbsp;upload</i>
+                                                    </button>
+
+
+                                                    <button class="dwload btn btn-primary btn-md" @click="userDownload">
+                                                        <i class="glyphicon glyphicon-download">&nbsp;download</i>
+                                                    </button>
+
+                                                    <!--//todo share-->
+                                                    <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
+                                                    <!--<i class="glyphicon glyphicon-share">&nbsp;share</i>-->
+                                                    <!--</button>-->
+
+
+                                                </el-col>
+                                                <el-col :span="9">
+                                                    <el-input id="searchinput"
+                                                              placeholder="search input "
+                                                              suffix-icon="el-icon-search"
+                                                              v-model="searchcontent"
+                                                              @keyup.enter.native="keywordsSearch()"
+                                                    >
+                                                    </el-input>
+                                                </el-col>
+                                            </el-row>
+                                        </el-card>
+                                        <el-card :body-style="{ padding:'9px'}">
+
+                                            <el-alert class="alert-success" role="alert" id="outputDataChosen">
+                                                <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>&nbsp;&nbsp;&nbsp;<span>{{downloadDataSetName.length!=0?downloadDataSetName:"select no data.."}}</span>
+                                            </el-alert>
+                                        </el-card>
+
+                                        <el-row>
+                                            <el-col :span="3">
+                                                <el-card style="height:560px;overflow-y: auto " class="managerAsideBtn">
+                                                    <el-button @click="findAllFiles()">All Files</el-button>
+                                                    <br>
+                                                    <el-button @click="findPics()">pictures</el-button>
+                                                    <br>
+                                                    <el-button @click="findDocs()">doc</el-button>
+                                                    <br>
+                                                    <!--<el-button @click="findVideo()" >video</el-button><br>-->
+                                                    <el-button @click="findOtherFiles()">other</el-button>
+                                                    <br>
+
+                                                </el-card>
+                                            </el-col>
+
+                                            <el-col :span="21">
+                                                <el-card style="height: 560px;overflow-y:auto;width:100%" id="browsercont"
+                                                         v-loading="managerloading">
+
+                                                    <!--</el-row>-->
+
+                                                    <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
+                                                         :id="generateId(key)"
+                                                         v-for="(item,key) in userTaskInfo"
+                                                         :key="key"
+                                                         @click="getid($event,item)"
+                                                         @mouseover="addDataClass($event,item)"
+                                                         @mouseout="removeClass($event,item)"
+                                                         @click.right="rightMenu($event)">
+
+                                                        <el-row style="height: 80%">
+                                                            <el-col :span="6">&nbsp</el-col>
+                                                            <el-col :span="14" style="height: 100%;"><img :src="getImg(item)"
+                                                                                                          style="height: 100%;width:100%"></el-col>
+                                                            <el-col :span="4">&nbsp</el-col>
+                                                        </el-row>
+                                                        <el-row type="flex" justify="center">
+
+                                                            <!--                                                    <p> {{item.fileName}}.{{item.suffix}} </p>-->
+
+
+                                                        </el-row>
+
+
+                                                    </div>
+
+
+                                                </el-card>
+                                            </el-col>
+                                        </el-row>
+                                        <!--<el-button icon="el-icon-sold-out" class="dall" @click="dall()">download selected all files-->
+                                        <!--</el-button>-->
+
+
+                                        <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu">
+                                            <el-button id="dbtn" @click="download_data_dataManager()" type="text">download
+                                            </el-button>
+                                            <br>
+                                            <el-button id="dbtn" @click="delete_data_dataManager()" type="text">delete
+                                            </el-button>
+                                            <br>
+                                            <el-button id="sbtn" @click="share" type="text">share</el-button>
+                                            <el-button id="sbtn" @click="relatedModels_dataManager()" type="text">relatedModels
+                                            </el-button>
+                                        </el-card>
+
+
+                                    </div>
+
+
+                                    <div class="modal fade" id="managerUpload" tabindex="-1" role="dialog"
+                                         aria-labelledby="ModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" style="z-index: 2041">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="ModalLabel3">Upload Data</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                        &times;
+                                                    </button>
+
+                                                </div>
+                                                <div class="modal-body">
+
+
+                                                    <!--<div class="file-loading">-->
+
+                                                    <!--<input id="file-1"   type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-theme="fas">-->
+                                                    <!--</div>-->
+                                                    <form action="http://localhost:8081/file/apk_upload" method="post"
+                                                          enctype="multipart/form-data">
+                                                        <div class="form-group">
+                                                            <div class="file-loading">
+                                                                <input id="manager-upload" type="file" multiple class="file"
+                                                                       data-overwrite-initial="false" data-min-file-count="1"
+                                                                       data-theme="fas">
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <div class="uploaded">
+
+                                                        <form>
+
+                                                            <div class="form-group">
+                                                                <label for="fileName">fileName:</label>
+                                                                <input type="text" class="form-control"
+                                                                       placeholder="Please input coordinate system of the data to be uploaded."
+                                                                       id="managerFileName" required/>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="suffix">suffix:</label>
+                                                                <input type="text" class="form-control"
+                                                                       placeholder="Please input coordinate system of the data to be uploaded."
+                                                                       id="managerFileSuffix" required/>
+                                                            </div>
+
+                                                            <div class="form-group">
+
+                                                                <label for="keywords">tags:</label><br>
+                                                                <div class="bootstrap-tagsinput">
+
+                                                                    <input type="text" data-role="tagsinput" id="managerFileTags"
+                                                                           size="1"
+                                                                           required/>
+                                                                </div>
+                                                            </div>
+
+                                                        </form>
+                                                        <!--<button class="btn btn-success pull-right" @click="uploadD">upload</button>-->
+
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" @click="upload_data_dataManager">
+                                                        upload
+                                                    </button>
+
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                            @click="close()">
+                                                        close
+                                                    </button>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal -->
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==2}">
+                                <div class="panel panel-success" style="border: none;height: 650px;overflow: hidden">
+                                    <div>
+                            <!--                            数据文件夹的内容-->
+                                        <el-row class="showHidden" type="flex" justify="center" :class="{showActive:detailsIndex==1}">
+                                <el-card style="height: 560px;overflow-y:auto;width:100%" id="browsercont"
+                                         v-loading="managerloading">
+
+                                    <!--</el-row>-->
+
+                                    <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
+                                         :id="generateId(key)"
+                                         v-for="(item,key) in userTaskInfo"
+                                         :key="key"
+                                         @click="getid($event,item)"
+                                         @mouseover="addDataClass($event,item)"
+                                         @mouseout="removeClass($event,item)"
+                                         @click.right="openWzhRightMenu($event)">
+
+                                        <el-row type="flex" justify="center">
+                                            <h4>File Package</h4>
+                                        </el-row>
+                                        <el-row type="flex" justify="center" style="align-items: center;flex-direction: column">
+                                            <p style="text-align: center">{{item.modelName}}</p>
+                                            <p>@{{dateFormat(item.createTime)}} </p>
+
+
+                                        </el-row>
+
+                                        <!--menu item -->
+
+
+                                    </div>
+
+
+                                </el-card>
+                                <ul class="wzhRightMenu" ref="browsermenu">
+                                    <li @click="download_data_dataManager()" type="text">download
+                                    </li>
+                                    <li @click="delete_data_dataManager()" type="text">delete
+                                    </li>
+                                    <li @click="share" type="text">share</li>
+                                    <li @click="relatedModels_dataManager()" type="text">relatedModels
+                                    </li>
+                                </ul>
+                            </el-row>
+                            <!--                            用户跑完模型的数据文件夹-->
+                                        <el-row class="showHidden" type="flex" justify="center" :class="{showActive:detailsIndex==2}">
+                                <el-card style="height: 560px;overflow-y:auto;width:100%" id="outputData"
+                                         v-loading="managerloading">
+                                    <div class="contentFlexContainer">
+                                        <div class="squareButton" @click="backToPackage">
+                                            <i class="fa fa-arrow-left" style="margin-right:2px "></i>
+                                        </div>
+                                        <div class="modelTitleContainer"  style="text-align: center;">
+                                            <h4>{{packageContent.computableName}}</h4>
+                                        </div>
+                                    </div>
+                                    <!--  input-->
+                                    <div class="containerWithColor" style=" background-color: rgba(227, 252, 255, 0.31);border-color: #289ec2">
+                                        <div class="subTitle" style="with:100%;">
+                                            <h4 style="font-style: italic;color:#289ec2 ;">Input</h4>
+                                        </div>
+                                        <el-row type="flex" justify="space-around">
+                                            <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
+                                                 :id="generateId(key)"
+                                                 v-for="(item,key) in packageContent.inputs"
+                                                 :key="key"
+                                                 @click="getid($event,item)"
+                                                 @mouseover="addDataClass($event,item)"
+                                                 @mouseout="removeClass($event,item)"
+                                                 @click.right="rightMenu($event)">
+
+                                                <el-row type="flex" justify="center">
+                                                    <h4>File</h4>
+                                                </el-row>
+                                                <el-row type="flex" justify="center" style="align-items: center;flex-direction: column">
+                                                    <p style="text-align: center">{{item.tag}}</p>
+
+
+                                                </el-row>
+                                            </div>
+                                        </el-row>
+                                    </div>
+
+                                    <!-- output-->
+                                    <div class="containerWithColor" style=" background-color: #acff9c21;border-color: #71d913">
+                                        <div class="subTitle" style="with:100%;">
+                                            <h4 style="font-style: italic;color:#71d913 ;">Output</h4>
+                                        </div>
+                                        <el-row type="flex" justify="space-around">
+                                            <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
+                                                 :id="generateId(key)"
+                                                 v-for="(item,key) in packageContent.outputs"
+                                                 :key="key"
+                                                 @click="getid($event,item)"
+                                                 @mouseover="addDataClass($event,item)"
+                                                 @mouseout="removeClass($event,item)"
+                                                 @click.right="openWzhRightMenu($event,item)">
+
+                                                <el-row type="flex" justify="center">
+                                                    <h4>File</h4>
+                                                </el-row>
+                                                <el-row type="flex" justify="center" style="align-items: center;flex-direction: column">
+                                                    <p style="text-align: center">{{item.tag}}</p>
+                                                </el-row>
+
+                                                <!--menu item -->
+                                            </div>
+                                        </el-row>
+                                    </div>
+                                </el-card>
+                            </el-row>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <el-table class="showHidden" :data="dataFromDataContainer" :class="{showActive:detailsIndex==3}" stripe v-loading="tableLoading">
                                 <el-table-column property="createDate" label="Date" width="200">
                                     <template slot-scope="scope">
                                         {{dateFormat(scope.row.createDate)}}

@@ -10,8 +10,10 @@ import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.support.TaskData;
+import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.TaskService;
+import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,9 @@ public class TaskRestController {
     TaskService taskService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     ComputableModelService computableModelService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -52,6 +57,17 @@ public class TaskRestController {
         }
 
     }
+
+//    @RequestMapping(value="/renameTag",method = RequestMethod.POST)
+//    JsonResult renameTag(@RequestParam(value="taskId", required = false) String taskId,@RequestParam(value="outputs[][statename]", required = false) List<TaskData> outputs
+//                         ,HttpServletRequest request){
+//        System.out.println(outputs);
+//        HttpSession session=request.getSession();
+//        if(session.getAttribute("uid")==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        return ResultUtils.success(taskService.renameTag(taskId,outputs));
+//    }
 
     @RequestMapping(value = "/output/{id}", method = RequestMethod.GET)
     ModelAndView getTaskOutput(@PathVariable("id") String id, HttpServletRequest request) {
@@ -109,6 +125,12 @@ public class TaskRestController {
         } else {
             return ResultUtils.error(-1, "can not get service task!");
         }
+    }
+
+    @RequestMapping(value="/getTaskByTaskId",method = RequestMethod.GET)
+    public JsonResult getTaskByTaskId(@RequestParam(value="id") String taskId){
+        return ResultUtils.success(taskService.findByTaskId(taskId));
+
     }
 
     @RequestMapping (value="/searchTasksByUserId",method = RequestMethod.GET)
@@ -190,6 +212,14 @@ public class TaskRestController {
 //                }
 
                 taskService.save(task);
+                UserTaskInfo userTaskInfo=new UserTaskInfo();
+                userTaskInfo.setCreateTime(task.getRunTime());
+                userTaskInfo.setModelName(task.getComputableName());
+                userTaskInfo.setTaskId(task.getTaskId());
+
+                //存入用户信息记录
+                String msg= userService.addTaskInfo(username,userTaskInfo);
+                result=result.concat("&").concat(msg);
 
                 return ResultUtils.success(result);
             }

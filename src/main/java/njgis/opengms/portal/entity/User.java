@@ -49,6 +49,8 @@ public class User {
 //    String lab;
     List<Project> projects;
 
+    List<UserTaskInfo> runTask;
+
     int modelItems;
     int dataItems;
     int conceptualModels;

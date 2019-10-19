@@ -5,10 +5,7 @@ import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
-import njgis.opengms.portal.entity.support.Affiliation;
-import njgis.opengms.portal.entity.support.AwardandHonor;
-import njgis.opengms.portal.entity.support.EducationExperience;
-import njgis.opengms.portal.entity.support.UserLab;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -370,6 +367,7 @@ public class UserService {
         userInfo.put("affiliation",user.getAffiliation());
         userInfo.put("eduExperiences",user.getEducationExperiences());
         userInfo.put("awdHonors",user.getAwardsHonors());
+        userInfo.put("runTask",user.getRunTask());
         userInfo.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
 
         return userInfo;
@@ -556,6 +554,29 @@ public class UserService {
         }
 
         return modelAndView;
+    }
+
+    public String addTaskInfo(String userName, UserTaskInfo userTaskInfo){
+        try {
+            User user =userDao.findFirstByUserName(userName);
+            if(user!=null){
+                List<UserTaskInfo>runTask= user.getRunTask();
+                runTask.add(userTaskInfo);
+                Date now=new Date();
+
+                user.setRunTask(runTask);
+                user.setUpdateTime(now);
+                System.out.println(userDao.save(user));
+                return "add taskInfo suc";
+            }
+            else
+                return "no user";
+
+        }catch(Exception e){
+            return "fail";
+        }
+
+
     }
 
 }

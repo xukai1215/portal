@@ -56,7 +56,32 @@ var vue = new Vue({
         keyInput:'',
         modelInEvent:{},
         isFixed:false,
-        introHeight:1
+        introHeight:1,
+
+        dataChosenIndex:1,
+        detailsIndex:1,
+        managerloading:true,
+        userTaskInfo:[{
+            content:{},
+        }],
+
+        downloadDataSet:[],
+        downloadDataSetName:[],
+        packageContent:{},
+        userInfo: {
+            runTask:[
+                {
+
+                }
+            ]
+        },
+        searchcontent:'',
+        databrowser:[],
+        loading:'false',
+        managerloading:true,
+        dataid:'',
+        rightMenuShow:false,
+
     },
     computed: {},
     methods: {
@@ -81,6 +106,57 @@ var vue = new Vue({
 
             })
 
+        },
+
+        showtitle(ev){
+            return ev.fileName+"\n"+"Type:"+ev.suffix;
+        },
+
+        generateId(key){
+            return key;
+        },
+
+        getUserTaskInfo(){
+            let { code, data, msg } =  fetch("/user/getUserInfo", {
+                method: "GET",
+            }).then((response)=>{
+                return response.json();
+            }).then((data)=>{
+                this.userInfo=data.data.userInfo;
+                this.userTaskInfo=this.userInfo.runTask;
+                console.log(this.userInfo);
+                setTimeout(()=>{
+                    $('.el-loading-mask').css('display','none');
+                },355)
+
+            });
+
+        },
+
+        share(){
+            for(let i=0;i<this.databrowser.length;i++){
+                if(this.databrowser[i].id===this.dataid){
+                    var item=this.databrowser[i];
+                    break;
+                }
+            }
+
+
+            if(item!=null){
+                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
+                this.$alert("<input style='width: 100%' value="+url+">",{
+                    dangerouslyUseHTMLString: true
+                })
+                // this.dataid='';
+
+            }else {
+                // console.log("从后台获取数据条目数组有误")
+                this.$message('please select file first!!');
+            }
+        },
+
+        backToPackage(){
+            this.detailsIndex=1;
         },
 
         dateFormat(date, format) {
@@ -249,6 +325,8 @@ var vue = new Vue({
                 this.first = false;
             }
             this.showDataChose = true;
+            this.getUserTaskInfo()
+
             this.eventChoosing = event;
         },
         async handleCurrentChange(val) {
@@ -286,7 +364,7 @@ var vue = new Vue({
                 ip: this.info.taskInfo.ip,
                 port: this.info.taskInfo.port,
                 pid: this.info.taskInfo.pid,
-                inputs: []
+                inputs: [],
             };
 
             try{
@@ -454,10 +532,536 @@ var vue = new Vue({
             }
 
 
+        },
+
+        showtitle(ev){
+            return ev.fileName+"\n"+"Type:"+ev.suffix;
+        },
+        getImg(item){
+            return "/static/img/filebrowser/"+item.suffix+".svg"
+        },
+        generateId(key){
+            return key;
+        },
+
+        //上传
+        upload_data_dataManager(){
+
+
+
+            if(this.sourceStoreId===''){
+                alert("请先上传数据")
+            }else{
+                var data={
+                    author: this.userId,
+
+                    fileName: $("#managerFileName").val(),
+                    fromWhere:"PORTAL",
+                    mdlId: "string",
+                    sourceStoreId:this.sourceStoreId,
+                    suffix:$("#managerFileSuffix").val(),
+                    tags: $("#managerFileTags").tagsinput('items'),
+                    type: "OTHER"
+
+                }
+                var that =this;
+                axios.post("http://172.21.212.64:8081/dataResource",data)
+                    .then(res=>{
+                        if(res.status==200){
+                            alert("data upload success")
+
+                            that.addAllData()
+                            that.close()
+                        }
+                    });
+
+            }
+
+        },
+
+        //下载
+        download_data_dataManager(){
+
+            for(let i=0;i<this.databrowser.length;i++){
+                if(this.databrowser[i].id===this.dataid){
+                    var item=this.databrowser[i];
+                    break;
+                }
+            }
+
+
+
+            if(item!=null){
+                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
+                let link =document.createElement('a');
+                link.style.display='none';
+                link.href=url;
+                // link.setAttribute(item.fileName,'filename.'+item.suffix)
+
+                document.body.appendChild(link)
+                link.click();
+
+            }else {
+                this.$message('please select file first!!');
+            }
+
+
+        },
+        //删除
+        delete_data_dataManager(){
+
+            if(confirm("Are you sure to delete?")){
+                let tha=this
+                axios.delete("/dataManager/delete",{
+                    params:{
+                        id:tha.dataid
+                    }
+                }).then((res)=>{
+
+
+                    if(res.data.msg==="成功"){
+                        //删除双向绑定的数组
+                        tha.rightMenuShow=false
+                        tha.databrowser=[]
+                        tha.addAllData()
+                        alert("delete successful")
+
+                    }
+
+                })
+            }else{
+                alert("ok")
+            }
+
+
 
 
 
         },
+
+
+        showsearchresult(data){
+
+            //动态创建DOM节点
+
+            for(let i=0;i<this.databrowser.length;i++){
+                //匹配查询字段
+                if(this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase())>-1){
+                    //插入查找到的card
+
+                    //card
+                    let searchresultcard=document.createElement("div");
+                    searchresultcard.classList.add("el-card");
+                    searchresultcard.classList.add("dataitemisol");
+                    searchresultcard.classList.add("is-never-shadow");
+                    searchresultcard.classList.add("sresult");
+
+
+                    //cardbody
+                    let secardbody=document.createElement("div");
+                    secardbody.classList.add("el-card__body");
+                    //card里添加cardbody
+                    searchresultcard.appendChild(secardbody);
+
+                    //el-row1
+                    let cardrow1=document.createElement("div");
+                    cardrow1.classList.add("el-row");
+                    secardbody.appendChild(cardrow1);
+
+                    //3个div1
+                    //div1
+                    let div1=document.createElement("div");
+                    div1.classList.add("el-col");
+                    div1.classList.add("el-col-6");
+
+                    let text1=document.createTextNode(" ");
+                    div1.appendChild(text1);
+
+                    cardrow1.appendChild(div1)
+
+                    //div2
+                    let div2=document.createElement("div");
+                    div2.classList.add("el-col");
+                    div2.classList.add("el-col-12");
+
+                    let img=document.createElement("img");
+                    img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+
+                    img.style.height='60%';
+                    img.style.width='100%';
+                    img.style.marginLeft='30%';
+
+                    div2.appendChild(img);
+
+                    cardrow1.appendChild(div2)
+
+                    //div3
+                    let div3=document.createElement("div");
+                    div3.classList.add("el-col");
+                    div3.classList.add("el-col-6");
+
+                    let text2=document.createTextNode(" ");
+                    div3.appendChild(text2);
+
+                    cardrow1.appendChild(div3);
+
+
+                    //el-row2
+                    let cardrow2=document.createElement("div");
+                    cardrow2.classList.add("el-row");
+                    secardbody.appendChild(cardrow2);
+
+                    //3个div2
+                    //div4
+                    let div4=document.createElement("div");
+                    div4.classList.add("el-col");
+                    div4.classList.add("el-col-2");
+
+                    let text3=document.createTextNode(" ");
+                    div4.appendChild(text3);
+
+                    cardrow2.appendChild(div4)
+
+                    //div5
+                    let div5=document.createElement("div");
+                    div5.classList.add("el-col");
+                    div5.classList.add("el-col-20");
+
+                    let p=document.createElement("p");
+                    div5.appendChild(p);
+
+                    let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                    p.appendChild(filenameandtype)
+
+                    cardrow2.appendChild(div5)
+
+                    //div6
+                    let div6=document.createElement("div");
+                    div6.classList.add("el-col");
+                    div6.classList.add("el-col-20");
+
+                    let text4=document.createTextNode(" ");
+                    div6.appendChild(text4);
+
+                    cardrow2.appendChild(div6)
+
+                    //往contents里添加card
+                    document.getElementById("browsercont").appendChild(searchresultcard);
+
+                    //DOM2级事件绑定
+
+                    // searchresultcard.addEventListener('click',()=>{
+                    //    //点击赋值id
+                    //     this.dataid=i;
+                    // });
+                    searchresultcard.click(function () {
+                        this.dataid=this.databrowser[i].id;
+                    })
+
+                }
+            }
+        },
+
+        category(data){
+
+            for(let j=0;j<data.length;j++){
+                for(let i=0;i<this.databrowser.length;i++){
+                    //匹配查询字段
+                    if(this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase())>-1){
+                        //插入查找到的card
+
+                        //card
+                        let searchresultcard=document.createElement("div");
+                        searchresultcard.classList.add("el-card");
+                        searchresultcard.classList.add("dataitemisol");
+                        searchresultcard.classList.add("is-never-shadow");
+                        searchresultcard.classList.add("sresult");
+
+
+                        //cardbody
+                        let secardbody=document.createElement("div");
+                        secardbody.classList.add("el-card__body");
+                        //card里添加cardbody
+                        searchresultcard.appendChild(secardbody);
+
+                        //el-row1
+                        let cardrow1=document.createElement("div");
+                        cardrow1.classList.add("el-row");
+                        secardbody.appendChild(cardrow1);
+
+                        //3个div1
+                        //div1
+                        let div1=document.createElement("div");
+                        div1.classList.add("el-col");
+                        div1.classList.add("el-col-6");
+
+                        let text1=document.createTextNode(" ");
+                        div1.appendChild(text1);
+
+                        cardrow1.appendChild(div1)
+
+                        //div2
+                        let div2=document.createElement("div");
+                        div2.classList.add("el-col");
+                        div2.classList.add("el-col-12");
+
+                        let img=document.createElement("img");
+                        img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+
+                        img.style.height='60%';
+                        img.style.width='100%';
+                        img.style.marginLeft='30%';
+
+                        div2.appendChild(img);
+
+                        cardrow1.appendChild(div2)
+
+                        //div3
+                        let div3=document.createElement("div");
+                        div3.classList.add("el-col");
+                        div3.classList.add("el-col-6");
+
+                        let text2=document.createTextNode(" ");
+                        div3.appendChild(text2);
+
+                        cardrow1.appendChild(div3);
+
+
+                        //el-row2
+                        let cardrow2=document.createElement("div");
+                        cardrow2.classList.add("el-row");
+                        secardbody.appendChild(cardrow2);
+
+                        //3个div2
+                        //div4
+                        let div4=document.createElement("div");
+                        div4.classList.add("el-col");
+                        div4.classList.add("el-col-2");
+
+                        let text3=document.createTextNode(" ");
+                        div4.appendChild(text3);
+
+                        cardrow2.appendChild(div4)
+
+                        //div5
+                        let div5=document.createElement("div");
+                        div5.classList.add("el-col");
+                        div5.classList.add("el-col-20");
+
+                        let p=document.createElement("p");
+                        div5.appendChild(p);
+
+                        let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                        p.appendChild(filenameandtype)
+
+                        cardrow2.appendChild(div5)
+
+                        //div6
+                        let div6=document.createElement("div");
+                        div6.classList.add("el-col");
+                        div6.classList.add("el-col-20");
+
+                        let text4=document.createTextNode(" ");
+                        div6.appendChild(text4);
+
+                        cardrow2.appendChild(div6)
+
+                        //往contents里添加card
+                        document.getElementById("browsercont").appendChild(searchresultcard);
+
+                        //DOM2级事件绑定
+
+                        // searchresultcard.addEventListener('click',()=>{
+                        //    //点击赋值id
+                        //     this.dataid=i;
+                        // });
+                        searchresultcard.click(function () {
+                            this.dataid=this.databrowser[i].id;
+                        })
+
+                    }
+                }
+            }
+
+        },
+
+        getid($event,eval){
+            console.log(eval.id)
+            this.dataid=eval.id;
+
+            $event.currentTarget.className="el-card dataitemisol clickdataitem"
+
+            //再次点击取消选择
+            if(this.downloadDataSet.indexOf(eval)>-1){
+                for(var i=0;i<this.downloadDataSet.length;i++){
+                    if(this.downloadDataSet[i]===eval){
+                        //删除
+                        this.downloadDataSet.splice(i,1)
+                        break
+                    }
+                }
+                for(var i=0;i<this.downloadDataSetName.length;i++){
+                    if(this.downloadDataSetName[i]===eval.fileName){
+                        this.downloadDataSetName.splice(i,1)
+                        break
+                    }
+                }
+
+
+
+            }else{
+                this.downloadDataSet.push(eval)
+                this.downloadDataSetName.push(eval.fileName)
+            }
+
+            if(eval.taskId!=null){
+                console.log(eval.taskId)
+                this.detailsIndex=2
+                this.getOneOfUserTasks(eval.taskId);
+            }
+
+
+        },
+
+        getOneOfUserTasks(taskId){
+            $.ajax({
+                type:'GET',
+                url:"/task/getTaskByTaskId",
+                // contentType:'application/json',
+
+                data:
+                    {
+                        id:taskId,
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields:{
+                    withCredentials:true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }else {
+                        setTimeout(()=>{
+                            const data = json.data;
+                            this.resourceLoad = false;
+                            // this.researchItems = data.list;
+                            this.packageContent=data;
+                            console.log(this.packageContent)
+                        },100)
+
+
+
+                    }
+                }
+            })
+        },
+
+        addDataClass($event,item){
+            this.rightMenuShow=false
+
+
+            if(this.downloadDataSet.indexOf(item)<0){
+                $event.currentTarget.className="el-card dataitemisol dataitemhover"
+            }
+
+            this.dataid=item.id
+
+
+        },
+
+        removeClass($event,item){
+
+
+
+            if(this.downloadDataSet.indexOf(item)>-1){
+                $event.currentTarget.className="el-card dataitemisol clickdataitem"
+            }else{
+                $event.currentTarget.className="el-card dataitemisol"
+            }
+
+
+
+        },
+
+        //右键菜单
+
+        rightMenu(e){
+            e.preventDefault();
+
+            e.currentTarget.className="el-card dataitemisol clickdataitem"
+
+
+            var dom = document.getElementsByClassName("browsermenu");
+
+            console.log(e)
+            dom[0].style.top = e.pageY -100+"px"
+            // 125 > window.innerHeight
+            //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
+            dom[0].style.left = e.pageX-200 +"px";
+
+            this.rightMenuShow=true
+
+
+
+
+        },
+
+        openWzhRightMenu(e){
+            e.preventDefault();
+
+            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            console.log(e)
+
+            var dom = document.getElementsByClassName("wzhRightMenu");
+
+            dom[0].style.top = e.pageY -250+"px"
+            dom[0].style.left = e.pageX-230 +"px";
+            console.log(e.style)
+            $('.wzhRightMenu').animate({height:'120'},150);
+        },
+
+        myDataClick(index){
+            this.dataChosenIndex=index;
+        },
+
+        outputDataClick(index){
+            this.dataChosenIndex=index;
+        },
+
+        userDownload(){
+            //todo 依据数组downloadDataSet批量下载
+
+            let sourceId=new Array()
+
+            for(let i=0;i<this.downloadDataSet.length;i++){
+                sourceId.push(this.downloadDataSet[i].sourceStoreId)
+            }
+
+
+            if(this.downloadDataSet.length>0){
+
+                const keys=sourceId.map(_=>`sourceStoreId=${_}`).join('&');
+                let url ="/dataManager/downloadSomeRemote?"+keys;
+                let link =document.createElement('a');
+                link.style.display='none';
+                link.href=url;
+                // link.setAttribute(item.fileName,'filename.'+item.suffix)
+
+                document.body.appendChild(link)
+                link.click();
+
+            }else{
+                alert("please select first!!")
+            }
+
+
+        },
+
 
         submitForm (formName) {
             //包含上传的文件信息和服务端返回的所有信息都在这个对象里
@@ -518,6 +1122,7 @@ var vue = new Vue({
         window.addEventListener('scroll',this.initSize);
         window.addEventListener('resize',this.initSize);
 
+        // this.getUserTaskInfo()
 
     },
 
@@ -538,5 +1143,13 @@ var vue = new Vue({
         }
     })
 
+    $('body').click((e)=>{
+        $('.wzhRightMenu').animate({height:'0'},50);
+        if(e.stopPropagation){
+            e.stopPropagation();
+        }else{
+            e.cancelBubble = true;
+        }
+    })
 
 })()
