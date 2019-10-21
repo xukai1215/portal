@@ -13,6 +13,7 @@ import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -459,6 +460,62 @@ public class DataItemService {
         return pageResult;
 
 
+
+    }
+
+    public JSONObject searchResourceByNameAndCate(DataItemFindDTO dataItemFindDTO){
+
+        int page= dataItemFindDTO.getPage();
+        int pageSize = dataItemFindDTO.getPageSize();
+        String searchText = dataItemFindDTO.getSearchText();
+
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<DataItem> dataItemPage=dataItemDao.findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn("resource",searchText,dataItemFindDTO.getClassifications(),pageable);
+        List<DataItem> dataItems=dataItemPage.getContent();
+
+        JSONArray list=new JSONArray();
+        for(int i=0;i< dataItems.size();i++){
+            JSONObject object=new JSONObject();
+            DataItem dataItem=dataItems.get(i);
+
+            String oid=dataItem.getAuthor();
+            User user=userDao.findFirstByOid(oid);
+            JSONObject userObj=new JSONObject();
+            userObj.put("oid",user.getOid());
+            userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
+            userObj.put("name",user.getName());
+
+            String dataStr="";
+            List<DataMeta> dataMetaList=dataItem.getDataList();
+            for(int j=0;j<dataMetaList.size();j++){
+                DataMeta dataMeta=dataMetaList.get(j);
+                dataStr+=j==0?"":", ";
+                dataStr+=dataMeta.getName()+(dataMeta.getSuffix().equals("unknow")?"":dataMeta.getSuffix());
+            }
+
+            object.put("id",dataItem.getId());
+            object.put("name",dataItem.getName());
+            object.put("author",userObj);
+            object.put("dataList",dataItem.getDataList());
+            object.put("dataStr",dataStr);
+
+
+
+            list.add(object);
+
+
+//            dataItems.get(i).setAuthor(user.getName());
+//            dataItems.get(i).setOid(dataItem.getId());
+
+        }
+
+        JSONObject result=new JSONObject();
+        result.put("list", list);
+        result.put("total", dataItemPage.getTotalElements());
+
+        return result;
 
     }
 

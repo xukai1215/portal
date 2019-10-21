@@ -120,6 +120,19 @@ public class RepositoryRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value="/dataItem/{id}",method = RequestMethod.GET)
+    public ModelAndView redirectDataItem(@PathVariable("id") String id,HttpServletRequest req){
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/dataItem/"+id);
+
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
+        return modelAndView;
+    }
+
 
 
     //concept

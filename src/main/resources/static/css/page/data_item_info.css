@@ -54,6 +54,7 @@ p{
     margin-left: 110px;
     display: block;
     padding-top:5px;
+    min-height: 77px;
 }
 .info a{
     font-size:18px;

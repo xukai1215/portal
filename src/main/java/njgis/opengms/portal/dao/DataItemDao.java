@@ -18,6 +18,7 @@ import java.util.List;
 public interface DataItemDao extends MongoRepository<DataItem,String> {
 
 
+    Page<DataItem> findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn(String contentType,String name,List<String> cls,Pageable pageable);
 
     DataItem findFirstById(String id);
 

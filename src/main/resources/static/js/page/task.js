@@ -9,9 +9,7 @@ var vue = new Vue({
         info: {
             dxInfo: {},
             modelInfo: {},
-            taskInfo: {
-
-            },
+            taskInfo: {},
             userInfo: {}
         },
         showUpload: false,
@@ -82,9 +80,98 @@ var vue = new Vue({
         dataid:'',
         rightMenuShow:false,
 
+        introHeight:1,
+
+        dataItemVisible:false,
+        categoryTree:[],
+        classifications:[],
+        dataItemSearchText:'',
+        currentData:{},
+        pageOption:{
+            page:0,
+            pageSize:5,
+            asc:false,
+            searchResult:[],
+            total:0,
+        }
     },
     computed: {},
     methods: {
+        handlePageChange(){
+
+        },
+        handleView(){
+
+        },
+        selectFromDataItem(event){
+            this.eventChoosing = event;
+            this.dataItemVisible=true;
+        },
+        clickData(item,event){
+            console.log(item,event)
+            if(this.currentData.url!=item.url) {
+
+                this.currentData = item;
+
+                for(let parent of event.path){
+                    if(parent.id==item.url){
+                        $(".dataitemisol").removeClass("clickdataitem");
+                        parent.classList.add("clickdataitem")
+                        break;
+                    }
+                }
+            }
+            else{
+                this.currentData={};
+                $(".dataitemisol").removeClass("clickdataitem")
+            }
+        },
+        searchDataItem(){
+            this.pageOption.classifications=this.classifications;
+            this.pageOption.searchText=this.dataItemSearchText;
+            axios.post("/dataItem/searchResourceByNameAndCate/",this.pageOption)
+                .then((res)=>{
+                    console.log(res)
+                    this.pageOption.searchResult=res.data.data.list;
+                    this.pageOption.total=res.data.data.total;
+                });
+        },
+
+        chooseCate(item,e){
+            if(this.classifications[0]!=item.id){
+                $(".taskDataCate").children().css("color","black")
+                e.target.style.color='deepskyblue';
+                this.classifications.pop();
+                this.classifications.push(item.id);
+            }
+            else{
+                e.target.style.color='black';
+                this.classifications.pop();
+            }
+
+            this.searchDataItem();
+
+        },
+
+        confirmData(){
+            if(this.currentDataUrl!="") {
+                this.dataItemVisible=false;
+                console.log(this.eventChoosing,this.currentData)
+                this.eventChoosing.tag = this.currentData.name;
+                this.eventChoosing.url = this.currentData.url;
+            }
+            else{
+                this.$message("Please select data first!")
+            }
+        },
+        downloadData(){
+            if(this.currentDataUrl!="") {
+                window.open("/dispatchRequest/download?url=" + this.currentData.url);
+            }
+            else{
+                this.$message("Please select data first!")
+            }
+        },
 
         initSize(){
             this.$nextTick(() =>{
@@ -231,11 +318,9 @@ var vue = new Vue({
         },
         init() {},
         inEventList(state) {
-            let stateInfo= state.event.filter(value => {
+            return state.event.filter(value => {
                 return value.eventType === "response";
             });
-            console.log(stateInfo)
-            return stateInfo
         },
         outEventList(state) {
             return state.event.filter(value => {
@@ -364,13 +449,13 @@ var vue = new Vue({
                 ip: this.info.taskInfo.ip,
                 port: this.info.taskInfo.port,
                 pid: this.info.taskInfo.pid,
-                inputs: [],
+                inputs: []
             };
 
             try{
                 this.info.modelInfo.states.forEach(state => {
                     let statename = state.name;
-                    state.event.forEach((el) => {
+                    state.event.forEach(el => {
                         let event = el.eventName;
                         let tag = el.tag;
                         let url = el.url;
@@ -1095,6 +1180,26 @@ var vue = new Vue({
 
     },
     async mounted() {
+
+        var tha=this
+        axios.get("/dataItem/createTree")
+            .then(res=>{
+                tha.tObj=res.data;
+                for(var e in tha.tObj){
+                    var a={
+                        key:e,
+                        value:tha.tObj[e]
+                    }
+                    if(e!='Data Resouces Hubs'){
+                        tha.categoryTree.push(a);
+                    }
+
+
+                }
+
+            })
+
+
         this.introHeight=$('.introContent').attr('height');
 
         console.log(this.introHeight)
@@ -1122,7 +1227,6 @@ var vue = new Vue({
         window.addEventListener('scroll',this.initSize);
         window.addEventListener('resize',this.initSize);
 
-        // this.getUserTaskInfo()
 
     },
 
@@ -1132,7 +1236,7 @@ var vue = new Vue({
     }
 });
 
-(function () {
+$(function () {
     $(window).resize(function(){
         let introHeaderHeight=$('.introHeader').css('width')
         console.log(introHeaderHeight)
@@ -1152,4 +1256,5 @@ var vue = new Vue({
         }
     })
 
-})()
+
+});
