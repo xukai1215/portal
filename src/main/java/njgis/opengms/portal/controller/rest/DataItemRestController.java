@@ -117,6 +117,11 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO));
     }
 
+    @RequestMapping(value="/searchResourceByNameAndCate",method = RequestMethod.POST)
+    JsonResult searchResourceByNameAndCate(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.searchResourceByNameAndCate(dataItemFindDTO));
+    }
+
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
     JsonResult searchByTitle(DataItemFindDTO dataItemFindDTO, String oid){

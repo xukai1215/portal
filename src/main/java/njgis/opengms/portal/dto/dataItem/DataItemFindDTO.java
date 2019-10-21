@@ -19,12 +19,13 @@ public class DataItemFindDTO {
     List<String> classifications;
     String categoryId;
     List<String> searchContent;
+    String searchText;
 
     String dataId;
     List<String> relatedModels;
 
     String sortElement;
-    String searchText;
+
     //用做多条件查询
     //private List<String> properties;
 

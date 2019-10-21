@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Data Item Info | OpenGMS</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-    <link rel="icon" type="image/x-icon"  th:href="@{../../static/img/logo/favicon.ico}">
+    <link rel="icon" type="image/x-icon" th:href="@{../../static/img/logo/favicon.ico}">
     <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
 
-    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css" th:href="@{../../static/css/base/bootstrap.min.css}">
+    <link rel="stylesheet" href="../static/css/base/bootstrap.min.css"
+          th:href="@{../../static/css/base/bootstrap.min.css}">
     <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css"
           th:href="@{../../static/css/font-awesome/css/font-awesome.min.css}">
     <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.woff"
@@ -18,11 +20,13 @@
 
     <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{../../static/css/base/style.css}">
     <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{../../static/css/base/universal.css}">
-    <link rel="stylesheet" href="../static/css/page/data_item_info.css" th:href="@{../../static/css/page/data_item_info.css}">
-    <link rel="stylesheet" href="../static/css/components/file-manager.css" th:href="@{../../static/css/components/file-manager.css}">
+    <link rel="stylesheet" href="../static/css/page/data_item_info.css"
+          th:href="@{../../static/css/page/data_item_info.css}">
+    <link rel="stylesheet" href="../static/css/components/file-manager.css"
+          th:href="@{../../static/css/components/file-manager.css}">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css"/>
 
     <style type="text/css" th:inline="css">
         .col-md-5 {
@@ -43,7 +47,7 @@
 
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="left-panel el-col el-col-15 el-col-offset-2"  style="border-right: #adadad solid 1px">
+        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #adadad solid 1px">
             <div class="detail">
                 <div class="detail_title" th:object="${datainfo}">
                     <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>
@@ -55,7 +59,7 @@
 
                     <div class="img" th:object="${datainfo}">
                         <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{/static/img/model/data.png}">-->
-                        <avatar   th:username="${datainfo.data.name}" :size="90" :rounded="false" ></avatar>
+                        <avatar th:username="${datainfo.data.name}" :size="90" :rounded="false"></avatar>
 
                         <!--<img th:unless="${datainfo.data.image!=Null}" th:src="${datainfo.data.image}">-->
                     </div>
@@ -72,7 +76,8 @@
 
                     <div class="detail_option" th:object="${datainfo}">
 
-                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp<span th:utext="${datainfo.data.viewCount}">{{viewCount}}</span>
+                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp<span
+                            th:utext="${datainfo.data.viewCount}">{{viewCount}}</span>
 
                     </div>
 
@@ -87,9 +92,11 @@
                         <h4>Data Resource Url</h4>
                     </div>
                 </div>
-                <div class="block_content flex" >
+                <div class="block_content flex">
                     <div id="data-url" class="">
-                        <a th:href="${datainfo.data.reference}" id="" target="_blank="><span style="font-size: 17px;color: #67c23a;" th:text="${datainfo.data.reference}">current</span>
+                        <a th:href="${datainfo.data.reference}" id="" target="_blank="><span
+                                style="font-size: 17px;color: #67c23a;"
+                                th:text="${datainfo.data.reference}">current</span>
                         </a>
                     </div>
 
@@ -104,17 +111,99 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div id="detail" class="detailIntroducePanel" th:utext="${datainfo.data.detail}" style="overflow:auto"></div>
+                    <div id="detail" class="detailIntroducePanel" th:utext="${datainfo.data.detail}"
+                         style="overflow:auto"></div>
                 </div>
                 <div class="fullPaper text-center hide">
-                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i class="fa fa-angle-down"
-                                                                                              style="margin-left: 10px;color:red;font-weight: bold"
-                                                                                              aria-hidden="true"></i></a>
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
+                            class="fa fa-angle-down"
+                            style="margin-left: 10px;color:red;font-weight: bold"
+                            aria-hidden="true"></i></a>
                 </div>
 
             </div>
 
+            <div th:if="${datainfo.data.dataList!=null && #lists.size(datainfo.data.dataList)!=0}" id="resources" class="detail_block" ref="browser">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Resources</h4>
+                    </div>
+                </div>
 
+                <div class="block_content">
+                    <div class="el-card filebrowserfunction is-always-shadow"><!---->
+                        <div class="el-card__body">
+                            <div class="filebrowser el-row">
+                                <div class="el-col el-col-15">
+                                    <button type="button" class="el-button dwload el-button--default"><!----><i
+                                            class="el-icon-download"></i><span>
+                                    Download
+                                </span></button>
+                                    <button type="button" class="el-button shareData el-button--default"><!----><i
+                                            class="el-icon-share"></i><span>Share</span></button>
+
+                                    <button type="button" class="el-button downloadAll el-button--default"><!----><i
+                                            class="el-icon-sold-out"></i><span>Download all files
+                                    </span></button>
+                                </div>
+
+
+                                <!--<div class="el-input el-input&#45;&#45;suffix">&lt;!&ndash;&ndash;&gt;<input type="text" autocomplete="off"-->
+                                <!--id="searchinput"-->
+                                <!--placeholder="search input "-->
+                                <!--class="el-input__inner">&lt;!&ndash;&ndash;&gt;<span-->
+                                <!--class="el-input__suffix"><span class="el-input__suffix-inner"><i-->
+                                <!--class="el-input__icon el-icon-search"></i>&lt;!&ndash;&ndash;&gt;&lt;!&ndash;&ndash;&gt;&lt;!&ndash;&ndash;&gt;</span>-->
+                                <!--&lt;!&ndash;&ndash;&gt;</span>&lt;!&ndash;&ndash;&gt;&lt;!&ndash;&ndash;&gt;</div>-->
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-card is-always-shadow"><!---->
+                        <div class="el-card__body" style="padding: 9px;"><span><i class="el-icon-document"></i>&nbsp;&nbsp; contents</span>
+                        </div>
+                    </div>
+                    <div class="el-card filecontent is-always-shadow" id="browsercont"
+                         style="height: 300px; overflow-y: auto;"><!---->
+                        <el-card th:each="item,key:${datainfo.data.dataList}"
+                                 th:title="${item.name}" class="dataitemisol" shadow="never" th:id="${item.url}"
+                                 th:key="${key}">
+
+                            <el-row>
+                                <el-col :span="6">&nbsp</el-col>
+                                <el-col :span="12"><img th:src="'/static/img/filebrowser/'+${item.suffix}+'.svg'"
+                                                        style="height: 60%;width:100%"></el-col>
+                                <el-col :span="6">&nbsp</el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="2">&nbsp</el-col>
+                                <el-col :span="20">
+
+                                    <p style="text-align: center;word-break: break-all;"
+                                       th:text="${item.name}+(${item.suffix}!='unknow'?${item.suffix}:'')"></p>
+                                </el-col>
+                                <el-col :span="2">&nbsp</el-col>
+
+                            </el-row>
+
+                            <!--menu item -->
+
+
+                        </el-card>
+                    </div>
+
+                    <div class="el-card browsermenu is-always-shadow"><!---->
+                        <div class="el-card__body">
+                            <button type="button" class="el-button el-button--text" id="dbtn"><!----><i
+                                    class="el-icon-download"></i><span>download
+                        </span></button>
+                            <br>
+                            <button type="button" class="el-button el-button--text" id="sbtn"><!----><i
+                                    class="el-icon-share"></i><span>share</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
             <!--related models-->
@@ -124,7 +213,7 @@
                         <h4>Related Models</h4>
                     </div>
                 </div>
-                <div class="block_content flex"  >
+                <div class="block_content flex">
 
                     <div th:if="${#lists.size(relatedModels)}!=0">
                         <div class="list_panel clearfix" th:each="model:${relatedModels}">
@@ -158,141 +247,141 @@
                     </div>
 
                     <!--<el-tabs value="first" >-->
-                        <!--<el-tab-pane label="Related Models List" name="first" style="width: 100%;height:320px;">-->
+                    <!--<el-tab-pane label="Related Models List" name="first" style="width: 100%;height:320px;">-->
 
-                            <!--<el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">-->
-                                <!--<div > <strong>Model: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>-->
-                                    <!--<br><strong>Description:</strong><span>{{item.description}}</span>-->
+                    <!--<el-card v-show="relatedModelNotNull"  class="is-hover-shadow relatedModelsInfo"  v-for="item in related3Models" style="margin-top: 10px;margin-bottom: 10px;">-->
+                    <!--<div > <strong>Model: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>-->
+                    <!--<br><strong>Description:</strong><span>{{item.description}}</span>-->
 
-                                <!--</div>-->
+                    <!--</div>-->
 
-                            <!--</el-card>-->
-                            <!--<el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary" icon="el-icon-star-off" style="width: 100%">-->
+                    <!--</el-card>-->
+                    <!--<el-button v-show="relatedModelNotNull" @click="showRelatedModels" type="primary" icon="el-icon-star-off" style="width: 100%">-->
 
-                                <!--More...-->
-                            <!--</el-button>-->
-                            <!--<el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo" style="margin-top: 10px;margin-bottom: 10px"  >-->
-                                <!--<div style="-->
-                                    <!--text-align: center;-->
-                                    <!--font-weight: 600;-->
-                                    <!--margin-top: 30px;-->
-                                    <!--margin-bottom: 20px;">-->
-                                    <!--<strong>There are no related models for this data, you can add one!</strong>-->
+                    <!--More...-->
+                    <!--</el-button>-->
+                    <!--<el-card v-show="relatedModelIsNull" class="is-never-shadow relatedModelsInfo" style="margin-top: 10px;margin-bottom: 10px"  >-->
+                    <!--<div style="-->
+                    <!--text-align: center;-->
+                    <!--font-weight: 600;-->
+                    <!--margin-top: 30px;-->
+                    <!--margin-bottom: 20px;">-->
+                    <!--<strong>There are no related models for this data, you can add one!</strong>-->
 
-                                <!--</div>-->
+                    <!--</div>-->
 
-                                <!--<el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">-->
-                                    <!--add the first model for this data-->
-                                <!--</el-button>-->
-                            <!--</el-card>-->
+                    <!--<el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">-->
+                    <!--add the first model for this data-->
+                    <!--</el-button>-->
+                    <!--</el-card>-->
 
-                        <!--</el-tab-pane>-->
+                    <!--</el-tab-pane>-->
 
-                        <!--<el-tab-pane label="Search From Related Models" name="second">-->
-                            <!--<div style="-->
-                                    <!--text-align: center;-->
-                                    <!--font-weight: 600;-->
-                                    <!--margin-top: 30px;-->
-                                    <!--margin-bottom: 20px;-->
-                                <!--"><span>Search the models from the current data related models</span></div>-->
+                    <!--<el-tab-pane label="Search From Related Models" name="second">-->
+                    <!--<div style="-->
+                    <!--text-align: center;-->
+                    <!--font-weight: 600;-->
+                    <!--margin-top: 30px;-->
+                    <!--margin-bottom: 20px;-->
+                    <!--"><span>Search the models from the current data related models</span></div>-->
 
-                            <!--<el-button type="success" @click="showRelatedModels" icon="el-icon-search" style="width: 100%">-->
+                    <!--<el-button type="success" @click="showRelatedModels" icon="el-icon-search" style="width: 100%">-->
 
-                                <!--search related-->
-                            <!--</el-button>-->
+                    <!--search related-->
+                    <!--</el-button>-->
 
-                        <!--</el-tab-pane>-->
+                    <!--</el-tab-pane>-->
 
-                        <!--&lt;!&ndash;search related model dialog&ndash;&gt;-->
-                        <!--<el-dialog-->
-                                <!--title="Related Models of current Data"-->
-                                <!--:visible.sync="searchRelatedModelsDialogVisible"-->
-                                <!--width="30%"-->
-                                <!--height="50%"-->
-                                <!--:before-close="handleClose"-->
-                                <!--style="overflow-y: scroll"-->
-                        <!--&gt;-->
-
-
-                            <!--<el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>-->
-                            <!--<el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >-->
-
-                                <!--<div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">-->
-                                    <!--<div > <strong>Model: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>-->
-                                        <!--<br><strong>Description:</strong><span>{{item.description}}</span>-->
-
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div v-if="nomore!=''" style="text-align: center">-->
-                                    <!--<span  >no more data</span>-->
-                                <!--</div>-->
+                    <!--&lt;!&ndash;search related model dialog&ndash;&gt;-->
+                    <!--<el-dialog-->
+                    <!--title="Related Models of current Data"-->
+                    <!--:visible.sync="searchRelatedModelsDialogVisible"-->
+                    <!--width="30%"-->
+                    <!--height="50%"-->
+                    <!--:before-close="handleClose"-->
+                    <!--style="overflow-y: scroll"-->
+                    <!--&gt;-->
 
 
-                            <!--</el-card>-->
+                    <!--<el-input v-model="relatedModelsSearchText" placeholder="search related models.."  @keyup.native="searchFromRelatedModels"></el-input>-->
+                    <!--<el-card id="allReM" class="is-never-shadow" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadMore($event)"  >-->
+
+                    <!--<div class="el-card is-hover-shadow relatedModelsInfo" v-for="item in allRelatedModels" style="margin-top: 10px;margin-bottom: 10px;">-->
+                    <!--<div > <strong>Model: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>-->
+                    <!--<br><strong>Description:</strong><span>{{item.description}}</span>-->
+
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div v-if="nomore!=''" style="text-align: center">-->
+                    <!--<span  >no more data</span>-->
+                    <!--</div>-->
 
 
-                            <!--<span slot="footer" class="dialog-footer">-->
-                            <!--<el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>-->
-                            <!--<el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>-->
-                          <!--</span>-->
-                        <!--</el-dialog>-->
-
-                        <!--<el-tab-pane label="Add Models" name="third">-->
-                            <!--<div style="-->
-                                    <!--text-align: center;-->
-                                    <!--font-weight: 600;-->
-                                    <!--margin-top: 30px;-->
-                                    <!--margin-bottom: 20px;-->
-                                <!--"><span>Add the models into the current data related models</span></div>-->
-                            <!--<el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">-->
-                                <!--add models-->
-                            <!--</el-button></br>-->
-                        <!--</el-tab-pane>-->
-
-                        <!--&lt;!&ndash;add related model dialog&ndash;&gt;-->
-                        <!--<el-dialog-->
-                                <!--title="Add Models for current data"-->
-                                <!--:visible.sync="addRelatedModelsDialogVisible"-->
-                                <!--width="30%"-->
-                                <!--:before-close="handleClose">-->
+                    <!--</el-card>-->
 
 
-                            <!--<el-form :inline="true"  class="demo-form-inline">-->
-                                <!--<el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created models</el-radio>-->
-                                <!--<el-radio v-model="value1" label="2" @change="clearSearchResult()">from all models</el-radio>-->
-                            <!--</el-form>-->
+                    <!--<span slot="footer" class="dialog-footer">-->
+                    <!--<el-button @click="searchRelatedModelsDialogVisible = false">Cancel</el-button>-->
+                    <!--<el-button type="primary" @click="searchRelatedModelsDialogVisible = false">Sure</el-button>-->
+                    <!--</span>-->
+                    <!--</el-dialog>-->
 
-                            <!--<el-input v-model="addModelsSearchText" placeholder="search related models and Enter.."  @keyup.enter.native="searchRelatedModels"></el-input></br>-->
+                    <!--<el-tab-pane label="Add Models" name="third">-->
+                    <!--<div style="-->
+                    <!--text-align: center;-->
+                    <!--font-weight: 600;-->
+                    <!--margin-top: 30px;-->
+                    <!--margin-bottom: 20px;-->
+                    <!--"><span>Add the models into the current data related models</span></div>-->
+                    <!--<el-button @click="addRelatedModel()" type="primary" icon="el-icon-plus" style="width: 100%">-->
+                    <!--add models-->
+                    <!--</el-button></br>-->
+                    <!--</el-tab-pane>-->
 
-                            <!--<el-alert-->
-                                    <!--title=""-->
-                                    <!--type="success"-->
-                                    <!--:closable="false">-->
-                                <!--{{selectedModels}}-->
-
-                            <!--</el-alert>-->
-
-
-                            <!--<el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >-->
-
-                                <!--<el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">-->
-                                    <!--<div > <strong>Model: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>-->
-                                        <!--<br><strong>Description:</strong><span>{{item.description}}</span>-->
-
-                                    <!--</div>-->
-                                <!--</el-card>-->
-                                <!--<div v-if="nomore!=''" style="text-align: center">-->
-                                    <!--<span  >no more data</span>-->
-                                <!--</div>-->
+                    <!--&lt;!&ndash;add related model dialog&ndash;&gt;-->
+                    <!--<el-dialog-->
+                    <!--title="Add Models for current data"-->
+                    <!--:visible.sync="addRelatedModelsDialogVisible"-->
+                    <!--width="30%"-->
+                    <!--:before-close="handleClose">-->
 
 
-                            <!--</el-card>-->
+                    <!--<el-form :inline="true"  class="demo-form-inline">-->
+                    <!--<el-radio v-model="value1" label="1" @change="clearSearchResult()" >from my created models</el-radio>-->
+                    <!--<el-radio v-model="value1" label="2" @change="clearSearchResult()">from all models</el-radio>-->
+                    <!--</el-form>-->
 
-                            <!--<span slot="footer" class="dialog-footer">-->
-                            <!--<el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>-->
-                            <!--&lt;!&ndash;<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>&ndash;&gt;-->
-                          <!--</span>-->
-                        <!--</el-dialog>-->
+                    <!--<el-input v-model="addModelsSearchText" placeholder="search related models and Enter.."  @keyup.enter.native="searchRelatedModels"></el-input></br>-->
+
+                    <!--<el-alert-->
+                    <!--title=""-->
+                    <!--type="success"-->
+                    <!--:closable="false">-->
+                    <!--{{selectedModels}}-->
+
+                    <!--</el-alert>-->
+
+
+                    <!--<el-card v-if="searchAddRelatedModels.length!=0" class="is-never-shadow relatedModelsInfo" style="height: 300px;overflow-y: scroll" v-loading="loading" @scroll.native="loadAddMore($event)" >-->
+
+                    <!--<el-card class="is-hover-shadow models_margin_style" v-for="item in searchAddRelatedModels"   @click.native="selectRelatedModel(item,$event)">-->
+                    <!--<div > <strong>Model: <a :href="checkRelatedModels(item)" target="_blank">{{item.name}}</a></strong>-->
+                    <!--<br><strong>Description:</strong><span>{{item.description}}</span>-->
+
+                    <!--</div>-->
+                    <!--</el-card>-->
+                    <!--<div v-if="nomore!=''" style="text-align: center">-->
+                    <!--<span  >no more data</span>-->
+                    <!--</div>-->
+
+
+                    <!--</el-card>-->
+
+                    <!--<span slot="footer" class="dialog-footer">-->
+                    <!--<el-button @click="relatedToCurrentData()" type="success">RelatedToCurrentData</el-button>-->
+                    <!--&lt;!&ndash;<el-button type="primary" @click="addRelatedModelsDialogVisible = false">Close</el-button>&ndash;&gt;-->
+                    <!--</span>-->
+                    <!--</el-dialog>-->
 
                     <!--</el-tabs>-->
                 </div>
@@ -309,9 +398,12 @@
                 </div>
                 <div class="block_content flex" th:object="${datainfo}">
                     <div id="cite-text" class="">
-                        <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS,'"></span>
-                        <span th:if="${authorship==''}" th:text="${user.name}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS,'"></span>
-                        <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"
+                        <span th:if="${authorship!=''}"
+                              th:text="${authorship}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS,'"></span>
+                        <span th:if="${authorship==''}"
+                              th:text="${user.name}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS,'"></span>
+                        <a style="word-break:break-all;"
+                           th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"
                            th:text="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"></a>
                     </div>
                     <div id="copy" class="btn btn-info">
@@ -325,115 +417,111 @@
             </div>
 
 
-
-
             <!--comment-->
             <!--<div id="comment" class="detail_block">-->
-                <!--<div class="block_head">-->
-                    <!--<div class="head_text">-->
-                        <!--<h4>Comments</h4>-->
-                    <!--</div>-->
-                <!--</div>-->
+            <!--<div class="block_head">-->
+            <!--<div class="head_text">-->
+            <!--<h4>Comments</h4>-->
+            <!--</div>-->
+            <!--</div>-->
 
-                <!--<div class="block_content">-->
-                    <!--{{allcomments.length==0?"Give the frst comment":''}}-->
-                    <!--&lt;!&ndash;comment  v-for card&ndash;&gt;-->
-                    <!--<el-card v-for="(item,key) in allcomments" :key="key" shadow="hover"  >-->
-                        <!--<div class="el-col el-col-4" >-->
-                            <!--<el-badge :value="thumbs===''? item.thumbsUpNumber:(thisthumbs===key?thumbs:item.thumbsUpNumber)"  type="primary">-->
-                                <!--<el-button round @click="thumbsup(key)">❤</el-button>-->
-                            <!--</el-badge>-->
+            <!--<div class="block_content">-->
+            <!--{{allcomments.length==0?"Give the frst comment":''}}-->
+            <!--&lt;!&ndash;comment  v-for card&ndash;&gt;-->
+            <!--<el-card v-for="(item,key) in allcomments" :key="key" shadow="hover"  >-->
+            <!--<div class="el-col el-col-4" >-->
+            <!--<el-badge :value="thumbs===''? item.thumbsUpNumber:(thisthumbs===key?thumbs:item.thumbsUpNumber)"  type="primary">-->
+            <!--<el-button round @click="thumbsup(key)">❤</el-button>-->
+            <!--</el-badge>-->
 
-                        <!--</div>-->
+            <!--</div>-->
 
-                        <!--<div class="el-col el-col-20"  >-->
-                            <!--<el-row><span>{{item.comment}}</span></el-row>-->
-                            <!--<hr>-->
-                            <!--<el-row >-->
-                                <!--<div class="el-col el-col-10"   >-->
-                                    <!--<div style="white-space:nowrap;">-->
-                                        <!--<el-button icon="el-icon-edit"   @click="showmycomment(key)" size="mini">Add Comments</el-button>-->
-                                        <!--<el-button icon="el-icon-news"   @click="showcomment(key)" size="mini">Comments(<strong>{{getcommentlength(item.commentsForComment)}}</strong>)</el-button>-->
+            <!--<div class="el-col el-col-20"  >-->
+            <!--<el-row><span>{{item.comment}}</span></el-row>-->
+            <!--<hr>-->
+            <!--<el-row >-->
+            <!--<div class="el-col el-col-10"   >-->
+            <!--<div style="white-space:nowrap;">-->
+            <!--<el-button icon="el-icon-edit"   @click="showmycomment(key)" size="mini">Add Comments</el-button>-->
+            <!--<el-button icon="el-icon-news"   @click="showcomment(key)" size="mini">Comments(<strong>{{getcommentlength(item.commentsForComment)}}</strong>)</el-button>-->
 
-                                    <!--</div>-->
+            <!--</div>-->
 
-                                    <!--&lt;!&ndash;<el-button icon="el-icon-setting" type="text" >donate </el-button>&ndash;&gt;-->
-                                <!--</div>-->
-                                <!--<div class="el-col el-col-10"     >-->
-
-
-                                    <!--<div  class="el-col el-col-10 el-col-offset-4"  >-->
-
-                                        <!--<img th:src="@{../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">-->
+            <!--&lt;!&ndash;<el-button icon="el-icon-setting" type="text" >donate </el-button>&ndash;&gt;-->
+            <!--</div>-->
+            <!--<div class="el-col el-col-10"     >-->
 
 
-                                        <!--<div  style="margin-left: 55px;display: block;" th:object="${datainfo}">-->
+            <!--<div  class="el-col el-col-10 el-col-offset-4"  >-->
 
-                                            <!--&lt;!&ndash;//todo 每项数据绑定作者，这里每个评论绑定作者&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>&ndash;&gt;-->
-                                            <!--<a href="javascript:void(0)"><h5>{{item.author}}</h5></a>-->
-
-                                            <!--&lt;!&ndash;<h5 th:text="${datainfo.data.lastModifyTime}"></h5>&ndash;&gt;-->
-                                            <!--<span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>-->
-
-                                        <!--</div>-->
+            <!--<img th:src="@{../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">-->
 
 
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</el-row>-->
-                        <!--</div>-->
-                        <!--<el-card  v-show="comforcom===key" style="background-color: #f5f5f5" ref="key">-->
+            <!--<div  style="margin-left: 55px;display: block;" th:object="${datainfo}">-->
 
-                            <!--<div  class="el-col el-col-20"  >-->
-                                <!--<el-input-->
-                                        <!--type="textarea"-->
-                                        <!--:rows="4"-->
-                                        <!--placeholder="please input content.."-->
-                                        <!--v-model="comforcomtextarea">-->
-                                <!--</el-input><br/><br/>-->
-                            <!--</div>-->
-                            <!--<div class="el-col el-col-4"  >-->
-                                <!--<el-button @click="reply(item.id)">reply</el-button>-->
-                            <!--</div>-->
-                        <!--</el-card>-->
+            <!--&lt;!&ndash;//todo 每项数据绑定作者，这里每个评论绑定作者&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>&ndash;&gt;-->
+            <!--<a href="javascript:void(0)"><h5>{{item.author}}</h5></a>-->
 
-                        <!--<el-card  v-show="comments=== key" style="background-color: #f5f5f5;overflow-y: scroll;height: 400px"   ref="key">-->
-                            <!--&lt;!&ndash;v-for 多个&ndash;&gt;-->
-                            <!--<el-card  v-for="(item1,key1) in item.commentsForComment" :key="key1" shadow="hover">-->
-                                <!--<el-row>-->
-                                    <!--<div class="el-col el-col-18"  ><span>{{item1.comment}}</span></div>-->
-                                    <!--<div class="el-col el-col-6"  >-->
-                                        <!--<el-row><strong>by:</strong> <span>{{item1.author}}</span> </el-row>-->
-                                        <!--<el-row><strong>at:</strong> <span >{{formatDate(item1.date)}}</span> </el-row>-->
+            <!--&lt;!&ndash;<h5 th:text="${datainfo.data.lastModifyTime}"></h5>&ndash;&gt;-->
+            <!--<span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>-->
 
-                                    <!--</div>-->
-                                <!--</el-row>-->
-                            <!--</el-card>-->
-
-                        <!--</el-card>-->
-
-                    <!--</el-card><br/>-->
-
-                    <!--<hr> <h4><strong>Submit My Comments:</strong></h4><br/>-->
-                    <!--<el-card>-->
-                        <!--<div class="el-col el-col-20"  >-->
-                            <!--<el-input-->
-                                    <!--type="textarea"-->
-                                    <!--:rows="4"-->
-                                    <!--placeholder="please input content.."-->
-                                    <!--v-model="mycommentforthedata">-->
-                            <!--</el-input><br/><br/>-->
-                        <!--</div>-->
-                        <!--<div  class="el-col el-col-4" >-->
-                            <!--<el-button @click="putcomment()">submit</el-button>-->
-                        <!--</div>-->
-                    <!--</el-card>-->
+            <!--</div>-->
 
 
+            <!--</div>-->
+            <!--</div>-->
+            <!--</el-row>-->
+            <!--</div>-->
+            <!--<el-card  v-show="comforcom===key" style="background-color: #f5f5f5" ref="key">-->
+
+            <!--<div  class="el-col el-col-20"  >-->
+            <!--<el-input-->
+            <!--type="textarea"-->
+            <!--:rows="4"-->
+            <!--placeholder="please input content.."-->
+            <!--v-model="comforcomtextarea">-->
+            <!--</el-input><br/><br/>-->
+            <!--</div>-->
+            <!--<div class="el-col el-col-4"  >-->
+            <!--<el-button @click="reply(item.id)">reply</el-button>-->
+            <!--</div>-->
+            <!--</el-card>-->
+
+            <!--<el-card  v-show="comments=== key" style="background-color: #f5f5f5;overflow-y: scroll;height: 400px"   ref="key">-->
+            <!--&lt;!&ndash;v-for 多个&ndash;&gt;-->
+            <!--<el-card  v-for="(item1,key1) in item.commentsForComment" :key="key1" shadow="hover">-->
+            <!--<el-row>-->
+            <!--<div class="el-col el-col-18"  ><span>{{item1.comment}}</span></div>-->
+            <!--<div class="el-col el-col-6"  >-->
+            <!--<el-row><strong>by:</strong> <span>{{item1.author}}</span> </el-row>-->
+            <!--<el-row><strong>at:</strong> <span >{{formatDate(item1.date)}}</span> </el-row>-->
+
+            <!--</div>-->
+            <!--</el-row>-->
+            <!--</el-card>-->
+
+            <!--</el-card>-->
+
+            <!--</el-card><br/>-->
+
+            <!--<hr> <h4><strong>Submit My Comments:</strong></h4><br/>-->
+            <!--<el-card>-->
+            <!--<div class="el-col el-col-20"  >-->
+            <!--<el-input-->
+            <!--type="textarea"-->
+            <!--:rows="4"-->
+            <!--placeholder="please input content.."-->
+            <!--v-model="mycommentforthedata">-->
+            <!--</el-input><br/><br/>-->
+            <!--</div>-->
+            <!--<div  class="el-col el-col-4" >-->
+            <!--<el-button @click="putcomment()">submit</el-button>-->
+            <!--</div>-->
+            <!--</el-card>-->
 
 
-                <!--</div>-->
+            <!--</div>-->
 
 
             <!--</div>-->
@@ -454,7 +542,8 @@
 
                     <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
 
-                        <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}" style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
+                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
 
                 </div>
             </div>
@@ -481,14 +570,16 @@
                     </div>
                     <div class="el-row el-col-offset-3">
                         <div class="text-center">
-                            <h5 th:text="'contributed at '+${#dates.format(datainfo.data.createTime,'yyyy-MM-dd')}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:text="'contributed at '+${#dates.format(datainfo.data.createTime,'yyyy-MM-dd')}">
+                                contributed at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
                 </div>
             </div>
 
 
-            <div id="Authorship" class="detail_block" th:if="${datainfo.data.authorship!=null&&#lists.size(datainfo.data.authorship)!=0}">
+            <div id="Authorship" class="detail_block"
+                 th:if="${datainfo.data.authorship!=null&&#lists.size(datainfo.data.authorship)!=0}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -496,23 +587,23 @@
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
 
-                    <div style="text-align: left;" th:each="author:${datainfo.data.authorship}">
+                    <div style="text-align: left;" th:each="author,key:${datainfo.data.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"><a
-                                href
-                                data-toggle="collapse" class="detail-toggle"
-                                aria-expanded="true">[Collapse]</a></span>
-                        <div class="NavHead" style="font-size: 16px;" th:text="${author.name}">NJGIS</div>
-                        <div th:id="${author.name}" class="panel-collapse collapse in" aria-expanded="true" style="">
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true" th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
+                             style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
-                                    <!--<dt>Affiliation :</dt>-->
-                                    <!--<dd th:text="${author.ins}"></dd>-->
+                                    <dt th:if="${author.ins!=''&&author.ins!=null}">Affiliation：</dt>
+                                    <dd th:if="${author.ins!=''&&author.ins!=null}" th:text="${author.ins}"></dd>
                                     <div th:if="${author.email!='unknow'&&author.email!=''}">
-                                    <dt>Email :</dt>
-                                    <dd th:text="${author.email}">njgis@163.com</dd>
+                                        <dt>Email：</dt>
+                                        <dd th:text="${author.email}">njgis@163.com</dd>
                                     </div>
-                                    <dt>Home Page :</dt>
-                                    <dd ><a th:href="${author.homepage}">View</a></dd>
+                                    <dt>Home Page：</dt>
+                                    <dd><a th:href="${author.homepage}">View</a></dd>
                                 </dl>
                             </div>
                         </div>
@@ -536,7 +627,8 @@
         </div>
 
         <!--Relation 弹出框-->
-        <el-dialog :visible.sync="dialogTableVisible" title="Add Related Model Item" :before-close="handleClose" width="70%" top="40px">
+        <el-dialog :visible.sync="dialogTableVisible" title="Add Related Model Item" :before-close="handleClose"
+                   width="70%" top="40px">
 
             <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
                 <div slot="header" class="clearfix">
@@ -599,7 +691,8 @@
                     <el-table-column
                             label="Name">
                         <template slot-scope="props">
-                            <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                            <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                               target="_blank">{{props.row.name}}</a>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -625,7 +718,8 @@
                 </el-pagination>
             </el-card>
             <div slot="footer" class="dialog-footer">
-                <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+                <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer"
+                                                                             @click="jump">here</a> to create a new one.</span>
                 <el-button @click="dialogTableVisible = false;">Cancel</el-button>
                 <el-button type="primary" @click="confirm()">OK</el-button>
             </div>
@@ -639,14 +733,12 @@
 </div>
 
 
-
-
 </body>
 
 <script th:src="@{../static/js/common/vue.min.js}"></script>
 <script th:src="@{../static/element-ui/index.js}"></script>
 <script th:src="@{../static/js/common/jquery-3.3.1.min.js}"></script>
-
+<script src="/static/js/common/bootstrap.min.js"></script>
 
 <script src="/static/js/common/vue-avatar.min.js"></script>
 

@@ -68,12 +68,22 @@ var  data_item_info= new Vue({
                 searchResult: [],
             },
 
-
+            currentData:"",
 
         }
         
     } ,
     methods: {
+
+        getUrlParam(url,name) {
+
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+
+            var r = window.location.search.substr(1).match(reg);
+
+            if(r!=null)return  unescape(r[2]); return null;
+
+        },
 
         //Relation 相关
         getRelation(){
@@ -269,22 +279,19 @@ var  data_item_info= new Vue({
         generateId(key){
             return key;
         },
-        getid(eval){
+        getid(event){
+            console.log(eval)
             this.dataid=eval;
 
 
         },
 
         share(){
-            // if(this.dataid==''){
-            //     this.$message('please select file first!!');
-            // }
 
-            let item =this.databrowser[this.dataid]
 
-            if(item!=null){
-                let url ="/dataItem/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                 this.$alert("<input style='width: 100%' value="+url+">",{
+            if(currentData!=''){
+                let url ="/dispatchRequest/download?url=" + currentData;
+                 this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+url+">",{
                      dangerouslyUseHTMLString: true
                  })
                 // this.dataid='';
@@ -296,17 +303,25 @@ var  data_item_info= new Vue({
         },
         dall(){
 
+            let downloadAllZipUrl="/dataManager/downloadSomeRemote"
 
-             let locaurl=window.location.href;
-             let url =locaurl.split("/");
-             // console.log(url[url.length-1]);
+            let data=$(".dataitemisol");
+            console.log($(".dataitemisol").get(1));
+            for(i=0;i<data.length;i++){
+                let url=data.eq(0).attr('id');
+                let id=this.getUrlParam(url,"sourceStoreId");
 
-             let downloadallzipurl="http://172.21.213.194:8081/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
+                downloadAllZipUrl+=i==0?'?':'&';
+                downloadAllZipUrl+=id;
 
+            }
+
+             // let downloadallzipurl="http://172.21.212.64:8081/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
+             //
              let link =document.createElement("a");
              link.style.display='none';
-             link.href=downloadallzipurl;
-             link.setAttribute("download","alldata.zip");
+             link.href=downloadAllZipUrl;
+             link.setAttribute("download","allData.zip");
 
              document.body.appendChild(link);
              link.click();
@@ -316,28 +331,13 @@ var  data_item_info= new Vue({
             return ev.fileName+"\n"+"Type:"+ev.suffix;
         },
         downloaddata(){
+            if(currentData!='') {
 
-            // if(this.dataid==undefined){
-            //     this.$message('please select file first!!');
-            // }
-            // console.log("downid"+this.dataid)
-
-            let item =this.databrowser[this.dataid];
-
-            if(item!=null){
-                let url ="/dataItem/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                let link =document.createElement('a');
-                link.style.display='none';
-                link.href=url;
-                link.setAttribute(item.fileName,'filename.'+item.suffix)
-
-                document.body.appendChild(link)
-                link.click();
-
-            }else {
+                window.open("/dispatchRequest/download?url=" + currentData);
+            }
+            else{
                 this.$message('please select file first!!');
             }
-
 
         },
 
@@ -830,27 +830,12 @@ var  data_item_info= new Vue({
 
         },
 
-
-
-
-
-
-
-
-
-
-
-
-
         showRelatedModels(){
             this.dataNums=5
             this.searchAddRelatedModels=[]
             this.searchRelatedModelsDialogVisible=true
             relatedModelsSearchText=""
             this.RelatedModels(this.dataNums)
-
-
-
 
         },
         searchFromRelatedModels(){
@@ -904,10 +889,7 @@ var  data_item_info= new Vue({
 
                 })
 
-
         }
-
-
 
     },
 
@@ -950,9 +932,9 @@ var  data_item_info= new Vue({
                 }
 
                 //when browser get no data,the element hidden
-                if(that.databrowser.length==0){
-                    $('#resources').css('display','none');
-                }
+                // if(that.databrowser.length==0){
+                //     $('#resources').css('display','none');
+                // }
 
 
 
@@ -1030,47 +1012,48 @@ var  data_item_info= new Vue({
         })
 
 
-
-
-
-
-
-
     },
 
 });
-
+var currentData='';
 //JQuery
 $(function () {
-    setTimeout(function () {
 
         //数据项点击样式事件
         $(".filecontent .el-card").on('click',function (e) {
 
-            $(".filecontent .browsermenu").hide();
 
-            $(this).addClass("clickdataitem");
+            if(currentData!=e.currentTarget.id) {
+                currentData = e.currentTarget.id;
 
+                $(".filecontent .browsermenu").hide();
 
-            $(this).siblings().removeClass("clickdataitem");
+                $(this).addClass("clickdataitem");
 
-        });
-
-
-        //数据项右键菜单事件
-        $(".filecontent .el-card").contextmenu(function (e) {
-
-            e.preventDefault();
-
-
-
-            $(".browsermenu").css({
-                "left":e.pageX,
-                "top":e.pageY
-            }).show();
-
+                $(this).siblings().removeClass("clickdataitem");
+            }
+            else{
+                currentData='';
+                $(".dataitemisol").removeClass("clickdataitem")
+            }
 
         });
+
+
+        // //数据项右键菜单事件
+        // $(".filecontent .el-card").contextmenu(function (e) {
+        //
+        //     e.preventDefault();
+        //
+        //
+        //
+        //     $(".browsermenu").css({
+        //         "left":e.pageX,
+        //         "top":e.pageY
+        //     }).show();
+        //
+        //
+        // });
 
 
         //contents白板右键点击菜单事件，是否添加有待进一步思考
@@ -1083,11 +1066,61 @@ $(function () {
 
         });
 
+
+
         //下载全部按钮为所有数据项添加样式事件
-        $(".dall").click(function () {
+        $(".downloadAll").click(function () {
             $(".dataitemisol").addClass("clickdataitem")
 
+            let downloadAllZipUrl="/dataManager/downloadSomeRemote"
 
+            let data=$(".dataitemisol");
+            console.log($(".dataitemisol").get(1));
+            for(i=0;i<data.length;i++){
+                let url=data.eq(i).attr('id');
+                let id=getUrlParam(url);
+
+                downloadAllZipUrl+=i==0?'?':'&';
+                downloadAllZipUrl+=id;
+
+            }
+
+            // let downloadallzipurl="http://172.21.212.64:8081/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
+            //
+            let link =document.createElement("a");
+            link.style.display='none';
+            link.href=downloadAllZipUrl;
+            link.setAttribute("download","allData.zip");
+
+            document.body.appendChild(link);
+            link.click();
+
+        });
+
+        $(".dwload").click(function () {
+            if(currentData!='') {
+
+                window.open("/dispatchRequest/download?url=" + currentData);
+            }
+            else{
+                alert('please select file first!!');
+            }
+
+
+        });
+
+        $(".shareData").click(function () {
+            if(currentData!=''){
+                let url ="/dispatchRequest/download?url=" + currentData;
+                this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+url+">",{
+                    dangerouslyUseHTMLString: true
+                })
+                // this.dataid='';
+
+            }else {
+                // console.log("从后台获取数据条目数组有误")
+                alert('please select file first!!');
+            }
         });
 
 
@@ -1117,6 +1150,7 @@ $(function () {
         //contents白板点击隐藏数据项菜单事件
         $(".filecontent").click(function () {
             $(".browsermenu").hide();
+            //$(".dataitemisol").removeClass("clickdataitem")
 
         });
 
@@ -1125,7 +1159,13 @@ $(function () {
             $(".browsermenu").hide();
         });
 
-    },0)
+
+    function getUrlParam(url,name) {
+
+        let urls=url.split('?')
+        return urls[1];
+
+    }
 
 
 });
