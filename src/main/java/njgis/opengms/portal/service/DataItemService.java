@@ -521,7 +521,7 @@ public class DataItemService {
 
     public JSONObject searchByName(DataItemFindDTO dataItemFindDTO){
 
-        int page= dataItemFindDTO.getPage();
+        int page= dataItemFindDTO.getPage()-1;
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchContent().get(0);
 

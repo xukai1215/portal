@@ -36,6 +36,14 @@ dt{
     float: left;
 }
 
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
+    background-color:#d9edf7
+}
+
+.el-dialog__body{
+    padding: 10px 20px;
+}
+
 .el-menu{
     border:none;
 }

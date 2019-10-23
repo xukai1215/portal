@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Affiliation;
-import njgis.opengms.portal.entity.support.AwardandHonor;
-import njgis.opengms.portal.entity.support.EducationExperience;
-import njgis.opengms.portal.entity.support.UserLab;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
@@ -29,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +42,9 @@ public class PortalApplicationTests {
 
     @Autowired
     ModelItemDao modelItemDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
 
     @Autowired
     ConceptualModelDao conceptualModelDao;
@@ -69,7 +70,19 @@ public class PortalApplicationTests {
     @Value("${resourcePath}")
     private String resourcePath;
 
-    
+    @Test
+    public void addFolder(){
+        User user=userDao.findFirstByUserName("njgis");
+        List<FileMeta> fileContainer=new ArrayList<>();
+
+        fileContainer.add(new FileMeta(true,UUID.randomUUID().toString(),"123","","",new ArrayList<>()));
+        fileContainer.add(new FileMeta(false,"id2","1234","pdf","http://",new ArrayList<>()));
+
+        user.setFileContainer(fileContainer);
+
+
+        userDao.save(user);
+    }
 
     @Test
     public void addImage(){

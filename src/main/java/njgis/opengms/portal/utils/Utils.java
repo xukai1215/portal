@@ -9,6 +9,7 @@ import org.dom4j.Element;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -27,6 +28,18 @@ public class Utils {
     public static class Method {
         public static String POST = "POST";
         public static String GET = "GET";
+    }
+
+    public static String checkLoginStatus(HttpSession httpSession){
+
+        Object object=httpSession.getAttribute("uid");
+        if(object==null){
+            return null;
+        }
+        else{
+            return object.toString();
+        }
+
     }
 
     public static JSONObject postJSON(String urlStr, JSONObject jsonParam) {
