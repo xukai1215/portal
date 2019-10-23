@@ -125,9 +125,24 @@ new Vue({
             })
         },
 
+        showMxGraph(){
+            this.graphVisible = "block";
+            var vh=window.innerHeight;
+            var h = vh - 62 +"px";
+            $("#container_top").css("height",h);
+
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            document.body.style.overflowY="hidden";
+        },
+
+        hideMxGraph(){
+            this.graphVisible = "none";
+            document.body.style.overflowY="auto";
+        }
+
     },
     mounted(){
-        $("#mxgraph_popup").css("left","140px");
 
         let parentWidth=$("#pane-Image").width();
         let children=$("#pane-Image img");
