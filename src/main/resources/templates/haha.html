@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
@@ -459,13 +461,13 @@
                                                         <form>
 
                                                             <div class="form-group">
-                                                                <label for="fileName">fileName:</label>
+                                                                <label for="managerFileName">fileName:</label>
                                                                 <input type="text" class="form-control"
                                                                        placeholder="Please input coordinate system of the data to be uploaded."
                                                                        id="managerFileName" required/>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="suffix">suffix:</label>
+                                                                <label for="managerFileSuffix">suffix:</label>
                                                                 <input type="text" class="form-control"
                                                                        placeholder="Please input coordinate system of the data to be uploaded."
                                                                        id="managerFileSuffix" required/>
@@ -473,7 +475,7 @@
 
                                                             <div class="form-group">
 
-                                                                <label for="keywords">tags:</label><br>
+                                                                <label for="managerFileTags">tags:</label><br>
                                                                 <div class="bootstrap-tagsinput">
 
                                                                     <input type="text" data-role="tagsinput" id="managerFileTags"
@@ -625,62 +627,64 @@
                                 </div>
                             </div>
 
-                            <el-table class="showHidden" :data="dataFromDataContainer" :class="{showActive:detailsIndex==3}" stripe v-loading="tableLoading">
-                                <el-table-column property="createDate" label="Date" width="200">
-                                    <template slot-scope="scope">
-                                        {{dateFormat(scope.row.createDate)}}
-                                    </template>
-                                </el-table-column>
-                                <el-table-column property="type" label="Type" width="150"></el-table-column>
+                            <div role="showinList" class="=showHidden" :class="{showActive:detailsIndex==3}">
+<!--                                <el-table class="showHidden" :data="dataFromDataContainer" :class="{showActive:detailsIndex==3}" stripe v-loading="tableLoading">-->
+<!--                                    <el-table-column property="createDate" label="Date" width="200">-->
+<!--                                        <template slot-scope="scope">-->
+<!--                                            {{dateFormat(scope.row.createDate)}}-->
+<!--                                        </template>-->
+<!--                                    </el-table-column>-->
+<!--                                    <el-table-column property="type" label="Type" width="150"></el-table-column>-->
 
-                                <el-table-column
-                                        label="Name"
+<!--                                    <el-table-column-->
+<!--                                            label="Name"-->
 
-                                >
-                                    <template slot-scope="scope">
-                                        {{scope.row.fileName+"."+scope.row.suffix}}
-                                    </template>
-                                </el-table-column>
+<!--                                    >-->
+<!--                                        <template slot-scope="scope">-->
+<!--                                            {{scope.row.fileName+"."+scope.row.suffix}}-->
+<!--                                        </template>-->
+<!--                                    </el-table-column>-->
 
-                                <el-table-column
-                                        prop="fromWhere"
-                                        label="Source"
-                                        width="200"
-                                        :filters="[{ text: 'PORTAL', value: 'PORTAL' }, { text: 'MODELCONTAINER', value: 'MODELCONTAINER' },{ text: 'ONLINESAGA', value: 'ONLINESAGA ' }]"
-                                        :filter-method="filterTag"
-                                        filter-placement="bottom-end">
-                                    <template slot-scope="scope">
-                                        <el-tag
-                                                :type="scope.row.fromWhere === 'PORTAL' ? 'primary' : 'success'"
-                                                disable-transitions>{{scope.row.fromWhere}}
-                                        </el-tag>
-                                    </template>
-                                </el-table-column>
+<!--                                    <el-table-column-->
+<!--                                            prop="fromWhere"-->
+<!--                                            label="Source"-->
+<!--                                            width="200"-->
+<!--                                            :filters="[{ text: 'PORTAL', value: 'PORTAL' }, { text: 'MODELCONTAINER', value: 'MODELCONTAINER' },{ text: 'ONLINESAGA', value: 'ONLINESAGA ' }]"-->
+<!--                                            :filter-method="filterTag"-->
+<!--                                            filter-placement="bottom-end">-->
+<!--                                        <template slot-scope="scope">-->
+<!--                                            <el-tag-->
+<!--                                                    :type="scope.row.fromWhere === 'PORTAL' ? 'primary' : 'success'"-->
+<!--                                                    disable-transitions>{{scope.row.fromWhere}}-->
+<!--                                            </el-tag>-->
+<!--                                        </template>-->
+<!--                                    </el-table-column>-->
 
-                                <el-table-column
-                                        label="Operation"
-                                        width="200"
-                                >
-                                    <template slot-scope="scope">
-                                        <el-button @click="handleDataChooseClick(scope.row)" type="primary"
-                                                   size="small">Select
-                                        </el-button>
-                                        <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">
-                                            Download
-                                        </el-button>
+<!--                                    <el-table-column-->
+<!--                                            label="Operation"-->
+<!--                                            width="200"-->
+<!--                                    >-->
+<!--                                        <template slot-scope="scope">-->
+<!--                                            <el-button @click="handleDataChooseClick(scope.row)" type="primary"-->
+<!--                                                       size="small">Select-->
+<!--                                            </el-button>-->
+<!--                                            <el-button @click="handleDataDownloadClick(scope.row)" type="text" size="small">-->
+<!--                                                Download-->
+<!--                                            </el-button>-->
 
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+<!--                                        </template>-->
+<!--                                    </el-table-column>-->
+<!--                                </el-table>-->
 
-                            <el-pagination
-                                    class="my-pagination"
-                                    style="margin-top:10px"
-                                    small
-                                    layout="prev, pager, next"
-                                    @current-change="handleCurrentChange"
-                                    :total="total">
-                            </el-pagination>
+                                <el-pagination
+                                        class="my-pagination"
+                                        style="margin-top:10px"
+                                        small
+                                        layout="prev, pager, next"
+                                        @current-change="handleCurrentChange"
+                                        :total="total">
+                                </el-pagination>
+                            </div>
                         </el-dialog>
 
                         <el-dialog  top="40px" width="70%" title="select from data item" :visible.sync="dataItemVisible">
@@ -790,6 +794,7 @@
 <!--<script src="/static/js/common/jquery.gritter.min.js"></script>-->
 <!--<script src="/static/js/common/lodash.js"></script>-->
 <script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
 <!--<script src="/static/js/common/bootstrap-treeview.js"></script>-->
 
 <!--<script type="text/javascript">-->
@@ -797,8 +802,11 @@
 <!--</script>-->
 <!--<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>-->
 <!--<script type="text/javascript" src="/static/js/common/computableEditorTest.js"></script>-->
+<script src="/static/js/common/fileinput.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
 <script src="/static/js/page/task.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

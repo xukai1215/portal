@@ -429,10 +429,10 @@ var vue = new Vue({
             )).json();
             this.tableLoading = false;
 
-            return {
-                total: data.totalElements,
-                content: data.content
-            };
+            // return {
+            //     total: data.totalElements,
+            //     content: data.content
+            // };
         },
 
         async invoke() {
@@ -1147,6 +1147,10 @@ var vue = new Vue({
 
         },
 
+        getTree(){
+            return this.tree;
+        },
+
 
         submitForm (formName) {
             //包含上传的文件信息和服务端返回的所有信息都在这个对象里
@@ -1179,6 +1183,7 @@ var vue = new Vue({
         }
 
     },
+
     async mounted() {
 
         var tha=this
@@ -1228,12 +1233,202 @@ var vue = new Vue({
         window.addEventListener('resize',this.initSize);
 
 
+        //managerUpload
+
+        $("#managerUpload").fileinput({
+            theme: 'fas',
+            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            overwriteInitial: false,
+            uploadAsync: true, //默认异步上传,
+            showUpload: true, //是否显示上传按钮
+            showRemove : true, //显示移除按钮
+            showPreview : true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+
+            maxFileSize: 10000,
+            maxFilesNum: 10,
+            enctype: 'multipart/form-data',
+            validateInitialCount:true,
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            //allowedFileTypes: ['image', 'video', 'flash'],
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+            // console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            if(response!=null){
+                // alert("数据上传成功")
+            }
+            //get dataResource add sourceStoreId
+            that.sourceStoreId=response.data;
+            // console.log(response);//打印出返回的json
+            // console.log(response.status);//打印出路径
+
+
+        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+            // console.log('文件上传失败！'+data.status);
+        });
+
+
+
+
+
+        //上传数据相关
+        $("#file-1").fileinput({
+            theme: 'fas',
+            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            overwriteInitial: false,
+            uploadAsync: true, //默认异步上传,
+            showUpload: true, //是否显示上传按钮
+            showRemove : true, //显示移除按钮
+            showPreview : true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+
+            maxFileSize: 10000,
+            maxFilesNum: 10,
+            enctype: 'multipart/form-data',
+            validateInitialCount:true,
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            //allowedFileTypes: ['image', 'video', 'flash'],
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+            // console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            if(response!=null){
+                // alert("数据上传成功")
+            }
+            //get dataResource add sourceStoreId
+            that.sourceStoreId=response.data;
+            // console.log(response);//打印出返回的json
+            // console.log(response.status);//打印出路径
+
+
+        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+            // console.log('文件上传失败！'+data.status);
+        });
+
+        $("#file-2").fileinput({
+            theme: 'fas',
+            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            overwriteInitial: false,
+            uploadAsync: true, //默认异步上传,
+            showUpload: true, //是否显示上传按钮
+            showRemove : true, //显示移除按钮
+            showPreview : true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+
+            maxFileSize: 10000,
+            maxFilesNum: 10,
+            enctype: 'multipart/form-data',
+            validateInitialCount:true,
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            //allowedFileTypes: ['image', 'video', 'flash'],
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+            // console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            if(response!=null){
+                // alert("数据上传成功")
+            }
+            //get dataResource add sourceStoreId
+            that.sourceStoreId=response.data;
+
+
+            // console.log(response);//打印出返回的json
+            // console.log(response.status);//打印出路径
+
+
+        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+            // console.log('文件上传失败！'+data.status);
+        });
+
+
+
+        //上传数据相关
+        $("#manager-upload").fileinput({
+            theme: 'fas',
+            uploadUrl: 'http://172.21.212.64:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            overwriteInitial: false,
+            uploadAsync: true, //默认异步上传,
+            showUpload: true, //是否显示上传按钮
+            showRemove : true, //显示移除按钮
+            showPreview : true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+            dropZoneEnabled: true,
+            maxFileSize: 10000,
+            maxFilesNum: 10,
+            enctype: 'multipart/form-data',
+            validateInitialCount:true,
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            //allowedFileTypes: ['image', 'video', 'flash'],
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+            // console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            if(response!=null){
+                // alert("数据上传成功")
+            }
+            //get dataResource add sourceStoreId
+            that.sourceStoreId=response.data;
+            // console.log(response);//打印出返回的json
+            // console.log(response.status);//打印出路径
+
+
+        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+            // console.log('文件上传失败！'+data.status);
+        });
+
+        $("#imgChange").click(function () {
+            $("#imgFile").click();
+        });
+        $("#imgFile").change(function () {
+            //获取input file的files文件数组;
+            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+            var file = $('#imgFile').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload = function (e) {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                $('#imgShow').get(0).src = e.target.result;
+                $('#imgShow').show();
+
+                that.data_img.push(e.target.result)
+
+            }
+        });
     },
 
     destory(){
         window.removeEventListener('scroll',this.initSize);
         window.removeEventListener('resize',this.initSize);
     }
+
+
 });
 
 $(function () {
@@ -1247,13 +1442,10 @@ $(function () {
         }
     })
 
-    $('body').click((e)=>{
+    $('#browsercont2').click((e)=>{
         $('.wzhRightMenu').animate({height:'0'},50);
-        if(e.stopPropagation){
-            e.stopPropagation();
-        }else{
-            e.cancelBubble = true;
-        }
+        console.log($('#browsercont'))
+
     })
 
 

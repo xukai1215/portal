@@ -1,14 +1,14 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.*;
+import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.User;
-import njgis.opengms.portal.entity.support.Affiliation;
-import njgis.opengms.portal.entity.support.AwardandHonor;
-import njgis.opengms.portal.entity.support.EducationExperience;
-import njgis.opengms.portal.entity.support.UserLab;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;

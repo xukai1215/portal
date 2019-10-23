@@ -166,6 +166,21 @@ public class TaskRestController {
         }
     }
 
+    @RequestMapping(value = "/getTasksByUserIdNoPage", method = RequestMethod.GET)
+    JsonResult getTasksByUserIdNoPage(HttpServletRequest request,
+                                @RequestParam(value="sortType") String sortType,
+                                @RequestParam(value="asc") int sortAsc){
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getTasksByUserId(username,sortType,sortAsc));
+        }
+    }
+
     @RequestMapping(value = "/createTask/{id}", method = RequestMethod.POST)
     JsonResult createTask(@PathVariable("id") String id, HttpServletRequest request) {
 
