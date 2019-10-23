@@ -70,10 +70,165 @@ var  data_item_info= new Vue({
 
             currentData:"",
 
+            forkDialogVisible:false,
+            id:1000,
+            folderTree : [{
+                id: 1,
+                label: 'All Folder',
+                children: [{
+                    id: 4,
+                    label: '二级 1-1',
+                    children: [{
+                        id: 9,
+                        label: '三级 1-1-1'
+                    }, {
+                        id: 10,
+                        label: '三级 1-1-2'
+                    }]
+                }]
+            }],
+
         }
         
     } ,
     methods: {
+
+        forkData(){
+            if(dataSelection.length!=0){
+                axios.get("/user/getFolder",{})
+                    .then(res=> {
+                        let json=res.data;
+                        if(json.code==-1){
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href="/user/login"
+                        }
+                        else {
+                            this.folderTree=res.data.data;
+                            this.forkDialogVisible=true;
+                        }
+
+
+                    });
+
+            }
+            else{
+                alert("Please select data first!")
+            }
+        },
+
+        addFolder(){
+            let data=this.$refs.folderTree.getCurrentNode();
+            let node=this.$refs.folderTree.getNode(data);
+            console.log(node);
+            let paths=[];
+            while(node.key!=undefined&&node.key!=0){
+                paths.push(node.key);
+                node=node.parent;
+            }
+
+            this.$prompt(null, 'Enter Folder Name', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            }).then(({ value }) => {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/user/addFolder",
+                        data: {paths: paths, name: value},
+                        async: true,
+                        contentType: "application/x-www-form-urlencoded",
+                        success: (json) => {
+                            if (json.code == -1) {
+                                alert("Please login first!")
+                                window.sessionStorage.setItem("history", window.location.href);
+                                window.location.href = "/user/login"
+                            }
+                            else {
+                                const newChild = {id: json.data, label: value, children: []};
+                                if (!data.children) {
+                                    this.$set(data, 'children', []);
+                                }
+                                data.children.push(newChild);
+                            }
+
+                        }
+                    });
+
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Cancel'
+                });
+            });
+        },
+
+        confirmFolder(){
+            let data=this.$refs.folderTree.getCurrentNode();
+            let node=this.$refs.folderTree.getNode(data);
+
+            let paths=[];
+            while(node.key!=undefined&&node.key!=0){
+                paths.push(node.key);
+                node=node.parent;
+            }
+
+            let urls=window.location.href.split("/");
+            let itemId=urls[urls.length-1].trim();
+
+            $.ajax({
+                type: "POST",
+                url: "/user/forkData",
+                data: {paths: paths, itemId:itemId, dataIds:dataSelection},
+                async: true,
+                contentType: "application/x-www-form-urlencoded",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    }
+                    else {
+                        alert("Fork successfully!");
+                        this.forkDialogVisible=false;
+                    }
+
+                }
+            });
+        },
+
+        append(data) {
+
+            this.$prompt(null, 'Enter Folder Name', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            }).then(({ value }) => {
+                const newChild = { id: this.id++, label: value, children: [] };
+                if (!data.children) {
+                    this.$set(data, 'children', []);
+                }
+                data.children.push(newChild);
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Cancel'
+                });
+            });
+
+        },
+
+        remove(node, data) {
+            const parent = node.parent;
+            const children = parent.data.children || parent.data;
+            const index = children.findIndex(d => d.id === data.id);
+            children.splice(index, 1);
+        },
+
 
         getUrlParam(url,name) {
 
@@ -889,6 +1044,31 @@ var  data_item_info= new Vue({
 
                 })
 
+        },
+        getUrlParam(url, name) {
+
+            let urls = url.split('?')
+            return urls[1];
+
+        },
+        shareData(){
+            let downloadAllZipUrl="/dataManager/downloadSomeRemote";
+            if(dataSelection.length!=0) {
+                for(i=0;i<dataSelection.length;i++){
+
+                    let id=this.getUrlParam(dataSelection[i]);
+
+                    downloadAllZipUrl+=i==0?'?':'&';
+                    downloadAllZipUrl+=id;
+
+                }
+                this.$alert("<textarea style='width: 100%;height:auto'>http://geomodeling.njnu.edu.cn"+downloadAllZipUrl+"</textarea>","Sharing link",{
+                    dangerouslyUseHTMLString: true
+                })
+            }
+            else{
+                alert('please select file first!!');
+            }
         }
 
     },
@@ -918,35 +1098,36 @@ var  data_item_info= new Vue({
 
 
         var that=this;
-        axios.get("/dataItem/getRemoteDataSource?dataItemId="+dataitemid[dataitemid.length-1])
-            .then(function (res) {
-                if(res.status==200){
-                     for(var i=0;i<res.data.data.data.length;i++){
 
-                         that.databrowser.push(res.data.data.data[i])
-                     }
-
-                }else{
-                    console.log("error")
-                    that.$message("datamanager get data error!")
-                }
-
-                //when browser get no data,the element hidden
-                // if(that.databrowser.length==0){
-                //     $('#resources').css('display','none');
-                // }
-
-
-
-            } );
-
-        axios.get("/dataItem/getcomment/"+dataitemid[dataitemid.length-1])
-            .then(res=>{
-                that.allcomments=res.data.data.comments;
-
-                // console.log(res.data.data.comments)
-
-            });
+        // axios.get("/dataItem/getRemoteDataSource?dataItemId="+dataitemid[dataitemid.length-1])
+        //     .then(function (res) {
+        //         if(res.status==200){
+        //              for(var i=0;i<res.data.data.data.length;i++){
+        //
+        //                  that.databrowser.push(res.data.data.data[i])
+        //              }
+        //
+        //         }else{
+        //             console.log("error")
+        //             that.$message("datamanager get data error!")
+        //         }
+        //
+        //         //when browser get no data,the element hidden
+        //         // if(that.databrowser.length==0){
+        //         //     $('#resources').css('display','none');
+        //         // }
+        //
+        //
+        //
+        //     } );
+        //
+        // axios.get("/dataItem/getcomment/"+dataitemid[dataitemid.length-1])
+        //     .then(res=>{
+        //         that.allcomments=res.data.data.comments;
+        //
+        //         // console.log(res.data.data.comments)
+        //
+        //     });
 
         axios.get("/user/load")
             .then((res)=>{
@@ -1016,25 +1197,28 @@ var  data_item_info= new Vue({
 
 });
 var currentData='';
+var dataSelection=[];
 //JQuery
 $(function () {
 
         //数据项点击样式事件
         $(".filecontent .el-card").on('click',function (e) {
 
-
-            if(currentData!=e.currentTarget.id) {
-                currentData = e.currentTarget.id;
-
-                $(".filecontent .browsermenu").hide();
-
-                $(this).addClass("clickdataitem");
-
-                $(this).siblings().removeClass("clickdataitem");
+            let exist=false;
+            for(i=0;i<dataSelection.length;i++)
+            {
+                let data=dataSelection[i];
+                if(data==e.currentTarget.id){
+                    exist=true;
+                    dataSelection.splice(i,1);
+                    $(this).removeClass("clickdataitem");
+                    break;
+                }
             }
-            else{
-                currentData='';
-                $(".dataitemisol").removeClass("clickdataitem")
+
+            if(!exist){
+                dataSelection.push(e.currentTarget.id);
+                $(this).addClass("clickdataitem");
             }
 
         });
@@ -1098,9 +1282,23 @@ $(function () {
         });
 
         $(".dwload").click(function () {
-            if(currentData!='') {
+            let downloadAllZipUrl="/dataManager/downloadSomeRemote";
+            if(dataSelection.length!=0) {
+                for(i=0;i<dataSelection.length;i++){
 
-                window.open("/dispatchRequest/download?url=" + currentData);
+                    let id=getUrlParam(dataSelection[i]);
+
+                    downloadAllZipUrl+=i==0?'?':'&';
+                    downloadAllZipUrl+=id;
+
+                }
+                let link =document.createElement("a");
+                link.style.display='none';
+                link.href=downloadAllZipUrl;
+                link.setAttribute("download","allData.zip");
+
+                document.body.appendChild(link);
+                link.click();
             }
             else{
                 alert('please select file first!!');
@@ -1109,19 +1307,38 @@ $(function () {
 
         });
 
-        $(".shareData").click(function () {
-            if(currentData!=''){
-                let url ="/dispatchRequest/download?url=" + currentData;
-                this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+url+">",{
-                    dangerouslyUseHTMLString: true
-                })
-                // this.dataid='';
-
-            }else {
-                // console.log("从后台获取数据条目数组有误")
-                alert('please select file first!!');
-            }
-        });
+        // $(".shareData").click(function () {
+        //
+        //     let downloadAllZipUrl="/dataManager/downloadSomeRemote";
+        //     if(dataSelection.length!=0) {
+        //         for(i=0;i<dataSelection.length;i++){
+        //
+        //             let id=getUrlParam(dataSelection[i]);
+        //
+        //             downloadAllZipUrl+=i==0?'?':'&';
+        //             downloadAllZipUrl+=id;
+        //
+        //         }
+        //         this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+downloadAllZipUrl+">",{
+        //             dangerouslyUseHTMLString: true
+        //         })
+        //     }
+        //     else{
+        //         alert('please select file first!!');
+        //     }
+        //
+        //     // if(currentData!=''){
+        //     //     let url ="/dispatchRequest/download?url=" + currentData;
+        //     //     this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+url+">",{
+        //     //         dangerouslyUseHTMLString: true
+        //     //     })
+        //     //     // this.dataid='';
+        //     //
+        //     // }else {
+        //     //     // console.log("从后台获取数据条目数组有误")
+        //     //     alert('please select file first!!');
+        //     // }
+        // });
 
 
         //搜索结果样式效果和菜单事件

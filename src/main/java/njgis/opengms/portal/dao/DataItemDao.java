@@ -26,7 +26,6 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
 
-
     //test
     Page<DataItem>  findByClassificationsIsIn(Pageable pageable,String classification);
 

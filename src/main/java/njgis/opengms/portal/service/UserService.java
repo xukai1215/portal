@@ -5,7 +5,10 @@ import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
-import njgis.opengms.portal.entity.support.*;
+import njgis.opengms.portal.entity.support.Affiliation;
+import njgis.opengms.portal.entity.support.AwardandHonor;
+import njgis.opengms.portal.entity.support.EducationExperience;
+import njgis.opengms.portal.entity.support.UserLab;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -28,6 +31,9 @@ public class UserService {
 
     @Autowired
     TaskDao taskDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
 
     @Autowired
     CommonService commonService;
@@ -577,6 +583,135 @@ public class UserService {
         }
 
 
+    }
+
+    public String addFolder(List<String> paths,String name,String userName){
+        User user=userDao.findFirstByUserName(userName);
+
+        String id=UUID.randomUUID().toString();
+        user.setFileContainer(aFolder(paths,user.getFileContainer(),name,id));
+
+        userDao.save(user);
+
+        return id;
+    }
+
+    private List<FileMeta> aFolder(List<String> paths,List<FileMeta> fileMetaList,String name,String id){
+
+        if(paths.size()==0){
+            fileMetaList.add(new FileMeta(true,id,name,"","",new ArrayList<>()));
+        }
+        else {
+            // pop
+            String path = paths.remove(paths.size() - 1);
+            for (int i = 0; i < fileMetaList.size(); i++) {
+                FileMeta fileMeta = fileMetaList.get(i);
+                if (fileMeta.getId().equals(path)) {
+
+                    fileMeta.setContent(aFolder(paths, fileMeta.getContent(),name,id));
+                    fileMetaList.set(i,fileMeta);
+                    break;
+                }
+            }
+        }
+        return fileMetaList;
+    }
+
+    public JSONArray getFolder(String userName){
+        User user=userDao.findFirstByUserName(userName);
+        List<FileMeta> fileMetaList=user.getFileContainer();
+
+        if(fileMetaList==null) {
+            FileMeta fileMeta=new FileMeta(true,UUID.randomUUID().toString(),"My Data","","",new ArrayList<>());
+            fileMetaList=new ArrayList<>();
+            fileMetaList.add(fileMeta);
+            user.setFileContainer(fileMetaList);
+            userDao.save(user);
+        }
+
+
+        JSONArray content=new JSONArray();
+        JSONObject obj=new JSONObject();
+        obj.put("id", "0");
+        obj.put("label", "All Folder");
+        obj.put("children", gFolder(fileMetaList));
+
+        content.add(obj);
+
+        return content;
+
+    }
+
+    private JSONArray gFolder(List<FileMeta> fileMetaList){
+
+
+        JSONArray parent=new JSONArray();
+
+        if(fileMetaList.size()!=0) {
+            for (int i = 0; i < fileMetaList.size(); i++) {
+                FileMeta fileMeta = fileMetaList.get(i);
+                if (fileMeta.getIsFolder()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", fileMeta.getId());
+                    jsonObject.put("label", fileMeta.getName());
+
+                    jsonObject.put("children", gFolder(fileMeta.getContent()));
+
+                    parent.add(jsonObject);
+                }
+            }
+        }
+        return parent;
+    }
+
+    public String forkData(List<String> paths,List<String> dataIds,String itemId,String userName){
+
+        User user=userDao.findFirstByUserName(userName);
+
+        DataItem dataItem=dataItemDao.findFirstById(itemId);
+
+        user.setFileContainer(setData(paths,user.getFileContainer(),dataIds,dataItem));
+        userDao.save(user);
+
+        return "suc";
+    }
+
+    private List<FileMeta> setData(List<String> paths,List<FileMeta> fileMetaList,List<String> dataIds,DataItem dataItem){
+
+        if(paths.size()==0){
+            List<DataMeta> dataList=dataItem.getDataList();
+            for(String dataId:dataIds){
+                for(DataMeta dataMeta:dataList){
+                    String url=dataMeta.getUrl();
+                    String param=url.split("[?]")[1];
+                    String id=param.split("=")[1];
+                    if(dataId.equals(url)){
+                        boolean exist=false;
+                        for(FileMeta fm:fileMetaList){
+                            if(fm.getId().equals(id)){
+                                exist=true;
+                                break;
+                            }
+                        }
+                        if(!exist) {
+                            FileMeta fileMeta = new FileMeta(false, id, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), null);
+                            fileMetaList.add(fileMeta);
+                        }
+                        break;
+                    }
+
+                }
+            }
+        }
+        else{
+            String id=paths.remove(paths.size()-1);
+            for(FileMeta fileMeta:fileMetaList){
+                if(fileMeta.getId().equals(id)){
+                    fileMeta.setContent(setData(paths,fileMeta.getContent(),dataIds,dataItem));
+                }
+            }
+        }
+        return fileMetaList;
     }
 
 }

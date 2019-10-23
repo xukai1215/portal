@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +42,9 @@ public class PortalApplicationTests {
 
     @Autowired
     ModelItemDao modelItemDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
 
     @Autowired
     ConceptualModelDao conceptualModelDao;
@@ -66,7 +70,19 @@ public class PortalApplicationTests {
     @Value("${resourcePath}")
     private String resourcePath;
 
-    
+    @Test
+    public void addFolder(){
+        User user=userDao.findFirstByUserName("njgis");
+        List<FileMeta> fileContainer=new ArrayList<>();
+
+        fileContainer.add(new FileMeta(true,UUID.randomUUID().toString(),"123","","",new ArrayList<>()));
+        fileContainer.add(new FileMeta(false,"id2","1234","pdf","http://",new ArrayList<>()));
+
+        user.setFileContainer(fileContainer);
+
+
+        userDao.save(user);
+    }
 
     @Test
     public void addImage(){

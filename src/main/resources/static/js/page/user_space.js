@@ -238,16 +238,27 @@ var vue = new Vue({
             for(i=0;i<cls.length;i++){
                 if(cls[i]==item.id)
                 {
-                    e.target.style.color='black';
+                    if(e.target.type=="button"){
+                        e.target.children[0].style.color="black";
+                    }
+                    else {
+                        e.target.style.color = 'black';
+                    }
+
                     cls.splice(i,1);
-                    this.taskDataForm.classifications.splice(i,1);
                     this.taskDataForm.categoryText.splice(i,1);
                     exist=true;
                     break;
                 }
             }
             if(!exist) {
-                e.target.style.color='deepskyblue';
+                if(e.target.type=="button"){
+                    e.target.children[0].style.color="deepskyblue";
+                }
+                else {
+                    e.target.style.color = 'deepskyblue';
+                }
+
                 this.taskDataForm.categoryText.push(e.target.innerText);
                 this.taskDataForm.classifications.push(item.id);
             }
@@ -469,7 +480,9 @@ var vue = new Vue({
                 categoryText:[],
             };
             $(".taskDataCate").children().css("color","black");
-            $('#taskDataKeywords').tagEditor('destroy');
+            if($("#taskDataShareDialog .tag-editor").length!=0) {
+                $('#taskDataKeywords').tagEditor('destroy');
+            }
             $("#taskDataKeywords").tagEditor({
                 initialTags:[''],
                 forceLowercase: false

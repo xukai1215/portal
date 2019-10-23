@@ -51,6 +51,8 @@ public class User {
 
     List<UserTaskInfo> runTask;
 
+    List<FileMeta> fileContainer;
+
     int modelItems;
     int dataItems;
     int conceptualModels;

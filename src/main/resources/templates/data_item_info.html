@@ -38,7 +38,14 @@
             text-align: right;
         }
 
-
+        .custom-tree-node {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 17px;
+            padding-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -134,16 +141,20 @@
                     <div class="el-card filebrowserfunction is-always-shadow"><!---->
                         <div class="el-card__body">
                             <div class="filebrowser el-row">
-                                <div class="el-col el-col-15">
+                                <div class="el-col">
                                     <button type="button" class="el-button dwload el-button--default"><!----><i
                                             class="el-icon-download"></i><span>
                                     Download
                                 </span></button>
-                                    <button type="button" class="el-button shareData el-button--default"><!----><i
+                                    <button type="button" class="el-button shareData el-button--default" @click="shareData()"><!----><i
                                             class="el-icon-share"></i><span>Share</span></button>
 
-                                    <button type="button" class="el-button downloadAll el-button--default"><!----><i
-                                            class="el-icon-sold-out"></i><span>Download all files
+                                    <!--<button type="button" class="el-button downloadAll el-button&#45;&#45;default">&lt;!&ndash;&ndash;&gt;<i-->
+                                            <!--class="el-icon-sold-out"></i><span>Download all files-->
+                                    <!--</span></button>-->
+
+                                    <button type="button" class="el-button fork el-button--default" @click="forkData()"><!----><i
+                                            class="el-icon-star-off"></i><span>Fork selected data
                                     </span></button>
                                 </div>
 
@@ -205,6 +216,44 @@
                 </div>
             </div>
 
+            <el-dialog :visible.sync="forkDialogVisible" title="Select Folder" width="35%">
+
+                <el-card style="min-height: 300px;">
+                    <el-tree
+                            :data="folderTree"
+                            ref="folderTree"
+                            node-key="id"
+                            highlight-current
+                            default-expand-all
+                            :expand-on-click-node="false"
+                            >
+                      <span class="custom-tree-node" slot-scope="{ node, data }">
+                        <span>{{ node.label }}</span>
+                        <!--<span>-->
+                          <!--<el-button-->
+                                  <!--type="text"-->
+                                  <!--size="mini"-->
+                                  <!--@click="() => append(data)">-->
+                            <!--Append-->
+                          <!--</el-button>-->
+                          <!--<el-button-->
+                                  <!--type="text"-->
+                                  <!--size="mini"-->
+                                  <!--@click="() => remove(node, data)">-->
+                            <!--Delete-->
+                          <!--</el-button>-->
+                        <!--</span>-->
+                      </span>
+                    </el-tree>
+                </el-card>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button class="pull-left" type="primary" icon="el-icon-folder-add" @click="addFolder()">Add new folder</el-button>
+                    <el-button @click="forkDialogVisible = false">Cancel</el-button>
+                    <el-button type="primary" @click="confirmFolder()">OK</el-button>
+                </span>
+
+            </el-dialog>
 
             <!--related models-->
             <div id="relatedmodels" class="detail_block">
@@ -399,9 +448,9 @@
                 <div class="block_content flex" th:object="${datainfo}">
                     <div id="cite-text" class="">
                         <span th:if="${authorship!=''}"
-                              th:text="${authorship}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS,'"></span>
+                              th:text="${authorship}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS, '"></span>
                         <span th:if="${authorship==''}"
-                              th:text="${user.name}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS,'"></span>
+                              th:text="${user.name}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS, '"></span>
                         <a style="word-break:break-all;"
                            th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"
                            th:text="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"></a>

@@ -10,6 +10,7 @@ import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -493,4 +494,50 @@ public class UserRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value="/getFolder",method = RequestMethod.GET)
+    JsonResult getFolder(HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        Object object=httpSession.getAttribute("uid");
+        if(object==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=object.toString();
+        JSONArray result=userService.getFolder(userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/addFolder",method = RequestMethod.POST)
+    JsonResult addFolder(@RequestParam("paths[]") List<String> paths,
+                         @RequestParam("name") String name,
+                         HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName= Utils.checkLoginStatus(httpSession);
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.addFolder(paths,name,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/forkData",method = RequestMethod.POST)
+    JsonResult forkData(@RequestParam("paths[]") List<String> paths,
+                        @RequestParam("dataIds[]") List<String> dataIds,
+                        @RequestParam("itemId") String dataItemId,
+                        HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName=httpSession.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+
+        String result=userService.forkData(paths,dataIds,dataItemId,userName);
+
+        return ResultUtils.success();
+
+    }
 }
