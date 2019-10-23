@@ -118,12 +118,15 @@ var data_items = new Vue({
                     });
             }else {
 
-                axios.post("/dataItem/listBySearch/",that.findDto)
+                axios.post("/dataItem/searchByName/",that.findDto)
                     .then((res)=>{
                         setTimeout(()=>{
-                            that.list=res.data.data.content;
+
+                            that.list=res.data.data.list;
                             that.progressBar=false;
-                            that.datacount=res.data.data.totalElements;
+                            that.datacount=res.data.data.total;
+                            that.users=res.data.data.users;
+                            that.loading=false;
                         },500)
 
                         // this.list=res.data.data;

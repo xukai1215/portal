@@ -688,8 +688,8 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text">
-                        <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS,'"></span>
-                        <span th:if="${authorship==''}" th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS,'">
+                        <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '"></span>
+                        <span th:if="${authorship==''}" th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                         </span>
                         <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/modelItem/'+${modelInfo.oid}"
