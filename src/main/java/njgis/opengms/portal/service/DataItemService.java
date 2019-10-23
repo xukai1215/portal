@@ -295,7 +295,7 @@ public class DataItemService {
             as=false;
         }
 
-        Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
+        Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pagesize, sort);
         return dataItemDao.findByAuthor(pageable,author);
 
@@ -303,8 +303,6 @@ public class DataItemService {
 
     //获得用户创建条目的总数
     public Integer getAmountOfData(String userOid){
-
-
 
 
         List<DataItem> resultList= new ArrayList<DataItem>();
