@@ -521,7 +521,7 @@ public class DataItemService {
 
         int page= dataItemFindDTO.getPage()-1;
         int pageSize = dataItemFindDTO.getPageSize();
-        String searchText = dataItemFindDTO.getSearchContent().get(0);
+        String searchText = dataItemFindDTO.getSearchText();
 
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
