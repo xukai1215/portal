@@ -176,6 +176,7 @@ var vue = new Vue({
         taskSharingActive: 0,
         stateFilters: [],
         multipleSelection: [],
+        multipleSelectionMyData: [],
         taskCollapseActiveNames: [],
         taskDataForm: {
             name: '',
@@ -233,6 +234,44 @@ var vue = new Vue({
         autoHeightFaOld: 1,
 
         checkSelectedIndex:0,
+
+        clickedList:[],
+
+        selectPathDialog:false,
+
+        folderTree : [{
+            id: 1,
+            label: 'All Folder',
+            children: [{
+                id: 4,
+                label: '二级 1-1',
+                children: [{
+                    id: 9,
+                    label: '三级 1-1-1'
+                }, {
+                    id: 10,
+                    label: '三级 1-1-2'
+                }]
+            }]
+        }],
+
+        fileSpaceIndex:1,
+
+        myFile:[],
+
+        myFileShown:[
+            {
+                children:[],
+            }
+        ],
+
+        fatherIndex:'',
+
+        pathShown:[],
+
+        addFolderIndex: false,
+
+        newFolderName:'',
     },
 
     methods: {
@@ -279,9 +318,9 @@ var vue = new Vue({
                     if (index == 2) {
                         targetLi.animate({height: autoHeight2}, 320);
                         this.autoHeightFaOld = autoHeight2;
-                        this.getAllPackageTasks();
-                    } else if (index == 1)
+                    } else if (index == 1){
                         targetLi.animate({height: autoHeight1}, 320);
+                    }
                     else {
                         targetLi.animate({height: autoHeight3}, 320);
                     }
@@ -301,14 +340,14 @@ var vue = new Vue({
             console.log(this.packageContentList)
         },
 
-        formDataPackage(){
-            for (let i=0;i<this.packageContentList.length;i++){
-
-            }
-        },
+        // formDataPackage(){
+        //     for (let i=0;i<this.packageContentList.length;i++){
+        //
+        //     }
+        // },
 
         async dropPackageContent(item,index){
-            // this.sharingTaskData(item);
+
             let arrow=$('.treeChildLi').eq(index);
             let father=$('ul.flexLi')
             let autoHeightFaOld=this.autoHeightFaOld;
@@ -316,15 +355,14 @@ var vue = new Vue({
             let autoHeight=(this.packageContentList[index].inputs.length+this.packageContentList[index].outputs.length)*57+79
             let autoHeightFa=autoHeight+autoHeightFaOld
 
-            console.log(autoHeightFa)
-            console.log(autoHeightFaOld)
-            console.log(autoHeight)
             for(let i=0;i<this.userTaskFullInfo.tasks.length;i++){
                 if((i===index)){
                     if(!arrow.hasClass('expanded')){
                         arrow.addClass('expanded');
                         father.animate({height: autoHeightFa}, 260,'linear');
                         targetLi.animate({height: autoHeight}, 500,'linear');
+                        this.sharingTaskData(item,index);
+
                     }else if(arrow.hasClass('expanded')){
                         father.animate({height:autoHeightFaOld},320)
                         $('.packageContent').eq(index).animate({height: 0}, 300);
@@ -417,7 +455,10 @@ var vue = new Vue({
 
         allFileShareAsDataItem() {
             this.allFileTaskSharingVisible = true;
-            this.getTasks();
+            this.multipleSelection=[];
+            this.multipleSelectionMyData=[];
+            this.taskSharingActive=0;
+            // this.getTasks();
         },
 
         taskSharingPre() {
@@ -432,10 +473,21 @@ var vue = new Vue({
         taskSharingFinish() {
 
             this.taskSharingActive = 4;
+            var selectResult=[]
+            if(this.curIndex==6)
+                selectResult=this.multipleSelection ;
+            else selectResult=this.multipleSelectionMyData.concat(this.multipleSelection);
 
-            for (let select of this.multipleSelection) {
-                select.name = select.tag;
-                select.suffix = 'unknow';
+            console.log(selectResult)
+            for (let select of selectResult) {
+                if(select.tag){
+                    select.name = select.tag;
+                    select.suffix = 'unknow';
+                }else{
+                    select.name = select.fileName;
+                    select.suffix =select.suffix;
+                }
+
                 this.taskDataForm.dataList.push(select);
             }
 
@@ -475,7 +527,7 @@ var vue = new Vue({
             //检查
             switch (this.taskSharingActive) {
                 case 0:
-                    if (this.multipleSelection.length == 0) {
+                    if (this.multipleSelection.length+this.multipleSelectionMyData.length == 0) {
                         this.showWaring('Please select data first!');
                         return;
                     }
@@ -563,9 +615,9 @@ var vue = new Vue({
         },
 
 
-        sharingTaskData(task) {
+        sharingTaskData(task,index) {
 
-            // this.initTaskDataForm();
+            this.initTaskDataForm();
 
             this.taskSharingActive = 0;
             let inputs = task.inputs;
@@ -610,11 +662,33 @@ var vue = new Vue({
             if (this.curIndex==6)
                 this.taskSharingVisible=true;
 
-            console.log(this.taskDataList)
+            if (this.curIndex=='3-3'){
+                if(this.multipleSelection.length>0){
+                    this.$nextTick(function () {
+                        this.multipleSelection.forEach(row=>{
+                            console.log(this.$refs.multipleTableDataSharing)
+                            this.$refs.multipleTableDataSharing[index].toggleRowSelection(row);
+                        })
+                    })
+                }
+
+            }
+
         },
         handleSelectionChange(val) {
-            this.multipleSelection = val;
-            console.log(this.multipleSelection)
+            if(val)
+                this.multipleSelection=val
+        },
+
+        handleSelectionChangeMyData(val) {
+            if(val)
+                this.multipleSelectionMyData=val
+        },
+
+        handleSelectionChangeRow(val,row) {
+            this.multipleSelection.push(row)
+            // this.$refs.multipleTableOutput.toggleRowSelection(row);
+            // console.log(this.$refs.multipleTableOutput[1].clearSelection())
         },
         checkSelectedFile(){
             this.checkSelectedIndex=1;
@@ -629,8 +703,10 @@ var vue = new Vue({
             this.taskDataList = [];
             this.taskSharingActive = 0;
             this.stateFilters = [];
-            this.multipleSelection = [];
             this.taskCollapseActiveNames = [];
+            //如果是task条目下则清空，不是则会在其他事件中清空
+            if(this.curIndex==6)
+                this.multipleSelection = [];
             this.taskDataForm = {
                 name: '',
                 type: "option1",
@@ -720,6 +796,160 @@ var vue = new Vue({
         onzzzSuccess() {
             alert("上传成功")
         },
+
+        selectPathClick(){
+            if(1){
+                axios.get("/user/getFolder",{})
+                    .then(res=> {
+                        let json=res.data;
+                        if(json.code==-1){
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href="/user/login"
+                        }
+                        else {
+                            this.folderTree=res.data.data;
+                            this.selectPathDialog=true;
+                        }
+
+
+                    });
+
+            }
+            else{
+                alert("Please select data first!")
+            }
+        },
+
+        getPackageContent($event, eval,key){
+            let id=eval.id;
+            this.fatherIndex=this.myFileShown[key].id;
+            this.pathShown.push(this.myFileShown[key])
+            if(this.myFileShown[key].children.length!=0)
+                this.myFileShown= this.myFileShown[key].children;
+            else
+                this.myFileShown=[];
+
+
+            console.log(this.myFileShown)
+            console.log(this.myFileShown.length)
+            console.log(this.fatherIndex)
+
+        },
+
+        getFilePackage(){
+            axios.get("/user/getFolderAndFile",{})
+                .then(res=> {
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.myFile=res.data.data;
+                        this.myFileShown=this.myFile;
+                    }
+
+
+                });
+        },
+
+        backToFather(){
+           // if(this.myFileShown.length==0||this.fatherIndex!=0) {
+           //     this.findFather(this.myFile)
+           //     this.fatherIndex=this.myFileShown[0].father;
+           //     console.log()
+           // }else if(this.fatherIndex==0)
+           //     this.myFileShown=this.myFile;
+
+           let allFolder = [];
+            allFolder.children=this.myFile;
+            this.findFather(this.myFile,allFolder)
+            console.log(this.myFileShown)
+            this.fatherIndex=this.myFileShown[0].father;
+            this.pathShown.pop(this.pathShown.length-1)
+        },
+
+        findFather(file,father){
+            if(this.fatherIndex==='0')
+                this.myFileShown=this.myFile;
+            for(let i=0;i<file.length;i++){
+                if(file[i].id===this.fatherIndex){
+                    this.myFileShown=father.children;
+                    console.log(this.myFileShown)
+                    return;
+                }else{
+                    this.findFather(file[i].children,file[i])
+                }
+            }
+        },
+
+        showFilePackage(){
+            this.fileSpaceIndex=1
+        },
+
+        showMyUpload(){
+            this.fileSpaceIndex=2
+        },
+
+        showMyFork(){},
+
+        addFolderInPath(){
+            this.addFolderIndex=true;
+        },
+
+        addChild(fileTree,fatherId,child){
+            for(let i=0;i<fileTree.length;i++){
+                if(fileTree[i].id===fatherId){
+                    fileTree[i].children.push(child)
+                    return;
+                }
+                this.addChild(fileTree[i].children,fatherId,child);
+            }
+        },
+
+        addFolder() {
+            let i=this.pathShown.length-1;
+            let paths=[]
+            while (i>=1) {
+                paths.push(this.pathShown[i].id);
+                i--;
+            }
+            console.log(paths)
+            $.ajax({
+                type: "POST",
+                url: "/user/addFolder",
+                data: {paths: paths, name: this.newFolderName},
+                async: true,
+                contentType: "application/x-www-form-urlencoded",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        const newChild = {id: json.data, label: this.newFolderName, children: [],package:true, father:paths[0]};
+                        if(this.myFileShown.length===0)
+                            this.addChild(this.myFile,paths[0],newChild)
+                        this.myFileShown.push(newChild);
+                        console.log(this.myFileShown)
+                        // this.getFilePackage();
+                        console.log(this.myFile)
+                        this.addFolderIndex=false;
+
+                    }
+
+                }
+            });
+
+
+        },
+
+        uploadFileInPath(){
+
+        },
+
         uploadData() {
             return {
                 author: this.userName
@@ -798,7 +1028,9 @@ var vue = new Vue({
                 case '3-3':
                     this.panye(1);
                     this.addAllData()
+                    this.getFilePackage()
                     this.pageControlIndex = this.curIndex;
+                    this.pathShown=[];
                     break;
                 case '4-1':
                     this.searchText = '';
@@ -2176,7 +2408,7 @@ var vue = new Vue({
             })
         },
 
-        getTasks() {
+        getTasks(callback) {
             $.ajax({
                 type: "Get",
                 url: "/task/getTasksByUserIdNoPage",
@@ -2198,14 +2430,11 @@ var vue = new Vue({
                         alert("Please login first!");
                         window.location.href = "/user/login";
                     } else {
-                        setTimeout(() => {
                             const data = json.data;
                             this.resourceLoad = false;
                             // this.researchItems = data.list;
                             this.userTaskFullInfo = data;
-                            console.log(this.userTaskFullInfo)
-                        }, 100)
-
+                            this.getAllPackageTasks();
 
                     }
                 }
@@ -2477,7 +2706,6 @@ var vue = new Vue({
                             this.totalNum = data.total;
                             // this.researchItems = data.list;
                             Vue.set(this.researchItems, 'list', data.list);
-                            console.log(this.researchItems);
                             this.$forceUpdate();
                             if (this.page == 1) {
                                 this.pageInit();
@@ -3314,7 +3542,7 @@ var vue = new Vue({
 
 
             if (this.sourceStoreId === '') {
-                alert("请先上传数据")
+                alert("Please upload the file in to the template first")
             } else {
                 var data = {
                     author: this.userId,
@@ -3373,13 +3601,16 @@ var vue = new Vue({
             return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
         getImg(item) {
+            if(item.id==0||item.package==true)
+                return "/static/img/filebrowser/package.jpg"
+            if(item.suffix=='unknow')
+                return "/static/img/filebrowser/unknow.svg"
             return "/static/img/filebrowser/" + item.suffix + ".svg"
         },
         generateId(key) {
             return key;
         },
         getid($event, eval) {
-            console.log(eval.id)
             this.dataid = eval.id;
 
             $event.currentTarget.className = "el-card dataitemisol clickdataitem"
@@ -3407,7 +3638,6 @@ var vue = new Vue({
             }
 
             if (eval.taskId != null) {
-                console.log(eval.taskId)
                 this.detailsIndex = 2
                 this.getOneOfUserTasks(eval.taskId);
             }
@@ -3419,7 +3649,7 @@ var vue = new Vue({
             this.detailsIndex = 1;
         },
 
-        getOneOfUserTasks(task,index,callback) {
+        getOneOfUserTasks(taskId) {
             $.ajax({
                 type: 'GET',
                 url: "/task/getTaskByTaskId",
@@ -3427,7 +3657,7 @@ var vue = new Vue({
 
                 data:
                     {
-                        id: task.taskId,
+                        id: taskId,
                     },
                 // JSON.stringify(obj),
                 cache: false,
@@ -3447,7 +3677,6 @@ var vue = new Vue({
                         // this.researchItems = data.list;
                         this.packageContent = data;
                         console.log(this.packageContent)
-                        return callback(task,index);
                     }
                 }
             })
@@ -3528,7 +3757,6 @@ var vue = new Vue({
 
                     // console.log("oid datas",this.userId,res.data.data)
                     that.databrowser = res.data.data
-                    console.log(that.databrowser)
                     that.alllen = that.databrowser.length
                     that.managerloading = false
                 })
@@ -3597,9 +3825,9 @@ var vue = new Vue({
         //上传
         upload_data_dataManager() {
 
-
+            console.log($('.file-caption').text())
             if (this.sourceStoreId === '') {
-                alert("请先上传数据")
+                alert("Please upload the file into the template first")
             } else {
                 var data = {
                     author: this.userId,
@@ -3633,6 +3861,31 @@ var vue = new Vue({
             console.log(done)
             this.$confirm('Are you sure to close？')
                 .then(_ => {
+                    done();
+                })
+                .catch(_ => {
+                });
+        },
+
+        closeAndClear(){
+
+        },
+
+        handleCloseandInit(done) {
+            console.log(done)
+            this.$confirm('Are you sure to close？')
+                .then(_ => {
+                    for(let i=0;i<$('.treeLi').length;i++) {
+                        $('.treeLi').eq(i).removeClass('expanded');
+                        $('.flexLi').eq(i).animate({height: 0}, 300);
+                    }
+                    for(let i=0;i<$('.treeChildLi').length;i++){
+                        $('.treeChildLi').eq(i).removeClass('expanded');
+                        $('.packageContent').eq(i).animate({height:0},300);
+                    }
+                    for(let i=0;i<this.$refs.multipleTableDataSharing.length;i++)
+                        this.$refs.multipleTableDataSharing[i].clearSelection();
+                    this.$refs.multipleTableMyData.clearSelection();
                     done();
                 })
                 .catch(_ => {
@@ -4474,13 +4727,13 @@ var vue = new Vue({
             showUpload: true, //是否显示上传按钮
             showRemove: true, //显示移除按钮
             showPreview: true, //是否显示预览
-            showCaption: false,//是否显示标题
+            showCaption: true,//是否显示标题
             browseClass: "btn btn-primary", //按钮样式
             maxFileSize: 10000,
             maxFilesNum: 10,
             enctype: 'multipart/form-data',
             validateInitialCount: true,
-            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            msgFilesTooMany: "You have chosen ({n}) files, more than {m} files！",
             //allowedFileTypes: ['image', 'video', 'flash'],
             slugCallback: function (filename) {
                 return filename.replace('(', '_').replace(']', '_');

@@ -508,11 +508,26 @@ public class UserRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value="/getFolderAndFile",method = RequestMethod.GET)
+    JsonResult getFolder7File(HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        Object object=httpSession.getAttribute("uid");
+        if(object==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=object.toString();
+        JSONArray result=userService.getFolder7File(userName);
+
+        return ResultUtils.success(result);
+    }
+
     @RequestMapping(value="/addFolder",method = RequestMethod.POST)
     JsonResult addFolder(@RequestParam("paths[]") List<String> paths,
                          @RequestParam("name") String name,
                          HttpServletRequest httpServletRequest){
 
+        System.out.print(paths);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName= Utils.checkLoginStatus(httpSession);
         if(userName==null){
@@ -522,6 +537,23 @@ public class UserRestController {
 
         return ResultUtils.success(result);
     }
+
+//    @RequestMapping(value="/addFile",method = RequestMethod.POST)
+//    JsonResult addFile(@RequestParam("paths[]") List<String> paths,
+//                         @RequestParam("name") String name,
+//                         @RequestParam("url") String url,
+//                         HttpServletRequest httpServletRequest){
+//
+//        System.out.print(paths);
+//        HttpSession httpSession=httpServletRequest.getSession();
+//        String userName= Utils.checkLoginStatus(httpSession);
+//        if(userName==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        String result=userService.addFile(paths,name,userName,url);
+//
+//        return ResultUtils.success(result);
+//    }
 
     @RequestMapping(value="/forkData",method = RequestMethod.POST)
     JsonResult forkData(@RequestParam("paths[]") List<String> paths,

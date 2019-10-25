@@ -1668,13 +1668,14 @@ ul,li{
  }
  .dataitemisol:hover{
    cursor: pointer;
+   border: 2px solid rgba(49, 143, 194, 0.92);
  }
  .dataitemhover{
    /*border: 2px solid #72d600eb;*/
    /*background-color: #acff9c3d;*/
 
-   border: 2px solid rgba(118, 122, 109, 0.92);
-   background-color: rgba(231, 231, 231, 0.24);
+   border: 2px solid rgba(49, 143, 194, 0.92);
+   background-color: #ecf5ff;
 
  }
  .clickdataitem{
@@ -1742,6 +1743,16 @@ ul,li{
    display: flex;
    justify-content:center;
    align-items:center;
+ }
+
+ .flexRowSpaceBetween{
+   display: flex;
+   justify-content: space-between;
+ }
+
+ .flexColCenter{
+   display: flex;
+   align-items: center;
  }
 
  .creatItemCard{
@@ -1893,6 +1904,18 @@ ul,li{
    padding-right: 15px;
    overflow-y: scroll;
    overflow-y: overlay;
+ }
+
+ .containerWithBorder{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+
+   height: 24px;
+   border-radius: 10px;
+   margin: 3px ;
+   padding: 0 8px;
+   border:3px solid #85d9ff;
  }
 
  .containerWithDottedLine::-webkit-scrollbar{
@@ -2078,4 +2101,26 @@ ul,li{
 
  .rightItemShare{
    margin-left: 1500px;
+ }
+
+ .circle{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-size: 35px;
+   color:#00abff ;
+   width: 100px;
+   max-width: 100px;
+   height: 100px;
+   /*padding: 45% 0;*/
+   /*max-height: 100px;*/
+   border-radius: 50%;
+   border: 4px dashed #00abff80;
+ }
+
+ .showPathContainer{
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+
  }
