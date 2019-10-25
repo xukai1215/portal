@@ -11,8 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class FileMeta {
     Boolean isFolder;//是否为文件夹
+    Boolean isUserUpload;//是否用户上传
 
     String id;
+    String father;//父文件
     String name;//文件、文件夹名称
 
     String suffix;

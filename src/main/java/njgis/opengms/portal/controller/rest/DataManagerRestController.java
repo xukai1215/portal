@@ -257,8 +257,24 @@ public class DataManagerRestController {
 
     }
 
+    /**
+     * 在数据库中加入文件夹package
+     *
+     */
+    @RequestMapping(value="/addPackage",method = RequestMethod.GET)
+    JsonResult addPackage(@RequestParam(value="name") String name){
 
+        String url="http://"+dataContainerIpAndPort+"/packageResource/add";
 
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.GET,null,JSONObject.class,name);
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new MyException("远程服务调用错误");
+        }
+        return ResultUtils.success(responseEntity.getBody());
+
+    }
 
 
 

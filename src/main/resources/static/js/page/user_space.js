@@ -3,10 +3,10 @@ ELEMENT.locale(ELEMENT.lang.en)
 var vue = new Vue({
     el: "#app",
     data: {
-        total:100,
-        dataFromDataContainer:[],
-        defaultActive:'1',
-        curIndex:'1',
+        total: 100,
+        dataFromDataContainer: [],
+        defaultActive: '1',
+        curIndex: '1',
 
         // show controller
         dashboard_show: false,
@@ -17,20 +17,27 @@ var vue = new Vue({
         tasks_show: false,
         //add servers by wangming at 2018.07.31
         servers_show: false,
-        deploys_show:false,
+        deploys_show: false,
 
         //todo data-item
-        data_upload:false,
-        data_show:false,
-        user_position:"",
-        dcount:new Number(),
-        sourceStoreId:'',
-        data_upload_id:'',
-        indexStep:-1,
-        newStep:-1,
+        data_upload: false,
+        data_show: false,
+        user_position: "",
+        dcount: new Number(),
+        sourceStoreId: '',
+        data_upload_id: '',
+        indexStep: -1,
+        newStep: -1,
 
-        userInfo: {},
+        userInfo: {
+            runTask: [
+                {}
+            ]
+        },
 
+        userTaskInfo: [{
+            content: {},
+        }],
 
         ScreenMaxHeight: "0px",
         load: true,
@@ -50,12 +57,12 @@ var vue = new Vue({
         serverInfos: [],
 
         //computerNodesInfo
-        computerNodesInfos:[],
+        computerNodesInfos: [],
 
         //computerModelsDeploy
-        computerModelsDeploy:[],
+        computerModelsDeploy: [],
 
-        computerNodesMapOptions:{},
+        computerNodesMapOptions: {},
         //left-menu
         ScreenMinHeight: "0px",
 
@@ -63,7 +70,7 @@ var vue = new Vue({
         userName: "",
         loginFlag: false,
         activeIndex: 1,
-        childIndex:0,
+        childIndex: 0,
         //model-item
         searchResult: [],
         modelItemResult: [],
@@ -81,62 +88,65 @@ var vue = new Vue({
         totalNum: 0,
 
         //create dataitem
-        dataItemAddDTO:{
-            name:'',
-            description:'',
-            detail:'',
-            author:'',
-            type:'',
-            reference:'',
-            keywords:[],
-            classifications:[],
-            displays:[],
-            contributers:[],
-            authorship:[],
-            meta:{
-                coordinateSystem:'',
-                geographicProjection:'',
-                coordinateUnits:'',
-                boundingRectangle:[]
+        dataItemAddDTO: {
+            name: '',
+            description: '',
+            detail: '',
+            author: '',
+            type: '',
+            reference: '',
+            keywords: [],
+            classifications: [],
+            displays: [],
+            contributers: [],
+            authorship: [],
+            meta: {
+                coordinateSystem: '',
+                geographicProjection: '',
+                coordinateUnits: '',
+                boundingRectangle: []
             }
 
         },
-        classif:[],
-        active:0,
-        categoryTree:[],
-        ctegorys:[],
+        classif: [],
+        active: 0,
+        categoryTree: [],
+        ctegorys: [],
 
-        data_img:[],
+        data_img: [],
         //manager
-        searchcontent:'',
-        databrowser:[],
-        loading:'false',
-        managerloading:true,
-        dataid:'',
-        rightMenuShow:false,
-        downloadDataSet:[],
-        downloadDataSetName:[],
+        searchcontent: '',
+        databrowser: [],
+        loading: 'false',
+        managerloading: true,
+        dataid: '',
+        rightMenuShow: false,
+        downloadDataSet: [],
+        downloadDataSetName: [],
         uploadDialogVisible: false,
-        alllen:0,
+        alllen: 0,
 
-        researchIndex:1,
-        pageControlIndex:'',
+        researchIndex: 1,
+        pageControlIndex: '',
 
-        articleToBack:{
-            title:'aa',
-            author:[],
-            journal:'ss',
-            startPage:1,
-            endPage:2,
-            date:2019,
-            link:'aa',
+        dataChosenIndex: 1,
+        detailsIndex: 1,
+
+        articleToBack: {
+            title: 'aa',
+            author: [],
+            journal: 'ss',
+            startPage: 1,
+            endPage: 2,
+            date: 2019,
+            link: 'aa',
         },
 
-        projectToBack:{
-            name:'',
+        projectToBack: {
+            name: '',
             startTime: '',
-            endTime:'',
-            role:'',
+            endTime: '',
+            role: '',
             fundAgency: '',
             amount: 1,
         },
@@ -150,89 +160,334 @@ var vue = new Vue({
             endTime: '',
         },
 
-        researchItemOid:'',
-        researchItems:[],
-        projectResult:[],
-        conferenceResult:[],
+        researchItemOid: '',
+        researchItems: [],
+        projectResult: [],
+        conferenceResult: [],
 
-        editOid:'',
+        editOid: '',
 
-        isInSearch:0,
+        isInSearch: 0,
 
-        taskSharingVisible:false,
+        taskSharingVisible: false,
+        allFileTaskSharingVisible: false,
+
         taskDataList: [],
-        taskSharingActive:0,
-        stateFilters:[],
+        taskSharingActive: 0,
+        stateFilters: [],
         multipleSelection: [],
-        taskCollapseActiveNames:[],
-        taskDataForm:{
-            name:'',
-            type:"option1",
-            contentType:"resource",
-            description:"",
-            detail:"",
-            reference:"",
-            author:"",
-            keywords:[],
-            contributers:[],
-            classifications:[],
-            displays:[],
-            authorship:[],
-            comments:[],
-            dataList:[],
+        multipleSelectionMyData: [],
+        taskCollapseActiveNames: [],
+        taskDataForm: {
+            name: '',
+            type: "option1",
+            contentType: "resource",
+            description: "",
+            detail: "",
+            reference: "",
+            author: "",
+            keywords: [],
+            contributers: [],
+            classifications: [],
+            displays: [],
+            authorship: [],
+            comments: [],
+            dataList: [],
 
-            categoryText:[],
+            categoryText: [],
 
         },
 
+        packageContent: {},
+
+        packageContentList: [],
+
+        userTaskFullInfo: [],
+
+        dataForm: [{
+            label: 'My Uploaded Data',
+            children: [{}]
+
+        }, {
+            label: 'Output Data',
+            children: [{
+                label: '二级 1-1',
+                children: [{
+                    label: '三级 1-1-1'
+                }]
+            }]
+        }, {
+            label: 'Fork Data',
+            children: [{
+                label: '二级 1-1',
+                children: [{
+                    label: '三级 1-1-1'
+                }]
+            }]
+        }
+        ],
+        defaultProps: {
+            children: 'children',
+            label: 'label'
+        },
+
+        autoHeightFaOld: 1,
+
+        checkSelectedIndex:0,
+
+        clickedList:[],
+
+        selectPathDialog:false,
+
+        folderTree : [{
+            id: 1,
+            label: 'All Folder',
+            children: [{
+                id: 4,
+                label: '二级 1-1',
+                children: [{
+                    id: 9,
+                    label: '三级 1-1-1'
+                }, {
+                    id: 10,
+                    label: '三级 1-1-2'
+                }]
+            }]
+        }],
+
+        fileSpaceIndex:1,
+
+        myFile:[],
+
+        myFileShown:[
+            {
+                children:[],
+            }
+        ],
+
+        fatherIndex:'',
+
+        pathShown:[],
+
+        addFolderIndex: false,
+
+        newFolderName:'',
     },
 
     methods: {
-        chooseTaskDataCate(item,e){
-            let exist=false;
-            let cls=this.taskDataForm.classifications;
-            for(i=0;i<cls.length;i++){
-                if(cls[i]==item.id)
-                {
-                    if(e.target.type=="button"){
-                        e.target.children[0].style.color="black";
+        dateFormat(date, format) {
+            let dateObj = new Date(date);
+            let fmt = format || "yyyy-MM-dd hh:mm:ss";
+            //author: meizz
+            var o = {
+                "M+": dateObj.getMonth() + 1, //月份
+                "d+": dateObj.getDate(), //日
+                "h+": dateObj.getHours(), //小时
+                "m+": dateObj.getMinutes(), //分
+                "s+": dateObj.getSeconds(), //秒
+                "q+": Math.floor((dateObj.getMonth() + 3) / 3), //季度
+                S: dateObj.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(
+                    RegExp.$1,
+                    (dateObj.getFullYear() + "").substr(4 - RegExp.$1.length)
+                );
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(
+                        RegExp.$1,
+                        RegExp.$1.length == 1
+                            ? o[k]
+                            : ("00" + o[k]).substr(("" + o[k]).length)
+                    );
+            return fmt;
+        },
+
+        dataTreeClick(index) {
+
+            for (let i = 0; i < $('.treeLi').length; i++) {
+                let arrow = $('.treeLi').eq(index - 1);
+                let targetLi = $('.flexLi').eq(index - 1);
+                let autoHeight1 = $('.el-table').eq(index - 1).height() + 23
+                let autoHeight2 = $('.filePackageList').height()
+                let autoHeight3 = $('.el-table').eq(this.userTaskFullInfo.tasks.length + 1).height() + 23
+
+                if ((i === index - 1) && !arrow.hasClass('expanded')) {
+                    arrow.addClass('expanded');
+                    if (index == 2) {
+                        targetLi.animate({height: autoHeight2}, 320);
+                        this.autoHeightFaOld = autoHeight2;
+                    } else if (index == 1){
+                        targetLi.animate({height: autoHeight1}, 320);
                     }
                     else {
+                        targetLi.animate({height: autoHeight3}, 320);
+                    }
+
+                } else {
+                    $('.treeLi').eq(i).removeClass('expanded');
+                    $('.flexLi').eq(i).animate({height: 0}, 300);
+                }
+            }
+
+        },
+
+        getAllPackageTasks(){
+            for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
+                 this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
+            }
+            console.log(this.packageContentList)
+        },
+
+        // formDataPackage(){
+        //     for (let i=0;i<this.packageContentList.length;i++){
+        //
+        //     }
+        // },
+
+        async dropPackageContent(item,index){
+
+            let arrow=$('.treeChildLi').eq(index);
+            let father=$('ul.flexLi')
+            let autoHeightFaOld=this.autoHeightFaOld;
+            let targetLi=$('.packageContent').eq(index);
+            let autoHeight=(this.packageContentList[index].inputs.length+this.packageContentList[index].outputs.length)*57+79
+            let autoHeightFa=autoHeight+autoHeightFaOld
+
+            for(let i=0;i<this.userTaskFullInfo.tasks.length;i++){
+                if((i===index)){
+                    if(!arrow.hasClass('expanded')){
+                        arrow.addClass('expanded');
+                        father.animate({height: autoHeightFa}, 260,'linear');
+                        targetLi.animate({height: autoHeight}, 500,'linear');
+                        this.sharingTaskData(item,index);
+
+                    }else if(arrow.hasClass('expanded')){
+                        father.animate({height:autoHeightFaOld},320)
+                        $('.packageContent').eq(index).animate({height: 0}, 300);
+                        $('.treeChildLi').eq(index).removeClass('expanded');
+                    }
+                }
+                else {
+                    $('.treeChildLi').eq(i).removeClass('expanded');
+                    $('.packageContent').eq(i).animate({height:0},300);
+                    // father.animate({height:autoHeightFaOld},320)
+                }
+
+            }
+        },
+
+        test(item, index) {
+            this.sharingTaskData(item);
+            let arrow = $('.treeChildLi').eq(index);
+            let father = $('ul.flexLi')
+            let autoHeightFaOld = this.autoHeightFaOld;
+            let targetLi = $('.packageContent').eq(index);
+            let autoHeight = (this.packageContent.inputs.length + this.packageContent.outputs.length) * 57 + 82;
+            let autoHeightFa = autoHeight + autoHeightFaOld;
+            console.log(autoHeightFa)
+            console.log(autoHeightFaOld)
+            console.log(autoHeight)
+            for (let i = 0; i < this.userTaskFullInfo.tasks.length; i++) {
+                if ((i === index)  ) {
+                    if(!arrow.hasClass('expanded')){
+                        arrow.addClass('expanded');
+                        father.animate({height: autoHeightFa}, 260,'linear');
+                        targetLi.animate({height: autoHeight}, 500,'linear');
+                    }else if(arrow.hasClass('expanded')){
+                        father.animate({height:autoHeightFaOld},320)
+                        $('.packageContent').eq(index).animate({height: 0}, 300);
+                        $('.treeChildLi').eq(index).removeClass('expanded');
+                    }
+
+                } else {
+                    $('.treeChildLi').eq(i).removeClass('expanded');
+                    $('.packageContent').eq(i).animate({height: 0}, 300);
+                    // father.animate({height:autoHeightFaOld},320)
+                }
+            }
+        },
+
+        // dropPackageContent(item, index) {
+        //
+        //     this.getOneOfUserTasks(item,index,this.test);
+        // },
+
+        chooseTaskDataCate(item,e) {
+            let exist = false;
+            let cls = this.taskDataForm.classifications;
+            for (i = 0; i < cls.length; i++) {
+                if (cls[i] == item.id) {
+                    if (e.target.type == "button") {
+                        e.target.children[0].style.color = "black";
+                    } else {
                         e.target.style.color = 'black';
                     }
 
-                    cls.splice(i,1);
-                    this.taskDataForm.categoryText.splice(i,1);
-                    exist=true;
+                    cls.splice(i, 1);
+                    this.taskDataForm.categoryText.splice(i, 1);
+                    exist = true;
                     break;
                 }
             }
-            if(!exist) {
-                if(e.target.type=="button"){
-                    e.target.children[0].style.color="deepskyblue";
-                }
-                else {
+            if (!exist) {
+                if (e.target.type == "button") {
+                    e.target.children[0].style.color = "deepskyblue";
+                } else {
                     e.target.style.color = 'deepskyblue';
                 }
 
-                this.taskDataForm.categoryText.push(e.target.innerText);
-                this.taskDataForm.classifications.push(item.id);
-            }
+                if (!exist) {
+                    if (e.target.type == "button") {
+                        e.target.children[0].style.color = "deepskyblue";
+                    } else {
+                        e.target.style.color = 'deepskyblue';
+                    }
 
+                    this.taskDataForm.categoryText.push(e.target.innerText);
+                    this.taskDataForm.classifications.push(item.id);
+                }
+
+            }
+        },
+
+
+        allFileShareAsDataItem() {
+            this.allFileTaskSharingVisible = true;
+            this.multipleSelection=[];
+            this.multipleSelectionMyData=[];
+            this.taskSharingActive=0;
+            // this.getTasks();
         },
 
         taskSharingPre() {
-            let len=$(".taskSharingStep").length;
-            if(this.taskSharingActive!=0)
+            let len = $(".taskSharingStep").length;
+            if (this.taskSharingActive != 0)
                 this.taskSharingActive--;
+            // if(this.curIndex=='3-3'){
+            //     $('.dataItemShare').eq(this.taskSharingActive).animate({marginLeft:0},200)
+            //     $('.dataItemShare').eq(this.taskSharingActive+1).animate({marginleft:1500},200)
+            // }
         },
-        taskSharingFinish(){
+        taskSharingFinish() {
 
-            this.taskSharingActive=4;
+            this.taskSharingActive = 4;
+            var selectResult=[]
+            if(this.curIndex==6)
+                selectResult=this.multipleSelection ;
+            else selectResult=this.multipleSelectionMyData.concat(this.multipleSelection);
 
-            for(let select of this.multipleSelection) {
-                select.name=select.tag;
-                select.suffix='unknow';
+            console.log(selectResult)
+            for (let select of selectResult) {
+                if(select.tag){
+                    select.name = select.tag;
+                    select.suffix = 'unknow';
+                }else{
+                    select.name = select.fileName;
+                    select.suffix =select.suffix;
+                }
+
                 this.taskDataForm.dataList.push(select);
             }
 
@@ -245,22 +500,22 @@ var vue = new Vue({
             // this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
             // this.dataItemAddDTO.meta.boundingRectangle=[];
 
-            let authorship=[];
+            let authorship = [];
             this.getUserData($("#providersPanel .user-contents .form-control"), authorship);
-            this.taskDataForm.authorship=authorship;
+            this.taskDataForm.authorship = authorship;
             console.log(this.taskDataForm)
 
-            axios.post("/dataItem/",this.taskDataForm)
-                .then(res=> {
+            axios.post("/dataItem/", this.taskDataForm)
+                .then(res => {
                     console.log(res);
                     if (res.status == 200) {
 
-                        this.openConfirmBox("Create successfully! Do you want to view this Data Item?","Message",res.data.data.id);
-                        this.taskSharingVisible=false;
+                        this.openConfirmBox("Create successfully! Do you want to view this Data Item?", "Message", res.data.data.id);
+                        this.taskSharingVisible = false;
                     }
                 })
         },
-        showWaring(text){
+        showWaring(text) {
             this.$message({
                 showClose: true,
                 message: text,
@@ -270,33 +525,33 @@ var vue = new Vue({
         taskSharingNext() {
 
             //检查
-            switch(this.taskSharingActive) {
+            switch (this.taskSharingActive) {
                 case 0:
-                    if (this.multipleSelection.length == 0) {
+                    if (this.multipleSelection.length+this.multipleSelectionMyData.length == 0) {
                         this.showWaring('Please select data first!');
                         return;
                     }
                     break;
                 case 1:
-                    if(this.taskDataForm.classifications.length==0){
+                    if (this.taskDataForm.classifications.length == 0) {
                         this.showWaring('Please choose categories from sidebar')
                         return;
                     }
-                    if(this.taskDataForm.name.trim()==''){
+                    if (this.taskDataForm.name.trim() == '') {
                         this.showWaring('Please enter name');
                         return;
                     }
-                    if($("#taskDataKeywords").val().split(",")[0]==''){
+                    if ($("#taskDataKeywords").val().split(",")[0] == '') {
                         this.showWaring('Please enter keywords');
                         return;
                     }
-                    if(this.taskDataForm.description==''){
+                    if (this.taskDataForm.description == '') {
                         this.showWaring('Please enter overview');
                         return;
                     }
                     break;
                 case 2:
-                    if(tinyMCE.activeEditor.getContent().trim()==''){
+                    if (tinyMCE.activeEditor.getContent().trim() == '') {
                         this.showWaring('Please enter detailed description');
                         return;
                     }
@@ -305,21 +560,19 @@ var vue = new Vue({
             }
 
 
-
-
             //翻页
-            let len=$(".taskSharingStep").length;
-            if(this.taskSharingActive<len)
+            let len = $(".taskSharingStep").length;
+            if (this.taskSharingActive < len)
                 this.taskSharingActive++;
-            if(this.taskSharingActive==1){
-                if($("#taskDataShareDialog .tag-editor").length==0) {
+            if (this.taskSharingActive == 1) {
+                if ($("#taskDataShareDialog .tag-editor").length == 0) {
                     $("#taskDataKeywords").tagEditor({
                         forceLowercase: false
                     })
                 }
             }
 
-            if(this.taskSharingActive==1){
+            if (this.taskSharingActive == 1) {
                 tinymce.init({
                     selector: "textarea#taskDataDetail",
                     height: 205,
@@ -354,56 +607,91 @@ var vue = new Vue({
                     }
                 });
             }
+            // if(this.curIndex=='3-3'){
+            //     console.log($('.dataItemShare').eq(this.taskSharingActive))
+            //     $('.dataItemShare').eq(this.taskSharingActive-1).animate({marginLeft:-1500},220)
+            //     $('.dataItemShare').eq(this.taskSharingActive).animate({marginLeft:0},220)
+            // }
         },
-        sharingTaskData(task){
+
+
+        sharingTaskData(task,index) {
 
             this.initTaskDataForm();
 
-            this.taskSharingActive=0;
-            let inputs=task.inputs;
-            let outputs=task.outputs;
-            for(let input of inputs){
-                input.type="Input";
+            this.taskSharingActive = 0;
+            let inputs = task.inputs;
+            let outputs = task.outputs;
+            for (let input of inputs) {
+                input.type = "Input";
                 this.taskDataList.push(input);
 
-                let exist=false;
-                for(let filter of this.stateFilters){
-                    if(filter.value==input.statename){
-                        exist=true;
+                let exist = false;
+                for (let filter of this.stateFilters) {
+                    if (filter.value == input.statename) {
+                        exist = true;
                     }
                 }
 
-                if(!exist){
-                    let obj={};
-                    obj.text=input.statename;
-                    obj.value=input.statename;
+                if (!exist) {
+                    let obj = {};
+                    obj.text = input.statename;
+                    obj.value = input.statename;
                     this.stateFilters.push(obj);
                 }
             }
-            for(let output of outputs){
-                output.type="Output";
+            for (let output of outputs) {
+                output.type = "Output";
                 this.taskDataList.push(output);
 
-                let exist=false;
-                for(let filter of this.stateFilters){
-                    if(filter.value==output.statename){
-                        exist=true;
+                let exist = false;
+                for (let filter of this.stateFilters) {
+                    if (filter.value == output.statename) {
+                        exist = true;
                     }
                 }
 
-                if(!exist){
-                    let obj={};
-                    obj.text=output.statename;
-                    obj.value=output.statename;
+                if (!exist) {
+                    let obj = {};
+                    obj.text = output.statename;
+                    obj.value = output.statename;
                     this.stateFilters.push(obj);
                 }
             }
 
-            this.taskSharingVisible=true;
+            if (this.curIndex==6)
+                this.taskSharingVisible=true;
+
+            if (this.curIndex=='3-3'){
+                if(this.multipleSelection.length>0){
+                    this.$nextTick(function () {
+                        this.multipleSelection.forEach(row=>{
+                            console.log(this.$refs.multipleTableDataSharing)
+                            this.$refs.multipleTableDataSharing[index].toggleRowSelection(row);
+                        })
+                    })
+                }
+
+            }
 
         },
         handleSelectionChange(val) {
-            this.multipleSelection = val;
+            if(val)
+                this.multipleSelection=val
+        },
+
+        handleSelectionChangeMyData(val) {
+            if(val)
+                this.multipleSelectionMyData=val
+        },
+
+        handleSelectionChangeRow(val,row) {
+            this.multipleSelection.push(row)
+            // this.$refs.multipleTableOutput.toggleRowSelection(row);
+            // console.log(this.$refs.multipleTableOutput[1].clearSelection())
+        },
+        checkSelectedFile(){
+            this.checkSelectedIndex=1;
         },
         filterType(value, row) {
             return row.type === value;
@@ -411,36 +699,40 @@ var vue = new Vue({
         filterState(value, row) {
             return row.statename === value;
         },
-        initTaskDataForm(){
-            this.taskDataList=[];
-            this.taskSharingActive=0;
-            this.stateFilters=[];
-            this.multipleSelection=[];
-            this.taskCollapseActiveNames=[];
-            this.taskDataForm={
-                name:'',
-                type:"option1",
-                contentType:"resource",
-                description:"",
-                detail:"",
-                reference:"",
-                author:"",
-                keywords:[],
-                contributers:[],
-                classifications:[],
-                displays:[],
-                authorship:[],
-                comments:[],
-                dataList:[],
+        initTaskDataForm() {
+            this.taskDataList = [];
+            this.taskSharingActive = 0;
+            this.stateFilters = [];
+            this.taskCollapseActiveNames = [];
+            //如果是task条目下则清空，不是则会在其他事件中清空
+            if(this.curIndex==6)
+                this.multipleSelection = [];
+            this.taskDataForm = {
+                name: '',
+                type: "option1",
+                contentType: "resource",
+                description: "",
+                detail: "",
+                reference: "",
+                author: "",
+                keywords: [],
+                contributers: [],
+                classifications: [],
+                displays: [],
+                authorship: [],
+                comments: [],
+                dataList: [],
 
-                categoryText:[],
+                categoryText: [],
             };
-            $(".taskDataCate").children().css("color","black");
-            if($("#taskDataShareDialog .tag-editor").length!=0) {
+            $(".taskDataCate").children().css("color", "black");
+
+            if ($("#taskDataShareDialog .tag-editor").length != 0) {
                 $('#taskDataKeywords').tagEditor('destroy');
             }
+
             $("#taskDataKeywords").tagEditor({
-                initialTags:[''],
+                initialTags: [''],
                 forceLowercase: false
             });
             tinyMCE.activeEditor.setContent("");
@@ -448,18 +740,18 @@ var vue = new Vue({
             $(".user-add").click();
         },
 
-        openConfirmBox(content,title,id) {
+        openConfirmBox(content, title, id) {
             this.$confirm(content, title, {
                 confirmButtonText: "Yes",
                 cancelButtonText: "No",
                 type: 'success'//'warning'
             }).then(() => {
-                window.open("/dataItem/"+id);
+                window.open("/dataItem/" + id);
             }).catch(() => {
 
             });
         },
-        openAlertBox(content,title) {
+        openAlertBox(content, title) {
             this.$alert(content, title, {
                 confirmButtonText: 'OK',
                 callback: action => {
@@ -468,14 +760,14 @@ var vue = new Vue({
             });
         },
         getUserData(UsersInfo, prop) {
-            let index=0;
-            for(i=0;i<UsersInfo.length;i+=4){
+            let index = 0;
+            for (i = 0; i < UsersInfo.length; i += 4) {
                 let value1 = UsersInfo.eq(i)[0].value.trim();
                 let value2 = UsersInfo.eq(i)[0].value.trim();
                 let value3 = UsersInfo.eq(i)[0].value.trim();
                 let value4 = UsersInfo.eq(i)[0].value.trim();
-                if(value1==''&&value2==''&&value3==''&&value4==''){
-                    index=i+4;
+                if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
+                    index = i + 4;
                 }
 
             }
@@ -492,8 +784,7 @@ var vue = new Vue({
                         prop.push(eval('(' + result + ')'));
                     }
                     result = "{";
-                }
-                else {
+                } else {
                     result += "'" + Info.name + "':'" + Info.value + "',";
                 }
 
@@ -502,28 +793,182 @@ var vue = new Vue({
         filterTag(value, row) {
             return row.fromWhere === value;
         },
-        onzzzSuccess(){
+        onzzzSuccess() {
             alert("上传成功")
         },
-        uploadData(){
-            return {
-                author:this.userName
+
+        selectPathClick(){
+            if(1){
+                axios.get("/user/getFolder",{})
+                    .then(res=> {
+                        let json=res.data;
+                        if(json.code==-1){
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href="/user/login"
+                        }
+                        else {
+                            this.folderTree=res.data.data;
+                            this.selectPathDialog=true;
+                        }
+
+
+                    });
+
+            }
+            else{
+                alert("Please select data first!")
             }
         },
-        handleDataDownloadClick({ sourceStoreId }) {
+
+        getPackageContent($event, eval,key){
+            let id=eval.id;
+            this.fatherIndex=this.myFileShown[key].id;
+            this.pathShown.push(this.myFileShown[key])
+            if(this.myFileShown[key].children.length!=0)
+                this.myFileShown= this.myFileShown[key].children;
+            else
+                this.myFileShown=[];
+
+
+            console.log(this.myFileShown)
+            console.log(this.myFileShown.length)
+            console.log(this.fatherIndex)
+
+        },
+
+        getFilePackage(){
+            axios.get("/user/getFolderAndFile",{})
+                .then(res=> {
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.myFile=res.data.data;
+                        this.myFileShown=this.myFile;
+                    }
+
+
+                });
+        },
+
+        backToFather(){
+           // if(this.myFileShown.length==0||this.fatherIndex!=0) {
+           //     this.findFather(this.myFile)
+           //     this.fatherIndex=this.myFileShown[0].father;
+           //     console.log()
+           // }else if(this.fatherIndex==0)
+           //     this.myFileShown=this.myFile;
+
+           let allFolder = [];
+            allFolder.children=this.myFile;
+            this.findFather(this.myFile,allFolder)
+            console.log(this.myFileShown)
+            this.fatherIndex=this.myFileShown[0].father;
+            this.pathShown.pop(this.pathShown.length-1)
+        },
+
+        findFather(file,father){
+            if(this.fatherIndex==='0')
+                this.myFileShown=this.myFile;
+            for(let i=0;i<file.length;i++){
+                if(file[i].id===this.fatherIndex){
+                    this.myFileShown=father.children;
+                    console.log(this.myFileShown)
+                    return;
+                }else{
+                    this.findFather(file[i].children,file[i])
+                }
+            }
+        },
+
+        showFilePackage(){
+            this.fileSpaceIndex=1
+        },
+
+        showMyUpload(){
+            this.fileSpaceIndex=2
+        },
+
+        showMyFork(){},
+
+        addFolderInPath(){
+            this.addFolderIndex=true;
+        },
+
+        addChild(fileTree,fatherId,child){
+            for(let i=0;i<fileTree.length;i++){
+                if(fileTree[i].id===fatherId){
+                    fileTree[i].children.push(child)
+                    return;
+                }
+                this.addChild(fileTree[i].children,fatherId,child);
+            }
+        },
+
+        addFolder() {
+            let i=this.pathShown.length-1;
+            let paths=[]
+            while (i>=1) {
+                paths.push(this.pathShown[i].id);
+                i--;
+            }
+            console.log(paths)
+            $.ajax({
+                type: "POST",
+                url: "/user/addFolder",
+                data: {paths: paths, name: this.newFolderName},
+                async: true,
+                contentType: "application/x-www-form-urlencoded",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        const newChild = {id: json.data, label: this.newFolderName, children: [],package:true, father:paths[0]};
+                        if(this.myFileShown.length===0)
+                            this.addChild(this.myFile,paths[0],newChild)
+                        this.myFileShown.push(newChild);
+                        console.log(this.myFileShown)
+                        // this.getFilePackage();
+                        console.log(this.myFile)
+                        this.addFolderIndex=false;
+
+                    }
+
+                }
+            });
+
+
+        },
+
+        uploadFileInPath(){
+
+        },
+
+        uploadData() {
+            return {
+                author: this.userName
+            }
+        },
+        handleDataDownloadClick({sourceStoreId}) {
             let url =
                 "http://172.21.212.64:8081/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
             window.open("/dispatchRequest/download?url=" + url);
         },
         async panye(val) {
-            let d=await  this.getTableData(val-1);
+            let d = await this.getTableData(val - 1);
             this.dataFromDataContainer = d.content
-            this.total=d.total;
+            this.total = d.total;
         },
         async getTableData(page) {
 
-            let { data } = await (await fetch(
+            let {data} = await (await fetch(
                 "/dispatchRequest/getUserRelatedDataFromDataContainer?page=" +
                 page +
                 "&pageSize=10&" +
@@ -532,23 +977,23 @@ var vue = new Vue({
             )).json();
 
             return {
-                total:data.totalElements,
-                content:data.content
+                total: data.totalElements,
+                content: data.content
             }
         },
 
-        handleSelect(index,indexPath){
+        handleSelect(index, indexPath) {
             console.log(index)
             this.resourceLoad = true;
-            this.curIndex=index;
-            switch (index){
+            this.curIndex = index;
+            switch (index) {
                 case '1':
                     this.searchText = '';
                     this.searchResult = new Array();
                     this.page = 1;
-                    this.researchIndex=1;
+                    this.researchIndex = 1;
                     this.getTasksInfo();
-                    this.pageControlIndex='research';
+                    this.pageControlIndex = 'research';
                     this.getArticleResult();
 
                     break;
@@ -561,57 +1006,59 @@ var vue = new Vue({
                     this.searchResult = [];
                     this.page = 1;
                     this.getModels();
-                    this.showWhat=index;
-                    this.pageControlIndex=this.curIndex;
+                    this.showWhat = index;
+                    this.pageControlIndex = this.curIndex;
                     break;
                 case '3-1':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getDataItems();
-                    this.pageControlIndex=this.curIndex;
+                    this.pageControlIndex = this.curIndex;
                     break;
                 case '3-2':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
-                    this.classif=[];
+                    this.classif = [];
                     $("#classification").val('');
-                    this.pageControlIndex=this.curIndex;
-                    this.data_img=[]
+                    this.pageControlIndex = this.curIndex;
+                    this.data_img = []
                     break;
                 case '3-3':
                     this.panye(1);
                     this.addAllData()
-                    this.pageControlIndex=this.curIndex;
+                    this.getFilePackage()
+                    this.pageControlIndex = this.curIndex;
+                    this.pathShown=[];
                     break;
                 case '4-1':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getConcepts();
-                    this.pageControlIndex=this.curIndex;
+                    this.pageControlIndex = this.curIndex;
                     break;
                 case '4-2':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getSpatials();
-                    this.pageControlIndex=this.curIndex;
+                    this.pageControlIndex = this.curIndex;
                     break;
                 case '4-3':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getTemplates();
-                    this.pageControlIndex=this.curIndex;
+                    this.pageControlIndex = this.curIndex;
                     break;
                 case '4-4':
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getUnits();
-                    this.pageControlIndex=this.curIndex;
+                    this.pageControlIndex = this.curIndex;
                     break;
                 // case '5-1':
                 // case '5-2':
@@ -625,86 +1072,85 @@ var vue = new Vue({
 
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
-            this.editOid=sessionStorage.getItem('editItemOid');
+            this.editOid = sessionStorage.getItem('editItemOid');
         },
 
 
-        addArticleClick(){
+        addArticleClick() {
 
-            this.articleToBack.title=$("#articleTitle").val();
+            this.articleToBack.title = $("#articleTitle").val();
             var tags = $('#articleAuthor').tagEditor('getTags')[0].tags;
-            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
-            this.articleToBack.author=tags;
-            this.articleToBack.journal=$("#articleJournal").val();
-            this.articleToBack.startPage=$("#articleStartPage").val();
-            this.articleToBack.endPage=$("#articleEndPage").val();
-            this.articleToBack.date=$("#articleDate").val();
-            this.articleToBack.link=$("#articleLink").val();
+            for (i = 0; i < tags.length; i++) {
+                $('#articleAuthor').tagEditor('removeTag', tags[i]);
+            }
+            this.articleToBack.author = tags;
+            this.articleToBack.journal = $("#articleJournal").val();
+            this.articleToBack.startPage = $("#articleStartPage").val();
+            this.articleToBack.endPage = $("#articleEndPage").val();
+            this.articleToBack.date = $("#articleDate").val();
+            this.articleToBack.link = $("#articleLink").val();
             // console.log(this.articleToBack);
             this.ArticleAddToBack();
 
         },
 
-        ArticleAddToBack(){
-            if(this.articleToBack.title.trim()==""||this.articleToBack.author.length=="")
+        ArticleAddToBack() {
+            if (this.articleToBack.title.trim() == "" || this.articleToBack.author.length == "")
                 alert("Please enter the Title and at least one Author.");
-            else
-                {
-            let obj=
-                {
-                    title:this.articleToBack.title,
-                    authors:this.articleToBack.author,
-                    journal:this.articleToBack.journal,
-                    startPage:this.articleToBack.startPage,
-                    endPage:this.articleToBack.endPage,
-                    date:this.articleToBack.date,
-                    link:this.articleToBack.link,
-                }
-            $.ajax({
-                url: "/article/add",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(obj),
-
-                async:true,
-                success:(json)=>{
-                    if(json.code==0){
-                        alert("Add Success");
-                        this.getArticleResult();
-                        $("#articleInfo")[0].style.display="none";
+            else {
+                let obj =
+                    {
+                        title: this.articleToBack.title,
+                        authors: this.articleToBack.author,
+                        journal: this.articleToBack.journal,
+                        startPage: this.articleToBack.startPage,
+                        endPage: this.articleToBack.endPage,
+                        date: this.articleToBack.date,
+                        link: this.articleToBack.link,
                     }
-                    else alert("Add Error");//此处error信息不明确，记得后加
-                }
+                $.ajax({
+                    url: "/article/add",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
 
-            })
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
+                            alert("Add Success");
+                            this.getArticleResult();
+                            $("#articleInfo")[0].style.display = "none";
+                        } else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
             }
 
         },
 
-        addProjectClick(){
+        addProjectClick() {
 
-            this.projectToBack.name=$("#projectName").val();
-            this.projectToBack.startTime=$("#startTime").val();
-            this.projectToBack.endTime=$("#endTime").val();
-            this.projectToBack.role=$("#role").val();
-            this.projectToBack.fundAgency=$("#fundAgency").val();
-            this.projectToBack.amount=$("#amount").val();
+            this.projectToBack.name = $("#projectName").val();
+            this.projectToBack.startTime = $("#startTime").val();
+            this.projectToBack.endTime = $("#endTime").val();
+            this.projectToBack.role = $("#role").val();
+            this.projectToBack.fundAgency = $("#fundAgency").val();
+            this.projectToBack.amount = $("#amount").val();
             this.ProjectAddToBack();
         },
 
-        ProjectAddToBack(){
-            if(this.projectToBack.title=="")
+        ProjectAddToBack() {
+            if (this.projectToBack.title == "")
                 alert("Please enter the project Name.");
-            else
-            {
-                let obj=
+            else {
+                let obj =
                     {
-                        projectName:this.projectToBack.name,
-                        startTime:this.projectToBack.startTime,
-                        endTime:this.projectToBack.endTime,
-                        role:this.projectToBack.role,
-                        fundAgency:this.projectToBack.fundAgency,
-                        amount:this.projectToBack.amount,
+                        projectName: this.projectToBack.name,
+                        startTime: this.projectToBack.startTime,
+                        endTime: this.projectToBack.endTime,
+                        role: this.projectToBack.role,
+                        fundAgency: this.projectToBack.fundAgency,
+                        amount: this.projectToBack.amount,
                     }
                 $.ajax({
                     url: "/project/add",
@@ -712,14 +1158,13 @@ var vue = new Vue({
                     contentType: "application/json",
                     data: JSON.stringify(obj),
 
-                    async:true,
-                    success:(json)=>{
-                        if(json.code==0){
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
                             alert("Add Success");
                             this.getProjectResult();
-                            $("#projectInfo")[0].style.display="none";
-                        }
-                        else alert("Add Error");//此处error信息不明确，记得后加
+                            $("#projectInfo")[0].style.display = "none";
+                        } else alert("Add Error");//此处error信息不明确，记得后加
                     }
 
                 })
@@ -727,29 +1172,28 @@ var vue = new Vue({
 
         },
 
-        addConferenceClick(){
-            this.conferenceToBack.title=$("#conferenceTitle").val();
-            this.conferenceToBack.theme=$("#theme").val();
-            this.conferenceToBack.role=$("#conferenceRole").val();
-            this.conferenceToBack.location=$("#conferenceLocation").val();
-            this.conferenceToBack.startTime=$("#conferstartTime").val();
-            this.conferenceToBack.endTime=$("#conferendTime").val();
+        addConferenceClick() {
+            this.conferenceToBack.title = $("#conferenceTitle").val();
+            this.conferenceToBack.theme = $("#theme").val();
+            this.conferenceToBack.role = $("#conferenceRole").val();
+            this.conferenceToBack.location = $("#conferenceLocation").val();
+            this.conferenceToBack.startTime = $("#conferstartTime").val();
+            this.conferenceToBack.endTime = $("#conferendTime").val();
             this.ConferenceAddToBack();
         },
 
-        ConferenceAddToBack(){
-            if(this.projectToBack.title=="")
+        ConferenceAddToBack() {
+            if (this.projectToBack.title == "")
                 alert("Please enter the project name.");
-            else
-            {
-                let obj=
+            else {
+                let obj =
                     {
-                        title:this.conferenceToBack.title,
-                        theme:this.conferenceToBack.theme,
-                        conferenceRole:this.conferenceToBack.role,
-                        location:this.conferenceToBack.location,
-                        startTime:this.conferenceToBack.startTime,
-                        endTime:this.conferenceToBack.endTime
+                        title: this.conferenceToBack.title,
+                        theme: this.conferenceToBack.theme,
+                        conferenceRole: this.conferenceToBack.role,
+                        location: this.conferenceToBack.location,
+                        startTime: this.conferenceToBack.startTime,
+                        endTime: this.conferenceToBack.endTime
                     }
                 $.ajax({
                     url: "/conference/add",
@@ -757,14 +1201,13 @@ var vue = new Vue({
                     contentType: "application/json",
                     data: JSON.stringify(obj),
 
-                    async:true,
-                    success:(json)=>{
-                        if(json.code==0){
+                    async: true,
+                    success: (json) => {
+                        if (json.code == 0) {
                             alert("Add Success");
                             this.getConferenceResult();
-                            $("#conferenceInfo")[0].style.display="none";
-                        }
-                        else alert("Add Error");//此处error信息不明确，记得后加
+                            $("#conferenceInfo")[0].style.display = "none";
+                        } else alert("Add Error");//此处error信息不明确，记得后加
                     }
 
                 })
@@ -772,10 +1215,10 @@ var vue = new Vue({
 
         },
 
-        articleClick(index){
-            this.researchIndex=index;
+        articleClick(index) {
+            this.researchIndex = index;
             // this.curIndex='research'+index.toString();
-            this.pageControlIndex='research';
+            this.pageControlIndex = 'research';
             this.searchText = '';
             this.searchResult = [];
             this.page = 1;
@@ -783,9 +1226,9 @@ var vue = new Vue({
             this.getArticleResult();
         },
 
-        projectClick(index){
-            this.researchIndex=index;
-            this.pageControlIndex='research';
+        projectClick(index) {
+            this.researchIndex = index;
+            this.pageControlIndex = 'research';
             this.searchText = '';
             this.searchResult = [];
             this.page = 1;
@@ -793,9 +1236,9 @@ var vue = new Vue({
             this.getProjectResult();
         },
 
-        conferenceClick(index){
-            this.researchIndex=index;
-            this.pageControlIndex='research';
+        conferenceClick(index) {
+            this.researchIndex = index;
+            this.pageControlIndex = 'research';
             this.searchText = '';
             this.searchResult = [];
             this.page = 1;
@@ -803,61 +1246,71 @@ var vue = new Vue({
             this.getConferenceResult();
         },
 
-        articleEditClick(){
-            this.articleToBack.title=$("#articleTitleEdit").val();
+        articleEditClick() {
+            this.articleToBack.title = $("#articleTitleEdit").val();
             var tags = $('#articleAuthorEdit').tagEditor('getTags')[0].tags;
-            for (i = 0; i < tags.length; i++) { $('#articleAuthorEdit').tagEditor('removeTag', tags[i]); }
-            this.articleToBack.author=tags;
-            this.articleToBack.journal=$("#articleJournalEdit").val();
-            this.articleToBack.startPage=$("#articleStartPageEdit").val();
-            this.articleToBack.endPage=$("#articleEndPageEdit").val();
-            this.articleToBack.date=$("#articleDateEdit").val();
-            this.articleToBack.link=$("#articleLinkEdit").val();
+            for (i = 0; i < tags.length; i++) {
+                $('#articleAuthorEdit').tagEditor('removeTag', tags[i]);
+            }
+            this.articleToBack.author = tags;
+            this.articleToBack.journal = $("#articleJournalEdit").val();
+            this.articleToBack.startPage = $("#articleStartPageEdit").val();
+            this.articleToBack.endPage = $("#articleEndPageEdit").val();
+            this.articleToBack.date = $("#articleDateEdit").val();
+            this.articleToBack.link = $("#articleLinkEdit").val();
             this.editArticle();
         },
 
-        projectEditClick(){
-            this.projectToBack.name=$("#projectNameEdit").val();
-            this.projectToBack.startTime=$("#startTimeEdit").val();
-            this.projectToBack.endTime=$("#endTimeEdit").val();
-            this.projectToBack.role=$("#roleEdit").val();
-            this.projectToBack.fundAgency=$("#fundAgencyEdit").val();
-            this.projectToBack.amount=$("#amountEdit").val();
+        projectEditClick() {
+            this.projectToBack.name = $("#projectNameEdit").val();
+            this.projectToBack.startTime = $("#startTimeEdit").val();
+            this.projectToBack.endTime = $("#endTimeEdit").val();
+            this.projectToBack.role = $("#roleEdit").val();
+            this.projectToBack.fundAgency = $("#fundAgencyEdit").val();
+            this.projectToBack.amount = $("#amountEdit").val();
             this.editProject();
         },
 
-        conferenceEditClick(){
-            this.conferenceToBack.title=$("#conferenceTitleEdit").val();
+        conferenceEditClick() {
+            this.conferenceToBack.title = $("#conferenceTitleEdit").val();
             console.log(this.conferenceToBack.title);
             console.log(this.editOid);
-            this.conferenceToBack.theme=$("#themeEdit").val();
-            this.conferenceToBack.role=$("#conferenceRoleEdit").val();
-            this.conferenceToBack.location=$("#conferenceLocationEdit").val();
-            this.conferenceToBack.startTime=$("#conferStartTimeEdit").val();
-            this.conferenceToBack.endTime=$("#conferEndTimeEdit").val();
+            this.conferenceToBack.theme = $("#themeEdit").val();
+            this.conferenceToBack.role = $("#conferenceRoleEdit").val();
+            this.conferenceToBack.location = $("#conferenceLocationEdit").val();
+            this.conferenceToBack.startTime = $("#conferStartTimeEdit").val();
+            this.conferenceToBack.endTime = $("#conferEndTimeEdit").val();
             this.editConference();
         },
 
-        editArticle(){
+        myDataClick(index) {
+            this.dataChosenIndex = index;
+        },
+
+        outputDataClick(index) {
+            this.dataChosenIndex = index;
+        },
+
+        editArticle() {
             // var urls={
             //     1:"/article/editByOid",
             //     2:"/project/editByOid",
             //     3:"/conference/editByOid",
             // }
             // var url=urls[this.researchIndex];
-            if(this.articleToBack.title==""||this.articleToBack.author=="")
+            if (this.articleToBack.title == "" || this.articleToBack.author == "")
                 alert("Please enter the Title and at least one Author.");
             else {
                 let obj =
                     {
-                        title:this.articleToBack.title,
-                        authors:this.articleToBack.author,
-                        journal:this.articleToBack.journal,
-                        startPage:this.articleToBack.startPage,
-                        endPage:this.articleToBack.endPage,
-                        date:this.articleToBack.date,
-                        link:this.articleToBack.link,
-                        oid:this.editOid,
+                        title: this.articleToBack.title,
+                        authors: this.articleToBack.author,
+                        journal: this.articleToBack.journal,
+                        startPage: this.articleToBack.startPage,
+                        endPage: this.articleToBack.endPage,
+                        date: this.articleToBack.date,
+                        link: this.articleToBack.link,
+                        oid: this.editOid,
                     }
                 $.ajax({
                     url: "/article/editByOid",
@@ -877,25 +1330,25 @@ var vue = new Vue({
             }
         },
 
-        editProject(){
-            if(this.projectToBack.name=="")
+        editProject() {
+            if (this.projectToBack.name == "")
                 alert("Please enter the project Name.");
             else {
                 let obj =
                     {
-                        projectName:this.projectToBack.name,
-                        startTime:this.projectToBack.startTime,
-                        endTime:this.projectToBack.endTime,
-                        role:this.projectToBack.role,
-                        fundAgency:this.projectToBack.fundAgency,
-                        amount:this.projectToBack.amount,
-                        oid:this.editOid,
+                        projectName: this.projectToBack.name,
+                        startTime: this.projectToBack.startTime,
+                        endTime: this.projectToBack.endTime,
+                        role: this.projectToBack.role,
+                        fundAgency: this.projectToBack.fundAgency,
+                        amount: this.projectToBack.amount,
+                        oid: this.editOid,
                     }
                 $.ajax({
                     url: "/project/editByOid",
                     type: "POST",
                     contentType: "application/json",
-                    data:  JSON.stringify(obj),
+                    data: JSON.stringify(obj),
 
                     async: true,
                     success: (json) => {
@@ -909,25 +1362,25 @@ var vue = new Vue({
             }
         },
 
-        editConference(){
-            if(this.conferenceToBack.title=="")
+        editConference() {
+            if (this.conferenceToBack.title == "")
                 alert("Please enter the conference Title.");
             else {
                 let obj =
                     {
-                        title:this.conferenceToBack.title,
-                        theme:this.conferenceToBack.theme,
-                        conferenceRole:this.conferenceToBack.role,
-                        location:this.conferenceToBack.location,
-                        startTime:this.conferenceToBack.startTime,
-                        endTime:this.conferenceToBack.endTime,
-                        oid:this.editOid,
+                        title: this.conferenceToBack.title,
+                        theme: this.conferenceToBack.theme,
+                        conferenceRole: this.conferenceToBack.role,
+                        location: this.conferenceToBack.location,
+                        startTime: this.conferenceToBack.startTime,
+                        endTime: this.conferenceToBack.endTime,
+                        oid: this.editOid,
                     }
                 $.ajax({
                     url: "/conference/editByOid",
                     type: "POST",
                     contentType: "application/json",
-                    data:  JSON.stringify(obj),
+                    data: JSON.stringify(obj),
 
                     async: true,
                     success: (json) => {
@@ -941,14 +1394,14 @@ var vue = new Vue({
             }
         },
 
-        deleteResearchItemClick(oid){
+        deleteResearchItemClick(oid) {
             this.deleteResearchItem(oid);
         },
-        imgFile(){
+        imgFile() {
             $("#imgOne").click();
         },
         getFileUrl() {
-            let sourceId="imgOne"
+            let sourceId = "imgOne"
             var url;
             if (navigator.userAgent.indexOf("MSIE") >= 1) { // IE
                 url = document.getElementById(sourceId).value;
@@ -983,8 +1436,8 @@ var vue = new Vue({
             canvas.height = img.height;
             var ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, img.width, img.height);
-            var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
-            var dataURL = canvas.toDataURL("image/"+ext);
+            var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();
+            var dataURL = canvas.toDataURL("image/" + ext);
             return dataURL;
         },
 
@@ -992,19 +1445,19 @@ var vue = new Vue({
             this.activeIndex = n;
         },
 
-        getTree(){
+        getTree() {
             return this.tree;
         },
 
-        editModelItem(oid){
-            this.setSession('editModelItem_id',oid);
+        editModelItem(oid) {
+            this.setSession('editModelItem_id', oid);
             document.getElementById('modifyModelItem').contentWindow.location.reload(true)
 
         },
 
 
         getTasksInfo() {
-            this.isInSearch=0;
+            this.isInSearch = 0;
             $.ajax({
                 type: "Get",
                 url: "/user/getUserInfo",
@@ -1071,7 +1524,12 @@ var vue = new Vue({
                     // chart.setOption(this.resourceOption);
 
                     this.userInfo = modelInfo;
+
+                    //取出taskinfo放入userTaskInfo
+                    this.getUserTaskInfo()
+
                     let orgs = this.userInfo.organizations;
+
                     if (orgs.length != 0) {
                         this.userInfo.orgStr = orgs[0];
                         for (i = 1; i < orgs.length; i++) {
@@ -1080,7 +1538,7 @@ var vue = new Vue({
                     }
 
                     let sas = this.userInfo.subjectAreas;
-                    if (sas!=null&&sas.length != 0) {
+                    if (sas != null && sas.length != 0) {
                         this.userInfo.saStr = sas[0];
                         for (i = 1; i < sas.length; i++) {
                             this.userInfo.saStr += ", " + sas[i];
@@ -1158,8 +1616,8 @@ var vue = new Vue({
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (data) => {
@@ -1353,6 +1811,10 @@ var vue = new Vue({
             window.location.href = '../deploy-modelService/deploy-modelService.html';
         },
 
+        getUserTaskInfo() {
+            this.userTaskInfo = this.userInfo.runTask;
+            console.log(this.userTaskInfo)
+        },
 
         menuClick(num) {
             switch (num) {
@@ -1365,17 +1827,18 @@ var vue = new Vue({
                     this.tasks_show = false;
                     this.servers_show = false;
                     this.deploys_show = false;
-                    this.data_upload=false;
-                    this.data_show=false;
+                    this.data_upload = false;
+                    this.data_show = false;
                     this.user_position = this.curIndex,
-                    //update searchText
-                    this.searchText = '';
+                        //update searchText
+                        this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
                     this.getTasksInfo();
+
                     break;
                 case 2:
-                    this.childIndex=1;
+                    this.childIndex = 1;
                     this.dashboard_show = false;
                     this.model_show = true;
                     this.conceptual_show = false;
@@ -1385,8 +1848,8 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.resourceLoad = true;
-                    this.data_upload=false;
-                    this.data_show=false;
+                    this.data_upload = false;
+                    this.data_show = false;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1394,7 +1857,7 @@ var vue = new Vue({
                     this.getModels();
                     break;
                 case 3:
-                    this.childIndex=2;
+                    this.childIndex = 2;
                     this.dashboard_show = false;
                     this.model_show = false;
                     this.conceptual_show = true;
@@ -1404,8 +1867,8 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.resourceLoad = true;
-                    this.data_upload=false;
-                    this.data_show=false;
+                    this.data_upload = false;
+                    this.data_show = false;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1413,7 +1876,7 @@ var vue = new Vue({
                     this.getModels();
                     break;
                 case 4:
-                    this.childIndex=3;
+                    this.childIndex = 3;
                     this.dashboard_show = false;
                     this.model_show = false;
                     this.conceptual_show = false;
@@ -1422,9 +1885,9 @@ var vue = new Vue({
                     this.tasks_show = false;
                     this.servers_show = false;
                     this.deploys_show = false;
-                    this.data_upload=false;
+                    this.data_upload = false;
                     this.resourceLoad = true;
-                    this.data_show=false;
+                    this.data_show = false;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1443,8 +1906,8 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.resourceLoad = true;
-                    this.data_upload=false;
-                    this.data_show=false;
+                    this.data_upload = false;
+                    this.data_show = false;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1460,8 +1923,8 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.resourceLoad = true;
-                    this.data_upload=false;
-                    this.data_show=false;
+                    this.data_upload = false;
+                    this.data_show = false;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1469,8 +1932,8 @@ var vue = new Vue({
                     this.getModels();
                     break;
                 case 7://todo data items
-                    this.curIndex='3-2',
-                        this.childIndex=5;
+                    this.curIndex = '3-2',
+                        this.childIndex = 5;
                     this.dashboard_show = false;
                     this.model_show = false;
                     this.conceptual_show = false;
@@ -1480,9 +1943,9 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.user_position = this.curIndex,
-                    this.resourceLoad = false;
-                    this.data_upload=false;
-                    this.data_show=true;
+                        this.resourceLoad = false;
+                    this.data_upload = false;
+                    this.data_show = true;
 
                     //update searchText
                     this.searchText = '';
@@ -1493,7 +1956,7 @@ var vue = new Vue({
                     break;
                 case 8://todo upload data
 
-                    this.childIndex=6;
+                    this.childIndex = 6;
                     this.dashboard_show = false;
                     this.model_show = false;
                     this.conceptual_show = false;
@@ -1503,16 +1966,16 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.resourceLoad = false;
-                    this.data_show=false;
-                    this.data_upload=true;
+                    this.data_show = false;
+                    this.data_upload = true;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
                     this.page = 1;
-                    this.classif=[];
+                    this.classif = [];
                     // this.getModels();
                     $("#classification").val('');
-                    this.data_img=[]
+                    this.data_img = []
 
                     break;
                 case 10:
@@ -1527,8 +1990,8 @@ var vue = new Vue({
                     this.servers_show = false;
                     this.deploys_show = false;
                     this.resourceLoad = true;
-                    this.data_upload=false;
-                    this.data_show=false;
+                    this.data_upload = false;
+                    this.data_show = false;
                     //update searchText
                     this.searchText = '';
                     this.searchResult = [];
@@ -1559,58 +2022,53 @@ var vue = new Vue({
 
         searchModels() {
             this.resourceLoad = true;
-            this.pageSize=10;
-            this.isInSearch=1;
+            this.pageSize = 10;
+            this.isInSearch = 1;
             var url = "";
             var name = "";
-            if (this.curIndex=='2-1') {
+            if (this.curIndex == '2-1') {
                 url = "/modelItem/searchModelItemsByUserId";
                 name = "modelItems";
-            }
-            else if (this.curIndex=='2-2') {
+            } else if (this.curIndex == '2-2') {
                 url = "/conceptualModel/searchConceptualModelsByUserId";
                 name = "conceptualModels";
-            }
-            else if (this.curIndex=='2-3') {
+            } else if (this.curIndex == '2-3') {
                 url = "/logicalModel/searchLogicalModelsByUserId";
                 name = "logicalModels";
-            }
-            else if (this.curIndex=='2-4') {
+            } else if (this.curIndex == '2-4') {
                 url = "/computableModel/searchComputableModelsByUserId";
                 name = "computableModels";
-            }
-            else if (this.curIndex=='6') {
+            } else if (this.curIndex == '6') {
                 url = "/task/searchTasksByUserId";
                 name = "tasks";
-                this.sortAsc=-1;
+                this.sortAsc = -1;
             }
 
-            if(this.deploys_show){
+            if (this.deploys_show) {
                 this.searchComputerModelsForDeploy();
-            }else{
+            } else {
                 $.ajax({
                     type: "Get",
                     url: url,
                     data: {
                         searchText: this.searchText,
-                        page: this.page-1,
-                        pagesize:this.pageSize,
+                        page: this.page - 1,
+                        pagesize: this.pageSize,
                         sortType: this.sortType,
                         asc: this.sortAsc
                     },
                     cache: false,
                     async: true,
                     dataType: "json",
-                    xhrFields:{
-                        withCredentials:true
+                    xhrFields: {
+                        withCredentials: true
                     },
                     crossDomain: true,
                     success: (json) => {
                         if (json.code != 0) {
                             alert("Please login first!");
                             window.location.href = "/user/login";
-                        }
-                        else {
+                        } else {
                             data = json.data;
                             this.resourceLoad = false;
                             this.totalNum = data.count;
@@ -1627,28 +2085,28 @@ var vue = new Vue({
             }
         },
         searchDataItem() {
-            this.pageSize=10;
-            this.isInSearch=1;
+            this.pageSize = 10;
+            this.isInSearch = 1;
             var that = this;
-            var da={
-                userOid:this.userId,
-                page:this.page,
-                pagesize:this.pageSize,
-                asc:false,
-                searchText:this.searchText
+            var da = {
+                userOid: this.userId,
+                page: this.page,
+                pagesize: this.pageSize,
+                asc: false,
+                searchText: this.searchText
             }
-            axios.get("/dataItem/searchDataByUserId/",{
-                params:da
-            } )
+            axios.get("/dataItem/searchDataByUserId/", {
+                params: da
+            })
                 .then((res) => {
                     setTimeout(() => {
-                        if(res.status==200){
-                            if(res.data.data!=null){
+                        if (res.status == 200) {
+                            if (res.data.data != null) {
                                 that.searchResult = res.data.data.content;
                                 if (this.page == 1) {
                                     this.pageInit();
                                 }
-                            }else{
+                            } else {
                                 alert("no result")
                             }
                         }
@@ -1658,9 +2116,9 @@ var vue = new Vue({
 
                 });
         },
-        searchConcepts(){
-            this.pageSize=10;
-            this.isInSearch=1;
+        searchConcepts() {
+            this.pageSize = 10;
+            this.isInSearch = 1;
             var url = "/repository/searchConceptsByUserId";
             var name = "concepts";
             $.ajax({
@@ -1668,24 +2126,23 @@ var vue = new Vue({
                 url: url,
                 data: {
                     searchText: this.searchText,
-                    page: this.page-1,
-                    pageSize:this.pageSize,
+                    page: this.page - 1,
+                    pageSize: this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }
-                    else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -1698,9 +2155,9 @@ var vue = new Vue({
                 }
             })
         },
-        searchSpatials(){
-            this.pageSize=10;
-            this.isInSearch=1;
+        searchSpatials() {
+            this.pageSize = 10;
+            this.isInSearch = 1;
             var url = "/repository/searchSpatialsByUserId";
             var name = "spatials";
             $.ajax({
@@ -1708,24 +2165,23 @@ var vue = new Vue({
                 url: url,
                 data: {
                     searchText: this.searchText,
-                    page: this.page-1,
-                    pageSize:this.pageSize,
+                    page: this.page - 1,
+                    pageSize: this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }
-                    else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -1738,9 +2194,9 @@ var vue = new Vue({
                 }
             })
         },
-        searchTemplates(){
-            this.pageSize=10;
-            this.isInSearch=1;
+        searchTemplates() {
+            this.pageSize = 10;
+            this.isInSearch = 1;
             var url = "/repository/searchTemplatesByUserId";
             var name = "templates";
             $.ajax({
@@ -1748,24 +2204,23 @@ var vue = new Vue({
                 url: url,
                 data: {
                     searchText: this.searchText,
-                    page: this.page-1,
-                    pageSize:this.pageSize,
+                    page: this.page - 1,
+                    pageSize: this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }
-                    else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -1778,9 +2233,9 @@ var vue = new Vue({
                 }
             })
         },
-        searchUnits(){
-            this.pageSize=10;
-            this.isInSearch=1;
+        searchUnits() {
+            this.pageSize = 10;
+            this.isInSearch = 1;
             var url = "/repository/searchUnitsByUserId";
             var name = "units";
             $.ajax({
@@ -1788,24 +2243,23 @@ var vue = new Vue({
                 url: url,
                 data: {
                     searchText: this.searchText,
-                    page: this.page-1,
-                    pageSize:this.pageSize,
+                    page: this.page - 1,
+                    pageSize: this.pageSize,
                     sortType: this.sortType,
                     asc: this.sortAsc
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }
-                    else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -1819,9 +2273,9 @@ var vue = new Vue({
             })
         },
 
-        searchArticles(){
-            this.pageSize=5;
-            this.isInSearch=1;
+        searchArticles() {
+            this.pageSize = 5;
+            this.isInSearch = 1;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1829,33 +2283,33 @@ var vue = new Vue({
             // }
             // var url=urls[this.researchIndex];
             $.ajax({
-                type:"GET",
-                url:"/article/searchByTitle",
-                data:{
-                    page: this.page-1,
+                type: "GET",
+                url: "/article/searchByTitle",
+                data: {
+                    page: this.page - 1,
                     pageSize: this.pageSize,
-                    sortElement:"creatDate",
+                    sortElement: "creatDate",
                     asc: false,
-                    searchText:this.searchText
+                    searchText: this.searchText
 
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
-                success:(json)=>{
+                success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         const data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.total;
-                       Vue.set(this.researchItems ,'list',data.list) ;
+                        Vue.set(this.researchItems, 'list', data.list);
 
-                        console.log(this.researchItems );
+                        console.log(this.researchItems);
                         if (this.page == 1) {
                             this.pageInit();
                         }
@@ -1864,9 +2318,9 @@ var vue = new Vue({
             })
         },
 
-        searchProjects(){
-            this.pageSize=5;
-            this.isInSearch=1;
+        searchProjects() {
+            this.pageSize = 5;
+            this.isInSearch = 1;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1874,33 +2328,33 @@ var vue = new Vue({
             // }
             // var url=urls[this.researchIndex];
             $.ajax({
-                type:"GET",
-                url:"/project/searchByName",
-                data:{
-                    page: this.page-1,
-                    pageSize:this.pageSize,
-                    sortElement:"creatDate",
+                type: "GET",
+                url: "/project/searchByName",
+                data: {
+                    page: this.page - 1,
+                    pageSize: this.pageSize,
+                    sortElement: "creatDate",
                     asc: false,
-                    searchText:this.searchText
+                    searchText: this.searchText
 
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
-                success:(json)=>{
+                success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         const data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.total;
-                        Vue.set(this.projectResult ,'list',data.list) ;
+                        Vue.set(this.projectResult, 'list', data.list);
 
-                        console.log(this.projectResult );
+                        console.log(this.projectResult);
                         if (this.page == 1) {
                             this.pageInit();
                         }
@@ -1909,9 +2363,9 @@ var vue = new Vue({
             })
         },
 
-        searchConferences(){
-            this.pageSize=5;
-            this.isInSearch=1;
+        searchConferences() {
+            this.pageSize = 5;
+            this.isInSearch = 1;
             // var urls={
             //     1:"/article/searchByTitle",
             //     2:"/project/searchByName",
@@ -1919,33 +2373,33 @@ var vue = new Vue({
             // }
             // var url=urls[this.researchIndex];
             $.ajax({
-                type:"GET",
-                url:"/conference/searchByTitle",
-                data:{
-                    page: this.page-1,
-                    pageSize:this.pageSize,
-                    sortElement:"creatDate",
+                type: "GET",
+                url: "/conference/searchByTitle",
+                data: {
+                    page: this.page - 1,
+                    pageSize: this.pageSize,
+                    sortElement: "creatDate",
                     asc: false,
-                    searchText:this.searchText
+                    searchText: this.searchText
 
                 },
                 cache: false,
                 async: true,
                 dataType: "json",
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
-                success:(json)=>{
+                success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         const data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.total;
-                        Vue.set(this.conferenceResult ,'list',data.list) ;
+                        Vue.set(this.conferenceResult, 'list', data.list);
 
-                        console.log(this.conferenceResult );
+                        console.log(this.conferenceResult);
                         if (this.page == 1) {
                             this.pageInit();
                         }
@@ -1953,33 +2407,63 @@ var vue = new Vue({
                 }
             })
         },
+
+        getTasks(callback) {
+            $.ajax({
+                type: "Get",
+                url: "/task/getTasksByUserIdNoPage",
+                data: {
+
+                    sortType: 'runTime',
+                    asc: -1
+                },
+                cache: false,
+                async: true,
+
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                            const data = json.data;
+                            this.resourceLoad = false;
+                            // this.researchItems = data.list;
+                            this.userTaskFullInfo = data;
+                            this.getAllPackageTasks();
+
+                    }
+                }
+            })
+        },
+
 
         getModels() {
-            this.pageSize=10;
-            this.isInSearch=0;
+            this.pageSize = 10;
+            this.isInSearch = 0;
             var url = "";
             var name = "";
             console.log(this.searchResult);
-            if (this.curIndex=='2-1') {
+            if (this.curIndex == '2-1') {
                 url = "/modelItem/getModelItemsByUserId";
                 name = "modelItems";
-            }
-            else if (this.curIndex=='2-2') {
+            } else if (this.curIndex == '2-2') {
                 url = "/conceptualModel/getConceptualModelsByUserId"
                 name = "conceptualModels";
-            }
-            else if (this.curIndex=='2-3') {
+            } else if (this.curIndex == '2-3') {
                 url = "/logicalModel/getLogicalModelsByUserId"
                 name = "logicalModels";
-            }
-            else if (this.curIndex=='2-4') {
+            } else if (this.curIndex == '2-4') {
                 url = "/computableModel/getComputableModelsByUserId";
                 name = "computableModels";
-            }
-            else if (this.curIndex=='6') {
+            } else if (this.curIndex == '6') {
                 url = "/task/getTasksByUserId";
                 name = "tasks";
-                this.sortAsc=-1;
+                this.sortAsc = -1;
             }
             // else if(this.deploys_show){
             //     url = "http://geomodeling.njnu.edu.cn/GeoModeling/ComputableModelsForDeployServlet";
@@ -1992,31 +2476,30 @@ var vue = new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.page-1,
+                    page: this.page - 1,
                     sortType: this.sortType,
                     asc: -1
                 },
                 cache: false,
                 async: true,
 
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }
-                    else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
                         // this.searchCount = Number.parseInt(data["count"]);
                         //this.searchResult = data[name];
-                        for (var i = 0; i < data[name].length; i++){
+                        for (var i = 0; i < data[name].length; i++) {
                             // this.searchResult.push(data[name][i]);
-                            this.searchResult.splice(i,0,data[name][i]);
+                            this.searchResult.splice(i, 0, data[name][i]);
                             console.log(data[name][i]);
                         }
                         //this.modelItemResult = data[name];
@@ -2029,9 +2512,9 @@ var vue = new Vue({
             })
 
         },
-        getConcepts(){
-            this.pageSize=10;
-            this.isInSearch=0;
+        getConcepts() {
+            this.pageSize = 10;
+            this.isInSearch = 0;
             var url = "/repository/getConceptsByUserId";
             var name = "concepts";
 
@@ -2039,22 +2522,22 @@ var vue = new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.page-1,
+                    page: this.page - 1,
                     sortType: this.sortType,
                     asc: -1
                 },
                 cache: false,
                 async: true,
 
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -2067,9 +2550,9 @@ var vue = new Vue({
                 }
             })
         },
-        getSpatials(){
-            this.pageSize=10;
-            this.isInSearch=0;
+        getSpatials() {
+            this.pageSize = 10;
+            this.isInSearch = 0;
             var url = "/repository/getSpatialsByUserId";
             var name = "spatials";
 
@@ -2077,22 +2560,22 @@ var vue = new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.page-1,
+                    page: this.page - 1,
                     sortType: this.sortType,
                     asc: -1
                 },
                 cache: false,
                 async: true,
 
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -2105,9 +2588,9 @@ var vue = new Vue({
                 }
             })
         },
-        getTemplates(){
-            this.pageSize=10;
-            this.isInSearch=0;
+        getTemplates() {
+            this.pageSize = 10;
+            this.isInSearch = 0;
             var url = "/repository/getTemplatesByUserId";
             var name = "templates";
 
@@ -2115,22 +2598,22 @@ var vue = new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.page-1,
+                    page: this.page - 1,
                     sortType: this.sortType,
                     asc: -1
                 },
                 cache: false,
                 async: true,
 
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -2143,9 +2626,9 @@ var vue = new Vue({
                 }
             })
         },
-        getUnits(){
-            this.pageSize=10;
-            this.isInSearch=0;
+        getUnits() {
+            this.pageSize = 10;
+            this.isInSearch = 0;
             var url = "/repository/getUnitsByUserId";
             var name = "units";
 
@@ -2153,22 +2636,22 @@ var vue = new Vue({
                 type: "Get",
                 url: url,
                 data: {
-                    page: this.page-1,
+                    page: this.page - 1,
                     sortType: this.sortType,
                     asc: -1
                 },
                 cache: false,
                 async: true,
 
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
+                    } else {
                         data = json.data;
                         this.resourceLoad = false;
                         this.totalNum = data.count;
@@ -2182,10 +2665,10 @@ var vue = new Vue({
             })
         },
 
-        getArticleResult(){
-            this.pageSize=5;
-            this.researchItems=[];
-            this.isInSearch=0;
+        getArticleResult() {
+            this.pageSize = 5;
+            this.researchItems = [];
+            this.isInSearch = 0;
             // var urls={
             //     1:"/article/getByUserOidBySort",
             //     2:"/project/getByUserOidBySort",
@@ -2193,22 +2676,22 @@ var vue = new Vue({
             // }
             // var url=urls[this.researchIndex];
             $.ajax({
-                type:'GET',
-                url:"/article/getByUserOidBySort",
+                type: 'GET',
+                url: "/article/getByUserOidBySort",
                 // contentType:'application/json',
 
                 data:
                     {
-                        page: this.page-1,
-                        pageSize:this.pageSize,
-                        sortElement:"creatDate",
+                        page: this.page - 1,
+                        pageSize: this.pageSize,
+                        sortElement: "creatDate",
                         asc: false
                     },
                 // JSON.stringify(obj),
                 cache: false,
                 async: true,
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
@@ -2216,20 +2699,18 @@ var vue = new Vue({
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
-                        setTimeout(()=>{
+                    } else {
+                        setTimeout(() => {
                             const data = json.data;
                             this.resourceLoad = false;
                             this.totalNum = data.total;
                             // this.researchItems = data.list;
-                            Vue.set(this.researchItems ,'list', data.list);
-                            console.log(this.researchItems);
+                            Vue.set(this.researchItems, 'list', data.list);
                             this.$forceUpdate();
-                            if(this.page==1){
+                            if (this.page == 1) {
                                 this.pageInit();
                             }
-                        },100)
-
+                        }, 100)
 
 
                     }
@@ -2237,26 +2718,26 @@ var vue = new Vue({
             })
         },
 
-        getProjectResult(){
-            this.pageSize=5;
-            var url="/project/getByUserOidBySort";
+        getProjectResult() {
+            this.pageSize = 5;
+            var url = "/project/getByUserOidBySort";
             $.ajax({
-                type:'GET',
-                url:url,
+                type: 'GET',
+                url: url,
                 // contentType:'application/json',
 
                 data:
                     {
-                        page: this.page-1,
-                        pageSize:this.pageSize,
-                        sortElement:"creatDate",
+                        page: this.page - 1,
+                        pageSize: this.pageSize,
+                        sortElement: "creatDate",
                         asc: false
                     },
                 // JSON.stringify(obj),
                 cache: false,
                 async: true,
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
@@ -2264,20 +2745,19 @@ var vue = new Vue({
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
-                        setTimeout(()=>{
+                    } else {
+                        setTimeout(() => {
                             const data = json.data;
                             this.resourceLoad = false;
                             this.totalNum = data.total;
                             // this.researchItems = data.list;
-                            Vue.set(this.projectResult ,'list', data.list);
+                            Vue.set(this.projectResult, 'list', data.list);
                             console.log(this.projectResult);
                             this.$forceUpdate();
-                            if(this.page==1){
+                            if (this.page == 1) {
                                 this.pageInit();
                             }
-                        },150)
-
+                        }, 150)
 
 
                     }
@@ -2285,26 +2765,26 @@ var vue = new Vue({
             })
         },
 
-        getConferenceResult(){
-            this.pageSize=5;
-            var url="/conference/getByUserOidBySort";
+        getConferenceResult() {
+            this.pageSize = 5;
+            var url = "/conference/getByUserOidBySort";
             $.ajax({
-                type:'GET',
-                url:url,
+                type: 'GET',
+                url: url,
                 // contentType:'application/json',
 
                 data:
                     {
-                        page: this.page-1,
-                        pageSize:this.pageSize,
-                        sortElement:"creatDate",
+                        page: this.page - 1,
+                        pageSize: this.pageSize,
+                        sortElement: "creatDate",
                         asc: false
                     },
                 // JSON.stringify(obj),
                 cache: false,
                 async: true,
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
@@ -2312,20 +2792,19 @@ var vue = new Vue({
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
-                        setTimeout(()=>{
+                    } else {
+                        setTimeout(() => {
                             const data = json.data;
                             this.resourceLoad = false;
                             this.totalNum = data.total;
                             // this.researchItems = data.list;
-                            Vue.set(this.conferenceResult ,'list', data.list);
+                            Vue.set(this.conferenceResult, 'list', data.list);
                             console.log(this.projectResult);
                             this.$forceUpdate();
-                            if(this.page==1){
+                            if (this.page == 1) {
                                 this.pageInit();
                             }
-                        },150)
-
+                        }, 150)
 
 
                     }
@@ -2336,19 +2815,15 @@ var vue = new Vue({
         deleteModel(oid) {
             if (confirm("Are you sure to delete this model?")) {
                 var url = "";
-                if (this.curIndex=='2-1') {
+                if (this.curIndex == '2-1') {
                     url = "/modelItem/delete";
-                }
-                else if (this.curIndex=='2-2') {
+                } else if (this.curIndex == '2-2') {
                     url = "/conceptualModel/delete";
-                }
-                else if (this.curIndex=='2-3') {
+                } else if (this.curIndex == '2-3') {
                     url = "/logicalModel/delete";
-                }
-                else if (this.curIndex=='2-4') {
+                } else if (this.curIndex == '2-4') {
                     url = "/computableModel/delete";
-                }
-                else if (this.curIndex=='5') {
+                } else if (this.curIndex == '5') {
                     url = "/task/delete";
                 }
 
@@ -2366,21 +2841,18 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
+                        if (json.code == -1) {
                             alert("Please log in first!")
-                        }
-                        else{
-                            if(json.data==1){
+                        } else {
+                            if (json.data == 1) {
                                 alert("delete successfully!")
-                            }
-                            else{
+                            } else {
                                 alert("delete failed!")
                             }
                         }
                         if (this.searchText.trim() != "") {
                             this.searchModels();
-                        }
-                        else {
+                        } else {
                             this.getModels();
                         }
 
@@ -2388,7 +2860,7 @@ var vue = new Vue({
                 })
             }
         },
-        deleteConcept(oid){
+        deleteConcept(oid) {
             if (confirm("Are you sure to delete this concept?")) {
                 var url = "/repository/deleteConcept";
                 $.ajax({
@@ -2405,28 +2877,25 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
+                        if (json.code == -1) {
                             alert("Please log in first!")
-                        }
-                        else{
-                            if(json.data==1){
+                        } else {
+                            if (json.data == 1) {
                                 alert("delete successfully!")
-                            }
-                            else{
+                            } else {
                                 alert("delete failed!")
                             }
                         }
                         if (this.searchText.trim() != "") {
                             this.searchConcepts();
-                        }
-                        else {
+                        } else {
                             this.getConcepts();
                         }
                     }
                 })
             }
         },
-        deleteSpataial(oid){
+        deleteSpataial(oid) {
             if (confirm("Are you sure to delete this spatial reference?")) {
                 var url = "/repository/deleteSpatialReference";
                 $.ajax({
@@ -2443,28 +2912,25 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
+                        if (json.code == -1) {
                             alert("Please log in first!")
-                        }
-                        else{
-                            if(json.data==1){
+                        } else {
+                            if (json.data == 1) {
                                 alert("delete successfully!")
-                            }
-                            else{
+                            } else {
                                 alert("delete failed!")
                             }
                         }
                         if (this.searchText.trim() != "") {
                             this.searchSpatials();
-                        }
-                        else {
+                        } else {
                             this.getSpatials();
                         }
                     }
                 })
             }
         },
-        deleteTemplate(oid){
+        deleteTemplate(oid) {
             if (confirm("Are you sure to delete this template?")) {
                 var url = "/repository/deleteTemplate";
                 $.ajax({
@@ -2481,28 +2947,25 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
+                        if (json.code == -1) {
                             alert("Please log in first!")
-                        }
-                        else{
-                            if(json.data==1){
+                        } else {
+                            if (json.data == 1) {
                                 alert("delete successfully!")
-                            }
-                            else{
+                            } else {
                                 alert("delete failed!")
                             }
                         }
                         if (this.searchText.trim() != "") {
                             this.searchTemplates();
-                        }
-                        else {
+                        } else {
                             this.getTemplates();
                         }
                     }
                 })
             }
         },
-        deleteUnit(oid){
+        deleteUnit(oid) {
             if (confirm("Are you sure to delete this unit?")) {
                 var url = "/repository/deleteUnit";
                 $.ajax({
@@ -2519,21 +2982,18 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
+                        if (json.code == -1) {
                             alert("Please log in first!")
-                        }
-                        else{
-                            if(json.data==1){
+                        } else {
+                            if (json.data == 1) {
                                 alert("delete successfully!")
-                            }
-                            else{
+                            } else {
                                 alert("delete failed!")
                             }
                         }
                         if (this.searchText.trim() != "") {
                             this.searchUnits();
-                        }
-                        else {
+                        } else {
                             this.getUnits();
                         }
                     }
@@ -2541,20 +3001,20 @@ var vue = new Vue({
             }
         },
 
-        deleteResearchItem(oid){
-            var urls={
-                1:"/article/deleteByOid",
-                2:"/project/deleteByOid",
-                3:"/conference/deleteByOid",
+        deleteResearchItem(oid) {
+            var urls = {
+                1: "/article/deleteByOid",
+                2: "/project/deleteByOid",
+                3: "/conference/deleteByOid",
             }
-            if (confirm("Are you sure to delete this item?")){
-                var url=urls[this.researchIndex];
+            if (confirm("Are you sure to delete this item?")) {
+                var url = urls[this.researchIndex];
 
                 $.ajax({
-                    type:"POST",
-                    url:url,
-                    data:{
-                        oid:oid
+                    type: "POST",
+                    url: url,
+                    data: {
+                        oid: oid
                     },
 
                     cache: false,
@@ -2565,36 +3025,32 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
+                        if (json.code == -1) {
                             alert("Please log in first!")
-                        }
-                        else{
-                            if(json.data==1){
+                        } else {
+                            if (json.data == 1) {
                                 alert("delete successfully!")
-                            }
-                            else{
+                            } else {
                                 alert("delete failed!")
                             }
                         }
                         if (this.searchText.trim() != "") {
-                            if(this.researchIndex==1)
+                            if (this.researchIndex == 1)
                                 this.searchArticles();
-                            if(this.researchIndex==2)
+                            if (this.researchIndex == 2)
                                 this.searchProjects();
-                            if(this.researchIndex==3)
+                            if (this.researchIndex == 3)
                                 this.searchConferences();
-                        }
-                        else {
-                            if(this.researchIndex==1)
+                        } else {
+                            if (this.researchIndex == 1)
                                 this.getArticleResult();
-                            if(this.researchIndex==2)
+                            if (this.researchIndex == 2)
                                 this.getProjectResult();
-                            if(this.researchIndex==3)
+                            if (this.researchIndex == 3)
                                 this.getConferenceResult();
                         }
 
                     }
-
 
 
                 })
@@ -2684,7 +3140,7 @@ var vue = new Vue({
                 for (let i = 0; i < this.totalPage; i++) {
                     this.pageList.push(i + 1);
                 }
-            } else if (this.totalPage - this.curPage < 5 ) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+            } else if (this.totalPage - this.curPage < 5) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
 
                 this.pageList = [
                     this.totalPage - 4,
@@ -2717,9 +3173,9 @@ var vue = new Vue({
                 return;
             }
             if ((pageNo > 0) && (pageNo <= this.totalPage)) {
-                if(this.curIndex!=1)
-                    this.pageControlIndex=this.curIndex;
-                else this.pageControlIndex='researc';
+                if (this.curIndex != 1)
+                    this.pageControlIndex = this.curIndex;
+                else this.pageControlIndex = 'research';
                 switch (this.pageControlIndex) {
                     // this.computerModelsDeploy = [];
                     // this.resourceLoad = true;
@@ -2738,8 +3194,8 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
-                        if(this.isInSearch==0)
-                        this.getModels();
+                        if (this.isInSearch == 0)
+                            this.getModels();
                         else this.searchModels();
                         break;
                     //
@@ -2752,8 +3208,8 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
-                        if(this.isInSearch==0)
-                        this.getDataItems();
+                        if (this.isInSearch == 0)
+                            this.getDataItems();
                         else this.searchDataItem();
                         break;
 
@@ -2765,8 +3221,8 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
-                        if(this.isInSearch==0)
-                        this.getConcepts();
+                        if (this.isInSearch == 0)
+                            this.getConcepts();
                         else this.searchConcepts();
                         break;
                     case '4-2':
@@ -2777,8 +3233,8 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
-                        if(this.isInSearch==0)
-                        this.getSpatials();
+                        if (this.isInSearch == 0)
+                            this.getSpatials();
                         else this.searchSpatials()
                         break;
                     case '4-3':
@@ -2789,8 +3245,8 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
-                        if(this.isInSearch==0)
-                        this.getTemplates();
+                        if (this.isInSearch == 0)
+                            this.getTemplates();
                         else this.searchTemplates();
                         break;
                     case '4-4':
@@ -2801,11 +3257,23 @@ var vue = new Vue({
                         this.curPage = pageNo;
                         this.getPageList();
                         this.page = pageNo;
-                        if(this.isInSearch==0)
-                        this.getUnits();
+                        if (this.isInSearch == 0)
+                            this.getUnits();
                         else this.searchUnits();
                         break;
 
+                    case '6':
+                        this.resourceLoad = true;
+                        this.searchResult = [];
+                        //not result scroll
+                        //window.scrollTo(0, 0);
+                        this.curPage = pageNo;
+                        this.getPageList();
+                        this.page = pageNo;
+                        if (this.isInSearch == 0)
+                            this.getModels();
+                        else this.searchModels();
+                        break;
 
                     case 'research':
                         this.resourceLoad = true;
@@ -2816,13 +3284,16 @@ var vue = new Vue({
                         this.getPageList();
                         this.page = pageNo;
                         switch (this.researchIndex) {
-                            case 1:this.getArticleResult();
-                            console.log('article')
-                            break;
-                            case 2:this.getProjectResult();
-                            break;
-                            case 3:this.getConferenceResult();
-                            break;
+                            case 1:
+                                this.getArticleResult();
+                                console.log('article')
+                                break;
+                            case 2:
+                                this.getProjectResult();
+                                break;
+                            case 3:
+                                this.getConferenceResult();
+                                break;
                         }
                         break;
 
@@ -2887,7 +3358,7 @@ var vue = new Vue({
 
             this.dataItemAddDTO.classifications = this.ctegorys;
             // this.dataItemAddDTO.displays.push($("#displays").val())
-            this.dataItemAddDTO.displays=this.data_img
+            this.dataItemAddDTO.displays = this.data_img
 
             this.dataItemAddDTO.reference = $("#dataresoureurl").val()
 
@@ -2903,63 +3374,61 @@ var vue = new Vue({
             this.dataItemAddDTO.meta.geographicProjection = $("#geographicProjection").val();
             this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
 
-            this.dataItemAddDTO.meta.boundingRectangle=[];
+            this.dataItemAddDTO.meta.boundingRectangle = [];
 
 
+            var authorship = []
+            var author_lenth = $(".user-attr").length;
+            for (var i = 0; i < author_lenth; i++) {
 
-
-            var authorship=[]
-            var author_lenth=$(".user-attr").length;
-            for(var i=0;i<author_lenth;i++){
-
-                let authorInfo={
-                    name:'',
-                    email:'',
-                    homepage:''
+                let authorInfo = {
+                    name: '',
+                    email: '',
+                    homepage: ''
                 }
                 console.log($(".user-attr input"))
-                let t=3*i
-                authorInfo.name=$(".user-attr input")[t].value
-                authorInfo.email=$(".user-attr input")[1+t].value
-                authorInfo.homepage=$(".user-attr input")[2+t].value
+                let t = 3 * i
+                authorInfo.name = $(".user-attr input")[t].value
+                authorInfo.email = $(".user-attr input")[1 + t].value
+                authorInfo.homepage = $(".user-attr input")[2 + t].value
                 authorship.push(authorInfo)
 
             }
-            this.dataItemAddDTO.authorship=authorship
+            this.dataItemAddDTO.authorship = authorship
 
 
-            var thedata=this.dataItemAddDTO;
+            var thedata = this.dataItemAddDTO;
 
-            var that=this
-            if($("#dataname").val().length==0||$("#description").val()==''||this.dataItemAddDTO.detail==''||this.classif.length==0||$("#keywords").tagsinput('items').length==0){
+            var that = this
+            if ($("#dataname").val().length == 0 || $("#description").val() == '' || this.dataItemAddDTO.detail == '' || this.classif.length == 0 || $("#keywords").tagsinput('items').length == 0) {
                 alert("data not complete,please input required data")
-            }else{
-                axios.post("/dataItem/",thedata)
-                    .then(res=>{
-                        if(res.status==200){
+            } else {
+                axios.post("/dataItem/", thedata)
+                    .then(res => {
+                        if (res.status == 200) {
                             alert("created data item successfully!!")
 
                             //创建静态页面
-                            axios.get("/dataItem/adddataitembyuser",{
-                                params:{
-                                    id:res.data.data.id
+                            axios.get("/dataItem/adddataitembyuser", {
+                                params: {
+                                    id: res.data.data.id
                                 }
-                            }).then(()=>{
+                            }).then(() => {
 
                             });
 
-                            var categoryAddDTO={
-                                id:res.data.data.id,
-                                cate:that.ctegorys
+                            var categoryAddDTO = {
+                                id: res.data.data.id,
+                                cate: that.ctegorys
                             }
-                            axios.post('/dataItem/addcate',categoryAddDTO).then(res=>{
+                            axios.post('/dataItem/addcate', categoryAddDTO).then(res => {
                                 // console.log(res)
                             });
                             that.menuClick(7);
                             //每次创建完条目后清空category内容
-                            that.ctegorys=[];
+                            that.ctegorys = [];
                             //清空displays内容
-                            that.data_img=[]
+                            that.data_img = []
 
 
                             $(".prev").click();
@@ -2984,9 +3453,8 @@ var vue = new Vue({
                             $("#bottomrighty").val("");
                             $("#imgFile").val("");
 
-                            that.curIndex='none';
-                            that.curIndex='3-1'
-
+                            that.curIndex = 'none';
+                            that.curIndex = '3-1'
 
 
                         }
@@ -2994,58 +3462,57 @@ var vue = new Vue({
             }
 
         },
-        next(){
+        next() {
 
         },
-        change(currentIndex, newIndex, stepDirection){
+        change(currentIndex, newIndex, stepDirection) {
             console.log(currentIndex, newIndex, stepDirection)
         },
 
-        getDataItems(){
-            this.pageSize=10;
-            this.isInSearch=0;
-            var da={
-                userOid:this.userId,
-                page:this.page,
-                pagesize:this.pageSize,
-                asc:-1
+        getDataItems() {
+            this.pageSize = 10;
+            this.isInSearch = 0;
+            var da = {
+                userOid: this.userId,
+                page: this.page,
+                pagesize: this.pageSize,
+                asc: this.sortAsc
             }
 
-            this.loading=true
-            var that=this;
+            this.loading = true
+            var that = this;
             //todo 从后台拿到用户创建的data—item
-            axios.get("/user/getDataItems",{
-                params:da
-            }).then(res=>{
+            axios.get("/user/getDataItems", {
+                params: da
+            }).then(res => {
 
-                this.searchResult=res.data.data.content
+                this.searchResult = res.data.data.content
                 this.resourceLoad = false;
-                this.totalNum=res.data.data.totalElements;
-                if(this.page == 1){
+                this.totalNum = res.data.data.totalElements;
+                if (this.page == 1) {
                     this.pageInit();
                 }
-                this.data_show=true
-                this.loading=false
+                this.data_show = true
+                this.loading = false
 
             })
-
 
 
         },
         //todo 数据条目的增删操作
         // searchDataItems(){},
-        deleteDataitems(id){
+        deleteDataitems(id) {
 
             //todo 删除category中的 id
-            var cfm=confirm("Are you sure to delete?");
+            var cfm = confirm("Are you sure to delete?");
 
-            if(cfm==true){
-                axios.get("/dataItem/del/",{
-                    params:{
-                        id:id
+            if (cfm == true) {
+                axios.get("/dataItem/del/", {
+                    params: {
+                        id: id
                     }
-                }).then(res=>{
-                    if(res.status==200){
+                }).then(res => {
+                    if (res.status == 200) {
                         alert("delete success!");
                         this.getDataItems();
                     }
@@ -3055,45 +3522,43 @@ var vue = new Vue({
 
         },
 
-        updateDataItems(){},
-        upload_data(data){
+        updateDataItems() {
+        },
+        upload_data(data) {
 
-            this.data_upload_id=data.id;
-            var d=this.userName;
+            this.data_upload_id = data.id;
+            var d = this.userName;
             $("#data-author").val(d)
 
 
-
-
         },
-        close(){
+        close() {
             // $(".uploaddataitem").css("visibility","hidden");
-            this.data_upload_id='';
+            this.data_upload_id = '';
             $("#file-1").val('');
-            this.sourceStoreId=''
+            this.sourceStoreId = ''
         },
-        uploadD(){
+        uploadD() {
 
 
-
-            if(this.sourceStoreId===''){
-                alert("请先上传数据")
-            }else{
-                var data={
+            if (this.sourceStoreId === '') {
+                alert("Please upload the file in to the template first")
+            } else {
+                var data = {
                     author: this.userId,
                     dataItemId: this.data_upload_id,
                     fileName: $("#fileName").val(),
                     mdlId: "string",
-                    sourceStoreId:this.sourceStoreId,
-                    suffix:$("#suffix").val(),
+                    sourceStoreId: this.sourceStoreId,
+                    suffix: $("#suffix").val(),
                     tags: $("#datatags").tagsinput('items'),
                     type: $("input[name='data_upload_type']:checked").val(),
 
                 }
-                var that =this;
-                axios.post("http://172.21.213.194:8081/dataResource",data)
-                    .then(res=>{
-                        if(res.status==200){
+                var that = this;
+                axios.post("http://172.21.213.194:8081/dataResource", data)
+                    .then(res => {
+                        if (res.status == 200) {
                             alert("data upload success")
                             that.close()
                         }
@@ -3101,10 +3566,9 @@ var vue = new Vue({
             }
 
 
-
         },
-        chooseCate(item,e){
-            if($("#classification").val()!=null){
+        chooseCate(item, e) {
+            if ($("#classification").val() != null) {
                 $("#classification").val('')
             }
             this.classif.push(e.target.innerText);
@@ -3115,182 +3579,272 @@ var vue = new Vue({
 
         },
 
-        toDataItem(){
-            this.handleSelect('3-2',null);
-            this.defaultActive='3-1';
+        toDataItem() {
+            this.handleSelect('3-2', null);
+            this.defaultActive = '3-1';
         },
-        toMyData(){
-            this.handleSelect('3-3',null);
-            this.defaultActive='3-3';
+        toMyData() {
+            this.handleSelect('3-3', null);
+            this.defaultActive = '3-3';
 
         },
-        downloaddata(){},
-        dall(){},
+        downloaddata() {
+        },
+        dall() {
+        },
 
 
         //个人空间上传下载管理
 
         //获得所有数据
-        showtitle(ev){
-            return ev.fileName+"\n"+"Type:"+ev.suffix;
+        showtitle(ev) {
+            return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
-        getImg(item){
-            return "/static/img/filebrowser/"+item.suffix+".svg"
+        getImg(item) {
+            if(item.id==0||item.package==true)
+                return "/static/img/filebrowser/package.jpg"
+            if(item.suffix=='unknow')
+                return "/static/img/filebrowser/unknow.svg"
+            return "/static/img/filebrowser/" + item.suffix + ".svg"
         },
-        generateId(key){
+        generateId(key) {
             return key;
         },
-        getid($event,eval){
-            console.log(eval.id)
-            this.dataid=eval.id;
+        getid($event, eval) {
+            this.dataid = eval.id;
 
-            $event.currentTarget.className="el-card dataitemisol clickdataitem"
+            $event.currentTarget.className = "el-card dataitemisol clickdataitem"
 
             //再次点击取消选择
-            if(this.downloadDataSet.indexOf(eval)>-1){
-                for(var i=0;i<this.downloadDataSet.length;i++){
-                    if(this.downloadDataSet[i]===eval){
+            if (this.downloadDataSet.indexOf(eval) > -1) {
+                for (var i = 0; i < this.downloadDataSet.length; i++) {
+                    if (this.downloadDataSet[i] === eval) {
                         //删除
-                        this.downloadDataSet.splice(i,1)
+                        this.downloadDataSet.splice(i, 1)
                         break
                     }
                 }
-                for(var i=0;i<this.downloadDataSetName.length;i++){
-                    if(this.downloadDataSetName[i]===eval.fileName){
-                        this.downloadDataSetName.splice(i,1)
+                for (var i = 0; i < this.downloadDataSetName.length; i++) {
+                    if (this.downloadDataSetName[i] === eval.fileName) {
+                        this.downloadDataSetName.splice(i, 1)
                         break
                     }
                 }
 
 
-
-            }else{
+            } else {
                 this.downloadDataSet.push(eval)
                 this.downloadDataSetName.push(eval.fileName)
             }
 
+            if (eval.taskId != null) {
+                this.detailsIndex = 2
+                this.getOneOfUserTasks(eval.taskId);
+            }
 
 
         },
-        userDownload(){
+
+        backToPackage() {
+            this.detailsIndex = 1;
+        },
+
+        getOneOfUserTasks(taskId) {
+            $.ajax({
+                type: 'GET',
+                url: "/task/getTaskByTaskId",
+                // contentType:'application/json',
+
+                data:
+                    {
+                        id: taskId,
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        const data = json.data;
+                        this.resourceLoad = false;
+                        // this.researchItems = data.list;
+                        this.packageContent = data;
+                        console.log(this.packageContent)
+                    }
+                }
+            })
+        },
+
+        getOneOfUserTasksToList(task,i) {
+            $.ajax({
+                type: 'GET',
+                url: "/task/getTaskByTaskId",
+                // contentType:'application/json',
+
+                data:
+                    {
+                        id: task.taskId,
+                    },
+                // JSON.stringify(obj),
+                cache: false,
+                async: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (json) => {
+
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        const data = json.data;
+                        this.resourceLoad = false;
+                        // this.researchItems = data.list;
+                        this.packageContentList[i] = data;
+                    }
+                }
+            })
+        },
+
+        userDownload() {
             //todo 依据数组downloadDataSet批量下载
 
-            let sourceId=new Array()
+            let sourceId = new Array()
 
-            for(let i=0;i<this.downloadDataSet.length;i++){
+            for (let i = 0; i < this.downloadDataSet.length; i++) {
                 sourceId.push(this.downloadDataSet[i].sourceStoreId)
             }
 
 
-            if(this.downloadDataSet.length>0){
+            if (this.downloadDataSet.length > 0) {
 
-                const keys=sourceId.map(_=>`sourceStoreId=${_}`).join('&');
-                let url ="/dataManager/downloadSomeRemote?"+keys;
-                let link =document.createElement('a');
-                link.style.display='none';
-                link.href=url;
+                const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
+                let url = "/dataManager/downloadSomeRemote?" + keys;
+                let link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
                 // link.setAttribute(item.fileName,'filename.'+item.suffix)
 
                 document.body.appendChild(link)
                 link.click();
 
-            }else{
+            } else {
                 alert("please select first!!")
             }
 
 
         },
-        addAllData(){
-            let that=this
-            axios.get("/dataManager/list",{
-                params:{
-                    author:this.userId,
-                    type:"author"
+
+        addAllData() {
+            let that = this
+            axios.get("/dataManager/list", {
+                params: {
+                    author: this.userId,
+                    type: "author"
                 }
 
             })
-                .then((res)=>{
-
+                .then((res) => {
 
 
                     // console.log("oid datas",this.userId,res.data.data)
-                    that.databrowser=res.data.data
-                    that.alllen=that.databrowser.length
-                    that.managerloading=false
+                    that.databrowser = res.data.data
+                    that.alllen = that.databrowser.length
+                    that.managerloading = false
                 })
         },
-        addDataClass($event,item){
-            this.rightMenuShow=false
+
+        addDataClass($event, item) {
+            this.rightMenuShow = false
 
 
-            if(this.downloadDataSet.indexOf(item)<0){
-                $event.currentTarget.className="el-card dataitemisol dataitemhover"
+            if (this.downloadDataSet.indexOf(item) < 0) {
+                $event.currentTarget.className = "el-card dataitemisol dataitemhover"
             }
 
-            this.dataid=item.id
+            this.dataid = item.id
 
 
         },
-        removeClass($event,item){
+
+        removeClass($event, item) {
 
 
-
-            if(this.downloadDataSet.indexOf(item)>-1){
-                $event.currentTarget.className="el-card dataitemisol clickdataitem"
-            }else{
-                $event.currentTarget.className="el-card dataitemisol"
+            if (this.downloadDataSet.indexOf(item) > -1) {
+                $event.currentTarget.className = "el-card dataitemisol clickdataitem"
+            } else {
+                $event.currentTarget.className = "el-card dataitemisol"
             }
-
 
 
         },
 
         //右键菜单
 
-        rightMenu(e){
+        rightMenu(e) {
             e.preventDefault();
 
-            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            e.currentTarget.className = "el-card dataitemisol clickdataitem"
 
 
             var dom = document.getElementsByClassName("browsermenu");
 
             console.log(e)
-            dom[0].style.top = e.pageY -100+"px"
+            dom[0].style.top = e.pageY - 100 + "px"
             // 125 > window.innerHeight
             //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
-            dom[0].style.left = e.pageX-200 +"px";
+            dom[0].style.left = e.pageX - 200 + "px";
 
-            this.rightMenuShow=true
-
-
+            this.rightMenuShow = true
 
 
         },
+
+        openWzhRightMenu(e) {
+            e.preventDefault();
+
+            e.currentTarget.className = "el-card dataitemisol clickdataitem"
+            console.log(e)
+
+            var dom = document.getElementsByClassName("wzhRightMenu");
+
+            dom[0].style.top = e.pageY - 250 + "px"
+            dom[0].style.left = e.pageX - 230 + "px";
+            console.log(e.style)
+            $('.wzhRightMenu').animate({height: '120'}, 150);
+        },
+
         //上传
-        upload_data_dataManager(){
+        upload_data_dataManager() {
 
-
-
-            if(this.sourceStoreId===''){
-                alert("请先上传数据")
-            }else{
-                var data={
+            console.log($('.file-caption').text())
+            if (this.sourceStoreId === '') {
+                alert("Please upload the file into the template first")
+            } else {
+                var data = {
                     author: this.userId,
 
                     fileName: $("#managerFileName").val(),
-                    fromWhere:"PORTAL",
+                    fromWhere: "PORTAL",
                     mdlId: "string",
-                    sourceStoreId:this.sourceStoreId,
-                    suffix:$("#managerFileSuffix").val(),
+                    sourceStoreId: this.sourceStoreId,
+                    suffix: $("#managerFileSuffix").val(),
                     tags: $("#managerFileTags").tagsinput('items'),
                     type: "OTHER"
 
                 }
-                var that =this;
-                axios.post("http://172.21.212.64:8081/dataResource",data)
-                    .then(res=>{
-                        if(res.status==200){
+                var that = this;
+                axios.post("http://172.21.212.64:8081/dataResource", data)
+                    .then(res => {
+                        if (res.status == 200) {
                             alert("data upload success")
 
                             that.addAllData()
@@ -3303,87 +3857,110 @@ var vue = new Vue({
         },
 
 
-        handleClose(done){
+        handleClose(done) {
+            console.log(done)
             this.$confirm('Are you sure to close？')
                 .then(_ => {
                     done();
                 })
-                .catch(_ => {});
+                .catch(_ => {
+                });
+        },
+
+        closeAndClear(){
+
+        },
+
+        handleCloseandInit(done) {
+            console.log(done)
+            this.$confirm('Are you sure to close？')
+                .then(_ => {
+                    for(let i=0;i<$('.treeLi').length;i++) {
+                        $('.treeLi').eq(i).removeClass('expanded');
+                        $('.flexLi').eq(i).animate({height: 0}, 300);
+                    }
+                    for(let i=0;i<$('.treeChildLi').length;i++){
+                        $('.treeChildLi').eq(i).removeClass('expanded');
+                        $('.packageContent').eq(i).animate({height:0},300);
+                    }
+                    for(let i=0;i<this.$refs.multipleTableDataSharing.length;i++)
+                        this.$refs.multipleTableDataSharing[i].clearSelection();
+                    this.$refs.multipleTableMyData.clearSelection();
+                    done();
+                })
+                .catch(_ => {
+                });
         },
 
 
         //下载
-        download_data_dataManager(){
+        download_data_dataManager() {
 
-            for(let i=0;i<this.databrowser.length;i++){
-                if(this.databrowser[i].id===this.dataid){
-                    var item=this.databrowser[i];
+            for (let i = 0; i < this.databrowser.length; i++) {
+                if (this.databrowser[i].id === this.dataid) {
+                    var item = this.databrowser[i];
                     break;
                 }
             }
 
 
-
-            if(item!=null){
-                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                let link =document.createElement('a');
-                link.style.display='none';
-                link.href=url;
+            if (item != null) {
+                let url = "/dataManager/downloadRemote?&sourceStoreId=" + item.sourceStoreId;
+                let link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
                 // link.setAttribute(item.fileName,'filename.'+item.suffix)
 
                 document.body.appendChild(link)
                 link.click();
 
-            }else {
+            } else {
                 this.$message('please select file first!!');
             }
 
 
         },
         //删除
-        delete_data_dataManager(){
+        delete_data_dataManager() {
 
-            if(confirm("Are you sure to delete?")){
-                let tha=this
-                axios.delete("/dataManager/delete",{
-                    params:{
-                        id:tha.dataid
+            if (confirm("Are you sure to delete?")) {
+                let tha = this
+                axios.delete("/dataManager/delete", {
+                    params: {
+                        id: tha.dataid
                     }
-                }).then((res)=>{
+                }).then((res) => {
 
 
-                    if(res.data.msg==="成功"){
+                    if (res.data.msg === "成功") {
                         //删除双向绑定的数组
-                        tha.rightMenuShow=false
-                        tha.databrowser=[]
+                        tha.rightMenuShow = false
+                        tha.databrowser = []
                         tha.addAllData()
                         alert("delete successful")
 
                     }
 
                 })
-            }else{
+            } else {
                 alert("ok")
             }
-
-
-
 
 
         },
 
 
-        showsearchresult(data){
+        showsearchresult(data) {
 
             //动态创建DOM节点
 
-            for(let i=0;i<this.databrowser.length;i++){
+            for (let i = 0; i < this.databrowser.length; i++) {
                 //匹配查询字段
-                if(this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase())>-1){
+                if (this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase()) > -1) {
                     //插入查找到的card
 
                     //card
-                    let searchresultcard=document.createElement("div");
+                    let searchresultcard = document.createElement("div");
                     searchresultcard.classList.add("el-card");
                     searchresultcard.classList.add("dataitemisol");
                     searchresultcard.classList.add("is-never-shadow");
@@ -3391,89 +3968,89 @@ var vue = new Vue({
 
 
                     //cardbody
-                    let secardbody=document.createElement("div");
+                    let secardbody = document.createElement("div");
                     secardbody.classList.add("el-card__body");
                     //card里添加cardbody
                     searchresultcard.appendChild(secardbody);
 
                     //el-row1
-                    let cardrow1=document.createElement("div");
+                    let cardrow1 = document.createElement("div");
                     cardrow1.classList.add("el-row");
                     secardbody.appendChild(cardrow1);
 
                     //3个div1
                     //div1
-                    let div1=document.createElement("div");
+                    let div1 = document.createElement("div");
                     div1.classList.add("el-col");
                     div1.classList.add("el-col-6");
 
-                    let text1=document.createTextNode(" ");
+                    let text1 = document.createTextNode(" ");
                     div1.appendChild(text1);
 
                     cardrow1.appendChild(div1)
 
                     //div2
-                    let div2=document.createElement("div");
+                    let div2 = document.createElement("div");
                     div2.classList.add("el-col");
                     div2.classList.add("el-col-12");
 
-                    let img=document.createElement("img");
-                    img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+                    let img = document.createElement("img");
+                    img.src = "/static/img/filebrowser/" + this.databrowser[i].suffix + ".svg";
 
-                    img.style.height='60%';
-                    img.style.width='100%';
-                    img.style.marginLeft='30%';
+                    img.style.height = '60%';
+                    img.style.width = '100%';
+                    img.style.marginLeft = '30%';
 
                     div2.appendChild(img);
 
                     cardrow1.appendChild(div2)
 
                     //div3
-                    let div3=document.createElement("div");
+                    let div3 = document.createElement("div");
                     div3.classList.add("el-col");
                     div3.classList.add("el-col-6");
 
-                    let text2=document.createTextNode(" ");
+                    let text2 = document.createTextNode(" ");
                     div3.appendChild(text2);
 
                     cardrow1.appendChild(div3);
 
 
                     //el-row2
-                    let cardrow2=document.createElement("div");
+                    let cardrow2 = document.createElement("div");
                     cardrow2.classList.add("el-row");
                     secardbody.appendChild(cardrow2);
 
                     //3个div2
                     //div4
-                    let div4=document.createElement("div");
+                    let div4 = document.createElement("div");
                     div4.classList.add("el-col");
                     div4.classList.add("el-col-2");
 
-                    let text3=document.createTextNode(" ");
+                    let text3 = document.createTextNode(" ");
                     div4.appendChild(text3);
 
                     cardrow2.appendChild(div4)
 
                     //div5
-                    let div5=document.createElement("div");
+                    let div5 = document.createElement("div");
                     div5.classList.add("el-col");
                     div5.classList.add("el-col-20");
 
-                    let p=document.createElement("p");
+                    let p = document.createElement("p");
                     div5.appendChild(p);
 
-                    let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                    let filenameandtype = document.createTextNode(this.databrowser[i].fileName + '.' + this.databrowser[i].suffix);
                     p.appendChild(filenameandtype)
 
                     cardrow2.appendChild(div5)
 
                     //div6
-                    let div6=document.createElement("div");
+                    let div6 = document.createElement("div");
                     div6.classList.add("el-col");
                     div6.classList.add("el-col-20");
 
-                    let text4=document.createTextNode(" ");
+                    let text4 = document.createTextNode(" ");
                     div6.appendChild(text4);
 
                     cardrow2.appendChild(div6)
@@ -3488,23 +4065,23 @@ var vue = new Vue({
                     //     this.dataid=i;
                     // });
                     searchresultcard.click(function () {
-                        this.dataid=this.databrowser[i].id;
+                        this.dataid = this.databrowser[i].id;
                     })
 
                 }
             }
         },
 
-        category(data){
+        category(data) {
 
-            for(let j=0;j<data.length;j++){
-                for(let i=0;i<this.databrowser.length;i++){
+            for (let j = 0; j < data.length; j++) {
+                for (let i = 0; i < this.databrowser.length; i++) {
                     //匹配查询字段
-                    if(this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase())>-1){
+                    if (this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase()) > -1) {
                         //插入查找到的card
 
                         //card
-                        let searchresultcard=document.createElement("div");
+                        let searchresultcard = document.createElement("div");
                         searchresultcard.classList.add("el-card");
                         searchresultcard.classList.add("dataitemisol");
                         searchresultcard.classList.add("is-never-shadow");
@@ -3512,89 +4089,89 @@ var vue = new Vue({
 
 
                         //cardbody
-                        let secardbody=document.createElement("div");
+                        let secardbody = document.createElement("div");
                         secardbody.classList.add("el-card__body");
                         //card里添加cardbody
                         searchresultcard.appendChild(secardbody);
 
                         //el-row1
-                        let cardrow1=document.createElement("div");
+                        let cardrow1 = document.createElement("div");
                         cardrow1.classList.add("el-row");
                         secardbody.appendChild(cardrow1);
 
                         //3个div1
                         //div1
-                        let div1=document.createElement("div");
+                        let div1 = document.createElement("div");
                         div1.classList.add("el-col");
                         div1.classList.add("el-col-6");
 
-                        let text1=document.createTextNode(" ");
+                        let text1 = document.createTextNode(" ");
                         div1.appendChild(text1);
 
                         cardrow1.appendChild(div1)
 
                         //div2
-                        let div2=document.createElement("div");
+                        let div2 = document.createElement("div");
                         div2.classList.add("el-col");
                         div2.classList.add("el-col-12");
 
-                        let img=document.createElement("img");
-                        img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+                        let img = document.createElement("img");
+                        img.src = "/static/img/filebrowser/" + this.databrowser[i].suffix + ".svg";
 
-                        img.style.height='60%';
-                        img.style.width='100%';
-                        img.style.marginLeft='30%';
+                        img.style.height = '60%';
+                        img.style.width = '100%';
+                        img.style.marginLeft = '30%';
 
                         div2.appendChild(img);
 
                         cardrow1.appendChild(div2)
 
                         //div3
-                        let div3=document.createElement("div");
+                        let div3 = document.createElement("div");
                         div3.classList.add("el-col");
                         div3.classList.add("el-col-6");
 
-                        let text2=document.createTextNode(" ");
+                        let text2 = document.createTextNode(" ");
                         div3.appendChild(text2);
 
                         cardrow1.appendChild(div3);
 
 
                         //el-row2
-                        let cardrow2=document.createElement("div");
+                        let cardrow2 = document.createElement("div");
                         cardrow2.classList.add("el-row");
                         secardbody.appendChild(cardrow2);
 
                         //3个div2
                         //div4
-                        let div4=document.createElement("div");
+                        let div4 = document.createElement("div");
                         div4.classList.add("el-col");
                         div4.classList.add("el-col-2");
 
-                        let text3=document.createTextNode(" ");
+                        let text3 = document.createTextNode(" ");
                         div4.appendChild(text3);
 
                         cardrow2.appendChild(div4)
 
                         //div5
-                        let div5=document.createElement("div");
+                        let div5 = document.createElement("div");
                         div5.classList.add("el-col");
                         div5.classList.add("el-col-20");
 
-                        let p=document.createElement("p");
+                        let p = document.createElement("p");
                         div5.appendChild(p);
 
-                        let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                        let filenameandtype = document.createTextNode(this.databrowser[i].fileName + '.' + this.databrowser[i].suffix);
                         p.appendChild(filenameandtype)
 
                         cardrow2.appendChild(div5)
 
                         //div6
-                        let div6=document.createElement("div");
+                        let div6 = document.createElement("div");
                         div6.classList.add("el-col");
                         div6.classList.add("el-col-20");
 
-                        let text4=document.createTextNode(" ");
+                        let text4 = document.createTextNode(" ");
                         div6.appendChild(text4);
 
                         cardrow2.appendChild(div6)
@@ -3609,7 +4186,7 @@ var vue = new Vue({
                         //     this.dataid=i;
                         // });
                         searchresultcard.click(function () {
-                            this.dataid=this.databrowser[i].id;
+                            this.dataid = this.databrowser[i].id;
                         })
 
                     }
@@ -3619,136 +4196,146 @@ var vue = new Vue({
         },
 
 
-        share(){
-            for(let i=0;i<this.databrowser.length;i++){
-                if(this.databrowser[i].id===this.dataid){
-                    var item=this.databrowser[i];
+        share() {
+            for (let i = 0; i < this.databrowser.length; i++) {
+                if (this.databrowser[i].id === this.dataid) {
+                    var item = this.databrowser[i];
                     break;
                 }
             }
 
 
-            if(item!=null){
-                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                this.$alert("<input style='width: 100%' value="+url+">",{
+            if (item != null) {
+                let url = "/dataManager/downloadRemote?&sourceStoreId=" + item.sourceStoreId;
+                this.$alert("<input style='width: 100%' value=" + url + ">", {
                     dangerouslyUseHTMLString: true
                 })
                 // this.dataid='';
 
-            }else {
+            } else {
                 // console.log("从后台获取数据条目数组有误")
                 this.$message('please select file first!!');
             }
         },
         //todo 数据找模型
-        relatedModels_dataManager(){
-
-
+        relatedModels_dataManager() {
 
 
         },
-        keywordsSearch(){
-            if(this.searchcontent===""){
+        keywordsSearch() {
+            if (this.searchcontent === "") {
                 this.addAllData()
-            }else{
+            } else {
                 this.dataManagerSe(this.searchcontent)
 
             }
 
 
-
         },
-        dataManagerSe(val){
-            let that=this
-            this.loading=true
-            axios.get("/dataManager/keywordsSearch",{
-                params:{
-                    id:that.userId,
-                    words:val
+        dataManagerSe(val) {
+            let that = this
+            this.loading = true
+            axios.get("/dataManager/keywordsSearch", {
+                params: {
+                    id: that.userId,
+                    words: val
 
                 }
             })
-                .then((res)=>{
-                    if(res.status===200){
-                        that.databrowser=res.data.data.data
-                        that.loading=false
+                .then((res) => {
+                    if (res.status === 200) {
+                        that.databrowser = res.data.data.data
+                        that.loading = false
                     }
                 })
 
         },
-        findAllFiles(){
+        findAllFiles() {
 
             this.addAllData()
 
 
         },
 
-        findPics(){
+        findPics() {
 
 
-
-            let that=this
-            this.loading=true
-            axios.get("/dataManager/managerPics",{
-                params:{
-                    id:that.userId,
+            let that = this
+            this.loading = true
+            axios.get("/dataManager/managerPics", {
+                params: {
+                    id: that.userId,
 
 
                 }
             })
-                .then((res)=>{
-                    if(res.status===200){
-                        that.databrowser=res.data.data.data
-                        that.loading=false
+                .then((res) => {
+                    if (res.status === 200) {
+                        that.databrowser = res.data.data.data
+                        that.loading = false
                     }
                 })
         },
-        findDocs(){
+        findDocs() {
 
 
-            let that=this
-            this.loading=true
-            axios.get("/dataManager/managerDoc",{
-                params:{
-                    id:that.userId,
+            let that = this
+            this.loading = true
+            axios.get("/dataManager/managerDoc", {
+                params: {
+                    id: that.userId,
 
 
                 }
             })
-                .then((res)=>{
-                    if(res.status===200){
-                        that.databrowser=res.data.data.data
-                        that.loading=false
+                .then((res) => {
+                    if (res.status === 200) {
+                        that.databrowser = res.data.data.data
+                        that.loading = false
                     }
                 })
 
         },
 
-        findOtherFiles(){
+        findOtherFiles() {
 
-            let that=this
-            this.loading=true
-            axios.get("/dataManager/managerOhr",{
-                params:{
-                    id:that.userId,
+            let that = this
+            this.loading = true
+            axios.get("/dataManager/managerOhr", {
+                params: {
+                    id: that.userId,
 
 
                 }
             })
-                .then((res)=>{
-                    if(res.status===200){
-                        that.databrowser=res.data.data.data
-                        that.loading=false
+                .then((res) => {
+                    if (res.status === 200) {
+                        that.databrowser = res.data.data.data
+                        that.loading = false
                     }
                 })
-        }
+        },
+
+        checkOutput(modelId, taskId) {
+            window.open('/task/output/' + modelId + '&' + taskId);
+        },
+
+        // initDataTree(){
+        //     this.dataForm[0].label='My uploaded data';
+        //     this.dataForm[0].
+        //     this.dataForm[1].label='Output data';
+        //     this.dataForm[2].label='Fork Data';
+        // }
 
 
     },
-    created(){
+    created() {
         this.getArticleResult();
+        this.getTasks();
     },
     mounted() {
+
+        // this.initDataTree()
 
 
         $("#title").text("User Space")
@@ -3783,28 +4370,26 @@ var vue = new Vue({
                 async: false,
                 success: (json) => {
 
-                    console.log("u"+json);
+                    console.log("u" + json);
                     let data = json.data;
-                    if(data.image!=""&&data.image!=null){
-                        $("#photo").attr("src",data.image);
-                    }
-                    else{
-                        $("#photo").attr("src","../static/img/icon/default.png");
+                    if (data.image != "" && data.image != null) {
+                        $("#photo").attr("src", data.image);
+                    } else {
+                        $("#photo").attr("src", "../static/img/icon/default.png");
                     }
                     $("#inputName").val(data.name);
                     $("#inputPhone").val(data.phone);
                     $("#inputHomePage").val(data.wiki);
                     $("#inputDescription").val(data.description);
 
-                    if(data.organizations!=null&&data.organizations.length!=0) {
+                    if (data.organizations != null && data.organizations.length != 0) {
                         $("#inputOrganizations").tagEditor("destroy");
                         $('#inputOrganizations').tagEditor({
                             initialTags: data.organizations,
                             forceLowercase: false,
                             placeholder: 'Enter Organizations ...'
                         });
-                    }
-                    else{
+                    } else {
                         $("#inputOrganizations").tagEditor("destroy");
                         $('#inputOrganizations').tagEditor({
                             initialTags: [],
@@ -3812,15 +4397,14 @@ var vue = new Vue({
                             placeholder: 'Enter Organizations ...'
                         });
                     }
-                    if(data.subjectAreas!=null&&data.subjectAreas.length!=0) {
+                    if (data.subjectAreas != null && data.subjectAreas.length != 0) {
                         $("#inputSubjectAreas").tagEditor("destroy");
                         $('#inputSubjectAreas').tagEditor({
                             initialTags: data.subjectAreas,
                             forceLowercase: false,
                             placeholder: 'Enter Subject Areas ...'
                         });
-                    }
-                    else{
+                    } else {
                         $("#inputSubjectAreas").tagEditor("destroy");
                         $('#inputSubjectAreas').tagEditor({
                             initialTags: [],
@@ -3835,7 +4419,7 @@ var vue = new Vue({
         })
 
         $("#saveUser").click(() => {
-            $("#saveUser").attr("disabled","disabled");
+            $("#saveUser").attr("disabled", "disabled");
             let userUpdate = {};
             userUpdate.oid = this.userId;
             userUpdate.name = $("#inputName").val().trim();
@@ -3844,7 +4428,7 @@ var vue = new Vue({
             userUpdate.description = $("#inputDescription").val().trim();
             userUpdate.organizations = $("#inputOrganizations").val().split(",");
             userUpdate.subjectAreas = $("#inputSubjectAreas").val().split(",");
-            userUpdate.uploadImage=$("#photo").get(0).src;
+            userUpdate.uploadImage = $("#photo").get(0).src;
 
             $.ajax({
                 url: "/user/update",
@@ -3860,34 +4444,31 @@ var vue = new Vue({
             });
         })
 
-        $("#changePass").click(()=>{
+        $("#changePass").click(() => {
             $('#myModal1').modal('show');
         })
 
-        $("#submitPass").click(()=>{
-            let oldPass=$("#inputOldPass").val();
-            let newPass=$("#inputPassword").val();
-            let newPassAgain=$("#inputPassAgain").val();
-            if(oldPass==""){
+        $("#submitPass").click(() => {
+            let oldPass = $("#inputOldPass").val();
+            let newPass = $("#inputPassword").val();
+            let newPassAgain = $("#inputPassAgain").val();
+            if (oldPass == "") {
                 alert("Please enter old password!")
                 return;
-            }
-            else if(newPass==""){
+            } else if (newPass == "") {
                 alert("Please enter new password!")
                 return;
-            }
-            else if(newPassAgain==""){
+            } else if (newPassAgain == "") {
                 alert("Please confirm new password!")
                 return;
-            }
-            else if(newPass!=newPassAgain){
+            } else if (newPass != newPassAgain) {
                 alert("Password and Confirm Password are inconsistent!")
                 return;
             }
 
-            let data={};
-            data.oldPass=oldPass;
-            data.newPass=newPass;
+            let data = {};
+            data.oldPass = oldPass;
+            data.newPass = newPass;
 
             $.ajax({
                 url: "/user/changePassword",
@@ -3895,23 +4476,21 @@ var vue = new Vue({
                 async: false,
                 data: data,
                 success: function (result) {
-                    if(result.code==-1){
+                    if (result.code == -1) {
                         alert("Please login first!")
                         //window.location.href="/user/login";
-                    }
-                    else {
+                    } else {
                         let data = result.data;
                         if (data == 1) {
                             alert("Change password successfully!")
-                            window.location.href="/user/login";
+                            window.location.href = "/user/login";
 
-                        }
-                        else {
+                        } else {
                             alert("Old password is not correct!");
                         }
                     }
                 },
-                error:function (result) {
+                error: function (result) {
                     alert("Change password error!")
 
                 }
@@ -3927,17 +4506,17 @@ var vue = new Vue({
         });
 
 
-        var tha=this
+        var tha = this
 
         axios.get("/dataItem/createTree")
-            .then(res=>{
-                tha.tObj=res.data;
-                for(var e in tha.tObj){
-                    var a={
-                        key:e,
-                        value:tha.tObj[e]
+            .then(res => {
+                tha.tObj = res.data;
+                for (var e in tha.tObj) {
+                    var a = {
+                        key: e,
+                        value: tha.tObj[e]
                     }
-                    if(e!='Data Resouces Hubs'){
+                    if (e != 'Data Resouces Hubs') {
                         tha.categoryTree.push(a);
                     }
 
@@ -3947,7 +4526,7 @@ var vue = new Vue({
             })
 
 
-        var that=this;
+        var that = this;
 
         $(() => {
             let height = document.documentElement.clientHeight;
@@ -3965,25 +4544,22 @@ var vue = new Vue({
             $.ajax({
                 type: "GET",
                 url: "/user/load",
-                data: {
-
-                },
+                data: {},
                 cache: false,
                 async: false,
-                xhrFields:{
+                xhrFields: {
                     withCredentials: true
                 },
-                crossDomain:true,
+                crossDomain: true,
                 success: (data) => {
-                    data=JSON.parse(data);
+                    data = JSON.parse(data);
 
                     console.log(data);
 
                     if (data.oid == "") {
                         alert("Please login");
                         window.location.href = "/user/login";
-                    }
-                    else {
+                    } else {
                         this.userId = data.oid;
                         this.userName = data.name;
                         console.log(this.userId)
@@ -3999,14 +4575,13 @@ var vue = new Vue({
 
                         $("#author").val(this.userName);
 
-                        var index=window.sessionStorage.getItem("index");
+                        var index = window.sessionStorage.getItem("index");
                         if (index != null && index != undefined && index != "" && index != NaN) {
-                            this.defaultActive=index;
-                            this.handleSelect(index,null);
+                            this.defaultActive = index;
+                            this.handleSelect(index, null);
                             window.sessionStorage.removeItem("index");
 
-                        }
-                        else {
+                        } else {
                             this.menuClick(1);
                         }
 
@@ -4030,40 +4605,37 @@ var vue = new Vue({
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
+            showRemove: true, //显示移除按钮
+            showPreview: true, //是否显示预览
             showCaption: false,//是否显示标题
             browseClass: "btn btn-primary", //按钮样式
 
             maxFileSize: 10000,
             maxFilesNum: 10,
             enctype: 'multipart/form-data',
-            validateInitialCount:true,
+            validateInitialCount: true,
             msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
             //allowedFileTypes: ['image', 'video', 'flash'],
             slugCallback: function (filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+        }).on('filepreupload', function (event, data, previewId, index) {     //上传中
             // console.log('文件正在上传');
         }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
             var form = data.form, files = data.files, extra = data.extra,
                 response = data.response, reader = data.reader;
-            if(response!=null){
+            if (response != null) {
                 // alert("数据上传成功")
             }
             //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
+            that.sourceStoreId = response.data;
             // console.log(response);//打印出返回的json
             // console.log(response.status);//打印出路径
 
 
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
             // console.log('文件上传失败！'+data.status);
         });
-
-
-
 
 
         //上传数据相关
@@ -4073,35 +4645,35 @@ var vue = new Vue({
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
+            showRemove: true, //显示移除按钮
+            showPreview: true, //是否显示预览
             showCaption: false,//是否显示标题
             browseClass: "btn btn-primary", //按钮样式
 
             maxFileSize: 10000,
             maxFilesNum: 10,
             enctype: 'multipart/form-data',
-            validateInitialCount:true,
+            validateInitialCount: true,
             msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
             //allowedFileTypes: ['image', 'video', 'flash'],
             slugCallback: function (filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+        }).on('filepreupload', function (event, data, previewId, index) {     //上传中
             // console.log('文件正在上传');
         }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
             var form = data.form, files = data.files, extra = data.extra,
                 response = data.response, reader = data.reader;
-            if(response!=null){
+            if (response != null) {
                 // alert("数据上传成功")
             }
             //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
+            that.sourceStoreId = response.data;
             // console.log(response);//打印出返回的json
             // console.log(response.status);//打印出路径
 
 
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
             // console.log('文件上传失败！'+data.status);
         });
 
@@ -4111,40 +4683,39 @@ var vue = new Vue({
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
+            showRemove: true, //显示移除按钮
+            showPreview: true, //是否显示预览
             showCaption: false,//是否显示标题
             browseClass: "btn btn-primary", //按钮样式
 
             maxFileSize: 10000,
             maxFilesNum: 10,
             enctype: 'multipart/form-data',
-            validateInitialCount:true,
+            validateInitialCount: true,
             msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
             //allowedFileTypes: ['image', 'video', 'flash'],
             slugCallback: function (filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+        }).on('filepreupload', function (event, data, previewId, index) {     //上传中
             // console.log('文件正在上传');
         }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
             var form = data.form, files = data.files, extra = data.extra,
                 response = data.response, reader = data.reader;
-            if(response!=null){
+            if (response != null) {
                 // alert("数据上传成功")
             }
             //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
+            that.sourceStoreId = response.data;
 
 
             // console.log(response);//打印出返回的json
             // console.log(response.status);//打印出路径
 
 
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
             // console.log('文件上传失败！'+data.status);
         });
-
 
 
         //上传数据相关
@@ -4154,56 +4725,50 @@ var vue = new Vue({
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
-            showCaption: false,//是否显示标题
+            showRemove: true, //显示移除按钮
+            showPreview: true, //是否显示预览
+            showCaption: true,//是否显示标题
             browseClass: "btn btn-primary", //按钮样式
-
             maxFileSize: 10000,
             maxFilesNum: 10,
             enctype: 'multipart/form-data',
-            validateInitialCount:true,
-            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            validateInitialCount: true,
+            msgFilesTooMany: "You have chosen ({n}) files, more than {m} files！",
             //allowedFileTypes: ['image', 'video', 'flash'],
             slugCallback: function (filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+        }).on('filepreupload', function (event, data, previewId, index) {     //上传中
             // console.log('文件正在上传');
         }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
             var form = data.form, files = data.files, extra = data.extra,
                 response = data.response, reader = data.reader;
-            if(response!=null){
+            if (response != null) {
                 // alert("数据上传成功")
             }
             //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
+            that.sourceStoreId = response.data;
             // console.log(response);//打印出返回的json
             // console.log(response.status);//打印出路径
 
 
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
             // console.log('文件上传失败！'+data.status);
         });
 
 
-
-
-
-
-
-
         $('#tree').treeview({data: this.getTree()});
 
-        $('#tree').on('nodeSelected', function(event, data) {
-            var parent=$('#tree').treeview('getNode', data.parentId);
-            if($("#classification").val()!=null){
+        $('#tree').on('nodeSelected', function (event, data) {
+            var parent = $('#tree').treeview('getNode', data.parentId);
+            if ($("#classification").val() != null) {
                 $("#classification").val('')
             }
             that.classif.push(data.text);
 
             $("#classification").val(that.classif);
         });
+
         tinymce.init({
             selector: "textarea#detail",
             height: 205,
@@ -4262,7 +4827,7 @@ var vue = new Vue({
                         if ($("#dataname").val().length == 0 || that.classif.length == 0 || $("#keywords").tagsinput('items').length == 0) {
                             alert('Attention:Please complete data information!');
                             return false;
-                        }else {
+                        } else {
                             return true;
                         }
 
@@ -4311,7 +4876,9 @@ var vue = new Vue({
 
 
         //authorship
-        $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
+        $(document).on("click", ".author_close", function () {
+            $(this).parents(".panel").eq(0).remove();
+        });
 
 
         //作者添加
@@ -4376,12 +4943,10 @@ var vue = new Vue({
 
             if ($(this).val()) {
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html($(this).val());
-            }
-            else {
+            } else {
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
             }
         })
-
 
 
     }
@@ -4392,7 +4957,7 @@ var vue = new Vue({
 $(function () {
 
     //数据项点击样式事件
-    $(".filecontent .el-card").on('click',function (e) {
+    $(".filecontent .el-card").on('click', function (e) {
 
         $(".filecontent .browsermenu").hide();
 
@@ -4409,10 +4974,9 @@ $(function () {
         e.preventDefault();
 
 
-
         $(".browsermenu").css({
-            "left":e.pageX,
-            "top":e.pageY
+            "left": e.pageX,
+            "top": e.pageY
         }).show();
 
 
@@ -4426,7 +4990,7 @@ $(function () {
     });
 
     //搜索结果样式效果和菜单事件
-    $("#browsercont").on('click',function (e) {
+    $("#browsercont").on('click', function (e) {
 
         $(".el-card.dataitemisol.is-never-shadow.sresult").click(function () {
             $(this).addClass("clickdataitem");
@@ -4439,21 +5003,22 @@ $(function () {
         $(".el-card.dataitemisol.is-never-shadow.sresult").contextmenu(function () {
 
             $(".browsermenu").css({
-                "left":e.pageX,
-                "top":e.pageY
+                "left": e.pageX,
+                "top": e.pageY
             }).show();
 
         })
 
         //光标移入输入框隐藏数据项右键菜单
-        $("#searchinput").on("mouseenter",function () {
+        $("#searchinput").on("mouseenter", function () {
             $(".browsermenu").hide();
         });
-
-
-
     });
 
+    $('body').click((e) => {
+        $('.wzhRightMenu').animate({height: '0'}, 50);
+
+    })
 
 
 })

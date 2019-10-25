@@ -10,8 +10,10 @@ import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.support.TaskData;
+import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.TaskService;
+import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,9 @@ public class TaskRestController {
     TaskService taskService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     ComputableModelService computableModelService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -51,6 +56,45 @@ public class TaskRestController {
             return modelAndView;
         }
 
+    }
+
+//    @RequestMapping(value="/renameTag",method = RequestMethod.POST)
+//    JsonResult renameTag(@RequestParam(value="taskId", required = false) String taskId,@RequestParam(value="outputs[][statename]", required = false) List<TaskData> outputs
+//                         ,HttpServletRequest request){
+//        System.out.println(outputs);
+//        HttpSession session=request.getSession();
+//        if(session.getAttribute("uid")==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        return ResultUtils.success(taskService.renameTag(taskId,outputs));
+//    }
+
+    @RequestMapping(value = "/output/{id}", method = RequestMethod.GET)
+    ModelAndView getTaskOutput(@PathVariable("id") String id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("uid") == null) {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("login");
+            modelAndView.addObject("unlogged", "1");
+            return modelAndView;
+        } else {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("taskOutput");
+            modelAndView.addObject("logged", "0");
+            return modelAndView;
+        }
+
+    }
+
+    @RequestMapping(value = "/TaskOutputInit/{id}", method = RequestMethod.GET)
+    JsonResult initTaskOutput(@PathVariable("id") String ids, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String userName = request.getSession().getAttribute("uid").toString();
+            return ResultUtils.success(taskService.initTaskOutput(ids, userName));
+        }
     }
 
 //    @RequestMapping(value="/info",method = RequestMethod.GET)
@@ -83,6 +127,12 @@ public class TaskRestController {
         }
     }
 
+    @RequestMapping(value="/getTaskByTaskId",method = RequestMethod.GET)
+    public JsonResult getTaskByTaskId(@RequestParam(value="id") String taskId){
+        return ResultUtils.success(taskService.findByTaskId(taskId));
+
+    }
+
     @RequestMapping (value="/searchTasksByUserId",method = RequestMethod.GET)
     public JsonResult searchModelItemsByUserId(HttpServletRequest request,
                                                @RequestParam(value="searchText") String searchText,
@@ -113,6 +163,21 @@ public class TaskRestController {
         else {
             String username = session.getAttribute("uid").toString();
             return ResultUtils.success(taskService.getTasksByUserId(username,page,sortType,sortAsc));
+        }
+    }
+
+    @RequestMapping(value = "/getTasksByUserIdNoPage", method = RequestMethod.GET)
+    JsonResult getTasksByUserIdNoPage(HttpServletRequest request,
+                                @RequestParam(value="sortType") String sortType,
+                                @RequestParam(value="asc") int sortAsc){
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getTasksByUserId(username,sortType,sortAsc));
         }
     }
 
@@ -162,6 +227,14 @@ public class TaskRestController {
 //                }
 
                 taskService.save(task);
+                UserTaskInfo userTaskInfo=new UserTaskInfo();
+                userTaskInfo.setCreateTime(task.getRunTime());
+                userTaskInfo.setModelName(task.getComputableName());
+                userTaskInfo.setTaskId(task.getTaskId());
+
+                //存入用户信息记录
+                String msg= userService.addTaskInfo(username,userTaskInfo);
+                result=result.concat("&").concat(msg);
 
                 return ResultUtils.success(result);
             }

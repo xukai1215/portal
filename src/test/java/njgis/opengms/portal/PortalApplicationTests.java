@@ -75,8 +75,8 @@ public class PortalApplicationTests {
         User user=userDao.findFirstByUserName("njgis");
         List<FileMeta> fileContainer=new ArrayList<>();
 
-        fileContainer.add(new FileMeta(true,UUID.randomUUID().toString(),"123","","",new ArrayList<>()));
-        fileContainer.add(new FileMeta(false,"id2","1234","pdf","http://",new ArrayList<>()));
+        fileContainer.add(new FileMeta(true,false,UUID.randomUUID().toString(),"fa","123","","",new ArrayList<>()));
+        fileContainer.add(new FileMeta(false,false,"id2","ff","1234","pdf","http://",new ArrayList<>()));
 
         user.setFileContainer(fileContainer);
 
@@ -194,6 +194,13 @@ public class PortalApplicationTests {
             if(user.getUpdateTime()==null){
                 Date updateTime=user.getCreateTime();
                 user.setUpdateTime(updateTime);
+                userDao.save(user);
+                Utils.count();
+            }
+
+            if(user.getRunTask()==null){
+                List<UserTaskInfo> userTaskInfo=new ArrayList<>();
+                user.setRunTask(userTaskInfo);
                 userDao.save(user);
                 Utils.count();
             }

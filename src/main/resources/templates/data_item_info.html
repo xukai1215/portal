@@ -188,10 +188,12 @@
                             </el-row>
                             <el-row>
                                 <el-col :span="2">&nbsp</el-col>
-                                <el-col :span="20">
+                                <el-col  :span="20" style="display: flex;justify-content: center">
 
-                                    <p style="text-align: center;word-break: break-all;"
-                                       th:text="${item.name}+(${item.suffix}!='unknow'?${item.suffix}:'')"></p>
+                                    <p style="text-align: center;word-break: break-all;" th:text="${item.name}"></p>
+                                    <p th:if="${item.suffix}!='unknow'">.</p>
+                                    <p th:text="${item.suffix}!='unknow'?${item.suffix}:''"></p>
+
                                 </el-col>
                                 <el-col :span="2">&nbsp</el-col>
 

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Model Running Output | OpenGMS</title>
+
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <!--<link rel="stylesheet" href="/static/css/other/computable-test.css">-->
+    <!--<link rel="stylesheet" href="/static/css/other/jquery.gritter.css">-->
+    <!--<link rel="stylesheet" href="/static/css/page/logical_model.css">-->
+    <link rel="stylesheet" href="/static/haha/css/style.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <style>
+
+        input[type=file] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+    <div class="taskMain">
+        <el-row type="flex" justify="space-around">
+            <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">
+                <div id="introContainer" class="slider scrollbar" :class="isFixed== true?'fixed':''">
+                    <div class="introHeader">
+                        <div class="image">
+                            <i class="fa fa-database"></i>
+                            <!--<img src="/static/haha/img/default.png">-->
+                        </div>
+                        <div>
+                            <h3 class="model_title"> {{info.modelInfo.name}}</h3>
+                            <span  >Contributed by <span  style="cursor: pointer; font-size: 2rem;"
+                                                          @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+<!--                        <el-button plain type="primary" @click="loadTest('1')" :disabled="!info.modelInfo.hasTest"-->
+<!--                                   style="min-width: 120px">-->
+<!--                            Load test data-->
+<!--                        </el-button>-->
+
+
+<!--                        <el-button plain type="primary" @click="invoke()" style="min-width: 121px">-->
+<!--                            <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke-->
+<!--                        </el-button>-->
+
+                    </div>
+                    <div class="introContent">
+                        <h4 class="desc-title">Introduction</h4>
+                        <p class="desc">{{info.modelInfo.des}}</p>
+                        <br>
+                        <span class="model_date">Updated at <span style="font-weight: 600">{{dateFormat(info.modelInfo.date)}}</span></span>
+                    </div>
+                </div>
+            </el-col>
+            <div class="colBorder"></div>
+            <el-col :span="18" style="margin-left: 8px">
+                <div class="content">
+                    <div class="_main">
+                        <el-row class="_title" >
+                            <el-row type="flex" align="middle">
+                                <i class="fa fa-cogs"></i>
+                                <p style="font-size: 18px;margin-bottom: 0">&nbsp&nbspOut put Data</p>
+                            </el-row>
+
+                        </el-row>
+
+                        <el-row >
+                            <el-row type="flex" class="state-container" v-for="(state,index) in info.modelInfo.states" :key="index"
+                                    justify="start" style="flex-wrap:wrap">
+                                <div class="leftContainer">
+                                    <div class="modelState">
+                                        <p class="state-name"> {{state.name}}</p>
+                                        <p class="state-desc"> {{state.desc}}</p>
+
+                                    </div>
+                                </div>
+                                <div class="dataContainer">
+                                    <div class="_params-group">
+                                        <el-row v-if="outEventList(state).length!==0" class="_title">Output</el-row>
+                                        <div class="_items">
+                                            <el-row v-for="(modelOutEvent,outEventIndex) in outEventList(state)"
+                                                    :key="outEventIndex" class="_item">
+                                                <el-row>
+                                                    <el-col :span="9" class="_event-desc">
+                                                      <span class="event-name" title="modelOutEvent.eventName">
+                                                        {{modelOutEvent.eventName}}
+                                                    </span>
+                                                    </el-col>
+                                                    <el-col :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
+                                                        <el-input id="dataNameInput" v-if="output.event==modelOutEvent.eventName" class="model-input" :value="output.tag"
+                                                                  readonly>
+                                                        </el-input>
+                                                    </el-col>
+                                                    <el-col :span="5">
+                                                        <div class="_btn-group" v-for="output in info.taskInfo.outputs">
+                                                            <el-button v-if="output.event==modelOutEvent.eventName" plain round type="success"
+                                                                       @click="share(output.url)" >
+                                                                <i class="fa fa-share-square-o"></i>
+                                                            </el-button>
+                                                            <el-button v-if="output.event==modelOutEvent.eventName" plain round type="warning"
+                                                                       @click="download(output)" >
+                                                                <i class="fa fa-download"></i>
+                                                            </el-button>
+
+                                                        </div>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-row>
+                                                    <p class="event-desc" :title="modelOutEvent.eventDesc">
+                                                        {{modelOutEvent.eventDesc}}</p>
+                                                </el-row>
+
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </el-row>
+
+                        </el-row>
+
+<!--                        <el-dialog title="Rename Output Data Tag" :visible.sync="renameIndex" width="40%">-->
+<!--                            <h4>Data Tag: </h4>-->
+<!--                            <el-input id="outputRenameInput" v-model="outputTag"></el-input>-->
+<!--                            <span slot="footer" class="dialog-footer">-->
+<!--                                <el-button slot="trigger" type="primary" @click="renameTag">Confirm</el-button>-->
+<!--                                <el-button slot="trigger" type="warning" @click="renameIndex=false">Cancel</el-button>-->
+<!--                            </span>-->
+<!--                        </el-dialog>-->
+
+                        <el-dialog title="Share My Output Data" :visible.sync="shareIndex" width="40%">
+                            <h4>url: </h4>
+                            <el-input :value="downloadUrl" type="textarea">
+                            </el-input>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button slot="trigger" type="primary" @click="copyLink" :data-clipboard-text="downloadUrl"
+                                           class="copyLinkBtn">Copy Link</el-button>
+                                <el-button slot="trigger" type="warning" @click="shareIndex=false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
+
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+</body>
+
+<!--<script src="/static/js/common/knockout-3.4.2.js"></script>-->
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+
+<!--<script src="/static/js/common/jquery.gritter.min.js"></script>-->
+<!--<script src="/static/js/common/lodash.js"></script>-->
+<script src="/static/js/common/bootstrap.js"></script>
+<!--<script src="/static/js/common/bootstrap-treeview.js"></script>-->
+
+<!--<script type="text/javascript">-->
+<!--mxBasePath = '/static/MxGraph/'-->
+<!--</script>-->
+<!--<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>-->
+<!--<script type="text/javascript" src="/static/js/common/computableEditorTest.js"></script>-->
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/clipboard.min.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+<script src="/static/js/page/taskOutput.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+</html>

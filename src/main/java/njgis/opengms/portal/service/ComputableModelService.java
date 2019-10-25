@@ -37,6 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.IOUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -84,7 +86,7 @@ public class ComputableModelService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
-    public ModelAndView getPage(String id) {
+    public ModelAndView getPage(String id, HttpServletRequest httpServletRequest) {
         //条目信息
         try {
 
@@ -174,27 +176,41 @@ public class ComputableModelService {
                 }
             }
 
+            HttpSession session = httpServletRequest.getSession();
 
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("computable_model");
-            modelAndView.addObject("modelInfo", modelInfo);
-            modelAndView.addObject("classifications", classResult);
-            modelAndView.addObject("date", dateResult);
-            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
-            modelAndView.addObject("user", userJson);
-            modelAndView.addObject("authorship", authorshipString);
-            modelAndView.addObject("resources", resourceArray);
-            JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
-            if (mdlJson != null) {
-                JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
-                JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
-                modelAndView.addObject("behavior", behavior);
+            if (session.getAttribute("uid") == null) {
+                ModelAndView modelAndView = new ModelAndView();
+                modelAndView.setViewName("login");
+                modelAndView.addObject("unlogged", "1");
+                return modelAndView;
+            } else {
+                ModelAndView modelAndView = new ModelAndView();
+
+                modelAndView.setViewName("computable_model");
+                modelAndView.addObject("logged", "0");
+                modelAndView.setViewName("computable_model");
+                modelAndView.addObject("modelInfo", modelInfo);
+                modelAndView.addObject("classifications", classResult);
+                modelAndView.addObject("date", dateResult);
+                modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+                modelAndView.addObject("user", userJson);
+                modelAndView.addObject("authorship", authorshipString);
+                modelAndView.addObject("resources", resourceArray);
+                JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
+                if (mdlJson != null) {
+                    JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
+                    JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
+                    modelAndView.addObject("behavior", behavior);
+                }
+                modelAndView.addObject("loadPath", htmlLoadPath);
+                modelAndView.addObject("lastModifier", modifierJson);
+                modelAndView.addObject("lastModifyTime", lastModifyTime);
+
+
+
+                return modelAndView;
+
             }
-            modelAndView.addObject("loadPath", htmlLoadPath);
-            modelAndView.addObject("lastModifier", modifierJson);
-            modelAndView.addObject("lastModifyTime", lastModifyTime);
-
-            return modelAndView;
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

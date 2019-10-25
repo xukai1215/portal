@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.service.UserService;
@@ -80,6 +81,18 @@ public class UserRestController {
         }
 
         return "0";
+    }
+
+
+    @RequestMapping(value="/addTaskInfo", method = RequestMethod.POST)
+    public JsonResult addTaskInfo(@RequestBody UserTaskInfo userTaskInfo, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName=session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            return ResultUtils.success(userService.addTaskInfo(userName,userTaskInfo));
+        }
     }
 
     @RequestMapping(value = "/out", method = RequestMethod.GET)
@@ -221,6 +234,24 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/getUserTaskInfoa", method = RequestMethod.GET)
+    public JsonResult getUserTaskInfoa(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        JSONObject jsonObject = new JSONObject();
+        if(session.getAttribute("uid")==null){
+            jsonObject.put("result","error");
+            jsonObject.put("message","please login");
+
+            return ResultUtils.success(jsonObject);
+
+        }else{
+
+            String userId = session.getAttribute("uid").toString();
+            JSONObject result = userService.getUserInfo(userId);
+            return ResultUtils.success(result);
+        }
+    }
+
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
     public JsonResult getUser(HttpServletRequest req,@RequestParam String oid) {
         HttpSession session = req.getSession();
@@ -330,7 +361,6 @@ public class UserRestController {
 
     @RequestMapping(value="/updateUserIntro",method = RequestMethod.POST)
     JsonResult updateUserDescription(@RequestBody UserIntroDTO userIntroDTO,HttpServletRequest httpServletRequest){
-        System.out.println(userIntroDTO);
         String description=userIntroDTO.getDescription();
         List<String> researchInterests=userIntroDTO.getResearchInterests();
         List<String> subjectAreas=userIntroDTO.getSubjectAreas();
@@ -478,11 +508,26 @@ public class UserRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value="/getFolderAndFile",method = RequestMethod.GET)
+    JsonResult getFolder7File(HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        Object object=httpSession.getAttribute("uid");
+        if(object==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=object.toString();
+        JSONArray result=userService.getFolder7File(userName);
+
+        return ResultUtils.success(result);
+    }
+
     @RequestMapping(value="/addFolder",method = RequestMethod.POST)
     JsonResult addFolder(@RequestParam("paths[]") List<String> paths,
                          @RequestParam("name") String name,
                          HttpServletRequest httpServletRequest){
 
+        System.out.print(paths);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName= Utils.checkLoginStatus(httpSession);
         if(userName==null){
@@ -492,6 +537,23 @@ public class UserRestController {
 
         return ResultUtils.success(result);
     }
+
+//    @RequestMapping(value="/addFile",method = RequestMethod.POST)
+//    JsonResult addFile(@RequestParam("paths[]") List<String> paths,
+//                         @RequestParam("name") String name,
+//                         @RequestParam("url") String url,
+//                         HttpServletRequest httpServletRequest){
+//
+//        System.out.print(paths);
+//        HttpSession httpSession=httpServletRequest.getSession();
+//        String userName= Utils.checkLoginStatus(httpSession);
+//        if(userName==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        String result=userService.addFile(paths,name,userName,url);
+//
+//        return ResultUtils.success(result);
+//    }
 
     @RequestMapping(value="/forkData",method = RequestMethod.POST)
     JsonResult forkData(@RequestParam("paths[]") List<String> paths,

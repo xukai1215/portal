@@ -89,7 +89,7 @@ var  data_item_info= new Vue({
             }],
 
         }
-        
+
     } ,
     methods: {
 
@@ -126,6 +126,7 @@ var  data_item_info= new Vue({
                 paths.push(node.key);
                 node=node.parent;
             }
+            console.log(paths)
 
             this.$prompt(null, 'Enter Folder Name', {
                 confirmButtonText: 'OK',

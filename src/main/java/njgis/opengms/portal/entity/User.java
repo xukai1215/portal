@@ -49,6 +49,8 @@ public class User {
 //    String lab;
     List<Project> projects;
 
+    List<UserTaskInfo> runTask;
+
     List<FileMeta> fileContainer;
 
     int modelItems;

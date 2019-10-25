@@ -373,6 +373,7 @@ public class UserService {
         userInfo.put("affiliation",user.getAffiliation());
         userInfo.put("eduExperiences",user.getEducationExperiences());
         userInfo.put("awdHonors",user.getAwardsHonors());
+        userInfo.put("runTask",user.getRunTask());
         userInfo.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
 
         return userInfo;
@@ -401,7 +402,7 @@ public class UserService {
             User user=userDao.findFirstByUserName(userName);
             if(user!=null){
                 user.setDescription(description);
-                System.out.println("1"+userDao.save(user));
+                userDao.save(user);
                 return "success";
             }
             else
@@ -420,7 +421,6 @@ public class UserService {
                 user.setResearchInterests(researchInterests);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
-                System.out.println("2"+userDao.save(user));
                 return "success";
             }
             else
@@ -477,7 +477,6 @@ public class UserService {
                 user.setSubjectAreas(subjectAreas);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
-                System.out.println("3"+userDao.save(user));
                 return "success";
             }
             else
@@ -563,21 +562,55 @@ public class UserService {
         return modelAndView;
     }
 
+    public String addTaskInfo(String userName, UserTaskInfo userTaskInfo){
+        try {
+            User user =userDao.findFirstByUserName(userName);
+            if(user!=null){
+                List<UserTaskInfo>runTask= user.getRunTask();
+                runTask.add(userTaskInfo);
+                Date now=new Date();
+
+                user.setRunTask(runTask);
+                user.setUpdateTime(now);
+                System.out.println(userDao.save(user));
+                return "add taskInfo suc";
+            }
+            else
+                return "no user";
+
+        }catch(Exception e){
+            return "fail";
+        }
+
+
+    }
+
     public String addFolder(List<String> paths,String name,String userName){
         User user=userDao.findFirstByUserName(userName);
 
         String id=UUID.randomUUID().toString();
-        user.setFileContainer(aFolder(paths,user.getFileContainer(),name,id));
+        user.setFileContainer(aFolder(paths,user.getFileContainer(),name,id,"0"));
 
         userDao.save(user);
 
         return id;
     }
 
-    private List<FileMeta> aFolder(List<String> paths,List<FileMeta> fileMetaList,String name,String id){
+    public String addFile(List<String> paths,String name,String userName){
+        User user=userDao.findFirstByUserName(userName);
+
+        String id=UUID.randomUUID().toString();
+        user.setFileContainer(aFolder(paths,user.getFileContainer(),name,id,"0"));
+
+        userDao.save(user);
+
+        return id;
+    }
+
+    private List<FileMeta> aFolder(List<String> paths,List<FileMeta> fileMetaList,String name,String id,String father){
 
         if(paths.size()==0){
-            fileMetaList.add(new FileMeta(true,id,name,"","",new ArrayList<>()));
+            fileMetaList.add(new FileMeta(true,false,id,father,name,"","",new ArrayList<>()));
         }
         else {
             // pop
@@ -586,7 +619,7 @@ public class UserService {
                 FileMeta fileMeta = fileMetaList.get(i);
                 if (fileMeta.getId().equals(path)) {
 
-                    fileMeta.setContent(aFolder(paths, fileMeta.getContent(),name,id));
+                    fileMeta.setContent(aFolder(paths, fileMeta.getContent(),name,id,path));
                     fileMetaList.set(i,fileMeta);
                     break;
                 }
@@ -600,7 +633,8 @@ public class UserService {
         List<FileMeta> fileMetaList=user.getFileContainer();
 
         if(fileMetaList==null) {
-            FileMeta fileMeta=new FileMeta(true,UUID.randomUUID().toString(),"My Data","","",new ArrayList<>());
+
+            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
             fileMetaList=new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -632,8 +666,59 @@ public class UserService {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", fileMeta.getId());
                     jsonObject.put("label", fileMeta.getName());
-
+                    jsonObject.put("package",fileMeta.getIsFolder());
+                    jsonObject.put("father",fileMeta.getFather());
                     jsonObject.put("children", gFolder(fileMeta.getContent()));
+                    System.out.println(fileMeta.getContent());
+                    parent.add(jsonObject);
+                }
+            }
+        }
+        return parent;
+    }
+
+    public JSONArray getFolder7File(String userName){
+        User user=userDao.findFirstByUserName(userName);
+        List<FileMeta> fileMetaList=user.getFileContainer();
+
+        if(fileMetaList==null) {
+
+            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
+            fileMetaList=new ArrayList<>();
+            fileMetaList.add(fileMeta);
+            user.setFileContainer(fileMetaList);
+            userDao.save(user);
+        }
+
+
+        JSONArray content=new JSONArray();
+        JSONObject obj=new JSONObject();
+        obj.put("id", "0");
+        obj.put("label", "All Folder");
+        obj.put("children", gAllFile(fileMetaList));
+
+        content.add(obj);
+
+        return content;
+
+    }
+
+    private JSONArray gAllFile(List<FileMeta> fileMetaList){
+
+
+        JSONArray parent=new JSONArray();
+
+        if(fileMetaList.size()!=0) {
+            for (int i = 0; i < fileMetaList.size(); i++) {
+                FileMeta fileMeta = fileMetaList.get(i);
+                if (fileMeta.getId()!=null) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", fileMeta.getId());
+                    jsonObject.put("label", fileMeta.getName());
+                    jsonObject.put("package",fileMeta.getIsFolder());
+                    jsonObject.put("father",fileMeta.getFather());
+                    jsonObject.put("suffix",fileMeta.getSuffix());
+                    jsonObject.put("children", gAllFile(fileMeta.getContent()));
 
                     parent.add(jsonObject);
                 }
@@ -672,7 +757,8 @@ public class UserService {
                             }
                         }
                         if(!exist) {
-                            FileMeta fileMeta = new FileMeta(false, id, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), null);
+                            String father=paths.get(0);
+                            FileMeta fileMeta = new FileMeta(false,false, id,father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), null);
                             fileMetaList.add(fileMeta);
                         }
                         break;
