@@ -567,6 +567,10 @@ public class UserRestController {
             return ResultUtils.error(-1,"no login");
         }
 
+        if(paths.get(0).equals("root")){
+            paths.remove(0);
+        }
+
         String result=userService.forkData(paths,dataIds,dataItemId,userName);
 
         return ResultUtils.success();

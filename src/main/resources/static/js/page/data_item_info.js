@@ -176,6 +176,7 @@ var  data_item_info= new Vue({
                 paths.push(node.key);
                 node=node.parent;
             }
+            paths=paths.length==0?["root"]:paths;
 
             let urls=window.location.href.split("/");
             let itemId=urls[urls.length-1].trim();

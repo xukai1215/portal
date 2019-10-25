@@ -3476,7 +3476,7 @@ var vue = new Vue({
                 userOid: this.userId,
                 page: this.page,
                 pagesize: this.pageSize,
-                asc: this.sortAsc
+                asc: -1
             }
 
             this.loading = true

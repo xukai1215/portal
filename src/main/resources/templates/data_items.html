@@ -194,16 +194,22 @@
             <div class="el-col el-col-18"   >
                 <div class="searcherPanel">
 
-
-                    <div class="input-group">
-                        <input type="text" placeholder="Search data here..." data-role="tagsinput" class="form-control"  id="searchBox" @keyup.enter.native="search()"   >
-
-                        <span class="input-group-btn">
-						<button class="btn btn-primary" @click="search()" type="button">
-                            <i class="glyphicon glyphicon-search"></i>&nbsp;Search
-						</button>
-					</span>
+                    <div class="searcherPanel">
+                        <div class="searcherInputPanel" @keydown.enter="search()">
+                            <input id="searchBox" type="text" placeholder="Data Item Name..." v-model="searchText">
+                            <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
+                        </div>
                     </div>
+
+                    <!--<div class="input-group">-->
+                        <!--<input type="text" placeholder="Search data here..." data-role="tagsinput" class="form-control"  id="searchBox" @keyup.enter.native="search()"   >-->
+
+                        <!--<span class="input-group-btn">-->
+						<!--<button class="btn btn-primary" @click="search()" type="button">-->
+                            <!--<i class="glyphicon glyphicon-search"></i>&nbsp;Search-->
+						<!--</button>-->
+					<!--</span>-->
+                    <!--</div>-->
 
                 </div>
 

@@ -50,8 +50,8 @@ var data_items = new Vue({
         //文本检索
         search(){
 
-            this.startinput()
-            this.searchText=$('#searchBox').tagsinput('items')
+            // this.startinput()
+            this.searchText=$('#searchBox').val();
 
             // console.log("es "+this.searchText);
 
@@ -66,7 +66,7 @@ var data_items = new Vue({
 
             if(this.searchText.length!=0){
 
-                    this.findDto.searchContent=this.searchText;
+                    this.findDto.searchText=this.searchText;
                     this.findDto.page=1
 
                     axios.post("/dataItem/searchByName/",that.findDto)
