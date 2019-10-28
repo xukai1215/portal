@@ -596,17 +596,6 @@ public class UserService {
         return id;
     }
 
-    public String addFile(List<String> paths,String name,String userName){
-        User user=userDao.findFirstByUserName(userName);
-
-        String id=UUID.randomUUID().toString();
-        user.setFileContainer(aFolder(paths,user.getFileContainer(),name,id,"0"));
-
-        userDao.save(user);
-
-        return id;
-    }
-
     private List<FileMeta> aFolder(List<String> paths,List<FileMeta> fileMetaList,String name,String id,String father){
 
         if(paths.size()==0){
@@ -620,6 +609,39 @@ public class UserService {
                 if (fileMeta.getId().equals(path)) {
 
                     fileMeta.setContent(aFolder(paths, fileMeta.getContent(),name,id,path));
+                    fileMetaList.set(i,fileMeta);
+                    break;
+                }
+            }
+        }
+        return fileMetaList;
+    }
+
+
+    public String addFile(List<String> paths,String name,String suffix,String userName,String url){
+        User user=userDao.findFirstByUserName(userName);
+
+        String id=UUID.randomUUID().toString();
+        user.setFileContainer(aFile(paths,user.getFileContainer(),name,suffix,id,"0",url));
+
+        userDao.save(user);
+
+        return id;
+    }
+
+    private List<FileMeta> aFile(List<String> paths,List<FileMeta> fileMetaList,String name,String suffix,String id,String father,String url){
+
+        if(paths.size()==0){
+            fileMetaList.add(new FileMeta(false,true,id,father,name,suffix,url,new ArrayList<>()));
+        }
+        else {
+            // pop
+            String path = paths.remove(paths.size() - 1);
+            for (int i = 0; i < fileMetaList.size(); i++) {
+                FileMeta fileMeta = fileMetaList.get(i);
+                if (fileMeta.getId().equals(path)) {
+
+                    fileMeta.setContent(aFile(paths, fileMeta.getContent(),name,suffix,id,path,url));
                     fileMetaList.set(i,fileMeta);
                     break;
                 }
@@ -708,7 +730,7 @@ public class UserService {
 
         JSONArray parent=new JSONArray();
 
-        if(fileMetaList.size()!=0) {
+        if(fileMetaList!=null&&fileMetaList.size()!=0) {
             for (int i = 0; i < fileMetaList.size(); i++) {
                 FileMeta fileMeta = fileMetaList.get(i);
                 if (fileMeta.getId()!=null) {
@@ -718,9 +740,11 @@ public class UserService {
                     jsonObject.put("package",fileMeta.getIsFolder());
                     jsonObject.put("father",fileMeta.getFather());
                     jsonObject.put("suffix",fileMeta.getSuffix());
+                    System.out.println(fileMeta.getContent());
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
 
                     parent.add(jsonObject);
+                    System.out.println(parent);
                 }
             }
         }
@@ -733,13 +757,13 @@ public class UserService {
 
         DataItem dataItem=dataItemDao.findFirstById(itemId);
 
-        user.setFileContainer(setData(paths,user.getFileContainer(),dataIds,dataItem));
+        user.setFileContainer(setData(paths,user.getFileContainer(),dataIds,dataItem,"0"));
         userDao.save(user);
 
         return "suc";
     }
 
-    private List<FileMeta> setData(List<String> paths,List<FileMeta> fileMetaList,List<String> dataIds,DataItem dataItem){
+    private List<FileMeta> setData(List<String> paths,List<FileMeta> fileMetaList,List<String> dataIds,DataItem dataItem,String father){
 
         if(paths.size()==0){
             List<DataMeta> dataList=dataItem.getDataList();
@@ -757,7 +781,6 @@ public class UserService {
                             }
                         }
                         if(!exist) {
-                            String father=paths.get(0);
                             FileMeta fileMeta = new FileMeta(false,false, id,father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), null);
                             fileMetaList.add(fileMeta);
                         }
@@ -771,7 +794,7 @@ public class UserService {
             String id=paths.remove(paths.size()-1);
             for(FileMeta fileMeta:fileMetaList){
                 if(fileMeta.getId().equals(id)){
-                    fileMeta.setContent(setData(paths,fileMeta.getContent(),dataIds,dataItem));
+                    fileMeta.setContent(setData(paths,fileMeta.getContent(),dataIds,dataItem,id));
                 }
             }
         }

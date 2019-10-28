@@ -181,6 +181,7 @@ var  data_item_info= new Vue({
             let urls=window.location.href.split("/");
             let itemId=urls[urls.length-1].trim();
 
+            console.log(itemId)
             $.ajax({
                 type: "POST",
                 url: "/user/forkData",

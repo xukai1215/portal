@@ -36,6 +36,10 @@ public class UserRestController {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    //远程数据容器地址
+    @Value("${dataContainerIpAndPort}")
+    String dataContainerIpAndPort;
+
     @ResponseBody
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public JsonResult addUser(UserAddDTO user) throws Exception {
@@ -518,6 +522,7 @@ public class UserRestController {
         }
         String userName=object.toString();
         JSONArray result=userService.getFolder7File(userName);
+        System.out.println(result);
 
         return ResultUtils.success(result);
     }
@@ -538,22 +543,27 @@ public class UserRestController {
         return ResultUtils.success(result);
     }
 
-//    @RequestMapping(value="/addFile",method = RequestMethod.POST)
-//    JsonResult addFile(@RequestParam("paths[]") List<String> paths,
-//                         @RequestParam("name") String name,
-//                         @RequestParam("url") String url,
-//                         HttpServletRequest httpServletRequest){
-//
-//        System.out.print(paths);
-//        HttpSession httpSession=httpServletRequest.getSession();
-//        String userName= Utils.checkLoginStatus(httpSession);
-//        if(userName==null){
-//            return ResultUtils.error(-1,"no login");
-//        }
-//        String result=userService.addFile(paths,name,userName,url);
-//
-//        return ResultUtils.success(result);
-//    }
+    @RequestMapping(value="/addFile",method = RequestMethod.POST)
+    JsonResult addFile(@RequestParam("dataName") String fileName,
+                       @RequestParam("dataId") String dataId,
+                       @RequestParam("paths[]") List<String> paths,
+
+                         HttpServletRequest httpServletRequest){
+
+        System.out.print(paths);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName= Utils.checkLoginStatus(httpSession);
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String url="http://" + dataContainerIpAndPort + "/dataResource/getResources?sourceStoreId="+dataId;
+        String[] a=fileName.split("\\.");
+        String name=a[0];
+        String suffix=a[1];
+        String result=userService.addFile(paths,name,suffix,userName,url);
+
+        return ResultUtils.success(result);
+    }
 
     @RequestMapping(value="/forkData",method = RequestMethod.POST)
     JsonResult forkData(@RequestParam("paths[]") List<String> paths,
@@ -561,6 +571,9 @@ public class UserRestController {
                         @RequestParam("itemId") String dataItemId,
                         HttpServletRequest httpServletRequest){
 
+        System.out.println(paths);
+        System.out.println(dataIds);
+        System.out.println(dataItemId);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName=httpSession.getAttribute("uid").toString();
         if(userName==null){

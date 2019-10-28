@@ -1596,7 +1596,7 @@
                                         <el-input v-model="taskDataForm.name"></el-input>
                                     </el-form-item>
                                     <el-form-item label="Keywords" required>
-                                        <el-input v-model="taskDataForm.keywords" id="taskDataKeywords"></el-input>
+                                        <el-input v-model="taskDataForm.keywords" id="taskDataKeywordsAll"></el-input>
                                     </el-form-item>
                                     <el-form-item label="Overview" required>
                                         <el-input v-model="taskDataForm.description" type="textarea"
@@ -1607,7 +1607,7 @@
                         </el-card>
                         <el-card class="dataItemShare" :style="{display:(taskSharingActive==2?'block':'none')}"
                                  shadow="never">
-                    <textarea id="taskDataDetail"
+                            <textarea id="taskDataDetailAll"
                               placeholder="Input detail about the data here."></textarea>
                         </el-card>
                         <el-card class="dataItemShare" :style="{display:(taskSharingActive>=3?'block':'none')}"
@@ -1617,8 +1617,8 @@
                                 <div class="panel-body">
                                     <div class="col-md-10 col-md-offset-1">
 
-                                        <div class="panel-group " id="accordion2">
-                                            <div id="providersPanel" class="panel">
+                                        <div class="panel-group " id="accordion2All">
+                                            <div id="providersPanelAll" class="panel">
 
                                                 <div id="provider_body"
                                                      class="panel-collapse collapse in"
@@ -1766,22 +1766,21 @@
                             <!--</h3>-->
                             <!--</div>-->
                             <div>
-                                <el-card class="filebrowserfunction">
+                                <el-card class="filebrowserfunction" shadow="never">
 
-                                    <el-row id="" class="filebrowser">
+                                    <el-row id="" class="filebrowser" shadow="never">
 
-                                        <!-- 用户自己上传的数据-->
-                                        <el-col :span="15">
+                                        <el-col :span="15" shadow="never">
                                             <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
                                             <!--//todo upload-->
                                             <button id="upLoadButton" class="dwload btn btn-primary btn-md"
-                                                    data-toggle="modal"
-                                                    data-target="#managerUpload">
+                                                    data-toggle="modal" v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')"
+                                                    data-target="#managerUpload" >
                                                 <i class="glyphicon glyphicon-upload">&nbsp;upload</i>
                                             </button>
 
 
-                                            <button class="dwload btn btn-primary btn-md" @click="userDownload">
+                                            <button class="dwload btn btn-primary btn-md" v-if="downloadDataSet.length>0" @click="userDownload">
                                                 <i class="glyphicon glyphicon-download">&nbsp;download</i>
                                             </button>
 
@@ -1792,7 +1791,7 @@
 
 
                                         </el-col>
-                                        <el-col :span="9">
+                                        <el-col :span="9" style="float: right">
                                             <el-input id="searchinput"
                                                       placeholder="search input "
                                                       suffix-icon="el-icon-search"
@@ -1803,13 +1802,16 @@
                                         </el-col>
                                     </el-row>
                                 </el-card>
-                                <el-card :body-style="{ padding:'9px'}">
+                                <div class="infoBar" role="alert" id="outputDataChosen">
+                                    <div>
+                                        <span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;
+                                        <span v-if="downloadDataSetName.length==0">no data..</span>
+                                        <span v-for="item in downloadDataSetName">{{item}}, </span>
+                                    </div>
+                                    <div class="flexRowContainer">
+                                    </div>
 
-                                    <el-alert class="alert-success" role="alert" id="outputDataChosen">
-                                        <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>&nbsp;&nbsp;&nbsp;<span>{{downloadDataSetName.length!=0?downloadDataSetName:"select no data.."}}</span>
-                                    </el-alert>
-                                </el-card>
-
+                                </div>
                                 <el-row>
                                     <el-col :span="3">
                                         <el-card style="height:560px;overflow-y: auto " class="managerAsideBtn">
@@ -1841,6 +1843,7 @@
                                                         <i class="fa fa-arrow-left" style="margin-right:2px "></i>
                                                     </div>
                                                     <div class="showPathContainer" style="margin-left: 10px">
+                                                        <div>path</div>:
                                                         <div v-for="(path,index) in pathShown" :style="{color:index==pathShown.length-1?'#222222':'#666666'}"> /{{path.label}} </div>
                                                     </div>
                                                 </div>
@@ -1849,16 +1852,21 @@
                                                     Left or right click can call out some function</p>
                                             </div>
                                             <div v-if="myFileShown.length!=0" :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
-                                                 :id="generateId(key)"
+                                                 :id="generateId(key)" :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
                                                  v-for="(item,key) in myFileShown"
                                                  :key="key"
-                                                 @click="getPackageContent($event,item,key)"
+                                                 @click="singleClick($event,item)"
+                                                 @dblclick="getPackageContent($event,item,key)"
                                                  @mouseover="addDataClass($event,item)"
                                                  @mouseout="removeClass($event,item)"
-                                                 @click.right="rightMenu($event)">
+                                                 @click.right="rightMenu($event,eval)">
                                                 <el-row style="height: 80%">
-                                                    <el-col :span="6">&nbsp</el-col>
-                                                    <el-col :span="14" style="height: 100%;"><img :src="getImg(item)"
+                                                    <el-col :span="6">&nbsp
+                                                        <div class="squareSelect flexCenter" style="margin: 3px;float: inherit;">
+                                                            <i style="font-size: 16px;color:#666666" :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}" class="fa fa-check"></i>
+                                                        </div>
+                                                    </el-col>
+                                                    <el-col :span="14" style="height: 100%;"><img :src="getImg(item)" onerror=src="/static/img/filebrowser/unknow.svg"
                                                                                                   style="height: 100%;width:100%">
                                                     </el-col>
                                                     <el-col :span="4">&nbsp</el-col>
@@ -1871,7 +1879,7 @@
                                                 <!--menu item -->
                                             </div>
                                             <div class="el-card dataitemisol flexCenter" style="width: 120px;" data-toggle="modal"
-                                                 data-target="#managerUpload"
+                                                 data-target="#managerUpload" @click="uploadClick()"
                                                  v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')">
                                                 <div class="circle">
                                                     <i class="fa fa-arrow-up"></i>
@@ -1983,33 +1991,33 @@
 <!--                                                               @click="selectPathClick">Select-->
 <!--                                                    </el-button>-->
                                                 </div>
-                                                                                                <form>
+<!--                                                <form>-->
 
-                                                                                                    <div class="form-group">
-                                                                                                        <label for="fileName">fileName:</label>
-                                                                                                        <input type="text" class="form-control"
-                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."
-                                                                                                               id="managerFileName" required/>
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label for="suffix">suffix:</label>
-                                                                                                        <input type="text" class="form-control"
-                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."
-                                                                                                               id="managerFileSuffix" required/>
-                                                                                                    </div>
+<!--                                                                                                    <div class="form-group">-->
+<!--                                                                                                        <label for="fileName">fileName:</label>-->
+<!--                                                                                                        <input type="text" class="form-control"-->
+<!--                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."-->
+<!--                                                                                                               id="managerFileName" required/>-->
+<!--                                                                                                    </div>-->
+<!--                                                                                                    <div class="form-group">-->
+<!--                                                                                                        <label for="suffix">suffix:</label>-->
+<!--                                                                                                        <input type="text" class="form-control"-->
+<!--                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."-->
+<!--                                                                                                               id="managerFileSuffix" required/>-->
+<!--                                                                                                    </div>-->
 
-                                                                                                    <div class="form-group">
+<!--                                                                                                    <div class="form-group">-->
 
-                                                                                                        <label for="keywords">tags:</label><br>
-                                                                                                        <div class="bootstrap-tagsinput">
+<!--                                                                                                        <label for="keywords">tags:</label><br>-->
+<!--                                                                                                        <div class="bootstrap-tagsinput">-->
 
-                                                                                                            <input type="text" data-role="tagsinput" id="managerFileTags"
-                                                                                                                   size="1"
-                                                                                                                   required/>
-                                                                                                        </div>
-                                                                                                    </div>
+<!--                                                                                                            <input type="text" data-role="tagsinput" id="managerFileTags"-->
+<!--                                                                                                                   size="1"-->
+<!--                                                                                                                   required/>-->
+<!--                                                                                                        </div>-->
+<!--                                                                                                    </div>-->
 
-                                                                                                </form>
+<!--                                                                                                </form>-->
 <!--                                                <button class="btn btn-success pull-right" @click="uploadD">upload</button>-->
 
                                             </div>
@@ -2018,12 +2026,12 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-primary"
                                                     @click="upload_data_dataManager">
-                                                upload
+                                                Confirm
                                             </button>
 
                                             <button type="button" class="btn btn-default" data-dismiss="modal"
                                                     @click="close()">
-                                                close
+                                                Cancel
                                             </button>
                                         </div>
                                     </div><!-- /.modal-content -->
@@ -2088,10 +2096,10 @@
                                         </el-col>
                                     </el-row>
                                 </el-card>
-                                <el-card :body-style="{ padding:'9px'}">
+                                <el-card>
 
-                                    <el-alert class="alert-success" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>&nbsp;&nbsp;&nbsp;<span>{{downloadDataSetName.length!=0?downloadDataSetName:"select no data.."}}</span>
-                                    </el-alert>
+                                    <div class="alert-success" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;<span>{{downloadDataSetName.length!=0?downloadDataSetName:"no data.."}}</span>
+                                    </div>
                                 </el-card>
 
 
