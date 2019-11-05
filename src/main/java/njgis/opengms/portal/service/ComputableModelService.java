@@ -61,6 +61,9 @@ import static njgis.opengms.portal.utils.Utils.saveFiles;
 @Service
 public class ComputableModelService {
     @Autowired
+    ItemService itemService;
+
+    @Autowired
     ComputableModelDao computableModelDao;
 
     @Autowired
@@ -91,7 +94,7 @@ public class ComputableModelService {
         try {
 
             ComputableModel modelInfo = getByOid(id);
-            modelInfo.setViewCount(modelInfo.getViewCount() + 1);
+            modelInfo=(ComputableModel)itemService.recordViewCount(modelInfo);
             computableModelDao.save(modelInfo);
             //类
             JSONArray classResult = new JSONArray();

@@ -51,6 +51,9 @@ import static njgis.opengms.portal.utils.Utils.saveFiles;
 
 public class LogicalModelService {
     @Autowired
+    ItemService itemService;
+
+    @Autowired
     LogicalModelDao logicalModelDao;
 
     @Autowired
@@ -81,8 +84,7 @@ public class LogicalModelService {
     public ModelAndView getPage(String id) {
         //条目信息
         LogicalModel modelInfo = getByOid(id);
-        int viewCount = modelInfo.getViewCount();
-        modelInfo.setViewCount(++viewCount);
+        modelInfo=(LogicalModel)itemService.recordViewCount(modelInfo);
         logicalModelDao.save(modelInfo);
         //类
         JSONArray classResult = new JSONArray();

@@ -26,7 +26,8 @@ new Vue({
 
             activeIndex: '2',
             activeName: 'Computable Model',
-            activeName1: 'Data Item',
+            activeName1: 'Model Item',
+            activeName2: 'Concept & Semantic',
             activeRelatedDataName: 'Add Data Items',
             refTableData: [{
                 title: 'Anisotropic magnetotransport and exotic longitudinal linear magnetoresistance in WT e2 crystals',

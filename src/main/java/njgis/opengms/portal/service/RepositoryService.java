@@ -46,6 +46,8 @@ import java.util.*;
 
 @Service
 public class RepositoryService {
+    @Autowired
+    ItemService itemService;
 
     @Autowired
     UserService userService;
@@ -132,8 +134,9 @@ public class RepositoryService {
         modelAndView.setViewName("conceptInfo");
 
         Concept concept = conceptDao.findByOid(id);
-        modelAndView.addObject("info", concept);
-        concept.setLoadCount(concept.getLoadCount() + 1);
+
+        concept=(Concept)itemService.recordViewCount(concept);
+//        concept.setLoadCount(concept.getLoadCount() + 1);
         conceptDao.save(concept);
 
         //兼容两种格式的数据
@@ -222,6 +225,7 @@ public class RepositoryService {
             modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
+        modelAndView.addObject("info", concept);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+concept.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
@@ -459,8 +463,8 @@ public class RepositoryService {
         modelAndView.setViewName("spatialReferenceInfo");
 
         SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
-        modelAndView.addObject("info", spatialReference);
-        spatialReference.setLoadCount(spatialReference.getLoadCount() + 1);
+
+        spatialReference=(SpatialReference)itemService.recordViewCount(spatialReference);
         spatialReferenceDao.save(spatialReference);
 
 
@@ -538,6 +542,7 @@ public class RepositoryService {
             modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
+        modelAndView.addObject("info", spatialReference);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+spatialReference.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
@@ -768,8 +773,8 @@ public class RepositoryService {
         modelAndView.setViewName("templateInfo");
 
         Template template = templateDao.findByOid(id);
-        modelAndView.addObject("info", template);
-        template.setLoadCount(template.getLoadCount() + 1);
+
+        template=(Template)itemService.recordViewCount(template);
         templateDao.save(template);
 
         //兼容两种格式的数据
@@ -844,7 +849,7 @@ public class RepositoryService {
             modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
-
+        modelAndView.addObject("info", template);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+template.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
@@ -1053,8 +1058,8 @@ public class RepositoryService {
         modelAndView.setViewName("unitInfo");
 
         Unit unit = unitDao.findByOid(id);
-        modelAndView.addObject("info", unit);
-        unit.setLoadCount(unit.getLoadCount() + 1);
+
+        unit=(Unit)itemService.recordViewCount(unit);
         unitDao.save(unit);
 
         //兼容两种格式的数据
@@ -1131,7 +1136,7 @@ public class RepositoryService {
         String lastModifyTime=sdf.format(unit.getLastModifyTime());
 
 
-
+        modelAndView.addObject("info", unit);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+unit.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());

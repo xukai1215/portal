@@ -71,6 +71,41 @@ public class PortalApplicationTests {
     private String resourcePath;
 
     @Test
+    public void setViewCount(){
+//        List<ModelItem> modelItemList=modelItemDao.findAll();
+//        for(ModelItem modelItem:modelItemList){
+//            modelItemDao.save(modelItem);
+//            Utils.count();
+//        }
+
+        List<Concept> conceptList=conceptDao.findAll();
+        for(Concept concept:conceptList){
+            //concept.setViewCount(concept.getLoadCount());
+            conceptDao.save(concept);
+        }
+
+        List<SpatialReference> spatialReferenceList=spatialReferenceDao.findAll();
+        for(SpatialReference spatialReference:spatialReferenceList){
+
+            //spatialReference.setViewCount(spatialReference.getLoadCount());
+            spatialReferenceDao.save(spatialReference);
+        }
+
+        List<Template> templateList=templateDao.findAll();
+        for(Template template:templateList){
+            //template.setViewCount(template.getLoadCount());
+            templateDao.save(template);
+        }
+
+        List<Unit> unitList=unitDao.findAll();
+        for(Unit unit:unitList){
+            //unit.setViewCount(unit.getLoadCount());
+            unitDao.save(unit);
+        }
+
+    }
+
+    @Test
     public void addFolder(){
         User user=userDao.findFirstByUserName("njgis");
         List<FileMeta> fileContainer=new ArrayList<>();
