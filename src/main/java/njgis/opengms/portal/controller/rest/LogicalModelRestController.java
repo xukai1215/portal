@@ -9,6 +9,7 @@ import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.LogicalModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.service.ItemService;
 import njgis.opengms.portal.service.LogicalModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
@@ -40,6 +41,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/logicalModel")
 public class LogicalModelRestController {
+
+    @Autowired
+    ItemService itemService;
 
     @Autowired
     LogicalModelService logicalModelService;

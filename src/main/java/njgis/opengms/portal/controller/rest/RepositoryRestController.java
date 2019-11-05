@@ -775,9 +775,9 @@ public class RepositoryRestController {
         return ResultUtils.success(repositoryService.getUnitsByUserId(uid,unitFindDTO));
     }
 
-    //Contributers
+    //Contributors
     @RequestMapping(value="/contributors",method = RequestMethod.GET)
-    public ModelAndView getContributers() {
+    public ModelAndView getContributors() {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("ContributorsParticipants");

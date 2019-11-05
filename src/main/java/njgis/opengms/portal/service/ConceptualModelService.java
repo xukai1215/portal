@@ -48,6 +48,9 @@ import static njgis.opengms.portal.utils.Utils.saveFiles;
 
 public class ConceptualModelService {
     @Autowired
+    ItemService itemService;
+
+    @Autowired
     ConceptualModelDao conceptualModelDao;
 
     @Autowired
@@ -74,7 +77,9 @@ public class ConceptualModelService {
     public ModelAndView getPage(String id) {
         //条目信息
         ConceptualModel modelInfo = getByOid(id);
-        modelInfo.setViewCount(modelInfo.getViewCount() + 1);
+
+        modelInfo=(ConceptualModel)itemService.recordViewCount(modelInfo);
+
         conceptualModelDao.save(modelInfo);
         //类
         JSONArray classResult = new JSONArray();

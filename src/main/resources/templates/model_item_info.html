@@ -51,6 +51,16 @@
         [class*=el-col-]{
             float:left;
         }
+
+        .el-badge__content{
+            margin-left: 5px;
+            background-color: #bbbbbb;
+        }
+
+        .el-button.is-circle{
+            margin-left
+            padding:7px;
+        }
     </style>
 </head>
 <body>
@@ -136,21 +146,28 @@
             <div id="related_models" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Related Items</h4>
+                        <h4>Model Content & Service</h4>
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
-                    <el-tab-pane label="Model Item" name="Model Item">
-                        <div th:if="${#lists.size(modelItems)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${modelItems}">
-                                <!--<div th:text="${model.image}"></div>-->
-                                <a class="img" th:href="'/modelItem/'+${model.oid}" th:switch="${model.image}">
-                                    <img th:case="''" src="/static/img/model/model.png">
-                                    <img th:case="null" src="/static/img/model/model.png">
-                                    <img th:case="*" th:src="${model.image}">
+
+                    <el-tab-pane name="Computable Model">
+                        <div slot="label">
+                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
+                            Computable Model
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(computableModels)}">
+                            </span>
+
+                        </div>
+
+                        <div th:if="${#lists.size(computableModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${computableModels}">
+                                <a th:href="'/computableModel/'+${model.oid}" class="img">
+                                    <img src="/static/img/model/calcModel.png">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/modelItem/'+${model.oid}" target="_blank"
+                                    <a th:href="'/computableModel/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -159,23 +176,29 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
+                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
-                                Edit Related Model Item
+                                Edit Related Computable Model
                             </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(modelItems)}==0">
+                        <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related model item. You can bind model items.
+                                There is no related computable model. You can bind computable models.
                             </h5>
                             <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(1)">
+                                    style="display: inline-block;" @click="addRelation(4)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
                         </div>
+
                     </el-tab-pane>
-                    <el-tab-pane label="Conceptual Model" name="Conceptual Model">
+                    <el-tab-pane name="Conceptual Model">
+                        <div slot="label">Conceptual Model
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(conceptualModels)}">
+                            </span>
+                        </div>
                         <div th:if="${#lists.size(conceptualModels)}!=0">
                             <div class="list_panel clearfix" th:each="model:${conceptualModels}">
                                 <!--<div th:text="${model.image}"></div>-->
@@ -210,7 +233,12 @@
                             </button>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Logical Model" name="Logical Model">
+                    <el-tab-pane name="Logical Model">
+                        <div slot="label">Logical Model
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(logicalModels)}">
+                            </span>
+                        </div>
                         <div th:if="${#lists.size(logicalModels)}!=0">
                             <div class="list_panel clearfix" th:each="model:${logicalModels}">
                                 <a th:href="'/logicalModel/'+${model.oid}" th:switch="${model.image}" class="img">
@@ -243,15 +271,34 @@
                             </button>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Computable Model" name="Computable Model">
 
-                        <div th:if="${#lists.size(computableModels)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${computableModels}">
-                                <a th:href="'/computableModel/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/calcModel.png">
+
+                </el-tabs>
+            </div>
+
+            <div id="related_data" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Item</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName1" type="border-card" stretch="true">
+                    <el-tab-pane name="Model Item">
+                        <div slot="label">Model Item
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(modelItems)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(modelItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${modelItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/modelItem/'+${model.oid}" th:switch="${model.image}">
+                                    <img th:case="''" src="/static/img/model/model.png">
+                                    <img th:case="null" src="/static/img/model/model.png">
+                                    <img th:case="*" th:src="${model.image}">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/computableModel/'+${model.oid}" target="_blank"
+                                    <a th:href="'/modelItem/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -260,24 +307,76 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                            <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
-                                Edit Related Computable Model
+                                Edit Related Model Item
                             </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(computableModels)}==0">
+                        <div class="text-center" th:if="${#lists.size(modelItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can bind computable models.
+                                There is no related model item. You can bind model items.
                             </h5>
                             <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(4)">
+                                    style="display: inline-block;" @click="addRelation(1)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
                         </div>
-
                     </el-tab-pane>
-                    <el-tab-pane label="Concept & Semantic" name="Concept & Semantic">
+                    <el-tab-pane name="Data Item">
+                        <div slot="label">Data Item
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(dataItems)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(dataItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${dataItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/dataItem/'+${model.id}">
+                                    <img src="/static/img/model/data.png">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/dataItem/'+${model.id}" target="_blank"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(9)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Edit Related Data Item
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(dataItems)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related data item. You can bind data items.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(9)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+
+            <div id="related_knowledge" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Knowledge</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
+                    <el-tab-pane name="Concept & Semantic">
+                        <div slot="label">Concept & Semantic
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(concepts)}">
+                            </span>
+                        </div>
                         <div th:if="${#lists.size(concepts)}!=0">
                             <div class="list_panel clearfix" th:each="model:${concepts}">
                                 <a th:href="'/repository/concept/'+${model.oid}" class="img">
@@ -309,7 +408,12 @@
                             </button>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Spatial Reference" name="Spatial Reference">
+                    <el-tab-pane name="Spatial Reference">
+                        <div slot="label">Spatial Reference
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(spatialReferences)}">
+                            </span>
+                        </div>
                         <div th:if="${#lists.size(spatialReferences)}!=0">
                             <div class="list_panel clearfix" th:each="model:${spatialReferences}">
                                 <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
@@ -341,7 +445,12 @@
                             </button>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Data Template" name="Data Template">
+                    <el-tab-pane name="Data Template">
+                        <div slot="label">Data Template
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(templates)}">
+                            </span>
+                        </div>
                         <div th:if="${#lists.size(templates)}!=0">
                             <div class="list_panel clearfix" th:each="model:${templates}">
                                 <a th:href="'/repository/template/'+${model.oid}" class="img">
@@ -373,7 +482,12 @@
                             </button>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Unit & Metric" name="Unit & Metric">
+                    <el-tab-pane name="Unit & Metric">
+                        <div slot="label">Unit & Metric
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(units)}">
+                            </span>
+                        </div>
                         <div th:if="${#lists.size(units)}!=0">
                             <div class="list_panel clearfix" th:each="model:${units}">
                                 <a th:href="'/repository/unit/'+${model.oid}" class="img">
@@ -400,49 +514,6 @@
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(8)">
-
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                </el-tabs>
-            </div>
-
-            <div id="related_data" class="detail_block">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Related Data</h4>
-                    </div>
-                </div>
-                <el-tabs class="block_content" v-model="activeName1" type="border-card" stretch="true">
-                    <el-tab-pane label="Data Item" name="Data Item">
-                        <div th:if="${#lists.size(dataItems)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${dataItems}">
-                                <!--<div th:text="${model.image}"></div>-->
-                                <a class="img" th:href="'/dataItem/'+${model.id}">
-                                    <img src="/static/img/model/data.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/dataItem/'+${model.id}" target="_blank"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
-                            </div>
-                            <el-button @click="addRelation(9)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Data Item
-                            </el-button>
-                        </div>
-                        <div class="text-center" th:if="${#lists.size(dataItems)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related data item. You can bind data items.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(9)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -832,7 +903,7 @@
 
         <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
             <div slot="header" class="clearfix">
-                <span>Related Items</span>
+                <span>Model Content & Service</span>
 
             </div>
             <el-table

@@ -2974,9 +2974,7 @@
                             </div>
                         </div>
                         <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
-                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
-                            calculation
-                            tasks</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No calculation tasks</h4>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 text-center">
@@ -3090,7 +3088,7 @@
                         </el-collapse>
                     </el-col>
                     <el-col :span="18" class="col-md-9 col-sm-8">
-                        <el-form label-position="right" label-width="90px" :model="taskDataForm">
+                        <el-form label-position="right" label-width="95px" :model="taskDataForm">
                             <el-form-item label="Categories" required>
                                 <el-input v-model="taskDataForm.categoryText" type="textarea" rows="2"
                                           :disabled="true"></el-input>

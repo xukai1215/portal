@@ -4,11 +4,9 @@ import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.service.GeoIconService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value="/geoIcon")
 public class GeoIconController {
@@ -27,4 +25,7 @@ public class GeoIconController {
                        @RequestParam(value="sortType") String sortType){
         return ResultUtils.success(geoIconService.getGeoIconList(parentId,page,sortType));
     }
+
+//    @RequestMapping(value="/showIcon",method = RequestMethod.GET)
+
 }

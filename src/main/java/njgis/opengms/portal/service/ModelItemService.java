@@ -52,6 +52,8 @@ import java.util.regex.Pattern;
 
 public class ModelItemService {
 
+    @Autowired
+    ItemService itemService;
 
     @Autowired
     ClassificationService classificationService;
@@ -102,8 +104,11 @@ public class ModelItemService {
         //getpage函数通过id获取需要的页面
     public ModelAndView getPage(String id, HttpServletRequest request){
         //条目信息
+
         ModelItem modelInfo=getByOid(id);
-        modelInfo.setViewCount(modelInfo.getViewCount()+1);
+
+        modelInfo=(ModelItem)itemService.recordViewCount(modelInfo);
+
         modelItemDao.save(modelInfo);
         //类
         JSONArray classResult=new JSONArray();
