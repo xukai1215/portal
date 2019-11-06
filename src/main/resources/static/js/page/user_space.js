@@ -295,6 +295,8 @@ var vue = new Vue({
 
         uploadDialog:false,
 
+        uploadInPath:0,
+
     },
 
     methods: {
@@ -1103,7 +1105,7 @@ var vue = new Vue({
                             console.log(this.myFileShown)
                             // this.getFilePackage();
                             console.log(this.myFile)
-                            alert('add folder successfully')
+                            alert('Add folder successfully')
                             this.newFolderName='';
                             this.addFolderIndex=false;
 
@@ -1116,7 +1118,7 @@ var vue = new Vue({
 
         addFolderinTree(){
             let data=this.$refs.folderTree.getCurrentNode();
-            if(data===null) alert('please select a file directory')
+            if(data===null) alert('Please select a file directory')
             let node=this.$refs.folderTree.getNode(data);
 
             console.log(node);
@@ -3828,7 +3830,7 @@ var vue = new Vue({
         getImg(item) {
             let list=[]
             if(item.id==0||item.package==true)
-                return "/static/img/filebrowser/package.jpg"
+                return "/static/img/filebrowser/package.png"
             if(item.suffix=='unknow')
                 return "/static/img/filebrowser/unknow.svg"
             return "/static/img/filebrowser/" + item.suffix + ".svg"
@@ -4109,13 +4111,11 @@ var vue = new Vue({
         },
 
         //上传
-        uploadClick(){
-
+        uploadClick(index){
+            this.uploadInPath=index;
             this.uploadSource=[];
             $('#managerUpload').modal("show");
             $('#manager-upload').fileinput('clear');
-            //上传数据相关
-            this.uploadDialog=true;
         },
 
         selectFolder(){
@@ -4136,55 +4136,6 @@ var vue = new Vue({
 
 
                 });
-        },
-
-        addFolder(){
-            let data=this.$refs.folderTree.getCurrentNode();
-            let node=this.$refs.folderTree.getNode(data);
-            console.log(node);
-            let paths=[];
-            while(node.key!=undefined&&node.key!=0){
-                paths.push(node.key);
-                node=node.parent;
-            }
-
-            this.$prompt(null, 'Enter Folder Name', {
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel',
-                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-                // inputErrorMessage: '邮箱格式不正确'
-            }).then(({ value }) => {
-
-                $.ajax({
-                    type: "POST",
-                    url: "/user/addFolder",
-                    data: {paths: paths, name: value},
-                    async: true,
-                    contentType: "application/x-www-form-urlencoded",
-                    success: (json) => {
-                        if (json.code == -1) {
-                            alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
-                            window.location.href = "/user/login"
-                        }
-                        else {
-                            const newChild = {id: json.data, label: value, children: []};
-                            if (!data.children) {
-                                this.$set(data, 'children', []);
-                            }
-                            data.children.push(newChild);
-                        }
-
-                    }
-                });
-
-
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: 'Cancel'
-                });
-            });
         },
 
         confirmFolder(){
@@ -5622,8 +5573,8 @@ $(function () {
     $('#backFatherBtn').click(
         ()=>{
             console.log('11')
-            $('.fa-arrow-left').animate({marginLeft:'-6px'},175)
-            $('.fa-arrow-left').animate({marginLeft:'0'},175)
+            $('.fa-arrow-left').animate({marginLeft:'-6px'},170)
+            $('.fa-arrow-left').animate({marginLeft:'0'},170)
         }
     )
 
