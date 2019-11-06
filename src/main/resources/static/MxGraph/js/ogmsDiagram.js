@@ -13,9 +13,11 @@ function OGMSDiagram(){
     this.dataSchameWin = null;  //! Data Schame Reference window
     this.index = 1;             //! State index
     this.eventIndex = 1;        //! Event index
-    this.events_tmp = null;     //! current event group
-    this.vertexStyle = 'shape=ellipse;strokeWidth=2;fillColor=#ffffff;strokeColor=#0099CC;gradientColor=#0099CC;fontColor=black;fontStyle=1;spacingTop=14;';
-    this.edgeStyle = 'strokeWidth=3;endArrow=block;endSize=2;endFill=1;strokeColor=black;rounded=1;';
+    this.events_tmp = null;     //! current event group     "rounded=true;perimeter=ellipsePerimeter;arcSize=20"
+    this.startStyle = 'shape=ellipse;strokeWidth=2;fillColor=#329932;strokeColor=#000000;gradientColor=#329932;fontColor=black;fontStyle=1;';
+    this.endStyle = 'shape=ellipse;strokeWidth=2;fillColor=#ff3232;strokeColor=#000000;gradientColor=#ff3232;fontColor=black;fontStyle=1;';
+    this.roundedStyle = 'rounded=1;perimeter=ellipsePerimeter;arcSize=20;fillColor=#ffffff;strokeWidth=2;strokeColor=#329932;fontColor=black;fontStyle=1;';
+    this.edgeStyle = 'strokeWidth=3;endArrow=block;endSize=2;endFill=1;strokeColor=#369936;rounded=1;';
 
     this.stateDbCilck = null;
 }
@@ -56,33 +58,33 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
         dataButtons = '<input id="schameSave"  class="btn btn-primary btn-lg" type="button" value="Save" />&nbsp;&nbsp;&nbsp;' ;
     }
 
-    container.append('<div id="ogmsGraphContainer" style="overflow:hidden;width:auto;height:' + opts.height + 'px;background:url(\'' + imgGridPath + '\')">' +
+    container.append('<div id="ogmsGraphContainer" style="overflow:unset;width:auto;height:' + opts.height + 'px;background:url(\'' + imgGridPath + '\')">' +
                 '</div>' + 
                 imgState + 
                 debugBtn + 
                 '<div id="ogmsStateContent">' + 
                     '<br />' + 
                     '<form class="form-horizontal">' + 
-                        '<div class="form-group mxWinPanel">' + 
-                            '<label for="stateId" class="col-sm-3 control-label">ID</label>' + 
-                            '<div class="col-sm-8">' + 
-                            '<input type="text" class="form-control" ' + enable + ' id="stateId" placeholder="ID" />' + 
-                            '</div>' + 
-                        '</div>' + 
+                        // '<div class="form-group mxWinPanel">' +
+                        //     '<label for="stateId" class="col-sm-3 control-label">ID</label>' +
+                        //     '<div class="col-sm-8">' +
+                        //     '<input type="text" class="form-control" ' + enable + ' id="stateId" placeholder="ID" />' +
+                        //     '</div>' +
+                        // '</div>' +
                         '<div class="form-group mxWinPanel">' + 
                             '<label for="stateName" class="col-sm-3 control-label">Name</label>' + 
                             '<div class="col-sm-8">' + 
                                 '<input type="text" class="form-control" ' + enable + ' id="stateName" placeholder="Name" />' + 
                             '</div>' + 
                         '</div>' + 
-                        '<div class="form-group mxWinPanel">' + 
-                            '<label for="stateType" class="col-sm-3 control-label">Type</label>' + 
-                            '<div class="col-sm-8">' + 
-                                '<select id="stateType" ' + enable + ' class="form-control">' + 
-                                    '<option value="basic" >basic</option>' + 
-                                '</select>' + 
-                            '</div>' + 
-                        '</div>' + 
+                        // '<div class="form-group mxWinPanel">' +
+                        //     '<label for="stateType" class="col-sm-3 control-label">Type</label>' +
+                        //     '<div class="col-sm-8">' +
+                        //         '<select id="stateType" ' + enable + ' class="form-control">' +
+                        //             '<option value="basic" >basic</option>' +
+                        //         '</select>' +
+                        //     '</div>' +
+                        // '</div>' +
                         '<div class="form-group mxWinPanel">' + 
                             '<label for="stateDes" class="col-sm-3 control-label">Description</label>' + 
                             '<div class="col-sm-8">' + 
@@ -191,17 +193,17 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
 
     //! Double Click
     mxGraph.prototype.dblClick = function(evt, cell){
-        if (cell != null){
+        if (cell != null && container[0].id == 'mxGraphContainer' ){
             if (this.graph.model.isVertex(cell)){
-                this.stateInfoWin.setLocation(500, $('#ogmsGraphContainer').offset().top);
+                this.stateInfoWin.setLocation(900, 30);
                 //! Double Click in Vertex
                 this.stateInfoWin.show();
 
                 //! Load selected cell
                 this.state_s = cell;
-                $('#stateId').val(cell.state.id);
+                //$('#stateId').val(cell.state.id);
                 $('#stateName').val(cell.state.name);
-                $('#stateType').val(cell.state.type);
+                //$('#stateType').val(cell.state.type);
                 $('#stateDes').val(cell.state.description);
 
                 //! Remove all event
@@ -234,7 +236,7 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
     //! Click
     mxGraph.prototype.click = function(evt, cell){
         if (cell == null){
-            // this.stateInfoWin.hide();
+             //this.stateInfoWin.hide();
         }
     }.bind(this);
 
@@ -653,7 +655,7 @@ OGMSDiagram.prototype.getNextLayer = function(sources){
 //! Move State !!! No fresh
 OGMSDiagram.prototype.moveState = function(stateId, x, y){
     var state = this.getModelStateByID(stateId);
-    state.geometry.setRect(x, y, 100, 50);
+    state.geometry.setRect(x, y, state.geometry.width, state.geometry.height);
 }
 
 //! Mark state
@@ -705,8 +707,14 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
     this.graph.removeCells(this.graph.getChildVertices(this.graph.getDefaultParent()));
     jsBahavior = JSON.parse(strjson);
     var parent = this.graph.getDefaultParent();
+
+    // 插入开始节点
+    var cell = this.graph.insertVertex(parent,null,'Start',10, 20, 50, 50, this.startStyle);
+    cell['state'] = {id: -1,name:'Start',description:'The beginning of this model!'};
+    this.states.push(cell);
+
     for (var i = 0; i < jsBahavior.states.length; i++){
-        var v_cell = this.graph.insertVertex(parent, null, jsBahavior.states[i].name, 20 + i*120, 20, 100, 50, this.vertexStyle);
+        var v_cell = this.graph.insertVertex(parent, null, jsBahavior.states[i].name, 20 + i*120, 20, 100, 50, this.roundedStyle);
         v_cell['state'] = {
             id : jsBahavior.states[i].id,
             name : jsBahavior.states[i].name,
@@ -716,8 +724,14 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
         }
         this.states.push(v_cell);
     }
-    if (jsBahavior.transition.length == 0 && jsBahavior.states.length > 1){
-        var trans = jsBahavior.states.length - 1;
+
+    // 插入结束节点
+    cell = this.graph.insertVertex(parent,null,'End',10, 20, 50, 50, this.endStyle);
+    cell['state'] = {id:100,name:'End',description:'The end of this model!'};
+    this.states.push(cell);
+
+    if (jsBahavior.transition.length == 0 ){
+        var trans = jsBahavior.states.length + 1;
         for (var i = 0; i < trans; i++){
             this.graph.insertEdge(parent, null, '', this.states[i], this.states[i + 1]);
             this.links.push({
@@ -743,6 +757,7 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
             value : jsBahavior.dataRef[i].value
         });
     }
+
     this.orderGraphs();
 }
 
@@ -766,7 +781,7 @@ OGMSDiagram.prototype.orderGraphs = function(){
     var xIndex = 1;
     while(layer2.length != 0){
         for(var i = 0; i < layer2.length; i++){
-            this.moveState(layer2[i], 50 + xIndex*150, (i*80 + 60));
+            this.moveState(layer2[i], xIndex*150, (i*80 + 60));
         }
         xIndex++;
         var layer2 = this.getNextLayer(layer2);

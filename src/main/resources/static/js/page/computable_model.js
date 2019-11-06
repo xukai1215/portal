@@ -28,6 +28,9 @@ new Vue({
             footerBeforeDeploy:true,
             footerAfterDeploy:false,
 
+            graphVisible: 'none',
+            loadjson: '',
+            mDiagram: null
         }
     },
     methods: {
@@ -329,6 +332,19 @@ new Vue({
                 }
             }
         },
+
+        showMxGraph(){
+            this.graphVisible = 'block';
+
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            document.body.style.overflowY="hidden";
+        },
+
+        hideMxGraph(){
+            this.graphVisible = "none";
+            document.body.style.overflowY="auto";
+        }
     },
     mounted(){
         $(document).on("click", ".detail-toggle", function () {
@@ -355,12 +371,13 @@ new Vue({
         diagram.init($('#ogmsDiagramContainer'),
             {
                 width: 1000,       //! Width of panel
-                height: "100%",       //! Height of panel
+                height: '100%',       //! Height of panel
+                // height: 1000,       //! Height of panel
                 enabled: false      //! Edit enabled
             },
             {
                 x: 500,            //! X postion of state information window
-                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop(),              //! Y postion of state information window
+                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop() ,              //! Y postion of state information window
                 width: 520,         //! Width of state information window
                 height: 650         //! Height of state information window
             },
@@ -401,30 +418,18 @@ new Vue({
             behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
         }
 
-        // for(i=0;i<behavior.states.length;i++){
-        //     var state=behavior.states[i];
-        //     if(state.hasOwnProperty("Event")){
-        //         if(state.Event.hasOwnProperty("name")){
-        //             behavior.states[i].events=[];
-        //             behavior.states[i].events.push(state.Event);
-        //         }
-        //         else{
-        //             behavior.states[i].events=state.Event;
-        //         }
-        //     }
-        // }
-        console.log(behavior)
-        let loadjson=JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
-        console.log(JSON.parse(loadjson))
-        diagram.loadJSON(loadjson);
+        //console.log(behavior)
+        this.loadjson=JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
+        console.log(JSON.parse(this.loadjson));
+        diagram.loadJSON(this.loadjson);
 
         diagram.onStatedbClick(function(state){
             diagram.showStateWin({
-                x : 500,
-                y : $(window).scrollTop() + 60
+                x : 900,
+                y : $(window).scrollTop() + 80,
             },{
                 width : 520,
-                height : 650
+                height : 640
             });
 
         });

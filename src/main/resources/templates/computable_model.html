@@ -30,7 +30,8 @@
         }
 
         .mxWindowPane {
-            overflow-x: hidden !important;
+            /*overflow-x: hidden !important;*/
+            overflow: unset !important;
         }
 
     </style>
@@ -241,6 +242,7 @@
                         </table>
                     </el-tab-pane>
                     <el-tab-pane label="Behavior" name="Behavior">
+                        <el-button style="position: absolute; z-index: 999" @click="showMxGraph()"> MxGraph </el-button>
                         <div id="ogmsDiagramContainer"></div>
                     </el-tab-pane>
                     <el-tab-pane label="Runtime" name="Runtime">
@@ -443,6 +445,8 @@
 
     </div>
 
+    <iframe id="ModelShow" src="/common/ModelShow" :style="{display: graphVisible}" style="width: 100%; height: 100%;z-index: 990; position:absolute;  top:0px;"></iframe>
+    <el-button :style="{display: graphVisible}" style="z-index: 999; position: absolute;left: 20px;top: 10px;" @click="hideMxGraph" > Close </el-button>
 
     <el-dialog
             title=""
@@ -511,4 +515,37 @@
 
 <script src="/static/js/page/computable_model.js"></script>
 <script src="../static/js/common/navbar.js"></script>
+
+
+
+<script>
+    var behavior={};
+
+    if (Behavior.StateGroup[0].States ===  '') {
+        behavior.states = [];
+    }
+    else {
+        behavior.states = Behavior.StateGroup[0].States[0].State;
+    }
+
+    if (Behavior.StateGroup[0].StateTransitions === "") {
+        behavior.transition = [];
+    }
+    else {
+        behavior.transition = Behavior.StateGroup[0].StateTransitions[0].Add;
+    }
+
+    if (Behavior.RelatedDatasets === "") {
+        behavior.dataRef = [];
+    }
+    else {
+        behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
+    }
+
+    function getLoadJson(){
+        return JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
+    }
+
+</script>
+
 </html>
