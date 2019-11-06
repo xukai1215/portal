@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.datacontainer.AddDataResource;
 import njgis.opengms.portal.dao.CategoryDao;
+import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.ModelItemDao;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.comments.CommentsAddDTO;
@@ -17,6 +18,7 @@ import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.service.DataItemService;
+import njgis.opengms.portal.service.ItemService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -48,6 +50,9 @@ import java.util.*;
 public class DataItemRestController {
 
     @Autowired
+    ItemService itemService;
+
+    @Autowired
     DataItemService dataItemService;
 
     @Autowired
@@ -55,6 +60,9 @@ public class DataItemRestController {
 
     @Autowired
     ModelItemDao modelItemDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
 
     @Autowired
     CategoryDao categoryDao;
@@ -203,6 +211,10 @@ public class DataItemRestController {
 //        view.setViewName("/dataItems/"+id);
 
         DataItem dataItem=dataItemService.getById(id);
+
+        dataItem=(DataItem)itemService.recordViewCount(dataItem);
+        dataItemDao.save(dataItem);
+
 
         //用户信息
 

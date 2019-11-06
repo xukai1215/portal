@@ -270,9 +270,7 @@ public class TaskRestController {
     public JsonResult loadTestData(@RequestBody TestDataUploadDTO testDataUploadDTO, HttpServletRequest request){
 
         HttpSession session = request.getSession();
-        if(session.getAttribute("uid") == null){
-            return ResultUtils.error(-1, "no login");
-        }else{
+
             //处理得到进行数据上传的List数组
             List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArray(testDataUploadDTO);
             if(uploadDataDTOs == null){
@@ -298,7 +296,7 @@ public class TaskRestController {
 
             });
             return ResultUtils.success(resultDataDTOs);
-        }
+
 
     }
 
