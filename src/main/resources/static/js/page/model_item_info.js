@@ -688,16 +688,16 @@ new Vue({
                 }
             })
 
-
-        $(document).on("click", ".detail-toggle", function () {
-            if ($(this).text() == "[Collapse]") {
-                $(this).text("[Expand]");
-            }
-            else {
-                $(this).text("[Collapse]")
-            }
-
-        })
+        //
+        // $(document).on("click", ".detail-toggle", function () {
+        //     if ($(this).text() == "[Collapse]") {
+        //         $(this).text("[Expand]");
+        //     }
+        //     else {
+        //         $(this).text("[Collapse]")
+        //     }
+        //
+        // })
 
         $('html, body').animate({scrollTop: 0}, 'slow');
 
@@ -735,4 +735,17 @@ new Vue({
         });
 
     }
+})
+
+$(function () {
+
+    $(".ab").click(
+        function () {
+            if($('#authorship0').height()!=0)
+                $(this).addClass('transform180')
+            else
+                $(this).removeClass('transform180')
+        }
+    );
+
 })

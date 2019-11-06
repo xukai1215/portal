@@ -1247,7 +1247,7 @@
                                         <div class="tab-pane" >
                                             <div class="form-group flexCol">
                                                 <label for="userEmail"
-                                                       class="col-sm-12 control-label inputTitle">Email<span style="font-size: 14px;color: #555555">( Email is on of your identities that can not be modified )</span></label>
+                                                       class="col-sm-12 control-label inputTitle">Email<span style="font-size: 14px;color: #555555">( Email is one of your identities that can not be modified )</span></label>
                                                 <div class="col-sm-12">
                                                     <input type="text" class="form-control"
                                                            id="userEmail" disabled="disabled"/>
@@ -2085,11 +2085,11 @@
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
-                                                    <button class="squareButton alertBack" @click="deleteResearchItem(1,article.oid)">
-                                                        <div>×</div>
+                                                    <button class="squareButton safeBack" @click="editArticleClick(key,article.oid)" data-toggle="modal" data-target="#articleInfo" style="margin-right:10px ">
+                                                        <i class="fa fa-pencil" style="font-size: 20px;"></i>
                                                     </button>
-                                                    <button class="squareButton safeBack" @click="editArticleClick(key,article.oid)" data-toggle="modal" data-target="#articleInfo">
-                                                        <i class="fa fa-pencil-square-o" style="font-size: 25px;margin-left: 3px"></i>
+                                                    <button class="squareButton alertBack" @click="deleteResearchItem(1,article.oid)" >
+                                                        <i class="fa fa-trash-o" style="font-size: 20px;"></i>
                                                     </button>
                                                 </div>
                                             </div>

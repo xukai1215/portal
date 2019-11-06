@@ -38,6 +38,10 @@ public class UserService {
     @Autowired
     CommonService commonService;
 
+    //远程数据容器地址
+    @Value("${dataContainerIpAndPort}")
+    String dataContainerIpAndPort;
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -618,15 +622,24 @@ public class UserService {
     }
 
 
-    public String addFile(List<String> paths,String name,String suffix,String userName,String url){
+    public String addFiles(List<String> paths, List<Map> files, String userName){
         User user=userDao.findFirstByUserName(userName);
+        List<String> pathsCopy=new ArrayList<>();
+        for (int i = 0; i < files.size(); i++) {
 
-        String id=UUID.randomUUID().toString();
-        user.setFileContainer(aFile(paths,user.getFileContainer(),name,suffix,id,"0",url));
+            String fileName = files.get(i).get("file_name").toString();
+            String url = "http://" + dataContainerIpAndPort + "/dataResource/getResources?sourceStoreId=" + files.get(i).get("source_store_id").toString();
+            String[] a = fileName.split("\\.");
+            String name = a[0];
+            String suffix = a[1];
+            String id = UUID.randomUUID().toString();
+            pathsCopy.addAll(paths);
+            user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url));
+        }
 
-        userDao.save(user);
+            userDao.save(user);
 
-        return id;
+        return "11";
     }
 
     private List<FileMeta> aFile(List<String> paths,List<FileMeta> fileMetaList,String name,String suffix,String id,String father,String url){
@@ -650,11 +663,62 @@ public class UserService {
         return fileMetaList;
     }
 
+
+    public String deleteFile(String id, String userName){
+        User user = userDao.findFirstByUserName(userName);
+
+        user.setFileContainer(find7DeleteFile(user.getFileContainer(), id));
+
+        userDao.save(user);
+        return id;
+    }
+
+    public List<FileMeta> find7DeleteFile(List<FileMeta> fileMetaList, String id) {
+        FileMeta fileMeta=new FileMeta();
+        if (fileMetaList != null && fileMetaList.size() != 0)
+            for (int i = fileMetaList.size()-1; i >=0; i--) {
+                System.out.println(fileMetaList.get(i).getId());
+                if (fileMetaList.get(i).getId().equals(id)){
+                    fileMetaList.remove(i);
+                    return fileMetaList;
+                }
+
+                else find7DeleteFile(fileMetaList.get(i).getContent(), id);
+            }
+
+        return fileMetaList;
+    }
+
+    public String updateFile( String id, String name, String userName) {
+        User user = userDao.findFirstByUserName(userName);
+
+        user.setFileContainer(find7UpdateFile(user.getFileContainer(), id,name));
+
+        userDao.save(user);
+        return id;
+    }
+
+    public List<FileMeta> find7UpdateFile(List<FileMeta> fileMetaList, String id,String name) {
+        FileMeta fileMeta=new FileMeta();
+        if (fileMetaList != null && fileMetaList.size() != 0)
+            for (int i = 0; i < fileMetaList.size(); i++) {
+                System.out.println(fileMetaList.get(i).getId());
+                if (fileMetaList.get(i).getId().equals(id)){
+                    fileMetaList.get(i).setName(name);
+                    return fileMetaList;
+                }
+
+                else find7UpdateFile(fileMetaList.get(i).getContent(), id,name);
+            }
+
+        return fileMetaList;
+    }
+
     public JSONArray getFolder(String userName){
         User user=userDao.findFirstByUserName(userName);
         List<FileMeta> fileMetaList=user.getFileContainer();
 
-        if(fileMetaList==null) {
+        if(fileMetaList==null||fileMetaList.size()==0) {
 
             FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
             fileMetaList=new ArrayList<>();
@@ -703,7 +767,7 @@ public class UserService {
         User user=userDao.findFirstByUserName(userName);
         List<FileMeta> fileMetaList=user.getFileContainer();
 
-        if(fileMetaList==null) {
+        if(fileMetaList==null||fileMetaList.size()==0) {
 
             FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
             fileMetaList=new ArrayList<>();
@@ -738,18 +802,68 @@ public class UserService {
                     jsonObject.put("id", fileMeta.getId());
                     jsonObject.put("label", fileMeta.getName());
                     jsonObject.put("package",fileMeta.getIsFolder());
+                    jsonObject.put("upload",fileMeta.getIsUserUpload());
                     jsonObject.put("father",fileMeta.getFather());
                     jsonObject.put("suffix",fileMeta.getSuffix());
-                    System.out.println(fileMeta.getContent());
+                    jsonObject.put("url",fileMeta.getUrl());
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
 
                     parent.add(jsonObject);
-                    System.out.println(parent);
                 }
             }
         }
         return parent;
     }
+
+    public JSONObject getFileByPath(List<String> paths,String userName){
+        User user=userDao.findFirstByUserName(userName);
+        List<FileMeta> fileMetaList=user.getFileContainer();
+
+        JSONObject obj=new JSONObject();
+        obj.put("data",gFileBypath(paths,fileMetaList));
+
+
+        return obj;
+    }
+
+
+    private JSONArray gFileBypath(List<String> paths,List<FileMeta> fileMetaList){
+
+        JSONArray list = new JSONArray();
+        if(paths.size()==0){
+            for(int i=0;i<fileMetaList.size();i++)
+            {
+                FileMeta fileMeta = fileMetaList.get(i);
+                if (fileMeta.getId()!=null) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", fileMeta.getId());
+                    jsonObject.put("label", fileMeta.getName());
+                    jsonObject.put("package",fileMeta.getIsFolder());
+                    jsonObject.put("upload",fileMeta.getIsUserUpload());
+                    jsonObject.put("father",fileMeta.getFather());
+                    jsonObject.put("suffix",fileMeta.getSuffix());
+                    jsonObject.put("url",fileMeta.getUrl());
+                    jsonObject.put("children", gAllFile(fileMeta.getContent()));
+
+                    list.add(jsonObject);
+                }
+            }
+            return list;
+        }
+        else {
+            // pop
+            String path = paths.remove(paths.size() - 1);
+            for (int i = 0; i < fileMetaList.size(); i++) {
+                FileMeta fileMeta = fileMetaList.get(i);
+                if (fileMeta.getId().equals(path)) {
+                    list=gFileBypath(paths, fileMeta.getContent());
+                    break;
+                }
+            }
+        }
+        return list;
+    }
+
 
     public String forkData(List<String> paths,List<String> dataIds,String itemId,String userName){
 

@@ -134,13 +134,13 @@ var vue = new Vue({
         },
         handleDataDownloadClick({ sourceStoreId }) {
             let url =
-                "http://172.21.212.64:8081/dataResource/getResource?sourceStoreId=" +
+                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
             window.open("/dispatchRequest/download?url=" + url);
         },
         handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
             let url =
-                "http://172.21.212.64:8081/dataResource/getResource?sourceStoreId=" +
+                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
             this.showDataChose = false;
             this.eventChoosing.tag = fileName + "." + suffix;
@@ -423,7 +423,7 @@ var vue = new Vue({
                 this.selectDataDialog = false
 
                 //todo 拼接url
-                this.modelInEvent.url="http://172.21.212.64:8081/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
+                this.modelInEvent.url="http://172.21.212.64:8082/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
                 this.modelInEvent.tag=da.item.fileName
 
             }

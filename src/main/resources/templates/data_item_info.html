@@ -641,7 +641,7 @@
                     <div style="text-align: left;" th:each="author,key:${datainfo.data.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
-                                aria-expanded="true" th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
+                                aria-expanded="true" ><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
                         <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
                              style="">
@@ -789,6 +789,7 @@
 <script th:src="@{../static/js/common/vue.min.js}"></script>
 <script th:src="@{../static/element-ui/index.js}"></script>
 <script th:src="@{../static/js/common/jquery-3.3.1.min.js}"></script>
+<script th:src="@{../static/js/common/jquery.rotate.min.js}"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 
 <script src="/static/js/common/vue-avatar.min.js"></script>

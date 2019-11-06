@@ -401,3 +401,10 @@ model_date{
   /*border: none;*/
 
 }
+
+@media screen and (max-width:1200px){
+  .dataContainer{
+    width: 100%;
+  }
+
+}

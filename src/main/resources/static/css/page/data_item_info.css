@@ -124,6 +124,19 @@ p{
     border: orange 2px solid;
 }
 
+.transform180{
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.transform360{
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+}
+
+.ab{
+    transition:transform .3s ;
+}
 
 /*.filebrowserfunction{*/
     /*background: -webkit-linear-gradient(#ffffff, #e4e4e4); !* Safari 5.1 - 6.0 *!*/

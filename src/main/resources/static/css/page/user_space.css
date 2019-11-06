@@ -3,6 +3,11 @@
  html,body{
   overflow: hidden!important;
 }
+
+ body{
+   padding-right: 0 !important;
+ }
+
 .page-sidebar {
     width: 220px;
     position: relative;
@@ -297,6 +302,11 @@
       float: left;
       width: 100%;
   }
+
+ .myDataContainer{
+   height: 80%;
+   min-height: 630px;
+ }
   
   /* WIDGETS */
   .widget {
@@ -1667,7 +1677,7 @@ ul,li{
 
  }
  .dataitemisol:hover{
-   cursor: pointer;
+   /*cursor: pointer;*/
    border: 2px solid rgba(49, 143, 194, 0.92);
  }
  .dataitemhover{
@@ -1784,6 +1794,10 @@ ul,li{
    background: -ms-linear-gradient(top, #E04B4A 0%, #a43f3e 100%);
    background: linear-gradient(to bottom, #E04B4A 0%, #a43f3e 100%);
    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#E04B4A, endColorstr=#a43f3e, GradientType=0);
+ }
+
+ #mydata{
+   height: inherit;
  }
 
 .taskStats{
@@ -2114,6 +2128,7 @@ ul,li{
    display: flex;
    justify-content: center;
    align-items: center;
+   cursor: pointer;
    font-size: 35px;
    color:#00abff ;
    width: 100px;
@@ -2132,12 +2147,12 @@ ul,li{
 
  }
 
- .squareSelect{
+ .squareButtonMini{
    width: 18px;
    height: 18px;
    border: 1px solid #c0c5cc;
    border-radius: 2px;
-
+   background-color: #fafafa;
  }
 
  .infoBar{
@@ -2146,3 +2161,33 @@ ul,li{
    align-items: center;
    padding: 10px;
  }
+ 
+ .fileName:hover p{
+   color: #3c91ff;
+ }
+
+ .InputCenter{
+   text-align: center;
+ }
+
+ .wzhMicroInput{
+   width: 60%;
+   height: 23px;
+ }
+
+ .squareButton23{
+   width: 23px;
+   height: 23px;
+   border: 1px solid #bdc1c7;
+   border-radius: 2px;
+ }
+
+ .flexButton{
+   display: flex;
+   justify-content: space-around;
+ }
+
+ .transform180{
+     transform: rotate(180deg);
+ }
+

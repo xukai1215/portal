@@ -128,7 +128,13 @@ var vue = new Vue({
         dataid: '',
         rightMenuShow: false,
         downloadDataSet: [],
-        downloadDataSetName: [],
+        downloadDataSetName: [
+            {
+                name:'',
+                suffix:'',
+                package:true
+            }
+        ],
         uploadDialogVisible: false,
         alllen: 0,
 
@@ -275,11 +281,20 @@ var vue = new Vue({
 
         pathShown:[],
 
+        selectedPath:[],
+
         addFolderIndex: false,
 
         newFolderName:'',
 
         clickTimeout:1000,
+
+        rightTargetItem:{},
+
+        renameIndex:'',
+
+        uploadDialog:false,
+
     },
 
     methods: {
@@ -571,14 +586,14 @@ var vue = new Vue({
                     }
                     if(this.curIndex==='6') //复用判断在那个页面防止冲突
                         if ($("#taskDataKeywords").val().split(",")[0] == '') {
-                        this.showWaring('Please enter keywords');
-                        return;
+                            this.showWaring('Please enter keywords');
+                            return;
                         }
                     if(this.curIndex==='3-3')
-                    if ($("#taskDataKeywordsAll").val().split(",")[0] == '') {
-                        this.showWaring('Please enter keywords');
-                        return;
-                    }
+                        if ($("#taskDataKeywordsAll").val().split(",")[0] == '') {
+                            this.showWaring('Please enter keywords');
+                            return;
+                        }
 
                     if (this.taskDataForm.description == '') {
                         this.showWaring('Please enter overview');
@@ -602,15 +617,15 @@ var vue = new Vue({
             if (this.taskSharingActive == 1) {
                 if(this.curIndex === '6')
                     if ($("#taskDataShareDialog .tag-editor").length == 0) {
-                    $("#taskDataKeywords").tagEditor({
-                        forceLowercase: false
-                    })
+                        $("#taskDataKeywords").tagEditor({
+                            forceLowercase: false
+                        })
                     }
                 if(this.curIndex === '3-3')
-                        if ($("#allFileShareDialog .tag-editor").length == 0) {
-                            $("#taskDataKeywordsAll").tagEditor({
-                                forceLowercase: false
-                            })
+                    if ($("#allFileShareDialog .tag-editor").length == 0) {
+                        $("#taskDataKeywordsAll").tagEditor({
+                            forceLowercase: false
+                        })
                     }
             }
 
@@ -914,6 +929,7 @@ var vue = new Vue({
             else
                 this.myFileShown=[];
 
+            this.renameIndex='';
             // console.log(this.myFileShown)
             // console.log(this.myFileShown.length)
             // console.log(this.fatherIndex)
@@ -968,8 +984,58 @@ var vue = new Vue({
             }
         },
 
+        refreshPackage(){
+            if(this.myFileShown[0].label!='All Folder'&&this.myFileShown[0].label!='My Data'){
+                let i=this.pathShown.length-1;
+                let paths=[]
+                while (i>=1) {
+                    paths.push(this.pathShown[i].id);
+                    i--;
+                }
+                $.ajax({
+                    type: "GET",
+                    url:"/user/getFileByPath",
+                    data:{
+                        paths:paths,
+                    },
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    success:(json)=>{
+                        if(json.code==-1){
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href = "/user/login"
+                        }else{
+                            this.myFileShown=json.data.data;
+                            this.refreshChild(this.myFile);
+                            console.log(this.myFileShown)
+                        }
+                    }
+
+                })
+            }
+
+        },
+
+        refreshChild(file){
+            console.log(this.fatherIndex)
+            for(let i=0;i<file.length;i++){
+                if(file[i].id===this.fatherIndex){
+                    file[i].children=this.myFileShown
+                    console.log(this.myFile)
+                    return;
+                }else{
+                    this.refreshChild(file[i].children)
+                }
+            }
+        },
+
         showFilePackage(){
             this.fileSpaceIndex=1
+            this.pathShown=[];
+            this.downloadDataSet=[];
+            this.downloadDataSetName=[];
+            this.getFilePackage()
         },
 
         showMyUpload(){
@@ -980,6 +1046,8 @@ var vue = new Vue({
 
         addFolderInPath(){
             this.addFolderIndex=true;
+            $('body').css('padding-right','0')
+            console.log($('body').css('padding-right'))
         },
 
         addChild(fileTree,fatherId,child){
@@ -993,40 +1061,108 @@ var vue = new Vue({
         },
 
         addFolder() {
-            let i=this.pathShown.length-1;
-            let paths=[]
-            while (i>=1) {
-                paths.push(this.pathShown[i].id);
-                i--;
+            let folderName=[];
+            for(let i=0;i<this.myFileShown.length;i++){
+                if(this.myFileShown[i].package===true)
+                    folderName.push(this.myFileShown[i].label)
             }
-            console.log(paths)
-            $.ajax({
-                type: "POST",
-                url: "/user/addFolder",
-                data: {paths: paths, name: this.newFolderName},
-                async: true,
-                contentType: "application/x-www-form-urlencoded",
-                success: (json) => {
-                    if (json.code == -1) {
-                        alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
-                        window.location.href = "/user/login"
-                    } else {
-                        const newChild = {id: json.data, label: this.newFolderName, children: [],package:true, father:paths[0]};
-                        if(this.myFileShown.length===0)
-                            this.addChild(this.myFile,paths[0],newChild)
-                        this.myFileShown.push(newChild);//myfileShown是一个指向myFile子元素的地址，修改则myFile也变化
-                        console.log(this.myFileShown)
-                        // this.getFilePackage();
-                        console.log(this.myFile)
-                        this.addFolderIndex=false;
+
+            if( this.newFolderName===''){
+                alert('Please input the folder name');
+                this.addFolderIndex=true;
+            }
+            else if(folderName.indexOf(this.newFolderName)!=-1){
+                alert('this name is existing in this path, please input a new one');
+                this.newFolderName='';
+                this.addFolderIndex=true;
+            }
+            else{
+                let i=this.pathShown.length-1;
+                let paths=[]
+                while (i>=1) {
+                    paths.push(this.pathShown[i].id);
+                    i--;
+                }
+                console.log(paths)
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addFolder",
+                    data: {paths: paths, name: this.newFolderName},
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == -1) {
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href = "/user/login"
+                        } else {
+                            const newChild = {id: json.data, label: this.newFolderName, children: [],package:true, father:paths[0]};
+                            if(this.myFileShown.length===0)
+                                this.addChild(this.myFile,paths[0],newChild)
+                            this.myFileShown.push(newChild);//myfileShown是一个指向myFile子元素的地址，修改则myFile也变化
+                            console.log(this.myFileShown)
+                            // this.getFilePackage();
+                            console.log(this.myFile)
+                            alert('add folder successfully')
+                            this.newFolderName='';
+                            this.addFolderIndex=false;
+
+                        }
 
                     }
+                });
+            }
+        },
 
-                }
+        addFolderinTree(){
+            let data=this.$refs.folderTree.getCurrentNode();
+            if(data===null) alert('please select a file directory')
+            let node=this.$refs.folderTree.getNode(data);
+
+            console.log(node);
+            let paths=[];
+            while(node.key!=undefined&&node.key!=0){
+                paths.push(node.key);
+                node=node.parent;
+            }
+            console.log(paths)
+
+            this.$prompt(null, 'Enter Folder Name', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            }).then(({ value }) => {
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addFolder",
+                    data: {paths: paths, name: value},
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == -1) {
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href = "/user/login"
+                        }
+                        else {
+                            const newChild = {id: json.data, label: value, children: []};
+                            if (!data.children) {
+                                this.$set(data, 'children', []);
+                            }
+                            data.children.push(newChild);
+                        }
+
+                    }
+                });
+
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Cancel'
+                });
             });
-
-
         },
 
         uploadFileInPath(){
@@ -1040,7 +1176,7 @@ var vue = new Vue({
         },
         handleDataDownloadClick({sourceStoreId}) {
             let url =
-                "http://172.21.212.64:8081/dataResource/getResource?sourceStoreId=" +
+                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
             window.open("/dispatchRequest/download?url=" + url);
         },
@@ -1114,6 +1250,8 @@ var vue = new Vue({
                     this.getFilePackage()
                     this.pageControlIndex = this.curIndex;
                     this.pathShown=[];
+                    this.downloadDataSet=[];
+                    this.downloadDataSetName=[];
                     break;
                 case '4-1':
                     this.searchText = '';
@@ -1368,6 +1506,10 @@ var vue = new Vue({
 
         myDataClick(index) {
             this.dataChosenIndex = index;
+            this.pathShown=[];
+            this.downloadDataSet=[];
+            this.downloadDataSetName=[];
+            this.getFilePackage()
         },
 
         outputDataClick(index) {
@@ -3639,7 +3781,7 @@ var vue = new Vue({
 
                 }
                 var that = this;
-                axios.post("http://172.21.213.194:8081/dataResource", data)
+                axios.post("http://172.21.213.194:8082/dataResource", data)
                     .then(res => {
                         if (res.status == 200) {
                             alert("data upload success")
@@ -3684,6 +3826,7 @@ var vue = new Vue({
             return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
         getImg(item) {
+            let list=[]
             if(item.id==0||item.package==true)
                 return "/static/img/filebrowser/package.jpg"
             if(item.suffix=='unknow')
@@ -3692,6 +3835,24 @@ var vue = new Vue({
         },
         generateId(key) {
             return key;
+        },
+
+        singleClick($event, eval) {
+            if(this.rightMenuShow==true){
+                this.rightMenuShow=false;
+                return
+            }
+            clearTimeout(this.clickTimeout)
+            var target=$event.currentTarget;
+            var eval=eval;
+            var that=this
+            this.clickTimeout = setTimeout(function (){
+                that.getid(target, eval)
+            },1)
+
+            this.renameIndex='';
+
+
         },
 
         getid(target, eval){
@@ -3705,39 +3866,35 @@ var vue = new Vue({
                     if (this.downloadDataSet[i] === eval) {
                         //删除
                         this.downloadDataSet.splice(i, 1)
-                        break
-                    }
-                }
-                for (var i = 0; i < this.downloadDataSetName.length; i++) {
-                    if (this.downloadDataSetName[i] === eval.label) {
                         this.downloadDataSetName.splice(i, 1)
                         break
                     }
                 }
 
+                // for (var i = 0; i < this.downloadDataSetName.length; i++) {
+                //     if (this.downloadDataSetName[i].name === eval.label&&this.downloadDataSetName[i].suffix === eval.suffix) {
+                //         //删除
+                //         this.downloadDataSetName.splice(i, 1)
+                //         console.log(this.downloadDataSetName)
+                //         break
+                //     }
+                // }
 
             } else {
                 this.downloadDataSet.push(eval)
-                this.downloadDataSetName.push(eval.label)
+                let obj={
+                    name:eval.label,
+                    suffix:eval.suffix,
+                    package:eval.package,
+
+                }
+                this.downloadDataSetName.push(obj)
             }
 
             if (eval.taskId != null) {
                 this.detailsIndex = 2
                 this.getOneOfUserTasks(eval.taskId);
             }
-        },
-
-        singleClick($event, eval) {
-            clearTimeout(this.clickTimeout)
-            var target=$event.currentTarget;
-            var eval=eval;
-            console.log(event,eval)
-            var that=this
-            this.clickTimeout = setTimeout(function (){
-                that.getid(target, eval)
-            },200)
-            this.rightMenuShow=false;
-
         },
 
         backToPackage() {
@@ -3809,13 +3966,19 @@ var vue = new Vue({
             })
         },
 
+        getSourceId(url){
+            return url.split('=')[1]
+
+        },
+
         userDownload() {
             //todo 依据数组downloadDataSet批量下载
 
             let sourceId = new Array()
 
             for (let i = 0; i < this.downloadDataSet.length; i++) {
-                sourceId.push(this.downloadDataSet[i].sourceStoreId)
+                sourceId.push(this.getSourceId(this.downloadDataSet[i].url))
+                console.log(sourceId)
             }
 
 
@@ -3884,7 +4047,7 @@ var vue = new Vue({
 
         //右键菜单
 
-        rightMenu(e) {
+        rightMenu(e,eval,index) {
             e.preventDefault();
 
             e.currentTarget.className = "el-card dataitemisol clickdataitem"
@@ -3900,6 +4063,34 @@ var vue = new Vue({
 
             this.rightMenuShow = true
 
+            this.rightTargetItem=eval
+            this.rightTargetItem.index=index;
+
+        },
+
+        rename(){
+            console.log(this.rightTargetItem)
+            this.renameIndex=this.rightTargetItem.id;
+            this.rightMenuShow = false
+            console.log(this.rightTargetItem.label)
+            console.log($('.renameFileInput').eq(this.rightTargetItem.index))
+            $('.renameFileInput').eq(this.rightTargetItem.index).val(this.rightTargetItem.label);
+
+        },
+
+        renameConfirm(){
+            let folderName=[];
+            for(let i=0;i<this.myFileShown.length;i++){
+                if(this.myFileShown[i].package===true)
+                    folderName.push(this.myFileShown[i].label)
+            }
+            if(folderName.indexOf($('.renameFileInput').eq(this.rightTargetItem.index).val())!=-1)
+                alert('this name is existing in this path, please input a new one');
+            else{
+                this.rightTargetItem.label=$('.renameFileInput').eq(this.rightTargetItem.index).val();
+                console.log(this.myFileShown)
+                this.updateFileToPortalBack();
+            }
 
         },
 
@@ -3919,7 +4110,93 @@ var vue = new Vue({
 
         //上传
         uploadClick(){
+
+            this.uploadSource=[];
+            $('#managerUpload').modal("show");
             $('#manager-upload').fileinput('clear');
+            //上传数据相关
+            this.uploadDialog=true;
+        },
+
+        selectFolder(){
+            $('#selectFolder').modal('show')
+            this.selectedPath=[];
+            axios.get("/user/getFolder",{})
+                .then(res=> {
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.folderTree=res.data.data;
+                        this.selectPathDialog=true;
+                    }
+
+
+                });
+        },
+
+        addFolder(){
+            let data=this.$refs.folderTree.getCurrentNode();
+            let node=this.$refs.folderTree.getNode(data);
+            console.log(node);
+            let paths=[];
+            while(node.key!=undefined&&node.key!=0){
+                paths.push(node.key);
+                node=node.parent;
+            }
+
+            this.$prompt(null, 'Enter Folder Name', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            }).then(({ value }) => {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addFolder",
+                    data: {paths: paths, name: value},
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == -1) {
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href = "/user/login"
+                        }
+                        else {
+                            const newChild = {id: json.data, label: value, children: []};
+                            if (!data.children) {
+                                this.$set(data, 'children', []);
+                            }
+                            data.children.push(newChild);
+                        }
+
+                    }
+                });
+
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Cancel'
+                });
+            });
+        },
+
+        confirmFolder(){
+            let data=this.$refs.folderTree.getCurrentNode();
+            let node=this.$refs.folderTree.getNode(data);
+
+            while(node.key!=undefined&&node.key!=0){
+                this.selectedPath.unshift(node);
+                node=node.parent;
+            }
+            this.selectPathDialog=false;
+
         },
 
         upload_data_dataManager() {
@@ -3950,7 +4227,7 @@ var vue = new Vue({
                     }
                     var that = this;
                     var sucUpload
-                    axios.post("http://172.21.212.64:8081/dataResource", data)
+                    axios.post("http://172.21.212.64:8082/dataResource", data)
                         .then(res => {
                             if (res.status == 200) {
 
@@ -3960,70 +4237,103 @@ var vue = new Vue({
                             }
                         });
                 }
-                this.addUploadDataToPortalBack();
+                this.addDataToPortalBack();
 
 
             }
 
         },
 
-        addUploadDataToPortalBack(){
+        addDataToPortalBack(){
             let i=this.pathShown.length-1;
             let paths=[]
             while (i>=1) {
                 paths.push(this.pathShown[i].id);
                 i--;
             }
-            for(let i=0;i<this.uploadSource.length;i++){
-                let dataName=this.uploadSource[i].file_name;
-                let dataId=this.uploadSource[i].source_store_id;
-                console.log(data)
-                let that=this;
-                // axios.post("/user/addFile", data)
-                //     .then(res => {
-                //         if (res.status == 200) {
-                //             alert("data upload success")
-                //
-                //             that.addAllData()
-                //             that.close()
-                //         }
-                //     });
-                $.ajax({
-                    type: "POST",
-                    url: "/user/addFile",
-                    data: {
-                        dataName:dataName,
-                        dataId:dataId,
-                        paths:paths
+            let that = this;
+            $.ajax({
+                type: "POST",
+                url: "/user/addFile",
+                data: JSON.stringify({
+                    files: this.uploadSource,
+                    paths: paths
+                }),
 
-                    },
-                    async: true,
-                    contentType: "application/x-www-form-urlencoded",
-                    success: (json) => {
-                        if (json.code == -1) {
-                            alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
-                            window.location.href = "/user/login"
-                        } else {
-                            const newChild = {id: json.data, label: dataName, children: [],package:false, father:paths[0]};
-                            if(this.myFileShown.length===0)
-                                this.addChild(this.myFile,paths[0],newChild)
+                async: true,
+                traditional:true,
+                contentType: "application/json",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        for(let i=0;i<this.uploadSource.length;i++)
+                        {
+                            console.log(this.uploadSource[i].file_name)
+                            let dataName7Suffix = this.uploadSource[i].file_name.split('.')
+                            const newChild = {
+                                id: json.data,
+                                label: dataName7Suffix[0],
+                                suffix: dataName7Suffix[1],
+                                children: [],
+                                package: false,
+                                upload: true,
+                                father: paths[0]
+                            };
+                            if (this.myFileShown.length === 0)
+                                this.addChild(this.myFile, paths[0], newChild)
                             this.myFileShown.push(newChild);
                             console.log(this.myFileShown)
                             // this.getFilePackage();
                             console.log(this.myFile)
-                            this.addFolderIndex=false;
-
                         }
+                        this.addFolderIndex = false;
+                        this.selectedPath=[];
 
                     }
-                });
-            }
-            this.uploadSource=[];
+
+                }
+            });
+
             alert('Upload File successfully!')
             $('#managerUpload').modal("hide")
 
         },
+
+        updateFileToPortalBack(){
+            $.ajax({
+                type: "POST",
+                url: "/user/updateFile",
+                data: {
+                    dataName:this.rightTargetItem.label,
+                    dataId:this.rightTargetItem.id,
+
+                },
+                async: true,
+                contentType: "application/x-www-form-urlencoded",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        // const newChild = {id: json.data, label: dataName7Suffix[0],suffix:dataName7Suffix[1], children: [],package:false, father:paths[0]};
+                        // if(this.myFileShown.length===0)
+                        //     this.addChild(this.myFile,paths[0],newChild)
+                        // this.myFileShown.push(newChild);
+                        console.log(this.myFileShown)
+                        // this.getFilePackage();
+                        console.log(this.myFile)
+                        this.addFolderIndex=false;
+
+                    }
+
+                }
+            });
+        },
+
 
         handleClose(done) {
             console.log(done)
@@ -4054,10 +4364,13 @@ var vue = new Vue({
                     for(let i=0;i<this.$refs.multipleTableDataSharing.length;i++)
                         this.$refs.multipleTableDataSharing[i].clearSelection();
                     this.$refs.multipleTableMyData.clearSelection();
+
                     done();
                 })
                 .catch(_ => {
+                    done();
                 });
+            // this.allFileTaskSharingVisible=false
         },
 
 
@@ -4088,6 +4401,13 @@ var vue = new Vue({
 
 
         },
+
+        right_download(){
+            let url=this.rightTargetItem.url
+            window.location.href=url
+            this.rightMenuShow=false;
+        },
+
         //删除
         delete_data_dataManager() {
 
@@ -4117,6 +4437,64 @@ var vue = new Vue({
 
         },
 
+        right_deleteFile(){
+            const h = this.$createElement;
+            this.$msgbox({
+                title: ' ',
+                message: h('p', null, [
+                    h('span', { style: 'font-size:15px' }, 'All of the content will be deleted.'),
+                    h('br'),
+                    h('span', null, 'Are you sure to '),
+                    h('span', { style: 'color: #e6a23c;font-weight:600' }, 'continue'),
+                    h('span', null, '?'),
+                ]),
+                type:'warning',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                beforeClose: (action, instance, done) => {
+
+                    if (action === 'confirm') {
+                        instance.confirmButtonLoading = true;
+                        instance.confirmButtonText = 'deleting...';
+                        setTimeout(() => {
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/deleteFile",
+                                data: {dataId: this.rightTargetItem.id},
+                                async: true,
+                                contentType: "application/x-www-form-urlencoded",
+                                success: (json) => {
+                                    if (json.code == -1) {
+                                        alert("Please login first!")
+                                        window.sessionStorage.setItem("history", window.location.href);
+                                        window.location.href = "/user/login"
+                                    } else {
+                                        this.myFileShown.splice(this.rightTargetItem.index, 1);
+                                        // this.rightTargetItem=null;
+
+                                    }
+
+                                }
+                            });
+                            done();
+                            setTimeout(() => {
+                                instance.confirmButtonLoading = false;
+                            }, 300);
+                        }, 300);
+                    } else {
+                        done();
+                    }
+                }
+            }).then(action => {
+                this.rightMenuShow=false
+                this.$message({
+                    type: 'success',
+                    message: 'delete successful '
+                });
+            });
+
+        },
 
         showsearchresult(data) {
 
@@ -4365,7 +4743,7 @@ var vue = new Vue({
 
 
         share() {
-            for (let i = 0; i < this.databrowser.length; i++) {
+            for (let i = 0; i < this.right.length; i++) {
                 if (this.databrowser[i].id === this.dataid) {
                     var item = this.databrowser[i];
                     break;
@@ -4384,6 +4762,13 @@ var vue = new Vue({
                 // console.log("从后台获取数据条目数组有误")
                 this.$message('please select file first!!');
             }
+        },
+
+        right_share(){
+            let url=this.rightTargetItem.url;
+            this.$alert("<input style='width: 100%' value=" + url + ">", {
+                dangerouslyUseHTMLString: true
+            })
         },
         //todo 数据找模型
         relatedModels_dataManager() {
@@ -4497,6 +4882,11 @@ var vue = new Vue({
 
 
     },
+
+    watch(){
+
+    },
+
     created() {
         this.getArticleResult();
         this.getTasks();
@@ -4769,7 +5159,7 @@ var vue = new Vue({
 
         $("#managerUpload").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -4809,7 +5199,7 @@ var vue = new Vue({
         //上传数据相关
         $("#file-1").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -4847,7 +5237,7 @@ var vue = new Vue({
 
         $("#file-2").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -4890,7 +5280,7 @@ var vue = new Vue({
         $("#manager-upload").fileinput({
 
             theme: 'fas',
-            uploadUrl: 'http://172.21.212.64:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.212.64:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -4913,7 +5303,7 @@ var vue = new Vue({
         }).on("fileuploaded", function (event, data, previewId, index) {
             console.log(data)//一个文件上传成功
             var form = data.form, files = data.files, extra = data.extra,fileNames=data.filenames
-                response = data.response, reader = data.reader;
+            response = data.response, reader = data.reader;
 
             if (response != null) {
                 // alert("数据上传成功")
@@ -5123,12 +5513,10 @@ var vue = new Vue({
             }
         })
 
-
     }
 });
-//http://localhost:8081/file/upload/store_dataResource_files
-//http://localhost:8081/file/apk_upload
-
+//http://localhost:8082/file/upload/store_dataResource_files
+//http://localhost:8082/file/apk_upload
 $(function () {
 
 
@@ -5180,7 +5568,7 @@ $(function () {
 
             $(".browsermenu").css({
                 "left": e.pageX,
-                "top": e.pageY
+                "top": e.pageY,
             }).show();
 
         })
@@ -5190,12 +5578,60 @@ $(function () {
             // $(".browsermenu").hide();
         });
     });
+    //
+    // $('.fileTemplate').click((e) => {
+    //     $('.wzhRightMenu').animate({height: '0'}, 50);
+    //     if(vue.rightMenuShow==true)
+    //         vue.rightMenuShow=false
+    //     if(vue.renameIndex!='')
+    //         vue.renameIndex=''
+    //     console.log($('.fileTemplate').children().not('#browsercont'))
+    //     console.log($('.fileTemplate').children())
+    //     console.log($('.fileTemplate'))
+    //     console.log(e.currentTarget)
+    // })
 
-    $('body').click((e) => {
-        $('.wzhRightMenu').animate({height: '0'}, 50);
-        $('.browsermenu').hide();
+    $('.fileTemplate').on('click',':not(.wzhMicroInput)',function (e) {
 
+        e.stopPropagation();
+        if(vue.rightMenuShow==true)
+            vue.rightMenuShow=false
+        if(e.currentTarget.className.indexOf('renameContainer')==-1&&vue.renameIndex!=''){
+            console.log(e.currentTarget.className)
+            vue.renameIndex=''
+        }
     })
 
+    $('.wzhMicroInput').click(
+        function(event){
+            event.stopPropagation();
+        }
+    )
+
+
+    var value = 0
+
+    $("#refreshPackageBtn").click(
+        function () {
+            value += 180;
+            $('.fa-refresh').rotate({animateTo: value})
+        }
+    );
+
+
+    $('#backFatherBtn').click(
+        ()=>{
+            console.log('11')
+            $('.fa-arrow-left').animate({marginLeft:'-6px'},175)
+            $('.fa-arrow-left').animate({marginLeft:'0'},175)
+        }
+    )
+
+    $('.el-input__inner').click(
+        ()=>{
+            console.log($(this))
+        }
+    )
 
 })
+

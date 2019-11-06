@@ -1425,10 +1425,10 @@ input[type="radio"]:checked + span {
 
 .deleteEditContainer{
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: flex-end;
-    width: 94px;
+    /*flex-direction: column;*/
+    justify-content: flex-end;
+    align-items: center;
+    width: 80px;
     height: 60px;
 }
 

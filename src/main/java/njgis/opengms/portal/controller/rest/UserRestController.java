@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping (value = "/user")
@@ -527,12 +528,25 @@ public class UserRestController {
         return ResultUtils.success(result);
     }
 
+    @RequestMapping(value="/getFileByPath",method = RequestMethod.GET)
+    JsonResult getFileByPath(@RequestParam(value="paths[]") List<String> paths, HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        Object object=httpSession.getAttribute("uid");
+        if(object==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=object.toString();
+        JSONObject result=userService.getFileByPath(paths,userName);
+
+        return ResultUtils.success(result);
+    }
+
     @RequestMapping(value="/addFolder",method = RequestMethod.POST)
     JsonResult addFolder(@RequestParam("paths[]") List<String> paths,
                          @RequestParam("name") String name,
                          HttpServletRequest httpServletRequest){
 
-        System.out.print(paths);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName= Utils.checkLoginStatus(httpSession);
         if(userName==null){
@@ -544,23 +558,56 @@ public class UserRestController {
     }
 
     @RequestMapping(value="/addFile",method = RequestMethod.POST)
-    JsonResult addFile(@RequestParam("dataName") String fileName,
-                       @RequestParam("dataId") String dataId,
-                       @RequestParam("paths[]") List<String> paths,
+    JsonResult addFile(
+            @RequestBody UploadUserFileDTO uploadUserFileDTO
+                        , HttpServletRequest httpServletRequest){
 
-                         HttpServletRequest httpServletRequest){
+        System.out.print(uploadUserFileDTO.getFiles());
+        System.out.print(uploadUserFileDTO.getPaths());
+        List<Map> fileArray=uploadUserFileDTO.getFiles();
+        List<String> paths=uploadUserFileDTO.getPaths();
 
-        System.out.print(paths);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName= Utils.checkLoginStatus(httpSession);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
-        String url="http://" + dataContainerIpAndPort + "/dataResource/getResources?sourceStoreId="+dataId;
-        String[] a=fileName.split("\\.");
-        String name=a[0];
-        String suffix=a[1];
-        String result=userService.addFile(paths,name,suffix,userName,url);
+
+
+//        String[] a=files.split("\\.");
+//        String name=a[0];
+//        String suffix=a[1];
+        String result=userService.addFiles(paths,fileArray,userName);
+
+        return ResultUtils.success(uploadUserFileDTO);
+    }
+
+    @RequestMapping(value="/updateFile",method = RequestMethod.POST)
+    JsonResult updateFile(@RequestParam("dataName") String name,
+                          @RequestParam("dataId") String dataId,
+
+                       HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName= Utils.checkLoginStatus(httpSession);
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.updateFile(dataId,name,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/deleteFile",method = RequestMethod.POST)
+    JsonResult deleteFile(@RequestParam("dataId") String dataId,
+                          HttpServletRequest httpServletRequest){
+
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName= Utils.checkLoginStatus(httpSession);
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String result=userService.deleteFile(dataId,userName);
 
         return ResultUtils.success(result);
     }

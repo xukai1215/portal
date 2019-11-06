@@ -284,13 +284,13 @@ var vue = new Vue({
         },
         handleDataDownloadClick({ sourceStoreId }) {
             let url =
-                "http://172.21.212.64:8081/dataResource/getResource?sourceStoreId=" +
+                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
             window.open("/dispatchRequest/download?url=" + url);
         },
         handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
             let url =
-                "http://172.21.212.64:8081/dataResource/getResource?sourceStoreId=" +
+                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
             this.showDataChose = false;
             this.eventChoosing.tag = fileName + "." + suffix;
@@ -650,7 +650,7 @@ var vue = new Vue({
 
                 }
                 var that =this;
-                axios.post("http://172.21.212.64:8081/dataResource",data)
+                axios.post("http://172.21.212.64:8082/dataResource",data)
                     .then(res=>{
                         if(res.status==200){
                             alert("data upload success")
@@ -1169,7 +1169,7 @@ var vue = new Vue({
                 this.selectDataDialog = false
 
                 //todo 拼接url
-                this.modelInEvent.url="http://172.21.212.64:8081/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
+                this.modelInEvent.url="http://172.21.212.64:8082/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
                 this.modelInEvent.tag=da.item.fileName
                 
             }
@@ -1237,7 +1237,7 @@ var vue = new Vue({
 
         $("#managerUpload").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -1280,7 +1280,7 @@ var vue = new Vue({
         //上传数据相关
         $("#file-1").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -1318,7 +1318,7 @@ var vue = new Vue({
 
         $("#file-2").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -1361,7 +1361,7 @@ var vue = new Vue({
         //上传数据相关
         $("#manager-upload").fileinput({
             theme: 'fas',
-            uploadUrl: 'http://172.21.212.64:8081/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.212.64:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮

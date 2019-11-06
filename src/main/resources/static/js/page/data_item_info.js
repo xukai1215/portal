@@ -474,7 +474,7 @@ var  data_item_info= new Vue({
 
             }
 
-             // let downloadallzipurl="http://172.21.212.64:8081/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
+             // let downloadallzipurl="http://172.21.212.64:8082/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
              //
              let link =document.createElement("a");
              link.style.display='none';
@@ -1168,15 +1168,15 @@ var  data_item_info= new Vue({
 
 
         //full-text
-        $(document).on("click", ".detail-toggle", function () {
-            if ($(this).text() == "[Collapse]") {
-                $(this).text("[Expand]");
-            }
-            else {
-                $(this).text("[Collapse]")
-            }
-
-        })
+        // $(document).on("click", ".detail-toggle", function () {
+        //     if ($(this).text() == "[Collapse]") {
+        //         $(this).text("[Expand]");
+        //     }
+        //     else {
+        //         $(this).text("[Collapse]")
+        //     }
+        //
+        // })
 
         $('html, body').animate({scrollTop:0}, 'slow');
 
@@ -1206,7 +1206,7 @@ $(function () {
 
         //数据项点击样式事件
         $(".filecontent .el-card").on('click',function (e) {
-
+            console.log(e.currentTarget.id)
             let exist=false;
             for(i=0;i<dataSelection.length;i++)
             {
@@ -1272,7 +1272,7 @@ $(function () {
 
             }
 
-            // let downloadallzipurl="http://172.21.212.64:8081/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
+            // let downloadallzipurl="http://172.21.212.64:8082/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
             //
             let link =document.createElement("a");
             link.style.display='none';
@@ -1386,6 +1386,25 @@ $(function () {
         return urls[1];
 
     }
+
+    var value=0;
+
+    // $(".ab").click(
+    //     function () {
+    //         value += 180;
+    //         $('.fa-arrow-circle-up').rotate({animateTo: value})
+    //     }
+    // );
+
+    $(".ab").click(
+        function () {
+            if($('#authorship0').height()!=0)
+                $(this).addClass('transform180')
+            else
+                $(this).removeClass('transform180')
+        }
+    );
+
 
 
 });

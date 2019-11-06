@@ -1,6 +1,10 @@
 html,body{
   /*height: 100%;*/
 }
+
+body::-webkit-scrollbar{
+  width:0px;
+}
 .leftMenu{
   overflow:hidden;
   position:absolute;
@@ -113,6 +117,7 @@ html,body{
 .documentPanel p, .documentPanel pre {
   margin: 14px 0;
   word-wrap: break-word;
+  text-align: justify;
 }
 .geFooterContainer{
   position: absolute;

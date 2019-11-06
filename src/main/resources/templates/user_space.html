@@ -126,7 +126,7 @@
         <div th:replace="fragments/sidebar :: side"></div>
 
         <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20"
-             :style="{'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}" id="pageContent">
+             :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}" id="pageContent">
             <!-- top-tool -->
             <div th:replace="fragments/sidebar :: top"></div>
             <!--end top-tool -->
@@ -1608,7 +1608,7 @@
                         <el-card class="dataItemShare" :style="{display:(taskSharingActive==2?'block':'none')}"
                                  shadow="never">
                             <textarea id="taskDataDetailAll"
-                              placeholder="Input detail about the data here."></textarea>
+                                      placeholder="Input detail about the data here."></textarea>
                         </el-card>
                         <el-card class="dataItemShare" :style="{display:(taskSharingActive>=3?'block':'none')}"
                                  shadow="never">
@@ -1756,16 +1756,16 @@
                     </el-card>
                 </el-dialog>
 
-                <div class="page-content-wrap container-fluid">
+                <div class="page-content-wrap container-fluid  myDataContainer">
 
-                    <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==1}">
-                        <div class="panel panel-success" style="border: none;height: 650px;overflow: hidden">
+                    <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==1}" style="height: 100%">
+                        <div class="panel panel-success" style="border: none;height: 100%;overflow: hidden">
                             <!--<div class="panel-heading">-->
                             <!--<h3 class="panel-title">-->
                             <!--Manager my data below.-->
                             <!--</h3>-->
                             <!--</div>-->
-                            <div>
+                            <div style="height: 100%">
                                 <el-card class="filebrowserfunction" shadow="never">
 
                                     <el-row id="" class="filebrowser" shadow="never">
@@ -1774,8 +1774,8 @@
                                             <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
                                             <!--//todo upload-->
                                             <button id="upLoadButton" class="dwload btn btn-primary btn-md"
-                                                    data-toggle="modal" v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')"
-                                                    data-target="#managerUpload" >
+                                                    v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')"
+                                                    @click="uploadClick()">
                                                 <i class="glyphicon glyphicon-upload">&nbsp;upload</i>
                                             </button>
 
@@ -1806,24 +1806,24 @@
                                     <div>
                                         <span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;
                                         <span v-if="downloadDataSetName.length==0">no data..</span>
-                                        <span v-for="item in downloadDataSetName">{{item}}, </span>
+                                        <span v-for="item in downloadDataSetName">{{item.name}}<span v-if="item.package==false">.{{item.suffix}}</span>, </span>
                                     </div>
                                     <div class="flexRowContainer">
                                     </div>
 
                                 </div>
-                                <el-row>
-                                    <el-col :span="3">
-                                        <el-card style="height:560px;overflow-y: auto " class="managerAsideBtn">
-<!--                                            <el-button @click="findAllFiles()">All Files</el-button>-->
-<!--                                            <br>-->
-<!--                                            <el-button @click="findPics()">pictures</el-button>-->
-<!--                                            <br>-->
-<!--                                            <el-button @click="findDocs()">doc</el-button>-->
-<!--                                            <br>-->
-<!--                                            &lt;!&ndash;<el-button @click="findVideo()" >video</el-button><br>&ndash;&gt;-->
-<!--                                            <el-button @click="findOtherFiles()">other</el-button>-->
-<!--                                            <br>-->
+                                <el-row style="height: calc(100% - 100px);">
+                                    <el-col :span="3" style="height: 100%">
+                                        <el-card style="height:100%;overflow-y: auto " class="managerAsideBtn">
+                                            <!--                                            <el-button @click="findAllFiles()">All Files</el-button>-->
+                                            <!--                                            <br>-->
+                                            <!--                                            <el-button @click="findPics()">pictures</el-button>-->
+                                            <!--                                            <br>-->
+                                            <!--                                            <el-button @click="findDocs()">doc</el-button>-->
+                                            <!--                                            <br>-->
+                                            <!--                                            &lt;!&ndash;<el-button @click="findVideo()" >video</el-button><br>&ndash;&gt;-->
+                                            <!--                                            <el-button @click="findOtherFiles()">other</el-button>-->
+                                            <!--                                            <br>-->
                                             <el-button type="primary" plain @click="showFilePackage()">File Space</el-button>
                                             <br>
                                             <el-button type="primary" plain @click="showMyUpload()">My Upload Data</el-button>
@@ -1834,13 +1834,16 @@
                                         </el-card>
                                     </el-col>
 
-                                    <el-col :span="21">
-                                        <el-card style="height: 560px;overflow-y:auto;width:100%" id="browsercont"
-                                                 v-loading="managerloading" :style="{display:fileSpaceIndex==1?'block':'none'}">
+                                    <el-col :span="21" class="fileTemplate" style="height: 100%">
+                                        <el-card style="height:100%;overflow-y:auto;width:100%" id="browsercont1"
+                                                 v-loading="managerloading" :style="{display:fileSpaceIndex==1?'block':'none'}" >
                                             <div style="width: 100%;height: 20px;margin-left: -5px;display: flex;justify-content: space-between;align-items: center">
                                                 <div class="showPathContainer">
-                                                    <div class="squareButton" @click="backToFather">
+                                                    <div class="squareButton" id="backFatherBtn" @click="backToFather">
                                                         <i class="fa fa-arrow-left" style="margin-right:2px "></i>
+                                                    </div>
+                                                    <div class="squareButton" id="refreshPackageBtn" @click="refreshPackage($event)">
+                                                        <i class="fa fa-refresh" style="font-weight: 600"></i>
                                                     </div>
                                                     <div class="showPathContainer" style="margin-left: 10px">
                                                         <div>path</div>:
@@ -1855,26 +1858,39 @@
                                                  :id="generateId(key)" :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
                                                  v-for="(item,key) in myFileShown"
                                                  :key="key"
-                                                 @click="singleClick($event,item)"
-                                                 @dblclick="getPackageContent($event,item,key)"
+
                                                  @mouseover="addDataClass($event,item)"
                                                  @mouseout="removeClass($event,item)"
-                                                 @click.right="rightMenu($event,eval)">
-                                                <el-row style="height: 80%">
-                                                    <el-col :span="6">&nbsp
-                                                        <div class="squareSelect flexCenter" style="margin: 3px;float: inherit;">
-                                                            <i style="font-size: 16px;color:#666666" :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}" class="fa fa-check"></i>
+                                                 @click.right="rightMenu($event,item,key)">
+                                                <el-row style="height: 80%" @dblclick.native="getPackageContent($event,item,key)">
+                                                    <el-col :span="5">&nbsp
+                                                        <div class="squareButtonMini flexCenter" style="margin: 4px;float: inherit;cursor: pointer" @click="singleClick($event,item)"
+                                                             v-if="item.package==false">
+                                                            <i style="font-size: 16px;color:#1b7cde" :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}" class="fa fa-check"></i>
                                                         </div>
                                                     </el-col>
-                                                    <el-col :span="14" style="height: 100%;"><img :src="getImg(item)" onerror=src="/static/img/filebrowser/unknow.svg"
-                                                                                                  style="height: 100%;width:100%">
+                                                    <el-col :span="15" style="height: 100%;" >
+                                                        <img class="fileImg" :src="getImg(item)" onerror=src="/static/img/filebrowser/unknow.svg" style="height: 100%;width:100%;cursor: pointer">
                                                     </el-col>
-                                                    <el-col :span="4">&nbsp</el-col>
+                                                    <el-col :span="4">&nbsp
+                                                        <div v-if="item.upload==true" style="margin-right: 5px;margin-top: 4px;float: right">
+                                                            <i class="fa fa-user-circle-o" style="font-size: 16px;color:#1b7cde"></i>
+                                                        </div>
+                                                    </el-col>
                                                 </el-row>
-                                                <el-row type="flex" justify="center" v-if="item">
+                                                <el-row type="flex" justify="center" v-show="renameIndex!=item.id" v-if="item" class="fileName"
+                                                        @click.native="getPackageContent($event,item,key)" style="cursor: pointer">
                                                     <p style="text-align: center;word-break: break-all;" v-if="item">{{item.label}}</p>
                                                     <p v-if="item.suffix">.</p>
                                                     <p v-if="item.suffix">{{item.suffix}}</p>
+                                                </el-row>
+                                                <el-row type="flex" justify="center"  v-show="renameIndex==item.id" v-if="item" class="renameContainer">
+                                                    <input class="wzhMicroInput InputCenter renameFileInput"  >
+                                                    <p v-if="item.suffix">.{{item.suffix}}</p>
+                                                    <div class="squareButton23 flexCenter" style="position: absolute; right:calc(20% - 23px) ;background-color: #07b9ff;cursor: pointer" @click="renameConfirm">
+                                                        <i class="fa fa-check" style="margin-right:2px;color: whitesmoke "></i>
+                                                    </div>
+
                                                 </el-row>
                                                 <!--menu item -->
                                             </div>
@@ -1905,7 +1921,7 @@
                                                 </span>
                                         </el-dialog>
 
-                                        <el-card style="height: 560px;overflow-y:auto;width:100%" id="browsercont"
+                                        <el-card style="height: 100%;overflow-y:auto;width:100%" id="browsercont"
                                                  v-loading="managerloading" :style="{display:fileSpaceIndex==2?'block':'none'}">
                                             <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
                                                  :id="generateId(key)"
@@ -1914,7 +1930,7 @@
                                                  @click="getid($event,item)"
                                                  @mouseover="addDataClass($event,item)"
                                                  @mouseout="removeClass($event,item)"
-                                                 @click.right="rightMenu($event)">
+                                                 @click.right="rightMenu($event,item,key)">
                                                 <el-row style="height: 80%">
                                                     <el-col :span="6">&nbsp</el-col>
                                                     <el-col :span="14" style="height: 100%;"><img :src="getImg(item)"
@@ -1936,15 +1952,17 @@
 
 
                                 <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu">
-                                    <el-button id="dbtn" @click="download_data_dataManager()" type="text">download
+                                    <el-button id="dbtn" @click="right_download()" type="text">download
                                     </el-button>
                                     <br>
-                                    <el-button id="dbtn" @click="delete_data_dataManager()" type="text">delete
+                                    <el-button id="dbtn" @click="right_deleteFile()" type="text">delete
                                     </el-button>
                                     <br>
-                                    <el-button id="sbtn" @click="share" type="text">share</el-button>
-                                    <el-button id="sbtn" @click="relatedModels_dataManager()" type="text">relatedModels
-                                    </el-button>
+                                    <el-button id="sbtn" @click="right_share" type="text">share</el-button>
+                                    <br>
+                                    <el-button id="sbtn" @click="rename" type="text" v-if="rightTargetItem.label!='All Folder'&&rightTargetItem.label!='My Data'">rename</el-button>
+                                    <!--                                    <el-button id="sbtn" @click="relatedModels_dataManager()" type="text">relatedModels-->
+                                    <!--                                    </el-button>-->
                                 </el-card>
 
 
@@ -1954,7 +1972,7 @@
                             <div class="modal fade" id="managerUpload" tabindex="-1" role="dialog"
                                  aria-labelledby="ModalLabel"
                                  aria-hidden="true">
-                                <div class="modal-dialog" style="z-index: 2041">
+                                <div class="modal-dialog" style="z-index: 889">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="ModalLabel3">Upload Data</h4>
@@ -1983,42 +2001,42 @@
                                             <div class="uploaded">
 
                                                 <div class="form-group flexColCenter">
-                                                    <label for="fileName">Online datapath:</label>
+                                                    <label for="fileName">Online datapath:<el-button size="mini" @click="selectFolder" v-if="selectedPath.length==0">Select  Folder</el-button></label>
                                                     <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px">
-                                                        <div v-for="(path,index) in pathShown" :style="{color:index==pathShown.length-1?'#222222':'#666666'}"> /{{path.label}} </div>
+                                                        <div v-for="(path,index) in selectedPath" @click="selectFolder" style="text-decoration:underline;cursor: pointer"> /{{path.label}} </div>
                                                     </div>
-<!--                                                    <el-button style="margin-left: calc(50% - 180px)" type="primary"-->
-<!--                                                               @click="selectPathClick">Select-->
-<!--                                                    </el-button>-->
+                                                    <!--                                                    <el-button style="margin-left: calc(50% - 180px)" type="primary"-->
+                                                    <!--                                                               @click="selectPathClick">Select-->
+                                                    <!--                                                    </el-button>-->
                                                 </div>
-<!--                                                <form>-->
+                                                <!--                                                <form>-->
 
-<!--                                                                                                    <div class="form-group">-->
-<!--                                                                                                        <label for="fileName">fileName:</label>-->
-<!--                                                                                                        <input type="text" class="form-control"-->
-<!--                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."-->
-<!--                                                                                                               id="managerFileName" required/>-->
-<!--                                                                                                    </div>-->
-<!--                                                                                                    <div class="form-group">-->
-<!--                                                                                                        <label for="suffix">suffix:</label>-->
-<!--                                                                                                        <input type="text" class="form-control"-->
-<!--                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."-->
-<!--                                                                                                               id="managerFileSuffix" required/>-->
-<!--                                                                                                    </div>-->
+                                                <!--                                                                                                    <div class="form-group">-->
+                                                <!--                                                                                                        <label for="fileName">fileName:</label>-->
+                                                <!--                                                                                                        <input type="text" class="form-control"-->
+                                                <!--                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."-->
+                                                <!--                                                                                                               id="managerFileName" required/>-->
+                                                <!--                                                                                                    </div>-->
+                                                <!--                                                                                                    <div class="form-group">-->
+                                                <!--                                                                                                        <label for="suffix">suffix:</label>-->
+                                                <!--                                                                                                        <input type="text" class="form-control"-->
+                                                <!--                                                                                                               placeholder="Please input coordinate system of the data to be uploaded."-->
+                                                <!--                                                                                                               id="managerFileSuffix" required/>-->
+                                                <!--                                                                                                    </div>-->
 
-<!--                                                                                                    <div class="form-group">-->
+                                                <!--                                                                                                    <div class="form-group">-->
 
-<!--                                                                                                        <label for="keywords">tags:</label><br>-->
-<!--                                                                                                        <div class="bootstrap-tagsinput">-->
+                                                <!--                                                                                                        <label for="keywords">tags:</label><br>-->
+                                                <!--                                                                                                        <div class="bootstrap-tagsinput">-->
 
-<!--                                                                                                            <input type="text" data-role="tagsinput" id="managerFileTags"-->
-<!--                                                                                                                   size="1"-->
-<!--                                                                                                                   required/>-->
-<!--                                                                                                        </div>-->
-<!--                                                                                                    </div>-->
+                                                <!--                                                                                                            <input type="text" data-role="tagsinput" id="managerFileTags"-->
+                                                <!--                                                                                                                   size="1"-->
+                                                <!--                                                                                                                   required/>-->
+                                                <!--                                                                                                        </div>-->
+                                                <!--                                                                                                    </div>-->
 
-<!--                                                                                                </form>-->
-<!--                                                <button class="btn btn-success pull-right" @click="uploadD">upload</button>-->
+                                                <!--                                                                                                </form>-->
+                                                <!--                                                <button class="btn btn-success pull-right" @click="uploadD">upload</button>-->
 
                                             </div>
 
@@ -2037,46 +2055,41 @@
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal -->
                             </div>
+                            <div class="modal fade" id="selectFolder" aria-labelledby="ModalLabel"
+                                 aria-hidden="true" role="dialog">
+                                <div class="modal-dialog" style="z-index: 998;width: 550px;top: 55px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4>Select Folder</h4>
+                                        </div>
 
-
-                        </div>
-                        <el-dialog :visible.sync="selectPathDialog" title="Select Folder"
-                                   width="35%">
-                            <el-card style="min-height: 300px;">
-                                <el-tree
-                                        :data="folderTree"
-                                        ref="folderTree"
-                                        node-key="id"
-                                        highlight-current
-                                        default-expand-all
-                                        :expand-on-click-node="false"
-                                >
-                                                        <span class="custom-tree-node" slot-scope="{ node, data }">
-                                                            <span>{{ node.label }}</span>
-                                                            <!--<span>-->
-                                                            <!--<el-button-->
-                                                            <!--type="text"-->
-                                                            <!--size="mini"-->
-                                                            <!--@click="() => append(data)">-->
-                                                            <!--Append-->
-                                                            <!--</el-button>-->
-                                                            <!--<el-button-->
-                                                            <!--type="text"-->
-                                                            <!--size="mini"-->
-                                                            <!--@click="() => remove(node, data)">-->
-                                                            <!--Delete-->
-                                                            <!--</el-button>-->
-                                                            <!--</span>-->
-                                                        </span>
-                                </el-tree>
-                            </el-card>
-                            <span slot="footer" class="dialog-footer">
-                                                    <el-button class="pull-left" type="primary" icon="el-icon-folder-add" @click="addFolder()">Add new folder</el-button>
-                                                    <el-button @click="selectPathDialog = false">Cancel</el-button>
-                                                    <el-button type="primary" @click="confirmFolder()">OK</el-button>
+                                        <div class="" style="min-height: 305px;padding: 10px 15px;font-size: 16px;font-family: sans-serif">
+<!--                                            <el-card style="min-height: 300px;width: 95%">-->
+                                                <el-tree
+                                                        :data="folderTree"
+                                                        ref="folderTree"
+                                                        node-key="id"
+                                                        highlight-current
+                                                        default-expand-all
+                                                        :expand-on-click-node="false"
+                                                >
+                                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                    <span>{{ node.label }}</span>
                                                 </span>
-                        </el-dialog>
-                    </div>
+                                                </el-tree>
+<!--                                            </el-card>-->
+                                        </div>
+                                        <div class="modal-footer">
+                                             <span>
+                                                 <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
+                                                            @click="addFolderinTree()">Add new folder</el-button>
+                                                 <el-button @click="selectPathDialog = false">Cancel</el-button>
+                                                 <el-button type="primary" @click="confirmFolder()">OK</el-button>
+                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                     <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==2}">
                         <div class="panel panel-success" style="border: none;height: 650px;overflow: hidden">
@@ -2098,7 +2111,8 @@
                                 </el-card>
                                 <el-card>
 
-                                    <div class="alert-success" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;<span>{{downloadDataSetName.length!=0?downloadDataSetName:"no data.."}}</span>
+                                    <div class="alert-success" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;
+                                        <span>{{downloadDataSetName.name}}</span><span v-if="">.{{downloadDataSetName.suffix}}</span><span v-if="downloadDataSetName.length==0">no data..</span>
                                     </div>
                                 </el-card>
 
@@ -2938,7 +2952,7 @@
                                     <a class="panel-title" :href="'/task/'+task.computableId" style="font-weight: bold">
                                         {{task.computableName}}
                                     </a>
-                                    <button class="btn btn-info btn-sm" @click="sharingTaskData(task)"><i
+                                    <button class="btn btn-info btn-sm" @click="sharingTaskData(task)" style="margin-left: 15px"><i
                                             class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item
                                     </button>
                                     <el-button type="primary"
@@ -3231,6 +3245,7 @@
 </div>
 </body>
 <script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/jquery.rotate.min.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/js/common/piexif.min.js"></script>
 <script src="/static/js/common/fileinput.js"></script>
