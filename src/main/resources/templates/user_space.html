@@ -1774,12 +1774,13 @@
                                             <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
                                             <!--//todo upload-->
                                             <button id="upLoadButton" class="dwload btn btn-primary btn-md"
-                                                    v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')"
-                                                    @click="uploadClick()">
+                                                    v-if="myFileShown.length==0||myFileShown[0].label!='All Folder'"
+                                                    @click="uploadClick(0)">
                                                 <i class="glyphicon glyphicon-upload">&nbsp;upload</i>
                                             </button>
-
-
+                                            <button class="dwload btn btn-primary btn-md" @click="addFolderInPath">
+                                                <i class="glyphicon glyphicon-plus-sign">&nbsp;add folder</i>
+                                            </button>
                                             <button class="dwload btn btn-primary btn-md" v-if="downloadDataSet.length>0" @click="userDownload">
                                                 <i class="glyphicon glyphicon-download">&nbsp;download</i>
                                             </button>
@@ -1895,7 +1896,7 @@
                                                 <!--menu item -->
                                             </div>
                                             <div class="el-card dataitemisol flexCenter" style="width: 120px;" data-toggle="modal"
-                                                 data-target="#managerUpload" @click="uploadClick()"
+                                                 data-target="#managerUpload" @click="uploadClick(1)"
                                                  v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')">
                                                 <div class="circle">
                                                     <i class="fa fa-arrow-up"></i>
@@ -1910,7 +1911,7 @@
                                         </el-card>
                                         <el-dialog :visible.sync="addFolderIndex" title="Add New Folder">
                                             <div class="showPathContainer" style="margin-left: 10px;">
-                                                <div class="containerWithBorder">path</div>:
+                                                <div class="containerWithBorder" @click="selectFolder">path</div>:
                                                 <div v-for="(path,index) in pathShown" :style="{color:index==pathShown.length-1?'#222222':'#666666'}"> /{{path.label}} </div>
                                                 /..
                                             </div>
@@ -2001,9 +2002,12 @@
                                             <div class="uploaded">
 
                                                 <div class="form-group flexColCenter">
-                                                    <label for="fileName">Online datapath:<el-button size="mini" @click="selectFolder" v-if="selectedPath.length==0">Select  Folder</el-button></label>
-                                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px">
+                                                    <label for="fileName" >Online datapath:<el-button type="primary" plain size="mini" @click="selectFolder" v-if="selectedPath.length==0&&uploadInPath==0">Select  Folder</el-button></label>
+                                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px" v-if="uploadInPath==0">
                                                         <div v-for="(path,index) in selectedPath" @click="selectFolder" style="text-decoration:underline;cursor: pointer"> /{{path.label}} </div>
+                                                    </div>
+                                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px" v-if="uploadInPath==1">
+                                                        <div v-for="(path,index) in pathShown"> /{{path.label}} </div>
                                                     </div>
                                                     <!--                                                    <el-button style="margin-left: calc(50% - 180px)" type="primary"-->
                                                     <!--                                                               @click="selectPathClick">Select-->
@@ -2090,6 +2094,8 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
                     <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==2}">
                         <div class="panel panel-success" style="border: none;height: 650px;overflow: hidden">
@@ -2251,10 +2257,9 @@
                         </div>
                     </div>
 
+                        </div>
+                    </div>
 
-                </div>
-                </el-row>
-            </div>
             <!--end-->
 
             <!--Community-->
