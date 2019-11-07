@@ -51,7 +51,7 @@ public class TaskRestController {
             return modelAndView;
         } else {
             ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("haha");
+            modelAndView.setViewName("task");
             modelAndView.addObject("logged", "0");
             return modelAndView;
         }
@@ -234,7 +234,7 @@ public class TaskRestController {
 
                 //存入用户信息记录
                 String msg= userService.addTaskInfo(username,userTaskInfo);
-                result=result.concat("&").concat(msg);
+//                result=result.concat("&").concat(msg);
 
                 return ResultUtils.success(result);
             }

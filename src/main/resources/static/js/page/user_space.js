@@ -3120,7 +3120,7 @@ var vue = new Vue({
                 })
             }
         },
-        deleteSpataial(oid) {
+        deleteSpatial(oid) {
             if (confirm("Are you sure to delete this spatial reference?")) {
                 var url = "/repository/deleteSpatialReference";
                 $.ajax({

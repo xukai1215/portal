@@ -1,6 +1,9 @@
 var vue = new Vue({
     el: "#app",
     data: {
+        radioStyle:"Classic",
+        semanticsActiveStates:[0,1,2,3,4,5,6,7,8,9,10],
+
         tableLoading: true,
         first: true,
         activeIndex: "3-2",
@@ -176,18 +179,22 @@ var vue = new Vue({
         initSize(){
             this.$nextTick(() =>{
                 let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                let totalHeight= $('.content').css('height')
+                let totalHeight= $('.taskMain').css('height')
+                let leftbarHeight= $("#introContainer").css("height");
 
-                if(scrollTop>60){
-                    this.isFixed = true;
+                if(scrollTop>62){
+                    $('#introContainer').addClass("fixed")
+                    if(parseInt(totalHeight)-parseInt(scrollTop)+62<parseInt(leftbarHeight)){
+                        $('#introContainer').removeClass("fixed")
+                        $('#introContainer').addClass("stop")
+                    }else{
+                        $('#introContainer').removeClass("stop")
+                        $('#introContainer').addClass("fixed")
+                    }
                 }else{
-                    this.isFixed = false;
+                    $('#introContainer').removeClass("fixed")
                 }
-                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
-                    $('.introContent').css('display','none')
-                }else{
-                    $('.introContent').css('display','block')
-                }
+
 
 
 
@@ -440,7 +447,7 @@ var vue = new Vue({
             console.log(this.modelInEvent)
             const loading = this.$loading({
                 lock: true,
-                text: "Model is running, you can check running state and get the results of this model in \"User Space\" -> \"Task\"",
+                text: "Model is running, you can check running state and get results in \"User Space\" -> \"Task\"",
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
