@@ -12,4 +12,5 @@ public class TaskData {
     String event;
     String url;
     String tag;
+    String suffix;
 }
