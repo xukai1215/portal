@@ -41,7 +41,8 @@
         }
 
         .el-collapse-item__header{
-            font-size:16px;
+            font-size:20px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -138,7 +139,7 @@
                                                     <el-col :span="6" :offset="1">
                                                         <!--:value="modelInEvent.tag"-->
                                                         <el-input class="model-input"
-                                                                  :value="modelInEvent.tag"
+                                                                  :value="modelInEvent.tag==undefined?'':(modelInEvent.tag+'.'+modelInEvent.suffix)"
                                                                   :id="'datainput'+inEventIndex"
                                                                   readonly>
                                                         </el-input>
@@ -228,7 +229,7 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1">
-                                                        <el-input class="model-input" :value="modelOutEvent.tag"
+                                                        <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
                                                                   readonly>
                                                         </el-input>
                                                     </el-col>
@@ -260,9 +261,9 @@
                             <el-collapse v-model="semanticsActiveStates">
                                 <el-collapse-item :title="state.name" :name="index"
                                                   v-for="(state,index) in info.modelInfo.states" :key="index">
-                                    <h4><i>{{state.desc}}</i></h4>
+                                    <h4 style="font-size: 16px;margin-bottom:20px">{{state.desc}}</h4>
 
-                                    <el-table :data="state.event" style="width: 100%" border>
+                                    <el-table :data="state.event" :key="Math.random()" style="width: 100%" border>
                                         <el-table-column
                                                 label="Type"
                                                 width="150">
@@ -294,7 +295,7 @@
                                                 width="180">
                                             <template slot-scope="scope">
                                                 <el-input class="model-input"
-                                                          :value="scope.row.tag"
+                                                          :value="scope.row.tag==undefined?'':(scope.row.tag+'.'+scope.row.suffix)"
                                                           :id="'datainput'+scope.row.eventId"
                                                           readonly>
                                                 </el-input>

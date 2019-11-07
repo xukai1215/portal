@@ -100,6 +100,11 @@ var vue = new Vue({
     },
     computed: {},
     methods: {
+        tableRowKey(row){
+            console.log(row)
+          return row.name;
+        },
+
         handlePageChange(){
 
         },
@@ -377,6 +382,7 @@ var vue = new Vue({
                 });
                 if (event == undefined) return;
                 this.$set(event, "tag", el.tag);
+                this.$set(event, "suffix", el.suffix);
                 this.$set(event, "url", el.url);
             });
             loading.close();
@@ -403,9 +409,10 @@ var vue = new Vue({
             return this.$confirm(`确定移除 ${file.name}？`);
         },
         onSuccess({ data }) {
-            let { tag, url } = data;
+            let { tag,suffix, url } = data;
             this.showUpload = false;
             this.eventChoosing.tag = tag;
+            this.eventChoosing.suffix = suffix;
             this.eventChoosing.url = url;
             this.$refs.upload.clearFiles();
         },
@@ -466,6 +473,7 @@ var vue = new Vue({
                         let event = el.eventName;
                         let tag = el.tag;
                         let url = el.url;
+                        let suffix=el.suffix;
                         if (el.eventType == "response") {
                             if (el.optional) {
                                 if(url === null || url === undefined){
@@ -475,7 +483,8 @@ var vue = new Vue({
                                         statename,
                                         event,
                                         url,
-                                        tag
+                                        tag,
+                                        suffix
                                     });
                                 }
                             } else {
@@ -487,7 +496,8 @@ var vue = new Vue({
                                     statename,
                                     event,
                                     url,
-                                    tag
+                                    tag,
+                                    suffix
                                 });
                             }
                         }
@@ -558,13 +568,14 @@ var vue = new Vue({
                         });
                         if (event == undefined) return;
                         this.$set(event, "tag", el.tag);
+                        this.$set(event, "suffix", el.suffix);
                         this.$set(event, "url", el.url);
                     });
 
                     loading.close();
                 } else {
                 }
-            }, 3000);
+            }, 5000);
         },
 
 
