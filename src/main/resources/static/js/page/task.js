@@ -69,7 +69,6 @@ var vue = new Vue({
         userInfo: {
             runTask:[
                 {
-
                 }
             ]
         },
@@ -131,7 +130,7 @@ var vue = new Vue({
             this.pageOption.searchText=this.dataItemSearchText;
             axios.post("/dataItem/searchResourceByNameAndCate/",this.pageOption)
                 .then((res)=>{
-                    console.log(res)
+                    console.log(res);
                     this.pageOption.searchResult=res.data.data.list;
                     this.pageOption.total=res.data.data.total;
                 });
@@ -491,7 +490,7 @@ var vue = new Vue({
                 return;
             }
 
-
+            //3.配置完数据数据，开始调用模型
             let { data, code, msg } = await (await fetch("/task/invoke", {
                 method: "post",
                 headers: {

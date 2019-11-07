@@ -49,7 +49,7 @@ public class DispatchingRequestController {
                       @RequestParam("userName")String userName
 
                       ) throws IOException {
-        String url="http://"+managerServerIpAndPort+"/GeoModeling/computableModel/uploadData";
+        String url="http://"+ managerServerIpAndPort +"/GeoModeling/computableModel/uploadData";
         Map<String,String> a=new HashMap<>();
         a.put("host",host);
         a.put("port",port);

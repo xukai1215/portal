@@ -1,9 +1,12 @@
 package njgis.opengms.portal.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -20,6 +23,50 @@ import java.util.Map;
  * Created by wang ming on 2019/5/14.
  */
 public class MyHttpUtils {
+
+    //设置连接超时时间，单位毫秒
+    private static final int CONNECT_TIMEOUT = 6000;
+
+    //设置获取数据的超时时间(即响应时间),单位毫秒
+
+    private static final int SOCKET_TIMEOUT = 6000;
+
+    public static String POSTWithJSON(String url, String encode, Map<String, String> headers, JSONObject jsonObject)throws IOException{
+        String body = "";
+        CloseableHttpClient client = HttpClients.createDefault();
+        if(client == null){
+            return "Input Auth parameter error";
+        }
+        HttpPost httpPost = new HttpPost(url);
+
+        //设置连接超时时间
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
+        httpPost.setConfig(requestConfig);
+
+        //设置header
+        if(headers != null && headers.size() > 0){
+            for(Map.Entry<String, String> entry : headers.entrySet()){
+                httpPost.setHeader(entry.getKey(), entry.getValue());
+            }
+        }
+
+        StringEntity stringEntity = new StringEntity(jsonObject.toString(), encode);
+        stringEntity.setContentType("application/json");
+        httpPost.setEntity(stringEntity);
+
+        CloseableHttpResponse httpResponse = client.execute(httpPost);
+        HttpEntity entity = httpResponse.getEntity();
+
+        if(entity != null){
+            body = EntityUtils.toString(entity, encode);
+        }
+        EntityUtils.consume(entity);
+        //释放链接
+        httpResponse.close();
+        client.close();
+        return body;
+    }
+
 
     public static String POSTMultiPartFileToDataServer(String url,String encode, Map<String,String>params,Map<String,MultipartFile> fileMap)throws IOException{
         String body = "";

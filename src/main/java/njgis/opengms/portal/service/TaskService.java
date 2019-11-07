@@ -3,6 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.deploy.net.HttpUtils;
 import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ComputableModelDao;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -290,7 +292,7 @@ public class TaskService {
         resultDataDTO.setEvent(uploadDataDTO.getEvent());
         resultDataDTO.setStateId(uploadDataDTO.getState());
         String testDataPath = uploadDataDTO.getFilePath();
-        String url = "http://" + managerServer + "/GeoModeling/computableModel/uploadData";
+        String url = "http://" + managerServer + "/GeoModeling/computableModel/uploadData";// 2. 上传输入数据到特定的数据交换服务器
         //拼凑form表单
         Map<String,String> params = new HashMap<>();
         params.put("host",testDataUploadDTO.getHost());
@@ -330,7 +332,7 @@ public class TaskService {
 
     public JsonResult generateTask(String id,String username){
         String md5 = getMd5(id);
-        JSONObject result = getServiceTask(md5);
+        JSONObject result = getServiceTask(md5);//根据模型pid/MD5值，通过管理服务器获取包含有该服务的任务服务器
 
         if (result.getInteger("code") == 1) {
 
@@ -338,7 +340,7 @@ public class TaskService {
             String host = data.getString("host");
             int port = Integer.parseInt(data.getString("port"));
 
-            JSONObject createTaskResult = createTask(id, md5, host, port, username);
+            JSONObject createTaskResult = createTask(id, md5, host, port, username);//，创建一个Task,返回输入上传的数据服务器地址
             if (createTaskResult!=null && createTaskResult.getInteger("code") == 1) {
                 return ResultUtils.success(createTaskResult.getJSONObject("data"));
             } else {
@@ -363,7 +365,7 @@ public class TaskService {
     }
 
     public JSONObject createTask(String id, String md5, String ip, int port, String username) {
-
+            //1. 预处理过程，创建一个Task,获取输入上传的数据服务器地址
         String urlStr = "http://"+managerServerIpAndPort+"/GeoModeling/computableModel/createTask";
 //        Map<String, Object> paramMap = new HashMap<String, Object>();
 //        paramMap.put("ip", ip);
@@ -561,8 +563,16 @@ public class TaskService {
     public JSONObject getTaskResult(JSONObject data){
         JSONObject out = new JSONObject();
 
-        JSONObject result = Utils.postJSON("http://"+managerServerIpAndPort+"/GeoModeling/computableModel/refreshTaskRecord", data);
-
+        String url = "http://" + managerServerIpAndPort + "/GeoModeling/computableModel/refreshTaskRecord";
+        String tempStr = null;
+        try {
+            tempStr = MyHttpUtils.POSTWithJSON(url, "UTF-8", null, data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //JSONObject result = Utils.postJSON("http://"+managerServerIpAndPort+"/GeoModeling/computableModel/refreshTaskRecord", data);//4.根据task id去查询模型运行记录
+        //需要在此处加上判断 否则会轮询空指针
+        JSONObject result = JSONObject.parseObject(tempStr);
         ////update model status to Started, Started: 1, Finished: 2, Inited: 0, Error: -1
         Task task = findByTaskId(data.getString("tid"));
         int state = task.getStatus();

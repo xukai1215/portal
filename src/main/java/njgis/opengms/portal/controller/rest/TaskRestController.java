@@ -55,7 +55,6 @@ public class TaskRestController {
             modelAndView.addObject("logged", "0");
             return modelAndView;
         }
-
     }
 
 //    @RequestMapping(value="/renameTag",method = RequestMethod.POST)
@@ -104,7 +103,7 @@ public class TaskRestController {
 //    }
 
     @RequestMapping(value = "/TaskInit/{id}", method = RequestMethod.GET)
-    @ApiOperation (value = "Task初始化API，获取模型描述信息，State信息，task以及Dx相关信息")
+    @ApiOperation (value = "Task初始化API，获取模型描述信息，State信息，task以及Dx相关信息")//创建task 获取数据服务器地址
     JsonResult initTask(@PathVariable("id") String id, HttpServletRequest request){
         HttpSession session = request.getSession();
         if(session.getAttribute("uid") == null){
@@ -119,7 +118,7 @@ public class TaskRestController {
     JsonResult getServiceTask(@PathVariable("id") String id) {
 
         String md5 = taskService.getMd5(id);
-        JSONObject result = taskService.getServiceTask(md5);
+        JSONObject result = taskService.getServiceTask(md5);//根据模型pid/MD5值，通过管理服务器获取包含有该服务的任务服务器
         if (result.getInteger("code") == 1) {
             return ResultUtils.success(result.getJSONObject("data"));
         } else {
@@ -182,7 +181,7 @@ public class TaskRestController {
     }
 
     @RequestMapping(value = "/createTask/{id}", method = RequestMethod.POST)
-    JsonResult createTask(@PathVariable("id") String id, HttpServletRequest request) {
+    JsonResult createTask(@PathVariable("id") String id, HttpServletRequest request) {//id是MD5值
 
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null) {
@@ -190,7 +189,7 @@ public class TaskRestController {
         }
         else {
             String username = session.getAttribute("uid").toString();
-            return taskService.generateTask(id, username);
+            return taskService.generateTask(id, username);//1 创建一个Task,返回输入上传的数据服务器地址
         }
     }
 
@@ -202,7 +201,7 @@ public class TaskRestController {
             String username = session.getAttribute("uid").toString();
 //            JSONObject jsonObject = JSONObject.parseObject(lists);
             lists.put("username", username);
-            String result = taskService.invoke(lists);
+            String result = taskService.invoke(lists);//3. 配置完数据数据，开始调用模型
             if (result == null) {
                 return ResultUtils.error(-2, "invoke failed!");
             } else {
@@ -234,7 +233,7 @@ public class TaskRestController {
 
                 //存入用户信息记录
                 String msg= userService.addTaskInfo(username,userTaskInfo);
-                result=result.concat("&").concat(msg);
+                //result=result.concat("&").concat(msg);
 
                 return ResultUtils.success(result);
             }
@@ -248,7 +247,7 @@ public class TaskRestController {
     @RequestMapping(value = "/getResult", method = RequestMethod.POST)
     JsonResult getResult(@RequestBody JSONObject data) {
 
-        JSONObject out=taskService.getTaskResult(data);
+        JSONObject out=taskService.getTaskResult(data);//4.根据task id去查询模型运行记录
         return ResultUtils.success(out);
 
     }
@@ -281,7 +280,7 @@ public class TaskRestController {
             List<Future<ResultDataDTO>> futures = new ArrayList<>();
             //开启异步任务
             uploadDataDTOs.forEach((UploadDataDTO obj) ->{
-                Future<ResultDataDTO> future =taskService.uploadDataToServer(obj, testDataUploadDTO);
+                Future<ResultDataDTO> future =taskService.uploadDataToServer(obj, testDataUploadDTO);    // 2. 上传输入数据到特定的数据交换服务器
                 futures.add(future);
             });
             List<ResultDataDTO> resultDataDTOs = new ArrayList<>();
