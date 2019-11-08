@@ -143,7 +143,6 @@ new Vue({
 
     },
     mounted(){
-
         let parentWidth=$("#pane-Image").width();
         let children=$("#pane-Image img");
         for(i=0;i<children.length;i++){

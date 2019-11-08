@@ -46,6 +46,12 @@ public class CommonRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/ModelShow", method = RequestMethod.GET)
+    public ModelAndView mxGraph_show(){
+        ModelAndView modelAndView = new ModelAndView("ModelShow");
+        return  modelAndView;
+    }
+
     @RequestMapping(value = "/logicalModelEditor", method = RequestMethod.GET)
     public ModelAndView mxGraph_logical() {
 

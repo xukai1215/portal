@@ -4300,7 +4300,7 @@ StyleFormatPanel.prototype.init = function()
 	var editor = ui.editor;
 	var graph = editor.graph;
 	var ss = this.format.getSelectionState();
-	
+
 	this.container.innerHTML = "";
 	
 	var cell = graph.getSelectionCell();
@@ -4317,7 +4317,7 @@ StyleFormatPanel.prototype.init = function()
 	{
 		if (!ss.containsImage || ss.style.shape == 'image')
 		{
-			this.container.appendChild(this.addModelDescription(this.createPanel()));		
+			this.container.appendChild(this.addModelDescription(this.createPanel()));
 			/*this.container.appendChild(this.addModelItem(this.createPanel()));
 			this.container.appendChild(this.addConceptItem(this.createPanel()));*/
 		}
@@ -4346,7 +4346,7 @@ StyleFormatPanel.prototype.addModelDescription = function(div)
 	
 	var title = this.createTitle("Model Description");
 	title.style.paddingBottom = '6px';
-    title.style.fontSize = "16px";
+    title.style.fontSize = "20px";
     title.style.cursor = "pointer";
 
 
@@ -4362,7 +4362,8 @@ StyleFormatPanel.prototype.addModelDescription = function(div)
 	
 	var text = document.createElement("textarea");
 	text.id = "model_description";
-	text.style.height = "100px";
+    text.style.fontSize = "18px";
+	text.style.height = "200px";
 	text.style.width = "200px";
 	text.style.maxWidth = "200px";
 	text.style.display = "block";

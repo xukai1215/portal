@@ -55,7 +55,6 @@ EditorUi = function(editor, container, lightbox)
 		{
 			evt = window.event;
 		}
-		
 		return this.isSelectionAllowed(evt) ||  graph.isEditing();
 	});
 
@@ -342,7 +341,7 @@ EditorUi = function(editor, container, lightbox)
 	{
 		graph.popupMenuHandler.factoryMethod = mxUtils.bind(this, function(menu, cell, evt)
 		{
-			this.menus.createPopupMenu(menu, cell, evt);
+			//this.menus.createPopupMenu(menu, cell, evt);
 		});
 	}
 	
@@ -949,7 +948,7 @@ EditorUi.prototype.init = function()
 	 * Keypress starts immediate editing on selection cell
 	 */
 	var graph = this.editor.graph;
-		
+
 	mxEvent.addListener(graph.container, 'keydown', mxUtils.bind(this, function(evt)
 	{
 		this.onKeyDown(evt);
@@ -2975,8 +2974,8 @@ EditorUi.prototype.createUi = function()
 	{
 		this.container.appendChild(this.sidebarContainer);
 		
-		this.addIconContextMenu();
-		this.addPaletteContextMenu();
+		//this.addIconContextMenu();
+		//this.addPaletteContextMenu();
 		
 		this.sidebarContainer.oncontextmenu = function(event){  
 			var event = event || window.event; 

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ModelShow</title>
+
+    <link rel="stylesheet" th:href="@{/static/css/base/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" type="text/css" href="/static/MxGraph/css/common.css">
+
+    <style>
+        .mxWindowPane{
+            width: 100%;
+            overflow: unset !important;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="iframe">
+        <div id="mxGraphContainer"></div>
+    </div>
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+
+<script>
+    mxBasePath = "/static/MxGraph";
+</script>
+
+<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="/static/MxGraph/js/ogmsDiagram.js"></script>
+
+
+<script>
+    new Vue({
+        el: '#iframe',
+        data:{
+            loadJson: '',
+            mDiagram: null
+        },
+        mounted(){
+            this.loadJson = window.parent.getLoadJson();
+            console.log(this.loadJson);
+            mDiagram = new OGMSDiagram();
+            mDiagram.init($('#mxGraphContainer'),
+                {
+                    width: 1000,       //! Width of panel
+                    height:1000,       //! Height of panel
+                    enabled: false      //! Edit enabled
+                },
+                {
+                    x : 900,
+                    y : $(window).scrollTop() + 50,
+                    width: 520,         //! Width of state information window
+                    height: 650         //! Height of state information window
+                },
+                {
+                    x: 1000,           //! X postion of data reference information window
+                    y: $(window).scrollTop() + 50,              //! Y postion of data reference information window
+                    width: 300,         //! Width of data reference information window
+                    height: 400         //! Height of data reference information window
+                },
+                '/static/MxGraph/images/modelState.png',    //! state IMG
+                '/static/MxGraph/images/grid.png',          //! Grid IMG
+                '/static/MxGraph/images/connector.gif',     //! Connection center IMG
+                false                       //! Debug button
+            );
+
+            mDiagram.loadJSON(this.loadJson);
+            mDiagram.onStatedbClick(function(state){
+                mDiagram.showStateWin({
+                    x : 900,
+                    y : 30,
+                },{
+                    width : 520,
+                    height : 640
+                });
+
+            });
+
+            // 初始化打开start的详细信息表
+            mDiagram.stateInfoWin.setLocation(900, 30);
+            mDiagram.stateInfoWin.show();
+            $('#stateName').val(mDiagram.states[0].state.name);
+            $('#stateDes').val(mDiagram.states[0].state.description);
+
+        }
+    })
+
+</script>
+</html>

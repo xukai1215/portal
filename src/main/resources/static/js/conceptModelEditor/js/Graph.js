@@ -6038,7 +6038,7 @@ if (typeof mxVertexHandler != 'undefined')
 		
 		// Hold alt to ignore drop target
 		var mxGraphHandlerMoveCells = mxGraphHandler.prototype.moveCells;
-		
+
 		mxGraphHandler.prototype.moveCells = function(cells, dx, dy, clone, target, evt)
 		{
 			if (mxEvent.isAltDown(evt))
