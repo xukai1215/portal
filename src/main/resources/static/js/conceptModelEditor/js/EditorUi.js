@@ -948,7 +948,7 @@ EditorUi.prototype.init = function()
 	 * Keypress starts immediate editing on selection cell
 	 */
 	var graph = this.editor.graph;
-		
+
 	mxEvent.addListener(graph.container, 'keydown', mxUtils.bind(this, function(evt)
 	{
 		this.onKeyDown(evt);
