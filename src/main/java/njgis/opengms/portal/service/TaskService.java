@@ -224,6 +224,28 @@ public class TaskService {
         JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
         JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
         JSONArray states = mdlObj.getJSONArray("states");
+
+        for(int i=0;i<states.size();i++){
+            JSONObject state=states.getJSONObject(i);
+            JSONArray events=state.getJSONArray("event");
+            JSONArray eventsSort=new JSONArray();
+            for(int j=0;j<events.size();j++){
+                JSONObject event=events.getJSONObject(j);
+                if(event.getString("eventType").equals("response"))
+                {
+                    eventsSort.add(event);
+                }
+            }
+            for(int j=0;j<events.size();j++){
+                JSONObject event=events.getJSONObject(j);
+                if(!event.getString("eventType").equals("response")){
+                    eventsSort.add(event);
+                }
+            }
+            state.put("event",eventsSort);
+            states.set(i,state);
+        }
+
         model_Info.put("states",states);
         //拼接
         JSONObject result = new JSONObject();
@@ -315,12 +337,15 @@ public class TaskService {
             if(res.getIntValue("code") != 1){
                 resultDataDTO.setUrl("");
                 resultDataDTO.setTag("");
+                resultDataDTO.setSuffix("");
             }else{
                 JSONObject data = res.getJSONObject("data");
                 String data_url = data.getString("url");
                 String tag = data.getString("tag");
+                String suffix=data.getString("suffix");
                 resultDataDTO.setTag(tag);
                 resultDataDTO.setUrl(data_url);
+                resultDataDTO.setSuffix(suffix);
             }
         }
         return new AsyncResult<>(resultDataDTO);

@@ -14,7 +14,7 @@ body{
 .slider {
   /*border-right: solid 2px rgb(156, 154, 154);*/
   width: inherit;
-  min-height: 700px;
+  /*min-height: 700px;*/
   min-width: 220px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -121,6 +121,8 @@ body{
   border-top: 1px solid rgba(0,150,255,0.5);
   padding: 0 5px;
   overflow: hidden;
+  margin-bottom: 20px;
+
 }
 
 .state-container{
@@ -160,7 +162,7 @@ body{
 }
 
 .model_title{
-  margin: 4.5rem 0 1rem;
+  margin: 3.8rem 0 1rem;
 }
 model_date{
   font-size: 0.6rem;
@@ -213,7 +215,7 @@ model_date{
 .image i{
   font-size: 8rem;
   /*margin-left: 4rem;*/
-  margin-top: 4rem;
+  margin-top: 3rem;
   color: #3DA0DB;
 }
 
@@ -224,6 +226,11 @@ model_date{
 .fixed{
   position:fixed;
   margin-top: -80px;
+}
+
+.stop{
+  position: absolute;
+  bottom:0;
 }
 
 .fixed li{

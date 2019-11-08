@@ -15,4 +15,5 @@ public class ResultDataDTO {
     String event;
     String url;
     String tag;
+    String suffix;
 }

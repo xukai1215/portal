@@ -1,6 +1,9 @@
 var vue = new Vue({
     el: "#app",
     data: {
+        radioStyle:"Classic",
+        semanticsActiveStates:[0,1,2,3,4,5,6,7,8,9,10],
+
         tableLoading: true,
         first: true,
         activeIndex: "3-2",
@@ -97,6 +100,11 @@ var vue = new Vue({
     },
     computed: {},
     methods: {
+        tableRowKey(row){
+            console.log(row)
+          return row.name;
+        },
+
         handlePageChange(){
 
         },
@@ -176,18 +184,22 @@ var vue = new Vue({
         initSize(){
             this.$nextTick(() =>{
                 let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                let totalHeight= $('.content').css('height')
+                let totalHeight= $('.taskMain').css('height')
+                let leftbarHeight= $("#introContainer").css("height");
 
-                if(scrollTop>60){
-                    this.isFixed = true;
+                if(scrollTop>62){
+                    $('#introContainer').addClass("fixed")
+                    if(parseInt(totalHeight)-parseInt(scrollTop)+62<parseInt(leftbarHeight)){
+                        $('#introContainer').removeClass("fixed")
+                        $('#introContainer').addClass("stop")
+                    }else{
+                        $('#introContainer').removeClass("stop")
+                        $('#introContainer').addClass("fixed")
+                    }
                 }else{
-                    this.isFixed = false;
+                    $('#introContainer').removeClass("fixed")
                 }
-                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
-                    $('.introContent').css('display','none')
-                }else{
-                    $('.introContent').css('display','block')
-                }
+
 
 
 
@@ -370,6 +382,7 @@ var vue = new Vue({
                 });
                 if (event == undefined) return;
                 this.$set(event, "tag", el.tag);
+                this.$set(event, "suffix", el.suffix);
                 this.$set(event, "url", el.url);
             });
             loading.close();
@@ -396,9 +409,10 @@ var vue = new Vue({
             return this.$confirm(`确定移除 ${file.name}？`);
         },
         onSuccess({ data }) {
-            let { tag, url } = data;
+            let { tag,suffix, url } = data;
             this.showUpload = false;
             this.eventChoosing.tag = tag;
+            this.eventChoosing.suffix = suffix;
             this.eventChoosing.url = url;
             this.$refs.upload.clearFiles();
         },
@@ -440,7 +454,7 @@ var vue = new Vue({
             console.log(this.modelInEvent)
             const loading = this.$loading({
                 lock: true,
-                text: "Model is running, you can check running state and get the results of this model in \"User Space\" -> \"Task\"",
+                text: "Model is running, you can check running state and get results in \"User Space\" -> \"Task\"",
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
@@ -459,6 +473,7 @@ var vue = new Vue({
                         let event = el.eventName;
                         let tag = el.tag;
                         let url = el.url;
+                        let suffix=el.suffix;
                         if (el.eventType == "response") {
                             if (el.optional) {
                                 if(url === null || url === undefined){
@@ -468,7 +483,8 @@ var vue = new Vue({
                                         statename,
                                         event,
                                         url,
-                                        tag
+                                        tag,
+                                        suffix
                                     });
                                 }
                             } else {
@@ -480,7 +496,8 @@ var vue = new Vue({
                                     statename,
                                     event,
                                     url,
-                                    tag
+                                    tag,
+                                    suffix
                                 });
                             }
                         }
@@ -551,13 +568,14 @@ var vue = new Vue({
                         });
                         if (event == undefined) return;
                         this.$set(event, "tag", el.tag);
+                        this.$set(event, "suffix", el.suffix);
                         this.$set(event, "url", el.url);
                     });
 
                     loading.close();
                 } else {
                 }
-            }, 3000);
+            }, 5000);
         },
 
 
