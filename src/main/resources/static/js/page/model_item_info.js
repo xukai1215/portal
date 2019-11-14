@@ -739,9 +739,9 @@ new Vue({
 
 $(function () {
 
-    $(".ab").click(
-        function () {
-            if($('#authorship0').height()!=0)
+    $(".ab").click(function () {
+
+            if(!$(this).hasClass('transform180'))
                 $(this).addClass('transform180')
             else
                 $(this).removeClass('transform180')

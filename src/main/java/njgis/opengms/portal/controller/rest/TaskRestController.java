@@ -16,6 +16,7 @@ import njgis.opengms.portal.service.TaskService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,6 +41,9 @@ public class TaskRestController {
 
     @Autowired
     ComputableModelService computableModelService;
+
+    @Value("${managerServerIpAndPort}")
+    private String managerServerIpAndPort;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     ModelAndView getTask(@PathVariable("id") String id, HttpServletRequest request) {

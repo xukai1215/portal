@@ -108,6 +108,13 @@
             display: none;
         }
 
+        .el-form--label-top .el-form-item__label{
+            padding:0;
+            font-size: 20px;
+            font-weight: unset;
+            color:black;
+        }
+
     </style>
 </head>
 
@@ -886,37 +893,94 @@
             <!--End Model-->
 
             <!-- start server-nodes -->
-            <div :style="{display:servers_show?'block':'none'}">
-                <div class="page-content-wrap container-fluid">
+            <div :style="{display:curIndex=='7'?'block':'none'}">
+                <div class="page-content-wrap container-fluid" style="margin-top:-10px;">
                     <div class="row">
                         <div id="graphic" class="col-md-12" style="padding:0">
                             <div id="echartMap" style="height: 490px"></div>
                         </div>
                     </div>
                     <div class="row">
-                        <div id="computerNodePanel" class="col-sm-12">
-                            <div class="col-md-10 col-md-offset-1 col-sm-12"
-                                 v-for="computerNodeCity in computerNodesInfos"
-                                 :id="computerNodeCity.name">
-                                <div class="headTitle">
-                                    <h3 style="font-weight:normal">
-                                        <span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>
-                                    </h3>
-                                </div>
-                                <div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">
-                                    <div class="serverNodeInfo">
-                                        <h3>{{computerNodeInfo.name}}</h3>
-                                        <span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>
-                                        <a href="../computer-node-info/computer-node-info.html"
-                                           v-if="computerNodeInfo.status"
-                                           @click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-md-10 col-md-offset-1 col-sm-12" style="margin-top:20px">
+                            <span class="h3">My Model Server Container</span>
+                            <span>
+                                <el-button type="success" @click="registerModelContainerVisible=true">Register</el-button>
+                            </span>
                         </div>
+                        <!--<div id="computerNodePanel" class="col-sm-12">-->
+                            <!--<div class="col-md-10 col-md-offset-1 col-sm-12"-->
+                                 <!--v-for="computerNodeCity in computerNodesInfos"-->
+                                 <!--:id="computerNodeCity.name">-->
+                                <!--<div class="headTitle">-->
+                                    <!--<h3 style="font-weight:normal">-->
+                                        <!--<span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">-->
+                                    <!--<div class="serverNodeInfo">-->
+                                        <!--<h3>{{computerNodeInfo.name}}</h3>-->
+                                        <!--<span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>-->
+                                        <!--<a href="../computer-node-info/computer-node-info.html"-->
+                                           <!--v-if="computerNodeInfo.status"-->
+                                           <!--@click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <el-card class="box-card" >
+                            <div slot="header" class="clearfix">
+                                <span>卡片名称</span>
+                                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                            </div>
+                            <div v-for="o in 4" :key="o" class="text item">
+                                {{'列表内容 ' + o }}
+                            </div>
+                        </el-card>
+
                     </div>
                 </div>
             </div>
+
+            <el-dialog id="registerModelContainer" top="20px" width="70%" title="Register Model Server Container"
+                       :visible.sync="registerModelContainerVisible">
+                <el-steps style="margin-bottom: 15px;" align-center :active="registerModelContainerActive" finish-status="success">
+                    <el-step class="registerModelContainerStep" title="Download"></el-step>
+                    <el-step class="registerModelContainerStep" title="Register"></el-step>
+
+                </el-steps>
+                <el-card :style="{display:(registerModelContainerActive==0?'block':'none')}" shadow="never">
+                    <center style="font-size:18px;line-height: 2.5em;padding:20px">
+                    <p><b>Step1:</b> Download <a href="/static/ContainerPacking.rar">ContainerPacking.rar</a></p>
+                    <p><b>Step2:</b> Extract all the files in the package to any folder.</p>
+                        <p><b>Step3:</b> Run <i>ComputerResourceConsole.exe</i> and <b>Do Not close the terminal window!</b></p>
+                        <p>After finishing these steps, please click <b>Next</b>.</p>
+                    </center>
+                </el-card>
+                <el-card :style="{display:(registerModelContainerActive==1?'block':'none')}" shadow="never">
+                    <el-col :offset="6" :span="12" style="padding:20px">
+                        <el-form label-position="top" :model="taskDataForm" style="font-size: 20px">
+
+                            <el-form-item label="Please enter container IP:" required>
+                                <el-input v-model="modelContainerInfo.ip"></el-input>
+                            </el-form-item>
+
+                            <center>
+                                <el-button type="success" @click="modelContainerRegister">Register</el-button>
+                            </center>
+                        </el-form>
+                    </el-col>
+                </el-card>
+
+
+                <el-button :style="{visibility:(registerModelContainerActive>0?'visible':'hidden')}" class="el-button--primary"
+                           style="margin-top: 12px;position: absolute;left:4%;top:55px;"
+                           @click="registerModelContainerActive--">Previous</el-button>
+                <el-button v-if="registerModelContainerActive<1" class="el-button--primary"
+                           style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                           @click="registerModelContainerActive++">Next</el-button>
+
+            </el-dialog>
             <!-- end server-nodes -->
 
             <!-- start data-item-upload-->
@@ -933,7 +997,7 @@
                         <div class="panel panel-success" style="border: none;height: 660px;">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
-                                    Create a dataitem,input all information below.
+                                    Create a data item,input all information below.
                                 </h3>
                             </div>
 
@@ -3259,8 +3323,8 @@
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 
 
-<!--<script src="/static/js/common/echarts.min.js"></script>-->
-<!--<script src="/static/js/common/world.js"></script>-->
+<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/world.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 
