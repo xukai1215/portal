@@ -17,16 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,6 +67,22 @@ public class PortalApplicationTests {
 
     @Value("${resourcePath}")
     private String resourcePath;
+
+    @Value("${managerServerIpAndPort}")
+    private String managerServerIpAndPort;
+
+    @Test
+    public void testGet(){
+        RestTemplate restTemplate=new RestTemplate();
+        Map<String,Object> map=new HashMap();
+        map.put("page",1);
+        map.put("pageSize",10);
+        map.put("asc",false);
+        JSONObject result=restTemplate.getForObject("http://"+managerServerIpAndPort+"/GeoModeling/taskNode",JSONObject.class,map);
+        System.out.println(result);
+
+
+    }
 
     @Test
     public void setViewCount(){

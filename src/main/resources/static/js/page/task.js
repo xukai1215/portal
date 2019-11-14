@@ -295,10 +295,8 @@ var vue = new Vue({
             };
         },
         handleDataDownloadClick({ sourceStoreId }) {
-            let url =
-                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
-                sourceStoreId;
-            window.open("/dispatchRequest/download?url=" + url);
+
+            window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
         },
         handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
             let url =

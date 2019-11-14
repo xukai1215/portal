@@ -19,6 +19,13 @@ var vue = new Vue({
         servers_show: false,
         deploys_show: false,
 
+        registerModelContainerVisible:false,
+        registerModelContainerActive:0,
+        modelContainerInfo:{
+          ip:'',
+
+        },
+
         //todo data-item
         data_upload: false,
         data_show: false,
@@ -300,6 +307,24 @@ var vue = new Vue({
     },
 
     methods: {
+        modelContainerRegister(){
+            axios.post("/modelContainer/register/"+this.modelContainerInfo.ip, {})
+                .then(res => {
+                    console.log(res);
+                    if(res.code==0){
+                        alert("register successfully!")
+                    }
+                    else if(res.code==-1){
+                        alert("Please login first!")
+                        window.location.href = "/user/login";
+                    }
+                    else{
+                        alert(res.msg);
+                    }
+
+                })
+        },
+
         dateFormat(date, format) {
             let dateObj = new Date(date);
             let fmt = format || "yyyy-MM-dd hh:mm:ss";
@@ -1177,10 +1202,7 @@ var vue = new Vue({
             }
         },
         handleDataDownloadClick({sourceStoreId}) {
-            let url =
-                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
-                sourceStoreId;
-            window.open("/dispatchRequest/download?url=" + url);
+            window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
         },
         async panye(val) {
             let d = await this.getTableData(val - 1);
@@ -1289,6 +1311,9 @@ var vue = new Vue({
                 //
                 //     this.getResearchItems();
                 //     break;
+                case '7':
+                    this.getServersInfo()
+                    break;
             }
         },
 
@@ -1782,7 +1807,7 @@ var vue = new Vue({
         getServersInfo() {
             $.ajax({
                 type: "GET",
-                url: "/node/computerNodesByUserId",
+                url: "http://172.21.213.242/GeoModelingNew/ComputerNodesByUserIdServlet",
                 data: {},
 
                 crossDomain: true,
@@ -5231,7 +5256,7 @@ var vue = new Vue({
         $("#manager-upload").fileinput({
 
             theme: 'fas',
-            uploadUrl: 'http://172.21.212.64:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: 'http://172.21.212.148/dataContainer/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
