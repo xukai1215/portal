@@ -334,7 +334,7 @@ new Vue({
         },
 
         showMxGraph(){
-            this.graphVisible = 'block';
+            $("#ModelShow").show();
 
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -342,7 +342,7 @@ new Vue({
         },
 
         hideMxGraph(){
-            this.graphVisible = "none";
+            $("#ModelShow").hide();
             document.body.style.overflowY="auto";
         }
     },
