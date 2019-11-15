@@ -13,14 +13,14 @@ body{
 
 .slider {
   /*border-right: solid 2px rgb(156, 154, 154);*/
-  width: inherit;
+  /*width: inherit;*/
   /*min-height: 700px;*/
   min-width: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   word-wrap: break-word;
   /*padding: 10px 10px 10px 10%;*/
-  position: absolute;
+  /*position: absolute;*/
   overflow: hidden;
 }
 
@@ -147,7 +147,8 @@ body{
   border-bottom: dotted 1px #999999;
 }
 ._save-btn {
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 ._state-desc {
   margin: 0px 0px 35px 0px;
@@ -226,11 +227,13 @@ model_date{
 .fixed{
   position:fixed;
   margin-top: -80px;
+  width:inherit;
 }
 
 .stop{
   position: absolute;
   bottom:0;
+  width:inherit;
 }
 
 .fixed li{
