@@ -426,7 +426,7 @@ new Vue({
         search() {
             var data = {
                 asc: this.pageOption.sortAsc,
-                page: 0,
+                page: this.pageOption.currentPage,
                 pageSize: this.pageOption.pageSize,
                 searchText: this.relateSearch,
                 sortType: "default",
@@ -647,6 +647,7 @@ new Vue({
                     break;
             }
             this.tableData = [];
+            this.pageOption.currentPage=0;
             this.pageOption.searchResult = [];
             this.relateSearch = "";
             this.getRelation();
