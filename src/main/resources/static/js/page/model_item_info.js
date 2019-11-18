@@ -437,14 +437,13 @@ new Vue({
                 case "dataItem":
                     url="/dataItem/searchByName";
                     data = {
-                        page: 1,
+                        page: this.pageOption.currentPage+1,
                         pageSize: 5,
                         asc: true,
                         classifications: [],
                         category: '',
-                        searchContent: []
+                        searchText: this.relateSearch
                     }
-                    data.searchContent.push(this.relateSearch);
                     data=JSON.stringify(data);
                     contentType = "application/json";
                     break;
