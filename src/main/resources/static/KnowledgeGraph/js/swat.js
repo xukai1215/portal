@@ -54,6 +54,7 @@ var app = new Vue({
         panelmove(){$
             console.log("abc");
             let dragBox = function (drag, wrap) {
+            let dragBox = function (drag, wrap) {
 
                 function getCss(ele, prop) {
                     return parseInt(window.getComputedStyle(ele)[prop]);

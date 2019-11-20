@@ -127,6 +127,12 @@ public class UserService {
         user.setConcepts(++count);
         userDao.save(user);
     }
+    public void themePlusPlus(String username){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getThemes();
+        user.setThemes(++count);
+        userDao.save(user);
+    }
     public void spatialPlusPlus(String userName){
         User user = userDao.findFirstByUserName(userName);
         int count=user.getSpatials();

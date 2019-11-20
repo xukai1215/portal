@@ -1282,7 +1282,7 @@ var vue = new Vue({
                 let file = new File([JSON.stringify(conceptObj)],'ant.txt',{
                     type: 'text/plain',
                 });
-                formData.append("info", file)
+                formData.append("info", file);
                 $.ajax({
                     url: "/repository/addConcept",
                     type: "POST",

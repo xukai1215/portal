@@ -893,7 +893,7 @@ var vue = new Vue({
 
             var detail = tinyMCE.activeEditor.getContent();
             modelItemObj.detail = detail.trim();
-            console.log(modelItemObj)
+            console.log(modelItemObj);
 
             let formData=new FormData();
 
