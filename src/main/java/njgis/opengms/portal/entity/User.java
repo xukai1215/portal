@@ -65,6 +65,7 @@ public class User {
     int articlesCount;
     int projectsCount;
     int conferencesCount;
+    int themes;
 
 
     Affiliation affiliation;

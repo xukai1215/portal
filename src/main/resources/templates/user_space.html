@@ -24,7 +24,6 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
     <link rel="stylesheet" href="/static/css/page/user_space.css">
-
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
 
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
@@ -2987,7 +2986,100 @@
                 <!--                </div>-->
             </div>
             <!-- end model-items -->
+<!--start theme-->
+            <div :style="{display:curIndex=='5'?'block':'none'}">
+                <ul class="breadcrumb">
+                    <li class="active">Theme</li>
+                </ul>
+                <div class="page-content-wrap container-fluid">
+                    <!--按钮和搜索框-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a href="/user/createTheme">
+                                                    <button class="btn btn-warning" onclick="sessionStorage.clear();">
+                                                        <i class="fa fa-globe fa-fw"></i>Create Theme
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group" @keydown.enter="search()">
+                                                    <input type="text" class="form-control" name="searchText"
+                                                           placeholder="please enter name" v-model="searchText">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-primary" @click="search()">Search
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--列表-->
+                    <div class="row">
+                        <div class="col-sm-12" v-for="(theme,index) in searchResult" :key="index">
 
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <a :href="'/theme/'+theme.oid" target="_blank"
+                                       @click="setSession('themeInfo_id',theme.model_oid)">
+                                        {{theme.name}}
+                                    </a>
+                                    <div class="pull-right" style="margin-top: -3px;">
+                                        <a href="/user/createTheme"
+                                           @click="setSession('editTheme_id',theme.oid)">
+                                            <button class="btn btn-default editBtn">Edit</button>
+                                        </a>
+                                        <button class="btn btn-danger deleteBtn"
+                                                @click="deleteModel(theme.oid)">Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <b>Create Time:</b> {{formatDate(theme.createTime)}}</p>
+                                    <p style="word-break: break-all;">
+                                        <b>Overview:</b>{{theme.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model
+                            items</h4>
+                    </div>
+                    <!--尾部按钮-->
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <ul class="page">
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(1)">
+                                    <b>FIRST</b>
+                                </li>
+                                <li :class="curPage!=1?'pageItem':'pageItemDisable'" @click="changePage(curPage-1)">
+                                    <b>PRE</b>
+                                </li>
+                                <li class="pageItem" v-for="page in pageList" :class="curPage==page?'pageItemActive':''"
+                                    @click="changePage(page)">{{page}}
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(curPage+1)">
+                                    <b>NEXT</b>
+                                </li>
+                                <li :class="curPage!=totalPage?'pageItem':'pageItemDisable'"
+                                    @click="changePage(totalPage)">
+                                    <b>LAST</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- start task -->
             <div :style="{display:curIndex=='6'?'block':'none'}">
                 <div class="page-content-wrap container-fluid" style="margin-top:10px">
@@ -3094,9 +3186,8 @@
                     </div>
                 </div>
             </div>
-            <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Sharing as Data Item"
-                       :visible.sync="taskSharingVisible" :before-close="handleClose">
-                <el-steps style="margin-bottom: 15px;" align-center :active="taskSharingActive" finish-status="success">
+            <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Share as Data Item" :visible.sync="taskSharingVisible" :before-close="handleClose">
+                <el-steps style="margin-bottom: 15px;" align-center  :active="taskSharingActive" finish-status="success">
                     <el-step class="taskSharingStep" title="Select Data"></el-step>
                     <el-step class="taskSharingStep" title="Basic Info"></el-step>
                     <el-step class="taskSharingStep" title="Detailed Description"></el-step>
@@ -3282,6 +3373,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!--single authorship-->
+
                                             <button type="button"
                                                     class="btn btn-success btn-lg btn-block user-add"
                                                     style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
@@ -3323,8 +3417,8 @@
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 
 
-<script src="/static/js/common/echarts.min.js"></script>
-<script src="/static/js/common/world.js"></script>
+<!--<script src="/static/js/common/echarts.min.js"></script>-->
+<!--<script src="/static/js/common/world.js"></script>-->
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 

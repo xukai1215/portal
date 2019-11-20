@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title th:text="${modelInfo.name}+' | Model Item | OpenGMS'">Model Item Info | OpenGMS</title>
+    <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
+    <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
+    <link href="/static/thematicmodel/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/thematicmodel/css/navbar.css" rel="stylesheet">
+    <link href="/static/thematicmodel/css/custom/modelItemGroup.css" rel="stylesheet">
+    <link href="/static/thematicmodel/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/thematicmodel/css/fonts/fontawesome-webfont.woff2">
+</head>
+<body class="scrollbar">
+<!--start 导航条-->
+<div class="head navbar-static-top">
+    <nav class="navbar navbar-default pcnav" role="navigation">
+        <div class="container-fluid" title text-center>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="navbar-header" >
+                        <button id="phoneBtn" type="button" class="navbar-toggle" data-toggle="collapse"
+                                data-target="javascript:void(0)mycollapse">
+                            <span class="sr-only">切换导航</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="http://geomodeling.njnu.edu.cn/" class="navbar-brand">
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<!--end 导航条-->
+<div class="clearfix"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-2" style="position:fixed;">
+                    <div class="logoPanel">
+                        <img src="/static/thematicmodel/css/images/model/AI.png" />
+                        <h2>Deep Learning</h2>
+                    </div>
+                    <div class="navbarPanel">
+                        <!--将 <ul> 标签与 <li> 标签一起使用，创建无序列表。-->
+                        <ul class="navigation">
+                            <!-------------------------------Themes-------------------------------->
+                            <li>
+                                <!--javascript:void(0)创建了一个超级链接，当用户点击以后不会发生任何事-->
+                                <a href="javascript:void(0)" index=0 id="theme">
+                                    <!--<i> 标签显示斜体文本效果。-->
+                                    <i class="fa fa-info-circle fa-fw"></i>
+                                    <!--span用于对文档中的行内元素进行组合。-->
+                                    <span>Theme Info</span>
+                                </a>
+                            </li>
+                            <!-------------------------------Models-------------------------------->
+                            <li>
+                                <a href="javascript:void(0)" index=expand id="ex">
+                                    <i class="fa fa-th-large fa-fw"></i>
+                                    <span>Models</span>
+                                    <!--<i class="fa fa-chevron-right pull-right arrow"></i>-->
+                                </a>
+                                <ul class="subNavbar">
+                                    <li id="model-Image" class="modelimage">
+                                        <a href="javascript:void(0)" index=1>Image Models</a>
+                                    </li>
+                                    <li id="model-Text " class="modeltext">
+                                        <a href="javascript:void(0)" index=2>Text  Models</a>
+                                    </li>
+                                    <li id="model-Audio frequency" class="modelaudio">
+                                        <a href="javascript:void(0)" index=3>Audio frequency Models</a>
+                                    </li>
+                                    <li id="model-Video " class="modelvideo">
+                                        <a href="javascript:void(0)" index=4>Video  Models</a>
+                                    </li>
+                                    <li id="model-Semantic segmentation " class="modelsemantic">
+                                        <a href="javascript:void(0)" index=5>Semantic segmentation  Models</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-------------------------------Data-------------------------------->
+                            <li class="sidebardata">
+                                <a href="javascript:void(0)" index=6>
+                                    <i class="fa fa-database fa-fw"></i>
+                                    <span id="sidebar-data">Data</span>
+                                </a>
+                            </li>
+                            <!-------------------------------Applications-------------------------------->
+                            <li class="applications">
+                                <a href="javascript:void(0)" index=7>
+                                    <i class="fa fa-cubes fa-fw"></i>
+                                    <span id="applications1">Applications</span>
+                                </a>
+                                <ul class="subNavbar">
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-10" style="overflow: auto;">
+                    <div class="infoPanel container-fluid" id="BasicInfoPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Theme Info</span>
+                            </h3>
+                        </div>
+                        <div class="info">
+                            <p>Deep learning is a branch of machine learning. It is an algorithm that uses artificial neural networks as a framework to characterize and learn data.</p>
+                            <p>
+                                Deep learning is an algorithm based on the representation and learning of data in machine learning. Observations (e.g., an image) can be represented in a variety of ways, such as a vector of each pixel intensity value, or more abstractly represented as a series of edges, regions of a particular shape, and the like. It is easier to learn tasks from instances using some specific representation methods (for example, face recognition or facial expression recognition). The advantage of deep learning is the use of unsupervised or semi-supervised feature learning and hierarchical feature extraction efficient algorithms instead of manual acquisition features.
+                            </p>
+                            <p>
+                                The goal of characterization learning is to find better representations and create better models to learn these representations from large-scale unlabeled data. The representation comes from neuroscience and loosely creates information processing and understanding of communication patterns in similar nervous systems, such as neural coding, attempts to define the relationship between responses that pull neurons, and the electrical activity of neurons in the brain. The relationship between.
+
+                                So far, several deep learning frameworks, such as deep neural networks, convolutional neural networks and deep belief networks, and recurrent neural networks have been applied in the fields of computer vision, speech recognition, natural language processing, audio recognition and bioinformatics. Excellent result.</p>
+
+                                 </p>
+                            <h4>Image domain</h4>
+                            <ul>
+                                <li>adv_imagenet_models</li>
+                                <li>adversarial_logit_pairing</li>
+                                <li>attention_ocr</li>
+                                <li>cognitive_mapping_and_planning</li>
+                                <li>DeepLab</li>
+                                <li>Delf</li>
+                                <li>im2txt</li>
+                                <li>inception</li>
+                                <li>KeypointNet</li>
+                                <li>Marco</li>
+                                <li>object_detection</li>
+                                <li>slim</li>
+
+                            </ul>
+                            <p>&nbsp;</p>  <h4>Text domain</h4>
+                            <ul>
+                                <li>adversarial_text</li>
+                                <li>im2txt</li>
+                                <li>lexnet_nc</li>
+                                <li>lm_1b</li>
+                                <li>lm_commonsense</li>
+                                <li>maskgan</li>
+                                <li>swivel</li>
+                                <li>syntaxnet</li>
+                                <li>textsum</li>
+                            </ul>
+                            <p>&nbsp;</p>  <h4>Audio frequency domain</h4>
+                            <ul>
+                                <li>deep_speech</li>
+                            </ul>
+                            <p>&nbsp;</p>  <h4>Video field domain</h4>
+                            <ul>
+                                <li>audioset</li>
+                                <li>FEELVOS</li>
+                                <li>lstm_object_detection</li>
+                                <li>struct2depth</li>
+                                <li>lm_commonsense</li>
+                                <li>vid2depth</li>
+                                <li>video_prediction</li>
+                            </ul>
+                            <p>&nbsp;</p>  <h4>Semantic segmentation</h4>
+                            <ul>
+                                <li>FCN</li>
+                                <li>SEGNET</li>
+                                <li>U-NET</li>
+                                <li>DEEPLAB</li>
+                                <li>PSPNET</li>
+                                <li>HRNET</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="infoPanel container-fluid modelPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Image Models</span>
+                            </h3>
+                        </div>
+                        <div class="x_content" id="modelimage">
+                        </div>
+                    </div>
+
+                    <div class="infoPanel container-fluid modelPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Text Models</span>
+                            </h3>
+                        </div>
+                        <div class="x_content" id="modeltext">
+                        </div>
+                    </div>
+
+                    <div class="infoPanel container-fluid modelPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Audio frequency Models</span>
+                            </h3>
+                        </div>
+
+                        <div class="x_content" id="modelaudio">
+                        </div>
+                    </div>
+
+                    <div class="infoPanel container-fluid modelPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Video Models</span>
+                            </h3>
+                        </div>
+                        <div class="x_content" id="modelvideo">
+                        </div>
+                    </div>
+
+                    <div class="infoPanel container-fluid modelPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Semantic segmentation Models</span>
+                            </h3>
+                        </div>
+                        <div class="x_content" id="modelsemantic">
+                        </div>
+                    </div>
+
+
+
+                    <div class="infoPanel container-fluid dataPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Data</span>
+                            </h3>
+                        </div>
+                        <div class="x_content" id="sidebardata">
+                        </div>
+                    </div>
+
+                    <div class="infoPanel container-fluid applicationPanel" id="applicationPanel">
+                        <div class="title text-center">
+                            <h3>
+                                <span>Applications</span>
+                            </h3>
+                        </div>
+                        <div class="x_content" id="applications">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/thematicmodel/css/js/jquery-3.3.1.js"></script>
+<script src="/static/thematicmodel/css/js/bootstrap.js"></script>
+<script src="/static/thematicmodel/css/js/custom/modelItemGroup.js"></script>
+</html>

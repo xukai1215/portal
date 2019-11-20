@@ -1,5 +1,6 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
@@ -20,7 +21,12 @@ import njgis.opengms.portal.dto.Unit.UnitAddDTO;
 import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitResultDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
+import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.Application;
+import njgis.opengms.portal.entity.support.ClassInfo;
+import njgis.opengms.portal.entity.support.DataClassInfo;
+import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -29,6 +35,7 @@ import org.dom4j.DocumentHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -50,10 +57,19 @@ public class RepositoryService {
     ItemService itemService;
 
     @Autowired
+    ModelItemDao modelItemDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
+
+    @Autowired
     UserService userService;
 
     @Autowired
     ConceptDao conceptDao;
+
+    @Autowired
+    ThemeDao themeDao;
 
     @Autowired
     ConceptVersionDao conceptVersionDao;
@@ -97,7 +113,7 @@ public class RepositoryService {
     public void toUpperCase() {
         List<Concept> concepts = conceptDao.findAll();
         for (Concept c : concepts
-                ) {
+        ) {
             String upperName = c.getName().toUpperCase();
             c.setName(upperName);
             conceptDao.save(c);
@@ -105,7 +121,7 @@ public class RepositoryService {
 
         List<SpatialReference> spatialReferences = spatialReferenceDao.findAll();
         for (SpatialReference sr : spatialReferences
-                ) {
+        ) {
             String upperName = sr.getName().toUpperCase();
             sr.setName(upperName);
             spatialReferenceDao.save(sr);
@@ -113,7 +129,7 @@ public class RepositoryService {
 
         List<Template> templates = templateDao.findAll();
         for (Template t : templates
-                ) {
+        ) {
             String upperName = t.getName().toUpperCase();
             t.setName(upperName);
             templateDao.save(t);
@@ -121,7 +137,7 @@ public class RepositoryService {
 
         List<Unit> units = unitDao.findAll();
         for (Unit u : units
-                ) {
+        ) {
             String upperName = u.getName().toUpperCase();
             u.setName(upperName);
             unitDao.save(u);
@@ -223,6 +239,7 @@ public class RepositoryService {
         JSONObject modifierJson = null;
         if (lastModifier != null) {
             modifierJson = userService.getItemUserInfo(lastModifier);
+
         }
 
         modelAndView.addObject("info", concept);
@@ -235,6 +252,115 @@ public class RepositoryService {
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
 
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
+        return modelAndView;
+    }
+
+
+    public ModelAndView getThemePage(String id, HttpServletRequest req) {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("theme_info");
+
+        Theme theme = themeDao.findByOid(id);
+        modelAndView.addObject("info", theme);
+        themeDao.save(theme);
+
+        //详情页面
+        //String detailResult;
+        String theme_detailDesc=theme.getDetail();
+
+        JSONArray array = new JSONArray();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        String lastModifyTime = sdf.format(theme.getLastModifyTime());
+
+        //用户信息
+        JSONObject userJson = userService.getItemUserInfo(theme.getAuthor());
+
+        List<ClassInfo> classInfos = theme.getClassinfo();
+        JSONArray classInfos_result = new JSONArray();
+        for(int i=0;i<classInfos.size();i++){
+            ClassInfo classInfo = classInfos.get(i);
+            JSONObject classObj=new JSONObject();
+            classObj.put("name",classInfo.getMcname());
+            JSONArray models=new JSONArray();
+            List<String> modelOids=classInfo.getModelsoid();
+            for(int j=0;j<modelOids.size();j++) {
+                JSONObject model=new JSONObject();
+                ModelItem modelItem=modelItemDao.findFirstByOid(modelOids.get(j));
+                model.put("name",modelItem.getName());
+                model.put("image",modelItem.getImage());
+                model.put("oid",modelItem.getOid());
+                models.add(model);
+            }
+            classObj.put("content",models);
+            classInfos_result.add(classObj);
+        }
+
+
+        List<DataClassInfo> dataClassInfos = theme.getDataClassInfo();
+        JSONArray dataClassInfos_result = new JSONArray();
+        for(int i=0;i<dataClassInfos.size();i++){
+            DataClassInfo dataClassInfo = dataClassInfos.get(i);
+            JSONObject dataclassObj = new JSONObject();
+            dataclassObj.put("name",dataClassInfo.getDcname());
+            JSONArray datas = new JSONArray();
+            List<String> datasOid = dataClassInfo.getDatasoid();
+            //JSONArray urls= new JSONArray();
+            for(int j=0;j<datasOid.size();j++){
+                JSONObject data = new JSONObject();
+                JSONObject url = new JSONObject();
+                DataItem dataItem = dataItemDao.findFirstById(datasOid.get(j));
+                data.put("name",dataItem.getName());
+                data.put("oid",dataItem.getId());
+                //url.put("url_select",dataItem.getReference());
+                //List<DataMeta> dataList = dataItem.getDataList();
+                //JSONArray url_download = new JSONArray();
+//                for(DataMeta dataMeta:dataList){
+//                    if (dataList == null){
+//                        break;
+//                    }
+//                    url_download.add(dataMeta.getUrl());
+//                }
+                //url.put("url_download",url_download);
+                datas.add(data);
+                //urls.add(url);
+            }
+            dataclassObj.put("content",datas);
+            //dataclassObj.put("url",urls);
+            dataClassInfos_result.add(dataclassObj);
+        }
+
+        List<Application> applications = theme.getApplication();
+        JSONArray applications_result = new JSONArray();
+        JSONObject applicationObj = new JSONObject();
+        JSONArray apps=new JSONArray();
+
+        for(int i=0;i<applications.size();i++){
+            JSONObject app = new JSONObject();
+            Application application = applications.get(i);
+            app.put("name",application.getApplicationname());
+            app.put("link",application.getApplicationlink());
+            applications_result.add(app);
+        }
+
+
+        modelAndView.addObject("image", htmlLoadPath+theme.getImage());
+        modelAndView.addObject("detail",theme_detailDesc);
+        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("date", sdf.format(theme.getCreateTime()));
+        modelAndView.addObject("references",JSONArray.parseArray(JSON.toJSONString(theme.getReferences())));
+        modelAndView.addObject("modelClassInfos",classInfos_result);
+        modelAndView.addObject("dataClassInfos",dataClassInfos_result);
+        modelAndView.addObject("applications",applications_result);
+//        modelAndView.addObject("oid",theme.get)
+        /*判断登陆*/
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
             modelAndView.addObject("unlogged", "1");
@@ -268,7 +394,7 @@ public class RepositoryService {
             clas.add(repositoryQueryDTO.getOid());
             Classification cla = conceptClassificationDao.findFirstByOid(clas.get(0));
             for (String c : cla.getChildrenId()
-                    ) {
+            ) {
                 clas.add(c);
             }
             concepts = conceptDao.findByParentIdIn(clas, pageable);
@@ -606,7 +732,7 @@ public class RepositoryService {
             clas.add(repositoryQueryDTO.getOid());
             Classification cla = spatialReferenceClassificationDao.findFirstByOid(clas.get(0));
             for (String c : cla.getChildrenId()
-                    ) {
+            ) {
                 clas.add(c);
             }
             spatialReferences = spatialReferenceDao.findByParentIdIn(clas, pageable);
@@ -890,7 +1016,7 @@ public class RepositoryService {
             clas.add(repositoryQueryDTO.getOid());
             Classification cla = templateClassificationDao.findFirstByOid(clas.get(0));
             for (String c : cla.getChildrenId()
-                    ) {
+            ) {
                 clas.add(c);
             }
             templates = templateDao.findByParentIdIn(clas, pageable);
@@ -1179,7 +1305,7 @@ public class RepositoryService {
             clas.add(repositoryQueryDTO.getOid());
             Classification cla = unitClassificationDao.findFirstByOid(clas.get(0));
             for (String c : cla.getChildrenId()
-                    ) {
+            ) {
                 clas.add(c);
             }
             units = unitDao.findByParentIdIn(clas, pageable);
@@ -1380,6 +1506,30 @@ public class RepositoryService {
             System.out.println("分类树生成失败");
             throw new MyException(ResultEnum.ERROR);
         }
+    }
+
+    public Theme insertTheme(ThemeAddDTO themeAddDTO, String uid){
+        Theme theme = new Theme();
+        BeanUtils.copyProperties(themeAddDTO, theme);
+
+        Date now = new Date();
+        theme.setCreateTime(now);
+        theme.setLastModifyTime(now);
+        theme.setOid(UUID.randomUUID().toString());
+        theme.setAuthor(uid);
+
+        //设置图片
+        String path = "/repository/theme/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = themeAddDTO.getUploadImage().split(",");
+        if(strs.length > 1){
+            String imgStr = themeAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            theme.setImage(path);
+        } else {
+            theme.setImage("");
+        }
+
+        return themeDao.insert(theme);
     }
 
     private void traverseJson(String rootId, JSONObject jsonObject) {

@@ -2,8 +2,10 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.models.Model;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.*;
+import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.DataItemService;
@@ -315,6 +317,16 @@ public class UserRestController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("create-modelitem");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/createTheme", method = RequestMethod.GET)
+    public ModelAndView createTheme(){
+        System.out.println("create-theme");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("create-theme");
 
         return modelAndView;
     }

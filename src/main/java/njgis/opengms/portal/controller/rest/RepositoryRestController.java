@@ -16,6 +16,7 @@ import njgis.opengms.portal.dto.Template.TemplateUpdateDTO;
 import njgis.opengms.portal.dto.Unit.UnitAddDTO;
 import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
+import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.RepositoryService;
@@ -36,6 +37,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/repository")
 public class RepositoryRestController {
+
+    @Autowired
+    ThemeDao themeDao;
 
     @Autowired
     RepositoryService repositoryService;
@@ -159,6 +163,18 @@ public class RepositoryRestController {
     @RequestMapping(value="/concept/{id}",method = RequestMethod.GET)
     public ModelAndView getConceptPage(@PathVariable("id") String id,HttpServletRequest req){
         return repositoryService.getConceptPage(id,req);
+    }
+
+    //取数据存入数组
+    @RequestMapping(value ="/theme/data/{id}",method = RequestMethod.GET)
+    public Theme getThemeData(@PathVariable("id") String id,HttpServletRequest req){
+        Theme theme = themeDao.findByOid(id);
+        return theme;
+    }
+
+    @RequestMapping(value = "/theme/{id}",method = RequestMethod.GET)
+    public ModelAndView getThemePage(@PathVariable("id") String id,HttpServletRequest req){
+        return repositoryService.getThemePage(id,req);
     }
 
     @RequestMapping (value="/getConceptInfo/{id}",method = RequestMethod.GET)
@@ -805,9 +821,47 @@ public class RepositoryRestController {
     //to Upper Case
     @RequestMapping(value = "/toUpperCase",method = RequestMethod.GET)
     public JsonResult toUpperCase(){
-
         repositoryService.toUpperCase();
         return ResultUtils.success();
+    }
+
+    @RequestMapping(value = "/addTheme", method = RequestMethod.POST)
+    public JsonResult addTheme(HttpServletRequest request) throws IOException {
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file = multipartRequest.getFile("info");
+        String model = IOUtils.toString(file.getInputStream(), "utf-8");
+        JSONObject jsonObject = JSONObject.parseObject(model);
+        ThemeAddDTO themeAddDTO = JSONObject.toJavaObject(jsonObject, ThemeAddDTO.class);
+
+        HttpSession session = request.getSession();
+
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }
+
+        String uid = session.getAttribute("uid").toString();
+
+        System.out.println("add theme");
+
+        Theme theme = repositoryService.insertTheme(themeAddDTO, uid);
+
+        userService.themePlusPlus(uid);
+        return ResultUtils.success(theme.getOid());
+    }
+
+    @RequestMapping(value="/theme",method = RequestMethod.GET)
+    public ModelAndView getThemeRepository(HttpServletRequest req) {
+        System.out.println("themeRepository");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("themeRepository");
+
+        HttpSession session=req.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
+        return modelAndView;
     }
 
 }
