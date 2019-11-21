@@ -1,5 +1,5 @@
 
-    //
+    //TODO:渲染用户信息放后台
     $.ajax({
         url: '/user/load',
         type: 'get',

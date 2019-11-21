@@ -5,6 +5,10 @@
     font-style: normal;
 }
 
+[v-cloak] {
+    display: none;
+}
+
 body{
     margin:0px;
     overflow-y:scroll;

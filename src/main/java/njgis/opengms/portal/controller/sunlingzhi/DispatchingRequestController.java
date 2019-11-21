@@ -136,7 +136,7 @@ public class DispatchingRequestController {
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<byte []> response = restTemplate.exchange(url, HttpMethod.GET,
                 null, byte[].class);
-        return  response;
+        return response;
     }
 
     @RequestMapping (value="/downloadBySourceStoreId",method = RequestMethod.GET)
