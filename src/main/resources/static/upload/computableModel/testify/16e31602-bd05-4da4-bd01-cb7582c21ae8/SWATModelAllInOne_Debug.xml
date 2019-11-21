@@ -1,0 +1,21 @@
+<DebugData>
+  <Item State="WatershedDelienationState" Event="DEM" Type="Zip" File="udx_zip_dem.zip" />
+  <Item State="WatershedDelienationState" Event="MaskShape" Type="Zip" File="udx_zip_dem.zip" />
+  <Item State="WatershedDelienationState" Event="ThresholdValue" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="WatershedDelienationState" Event="OriginalOutletShape" Type="Zip" File="udx_zip_dem.zip" />
+  <Item State="WatershedDelienationState" Event="SnapThresholdValue" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Landuse" Type="Zip" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Soil" Type="Zip" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Station" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="PCP" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="WeatherGenerator" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="TMP" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="MinumParameter" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="TimeSpan" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="SlopeLimitation" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Rainfall_Runoff_Routine" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Rainfall_Distribution" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Potentail_ET_Method" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="HydroResponseUnitState" Event="Printout_Frequently" Type="Xml" File="udx_zip_dem.zip" />
+  <Item State="SWATBasinShapeGenerator" Event="SummeryType" Type="Xml" File="udx_zip_dem.zip" />
+</DebugData>

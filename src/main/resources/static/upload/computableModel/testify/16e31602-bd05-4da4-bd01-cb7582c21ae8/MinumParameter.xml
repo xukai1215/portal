@@ -1,0 +1,5 @@
+<Dataset>
+  <XDO name="minCorp" kernelType="real" value="20" />
+  <XDO name="minSoil" kernelType="real" value="10" />
+  <XDO name="minSlope" kernelType="real" value="5" />
+</Dataset>

@@ -1,5 +1,8 @@
 var vue = new Vue({
     el:"#app",
+    components: {
+        'avatar': VueAvatar.Avatar
+    },
     data:function () {
         return{
             defaultActive:'1',
@@ -38,10 +41,10 @@ var vue = new Vue({
 
     mounted:{
     }
-})
+});
 
-function show(id,container,cla){
-    $("."+cla).hide();
+function show(id,container){
+    $(".x_content").hide();
     $("#"+id).show();
 
     $(".infoPanel").hide();

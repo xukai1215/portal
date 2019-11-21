@@ -504,6 +504,27 @@ new Vue({
                             $(".el-tree-node__expand-icon").eq(i).click();
                             break;
                         }
+                        else{
+                            let childrens=children[j].children;
+                            if(childrens!=undefined) {
+                                for (k = 0; k < childrens.length; k++) {
+                                    if (category == childrens[k].oid) {
+                                        find = true;
+                                        this.$refs.tree1.setCurrentKey(childrens[k].id);
+                                        this.currentClass = childrens[k].label;
+                                        $(".el-tree-node__expand-icon").eq(1).click();
+                                        var index=j+2;
+                                        setTimeout(function(){
+                                            console.log($(".el-tree-node__expand-icon"))
+                                            $(".el-tree-node__expand-icon").eq(index).click();
+                                        },200);
+
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
                     }
                     if(find){
                         break;
@@ -516,6 +537,7 @@ new Vue({
             this.$refs.tree1.setCurrentKey(2);
             //展开分类树第一层
             $(".el-tree-node__expand-icon").eq(0).click();
+            $(".el-tree-node__expand-icon").eq(1).click();
         }
         if(page!=null){
             this.pageOption.currentPage=page;

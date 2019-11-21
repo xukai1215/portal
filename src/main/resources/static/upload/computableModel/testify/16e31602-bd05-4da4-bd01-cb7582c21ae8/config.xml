@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DebugData tag="TestData" detail="Test_Data for swat model" Title="Default">
+<Item State="3bc9aa08-91b4-4c47-9bf3-c250c6d5abb2" Event="DEM" Type="ZIP" File="udx_zip_dem.zip"/>
+<Item State="3bc9aa08-91b4-4c47-9bf3-c250c6d5abb2" Event="MaskShape" Type="ZIP" File="udx_zip_mask.zip"/>
+<Item State="3bc9aa08-91b4-4c47-9bf3-c250c6d5abb2" Event="ThresholdValue" Type="XML" File="DelineationThresholdValue.xml"/>
+<Item State="3bc9aa08-91b4-4c47-9bf3-c250c6d5abb2" Event="OriginalOutletShape" Type="ZIP" File="udx_zip_outlet.zip"/>
+<Item State="3bc9aa08-91b4-4c47-9bf3-c250c6d5abb2" Event="SnapThresholdValue" Type="XML" File="SnapThresholdValue.xml"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="Landuse" Type="ZIP" File="udx_zip_landuse.zip"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="Soil" Type="ZIP" File="udx_zip_soil.zip"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="Station" Type="FILE" File="station.txt"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="PCP" Type="FILE" File="765850.pcp"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="WeatherGenerator" Type="FILE" File="generator.wgn"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="TMP" Type="FILE" File="765850.tmp"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="MinumParameter" Type="XML" File="MinumParameter.xml"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="TimeSpan" Type="XML" File="TimeSpan.xml"/>
+<Item State="43477859-582a-435a-9d62-d28da9a44b7c" Event="SlopeLimitation" Type="XML" File="SlopeLimitation.xml"/>
+</DebugData>

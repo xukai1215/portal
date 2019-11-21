@@ -1,5 +1,5 @@
 html,body{
-    background: #f5f5f5;
+    background: #f0f2f5;
 }
 .bg-grey{
     background: #f5f5f5!important;
@@ -170,7 +170,6 @@ html,body{
     padding-top: 20px;
     padding-bottom: 10px;
     position: relative;
-    border-left: 1px solid #dddddd ;
     display: none;
 }
 
@@ -408,6 +407,7 @@ html,body{
     float: left;
     clear: both;
     margin-top: 5px;
+    display: none;
 }
 
 .thumbnail {
@@ -587,26 +587,3 @@ html,body{
     padding-left: 0px;
 }
 
-#model_col{
-    width: 200px;
-    height: 200px;
-    padding-left: 10px;padding-right: 10px;margin-right: 80px;
-}
-
-#model_col1{
-    width: 200px;
-    height: 200px;
-    padding-left: 10px;padding-right: 10px;margin-right: 80px;
-}
-
-#model_col2{
-     width: 200px;
-     height: 200px;
-     padding-left: 10px;padding-right: 10px;margin-right: 80px;
- }
-
-#model_col3{
-    width: 200px;
-    height: 200px;
-    padding-left: 10px;padding-right: 10px;margin-right: 80px;
-}
