@@ -18,9 +18,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
     <link rel="stylesheet" href="/static/css/components/file-manager.css">
     <link rel="stylesheet" href="/static/css/other/page.css">
-    <link rel="stylesheet" href="/static/css/conceptModelEditor/ownCss/treeView-Bootstrap.css">
-    <link rel="stylesheet" href="/static/css/conceptModelEditor/conceptBuild.css">
 
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-conceptual-model.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <style>
@@ -30,67 +29,10 @@
     </style>
 
 
-    <script type="text/javascript">
-        // Parses URL parameters. Supported parameters are:
-        // - lang=xy: Specifies the language of the user interface.
-        // - touch=1: Enables a touch-style user interface.
-        // - storage=local: Enables HTML5 local storage.
-        // - chrome=0: Chromeless mode.
-        var urlParams = (function (url) {
-            var result = new Object();
-            var idx = url.lastIndexOf('?');
-            console.log(idx);
-
-            if (idx > 0) {
-                var params = url.substring(idx + 1).split('&');
-
-                for (var i = 0; i < params.length; i++) {
-                    idx = params[i].indexOf('=');
-
-                    if (idx > 0) {
-                        result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
-                    }
-                }
-            }
-
-            return result;
-        })(window.location.href);
-
-        // Default resources are included in grapheditor resources
-        mxLoadResources = false;
-        mxBasePath = "/static/MxGraph/";
-        window.STYLE_PATH = "/static/js/conceptModelEditor2/styles";
-        window.RESOURCES_PATH = "/static/js/conceptModelEditor2/resources";
-        window.IMAGE_PATH = "/static/js/conceptModelEditor2/images";
-        window.STENCIL_PATH = "/static/js/conceptModelEditor2/stencils";
-        EXPORT_URL = "http://localhost:8081/GeoModelingNew/MyTestServlet";
-        SAVE_URL = "http://localhost:8081/GeoModelingNew/MyTestServlet";
-
-        editMode = true;
-    </script>
-    <link rel="stylesheet" type="text/css" href="/static/js/conceptModelEditor2/styles/grapheditor.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-conceptual-model.css"/>
-    <script type="text/javascript">var language = "en";</script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Init.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/jscolor/jscolor.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/sanitizer/sanitizer.min.js"></script>
-    <script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/EditorUi.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Editor.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Sidebar.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Graph.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Shapes.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Actions.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Menus.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Format.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Toolbar.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Dialogs.js"></script>
-
     <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 
     <script type="text/javascript" src="/static/js/common/pageEn.js"></script>
     <script type="text/javascript" src="/static/js/common/resetTree.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/conceptualEditorPlugin.js"></script>
 
 </head>
 

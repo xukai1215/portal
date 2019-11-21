@@ -5,8 +5,9 @@
     <title>Title</title>
 
     <link rel="stylesheet" href="/static/css/other/page.css">
-    <link rel="stylesheet" href="/static/css/conceptModelEditor/ownCss/treeView-Bootstrap.css">
-    <link rel="stylesheet" href="/static/css/conceptModelEditor/conceptBuild.css">
+    <link rel="stylesheet" href="/static/css/graphEditor/treeView-Bootstrap.css">
+    <link rel="stylesheet" href="/static/css/graphEditor/conceptBuild.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/graphEditor/styles/grapheditor.css">
 
     <script type="text/javascript">
         // Parses URL parameters. Supported parameters are:
@@ -36,40 +37,41 @@
 
         // Default resources are included in grapheditor resources
         mxLoadResources = false;
-        mxBasePath = "/static/MxGraph/";
-        window.STYLE_PATH = "/static/js/conceptModelEditor2/styles";
-        window.RESOURCES_PATH = "/static/js/conceptModelEditor2/resources";
-        window.IMAGE_PATH = "/static/js/conceptModelEditor2/images";
-        window.STENCIL_PATH = "/static/js/conceptModelEditor2/stencils";
-        EXPORT_URL = "http://localhost:8081/GeoModelingNew/MyTestServlet";
-        SAVE_URL = "http://localhost:8081/GeoModelingNew/MyTestServlet";
+        mxBasePath = "/static/js/mxGraph/";
+        STYLE_PATH = "/static/js/graphEditor/styles";
+        RESOURCES_PATH = "/static/js/graphEditor/resources";
+        IMAGE_PATH = "/static/js/graphEditor/images";
+        STENCIL_PATH = "/static/js/graphEditor/stencils";
+        EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+        SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
-        editMode = true;
+        editModel = true;
     </script>
-    <link rel="stylesheet" type="text/css" href="/static/js/conceptModelEditor2/styles/grapheditor.css">
 
     <script type="text/javascript">var language = "en";</script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Init.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/jscolor/jscolor.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/sanitizer/sanitizer.min.js"></script>
-    <script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/EditorUi.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Editor.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Sidebar.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Graph.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Shapes.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Actions.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Menus.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Format.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Toolbar.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/Dialogs.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Init.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/deflate/pako.min.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/deflate/base64.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/jscolor/jscolor.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/sanitizer/sanitizer.min.js"></script>
+    <script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/EditorUi.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Editor.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Sidebar.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Graph.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Shapes.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Actions.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Menus.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Format.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Toolbar.js"></script>
+    <script type="text/javascript" src="/static/js/graphEditor/js/Dialogs.js"></script>
+    <!--<script type="text/javascript" src="/static/js/graphEditor/js/conceptualEditorPlugin.js"></script>-->
 
     <script src="/static/js/common/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/static/js/common/bootstrap.js"></script>
     <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
     <script type="text/javascript" src="/static/js/common/pageEn.js"></script>
     <script type="text/javascript" src="/static/js/common/resetTree.js"></script>
-    <script type="text/javascript" src="/static/js/conceptModelEditor2/js/conceptualEditorPlugin.js"></script>
 </head>
 <body>
 
@@ -83,20 +85,8 @@
     <div width="100%" :style="{height:IframeHeight}" style="border:none">
         <script type="text/javascript">
             // Extends EditorUi to update I/O action states based on availability of backend
+            var ui, graph;
             (function () {
-                // var url = location.href;
-                // var first = url.indexOf("=");
-                // var last = url.indexOf("#");
-                // var uid = "";
-                // if (url.indexOf("=") >= 0) {
-                //     if (first > 0) {
-                //         if (last > 0) {
-                //             uid = url.substring(url.indexOf("=") + 1, last);
-                //         } else {
-                //             uid = url.substring(url.indexOf("=") + 1, url.length);
-                //         }
-                //     }
-                // }
 
                 var uid = window.sessionStorage.getItem("editConceptualModel_id");
 
@@ -115,14 +105,6 @@
                             this.actions.get('saveAs').setEnabled(enabled);
                             this.actions.get('export').setEnabled(enabled);
                         }));
-                    }
-                    else {
-                        var enabled = true;
-                        //					this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
-                        //					this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
-                        //					this.actions.get('save').setEnabled(enabled);
-                        //					this.actions.get('saveAs').setEnabled(enabled);
-                        //					this.actions.get('export').setEnabled(enabled);
                     }
                 };
 
@@ -143,28 +125,8 @@
 
                     // Main
                     var mainUI = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.getElementById("container"));
-                    /*				mainUI.editor.graph.connectionArrowsEnabled=false;
-                                    mainUI.editor.graph.connectionHandler.setEnabled(false);*/
-
-                    // mainUI.setPageVisible(false);
-                    //
-                    // /*
-                    // mainUI.editor.graph.setCellsLocked(true);
-                    // mainUI.editor.graph.setCellsEditable(false);
-                    // mainUI.editor.graph.setCellsResizable(false);
-                    // mainUI.editor.graph.setCellsDeletable(false);
-                    // mainUI.editor.graph.setCellsMovable(false);
-                    // mainUI.editor.graph.setCellsBendable(false);
-                    // mainUI.editor.graph.setCellsCloneable(false);
-                    // mainUI.editor.graph.setCellsDisconnectable(false);
-                    // */
-                    //
-                    // mainUI.editor.graph.setEnabled(true);
-                    // mainUI.editor.graph.setCellsSelectable(true);
-                    // mainUI.editor.graph.connectionArrowsEnabled = true;
-                    // mainUI.editor.graph.connectionHandler.setEnabled(true);
-
-                    //  mainUI.setStatusText("Load OK");
+                    ui = mainUI;
+                    graph = ui.editor.graph;
                     if (uid != null && uid != "" && uid != "0") {
                         $.ajax({
                             url: "/conceptualModel/getInfo/" + uid,
@@ -186,27 +148,76 @@
                 });
             })();
         </script>
-        <!--导航条开始-->
-        <iframe id="myIfm" name="myIfm" style="display: none"></iframe>
-        <!--导航条结束-->
+
         <div id="container" class="geEditor" style="left: 0px; top:0px; "></div>
-        <button id="returnUI" onclick="returnValue()" style="display: none"></button>
-        <input id="graph_text" style="display: none">
-        <input id="w" style="display: none">
-        <input id="h" style="display: none">
+
     </div>
 </div>
 
 </body>
 <script>
-    function returnValue(){
-        $('#graph_text').val(ui.editor.getGraphXml().outerHTML);
-        new PrintDialog(ui,'save').container;
-        let gb = graph.getGraphBounds();
-        let w = Math.ceil(gb.width*scale);
-        let h = Math.ceil(gb.height*scale);
-        $("#w").val(w);
-        $("#h").val(h);
+    function getCxml() {
+
+        return ui.editor.getGraphXml().outerHTML;
+    }
+
+    /**
+     * 张硕
+     * 2019.11.14
+     * 由于一下函数中涉及到自定义的全局变量 scale，graph 所以不能普适，暂时注释掉
+     * 由于要存图片，还是得需要svg，所以恢复原策略
+     */
+    function getXml(){
+        var xmlDoc = mxUtils.createXmlDocument();
+        var root = xmlDoc.createElement('output');
+        xmlDoc.appendChild(root);
+
+        var xmlCanvas = new mxXmlCanvas2D(root);
+        var scale=graph.getView().scale;
+        var stackLayout = new mxStackLayout(graph, true);
+        var border=stackLayout.border;
+        var bounds = graph.getGraphBounds();
+        xmlCanvas.translate(
+            Math.floor((border / scale - bounds.x) / scale),
+            Math.floor((border / scale - bounds.y) / scale),
+        );
+        xmlCanvas.scale(1);
+
+
+        var imgExport = new mxImageExport();
+        imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
+
+
+        var w = Math.ceil(bounds.width * scale / scale + 2 * border);
+        var h = Math.ceil(bounds.height * scale / scale + 2 * border);
+
+        var xml = mxUtils.getXml(root);
+        // xml = encodeURIComponent(xml);
+        console.log(xml)
+
+        let result={};
+        result.xml=xml;
+        result.w=w;
+        result.h=h;
+
+        return result;
+    }
+
+    function getSvg() {
+        new PrintDialog(ui, 'save').container;
+        return $("svg").eq(7).html();
+    }
+
+    function getW() {
+        var bounds = graph.getGraphBounds();
+        var w =  Math.ceil(bounds.width * scale / scale + 2 * border);
+        return w;
+    }
+
+    function getH() {
+        var bounds = graph.getGraphBounds();
+        var h = Math.ceil(bounds.height * scale / scale + 2 * border);
+        return h;
     }
 </script>
 </html>

@@ -194,6 +194,9 @@ public class LogicalModelService {
                     MxGraphUtils mxGraphUtils = new MxGraphUtils();
                     logger.info("before export");
                     mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + "/" + uid + "/", name);
+//                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+ "/" + uid + "/" ,name);
+//                    //TODO update时删除所有图片，version时不删除，accept之后再删除
+                    images=new ArrayList<>();
                     images.add("/logicalModel" + "/" + uid + "/"+ name);
                 }
                 logger.info("exportImage");
@@ -269,6 +272,7 @@ public class LogicalModelService {
             String path = resourcePath + "/logicalModel";
             List<String> images = new ArrayList<>();
 
+
             try {
                 JSONArray resources = jsonObject.getJSONArray("resources");
                 List<String> oldImages = logicalModel.getImage();
@@ -289,6 +293,7 @@ public class LogicalModelService {
                         return result;
                     }
                 }
+
 
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
 

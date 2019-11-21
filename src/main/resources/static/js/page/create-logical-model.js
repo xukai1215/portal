@@ -430,8 +430,14 @@ var vue = new Vue({
             this.logicalModel.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), this.logicalModel.authorship);
 
-
+            /**
+             * 张硕
+             * 2019.11.14
+             * 经过试验，logicalmodel只需要 cxml 就OK，所以暂时只存cxml，注释掉svg，xml，w，h
+             * 并不OK，需要存图片，所以不能注释
+             */
             let iframeWindow=$("#ModelEditor")[0].contentWindow;
+            // this.logicalModel.cXml=iframeWindow.getCxml();
 
             let result=iframeWindow.getXml();
 

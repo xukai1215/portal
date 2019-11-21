@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/static/css/base/universal.css}">
     <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
-    <link rel="stylesheet" type="text/css" href="/static/js/conceptModelEditor/styles/grapheditor.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/graphEditor/styles/grapheditor.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
@@ -25,6 +25,16 @@
             padding: 0;
             position: unset;
             margin: 0 0 0px;
+        }
+        /**
+            张硕
+            2019.11.14
+            控制 format 面板的样式
+         */
+        * {
+            -webkit-box-sizing: unset;
+            -moz-box-sizing: unset;
+            box-sizing: unset;
         }
 
     </style>
@@ -303,46 +313,35 @@
 
     // Default resources are included in grapheditor resources
     mxLoadResources = false;
-    mxBasePath = "/static/MxGraph/";
-    window.STYLE_PATH = "/static/js/conceptModelEditor/styles";
-    window.RESOURCES_PATH = "/static/js/conceptModelEditor/resources";
-    window.IMAGE_PATH = "/static/js/conceptModelEditor/images";
-    window.STENCIL_PATH = "/static/js/conceptModelEditor/stencils";
-    EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
-    SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    mxBasePath = "/static/js/mxGraph/";
+    STYLE_PATH = "/static/js/graphEditor/styles";
+    RESOURCES_PATH = "/static/js/graphEditor/resources";
+    IMAGE_PATH = "/static/js/graphEditor/images";
+    STENCIL_PATH = "/static/js/graphEditor/stencils";
+    // EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    // SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
-    editMode = false;
+    editModel = false;
 </script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Init.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/jscolor/jscolor.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/sanitizer/sanitizer.min.js"></script>
-<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/EditorUi.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Editor.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Sidebar.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Graph.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Shapes.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Actions.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Menus.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Format.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Toolbar.js"></script>
-<script type="text/javascript" src="/static/js/conceptModelEditor/js/Dialogs.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Init.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/deflate/pako.min.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/deflate/base64.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/sanitizer/sanitizer.min.js"></script>
+<script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/EditorUi.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Editor.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Sidebar.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Graph.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Shapes.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Actions.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Menus.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Format.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Toolbar.js"></script>
+<script type="text/javascript" src="/static/js/graphEditor/js/Dialogs.js"></script>
 <script type="text/javascript">
     // Extends EditorUi to update I/O action states based on availability of backend
     (function () {
-        // var url = location.href;
-        // var first = url.indexOf("=");
-        // var last = url.indexOf("#");
-        // var uid = "";
-        // if (first > 0) {
-        //     if (last > 0) {
-        //         uid = url.substring(url.indexOf("=") + 1, last);
-        //     } else {
-        //         uid = url.substring(url.indexOf("=") + 1, url.length);
-        //     }
-        // }
-
-        //uid = "OGU0YTA1YWYtZTc4ZS00NDViLTg5ZGQtODcyODFjODcwNWM2MTY=";//window.sessionStorage.getItem("conceptualModelInfo_id")
 
         var editorUiInit = EditorUi.prototype.init;
 
@@ -359,14 +358,6 @@
                     this.actions.get('saveAs').setEnabled(enabled);
                     this.actions.get('export').setEnabled(enabled);
                 }));
-            }
-            else {
-                var enabled = true;
-                //					this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
-                //					this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
-                //					this.actions.get('save').setEnabled(enabled);
-                //					this.actions.get('saveAs').setEnabled(enabled);
-                //					this.actions.get('export').setEnabled(enabled);
             }
         };
 
@@ -388,40 +379,14 @@
             // Main
             if ($("#container").length != 0) {
                 mainUI = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.getElementById("container"));
-                mainUI.setPageVisible(false);
-
-                mainUI.editor.graph.setCellsLocked(false);
-                mainUI.editor.graph.setCellsEditable(true);
-                mainUI.editor.graph.setCellsResizable(false);
-                mainUI.editor.graph.setCellsDeletable(false);
-                mainUI.editor.graph.setCellsMovable(true);
-                mainUI.editor.graph.setCellsBendable(false);
-                mainUI.editor.graph.setCellsCloneable(false);
-                mainUI.editor.graph.setCellsDisconnectable(false);
-
-                //mainUI.editor.graph.setEnabled(false);
-                mainUI.editor.graph.setCellsSelectable(true);
-                mainUI.editor.graph.connectionArrowsEnabled = false;
-                mainUI.editor.graph.connectionHandler.setEnabled(false);
-
-                //  mainUI.setStatusText("Load OK");
-                // $.ajax({
-                //     url: "http://geomodeling.njnu.edu.cn/GeoModelingNew/ConceptModelInfoServlet",
-                //     type: "get",
-                //     data: { "mid": uid },
-                //     success: function (result) {
-                //         $(".showbox").hide();
-                //         var data = JSON.parse(result);
 
                 var xml_doc = mxUtils.parseXml($("#container").attr("content"));
                 xml_doc.documentElement.setAttribute("page", 0);
                 mainUI.editor.setGraphXml(xml_doc.documentElement);
                 window.onbeforeunload = null;
-                //     }
-                // })
-
-                document.getElementsByTagName('svg').scrollTop=100;//通过scrollTop设置滚动到100位置
-                document.getElementsByTagName('svg').scrollLeft=200;//通过scrollTop设置滚动到200位置
+                //
+                // document.getElementsByTagName('svg').scrollTop=100;//通过scrollTop设置滚动到100位置
+                // document.getElementsByTagName('svg').scrollLeft=200;//通过scrollTop设置滚动到200位置
             }
         }, function () {
             document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';

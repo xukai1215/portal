@@ -455,18 +455,35 @@ var vue = new Vue({
             this.conceptualModel.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), this.conceptualModel.authorship);
 
+            /**
+             * 张硕
+             * 2019.11.21
+             * 和logicalmodel的创建保持统一，
+             * 这里有通过js出发前端按钮的方法
+             */
+            // if(this.conceptualModel.contentType=="MxGraph") {
+            //     let content = $("#ModelEditor").contents();
+            //     content.find("#returnUI").trigger("click");
+            //
+            //     let xml = content.find("#graph_text").val();
+            //     this.conceptualModel.cXml = xml;
+            // }
+
+
+            let iframeWindow=$("#ModelEditor")[0].contentWindow;
+
+            let result=iframeWindow.getXml();
+
             if(this.conceptualModel.contentType=="MxGraph") {
-                let content = $("#ModelEditor").contents();
-                content.find("#returnUI").trigger("click");
-
-                let svg = content.find("#myIfm").prop('contentWindow').document.getElementsByTagName("svg")[0].innerHTML;
-                let w = content.find("#w").val();
-                let h = content.find("#h").val();
-                this.conceptualModel.svg = "<svg width='" + w + "px' height='" + h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + svg + "</svg>"
-
-                let xml = content.find("#graph_text").val();
-
-                this.conceptualModel.cXml = xml;
+                this.conceptualModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>";
+                this.conceptualModel.cXml=iframeWindow.getCxml();
+                this.conceptualModel.xml=result.xml;
+                this.conceptualModel.w=result.w;
+                this.conceptualModel.h=result.h;
+            }
+            else{
+                this.conceptualModel.svg="";
+                this.conceptualModel.cXml="";
             }
 
             //添加图片
