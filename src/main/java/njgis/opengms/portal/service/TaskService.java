@@ -297,7 +297,15 @@ public class TaskService {
             states.set(i, state);
         }
 
+        JSONArray dataItems=mdlObj.getJSONArray("DataItems");
+        JSONArray dataRefs=new JSONArray();
+        for(int i=0;i<dataItems.size();i++){
+            JSONObject dataRef=dataItems.getJSONArray(i).getJSONObject(0);
+            dataRefs.add(dataRef);
+        }
+
         model_Info.put("states", states);
+        model_Info.put("dataRefs",dataRefs);
         //拼接
         JSONObject result = new JSONObject();
         result.put("userInfo", userJson);
