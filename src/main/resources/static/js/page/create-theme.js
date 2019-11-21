@@ -750,6 +750,50 @@ var vue = new Vue({
             }
         });
 
+
+        $(document).on('click','#imgChange1',function ($event) {
+            $("#imgFile1").click();
+        })
+        // $("#imgChange1").click(function () {
+        //     $("#imgFile1").click();
+        // });
+        $("#imgFile1").change(function () {
+            //获取input file的files文件数组;
+            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+            var file = $('#imgFile1').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload = function (e) {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                $('#imgShow1').get(0).src = e.target.result;
+                $('#imgShow1').show();
+            }
+        })
+        // $("#imgFile1").change(function () {
+        //     //获取input file的files文件数组;
+        //     //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+        //     //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+        //     var file = $('#imgFile1').get(0).files[0];
+        //     //创建用来读取此文件的对象
+        //     var reader = new FileReader();
+        //     //使用该对象读取file文件
+        //     reader.readAsDataURL(file);
+        //     //读取文件成功后执行的方法函数
+        //     reader.onload = function (e) {
+        //         //读取成功后返回的一个参数e，整个的一个进度事件
+        //         //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+        //         //的base64编码格式的地址
+        //         $('#imgShow1').get(0).src = e.target.result;
+        //         $('#imgShow1').show();
+        //     }
+        // });
+
         //table
         table = $('#dynamic-table').DataTable({
             //"aaSorting": [[ 0, "asc" ]],
@@ -953,7 +997,10 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+
             themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            // themeObj.application_image = $('#imgShow1').get(0).src;
+            // themeObj.upload_application_image = $('#imgShow1').get(0).currentSrc;
             let formData=new FormData();
 
             themeObj.creator_name = $("#creator_name").val();
@@ -963,6 +1010,7 @@ var vue = new Vue({
             var app = {};
             app.applicationname = $("#applicationname").val();
             app.applicationlink = $("#applicationlink").val();
+            app.upload_application_image = $("#imgShow1").get(0).currentSrc;
             themeObj.application.push(app);
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
@@ -1094,18 +1142,36 @@ var vue = new Vue({
             str += "</lable><div class='input-group col-sm-10'><input type='text' name=\"name\" id=\"applicationname\" class='form-control'></div></div><div style=\"margin-top:10px\"><lable class='control-label col-sm-2 text-center'" +
                 "style='font-weight: bold;'>";
             str += "Link:";
-            str += "</lable><div class='input-group col-sm-10'><input type='text' name=\"ins\" id=\"applicationlink\" class='form-control'></div></div><div";
+            str += "</lable><div class='input-group col-sm-10'><input type='text' name=\"ins\" id=\"applicationlink\" class='form-control'></div></div>";
+            str +="    <div style=\"margin-top:10px\">\n" +
+                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                "                                                                                                               style='font-weight: bold;'>\n" +
+                "                                                                                                            Image:\n" +
+                "                                                                                                        </lable>\n" +
+                "                                                                                                        <div class=\"col-sm-10\">\n" +
+                "                                                                                                            <img id=\"imgShow1\" src=\"\"/>\n" +
+                "                                                                                                            <div id=\"imgChange1\">\n" +
+                "                                                                                                                <i class=\"fa fa-plus fa-5x\"></i>\n" +
+                "                                                                                                            </div>\n" +
+                "                                                                                                            <input id=\"imgFile1\" type=\"file\"\n" +
+                "                                                                                                                   style=\"display: none\"\n" +
+                "                                                                                                                   accept=\"image/*\"/>\n" +
+                "                                                                                                        </div>\n" +
+                "                                                                                                    </div>"
             str +="</div></div></div></div></div>";
             content_box.append(str);
 
             var app = {};
             app.applicationname = $("#applicationname").val();
             app.applicationlink = $("#applicationlink").val();
+            app.upload_application_image = $("#imgShow1").get(0).currentSrc;
             themeObj.application.push(app);
 
 
             $("#applicationname").attr('id','applicationname_past');//改变当前id名称
             $("#applicationlink").attr('id','applicationlink_past');//改变当前id名称
+            $("#imgShow1").attr('id','imgShow1_past');//改变当前id名称
+            $("#imgChange1").attr('id','imgChange1_past');//改变当前id名称
             //还需要在finish里写一份，作为最后一次输入的追加
 
 

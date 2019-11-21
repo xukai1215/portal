@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
-
 /**
  * @Auther mingyuan
  * @Data 2019.10.24 18:01
@@ -19,5 +17,6 @@ public class Application {
     String oid;
     String applicationname;
     String applicationlink;
-    String remark;
+    String application_image;
+    String upload_application_image;
 }

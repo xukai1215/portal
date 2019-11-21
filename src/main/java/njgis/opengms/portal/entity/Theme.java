@@ -27,7 +27,6 @@ public class Theme {
     String detail;
     String image;
     String author;
-    String remarks;
 
     //其余部分
     List<ClassInfo> classinfo;

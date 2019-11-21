@@ -43,7 +43,7 @@
 
                                 </div>
                                 <div slot="header" class="clearfix text-center">
-                                    <img th:src="${info.image}">
+                                    <img th:src="'/static/upload'+${info.image}" id="header_image">
                                     <div th:utext="${info.themename}" style="font-size: 24px;color:#444"></div>
                                     <!--<a th:href="'/user/'+${info.creator_oid}"> <span th:utext="'Created by '+${info.creator_name}"></span></a>-->
                                 </div>
@@ -175,7 +175,7 @@
                                         <el-col :span="4" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
                                             <a th:href="${item.link}">
                                                 <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
-                                                    <img src="/static/img/thematic_center/thumb.png" class="image">
+                                                    <img th:src="'/static/upload'+${item.image}" class="image">
                                                     <div style="padding: 14px;">
                                                         <span th:text="${item.name}"></span>
                                                     </div>
