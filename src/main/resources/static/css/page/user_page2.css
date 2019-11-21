@@ -216,6 +216,13 @@ button:focus{
     border-bottom: 1px solid #e1e1e1;
 }
 
+
+.innerBorderCol{
+    height: 85%;
+    width: 1px;
+    background-color: rgba(0,0,0,0.1);
+}
+
 .userInfoContainer{
     display: flex;
     justify-content: space-around;
@@ -317,6 +324,18 @@ button:focus{
     background-color: #fbfbfb;
 }
 
+.flexAround{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: sans-serif;
+    width:100% ;
+    /*flex-grow: 1;*/
+    /*height: 148px;*/
+    background-color: #fcfcfc;
+}
+
 .affiliationInfoContainer{
     padding: 0 30px;
 }
@@ -405,6 +424,7 @@ button:focus{
 }
 
 .flexCenter{
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -853,7 +873,7 @@ input::placeholder{
     border-bottom-color: rgba(180,180,180,0.6);
     border-bottom-width: 1px;
     color: #828282;
-    font-family: Baskerville;
+    /*font-family: Baskerville;*/
 }
 
 .splitBlock{
@@ -1194,16 +1214,131 @@ input::placeholder{
     box-shadow: 1px 2px 4px rgba(0,0,0,0.35);
 }
 
-.greyShade{
-    background-color: rgba(128, 88, 88, 0.1);
+.shade{
+    /*background-color: rgba(128, 88, 88, 0.1);*/
     width: 100%;
     height: 100%;
-    transition: .3s;
+    transition: .5s ease-out;
+    -moz-transition: .5s ease-out; /* Firefox 4 */
+    -webkit-transition:  .5s ease-out; /* Safari 和 Chrome */
+    -o-transition: .5s ease-out; /* Opera */
 }
 
-.greyShade:hover{
+.shade:hover{
     background-color: rgba(5, 192, 255, 0.55);
-    box-shadow: 1px 2px 5px  rgba(0, 0, 0, 0.3) !important; ;
+    box-shadow: 1px 2px 5px  rgba(0, 0, 0, 0.3) !important;
+    cursor:pointer;
+}
+
+.hoverIcon{
+    font-size: 32px;
+    color: transparent;
+    transition: color .2s ease-out;
+    -moz-transition:color .2s ease-out; /* Firefox 4 */
+    -webkit-transition:color  .2s ease-out; /* Safari 和 Chrome */
+    -o-transition:color .2s ease-out; /* Opera */
+    transition: font-size .3s ;
+    -moz-transition:font-size .3s ; /* Firefox 4 */
+    -webkit-transition:font-size .3s ; /* Safari 和 Chrome */
+    -o-transition:font-size .3s ; /* Opera */
+}
+
+.shade:hover .hoverIcon{
+
+    color: #ebebeb;
+}
+
+.hoverIcon:hover{
+    font-size: 37px;
+}
+
+#imgShow {
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    display: none;
+    float: left;
+    margin-right: 10px;
+}
+
+#imgChange {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    width: 115px;
+    height: 115px;
+    text-align: center;
+    line-height: 150px;
+    vertical-align: middle;
+    color: #ccc;
+    float: left;
+}
+
+.circlePhotoFrame{
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.circlePhotoFrameShade{
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(140, 140, 140, 0) 65px, rgba(225, 226, 226,0.45) 3.2%);
+    position: absolute;
+}
+
+.circlePhotoFrame canvas{
+    /*width: 150px;*/
+    /*height: 150px;*/
+    /*position: relative;*/
+    /*background: radial-gradient(circle, rgba(140, 140, 140, 0) 65px, rgba(225, 226, 226,0.45) 3.2%);*/
+    /*background-size:;*/
+    background-repeat: no-repeat;
+    cursor: grab;
+}
+
+.circlePhotoFrame canvas:focus{
+    cursor: grabbing;
+}
+
+.dragBar{
+    position: relative;
+    width: 100px;
+    height: 6px;
+    border-radius: 3px;
+    /*border: 1px solid #05adff;*/
+    background-color: #cdf8ff;
+}
+
+.dragBlock{
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: #04bbff;
+    cursor: pointer;
+}
+
+#imgShowBig{
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+
+.overviewContainer{
+    height: 75%;
+}
+
+.containerWithDashed{
+    padding: 15px;
+    border:1px #cccccc dashed;
+    border-radius: 5px;
 }
 
 .infoContainer{

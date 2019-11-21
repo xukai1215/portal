@@ -65,6 +65,9 @@ public class PortalApplicationTests {
     @Autowired
     UnitDao unitDao;
 
+    @Autowired
+    TaskDao taskDao;
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -121,16 +124,43 @@ public class PortalApplicationTests {
 
     @Test
     public void addFolder(){
-        User user=userDao.findFirstByUserName("njgis");
-        List<FileMeta> fileContainer=new ArrayList<>();
+//        User user=userDao.findFirstByUserName("njgis");
+//        List<FileMeta> fileContainer=new ArrayList<>();
+//
+////        fileContainer.add(new FileMeta(true,false,UUID.randomUUID().toString(),"fa","123","","",new ArrayList<>()));
+////        fileContainer.add(new FileMeta(false,false,"id2","ff","1234","pdf","http://",new ArrayList<>()));
+//
+//        user.setFileContainer(fileContainer);
+//
+//
+//        userDao.save(user);
+    }
 
-        fileContainer.add(new FileMeta(true,false,UUID.randomUUID().toString(),"fa","123","","",new ArrayList<>()));
-        fileContainer.add(new FileMeta(false,false,"id2","ff","1234","pdf","http://",new ArrayList<>()));
+    @Test
+    public void addTaskInfo(){
+        List<Task> tasks = taskDao.findAll();
+        for (Task task:tasks){
+            if(task.getIsPublic()==null)
+            {
+                List<String> id=new ArrayList<>();
+                id.add(task.getUserId());
+                task.setIsPublic(id);
+                taskDao.save(task);
+                taskDao.count();
+            }
+            if(task.getDescription()==null)
+            {
+                task.setDescription("");
+                taskDao.save(task);
+                taskDao.count();
+            }
 
-        user.setFileContainer(fileContainer);
+                task.setLoadTime(0);
+                taskDao.save(task);
+                taskDao.count();
 
 
-        userDao.save(user);
+        }
     }
 
     @Test

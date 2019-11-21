@@ -8,6 +8,11 @@
    padding-right: 0 !important;
  }
 
+ span:focus{
+   border: 0;
+   outline: 0;
+ }
+
 .page-sidebar {
     width: 220px;
     position: relative;
@@ -1668,7 +1673,7 @@ ul,li{
    background: linear-gradient(#ffffff, #e4e4e4); /* 标准的语法（必须放在最后） */
  }
  .dataitemisol{
-   width: 18%;
+   width: 15.6%;
    height: 120px ;
    margin-right:9px;
    margin-top:5px;
@@ -1821,6 +1826,10 @@ ul,li{
    height: 85%;
    width: 1px;
    background-color: rgba(0,0,0,0.1);
+ }
+
+ overviewContainer{
+   width: 55%;
  }
 
  .researchTitle{
@@ -2188,6 +2197,23 @@ ul,li{
  }
 
  .transform180{
-     transform: rotate(180deg);
+   -webkit-transform: rotate(180deg);
+   transform: rotate(180deg);
  }
 
+ .ab{
+   transition:transform .3s ;
+ }
+
+ .height0{
+   height: 0;
+ }
+
+ .modelRunInfo{
+   border-top:1px dotted hsla(0, 0%, 63%, 1) ;
+ }
+
+ .file-preview{
+   max-height: 450px;
+   overflow-y: auto;
+ }

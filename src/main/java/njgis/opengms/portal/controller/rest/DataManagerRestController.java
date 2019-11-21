@@ -154,8 +154,8 @@ public class DataManagerRestController {
      */
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
     JsonResult deleteData(@RequestParam("id") String id) {
-
-        String url="http://"+dataContainerIpAndPort+"/dataResource/"+id;
+        System.out.println(id);
+        String url="http://"+dataContainerIpAndPort+"/dataResource/del/"+id;
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JSONObject> responseEntity=restTemplate.exchange(url,HttpMethod.DELETE,null,JSONObject.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {

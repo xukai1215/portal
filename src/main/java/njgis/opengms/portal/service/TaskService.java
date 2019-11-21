@@ -15,6 +15,7 @@ import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.TaskData;
+import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
@@ -34,10 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 
 import static njgis.opengms.portal.utils.Utils.*;
@@ -57,7 +55,7 @@ public class TaskService {
     @Autowired
     TaskDao taskDao;
 
-    @Value ("${managerServerIpAndPort}")
+    @Value("${managerServerIpAndPort}")
     private String managerServer;
 
     @Value("${resourcePath}")
@@ -81,11 +79,11 @@ public class TaskService {
 
         ModelAndView modelAndView = new ModelAndView();
         //创建task 获取数据服务器地址
-        if(username!=null){
-            JsonResult jsonResult=generateTask(id,username);
+        if (username != null) {
+            JsonResult jsonResult = generateTask(id, username);
 
-            JSONObject data=JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
-            JSONObject dxServer=data.getJSONObject("dxServer");
+            JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
+            JSONObject dxServer = data.getJSONObject("dxServer");
 
 //            String re="      {\"ip\": \"172.21.212.155\",\n" +
 //                    "      \"port\": 8062,\n" +
@@ -105,42 +103,91 @@ public class TaskService {
             modelAndView.addObject("mdlJson", convertMdl(modelInfo.getMdl()));
 
 
-        }
-        else {
+        } else {
             modelAndView.setViewName("login");
         }
-
 
 
         return modelAndView;
     }
 
-    public String renameTag(String taskId,List<TaskData> outputs){
-        Task task=new Task();
-        task=taskDao.findFirstByTaskId(taskId);
+    public String renameTag(String taskId, List<TaskData> outputs) {
+        Task task = new Task();
+        task = taskDao.findFirstByTaskId(taskId);
 //        task.setOutputs(outputs);
         taskDao.save(task);
         return "suc";
     }
 
-    public JSONObject initTaskOutput(String ids,String userName){
-        String[] twoIds=ids.split("&");
+    public ModelAndView getTaskOutputPage(String ids, String userName) {
+        String[] twoIds = ids.split("&");
 
-        String modelId= twoIds[0];
-        String taskId= twoIds[1];
+        String modelId = twoIds[0];
+        String taskId = twoIds[1];
+
+        User user = userDao.findFirstByUserName(userName);
+        //判断taskinfo权限
+        List<UserTaskInfo> userTaskInfos = user.getRunTask();
+        boolean isUserOwnTask = false;
+        for (UserTaskInfo userTaskInfo : userTaskInfos) {
+            if (userTaskInfo.getTaskId().equals(taskId))
+                isUserOwnTask = true;
+        }
+        if (isUserOwnTask == false) {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("login");
+            modelAndView.addObject("unlogged", "1");
+            return modelAndView;
+        } else {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("taskOutput");
+            modelAndView.addObject("logged", "0");
+            return modelAndView;
+        }
+    }
+
+    public JSONObject initTaskOutput(String ids, String userName) {
+        String[] twoIds = ids.split("&");
+
+        String modelId = twoIds[0];
+        String taskId = twoIds[1];
 
         ComputableModel modelInfo = computableModelService.getByOid(modelId);
         modelInfo.setViewCount(modelInfo.getViewCount() + 1);
         computableModelDao.save(modelInfo);
 
         User user = userDao.findFirstByUserName(modelInfo.getAuthor());
+
         JSONObject userJson = new JSONObject();
         userJson.put("compute_model_user_name", user.getUserName());
         userJson.put("compute_model_user_oid", user.getOid());
         userJson.put("userName", userName);
 
+        JSONObject result = new JSONObject();
+
         //获得task信息
-        Task task=findByTaskId(taskId);
+        Task task = findByTaskId(taskId);
+        //判断权限信息
+        boolean hasPermission = false;
+        List<String> publicInfos = task.getIsPublic();
+        if (publicInfos.get(0).equals("public")) {
+            result.put("permission", "yes");
+            return result;
+        } else {
+
+            for (String publicInfo : publicInfos) {
+                if (publicInfo.equals(userName)) {
+                    hasPermission = true;
+                    result.put("permission", "yes");
+                    break;
+                }
+
+            }
+            if (hasPermission == false) {
+                result.put("permission", "no");
+                return result;
+            }
+        }
 
         JsonResult jsonResult = generateTask(modelId, userName);
         JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
@@ -159,31 +206,36 @@ public class TaskService {
         taskInfo.put("ip", data.getString("ip"));
         taskInfo.put("port", data.getString("port"));
         taskInfo.put("pid", data.getString("pid"));
+        taskInfo.put("creater", task.getUserId());
+        taskInfo.put("description", task.getDescription());
+        taskInfo.put("public", task.getIsPublic());
         taskInfo.put("outputs", task.getOutputs());
+        taskInfo.put("inputs", task.getInputs());
+        taskInfo.put("createTime", task.getRunTime());
 
         boolean hasTest;
-        if(modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")){
+        if (modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")) {
             hasTest = false;
-        }else{
+        } else {
             hasTest = true;
         }
         model_Info.put("hasTest", hasTest);
         JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
         JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
         JSONArray states = mdlObj.getJSONArray("states");
-        model_Info.put("states",states);
+        model_Info.put("states", states);
         //拼接
-        JSONObject result = new JSONObject();
-        result.put("userInfo",userJson);
-        result.put("modelInfo",model_Info);
-        result.put("taskInfo",taskInfo);
-        result.put("dxInfo",dxInfo);
+
+        result.put("userInfo", userJson);
+        result.put("modelInfo", model_Info);
+        result.put("taskInfo", taskInfo);
+        result.put("dxInfo", dxInfo);
         System.out.println(result);
         return result;
     }
 
 
-    public JSONObject initTask(String oid, String userName){
+    public JSONObject initTask(String oid, String userName) {
         //条目信息
         ComputableModel modelInfo = computableModelService.getByOid(oid);
         modelInfo.setViewCount(modelInfo.getViewCount() + 1);
@@ -203,7 +255,7 @@ public class TaskService {
         JsonResult jsonResult = generateTask(oid, userName);
 
         JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
-        System.out.println("task"+jsonResult);
+        System.out.println("task" + jsonResult);
         JSONObject dxServer = data.getJSONObject("dxServer");
         taskInfo.put("ip", data.getString("ip"));
         taskInfo.put("port", data.getString("port"));
@@ -215,9 +267,9 @@ public class TaskService {
         model_Info.put("des", modelInfo.getDescription());
         model_Info.put("date", modelInfo.getCreateTime());
         boolean hasTest;
-        if(modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")){
+        if (modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")) {
             hasTest = false;
-        }else{
+        } else {
             hasTest = true;
         }
         model_Info.put("hasTest", hasTest);
@@ -225,50 +277,49 @@ public class TaskService {
         JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
         JSONArray states = mdlObj.getJSONArray("states");
 
-        for(int i=0;i<states.size();i++){
-            JSONObject state=states.getJSONObject(i);
-            JSONArray events=state.getJSONArray("event");
-            JSONArray eventsSort=new JSONArray();
-            for(int j=0;j<events.size();j++){
-                JSONObject event=events.getJSONObject(j);
-                if(event.getString("eventType").equals("response"))
-                {
+        for (int i = 0; i < states.size(); i++) {
+            JSONObject state = states.getJSONObject(i);
+            JSONArray events = state.getJSONArray("event");
+            JSONArray eventsSort = new JSONArray();
+            for (int j = 0; j < events.size(); j++) {
+                JSONObject event = events.getJSONObject(j);
+                if (event.getString("eventType").equals("response")) {
                     eventsSort.add(event);
                 }
             }
-            for(int j=0;j<events.size();j++){
-                JSONObject event=events.getJSONObject(j);
-                if(!event.getString("eventType").equals("response")){
+            for (int j = 0; j < events.size(); j++) {
+                JSONObject event = events.getJSONObject(j);
+                if (!event.getString("eventType").equals("response")) {
                     eventsSort.add(event);
                 }
             }
-            state.put("event",eventsSort);
-            states.set(i,state);
+            state.put("event", eventsSort);
+            states.set(i, state);
         }
 
-        model_Info.put("states",states);
+        model_Info.put("states", states);
         //拼接
         JSONObject result = new JSONObject();
-        result.put("userInfo",userJson);
-        result.put("modelInfo",model_Info);
-        result.put("taskInfo",taskInfo);
-        result.put("dxInfo",dxInfo);
+        result.put("userInfo", userJson);
+        result.put("modelInfo", model_Info);
+        result.put("taskInfo", taskInfo);
+        result.put("dxInfo", dxInfo);
 
         return result;
     }
 
     //根据post请求的信息得到数据存储的路径
-    public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO){
+    public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO) {
         String oid = testDataUploadDTO.getOid();
         String parentDirectory = resourcePath + "/computableModel/testify/" + oid;
         String configPath = parentDirectory + File.separator + "config.xml";
         JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory);
-        if(configInfoArray == null){
+        if (configInfoArray == null) {
             return null;
         }
         //进行遍历
         List<UploadDataDTO> dataUploadList = new ArrayList<>();
-        for(int i = 0; i < configInfoArray.size(); i++){
+        for (int i = 0; i < configInfoArray.size(); i++) {
             JSONObject temp = configInfoArray.getJSONObject(i);
             UploadDataDTO uploadDataDTO = new UploadDataDTO();
             uploadDataDTO.setEvent(temp.getString("event"));
@@ -280,11 +331,11 @@ public class TaskService {
     }
 
     //读取xml信息，返回数据的State,Event和数据路径
-    private JSONArray getConfigInfo(String configPath,String parentDirectory){
+    private JSONArray getConfigInfo(String configPath, String parentDirectory) {
         JSONArray resultArray = new JSONArray();
         Document result = null;
         SAXReader reader = new SAXReader();
-        try{
+        try {
             result = reader.read(configPath);
         } catch (DocumentException e) {
             e.printStackTrace();
@@ -292,57 +343,57 @@ public class TaskService {
         }
         Element rootElement = result.getRootElement();
         List<Element> items = rootElement.elements();
-        for(Element item : items){
+        for (Element item : items) {
             String fileName = item.attributeValue("File");
             String state = item.attributeValue("State");
             String event = item.attributeValue("Event");
             String filePath = parentDirectory + File.separator + fileName;
             JSONObject tempObject = new JSONObject();
-            tempObject.put("state",state);
-            tempObject.put("event",event);
-            tempObject.put("file",filePath);
+            tempObject.put("state", state);
+            tempObject.put("event", event);
+            tempObject.put("file", filePath);
             resultArray.add(tempObject);
         }
         return resultArray;
     }
 
     @Async
-    public Future<ResultDataDTO> uploadDataToServer(UploadDataDTO uploadDataDTO, TestDataUploadDTO testDataUploadDTO){
+    public Future<ResultDataDTO> uploadDataToServer(UploadDataDTO uploadDataDTO, TestDataUploadDTO testDataUploadDTO) {
         ResultDataDTO resultDataDTO = new ResultDataDTO();
         resultDataDTO.setEvent(uploadDataDTO.getEvent());
         resultDataDTO.setStateId(uploadDataDTO.getState());
         String testDataPath = uploadDataDTO.getFilePath();
         String url = "http://" + managerServer + "/GeoModeling/computableModel/uploadData";
         //拼凑form表单
-        Map<String,String> params = new HashMap<>();
-        params.put("host",testDataUploadDTO.getHost());
+        Map<String, String> params = new HashMap<>();
+        params.put("host", testDataUploadDTO.getHost());
         params.put("port", String.valueOf(testDataUploadDTO.getPort()));
         params.put("type", String.valueOf(testDataUploadDTO.getType()));
         params.put("userName", testDataUploadDTO.getUserName());
 
         //拼凑file表单
-        Map<String,String> fileMap = new HashMap<>();
+        Map<String, String> fileMap = new HashMap<>();
         fileMap.put("file", testDataPath);
         String result;
-        try{
-            result = MyHttpUtils.POSTFile(url,"UTF-8",params,fileMap);
-        }catch (Exception e){
+        try {
+            result = MyHttpUtils.POSTFile(url, "UTF-8", params, fileMap);
+        } catch (Exception e) {
             result = null;
         }
-        if(result == null){
+        if (result == null) {
             resultDataDTO.setUrl("");
             resultDataDTO.setTag("");
-        }else{
+        } else {
             JSONObject res = JSON.parseObject(result);
-            if(res.getIntValue("code") != 1){
+            if (res.getIntValue("code") != 1) {
                 resultDataDTO.setUrl("");
                 resultDataDTO.setTag("");
                 resultDataDTO.setSuffix("");
-            }else{
+            } else {
                 JSONObject data = res.getJSONObject("data");
                 String data_url = data.getString("url");
                 String tag = data.getString("tag");
-                String suffix=data.getString("suffix");
+                String suffix = data.getString("suffix");
                 resultDataDTO.setTag(tag);
                 resultDataDTO.setUrl(data_url);
                 resultDataDTO.setSuffix(suffix);
@@ -353,7 +404,39 @@ public class TaskService {
 
     }
 
-    public JsonResult generateTask(String id,String username){
+//    public UploadDataDTO getPublishedTask(String taskId){
+//
+//    }
+
+    public List<ResultDataDTO> getPublishedData(String taskId){
+        Task task=taskDao.findFirstByTaskId(taskId);
+
+        List<ResultDataDTO> resultDataDTOList=new ArrayList<>();
+
+        if(!task.getIsPublic().equals("noPublic")){
+            for(int i=0; i<task.getInputs().size();i++ ){
+                ResultDataDTO resultDataDTO=new ResultDataDTO();
+                resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
+                resultDataDTO.setState(task.getInputs().get(i).getStatename());
+                resultDataDTO.setEvent(task.getInputs().get(i).getEvent());
+                resultDataDTO.setTag(task.getInputs().get(i).getTag());
+                resultDataDTO.setSuffix(task.getInputs().get(i).getSuffix());
+                resultDataDTOList.add(resultDataDTO);
+            }
+            for(int i=0; i<task.getOutputs().size();i++ ){
+                ResultDataDTO resultDataDTO=new ResultDataDTO();
+                resultDataDTO.setUrl(task.getOutputs().get(i).getUrl());
+                resultDataDTO.setState(task.getOutputs().get(i).getStatename());
+                resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
+                resultDataDTO.setTag(task.getOutputs().get(i).getTag());
+                resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
+                resultDataDTOList.add(resultDataDTO);
+            }
+        }
+        return resultDataDTOList;
+    }
+
+    public JsonResult generateTask(String id, String username) {
         String md5 = getMd5(id);
         JSONObject result = getServiceTask(md5);
 
@@ -364,7 +447,7 @@ public class TaskService {
             int port = Integer.parseInt(data.getString("port"));
 
             JSONObject createTaskResult = createTask(id, md5, host, port, username);
-            if (createTaskResult!=null && createTaskResult.getInteger("code") == 1) {
+            if (createTaskResult != null && createTaskResult.getInteger("code") == 1) {
                 return ResultUtils.success(createTaskResult.getJSONObject("data"));
             } else {
                 return ResultUtils.error(-3, "can not create task!");
@@ -381,7 +464,7 @@ public class TaskService {
 
     public JSONObject getServiceTask(String md5) {
 
-        String urlStr = "http://"+managerServerIpAndPort+"/GeoModeling/taskNode/getServiceTask/" + md5;
+        String urlStr = "http://" + managerServerIpAndPort + "/GeoModeling/taskNode/getServiceTask/" + md5;
         JSONObject result = connentURL(Utils.Method.GET, urlStr);
 
         return result;
@@ -389,7 +472,7 @@ public class TaskService {
 
     public JSONObject createTask(String id, String md5, String ip, int port, String username) {
 
-        String urlStr = "http://"+managerServerIpAndPort+"/GeoModeling/computableModel/createTask";
+        String urlStr = "http://" + managerServerIpAndPort + "/GeoModeling/computableModel/createTask";
 //        Map<String, Object> paramMap = new HashMap<String, Object>();
 //        paramMap.put("ip", ip);
 //        paramMap.put("port", port);
@@ -406,11 +489,11 @@ public class TaskService {
         return result;
     }
 
-    public String invoke(JSONObject lists){
+    public String invoke(JSONObject lists) {
 
-        JSONObject result=postJSON("http://"+managerServerIpAndPort+"/GeoModeling/computableModel/invoke",lists);
+        JSONObject result = postJSON("http://" + managerServerIpAndPort + "/GeoModeling/computableModel/invoke", lists);
 
-        if(result.getInteger("code")==1){
+        if (result.getInteger("code") == 1) {
 
             return result.getJSONObject("data").getString("tid");
         }
@@ -418,47 +501,46 @@ public class TaskService {
         return null;
     }
 
-    public String save(Task task){
+    public String save(Task task) {
 
         taskDao.save(task);
         return "suc";
     }
 
-    public int delete(String oid,String userName){
-        Task task=taskDao.findFirstByOid(oid);
-        if(task!=null){
+    public int delete(String oid, String userName) {
+        Task task = taskDao.findFirstByOid(oid);
+        if (task != null) {
             taskDao.delete(task);
             return 1;
-        }
-        else{
+        } else {
             return -1;
         }
     }
 
-    public JSONObject searchTasksByUserId(String searchText,String userId, int page, String sortType, int asc) {
+    public JSONObject searchTasksByUserId(String searchText, String userId, int page, String sortType, int asc) {
 
-        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<Task> modelItems = taskDao.findByComputableNameContainsIgnoreCaseAndUserId(searchText,userId,pageable);
+        Page<Task> modelItems = taskDao.findByComputableNameContainsIgnoreCaseAndUserId(searchText, userId, pageable);
 
         JSONObject modelItemObject = new JSONObject();
-        modelItemObject.put("count",modelItems.getTotalElements());
-        modelItemObject.put("tasks",modelItems.getContent());
+        modelItemObject.put("count", modelItems.getTotalElements());
+        modelItemObject.put("tasks", modelItems.getContent());
 
         return modelItemObject;
 
     }
 
-    public JSONObject getTasksByUserId(String userName,int page,String sortType,int sortAsc){
-        AsyncTask asyncTask=new AsyncTask();
+    public JSONObject getTasksByUserId(String userName, int page, String sortType, int sortAsc) {
+        AsyncTask asyncTask = new AsyncTask();
         List<Future> futures = new ArrayList<>();
 
-        Sort sort = new Sort(sortAsc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
+        Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 10, sort);
-        Page<Task> tasks=taskDao.findByUserId(userName,pageable);
-        List<Task> ts=tasks.getContent();
+        Page<Task> tasks = taskDao.findByUserId(userName, pageable);
+        List<Task> ts = tasks.getContent();
         try {
             for (int i = 0; i < ts.size(); i++) {
                 Task task = ts.get(i);
@@ -468,28 +550,27 @@ public class TaskService {
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
 
-                    futures.add(asyncTask.getRecordCallback(param,managerServerIpAndPort));
+                    futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
             }
 
             for (Future<?> future : futures) {
                 while (true) {//CPU高速轮询：每个future都并发轮循，判断完成状态然后获取结果，这一行，是本实现方案的精髓所在。即有10个future在高速轮询，完成一个future的获取结果，就关闭一个轮询
                     if (future.isDone() && !future.isCancelled()) {//获取future成功完成状态，如果想要限制每个任务的超时时间，取消本行的状态判断+future.get(1000*1, TimeUnit.MILLISECONDS)+catch超时异常使用即可。
-                        String result=(String)future.get();//获取结果
-                        JSONObject jsonResult= JSON.parseObject(result);
-                        String tid=jsonResult.getString("tid");
-                        int remoteStatus=jsonResult.getInteger("status");
-                        List<TaskData> outputs=jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
-                        Task task=taskDao.findFirstByTaskId(tid);
+                        String result = (String) future.get();//获取结果
+                        JSONObject jsonResult = JSON.parseObject(result);
+                        String tid = jsonResult.getString("tid");
+                        int remoteStatus = jsonResult.getInteger("status");
+                        List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
+                        Task task = taskDao.findFirstByTaskId(tid);
 
-                        if(task.getStatus()!=remoteStatus)
-                        {
+                        if (task.getStatus() != remoteStatus) {
                             task.setStatus(remoteStatus);
                             task.setOutputs(outputs);
                             taskDao.save(task);
-                            for(int i=0;i<ts.size();i++){
-                                Task task1=ts.get(i);
-                                if(task1.getTaskId().equals(tid)){
+                            for (int i = 0; i < ts.size(); i++) {
+                                Task task1 = ts.get(i);
+                                if (task1.getTaskId().equals(tid)) {
                                     task1.setStatus(remoteStatus);
                                     task1.setOutputs(outputs);
                                     break;
@@ -503,25 +584,24 @@ public class TaskService {
                 }
             }
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
 
         JSONObject taskObject = new JSONObject();
-        taskObject.put("count",tasks.getTotalElements());
-        taskObject.put("tasks",tasks.getContent());
+        taskObject.put("count", tasks.getTotalElements());
+        taskObject.put("tasks", tasks.getContent());
 
         return taskObject;
 
     }
 
-    public JSONObject getTasksByUserId(String userName,String sortType,int sortAsc){
-        AsyncTask asyncTask=new AsyncTask();
+    public JSONObject getTasksByUserId(String userName, String sortType, int sortAsc) {
+        AsyncTask asyncTask = new AsyncTask();
         List<Future> futures = new ArrayList<>();
 
-        Sort sort = new Sort(sortAsc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortType);
-        List<Task> ts=taskDao.findByUserId(userName,sort);
+        Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortType);
+        List<Task> ts = taskDao.findByUserId(userName, sort);
         try {
             for (int i = 0; i < ts.size(); i++) {
                 Task task = ts.get(i);
@@ -531,28 +611,27 @@ public class TaskService {
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
 
-                    futures.add(asyncTask.getRecordCallback(param,managerServerIpAndPort));
+                    futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
             }
 
             for (Future<?> future : futures) {
                 while (true) {//CPU高速轮询：每个future都并发轮循，判断完成状态然后获取结果，这一行，是本实现方案的精髓所在。即有10个future在高速轮询，完成一个future的获取结果，就关闭一个轮询
                     if (future.isDone() && !future.isCancelled()) {//获取future成功完成状态，如果想要限制每个任务的超时时间，取消本行的状态判断+future.get(1000*1, TimeUnit.MILLISECONDS)+catch超时异常使用即可。
-                        String result=(String)future.get();//获取结果
-                        JSONObject jsonResult= JSON.parseObject(result);
-                        String tid=jsonResult.getString("tid");
-                        int remoteStatus=jsonResult.getInteger("status");
-                        List<TaskData> outputs=jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
-                        Task task=taskDao.findFirstByTaskId(tid);
+                        String result = (String) future.get();//获取结果
+                        JSONObject jsonResult = JSON.parseObject(result);
+                        String tid = jsonResult.getString("tid");
+                        int remoteStatus = jsonResult.getInteger("status");
+                        List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
+                        Task task = taskDao.findFirstByTaskId(tid);
 
-                        if(task.getStatus()!=remoteStatus)
-                        {
+                        if (task.getStatus() != remoteStatus) {
                             task.setStatus(remoteStatus);
                             task.setOutputs(outputs);
                             taskDao.save(task);
-                            for(int i=0;i<ts.size();i++){
-                                Task task1=ts.get(i);
-                                if(task1.getTaskId().equals(tid)){
+                            for (int i = 0; i < ts.size(); i++) {
+                                Task task1 = ts.get(i);
+                                if (task1.getTaskId().equals(tid)) {
                                     task1.setStatus(remoteStatus);
                                     task1.setOutputs(outputs);
                                     break;
@@ -566,27 +645,54 @@ public class TaskService {
                 }
             }
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
 
         JSONObject taskObject = new JSONObject();
-        taskObject.put("count",ts.size());
-        taskObject.put("tasks",ts);
+        taskObject.put("count", ts.size());
+        taskObject.put("tasks", ts);
 
         return taskObject;
 
     }
 
-    public Task findByTaskId(String taskId){
+    public JSONArray getTasksByModelId(String modelId,int page){
+
+        Sort sort = new Sort(Sort.Direction.DESC, "runTime");
+        Pageable pageable = PageRequest.of(page, 5, sort);
+        Page<Task> tasks = taskDao.findByComputableId(modelId,pageable);
+        List<Task> ts = tasks.getContent();
+        JSONArray taskArray=new JSONArray();
+        for (Task task:ts) {
+            if(task.getIsPublic().get(0).equals("noPublic"))
+                continue;
+            String userName=task.getUserId();
+            String taskId=task.getTaskId();
+            Date runTime=task.getRunTime();
+            String description = task.getDescription();
+            List<String> isPublic = task.getIsPublic();
+
+            JSONObject obj=new JSONObject();
+            obj.put("userName",userName);
+            obj.put("taskId",taskId);
+            obj.put("runTime",runTime);
+            obj.put("description",description);
+            obj.put("isPublic",isPublic);
+            taskArray.add(obj);
+
+        }
+        return taskArray;
+    }
+
+    public Task findByTaskId(String taskId) {
         return taskDao.findFirstByTaskId(taskId);
     }
 
-    public JSONObject getTaskResult(JSONObject data){
+    public JSONObject getTaskResult(JSONObject data) {
         JSONObject out = new JSONObject();
 
-        JSONObject result = Utils.postJSON("http://"+managerServerIpAndPort+"/GeoModeling/computableModel/refreshTaskRecord", data);
+        JSONObject result = Utils.postJSON("http://" + managerServerIpAndPort + "/GeoModeling/computableModel/refreshTaskRecord", data);
 
         ////update model status to Started, Started: 1, Finished: 2, Inited: 0, Error: -1
         Task task = findByTaskId(data.getString("tid"));
@@ -613,5 +719,28 @@ public class TaskService {
         }
 
         return out;
+    }
+
+    public String addDescription(String taskId, String description) {
+        Task task = taskDao.findFirstByTaskId(taskId);
+        if (task == null)
+            return "0";
+        task.setDescription(description);
+        taskDao.save(task);
+        return "1";
+
+    }
+
+    public String setPublic(String taskId) {
+        Task task = taskDao.findFirstByTaskId(taskId);
+        if (task == null)
+            return "0";
+        List<String> isPublic = task.getIsPublic();
+        if (isPublic.get(0).equals("noPublic"))
+            isPublic.set(0, "public");
+        else if(!isPublic.get(0).equals("public"))
+            isPublic.add(0,"public");
+        taskDao.save(task);
+        return "1";
     }
 }

@@ -27,57 +27,75 @@
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" >
     <div th:replace="fragments/navbar :: unlog"></div>
     <div class="taskMain">
         <el-row type="flex" justify="space-around">
-            <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">
-                <div id="introContainer" class="slider scrollbar" :class="isFixed== true?'fixed':''">
-                    <div class="introHeader">
-                        <div class="image">
-                            <i class="fa fa-database"></i>
-                            <!--<img src="/static/haha/img/default.png">-->
-                        </div>
-                        <div>
-                            <h3 class="model_title"> {{info.modelInfo.name}}</h3>
-                            <span  >Contributed by <span  style="cursor: pointer; font-size: 2rem;"
-                                                          @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>
-                            <br>
-                        </div>
-                    </div>
-                    <div class="btn-list">
-<!--                        <el-button plain type="primary" @click="loadTest('1')" :disabled="!info.modelInfo.hasTest"-->
-<!--                                   style="min-width: 120px">-->
-<!--                            Load test data-->
-<!--                        </el-button>-->
 
 
-<!--                        <el-button plain type="primary" @click="invoke()" style="min-width: 121px">-->
-<!--                            <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke-->
-<!--                        </el-button>-->
-
-                    </div>
-                    <div class="introContent">
-                        <h4 class="desc-title">Introduction</h4>
-                        <p class="desc">{{info.modelInfo.des}}</p>
-                        <br>
-                        <span class="model_date">Updated at <span style="font-weight: 600">{{dateFormat(info.modelInfo.date)}}</span></span>
-                    </div>
-                </div>
-            </el-col>
-            <div class="colBorder"></div>
-            <el-col :span="18" style="margin-left: 8px">
+            <el-col :span="22" style="margin-left: 8px">
                 <div class="content">
-                    <div class="_main">
-                        <el-row class="_title" >
-                            <el-row type="flex" align="middle">
-                                <i class="fa fa-cogs"></i>
-                                <p style="font-size: 18px;margin-bottom: 0">&nbsp&nbspOut put Data</p>
-                            </el-row>
+                    <div>
+                        <div class="introHeader" style="width: 450px;border-bottom:1px dashed #777777 ;padding-right: 125px">
+                            <div class="image">
+                                <i class="fa fa-database"></i>
+                                <!--<img src="/static/haha/img/default.png">-->
+                            </div>
+                            <div>
+                                <h3 class="model_title"> {{info.modelInfo.name}}</h3>
+                                <span  >Contributed by <span  style="cursor: pointer; font-size: 2rem;"
+                                                              @click="goPersonCenter(info.userInfo.compute_model_user_oid)">{{info.userInfo.compute_model_user_name}}</span></span>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
 
+                    <el-row class="_main">
+                        <el-row class="_title" >
+                            <el-row type="flex" justify="space-between" align="middle">
+                                <el-row type="flex" align="middle">
+                                    <i class="fa fa-cogs"></i>
+                                    <p style="font-size: 18px;margin-bottom: 0">&nbsp&nbsp<span style="font-style: italic;">Data</span> of this caculation</p>
+                                </el-row>
+                                <div v-cloak style="margin-right: 5px;font-style: italic">
+                                    <span style="font-size: 15px">Runned by </span><span @click="openCreateUserPage(info.taskInfo.creater)" style="color: #389bdb;font-size: 22px;cursor: pointer">{{info.taskInfo.creater}}</span>
+                                    <span style="font-size: 15px">at</span> <span style="margin-right: 15px">{{dateFormat(info.taskInfo.createTime)}}</span>
+                                    <span style="font-style: normal">
+                                        <i style="font-size: 18px!important;" class="fa fa-bar-chart"></i> 0 &nbsp
+                                    </span>
+                                </div>
+
+                            </el-row>
+                            <el-row type="flex" justify="space-between" align="middle" >
+                                <el-row typy="flex" justify="space-between" align="top" class="containerShallowBlue"
+                                        style="font-size: 16px;min-width: 60%;flex: 1;margin-right: 15px">
+                                    <p>Description:<br></p>
+                                    <p v-if="info.taskInfo.description!=''">{{this.info.taskInfo.description}}</p>
+                                </el-row>
+                                <div v-cloak class="btn-list">
+                                    <el-button v-if="info.userInfo.userName==info.taskInfo.creater" plain type="primary" @click="addTaskDescription()" :disabled="!info.modelInfo.hasTest"
+                                               style="min-width: 120px" >
+                                        <span v-if="info.taskInfo.description==''">Add</span><span v-else>Edit</span> Description
+                                    </el-button>
+                                    <el-button v-if="info.userInfo.userName==info.taskInfo.creater" type="primary" @click="publishTask()" :disabled="!info.modelInfo.hasTest"
+                                               style="min-width: 120px;margin-left: 5px;">
+                                        Publish
+                                    </el-button>
+                                </div>
+                            </el-row>
+                            <el-dialog :visible.sync="addDescriptionVisible" title="Data Description" width="40%" style="margin-top: 120px">
+                                <el-input type="textarea" v-model="taskDescription" placeholder="you can input the description of data in this page" :rows="5"  >
+
+                                </el-input>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button type="primary"  @click="addTaskDescriptionConfirm">confirm</el-button>
+                                    <el-button @click="addDescriptionVisible = false">cancel</el-button>
+                                </div>
+                            </el-dialog>
                         </el-row>
 
                         <el-row >
+
                             <el-row type="flex" class="state-container" v-for="(state,index) in info.modelInfo.states" :key="index"
                                     justify="start" style="flex-wrap:wrap">
                                 <div class="leftContainer">
@@ -88,6 +106,44 @@
                                     </div>
                                 </div>
                                 <div class="dataContainer">
+                                    <div class="_params-group">
+                                        <el-row v-if="inEventList(state).length!==0" class="_title">Input</el-row>
+                                        <div class="_items">
+                                            <el-row v-for="(modelInEvent,inEventIndex) in inEventList(state)"
+                                                    :key="inEventIndex" class="_item">
+                                                <el-row>
+                                                    <el-col :span="9" class="_event-desc">
+                                                      <span class="event-name" title="modelInEvent.eventName">
+                                                        {{modelInEvent.eventName}}
+                                                    </span>
+                                                    </el-col>
+                                                    <el-col :span="6" :offset="1" v-for="input in info.taskInfo.inputs">
+                                                        <el-input id="dataNameInput" type="textarea" v-if="input.event==modelInEvent.eventName" class="model-input"
+                                                                  :value="input.tag==undefined?'':(input.tag)" readonly>
+                                                        </el-input>
+                                                    </el-col>
+                                                    <el-col :span="5">
+                                                        <div class="_btn-group" v-for="input in info.taskInfo.inputs">
+                                                            <el-button v-if="input.event==modelInEvent.eventName" plain round type="success"
+                                                                       @click="share(input.url)" >
+                                                                <i class="fa fa-share-square-o"></i>
+                                                            </el-button>
+                                                            <el-button v-if="input.event==modelInEvent.eventName" plain round type="warning"
+                                                                       @click="download(input)" >
+                                                                <i class="fa fa-download"></i>
+                                                            </el-button>
+
+                                                        </div>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-row>
+                                                    <p class="event-desc" :title="modelInEvent.eventDesc">
+                                                        {{modelInEvent.eventDesc}}</p>
+                                                </el-row>
+                                            </el-row>
+                                        </div>
+                                    </div>
+
                                     <div class="_params-group">
                                         <el-row v-if="outEventList(state).length!==0" class="_title">Output</el-row>
                                         <div class="_items">
@@ -100,8 +156,8 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
-                                                        <el-input id="dataNameInput" v-if="output.event==modelOutEvent.eventName" class="model-input" :value="output.tag"
-                                                                  readonly>
+                                                        <el-input id="dataNameInput" type="textarea" v-if="output.event==modelOutEvent.eventName" class="model-input"
+                                                                  :value="output.tag==undefined?'':(output.tag)" readonly>
                                                         </el-input>
                                                     </el-col>
                                                     <el-col :span="5">
@@ -132,6 +188,7 @@
 
                         </el-row>
 
+
 <!--                        <el-dialog title="Rename Output Data Tag" :visible.sync="renameIndex" width="40%">-->
 <!--                            <h4>Data Tag: </h4>-->
 <!--                            <el-input id="outputRenameInput" v-model="outputTag"></el-input>-->
@@ -151,12 +208,41 @@
                                 <el-button slot="trigger" type="warning" @click="shareIndex=false">Cancel</el-button>
                             </span>
                         </el-dialog>
-
-                    </div>
+                    </el-row>
                 </div>
-            </el-col>
-        </el-row>
 
+            </el-col>
+<!--            <div class="colBorder"></div>-->
+<!--            <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">-->
+<!--                <div id="introContainer" class="slider scrollbar">-->
+<!--                    <div class="introHeader">-->
+<!--                        <div>-->
+<!--                            <h3>Publish This Page</h3>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="introContent">-->
+<!--                        <p style="margin-top: 15px;margin-left: 5px">Who can see this page?</p>-->
+<!--                    </div>-->
+<!--                    <div class="btn-list">-->
+<!--                        <el-button plain type="primary" @click="resetPermission" :disabled="!info.modelInfo.hasTest"&ndash;&gt;-->
+<!--                            style="min-width: 120px">-->
+<!--                            Reset <br> Permission-->
+<!--                        </el-button>-->
+<!--                        <el-button plain type="primary" @click="resetPermission" :disabled="!info.modelInfo.hasTest"-->
+<!--                                   style="min-width: 120px">-->
+<!--                            Reset <br> Permission-->
+<!--                        </el-button>-->
+
+
+<!--                        <el-button plain type="primary" @click="sharePermissionKey" style="min-width: 121px">-->
+<!--                            Share <br>Permission Key-->
+<!--                        </el-button>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </el-col>-->
+        </el-row>
+    </div>
     </div>
     <div th:replace="fragments/footer :: footer"></div>
 </div>

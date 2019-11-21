@@ -56,6 +56,7 @@ var app = new Vue({
             let dragBox = function (drag, wrap) {
             let dragBox = function (drag, wrap) {
 
+                console.log(drag,wrap)
                 function getCss(ele, prop) {
                     return parseInt(window.getComputedStyle(ele)[prop]);
                 }

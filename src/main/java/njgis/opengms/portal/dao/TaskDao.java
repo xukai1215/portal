@@ -23,5 +23,7 @@ public interface TaskDao extends MongoRepository<Task,String> {
 
     Page<Task> findByComputableNameContainsIgnoreCaseAndUserId(String name,String author,Pageable pageable);
 
+    Page<Task> findByComputableId(String modelId,Pageable pageable);
+
     Task findFirstByOid(String oid);
 }

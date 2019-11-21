@@ -14,6 +14,7 @@ var vue = new Vue({
                 pid:'',
                 pott:'',
                 outputs:[],
+                description:'',
             },
             userInfo: {}
         },
@@ -69,6 +70,10 @@ var vue = new Vue({
         outputTag:'',
 
         clipBoard:'',
+
+        addDescriptionVisible:false,
+
+        taskDescription:'',
     },
     computed: {},
     methods: {
@@ -177,6 +182,16 @@ var vue = new Vue({
         filterTag(value, row) {
             return row.fromWhere === value;
         },
+
+        resetPermission(){
+
+        },
+
+        sharePermissionKey(){
+
+        },
+
+
         async loadTest(type) {
             const loading = this.$loading({
                 lock: true,
@@ -220,6 +235,15 @@ var vue = new Vue({
                 this.$set(event, "url", el.url);
             });
             loading.close();
+        },
+
+        openCreateUserPage(userName){
+            axios.get('/user/getUserByName',{
+                params: {userId:userName}
+            }).then((res)=>{
+                let oid=res.data.data.oid
+                window.open("/user/"+oid);
+            })
         },
 
         goPersonCenter(oid){
@@ -270,6 +294,88 @@ var vue = new Vue({
             )
         },
 
+        addTaskDescription(){
+            this.addDescriptionVisible=true;
+            this.taskDescription=this.info.taskInfo.description
+        },
+
+        addTaskDescriptionConfirm(){
+            let href=window.location.href.split('/')
+            let ids=href[href.length-1]
+            let taskId=ids.split('&')[1]
+            let data={
+                taskId: taskId,
+                description: this.taskDescription
+            }
+            axios.post('/task/addDescription',data,
+
+                ).then((res) => {
+                if (res.data.data == 1) {
+                    this.info.taskInfo.description = this.taskDescription
+                    // this.addDescriptionVisible=false
+                }
+            })
+            this.addDescriptionVisible=false
+        },
+
+        publishTask(){
+            const h = this.$createElement;
+            this.$msgbox({
+                title: ' ',
+                message: h('p', null, [
+                    h('span', { style: 'font-size:15px' }, 'All of the users will have'),h('span',{style:'font-weight:600'},' permission '),h('span','to this page and data.'),
+                    h('br'),
+                    h('span', null, 'Are you sure to '),
+                    h('span', { style: 'color: #e6a23c;font-weight:600' }, 'continue'),
+                    h('span', null, '?'),
+                ]),
+                type:'warning',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                beforeClose: (action, instance, done) => {
+                    let href=window.location.href.split('/')
+                    let ids=href[href.length-1]
+                    let taskId=ids.split('&')[1]
+                    if (action === 'confirm') {
+                        instance.confirmButtonLoading = true;
+                        // instance.confirmButtonText = '...';
+                        setTimeout(() => {
+                            $.ajax({
+                                type: "POST",
+                                url: "/task/setPublic",
+                                data: {taskId: taskId},
+                                async: true,
+                                contentType: "application/x-www-form-urlencoded",
+                                success: (json) => {
+                                    if (json.code == -1) {
+                                        alert("Please login first!")
+                                        window.sessionStorage.setItem("history", window.location.href);
+                                        window.location.href = "/user/login"
+                                    } else {
+                                        // this.rightTargetItem=null;
+                                    }
+
+                                }
+                            });
+                            done();
+                            setTimeout(() => {
+                                instance.confirmButtonLoading = false;
+                            }, 100);
+                        }, 100);
+                    } else {
+                        done();
+                    }
+                }
+            }).then(action => {
+                this.rightMenuShow=false
+                this.$message({
+                    type: 'success',
+                    message: 'This page can be visited by public'
+                });
+            });
+
+        },
 
         copyLink(){
             console.log(this.clipBoard);
@@ -448,7 +554,11 @@ var vue = new Vue({
         let { data } = await (await fetch("/task/TaskOutputInit/" + ids)).json();
         if(data==null||data==undefined){
             alert("Initialization error!")
+        }else if(data.permission=='no'){
+            alert("You do not have a permission to this personal page")
+
         }
+
         this.info = data;
         console.log(this.info);
 

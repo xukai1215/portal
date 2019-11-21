@@ -11,10 +11,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,12 +62,51 @@ public class DispatchingRequestController {
         return ResultUtils.success(j.getJSONObject("data"));
     }
 
+    @RequestMapping (value="/uploadFiles",method = RequestMethod.POST)
+    ResponseEntity<JSONObject> uploadFile(@RequestParam("file") MultipartFile file) throws  IOException {
+        RestTemplate restTemplate=new RestTemplate();
+        String url="http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files";
+        String fileName=file.getOriginalFilename();
+
+        File temp=File.createTempFile("temp","&"+fileName);
+
+        file.transferTo(temp);
+        FileSystemResource resource = new FileSystemResource(temp);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("file", resource);
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
+        ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, JSONObject.class);
+//        File tempFile=file.getResource().getFile();
+//        FileSystemResource fileSystemResource=new FileSystemResource(tempFile);
+        if (responseEntity.getStatusCode()!=HttpStatus.OK){
+            throw new MyException("远程服务出错");
+        }
+
+        temp.delete();
+
+        return responseEntity;//远程接口已经success格式封装
+    }
+
+    @RequestMapping (value="/addRecordToDataContainer",method = RequestMethod.POST)
+    JsonResult addRecordtoDataContainer (@RequestBody Map<String,Object> fileInfo){
+        RestTemplate restTemplate=new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity entity = new HttpEntity<>(fileInfo,headers);
+        String url="http://" + dataContainerIpAndPort + "/dataResource";
+        ResponseEntity<JSONObject> responseEntity1=restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
+        if (responseEntity1.getStatusCode()!=HttpStatus.OK){
+            throw new MyException("远程服务出错");
+        }
+        return ResultUtils.success("上传数据成功");
+    }
 
     @RequestMapping (value="/uploadToDataContainer",method = RequestMethod.POST)
     JsonResult uploadToDataContainer(@RequestParam("file")MultipartFile file,
                                      @RequestParam("author")String author) throws IOException {
         RestTemplate restTemplate=new RestTemplate();
-        String url="http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files";
+        String url="http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files";//远程接口
         File temp=File.createTempFile("temp",FilenameUtils.getExtension(file.getOriginalFilename()));
         file.transferTo(temp);
         FileSystemResource resource = new FileSystemResource(temp);
