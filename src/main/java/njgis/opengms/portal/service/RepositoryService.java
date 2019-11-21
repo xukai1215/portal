@@ -347,6 +347,7 @@ public class RepositoryService {
             Application application = applications.get(i);
             app.put("name",application.getApplicationname());
             app.put("link",application.getApplicationlink());
+            app.put("image",application.getApplication_image());
             applications_result.add(app);
         }
 
@@ -1527,6 +1528,24 @@ public class RepositoryService {
             theme.setImage(path);
         } else {
             theme.setImage("");
+        }
+
+        //从application数组中依次拿出uploadimage，转换为地址后放到image中
+        List<Application> applications = themeAddDTO.getApplication();
+
+        for(int i = 0;i<applications.size();i++){
+            String path1 = "/repository/theme/" + UUID.randomUUID().toString() + ".jpg";
+            Application application = applications.get(i);
+            String[] strs1 = application.getUpload_application_image().split(",");
+            if(strs1.length>1){
+                String imgStr = application.getUpload_application_image().split(",")[1];
+                Utils.base64StrToImage(imgStr, resourcePath+path1);
+                application.setApplication_image(path1);
+                //因为upload_application_image为base64，存入数据库非常占内存，故在此处将此属性转为空存入
+                application.setUpload_application_image("");
+            } else {
+                application.setApplication_image("");
+            }
         }
 
         return themeDao.insert(theme);

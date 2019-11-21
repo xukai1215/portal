@@ -20,8 +20,6 @@ public class ThemeAddDTO {
     String themename;
     String detail;
     String uploadImage;
-    String applicationname;
-    String applicationlink;
     String creator_name;
     String creator_oid;
 
