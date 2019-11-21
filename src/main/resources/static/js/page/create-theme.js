@@ -1003,9 +1003,6 @@ var vue = new Vue({
             // themeObj.upload_application_image = $('#imgShow1').get(0).currentSrc;
             let formData=new FormData();
 
-            themeObj.creator_name = $("#creator_name").val();
-            themeObj.creator_oid = $("#creator_oid").val();
-
             //第二份追加，因为输入最后一次后，不需要再点击add，只需要点击finish
             var app = {};
             app.applicationname = $("#applicationname").val();

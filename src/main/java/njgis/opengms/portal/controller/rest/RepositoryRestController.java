@@ -827,17 +827,18 @@ public class RepositoryRestController {
 
     @RequestMapping(value = "/addTheme", method = RequestMethod.POST)
     public JsonResult addTheme(HttpServletRequest request) throws IOException {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file = multipartRequest.getFile("info");
-        String model = IOUtils.toString(file.getInputStream(), "utf-8");
-        JSONObject jsonObject = JSONObject.parseObject(model);
-        ThemeAddDTO themeAddDTO = JSONObject.toJavaObject(jsonObject, ThemeAddDTO.class);
-
         HttpSession session = request.getSession();
 
         if(session.getAttribute("uid") == null){
             return ResultUtils.error(-1, "no login");
         }
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file = multipartRequest.getFile("info");
+        String model = IOUtils.toString(file.getInputStream(), "utf-8");
+        JSONObject jsonObject = JSONObject.parseObject(model);
+        ThemeAddDTO themeAddDTO = JSONObject.toJavaObject(jsonObject, ThemeAddDTO.class);
+        themeAddDTO.setCreator_name(session.getAttribute("name").toString());
+        themeAddDTO.setCreator_oid(session.getAttribute("oid").toString());
 
         String uid = session.getAttribute("uid").toString();
 
