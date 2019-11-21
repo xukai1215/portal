@@ -387,9 +387,9 @@ new Vue({
                 width: 300,         //! Width of data reference information window
                 height: 400         //! Height of data reference information window
             },
-            '/static/MxGraph/images/modelState.png',    //! state IMG
-            '/static/MxGraph/images/grid.gif',          //! Grid IMG
-            '/static/MxGraph/images/connector.gif',     //! Connection center IMG
+            '/static/js/mxGraph/images/modelState.png',    //! state IMG
+            '/static/js/mxGraph/images/grid.gif',          //! Grid IMG
+            '/static/js/mxGraph/images/connector.gif',     //! Connection center IMG
             false                       //! Debug button
         );
 

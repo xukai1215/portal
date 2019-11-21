@@ -60,4 +60,28 @@ public class GeoIconService {
         geoIconsObject.put("geoIcons",geoIcons);
         return geoIconsObject;
     }
+
+    public JSONObject getGeoIconList(String parentId) {
+        MongoCollection<Document> geoIconCol=modelDao.GetCollection("ModelRepository", "geoicons");
+        Bson MIFilter= Filters.eq("Icon_ParentId", parentId);
+        long count = geoIconCol.count(MIFilter);
+        MongoCursor<Document> geoIconDocs = null;
+        geoIconDocs= geoIconCol.find(MIFilter).sort(new BasicDBObject("Icon_Name",1)).iterator();
+
+        JSONObject geoIconsObject = new JSONObject();
+        geoIconsObject.put("count",count);
+        JSONArray geoIcons = new JSONArray();
+
+        while(geoIconDocs.hasNext()){
+            Document doc=geoIconDocs.next();
+            String icon_id=doc.getString("Icon_Id");
+            String icon_name=doc.getString("Icon_Name");
+            JSONObject iconModel = new JSONObject();
+            iconModel.put("icon_id",icon_id);
+            iconModel.put("icon_name",icon_name);
+            geoIcons.add(iconModel);
+        }
+        geoIconsObject.put("geoIcons",geoIcons);
+        return geoIconsObject;
+    }
 }

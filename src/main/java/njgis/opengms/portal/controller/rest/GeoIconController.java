@@ -26,6 +26,9 @@ public class GeoIconController {
         return ResultUtils.success(geoIconService.getGeoIconList(parentId,page,sortType));
     }
 
-//    @RequestMapping(value="/showIcon",method = RequestMethod.GET)
+    @RequestMapping(value="/list2",method = RequestMethod.GET)
+    JsonResult getList(@RequestParam(value="uid") String parentId){
+        return ResultUtils.success(geoIconService.getGeoIconList(parentId));
+    }
 
 }

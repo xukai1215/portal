@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" th:href="@{/static/css/base/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/static/css/font-awesome/css/font-awesome.min.css}">
-    <link rel="stylesheet" type="text/css" href="/static/MxGraph/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/mxGraph/css/common.css">
 
     <style>
         .mxWindowPane{
@@ -28,11 +28,11 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 
 <script>
-    mxBasePath = "/static/MxGraph";
+    mxBasePath = "/static/js/mxGraph";
 </script>
 
-<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>
-<script type="text/javascript" src="/static/MxGraph/js/ogmsDiagram.js"></script>
+<script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="/static/js/mxGraph/js/ogmsDiagram.js"></script>
 
 
 <script>
@@ -64,13 +64,14 @@
                     width: 300,         //! Width of data reference information window
                     height: 400         //! Height of data reference information window
                 },
-                '/static/MxGraph/images/modelState.png',    //! state IMG
-                '/static/MxGraph/images/grid.png',          //! Grid IMG
-                '/static/MxGraph/images/connector.gif',     //! Connection center IMG
+                '/static/js/mxGraph/images/modelState.png',    //! state IMG
+                '/static/js/mxGraph/images/grid.png',          //! Grid IMG
+                '/static/js/mxGraph/images/connector.gif',     //! Connection center IMG
                 false                       //! Debug button
             );
 
             mDiagram.loadJSON(this.loadJson);
+
             mDiagram.onStatedbClick(function(state){
                 mDiagram.showStateWin({
                     x : 900,

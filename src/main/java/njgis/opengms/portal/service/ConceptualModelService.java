@@ -14,7 +14,7 @@ import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.SvgUtils;
+import njgis.opengms.portal.utils.MxGraphUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.bson.Document;
 import org.springframework.beans.BeanUtils;
@@ -179,13 +179,11 @@ public class ConceptualModelService {
         } else {
             try {
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
-
-                    String name =new Date().getTime() + "_MxGraph.png";
-                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+ "/" + uid + "/" ,name);
-                    //TODO update时删除所有图片，version时不删除，accept之后再删除
+                    String name = new Date().getTime() + "_MxGraph.png";
+                    MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + "/" + uid + "/", name);
                     images=new ArrayList<>();
-                    images.add("/conceptualModel"+ "/" + uid + "/" + name);
-
+                    images.add("/conceptualModel" + "/" + uid + "/"+ name);
                 }
                 conceptualModel.setImage(images);
                 conceptualModel.setOid(UUID.randomUUID().toString());
@@ -276,13 +274,11 @@ public class ConceptualModelService {
                 }
 
                 if(jsonObject.getString("contentType").equals("MxGraph")) {
-
-                    String name =new Date().getTime() + "_MxGraph.png";
-                    SvgUtils.convertSvg2Png(jsonObject.getString("svg"),path+ "/" + uid + "/" ,name);
-                    //TODO update时删除所有图片，version时不删除，accept之后再删除
+                    String name = new Date().getTime() + "_MxGraph.png";
+                    MxGraphUtils mxGraphUtils = new MxGraphUtils();
+                    mxGraphUtils.exportImage(jsonObject.getInteger("w"), jsonObject.getInteger("h"), jsonObject.getString("xml"), path + "/" + uid + "/", name);
                     images=new ArrayList<>();
                     images.add("/conceptualModel" + "/" + uid + "/"+ name);
-
                 }
 
                 conceptualModel.setImage(images);
