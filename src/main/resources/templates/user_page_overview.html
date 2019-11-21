@@ -43,7 +43,14 @@
                     <!--/*@thymesVar id="areas" type=""*/-->
                     <div class="wzhFilter_userInfo">
                         <div class="userInfoContainer " >
-                            <img class="round_icon user_img" th:src="${userInfo.image}==''?'../static/img/icon/default.png':${loadPath+userInfo.image}">
+                            <div class="user_img" style="position: relative;margin-left: 22px;">
+
+                                <img class="round_icon user_img" :src="userPersonalInfo.image==''?'/static/img/icon/default.png':userPersonalInfo.image">
+                                <div class="shade flexCenter"  style="position: absolute;top:0;" @click="selectUserImg">
+                                    <i class="fa fa-camera hoverIcon"></i>
+                                </div>
+                            </div>
+
                             <div class="user_info" >
                                 <h3 style="font-weight: bold" th:text="${userInfo.name}">Tom Marvolo Riddle</h3>
                                 <h4 th:text="${userInfo.organizations[0]}">Nanjing Normal University</h4>
@@ -58,6 +65,7 @@
 <!--                                </button>-->
 <!--                            </div>-->
                         </div>
+
                         <div id="menuBack" class="menuContainer" >
                             <div class="menuItem" :class="{menuClicked:bodyIndex==1}">
                                 <button class="noneBorderButton"  @click="menu_Click(1)" style="" >Overview</button>
@@ -209,6 +217,47 @@
             </div>
 <!--            <div id="middleContainer" class="fullContainer ">-->
 <!--            </div>-->
+            <div class="modal fade" id="editUserImg" aria-hidden="true" aria-labelledby="myModalLabel" style="margin-top: 45px">
+                <div class="modal-dialog">
+                    <div class="modal-content" id="modalContent">
+                        <div class="modal-header" style="background: deepskyblue;border-bottom: 0">
+                            <h3 class="modal-title" style="color:aliceblue;text-align: center">
+                                Select a picture
+                            </h3>
+                        </div>
+                        <div class="flexAround" style="height: 280px;border: 1px solid #cccccc;padding: 0 5%">
+                            <div class="containerWithDashed">
+                                <div id="imgChange" @click="imgChange()">
+                                    <i class="fa fa-plus fa-5x"></i>
+                                </div>
+                            </div>
+                            <input id="imgFile" type="file"
+                                   style="display: none"
+                                   accept="image/*"/>
+                            <div class="innerBorderCol"></div>
+                            <div class="overviewContainer" style="width: 40%">
+                                <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
+                                <div class="flexAround" style="background-color: inherit;margin-top: 20px">
+                                    <div class="circlePhotoFrame flexCenter">
+                                        <canvas></canvas>
+                                    </div>
+<!--                                    <div class="circlePhotoFrameShade">-->
+<!--                                    </div>-->
+<!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
+<!--                                         src="../static/img/icon/default.png">-->
+                                    <div class="dragBar" style="margin-top:15px ">
+                                        <div class="dragBlock" ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">
+                            <el-button id="saveUserImgButton" type="success">Save</el-button>
+                            <el-button id="closeSaveUserImg">Cancel</el-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!--        <div th:replace="fragments/user_page_head :: userPageComm"></div>-->

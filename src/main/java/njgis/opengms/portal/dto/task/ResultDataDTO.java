@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResultDataDTO {
     String stateId;
+    String state;
     String event;
     String url;
     String tag;

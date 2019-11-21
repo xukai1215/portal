@@ -90,6 +90,16 @@ public class UserRestController {
         return "0";
     }
 
+    @RequestMapping(value="/saveUserIcon",method = RequestMethod.POST)
+    public JsonResult saveUserIcon(@RequestParam(value="img") String img, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName=session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            return ResultUtils.success(userService.saveUserIcon(img,userName)) ;
+        }
+    }
 
     @RequestMapping(value="/addTaskInfo", method = RequestMethod.POST)
     public JsonResult addTaskInfo(@RequestBody UserTaskInfo userTaskInfo, HttpServletRequest request){
@@ -275,6 +285,11 @@ public class UserRestController {
             String userId = session.getAttribute("uid").toString();
             return ResultUtils.success(userService.getUser(userId));
         }
+    }
+
+    @RequestMapping(value="/getUserByName",method = RequestMethod.GET)
+    public JsonResult getUserByName(@RequestParam String userId) {
+        return ResultUtils.success(userService.getUser(userId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -559,6 +574,7 @@ public class UserRestController {
                          @RequestParam("name") String name,
                          HttpServletRequest httpServletRequest){
 
+        System.out.println(paths);
         HttpSession httpSession=httpServletRequest.getSession();
         String userName= Utils.checkLoginStatus(httpSession);
         if(userName==null){
@@ -589,9 +605,10 @@ public class UserRestController {
 //        String[] a=files.split("\\.");
 //        String name=a[0];
 //        String suffix=a[1];
-        String result=userService.addFiles(paths,fileArray,userName);
 
-        return ResultUtils.success(uploadUserFileDTO);
+        JSONArray result=userService.addFiles(paths,fileArray,userName);
+//        System.out.println(result);
+        return ResultUtils.success(result);
     }
 
     @RequestMapping(value="/updateFile",method = RequestMethod.POST)
@@ -622,6 +639,16 @@ public class UserRestController {
         String result=userService.deleteFile(dataId,userName);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/keywordsSearch",method = RequestMethod.GET)
+    JsonResult searchFile(@RequestParam(value = "keyword") String keyword,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String userName = session.getAttribute("uid").toString();
+        if(userName == null)
+            return ResultUtils.error(-1,"no login");
+        else
+            return ResultUtils.success(userService.searchFile(keyword,userName));
     }
 
     @RequestMapping(value="/forkData",method = RequestMethod.POST)

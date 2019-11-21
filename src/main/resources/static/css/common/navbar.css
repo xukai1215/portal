@@ -13,7 +13,6 @@
     padding: 0;
     overflow: hidden;
     background-color: #080a0e;
-
 }
 
 /*.logo li{*/
@@ -64,6 +63,7 @@
     text-decoration: none;
     overflow: hidden;
     transition: .4s;
+    font-size: 15px;
 
     /*background-color: #080a0e;*/
 }
@@ -340,6 +340,7 @@
     width: 95.5%;
     border-bottom: 1px solid #e1e1e1;
 }
+
 
 
 /*设置悬停样式，除了命名为.login组件*/

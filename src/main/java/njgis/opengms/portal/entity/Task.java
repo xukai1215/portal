@@ -19,12 +19,15 @@ public class Task {
     String computableName;
     String userId;
     String ip;
+    String description;
     int port;
+    int loadTime;
 
     Date runTime;
 
     int status;//Started: 1, Finished: 2, Inited: 0, Error: -1
 
+    List<String> isPublic;//public ;noPublic ;userNames; all和noPublic都放数组头
     List<TaskData> inputs;
     List<TaskData> outputs;
 

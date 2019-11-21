@@ -298,6 +298,13 @@ model_date{
 
 }
 
+.flexCenter{
+  display: flex;
+  justify-content:center;
+  align-items:center;
+}
+
+
 .subTitle{
   width: 100%;
   display: flex;
@@ -418,3 +425,113 @@ model_date{
   }
 
 }
+
+.containerWithBorder{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 24px;
+  border-radius: 10px;
+  margin: 3px ;
+  padding: 0 8px;
+  border:3px solid #85d9ff;
+}
+
+.containerShallowBlue{
+
+  font-family:sans-serif;
+  border-radius: 8px;
+  /*border:4px dotted ;*/
+  padding: 5px 10px 15px;
+  margin: 10px 0;
+  padding-right: 15px;
+
+  overflow-y: scroll;
+  overflow-y: overlay;
+  background-color: rgba(227, 252, 255, 0.42);
+  border-color: rgb(40, 158, 194);
+}
+
+
+.containerShallowBlue::-webkit-scrollbar{
+  width: 6px;
+}
+
+.containerShallowBlue::-webkit-scrollbar-thumb{
+  width: 6px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 3.5px;
+  background-color: #cccccc;
+}
+
+.containerShallowBlue::-webkit-scrollbar-thumb:focus{
+  background-color: #a8a8a8;
+}
+
+.containerShallowBlue::-webkit-scrollbar-track{
+  width: 6px;
+
+  /*background-color: #a8a8a8;*/
+}
+
+.containerShallowBlue::-webkit-scrollbar-track:hover{
+  width: 6px;
+  background-color: #ededed;
+  transition: .4s;
+}
+
+.squareButtonMini{
+  width: 18px;
+  height: 18px;
+  border: 1px solid #c0c5cc;
+  border-radius: 2px;
+  background-color: #fafafa;
+}
+
+.dataitemisol{
+  width: 15.6%;
+  height: 120px ;
+  margin-right:9px;
+  margin-top:5px;
+  float:left;
+  /*border: none;*/
+
+}
+.dataitemisol:hover{
+  /*cursor: pointer;*/
+  border: 2px solid rgba(49, 143, 194, 0.92);
+}
+.dataitemhover{
+  /*border: 2px solid #72d600eb;*/
+  /*background-color: #acff9c3d;*/
+
+  border: 2px solid rgba(49, 143, 194, 0.92);
+  background-color: #ecf5ff;
+
+}
+.clickdataitem{
+  border: 2px solid #72d600eb;
+  background-color: #acff9c3d;
+}
+
+.el-card__body {
+  padding: 10px;
+}
+
+.showPathContainer{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+}
+
+.fa-refresh{
+  transition: transform 0.38s
+}
+
+.fileName:hover p{
+  color: #3c91ff;
+}
+

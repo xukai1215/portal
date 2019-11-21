@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DebugData tag="defaultTestData" detail="star model test data" Title="Default">
+<Item State="7b1611c4-0539-42a8-afa9-78d96a32a1e3" Event="stars_dbf" Type="FILE" File="JS.dbf"/>
+<Item State="7b1611c4-0539-42a8-afa9-78d96a32a1e3" Event="stars_csv" Type="FILE" File="gdp.csv"/>
+<Item State="7b1611c4-0539-42a8-afa9-78d96a32a1e3" Event="stars_shx" Type="FILE" File="JS.shx"/>
+<Item State="7b1611c4-0539-42a8-afa9-78d96a32a1e3" Event="stars_shp" Type="FILE" File="JS.shp"/>
+<Item State="7b1611c4-0539-42a8-afa9-78d96a32a1e3" Event="stars_xml" Type="XML" File="JS.xml"/>
+</DebugData>

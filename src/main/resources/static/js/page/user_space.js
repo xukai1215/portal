@@ -22,7 +22,7 @@ var vue = new Vue({
         registerModelContainerVisible:false,
         registerModelContainerActive:0,
         modelContainerInfo:{
-          ip:'',
+            ip:'',
 
         },
 
@@ -298,11 +298,15 @@ var vue = new Vue({
 
         rightTargetItem:{},
 
+        pasteTargetItem:{},
+
         renameIndex:'',
 
         uploadDialog:false,
 
         uploadInPath:0,
+
+        fileSearchResult:[]
 
     },
 
@@ -352,6 +356,20 @@ var vue = new Vue({
                             : ("00" + o[k]).substr(("" + o[k]).length)
                     );
             return fmt;
+        },
+
+        splitFirst(str,ele){
+            let result=[]
+            result[0]=''
+            result[1]=''
+            let j=0
+            for(let i=0;i<str.length;i++){
+                result[j]+=str[i]
+                if(str[i]===ele){
+                    j=1
+                }
+            }
+            return result
         },
 
         // arrayCompare(arry1,arry2){//取出在1中而不在2中的
@@ -511,6 +529,7 @@ var vue = new Vue({
 
 
         allFileShareAsDataItem() {
+            this.initTaskDataForm()
             this.allFileTaskSharingVisible = true;
             this.multipleSelection=[];
             this.multipleSelectionMyData=[];
@@ -538,7 +557,7 @@ var vue = new Vue({
 
             this.taskSharingActive = 4;
             var selectResult=[]
-            if(this.curIndex==6)
+            if(this.curIndex==='6')
                 selectResult=this.multipleSelection ;
             else selectResult=this.multipleSelectionMyData.concat(this.multipleSelection);
 
@@ -582,6 +601,7 @@ var vue = new Vue({
 
                         this.openConfirmBox("Create successfully! Do you want to view this Data Item?", "Message", res.data.data.id);
                         this.taskSharingVisible = false;
+                        this.allFileTaskSharingVisible = false;
                     }
                 })
         },
@@ -611,7 +631,7 @@ var vue = new Vue({
                         this.showWaring('Please enter name');
                         return;
                     }
-                    if(this.curIndex==='6') //复用判断在那个页面防止冲突
+                    if(this.curIndex==='6') //复用判断在哪个页面防止冲突
                         if ($("#taskDataKeywords").val().split(",")[0] == '') {
                             this.showWaring('Please enter keywords');
                             return;
@@ -973,7 +993,8 @@ var vue = new Vue({
                         window.location.href="/user/login"
                     }
                     else {
-                        this.myFile=res.data.data;
+                        this.myFile=res.data.data[0].children;
+                        console.log(this.myFile)
                         this.myFileShown=this.myFile;
                     }
 
@@ -981,6 +1002,7 @@ var vue = new Vue({
                 });
         },
 
+        //回到上一层目录
         backToFather(){
             // if(this.myFileShown.length==0||this.fatherIndex!=0) {
             //     this.findFather(this.myFile)
@@ -1011,36 +1033,56 @@ var vue = new Vue({
             }
         },
 
-        refreshPackage(){
-            if(this.myFileShown[0].label!='All Folder'&&this.myFileShown[0].label!='My Data'){
-                let i=this.pathShown.length-1;
-                let paths=[]
-                while (i>=1) {
+        refreshPackage(event,index){
+
+            let paths = []
+            if(index==1){
+                let i = this.pathShown.length - 1;
+                while (i >= 0) {
                     paths.push(this.pathShown[i].id);
                     i--;
                 }
-                $.ajax({
-                    type: "GET",
-                    url:"/user/getFileByPath",
-                    data:{
-                        paths:paths,
-                    },
-                    async: true,
-                    contentType: "application/x-www-form-urlencoded",
-                    success:(json)=>{
-                        if(json.code==-1){
-                            alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
-                            window.location.href = "/user/login"
-                        }else{
-                            this.myFileShown=json.data.data;
-                            this.refreshChild(this.myFile);
-                            console.log(this.myFileShown)
-                        }
-                    }
+                if (paths.length==0) paths = ['0']
 
-                })
+            }else{
+                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i>=1) {
+                    paths.push(this.selectedPath[i].key);
+                    i--;
+                }
+                if (paths.length==0) paths=['0']
+
+                this.pathShown=[]
+                for(i=1;i<this.selectedPath.length;i++){
+                    this.pathShown.push(this.selectedPath[i].data)
+                }
+
+
             }
+
+            $.ajax({
+                type: "GET",
+                url: "/user/getFileByPath",
+                data: {
+                    paths: paths,
+                },
+                async: true,
+                contentType: "application/x-www-form-urlencoded",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        this.myFileShown = json.data.data;
+                        this.fatherIndex = this.myFileShown[0].father
+                        this.refreshChild(this.myFile);
+                        console.log(this.myFileShown)
+                    }
+                }
+
+            })
+
 
         },
 
@@ -1106,10 +1148,11 @@ var vue = new Vue({
             else{
                 let i=this.pathShown.length-1;
                 let paths=[]
-                while (i>=1) {
+                while (i>=0) {
                     paths.push(this.pathShown[i].id);
                     i--;
                 }
+                if(paths.length==0)paths=['0']
                 console.log(paths)
                 $.ajax({
                     type: "POST",
@@ -1152,6 +1195,7 @@ var vue = new Vue({
                 paths.push(node.key);
                 node=node.parent;
             }
+            if(paths.length==0) paths.push('0')
             console.log(paths)
 
             this.$prompt(null, 'Enter Folder Name', {
@@ -1202,7 +1246,10 @@ var vue = new Vue({
             }
         },
         handleDataDownloadClick({sourceStoreId}) {
-            window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
+            let url =
+                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
+                sourceStoreId;
+            window.open("/dispatchRequest/download?url=" + url);
         },
         async panye(val) {
             let d = await this.getTableData(val - 1);
@@ -1807,7 +1854,7 @@ var vue = new Vue({
         getServersInfo() {
             $.ajax({
                 type: "GET",
-                url: "http://172.21.213.242/GeoModelingNew/ComputerNodesByUserIdServlet",
+                url: "/node/computerNodesByUserId",
                 data: {},
 
                 crossDomain: true,
@@ -3848,10 +3895,12 @@ var vue = new Vue({
 
         //个人空间上传下载管理
 
-        //获得所有数据
+        //显示鼠标hover的title
         showtitle(ev) {
-            return ev.fileName + "\n" + "Type:" + ev.suffix;
+            let suffix=(ev.suffix==''?'folder':ev.suffix)
+            return ev.label + "\n" + suffix;
         },
+
         getImg(item) {
             let list=[]
             if(item.id==0||item.package==true)
@@ -3993,6 +4042,17 @@ var vue = new Vue({
             })
         },
 
+        expandRunInfo(index,$event){
+            if(!$('.ab').eq(index).hasClass('transform180')){
+                $('.ab').eq(index).addClass('transform180')
+                $('.modelRunInfo').eq(index).collapse('show')
+            }else {
+                $('.ab').eq(index).removeClass('transform180')
+                $('.modelRunInfo').eq(index).collapse('hide')
+            }
+
+        },
+
         getSourceId(url){
             return url.split('=')[1]
 
@@ -4083,7 +4143,7 @@ var vue = new Vue({
             var dom = document.getElementsByClassName("browsermenu");
 
             console.log(e)
-            dom[0].style.top = e.pageY - 120 + "px"
+            dom[0].style.top = e.pageY - 130 + "px"
             // 125 > window.innerHeight
             //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
             dom[0].style.left = e.pageX - 220 + "px";
@@ -4139,6 +4199,7 @@ var vue = new Vue({
         uploadClick(index){
             this.uploadInPath=index;
             this.uploadSource=[];
+            this.selectedPath=[];
             $('#managerUpload').modal("show");
             $('#manager-upload').fileinput('clear');
         },
@@ -4171,8 +4232,19 @@ var vue = new Vue({
                 this.selectedPath.unshift(node);
                 node=node.parent;
             }
+            let allFder={
+                key:'0',
+                label:'All Folder'
+            }
+            this.selectedPath.unshift(allFder)
+            console.log(this.selectedPath)
             this.selectPathDialog=false;
+            $('#selectFolder').modal('hide')
 
+        },
+
+        closeSelectFolder(){
+            $('#selectFolder').modal('hide')
         },
 
         upload_data_dataManager() {
@@ -4184,14 +4256,13 @@ var vue = new Vue({
                 alert("Please upload the file into the template first")
             } else {
                 for(let i=0;i<this.uploadSource.length;i++){
-                    let dataName=this.uploadSource[i].file_name;
+                    let dataName=this.uploadSource[i].file_name.split('&')[1];
                     let dataname7suffix=dataName.split('.')
                     let fileName=dataname7suffix[0]
                     let suffix=dataname7suffix[1]
                     let dataId=this.uploadSource[i].source_store_id;
                     var data = {
                         author: this.userId,
-
                         fileName: fileName,
                         fromWhere: "PORTAL",
                         mdlId: "string",
@@ -4203,7 +4274,7 @@ var vue = new Vue({
                     }
                     var that = this;
                     var sucUpload
-                    axios.post("http://172.21.212.64:8082/dataResource", data)
+                    axios.post("/dispatchRequest/addRecordToDataContainer", data)
                         .then(res => {
                             if (res.status == 200) {
 
@@ -4220,19 +4291,49 @@ var vue = new Vue({
 
         },
 
-        addDataToPortalBack(){
-            let i=this.pathShown.length-1;
+        addDataToPortalBack(item){
+
+            var addItem=[]
+            if(item==undefined) {
+                addItem=this.uploadSource;
+                for(let i=0;i<addItem.length;i++)
+                    addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
+            }
+            else{
+                let obj={
+                    file_name:item.label+'.'+item.suffix,
+                    source_store_id:item.url.split('=')[1]
+                }
+                addItem[0]=obj
+            }
             let paths=[]
-            while (i>=1) {
-                paths.push(this.pathShown[i].id);
-                i--;
+            if(this.uploadInPath==1){
+                let i=this.pathShown.length-1;
+                while (i>=0) {
+                    paths.push(this.pathShown[i].id);
+                    i--;
+                }
+                if(paths.length==0)paths=['0']
+
+            }else{
+                if(this.selectedPath.length==0) {
+                    alert('Please a file folder')
+                    return
+                }
+
+                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i>=1) {
+                    paths.push(this.selectedPath[i].key);
+                    i--;
+                }
+                if(paths.length==0)paths=['0']
             }
             let that = this;
             $.ajax({
                 type: "POST",
                 url: "/user/addFile",
                 data: JSON.stringify({
-                    files: this.uploadSource,
+                    files: addItem,
                     paths: paths
                 }),
 
@@ -4245,25 +4346,33 @@ var vue = new Vue({
                         window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
-                        for(let i=0;i<this.uploadSource.length;i++)
-                        {
-                            console.log(this.uploadSource[i].file_name)
-                            let dataName7Suffix = this.uploadSource[i].file_name.split('.')
-                            const newChild = {
-                                id: json.data,
-                                label: dataName7Suffix[0],
-                                suffix: dataName7Suffix[1],
-                                children: [],
-                                package: false,
-                                upload: true,
-                                father: paths[0]
-                            };
-                            if (this.myFileShown.length === 0)
-                                this.addChild(this.myFile, paths[0], newChild)
-                            this.myFileShown.push(newChild);
-                            console.log(this.myFileShown)
-                            // this.getFilePackage();
-                            console.log(this.myFile)
+                        let idList=json.data
+                        console.log(idList)
+                        if(this.uploadInPath==1){
+                            for(let i=0;i<this.uploadSource.length;i++)
+                            {
+                                console.log(this.uploadSource[i].file_name)
+                                let dataName7Suffix = this.uploadSource[i].file_name.split('.')
+                                const newChild = {
+                                    id:idList[i].id,
+                                    label: dataName7Suffix[0],
+                                    suffix: dataName7Suffix[1],
+                                    children: [],
+                                    package: false,
+                                    upload: true,
+                                    father: paths[0],
+                                    url:idList[i].url,
+                                };
+                                if (this.myFileShown.length === 0)
+                                    this.addChild(this.myFile, paths[0], newChild)
+                                this.myFileShown.push(newChild);
+                                console.log(this.myFileShown)
+                                // this.getFilePackage();
+                                console.log(this.myFile)
+                            }
+                        }else{
+                            this.refreshPackage(0);
+                            //要写一个前台按路径查找的函数
                         }
                         this.addFolderIndex = false;
                         this.selectedPath=[];
@@ -4380,18 +4489,26 @@ var vue = new Vue({
 
         right_download(){
             let url=this.rightTargetItem.url
-            window.location.href=url
-            this.rightMenuShow=false;
+            //下载接口
+            if(url!=undefined) {
+                window.open("/dispatchRequest/download?url=" + url);
+            }
+            else{
+                this.$message.error("No data can be downloaded.");
+            }
+
+            // window.location.href=url
+            // this.rightMenuShow=false;
         },
 
-        //删除
-        delete_data_dataManager() {
-
+        //删除数据容器中的记录
+        delete_data_dataManager(id) {
+            console.log(id)
             if (confirm("Are you sure to delete?")) {
                 let tha = this
                 axios.delete("/dataManager/delete", {
                     params: {
-                        id: tha.dataid
+                        id:id
                     }
                 }).then((res) => {
 
@@ -4401,13 +4518,13 @@ var vue = new Vue({
                         tha.rightMenuShow = false
                         tha.databrowser = []
                         tha.addAllData()
-                        alert("delete successful")
+                        // alert("delete successful")
 
                     }
 
                 })
             } else {
-                alert("ok")
+                // alert("ok")
             }
 
 
@@ -4415,6 +4532,10 @@ var vue = new Vue({
 
         right_deleteFile(){
             const h = this.$createElement;
+            if(this.rightTargetItem.package==false){
+                var sourceId=this.getSourceId(this.rightTargetItem.url)
+            }
+
             this.$msgbox({
                 title: ' ',
                 message: h('p', null, [
@@ -4431,6 +4552,8 @@ var vue = new Vue({
                 beforeClose: (action, instance, done) => {
 
                     if (action === 'confirm') {
+                        if(this.rightTargetItem.package==false)
+                            this.delete_data_dataManager(sourceId)
                         instance.confirmButtonLoading = true;
                         instance.confirmButtonText = 'deleting...';
                         setTimeout(() => {
@@ -4470,6 +4593,18 @@ var vue = new Vue({
                 });
             });
 
+        },
+
+        copyFile(){
+             this.pasteTargetItem=this.rightTargetItem;
+             this.rightMenuShow=false;
+
+        },
+
+        pasteFile(){
+            this.uploadInPath=1
+            this.addDataToPortalBack(this.pasteTargetItem)
+            this.rightMenuShow=false;
         },
 
         showsearchresult(data) {
@@ -4751,16 +4886,33 @@ var vue = new Vue({
 
 
         },
+
         keywordsSearch() {
             if (this.searchcontent === "") {
-                this.addAllData()
+                this.getFilePackage()
             } else {
-                this.dataManagerSe(this.searchcontent)
+                axios.get('/user/keywordsSearch',{
+                    params:{
+                        keyword:this.searchcontent
+                    }
+                }).then((res)=>{
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.fileSearchResult=json.data.data;
+                        this.myFileShown=this.fileSearchResult
+                    }
+                })
 
             }
 
 
         },
+
         dataManagerSe(val) {
             let that = this
             this.loading = true
@@ -5256,7 +5408,7 @@ var vue = new Vue({
         $("#manager-upload").fileinput({
 
             theme: 'fas',
-            uploadUrl: 'http://172.21.212.148/dataContainer/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
+            uploadUrl: '/dispatchRequest/uploadFiles', // /file/apk_upload   you must set a valid URL here else you will get an error
             overwriteInitial: false,
             uploadAsync: true, //默认异步上传,
             showUpload: true, //是否显示上传按钮
@@ -5608,6 +5760,20 @@ $(function () {
             console.log($(this))
         }
     )
+
+    // $(document).on('click','.runStatus',
+    //     function () {
+    //         console.log($(".runStatus").children('h4'))
+    //         if(!$('.ab').eq(index).hasClass('transform180')){
+    //             $('.ab').eq(index).addClass('transform180')
+    //             $('.modelRunInfo').eq(index).collapse('show')
+    //         }else {
+    //             $('.ab').eq(index).removeClass('transform180')
+    //             $('.modelRunInfo').eq(index).collapse('hide')
+    //         }
+    //     }
+    // );
+
 
 })
 

@@ -38,6 +38,15 @@ var vue = new Vue({
                 sourceStoreId: "123123"
             }
         ],
+
+        exampleDataList:[
+            {
+                userName:'',
+                runTime:'',
+                description:''
+            }
+        ],
+
         inEvent: [],
         outEvent: [],
         oid: null,
@@ -96,7 +105,32 @@ var vue = new Vue({
             asc:false,
             searchResult:[],
             total:0,
-        }
+        },
+
+        loadDataVisible:false,
+
+        showDescriptionVisible:false,
+
+        taskDescription:'',
+
+        fileSpaceIndex:1,
+
+        myFile:[],
+
+        myFileShown:[
+            {
+                children:[],
+            }
+        ],
+
+        fatherIndex:'',
+
+        pathShown:[],
+
+        clickTimeout:1000,
+
+        rotatevalue:0,
+
     },
     computed: {},
     methods: {
@@ -200,6 +234,11 @@ var vue = new Vue({
                     $('#introContainer').removeClass("fixed")
                 }
 
+                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
+                    $('.introContent').css('display','none')
+                }else{
+                    $('.introContent').css('display','block')
+                }
 
 
 
@@ -340,6 +379,84 @@ var vue = new Vue({
         filterTag(value, row) {
             return row.fromWhere === value;
         },
+
+        loadData(){
+            this.loadDataVisible=true
+
+            let href=window.location.href.split('/')
+            let modelId=href[href.length-1]
+
+            axios.get("/task/getTasksByModel",{
+                    params:
+                        {
+                            modelId:modelId,
+                            page:0
+                        }
+            }
+            ).then((res)=>{
+                for(let i=0;i<res.data.data.length;i++)
+                    res.data.data[i].runTime=this.dateFormat(res.data.data[i].runTime)
+                this.exampleDataList=res.data.data
+            })
+        },
+
+        handleSelectionChange(){
+
+        },
+
+        showDescription(item){
+            console.log(item)
+            if(item.description!='')
+            {
+                this.showDescriptionVisible=true;
+                this.taskDescription=item.description;
+            }
+
+        },
+
+        async loadExampleData(id){
+            console.log(id)
+            const loading = this.$loading({
+                lock: true,
+                text: "Loading",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+
+            let{data,code,msg}=await (await fetch("/task/loadPublishedData",{
+                method:"post",
+                body:id
+                }
+
+                )).json()
+
+            if (code == -1 || code==null || code==undefined) {
+                loading.close();
+                this.$message.error(msg);
+                return;
+            }
+            console.log(data)
+            data.forEach(data=>{ //填入前端变量
+                let state = this.info.modelInfo.states.find(state => {
+                    return state.name == data.state;
+                });
+
+                let event = state.event.find(event => {
+                    return event.eventName == data.event;
+                });
+                if (event == undefined) return;
+                this.$set(event, "tag", data.tag);
+                this.$set(event, "suffix", data.suffix);
+                this.$set(event, "url", data.url);
+
+                }
+
+            )
+
+            loading.close();
+            this.loadDataVisible=false
+        },
+
         async loadTest(type) {
             const loading = this.$loading({
                 lock: true,
@@ -367,7 +484,7 @@ var vue = new Vue({
                 this.$message.error(msg);
                 return;
             }
-
+            console.log(data)
             data.forEach(el => {
                 let stateId = el.stateId;
                 let eventName = el.event;
@@ -384,10 +501,13 @@ var vue = new Vue({
                 this.$set(event, "url", el.url);
             });
             loading.close();
+            this.loadDataVisible=false
         },
+
         goPersonCenter(oid){
             window.open("/user/"+oid);
         },
+
         download(event) {
             //下载接口
             if(event.url!=undefined) {
@@ -414,7 +534,17 @@ var vue = new Vue({
             this.eventChoosing.url = url;
             this.$refs.upload.clearFiles();
         },
-        async check(event) {
+
+        myDataClick(index) {
+            this.dataChosenIndex = index;
+            this.pathShown=[];
+            this.downloadDataSet=[];
+            this.downloadDataSetName=[];
+            this.getFilePackage()
+        },
+
+
+        async checkPersonData(event) {
             if (this.first == true) {
                 let d = await this.getTableData(0);
                 this.dataFromDataContainer = d.content;
@@ -423,9 +553,25 @@ var vue = new Vue({
             }
             this.showDataChose = true;
             this.getUserTaskInfo()
+            this.getFilePackage()
 
-            this.eventChoosing = event;
+            this.eventChoosing = event;//此处把页面上的event与eventChoosing绑定
         },
+
+        selectDataFromPersonal(){
+            if(this.currentDataUrl!="") {
+                this.showDataChose=false;
+                console.log(this.eventChoosing,this.downloadDataSetName)
+                this.eventChoosing.tag = this.downloadDataSetName[0].name;
+                this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
+                this.eventChoosing.url = this.downloadDataSetName[0].url;
+            }
+            else{
+                this.$message("Please select data first!")
+            }
+
+        },
+
         async handleCurrentChange(val) {
             let d = await this.getTableData(val - 1);
             this.dataFromDataContainer = d.content;
@@ -441,11 +587,170 @@ var vue = new Vue({
             )).json();
             this.tableLoading = false;
 
-            // return {
-            //     total: data.totalElements,
-            //     content: data.content
-            // };
+            return {
+                total: data.totalElements,
+                content: data.content
+            };
         },
+
+        getPackageContent($event, eval,key){
+            clearTimeout(this.clickTimeout)
+            if(eval.package===false)
+                return
+            let id=eval.id;
+            this.fatherIndex=this.myFileShown[key].id;
+            this.pathShown.push(this.myFileShown[key])
+            if(this.myFileShown[key].children.length!=0)
+                this.myFileShown= this.myFileShown[key].children;
+            else
+                this.myFileShown=[];
+
+            this.renameIndex='';
+            console.log(this.myFileShown)
+            // console.log(this.myFileShown.length)
+            // console.log(this.fatherIndex)
+
+        },
+
+        getFilePackage(){
+            axios.get("/user/getFolderAndFile",{})
+                .then(res=> {
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.myFile=res.data.data[0].children;
+                        console.log(this.myFile)
+                        this.myFileShown=this.myFile;
+                    }
+
+
+                });
+        },
+
+        //回到上一层目录
+        backToFather(){
+            // if(this.myFileShown.length==0||this.fatherIndex!=0) {
+            //     this.findFather(this.myFile)
+            //     this.fatherIndex=this.myFileShown[0].father;
+            //     console.log()
+            // }else if(this.fatherIndex==0)
+            //     this.myFileShown=this.myFile;
+            this.pathShown.pop(this.pathShown.length-1)
+            $('.fa-arrow-left').animate({marginLeft:'-6px'},170)
+            let allFolder = [];
+            allFolder.children=this.myFile;
+            this.findFather(this.myFile,allFolder)
+            console.log(this.myFileShown)
+            this.fatherIndex=this.myFileShown[0].father;
+            $('.fa-arrow-left').animate({marginLeft:'0'},170)
+        },
+
+        findFather(file,father){
+            if(this.fatherIndex==='0')
+                this.myFileShown=this.myFile;
+            for(let i=0;i<file.length;i++){
+                if(file[i].id===this.fatherIndex){
+                    this.myFileShown=father.children;
+                    console.log(this.myFileShown)
+                    return;
+                }else{
+                    this.findFather(file[i].children,file[i])
+                }
+            }
+        },
+
+        refreshPackage(event,index){
+
+            let paths = []
+            if(index==1){
+                let i = this.pathShown.length - 1;
+                while (i >= 0) {
+                    paths.push(this.pathShown[i].id);
+                    i--;
+                }
+                if (paths.length==0) paths = ['0']
+
+            }else{
+                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i>=1) {
+                    paths.push(this.selectedPath[i].key);
+                    i--;
+                }
+                if (paths.length==0) paths=['0']
+
+                this.pathShown=[]
+                for(i=1;i<this.selectedPath.length;i++){
+                    this.pathShown.push(this.selectedPath[i].data)
+                }
+
+
+            }
+
+            this.rotatevalue += 180;
+            console.log($('.fa-refresh'))
+            $('.fa-refresh').css('transform','rotate('+this.rotatevalue+'deg)')
+
+            $.ajax({
+                type: "GET",
+                url: "/user/getFileByPath",
+                data: {
+                    paths: paths,
+                },
+                async: true,
+                contentType: "application/x-www-form-urlencoded",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        this.myFileShown = json.data.data;
+                        this.fatherIndex = this.myFileShown[0].father
+                        this.refreshChild(this.myFile);
+                        console.log(this.myFileShown)
+                    }
+                }
+
+            })
+
+
+        },
+
+        refreshChild(file){
+            console.log(this.fatherIndex)
+            for(let i=0;i<file.length;i++){
+                if(file[i].id===this.fatherIndex){
+                    file[i].children=this.myFileShown
+                    console.log(this.myFile)
+                    return;
+                }else{
+                    this.refreshChild(file[i].children)
+                }
+            }
+        },
+
+        singleClick($event, eval) {
+            if(this.rightMenuShow==true){
+                this.rightMenuShow=false;
+                return
+            }
+            clearTimeout(this.clickTimeout)
+            var target=$event.currentTarget;
+            var eval=eval;
+            var that=this
+            this.clickTimeout = setTimeout(function (){
+                that.getid(target, eval)
+            },1)
+
+            this.renameIndex='';
+
+        },
+
+
 
         async invoke() {
 
@@ -638,8 +943,13 @@ var vue = new Vue({
         showtitle(ev){
             return ev.fileName+"\n"+"Type:"+ev.suffix;
         },
-        getImg(item){
-            return "/static/img/filebrowser/"+item.suffix+".svg"
+        getImg(item) {
+            let list=[]
+            if(item.id==0||item.package==true)
+                return "/static/img/filebrowser/package.png"
+            if(item.suffix=='unknow')
+                return "/static/img/filebrowser/unknow.svg"
+            return "/static/img/filebrowser/" + item.suffix + ".svg"
         },
         generateId(key){
             return key;
@@ -990,39 +1300,39 @@ var vue = new Vue({
             console.log(eval.id)
             this.dataid=eval.id;
 
-            $event.currentTarget.className="el-card dataitemisol clickdataitem"
+            $event.closest('.el-card').className="el-card dataitemisol clickdataitem"
 
             //再次点击取消选择
-            if(this.downloadDataSet.indexOf(eval)>-1){
-                for(var i=0;i<this.downloadDataSet.length;i++){
-                    if(this.downloadDataSet[i]===eval){
+
+            if (this.downloadDataSet.indexOf(eval) > -1) {
+                for (var i = 0; i < this.downloadDataSet.length; i++) {
+                    if (this.downloadDataSet[i] === eval) {
                         //删除
-                        this.downloadDataSet.splice(i,1)
-                        break
-                    }
-                }
-                for(var i=0;i<this.downloadDataSetName.length;i++){
-                    if(this.downloadDataSetName[i]===eval.fileName){
-                        this.downloadDataSetName.splice(i,1)
+                        this.downloadDataSet.splice(i, 1)
+                        this.downloadDataSetName.splice(i, 1)
                         break
                     }
                 }
 
-
-
-            }else{
+            } else {
+                this.downloadDataSet=[]
+                this.downloadDataSetName=[]
                 this.downloadDataSet.push(eval)
-                this.downloadDataSetName.push(eval.fileName)
+                let obj={
+                    name:eval.label,
+                    suffix:eval.suffix,
+                    package:eval.package,
+                    url:eval.url
+                }
+                this.downloadDataSetName.push(obj)
             }
 
-            if(eval.taskId!=null){
-                console.log(eval.taskId)
-                this.detailsIndex=2
+            if (eval.taskId != null) {
+                this.detailsIndex = 2
                 this.getOneOfUserTasks(eval.taskId);
             }
-
-
         },
+
 
         getOneOfUserTasks(taskId){
             $.ajax({
@@ -1437,6 +1747,7 @@ var vue = new Vue({
 
             }
         });
+
     },
 
     destory(){
@@ -1448,6 +1759,7 @@ var vue = new Vue({
 });
 
 $(function () {
+    console.log('ha ha')
     $(window).resize(function(){
         let introHeaderHeight=$('.introHeader').css('width')
         console.log(introHeaderHeight)
@@ -1464,5 +1776,18 @@ $(function () {
 
     })
 
+    $("#refreshPackageBtn").click(
+        function () {
+            value += 180;
+            $('.fa-refresh').rotate({animateTo: value})
+        }
+    );
+
+
+    $('document').on('onclick','.backFatherBtn',()=>{
+        console.log('11')
+        $('.fa-arrow-left').animate({marginLeft:'-6px'},170)
+        $('.fa-arrow-left').animate({marginLeft:'0'},170)
+    })
 
 });

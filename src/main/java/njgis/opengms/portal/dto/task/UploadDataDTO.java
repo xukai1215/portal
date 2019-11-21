@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UploadDataDTO {
     String filePath;
+    String tag;
     String state;
     String event;
 }

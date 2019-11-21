@@ -1484,9 +1484,9 @@
                             <li :class="{researchMenuChoosed:dataChosenIndex==2}" style="cursor: pointer;"
                                 @click="outputDataClick(2)">Output Data
                             </li>
-                            <li :class="{researchMenuChoosed:dataChosenIndex==3}" style="cursor: pointer;"
-                                @click="forkClick(3)">Fork
-                            </li>
+<!--                            <li :class="{researchMenuChoosed:dataChosenIndex==3}" style="cursor: pointer;"-->
+<!--                                @click="forkClick(3)">Fork-->
+<!--                            </li>-->
                         </ul>
                         <button class="btn btn-info btn-sm" @click="allFileShareAsDataItem()"><i
                                 class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item
@@ -1683,12 +1683,12 @@
                                         <div class="panel-group " id="accordion2All">
                                             <div id="providersPanelAll" class="panel">
 
-                                                <div id="provider_body"
+                                                <div id="provider_bodyAll"
                                                      class="panel-collapse collapse in"
                                                      style="height: auto;">
                                                     <div class="panel-body providers"
                                                          style="padding:0px">
-                                                        <div class='panel panel-primary'>
+                                                        <div class='panel panel-primary taskDataAuthorship'>
                                                             <div class='panel-heading info-head'>
                                                                 <h4 class='panel-title'>
                                                                     <a class='accordion-toggle collapsed'
@@ -1703,7 +1703,7 @@
                                                                    class="fa fa-times author_close"
                                                                    style="float:right;margin-top:8px;color:white"></a>
                                                             </div>
-                                                            <div id='user1'
+                                                            <div id='user1All'
                                                                  class='panel-collapse collapse in'>
                                                                 <div class='panel-body user-contents'>
                                                                     <div class='user-attr'>
@@ -1836,18 +1836,20 @@
                                         <el-col :span="15" shadow="never">
                                             <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
                                             <!--//todo upload-->
-                                            <button id="upLoadButton" class="dwload btn btn-primary btn-md"
+                                            <button id="uploadButton" class="dwload btn btn-primary btn-md"
                                                     v-if="myFileShown.length==0||myFileShown[0].label!='All Folder'"
                                                     @click="uploadClick(0)">
-                                                <i class="glyphicon glyphicon-upload">&nbsp;upload</i>
+                                                <i class="glyphicon glyphicon-upload">&nbsp</i><span style="font-size: 15px">upload</span>
                                             </button>
                                             <button class="dwload btn btn-primary btn-md" @click="addFolderInPath">
-                                                <i class="glyphicon glyphicon-plus-sign">&nbsp;add folder</i>
+                                                <i class="glyphicon glyphicon-plus-sign">&nbsp;</i><span style="font-size: 15px">add folder</span>
                                             </button>
                                             <button class="dwload btn btn-primary btn-md" v-if="downloadDataSet.length>0" @click="userDownload">
-                                                <i class="glyphicon glyphicon-download">&nbsp;download</i>
+                                                <i class="glyphicon glyphicon-download">&nbsp;</i><span style="font-size: 15px">download</span>
                                             </button>
-
+                                            <button class="dwload btn btn-primary btn-md" v-if="pasteTargetItem.id" @click="pasteFile">
+                                                <i class="glyphicon glyphicon-download">&nbsp;</i><span style="font-size: 15px">paste</span>
+                                            </button>
                                             <!--//todo share-->
                                             <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
                                             <!--<i class="glyphicon glyphicon-share">&nbsp;share</i>-->
@@ -1877,28 +1879,28 @@
 
                                 </div>
                                 <el-row style="height: calc(100% - 100px);">
-                                    <el-col :span="3" style="height: 100%">
-                                        <el-card style="height:100%;overflow-y: auto " class="managerAsideBtn">
-                                            <!--                                            <el-button @click="findAllFiles()">All Files</el-button>-->
-                                            <!--                                            <br>-->
-                                            <!--                                            <el-button @click="findPics()">pictures</el-button>-->
-                                            <!--                                            <br>-->
-                                            <!--                                            <el-button @click="findDocs()">doc</el-button>-->
-                                            <!--                                            <br>-->
-                                            <!--                                            &lt;!&ndash;<el-button @click="findVideo()" >video</el-button><br>&ndash;&gt;-->
-                                            <!--                                            <el-button @click="findOtherFiles()">other</el-button>-->
-                                            <!--                                            <br>-->
-                                            <el-button type="primary" plain @click="showFilePackage()">File Space</el-button>
-                                            <br>
-                                            <el-button type="primary" plain @click="showMyUpload()">My Upload Data</el-button>
-                                            <br>
-                                            <el-button type="primary" plain @click="showMyFork()">My Fork Data</el-button>
-                                            <br>
+<!--                                    <el-col :span="3" style="height: 100%">-->
+<!--                                        <el-card style="height:100%;overflow-y: auto " class="managerAsideBtn">-->
+<!--                                            &lt;!&ndash;                                            <el-button @click="findAllFiles()">All Files</el-button>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <br>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <el-button @click="findPics()">pictures</el-button>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <br>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <el-button @click="findDocs()">doc</el-button>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <br>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            &lt;!&ndash;<el-button @click="findVideo()" >video</el-button><br>&ndash;&gt;&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <el-button @click="findOtherFiles()">other</el-button>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                            <br>&ndash;&gt;-->
+<!--                                            <el-button type="primary" plain @click="showFilePackage()">File Space</el-button>-->
+<!--                                            <br>-->
+<!--                                            <el-button type="primary" plain @click="showMyUpload()">My Upload Data</el-button>-->
+<!--                                            <br>-->
+<!--                                            <el-button type="primary" plain @click="showMyFork()">My Fork Data</el-button>-->
+<!--                                            <br>-->
 
-                                        </el-card>
-                                    </el-col>
+<!--                                        </el-card>-->
+<!--                                    </el-col>-->
 
-                                    <el-col :span="21" class="fileTemplate" style="height: 100%">
+                                    <el-col :span="24" class="fileTemplate" style="height: 100%">
                                         <el-card style="height:100%;overflow-y:auto;width:100%" id="browsercont1"
                                                  v-loading="managerloading" :style="{display:fileSpaceIndex==1?'block':'none'}" >
                                             <div style="width: 100%;height: 20px;margin-left: -5px;display: flex;justify-content: space-between;align-items: center">
@@ -1906,7 +1908,7 @@
                                                     <div class="squareButton" id="backFatherBtn" @click="backToFather">
                                                         <i class="fa fa-arrow-left" style="margin-right:2px "></i>
                                                     </div>
-                                                    <div class="squareButton" id="refreshPackageBtn" @click="refreshPackage($event)">
+                                                    <div class="squareButton" id="refreshPackageBtn" @click="refreshPackage($event,1)">
                                                         <i class="fa fa-refresh" style="font-weight: 600"></i>
                                                     </div>
                                                     <div class="showPathContainer" style="margin-left: 10px">
@@ -1958,14 +1960,14 @@
                                                 </el-row>
                                                 <!--menu item -->
                                             </div>
-                                            <div class="el-card dataitemisol flexCenter" style="width: 120px;" data-toggle="modal"
+                                            <div class="el-card dataitemisol flexCenter" style="width: 115px;" title="upload file" data-toggle="modal"
                                                  data-target="#managerUpload" @click="uploadClick(1)"
                                                  v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')">
                                                 <div class="circle">
                                                     <i class="fa fa-arrow-up"></i>
                                                 </div>
                                             </div>
-                                            <div class="el-card dataitemisol flexCenter" style="width: 120px;" @click="addFolderInPath"
+                                            <div class="el-card dataitemisol flexCenter" style="width: 115px;" @click="addFolderInPath" title="add new folder"
                                                  v-if="myFileShown.length==0||(myFileShown[0].label!='All Folder'&&myFileShown[0].label!='My Data')">
                                                 <div class="circle">
                                                     <i class="fa fa-plus"></i>
@@ -1974,7 +1976,7 @@
                                         </el-card>
                                         <el-dialog :visible.sync="addFolderIndex" title="Add New Folder">
                                             <div class="showPathContainer" style="margin-left: 10px;">
-                                                <div class="containerWithBorder" @click="selectFolder">path</div>:
+                                                <div class="containerWithBorder">path</div>:
                                                 <div v-for="(path,index) in pathShown" :style="{color:index==pathShown.length-1?'#222222':'#666666'}"> /{{path.label}} </div>
                                                 /..
                                             </div>
@@ -2016,11 +2018,13 @@
 
 
                                 <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu">
-                                    <el-button id="dbtn" @click="right_download()" type="text">download
-                                    </el-button>
+                                    <el-button id="dbtn" @click="right_download()" type="text">download</el-button>
                                     <br>
-                                    <el-button id="dbtn" @click="right_deleteFile()" type="text">delete
-                                    </el-button>
+                                    <el-button id="dbtn" @click="copyFile()" v-if="!rightTargetItem.package" type="text">copy to ...</el-button>
+                                    <br v-if="!rightTargetItem.package">
+                                    <el-button id="dbtn" @click="pasteFile()" v-if="!rightTargetItem.package" type="text">paste</el-button>
+                                    <br v-if="!rightTargetItem.package">
+                                    <el-button id="dbtn" @click="right_deleteFile()" type="text">delete</el-button>
                                     <br>
                                     <el-button id="sbtn" @click="right_share" type="text">share</el-button>
                                     <br>
@@ -2150,7 +2154,7 @@
                                              <span>
                                                  <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
                                                             @click="addFolderinTree()">Add new folder</el-button>
-                                                 <el-button @click="selectPathDialog = false">Cancel</el-button>
+                                                 <el-button @click="closeSelectFolder">Cancel</el-button>
                                                  <el-button type="primary" @click="confirmFolder()">OK</el-button>
                                              </span>
                                         </div>
@@ -3106,7 +3110,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12" v-for="task in searchResult">
+                        <div class="col-sm-12" v-for="(task,index) in searchResult">
                             <div class="panel"
                                  :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
                                 <div class="panel-heading">
@@ -3122,7 +3126,17 @@
                                     </el-button>
 
                                 </div>
-                                <div class="panel-body">
+                                <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
+                                    <h4 v-if="task.status==2" style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer" @click="expandRunInfo(index,$event)">
+                                    <span style="color: rgb(103,194,58)">Successful</span> caculation !</h4>
+                                    <h4 v-if="task.status==-1" style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer" @click="expandRunInfo(index,$event)">
+                                        Something <span style="color: rgb(224,101,80)" @click="expandRunInfo(index,$event)" >wrong</span> with it !</h4>
+                                    <h4 v-if="task.status==0||task.status==1" style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"@click="expandRunInfo(index,$event)" >
+                                        <span style="color: rgb(64,158,255)" >Caulating</span>!</h4>
+                                    <span role="button" tabindex="0" class="ab" style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
+                                          data-toggle="collapse" class="" aria-expanded="true" @click="expandRunInfo(index,$event)" ><i class="fa fa-caret-down" style="font-size: 27px"></i></a></span>
+                                </div>
+                                <div id="" class="panel-body modelRunInfo collapse" style="padding-top: 0">
                                     <h5 v-if="task.status==0||task.status==1">
                                         Calculating
                                     </h5>
@@ -3305,7 +3319,7 @@
                                              style="height: auto;">
                                             <div class="panel-body providers"
                                                  style="padding:0px">
-                                                <div class='panel panel-primary'>
+                                                <div class='panel panel-primary taskDataAuthorship'>
                                                     <div class='panel-heading info-head'>
                                                         <h4 class='panel-title'>
                                                             <a class='accordion-toggle collapsed'

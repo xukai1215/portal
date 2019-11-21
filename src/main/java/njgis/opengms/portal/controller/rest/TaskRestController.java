@@ -29,6 +29,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static java.util.Arrays.asList;
+
 @RestController
 @RequestMapping(value = "/task")
 public class TaskRestController {
@@ -74,7 +76,7 @@ public class TaskRestController {
 //    }
 
     @RequestMapping(value = "/output/{id}", method = RequestMethod.GET)
-    ModelAndView getTaskOutput(@PathVariable("id") String id, HttpServletRequest request) {
+    ModelAndView getTaskOutput(@PathVariable("id") String ids, HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session.getAttribute("uid") == null) {
             ModelAndView modelAndView = new ModelAndView();
@@ -100,7 +102,6 @@ public class TaskRestController {
             return ResultUtils.success(taskService.initTaskOutput(ids, userName));
         }
     }
-
 //    @RequestMapping(value="/info",method = RequestMethod.GET)
 //    JsonResult getInfo(@RequestParam("oid") String oid){
 //        taskService.
@@ -135,6 +136,17 @@ public class TaskRestController {
     public JsonResult getTaskByTaskId(@RequestParam(value="id") String taskId){
         return ResultUtils.success(taskService.findByTaskId(taskId));
 
+    }
+
+    @RequestMapping(value="/getTasksByModel",method = RequestMethod.GET)
+    public JsonResult getTasksByModel(@RequestParam(value = "modelId") String modelId, @RequestParam(value = "page")int page, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String userName = request.getSession().getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getTasksByModelId(modelId,page));
+        }
     }
 
     @RequestMapping (value="/searchTasksByUserId",method = RequestMethod.GET)
@@ -217,6 +229,8 @@ public class TaskRestController {
                 task.setComputableName(computableModel.getName());
                 task.setTaskId(result);
                 task.setUserId(username);
+                List<String> isp=asList(username);
+                task.setIsPublic(isp);
                 task.setIp(lists.getString("ip"));
                 task.setPort(lists.getInteger("port"));
                 task.setRunTime(new Date());
@@ -304,4 +318,50 @@ public class TaskRestController {
 
     }
 
+    @RequestMapping(value ="/loadPublishedData", method = RequestMethod.POST)
+    @ApiOperation(value = "加载其他用户发布数据，返回数据成功上传之后的url")
+    public JsonResult loadPublishedData(@RequestBody String taskId, HttpServletRequest request){
+        HttpSession session=request.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+
+        List<ResultDataDTO> resultDataDTOS = taskService.getPublishedData(taskId);
+        if(resultDataDTOS == null||resultDataDTOS.size()==0){
+            return ResultUtils.error(-1,"No Test Data");
+        }
+
+        return ResultUtils.success(resultDataDTOS);
+    }
+
+    @RequestMapping(value = "/addDescription",method = RequestMethod.POST)
+    public JsonResult addDescription(@RequestBody JSONObject obj,HttpServletRequest httpServletRequest)
+    {
+        String taskId=obj.get("taskId").toString();
+        String description=obj.get("description").toString();
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.addDescription(taskId,description));
+        }
+
+    }
+
+    @RequestMapping(value = "/setPublic",method = RequestMethod.POST)
+    public JsonResult setPublic(@RequestParam String taskId,HttpServletRequest httpServletRequest)
+    {
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.setPublic(taskId));
+        }
+
+    }
 }
