@@ -193,7 +193,7 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
 
     //! Double Click
     mxGraph.prototype.dblClick = function(evt, cell){
-        if (cell != null && container[0].id == 'mxGraphContainer' ){
+        if (cell != null && container[0].id == 'ogmsDiagramContainer' ){
             if (this.graph.model.isVertex(cell)){
                 this.stateInfoWin.setLocation(900, 30);
                 //! Double Click in Vertex
@@ -236,7 +236,7 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
     //! Click
     mxGraph.prototype.click = function(evt, cell){
         if (cell == null){
-             //this.stateInfoWin.hide();
+             this.stateInfoWin.hide();
         }
     }.bind(this);
 
@@ -398,6 +398,8 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
             this.orderGraphs();
         }.bind(this));
     }
+
+
 }
 
 OGMSDiagram.prototype.addEvent = function(id, name, type, option, description, dataDes){
@@ -463,8 +465,8 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
         dataConfigButton = '<input id="dataInput_' + id + '" class="btn btn-default btn-lg" type="button" value="Configure" data-tag="' + id + '" />';
     }
     $('<li id="eventHead_' + id + '" role="presentation">' +
-        '<a href="#event_' + id + '" aria-controls="event_' + id + '" role="tab" data-toggle="tab">' + 
-            '<i class="fa fa-flash"></i><span id="eventHeadName_' + id + '" >' + name + '</span>' + 
+        '<a href="#event_' + id + '" aria-controls="event_' + id + '" role="tab" data-toggle="tab" class="eventTab">' +
+            '<i class="fa fa-flash"></i><span id="eventHeadName_' + id + '"  >' + name + '</span>' +
             eventCloseButton +
         '</a>' + 
     '</li>').insertBefore($('#eventItemAdd'));
@@ -475,89 +477,117 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
     else {
         spanDataDes = '<span class="badge badge-info" style="cursor:pointer" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes + '</span>';
     }
-    $('#eventTabContent').append('<div role="tabpanel" class="tab-pane" id="event_' + id + '">' + 
-            '<form class="form-horizontal">' + 
-                '<div class="form-group mxWinPanel">' + 
-                    '<label for="eventName" class="col-sm-3 control-label">Name</label>' + 
-                    '<div class="col-sm-8">' + 
-                    '<input type="text" class="form-control" ' + enable + ' id="eventName_' + id + '" value="' + name + '" placeholder="Event Name" />' + 
-                    '</div>' + 
-                '</div>' + 
-                '<div class="form-group mxWinPanel">' + 
-                    '<label for="eventType_' + id + '" class="col-sm-3 control-label">Type</label>' + 
-                    '<div class="col-sm-8">' + 
-                        '<select id="eventType_' + id + '" class="form-control" ' + enable + '>' + 
-                            '<option value="response" >response(input)</option>' + 
-                            '<option value="noresponse" >noresponse(output)</option>' + 
-                        '</select>' + 
-                    '</div>' + 
-                '</div>' + 
-                '<div class="form-group mxWinPanel">' + 
-                    '<label for="eventOptional_' + id + '" class="col-sm-3 control-label">Optional</label>' + 
-                    '<div class="col-sm-8">' + 
-                        '<select id="eventOptional_' + id + '" class="form-control" ' + enable + '>' + 
-                            '<option value="False" >False</option>' + 
-                            '<option value="True" >True</option>' + 
-                        '</select>' + 
-                    '</div>' + 
-                '</div>' + 
-                '<div class="form-group mxWinPanel">' + 
-                    '<label for="eventDes_' + id + '" class="col-sm-3 control-label">Description</label>' + 
-                    '<div class="col-sm-8">' + 
-                        '<textarea id="eventDes_' + id + '" class="form-control" ' + enable + ' rows="3">' + description + '</textarea>' + 
-                    '</div>' + 
-                '</div>' + 
-                '<div class="form-group mxWinPanel">' + 
-                    '<label for="dataDescription" class="col-sm-3 control-label">Dataset Reference</label>' + 
-                    '<div class="col-sm-3">' + 
-                    spanDataDes + 
-                    '</div>' + 
-                    '<div class="col-sm-2">' + 
-                    dataConfigButton + 
-                    '</div>' + 
-                '</div>' + 
-            '</form>' + 
-        '</div>');
-        $('#eventType_' + id + ' option[value="' + type + '"]').attr('selected','selected');
-        $('#eventOptional_' + id + ' option[value="' + option + '"]').attr('selected','selected');
-        
-        if(this.enabled){
-            $('#dataInput_' + id).click(function(e){
-                this.dataSchameWin.show();
-                this.event_s = this.getEventByE(e);
-                if(this.event_s.dataDes != '[Undefined]'){
-                    for (var i = 0; i < this.dataRef.length; i++){
-                        if(this.dataRef[i].name == this.event_s.dataDes){
-                            this.loadDataReference(this.dataRef[i].name, this.dataRef[i].type, this.dataRef[i].description, this.dataRef[i].value);
-                            break;
-                        }
+
+    /**
+     * 张硕
+     * 2019.11.21
+     * 根据网页地址，判断是否在Event Pane添加 上传数据框
+     */
+    var infoPage = false
+    if(window.location.pathname === '/common/ModelShow')
+        infoPage =true;
+    var str1 = '<div role="tabpanel" class="tab-pane" id="event_' + id + '">' +
+        '<form class="form-horizontal">' +
+        '<div class="form-group mxWinPanel">' +
+        '<label for="eventName" class="col-sm-3 control-label">Name</label>' +
+        '<div class="col-sm-8">' +
+        '<input type="text" class="form-control" ' + enable + ' id="eventName_' + id + '" value="' + name + '" placeholder="Event Name" />' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group mxWinPanel">' +
+        '<label for="eventType_' + id + '" class="col-sm-3 control-label">Type</label>' +
+        '<div class="col-sm-8">' +
+        '<select id="eventType_' + id + '" class="form-control" ' + enable + '>' +
+        '<option value="response" >response(input)</option>' +
+        '<option value="noresponse" >noresponse(output)</option>' +
+        '</select>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group mxWinPanel">' +
+        '<label for="eventOptional_' + id + '" class="col-sm-3 control-label">Optional</label>' +
+        '<div class="col-sm-8">' +
+        '<select id="eventOptional_' + id + '" class="form-control" ' + enable + '>' +
+        '<option value="False" >False</option>' +
+        '<option value="True" >True</option>' +
+        '</select>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group mxWinPanel">' +
+        '<label for="eventDes_' + id + '" class="col-sm-3 control-label">Description</label>' +
+        '<div class="col-sm-8">' +
+        '<textarea id="eventDes_' + id + '" class="form-control" ' + enable + ' rows="3">' + description + '</textarea>' +
+        '</div>' +
+        '</div>'+
+        '<div class="form-group mxWinPanel">' +
+        '<label for="dataDescription" class="col-sm-3 control-label">Dataset Reference</label>' +
+        '<div class="col-sm-3">' +
+        spanDataDes +
+        '</div>' +
+        '<div class="col-sm-2">' +
+        dataConfigButton +
+        '</div>' +
+        '</div>';
+    var str2 =  '<div id="inputGroup_' + id + '" class="form-group mxWinPanel">' +
+        '<label for="eventInp_' + id + '" class="col-sm-3 control-label">Input</label>' +
+        '<div class="col-sm-8" style="height: 24px !important;">' +
+        '<input type="text" class="form-control" ' + enable + ' id="eventInp_' + id + '" style="width:60%"  placeholder="Please select upload file" />' +
+        '<button id="select_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 30%" ><span><i class="fa fa-th-large"></i></span></button>'+
+        '<button id="upload_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 20%" ><span><i class="fa fa-cloud-upload"></i></span></button>'+
+        '<button id="check_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 10%"><span><i class="fa fa-folder-open"></i></span></button>'+
+        '<button id="download_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 0%"><span><i class="fa fa-download"></i></span></button>'+
+        '</div>' +
+        '</div>' +
+
+        '</form>' +
+        '</div>';
+    var str3 = '</form>' + '</div>';
+    var str = '';
+    if (infoPage === true)
+        str = str1+str3;
+    else
+        str = str1+str2;
+
+    $('#eventTabContent').append(str);
+    $('#eventType_' + id + ' option[value="' + type + '"]').attr('selected','selected');
+    $('#eventOptional_' + id + ' option[value="' + option + '"]').attr('selected','selected');
+
+    if(this.enabled){
+        $('#dataInput_' + id).click(function(e){
+            this.dataSchameWin.show();
+            this.event_s = this.getEventByE(e);
+            if(this.event_s.dataDes != '[Undefined]'){
+                for (var i = 0; i < this.dataRef.length; i++){
+                    if(this.dataRef[i].name == this.event_s.dataDes){
+                        this.loadDataReference(this.dataRef[i].name, this.dataRef[i].type, this.dataRef[i].description, this.dataRef[i].value);
+                        break;
                     }
                 }
-                else{
-                    this.loadDataReference('', 'internal', '', ''); 
-                }
-            }.bind(this));
-            
-            $('#eventDelete_' + id).click(function(e){
-                var id = $(e.currentTarget).attr('data-tag');
-                this.removeEvent(id);
-            }.bind(this));
-        }
-        else{
-            $('#dataTemplate_' + id).click(function(e){
-                this.event_s = this.getEventByE(e);
-                if(this.event_s.dataDes != '[Undefined]'){
-                    for (var i = 0; i < this.dataRef.length; i++){
-                        if(this.dataRef[i].name == this.event_s.dataDes){
-                            this.loadDataReference(this.dataRef[i].name, this.dataRef[i].type, this.dataRef[i].description, this.dataRef[i].value);
-                            this.dataSchameWin.setLocation(1000, $('#ogmsGraphContainer').offset().top);
-                            this.dataSchameWin.show();
-                            break;
-                        }
+            }
+            else{
+                this.loadDataReference('', 'internal', '', '');
+            }
+        }.bind(this));
+
+        $('#eventDelete_' + id).click(function(e){
+            var id = $(e.currentTarget).attr('data-tag');
+            this.removeEvent(id);
+        }.bind(this));
+    }
+    else{
+        $('#dataTemplate_' + id).click(function(e){
+            this.event_s = this.getEventByE(e);
+            if(this.event_s.dataDes != '[Undefined]'){
+                for (var i = 0; i < this.dataRef.length; i++){
+                    if(this.dataRef[i].name == this.event_s.dataDes){
+                        this.loadDataReference(this.dataRef[i].name, this.dataRef[i].type, this.dataRef[i].description, this.dataRef[i].value);
+                        this.dataSchameWin.setLocation(1000, $('#ogmsGraphContainer').offset().top);
+                        this.dataSchameWin.show();
+                        break;
                     }
                 }
-            }.bind(this));
-        }
+            }
+        }.bind(this));
+    }
         
 }
 
@@ -708,7 +738,11 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
     jsBahavior = JSON.parse(strjson);
     var parent = this.graph.getDefaultParent();
 
-    // 插入开始节点
+    /**
+     * 张硕
+     * 2019.11.初
+     * 插入开始节点
+     */
     var cell = this.graph.insertVertex(parent,null,'Start',10, 20, 50, 50, this.startStyle);
     cell['state'] = {id: -1,name:'Start',description:'The beginning of this model!'};
     this.states.push(cell);
@@ -725,7 +759,11 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
         this.states.push(v_cell);
     }
 
-    // 插入结束节点
+    /**
+     * 张硕
+     * 2019.11.初
+     * 插入结束节点
+     */
     cell = this.graph.insertVertex(parent,null,'End',10, 20, 50, 50, this.endStyle);
     cell['state'] = {id:100,name:'End',description:'The end of this model!'};
     this.states.push(cell);

@@ -18,7 +18,7 @@
 </head>
 <body>
     <div id="iframe">
-        <div id="mxGraphContainer"></div>
+        <div id="ogmsDiagramContainer"></div>
     </div>
 </body>
 
@@ -46,7 +46,7 @@
             this.loadJson = window.parent.getLoadJson();
             console.log(this.loadJson);
             mDiagram = new OGMSDiagram();
-            mDiagram.init($('#mxGraphContainer'),
+            mDiagram.init($('#ogmsDiagramContainer'),
                 {
                     width: 1000,       //! Width of panel
                     height:1000,       //! Height of panel

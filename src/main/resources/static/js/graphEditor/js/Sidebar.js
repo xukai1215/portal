@@ -87,7 +87,7 @@ Sidebar.prototype.init = function()
     this.sideHeaderContainer = document.createElement("div");
     this.sideHeaderContainer.style.height = "34px";
     this.container.appendChild(this.sideHeaderContainer);
-    if (createLogical === undefined || createLogical === false){
+    if (typeof createLogical == "undefined" || createLogical == false){
 
         var generalTab = document.createElement("div");
         generalTab.style= "border-width: 0px 0px 0px 1px;border-style:solid;border-color:#dadce0; text-align: center;font-color:#707070; font-weight: bold;font-size: 16px; overflow: hidden; display: inline-block; padding-top: 8px; height: 25px; width: 49%;";

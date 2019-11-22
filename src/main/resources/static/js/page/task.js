@@ -131,6 +131,7 @@ var vue = new Vue({
 
         rotatevalue:0,
 
+        loadjson:''
     },
     computed: {},
     methods: {
@@ -533,6 +534,8 @@ var vue = new Vue({
             this.eventChoosing.suffix = suffix;
             this.eventChoosing.url = url;
             this.$refs.upload.clearFiles();
+            $("#eventInp_" + this.eventChoosing.eventId).val(tag+"."+suffix);
+            $("#download_" + this.eventChoosing.eventId).css("display","block");
         },
 
         myDataClick(index) {
@@ -1506,7 +1509,7 @@ var vue = new Vue({
 
 
 
-        }
+        },
 
     },
 
@@ -1748,6 +1751,162 @@ var vue = new Vue({
             }
         });
 
+        /**
+         * 张硕
+         * 2019.11.21
+         * 模型运行的图形界面
+         */
+
+        let count=0;
+        $('#workFlow').click(function () {
+            $(".mxWindow").remove();
+            if(count==0) {
+                count++;
+                setTimeout(function () {
+                    var diagram = new OGMSDiagram();
+                    diagram.init($('#ogmsDiagramContainer'),
+                        {
+                            width: '100%',       //! Width of panel
+                            // height: '100%',       //! Height of panel
+                            height: 650,       //! Height of panel
+                            enabled: false      //! Edit enabled
+                        },
+                        {
+                            x: 500,            //! X postion of state information window
+                            y: $(window).scrollTop() + 50,              //! Y postion of state information window
+                            width: 520,         //! Width of state information window
+                            height: 650         //! Height of state information window
+                        },
+                        {
+                            x: 1000,           //! X postion of data reference information window
+                            y: $(window).scrollTop() + 50,             //! Y postion of data reference information window
+                            width: 300,         //! Width of data reference information window
+                            height: 400         //! Height of data reference information window
+                        },
+                        '/static/js/mxGraph/images/modelState.png',    //! state IMG
+                        '/static/js/mxGraph/images/grid.gif',          //! Grid IMG
+                        '/static/js/mxGraph/images/connector.gif',     //! Connection center IMG
+                        false                       //! Debug button
+                    );
+
+
+                    var behavior = {};
+                    behavior.states = that.info.modelInfo.states;
+                    behavior.dataRef = that.info.modelInfo.dataRefs;
+                    behavior.transition = [];
+
+                    that.loadjson = JSON.stringify(behavior).replace(new RegExp("\"event\":", "gm"), "\"events\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"desc\":", "gm"), "\"description\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"Id\":", "gm"), "\"id\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"eventId\":", "gm"), "\"id\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"eventName\":", "gm"), "\"name\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"eventType\":", "gm"), "\"type\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"eventDesc\":", "gm"), "\"description\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"optional\":", "gm"), "\"option\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"data\":", "gm"), "\"dataDes\":");
+                    diagram.loadJSON(that.loadjson);
+
+                    diagram.onStatedbClick(function (state) {
+                        diagram.showStateWin({
+                            x: 1050,
+                            y: 260,
+                        }, {
+                            width: 500,
+                            height: 500
+                        });
+
+                    });
+                }, 0.1);
+            }
+        });
+        $('#classic').click(function () {
+            $(".mxWindow").remove();
+            count=0;
+        });
+        $('#semantics').click(function () {
+            $(".mxWindow").remove();
+            count=0;
+        });
+
+        $(document).on("click",".eventBtn",function(e){
+            var event_id = e.currentTarget.id;
+            var start = event_id.search('_');
+            var eventId = event_id.slice(start+1);
+            var btnName = event_id.slice(0,start);
+
+            var find = false;
+            for (var i = 0; i<that.info.modelInfo.states.length; i++){
+                var state = that.info.modelInfo.states[i];
+                for (var j = 0; j<state.event.length; j++){
+                    var event = state.event[j];
+                    if(eventId == event.eventId){
+                        switch (btnName) {
+                            case 'select':
+                                that.selectFromDataItem(event);
+                                break;
+                            case 'upload':
+                                that.upload(event);
+                                break;
+                            case 'check':
+                                that.checkPersonData(event);
+                                break;
+                            case 'download':
+                                that.download(event);
+                                break;
+                        }
+                        find = true;
+                        break;
+                    }
+                }
+                if (find == true){
+                    break;
+                }
+            }
+        }.bind(this));
+
+        /**
+         * 张硕
+         * 2019.11.22
+         * Event的点击事件，作用是将tab中的input文件与vue中的info属性相关联
+         */
+        $(document).on('click','.eventTab',function(e) {
+                var href = e.currentTarget.href;
+                var start = href.search('#');
+                var eventId = href.slice(start+7);
+
+                var find = false;
+                for (var i = 0; i<that.info.modelInfo.states.length; i++){
+                    var state = that.info.modelInfo.states[i];
+                    for (var j = 0; j<state.event.length; j++){
+                        var event = state.event[j];
+                        if(eventId == event.eventId){
+                            if (event.eventType == "response" && event.tag != undefined) {
+                                $("#eventInp_" + eventId).val(event.tag+"."+event.suffix);
+                            }else if (event.eventType == "response") {
+                                $("#download_" + eventId).css("display","none");
+                            }else if (event.eventType != "response" && event.tag != undefined) {
+                                $("#eventInp_" + eventId).val(event.tag+"."+event.suffix);
+                                $("#eventInp_" + eventId).css("width","90%");
+                                $("#select_" + eventId).css("display","none");
+                                $("#upload_" + eventId).css("display","none");
+                                $("#check_" + eventId).css("display","none");
+                            }else {
+                                $("#inputGroup_" + eventId).css("display","none");
+                            }
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (find == true){
+                        break;
+                    }
+                }
+
+                // that.info.modelInfo.states;
+                // $("#eventInp_ + eventId").value =
+
+            }.bind(this)
+        );
     },
 
     destory(){
@@ -1788,6 +1947,7 @@ $(function () {
         console.log('11')
         $('.fa-arrow-left').animate({marginLeft:'-6px'},170)
         $('.fa-arrow-left').animate({marginLeft:'0'},170)
-    })
+    });
+
 
 });
