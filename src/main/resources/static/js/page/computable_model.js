@@ -368,7 +368,7 @@ new Vue({
 
 
         diagram = new OGMSDiagram();
-        diagram.init($('#ogmsDiagramContainer'),
+        diagram.init($('#mxGraphContainer'),
             {
                 width: 1000,       //! Width of panel
                 height: '100%',       //! Height of panel
@@ -377,13 +377,13 @@ new Vue({
             },
             {
                 x: 500,            //! X postion of state information window
-                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop() ,              //! Y postion of state information window
+                y: $("#mxGraphContainer").offset().top - $(window).scrollTop() ,              //! Y postion of state information window
                 width: 520,         //! Width of state information window
                 height: 650         //! Height of state information window
             },
             {
                 x: 1000,           //! X postion of data reference information window
-                y: $("#ogmsDiagramContainer").offset().top - $(window).scrollTop(),              //! Y postion of data reference information window
+                y: $("#mxGraphContainer").offset().top - $(window).scrollTop(),              //! Y postion of data reference information window
                 width: 300,         //! Width of data reference information window
                 height: 400         //! Height of data reference information window
             },

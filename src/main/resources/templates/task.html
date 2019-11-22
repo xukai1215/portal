@@ -158,9 +158,9 @@
                                 <div style="position:absolute;right:0">
                                     <span style="margin-right:10px">Show style:</span>
                                     <el-radio-group v-model="radioStyle">
-                                        <el-radio-button label="Classic"></el-radio-button>
-                                        <el-radio-button label="Semantics"></el-radio-button>
-                                        <el-radio-button label="Work flow"></el-radio-button>
+                                        <el-radio-button id="classic" label="Classic"></el-radio-button>
+                                        <el-radio-button id="semantics" label="Semantics"></el-radio-button>
+                                        <el-radio-button id="workFlow" label="Work flow"></el-radio-button>
                                     </el-radio-group>
                                 </div>
                             </el-row>
@@ -363,6 +363,9 @@
                             </el-collapse>
                         </el-row>
 
+                        <el-row v-if="radioStyle=='Work flow'">
+                            <div id="ogmsDiagramContainer"></div>
+                        </el-row>
 
                         <!-- <el-tabs v-model="activeTab" tab-position="left">
                             <el-tab-pane v-for="(state,index) in modelInfo.states" :key="index" :label="state.name"
@@ -790,6 +793,14 @@
 </div>
 </body>
 
+
+<script>
+    mxBasePath = "/static/js/mxGraph";
+</script>
+
+<script src="/static/js/mxGraph/js/mxClient.js"></script>
+<script src="/static/js/mxGraph/js/ogmsDiagram.js"></script>
+
 <!--<script src="/static/js/common/knockout-3.4.2.js"></script>-->
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
@@ -814,5 +825,6 @@
 <script src="/static/js/page/task.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
+
 
 </html>
