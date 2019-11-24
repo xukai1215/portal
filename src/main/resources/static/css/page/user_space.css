@@ -1226,6 +1226,11 @@
 .btn-default:focus,
 .btn-default:active,
 .btn-default.active,
+
+.btn-primary{
+  border-radius: 3px;
+}
+
 .open > .dropdown-toggle.btn-default {
   background-color: #F5F5F5;
   border-color: #DDD;

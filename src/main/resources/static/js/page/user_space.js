@@ -128,7 +128,8 @@ var vue = new Vue({
 
         data_img: [],
         //manager
-        searchcontent: '',
+        searchContent: '',
+        searchContentShown: '',
         databrowser: [],
         loading: 'false',
         managerloading: true,
@@ -274,6 +275,22 @@ var vue = new Vue({
             }]
         }],
 
+        folderTree2 : [{
+            id: 1,
+            label: 'All Folder',
+            children: [{
+                id: 4,
+                label: '二级 1-1',
+                children: [{
+                    id: 9,
+                    label: '三级 1-1-1'
+                }, {
+                    id: 10,
+                    label: '三级 1-1-2'
+                }]
+            }]
+        }],
+
         fileSpaceIndex:1,
 
         myFile:[],
@@ -306,7 +323,11 @@ var vue = new Vue({
 
         uploadInPath:0,
 
-        fileSearchResult:[]
+        fileSearchResult:[],
+
+        addOutputToMyDataVisible:false,
+
+        outputToMyData:{},
 
     },
 
@@ -815,6 +836,55 @@ var vue = new Vue({
             }
 
         },
+
+        addOutputToMyData(output){
+            console.log(output)
+            this.outputToMyData=output
+            this.addOutputToMyDataVisible=true
+            this.selectedPath=[];
+            axios.get("/user/getFolder",{})
+                .then(res=> {
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.folderTree=res.data.data;
+                        this.selectPathDialog=true;
+                    }
+
+
+                });
+        },
+
+        addOutputToMyDataConfirm(index){
+            let data=this.$refs.folderTree2[index].getCurrentNode();
+            let node=this.$refs.folderTree2[index].getNode(data);
+
+            while(node.key!=undefined&&node.key!=0){
+                this.selectedPath.unshift(node);
+                node=node.parent;
+            }
+            let allFder={
+                key:'0',
+                label:'All Folder'
+            }
+            this.selectedPath.unshift(allFder)
+            console.log(this.selectedPath)
+
+            this.uploadInPath=0
+            let obj={
+                label:this.outputToMyData.event,
+                suffix:this.outputToMyData.suffix,
+                url:this.outputToMyData.url
+            }
+
+            this.addDataToPortalBack(obj)
+            this.addOutputToMyDataVisible=false
+        },
+
         handleSelectionChange(val) {
             if(val)
                 this.multipleSelection=val
@@ -964,13 +1034,49 @@ var vue = new Vue({
             }
         },
 
+        pushPathShown(file,eval){
+            let flag
+            if(file.id!='0')
+                this.pathShown.push(file)
+            
+            if(file.id==eval.id){
+                return 1
+            }
+
+            for(let i=0;i<file.children.length;i++){
+
+
+                flag=this.pushPathShown(file.children[i],eval)
+                if(flag==1)
+                    return 1
+                this.pathShown.pop(this.pathShown.length-1)
+
+            }
+
+            return 0;
+
+        },
+
         getPackageContent($event, eval,key){
             clearTimeout(this.clickTimeout)
+            if(this.searchContentShown!=''){
+                this.pathShown=[]
+                let allFder={
+                    id:'0',
+                    label:'All Folder',
+                    children:this.myFile
+                }
+                this.pushPathShown(allFder,eval)
+                this.searchContentShown=''
+            }else {
+                this.pathShown.push(this.myFileShown[key])
+            }
+
             if(eval.package===false)
                 return
             let id=eval.id;
             this.fatherIndex=this.myFileShown[key].id;
-            this.pathShown.push(this.myFileShown[key])
+
             if(this.myFileShown[key].children.length!=0)
                 this.myFileShown= this.myFileShown[key].children;
             else
@@ -1010,6 +1116,13 @@ var vue = new Vue({
             //     console.log()
             // }else if(this.fatherIndex==0)
             //     this.myFileShown=this.myFile;
+
+            if(this.searchContentShown!=''){
+                this.myFileShown=this.myFile
+                this.searchContentShown=''
+                this.pathShown=[]
+                return
+            }
 
             let allFolder = [];
             allFolder.children=this.myFile;
@@ -1184,10 +1297,18 @@ var vue = new Vue({
             }
         },
 
-        addFolderinTree(){
-            let data=this.$refs.folderTree.getCurrentNode();
-            if(data===null) alert('Please select a file directory')
-            let node=this.$refs.folderTree.getNode(data);
+        addFolderinTree(pageIndex,index){
+            var node,data
+            if(pageIndex==1){
+                data=this.$refs.folderTree.getCurrentNode();
+                if(data==undefined) alert('Please select a file directory')
+                node=this.$refs.folderTree.getNode(data);
+            }
+            else{
+                data=this.$refs.folderTree2[index].getCurrentNode();
+                if(data==undefined) alert('Please select a file directory')
+                node=this.$refs.folderTree2[index].getNode(data);
+            }
 
             console.log(node);
             let paths=[];
@@ -1197,6 +1318,8 @@ var vue = new Vue({
             }
             if(paths.length==0) paths.push('0')
             console.log(paths)
+
+            var newChild={id:""}
 
             this.$prompt(null, 'Enter Folder Name', {
                 confirmButtonText: 'OK',
@@ -1208,7 +1331,7 @@ var vue = new Vue({
                     type: "POST",
                     url: "/user/addFolder",
                     data: {paths: paths, name: value},
-                    async: true,
+                    async: false,
                     contentType: "application/x-www-form-urlencoded",
                     success: (json) => {
                         if (json.code == -1) {
@@ -1217,16 +1340,25 @@ var vue = new Vue({
                             window.location.href = "/user/login"
                         }
                         else {
-                            const newChild = {id: json.data, label: value, children: []};
+                            newChild = {id: json.data, label: value, children: [], father: data.id ,package:true,suffix:'',upload:false, url:'',};
                             if (!data.children) {
                                 this.$set(data, 'children', []);
                             }
                             data.children.push(newChild);
+
+                            this.addChild(this.myFile,paths[0],newChild)
+
+                            setTimeout(()=>{
+                                    this.$refs.folderTree.setCurrentKey(newChild.id)
+                                },100)
                         }
 
                     }
+
                 });
 
+
+            }).then(()=>{
 
             }).catch(() => {
                 this.$message({
@@ -1234,6 +1366,8 @@ var vue = new Vue({
                     message: 'Cancel'
                 });
             });
+
+
         },
 
         uploadFileInPath(){
@@ -1849,6 +1983,102 @@ var vue = new Vue({
                 }
             })
 
+        },
+
+        getCalcWithCurrent(){
+            this.curIndex=6
+            this.isInSearch = 0;
+            $.ajax({
+                type: "Get",
+                url: "/user/getUserInfo",
+                data: {},
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: (json) => {
+                    data = json.data;
+                    console.log(data);
+                    this.statisticsInfo = data["record"];
+                    var modelInfo = data["userInfo"];
+
+                    this.resourceOption = {
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: ['Model Items', 'Data Item', 'Conceputal Model', 'Logical Model', 'Computable Model'],
+                                axisTick: {
+                                    alignWithLabel: true
+                                },
+                                axisLabel: {
+                                    interval: 0,
+                                    formatter: function (params) {
+                                        var index = params.indexOf(" ");
+                                        var start = params.substring(0, index);
+                                        var end = params.substring(index + 1);
+                                        var newParams = start + "\n" + end;
+                                        return newParams
+                                    }
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: 'count',
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: [modelInfo["modelItems"], modelInfo["dataItems"], modelInfo["conceptualModels"], modelInfo["logicalModels"], modelInfo["computableModels"]]
+                            }
+                        ]
+                    }
+
+                    // var chart = echarts.init(document.getElementById('chartRes'));
+                    // chart.setOption(this.resourceOption);
+
+                    this.userInfo = modelInfo;
+
+                    //取出taskinfo放入userTaskInfo
+                    this.getUserTaskInfo()
+
+                    let orgs = this.userInfo.organizations;
+
+                    if (orgs.length != 0) {
+                        this.userInfo.orgStr = orgs[0];
+                        for (i = 1; i < orgs.length; i++) {
+                            this.userInfo.orgStr += ", " + orgs[i];
+                        }
+                    }
+
+                    let sas = this.userInfo.subjectAreas;
+                    if (sas != null && sas.length != 0) {
+                        this.userInfo.saStr = sas[0];
+                        for (i = 1; i < sas.length; i++) {
+                            this.userInfo.saStr += ", " + sas[i];
+                        }
+                    }
+
+
+                    this.load = false;
+                }
+            })
         },
 
         getServersInfo() {
@@ -4207,6 +4437,7 @@ var vue = new Vue({
         selectFolder(){
             $('#selectFolder').modal('show')
             this.selectedPath=[];
+
             axios.get("/user/getFolder",{})
                 .then(res=> {
                     let json=res.data;
@@ -4222,6 +4453,21 @@ var vue = new Vue({
 
 
                 });
+        },
+
+        setCheck(){
+            let obj={
+                children: [],
+                father: "c294e6f5-2b52-4868-873b-1baa283cb29a",
+                id: "4d0557df-63e7-4f3b-9fdd-0ad8fe774f5d",
+                label: "333",
+                package: true,
+                suffix: "",
+                upload: false,
+                url: "",
+            }
+
+            this.$refs.folderTree.setCurrentKey("4d0557df-63e7-4f3b-9fdd-0ad8fe774f5d")
         },
 
         confirmFolder(){
@@ -4888,12 +5134,12 @@ var vue = new Vue({
         },
 
         keywordsSearch() {
-            if (this.searchcontent === "") {
+            if (this.searchContent === "") {
                 this.getFilePackage()
             } else {
                 axios.get('/user/keywordsSearch',{
                     params:{
-                        keyword:this.searchcontent
+                        keyword:this.searchContent
                     }
                 }).then((res)=>{
                     let json=res.data;
@@ -4905,6 +5151,8 @@ var vue = new Vue({
                     else {
                         this.fileSearchResult=json.data.data;
                         this.myFileShown=this.fileSearchResult
+                        this.searchContentShown=this.searchContent
+                        this.pathShown=[];
                     }
                 })
 

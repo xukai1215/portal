@@ -446,6 +446,16 @@
                                         @click="outputDataClick(2)">Output Data
                                     </li>
                                 </ul>
+                                <el-col :span="9" style="float: right;font-weight: 500" >
+                                <el-input id="searchinput"
+                                          placeholder="input keywords, press enter to search "
+                                          v-model="searchcontent"
+                                          @keyup.enter.native="keywordsSearch()" size="mini"
+                                >
+                                    <el-button slot="append" icon="el-icon-search" @click="keywordsSearch()"></el-button>
+
+                                </el-input>
+                                </el-col>
                             </div>
 
                             <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==1}" style="height: 100%">
