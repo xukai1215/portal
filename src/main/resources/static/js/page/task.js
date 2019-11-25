@@ -131,6 +131,8 @@ var vue = new Vue({
 
         rotatevalue:0,
 
+        fileSearchResult:[],
+
         loadjson:''
     },
     computed: {},
@@ -753,7 +755,31 @@ var vue = new Vue({
 
         },
 
+        keywordsSearch() {
+            if (this.searchcontent === "") {
+                this.getFilePackage()
+            } else {
+                axios.get('/user/keywordsSearch',{
+                    params:{
+                        keyword:this.searchcontent
+                    }
+                }).then((res)=>{
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.fileSearchResult=json.data.data;
+                        this.myFileShown=this.fileSearchResult
+                    }
+                })
 
+            }
+
+
+        },
 
         async invoke() {
 
@@ -1560,171 +1586,6 @@ var vue = new Vue({
 
         window.addEventListener('scroll',this.initSize);
         window.addEventListener('resize',this.initSize);
-
-
-        //managerUpload
-
-        $("#managerUpload").fileinput({
-            theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
-            overwriteInitial: false,
-            uploadAsync: true, //默认异步上传,
-            showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
-            showCaption: false,//是否显示标题
-            browseClass: "btn btn-primary", //按钮样式
-
-            maxFileSize: 10000,
-            maxFilesNum: 10,
-            enctype: 'multipart/form-data',
-            validateInitialCount:true,
-            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
-            //allowedFileTypes: ['image', 'video', 'flash'],
-            slugCallback: function (filename) {
-                return filename.replace('(', '_').replace(']', '_');
-            }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
-            // console.log('文件正在上传');
-        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
-            var form = data.form, files = data.files, extra = data.extra,
-                response = data.response, reader = data.reader;
-            if(response!=null){
-                // alert("数据上传成功")
-            }
-            //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
-            // console.log(response);//打印出返回的json
-            // console.log(response.status);//打印出路径
-
-
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
-            // console.log('文件上传失败！'+data.status);
-        });
-
-
-
-
-
-        //上传数据相关
-        $("#file-1").fileinput({
-            theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
-            overwriteInitial: false,
-            uploadAsync: true, //默认异步上传,
-            showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
-            showCaption: false,//是否显示标题
-            browseClass: "btn btn-primary", //按钮样式
-
-            maxFileSize: 10000,
-            maxFilesNum: 10,
-            enctype: 'multipart/form-data',
-            validateInitialCount:true,
-            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
-            //allowedFileTypes: ['image', 'video', 'flash'],
-            slugCallback: function (filename) {
-                return filename.replace('(', '_').replace(']', '_');
-            }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
-            // console.log('文件正在上传');
-        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
-            var form = data.form, files = data.files, extra = data.extra,
-                response = data.response, reader = data.reader;
-            if(response!=null){
-                // alert("数据上传成功")
-            }
-            //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
-            // console.log(response);//打印出返回的json
-            // console.log(response.status);//打印出路径
-
-
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
-            // console.log('文件上传失败！'+data.status);
-        });
-
-        $("#file-2").fileinput({
-            theme: 'fas',
-            uploadUrl: 'http://172.21.213.194:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
-            overwriteInitial: false,
-            uploadAsync: true, //默认异步上传,
-            showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
-            showCaption: false,//是否显示标题
-            browseClass: "btn btn-primary", //按钮样式
-
-            maxFileSize: 10000,
-            maxFilesNum: 10,
-            enctype: 'multipart/form-data',
-            validateInitialCount:true,
-            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
-            //allowedFileTypes: ['image', 'video', 'flash'],
-            slugCallback: function (filename) {
-                return filename.replace('(', '_').replace(']', '_');
-            }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
-            // console.log('文件正在上传');
-        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
-            var form = data.form, files = data.files, extra = data.extra,
-                response = data.response, reader = data.reader;
-            if(response!=null){
-                // alert("数据上传成功")
-            }
-            //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
-
-
-            // console.log(response);//打印出返回的json
-            // console.log(response.status);//打印出路径
-
-
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
-            // console.log('文件上传失败！'+data.status);
-        });
-
-
-
-        //上传数据相关
-        $("#manager-upload").fileinput({
-            theme: 'fas',
-            uploadUrl: 'http://172.21.212.64:8082/file/upload/store_dataResource_files', // /file/apk_upload   you must set a valid URL here else you will get an error
-            overwriteInitial: false,
-            uploadAsync: true, //默认异步上传,
-            showUpload: true, //是否显示上传按钮
-            showRemove : true, //显示移除按钮
-            showPreview : true, //是否显示预览
-            showCaption: false,//是否显示标题
-            browseClass: "btn btn-primary", //按钮样式
-            dropZoneEnabled: true,
-            maxFileSize: 10000,
-            maxFilesNum: 10,
-            enctype: 'multipart/form-data',
-            validateInitialCount:true,
-            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
-            //allowedFileTypes: ['image', 'video', 'flash'],
-            slugCallback: function (filename) {
-                return filename.replace('(', '_').replace(']', '_');
-            }
-        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
-            // console.log('文件正在上传');
-        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
-            var form = data.form, files = data.files, extra = data.extra,
-                response = data.response, reader = data.reader;
-            if(response!=null){
-                // alert("数据上传成功")
-            }
-            //get dataResource add sourceStoreId
-            that.sourceStoreId=response.data;
-            // console.log(response);//打印出返回的json
-            // console.log(response.status);//打印出路径
-
-
-        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
-            // console.log('文件上传失败！'+data.status);
-        });
 
         $("#imgChange").click(function () {
             $("#imgFile").click();

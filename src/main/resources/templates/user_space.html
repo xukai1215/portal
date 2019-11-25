@@ -330,7 +330,7 @@
                                             </div>
                                             <div class="widget-data">
                                                 <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
-                                                <div class="widget-title">On Going Calculations</div>
+                                                <div class="widget-title" @click="getCalcWithCurrent">On Going Calculations</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1831,7 +1831,7 @@
                             <div style="height: 100%">
                                 <el-card class="filebrowserfunction" shadow="never">
 
-                                    <el-row id="" class="filebrowser" shadow="never">
+                                    <el-row id="" class="filebrowser flexColCenter" shadow="never">
 
                                         <el-col :span="15" shadow="never">
                                             <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
@@ -1860,10 +1860,11 @@
                                         <el-col :span="9" style="float: right">
                                             <el-input id="searchinput"
                                                       placeholder="search input "
-                                                      suffix-icon="el-icon-search"
-                                                      v-model="searchcontent"
+                                                      v-model="searchContent"
                                                       @keyup.enter.native="keywordsSearch()"
                                             >
+                                                <el-button slot="append" icon="el-icon-search" @click="keywordsSearch()"></el-button>
+
                                             </el-input>
                                         </el-col>
                                     </el-row>
@@ -1914,6 +1915,7 @@
                                                     <div class="showPathContainer" style="margin-left: 10px">
                                                         <div>path</div>:
                                                         <div v-for="(path,index) in pathShown" :style="{color:index==pathShown.length-1?'#222222':'#666666'}"> /{{path.label}} </div>
+                                                        <div v-if="searchContentShown!=''" style="font-style: italic"> search results of '{{searchContentShown}}' </div>
                                                     </div>
                                                 </div>
 
@@ -2153,7 +2155,7 @@
                                         <div class="modal-footer">
                                              <span>
                                                  <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
-                                                            @click="addFolderinTree()">Add new folder</el-button>
+                                                            @click="addFolderinTree(1)">Add new folder</el-button>
                                                  <el-button @click="closeSelectFolder">Cancel</el-button>
                                                  <el-button type="primary" @click="confirmFolder()">OK</el-button>
                                              </span>
@@ -2175,7 +2177,7 @@
                                             <el-input id="searchinput"
                                                       placeholder="search input "
                                                       suffix-icon="el-icon-search"
-                                                      v-model="searchcontent"
+                                                      v-model="searchContent"
                                                       @keyup.enter.native="keywordsSearch()"
                                             >
                                             </el-input>
@@ -2184,7 +2186,7 @@
                                 </el-card>
                                 <el-card>
 
-                                    <div class="alert-success" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;
+                                    <div class="" role="alert"><span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;
                                         <span>{{downloadDataSetName.name}}</span><span v-if="">.{{downloadDataSetName.suffix}}</span><span v-if="downloadDataSetName.length==0">no data..</span>
                                     </div>
                                 </el-card>
@@ -3132,7 +3134,7 @@
                                     <h4 v-if="task.status==-1" style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer" @click="expandRunInfo(index,$event)">
                                         Something <span style="color: rgb(224,101,80)" @click="expandRunInfo(index,$event)" >wrong</span> with it !</h4>
                                     <h4 v-if="task.status==0||task.status==1" style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"@click="expandRunInfo(index,$event)" >
-                                        <span style="color: rgb(64,158,255)" >Caulating</span>!</h4>
+                                        <span style="color: rgb(64,158,255)" >Calculating</span>!</h4>
                                     <span role="button" tabindex="0" class="ab" style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
                                           data-toggle="collapse" class="" aria-expanded="true" @click="expandRunInfo(index,$event)" ><i class="fa fa-caret-down" style="font-size: 27px"></i></a></span>
                                 </div>
@@ -3140,21 +3142,63 @@
                                     <h5 v-if="task.status==0||task.status==1">
                                         Calculating
                                     </h5>
+                                    <ul v-if="task.status==1">
+                                        <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
+                                        <li class="flagcontent clearfix" v-for="(input,key) in task.inputs">
+                                                <span style="margin-top: 5px; displaay: inline-block;">
+                                                    {{input.event}}
+                                                </span>
+                                            <button class="pull-right clearfix btn btn-primary downloadAFile" style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                    @click="downloadSingle(input.url)">Download File
+                                            </button>
+                                            <button class="pull-right clearfix btn btn-primary downloadAFile" style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                    @click="addOutputToMyData(input)">Add to My Data
+                                            </button>
+                                        </li>
+                                    </ul>
+
                                     <h5 v-if="task.status==-1">
                                         Calculation Failure
                                     </h5>
                                     <ul v-if="task.status==2">
-                                        <li class="flagcontent clearfix" v-for="output in task.outputs">
-                                                <span style="margin-top: 5px; display: inline-block;">
+                                        <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
+                                        <li class="flagcontent clearfix" v-for="(output,key) in task.outputs">
+                                                <span style="margin-top: 5px; displaay: inline-block;">
                                                     {{output.event}}
                                                 </span>
-                                            <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                            <button class="pull-right clearfix btn btn-primary downloadAFile" style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
                                                     @click="downloadSingle(output.url)">Download File
                                             </button>
-
+                                            <button class="pull-right clearfix btn btn-primary downloadAFile" style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                    @click="addOutputToMyData(output)">Add to My Data
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
+
+                                <el-dialog :visible.sync="addOutputToMyDataVisible" title="Add Output to My Data"
+                                           width="35%">
+                                    <el-card style="min-height: 300px;">
+                                        <el-tree
+                                                :data="folderTree"
+                                                ref="folderTree2"
+                                                node-key="id"
+                                                highlight-current
+                                                default-expand-all
+                                                :expand-on-click-node="false"
+                                        >
+                                            <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                <span>{{ node.label }}</span>
+                                            </span>
+                                        </el-tree>
+                                    </el-card>
+                                    <span slot="footer" class="dialog-footer">
+                                        <el-button class="pull-left" type="primary" icon="el-icon-folder-add" @click="addFolderinTree(2,index)">Add new folder</el-button>
+                                        <el-button @click="forkDialogVisible = false">Cancel</el-button>
+                                        <el-button type="primary" @click="addOutputToMyDataConfirm(index)">OK</el-button>
+                                    </span>
+                                </el-dialog>
+
                                 <div class="pull-right" :attr.uid="task.msr_id"
                                      style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
                                             <span style="margin-right:20px">
