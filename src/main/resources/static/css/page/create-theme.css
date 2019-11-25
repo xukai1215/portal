@@ -1430,3 +1430,43 @@ ul, li {
     display: flow-root;
 }
 
+.el-tabs__new-tab{
+    height: 30px !important;
+    width: 80px !important;
+    background-color: #0e90d2;
+    margin: 0 !important;
+}
+
+.el-icon-plus{
+    height: 25px;
+    width: 75px;
+}
+
+/*#selectok{*/
+    /*display: flex!important;*/
+/*}*/
+
+/*#step1_next{*/
+    /*float: right;*/
+    /*margin-left: 5px;*/
+/*}*/
+/*#step2_next{*/
+    /*float: right;*/
+    /*margin-left: 5px;*/
+/*}*/
+/*#step3_next{*/
+    /*float: right;*/
+    /*margin-left: 5px;*/
+/*}*/
+
+#step1_left{
+    width: 85%!important;
+    float: right!important;
+    margin-top: 20px!important;
+}
+
+#step2_left{
+    width: 85%!important;
+    float: right!important;
+    margin-top: 20px!important;
+}

@@ -102,7 +102,6 @@
                                                 <div class="step-content">
                                                     <div class="step-tab-panel" id="step1">
                                                         <div id="RepositoryParentsPanel">
-
                                                             <div class="form-horizontal">
                                                                 <div class="form-group">
                                                                     <label for="nameInput"
@@ -135,269 +134,258 @@
                                                                class="col-sm-2 control-label" style="width: 110px;font-weight: bold">Descriptions:</label>
                                                         </div>
                                                         <textarea id="myText"></textarea>
-
+                                                        <!--<div class="step-footer text-right">-->
+                                                            <!--<button class="btn btn-primary next" data-direction="next" id="step1_next">Next-->
+                                                        <!--</button>-->
+                                                        <!--</div>-->
                                                     </div>
                                                     <div class="step-tab-panel" id="step2">
-                                                        <div class="panel-body">
-                                                            <div class="col-md-10 col-md-offset-1">
 
-                                                                <div class="panel-group " id="accordion1">
-                                                                    <div id="providersPanel1" class="panel"
-                                                                         style="border-color:#424f63">
-                                                                        <div class="panel-heading"
-                                                                             style="background-color: #424f63">
-                                                                            <h4 class="panel-title"
-                                                                                style="color:white">
-                                                                                <a class="accordion-toggle"
-                                                                                   data-parent="#accordion1">
-                                                                                    Models
-                                                                                </a>
-                                                                            </h4>
-                                                                        </div>
-                                                                        <div id="provider_body1"
-                                                                             class="panel-collapse collapse in"
-                                                                             style="height: auto;">
-                                                                            <div class="panel-body providers"
-                                                                                 style="border-top: #424f63; padding:0px">
-                                                                                <div class='panel panel-primary'>
-                                                                                    <div class='panel-heading info-head'>
-                                                                                        <h4 class='panel-title'>
-                                                                                            <a class='accordion-toggle collapsed'
-                                                                                               style="color:white"
-                                                                                               data-toggle='collapse'
-                                                                                               data-target='#model1'
-                                                                                               href="javascript:;">
-                                                                                                NEW
-                                                                                            </a>
-                                                                                        </h4>
-                                                                                        <a href="javascript:;"
-                                                                                           class="fa fa-times author_close"
-                                                                                           style="float:right;margin-top:8px;color:white"></a>
-                                                                                    </div>
-                                                                                    <div id='model1'
-                                                                                         class='panel-collapse collapse in'>
-                                                                                        <div class='panel-body user-contents'>
-                                                                                            <div class='model-attr'>
-                                                                                                <div>
-                                                                                                    <lable class='control-label col-sm-2 text-center'
-                                                                                                           style='font-weight: bold;'>
-                                                                                                        Category Name:
-                                                                                                    </lable>
-                                                                                                    <div class='input-group col-sm-10'>
-                                                                                                        <input type='text'
-                                                                                                               id="categoryname"
-                                                                                                               name="name"
-                                                                                                               class='form-control'>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div style="margin-top:10px">
-                                                                                                    <lable class='control-label col-sm-2 text-center'
-                                                                                                           style='font-weight: bold;'>
-                                                                                                        Model name:
-                                                                                                    </lable>
-                                                                                                    <div class='input-group col-sm-10'>
-                                                                                                        <button type="button" icon="el-icon-plus"
-                                                                                                                   style="width: 100%" id ="selectmodel">
-                                                                                                            Select Model
-                                                                                                        </button>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                        <div class="panel-body">
+                                                            <!--实验tabs-->
+                                                            <el-card>
+                                                            <el-tabs v-model="editableTabsValue_model" type="card" editable @edit="handleTabsEdit_model">
+                                                                <el-tab-pane
+                                                                        :key="item.name"
+                                                                        v-for="(item, index) in editableTabs_model"
+                                                                        :label="item.title"
+                                                                        :name="item.name"
+                                                                        id="el_model"
+                                                                >
+                                                                    <!--{{item.content}}-->
+                                                                    <div id='model1'
+                                                                         class='panel-collapse collapse in'>
+                                                                        <div class='panel-body user-contents'>
+                                                                            <div class='model-attr'>
+                                                                                <div>
+                                                                                    <lable class='control-label col-sm-2 text-center'
+                                                                                           style='font-weight: bold;'>
+                                                                                        Category Name:
+                                                                                    </lable>
+                                                                                    <div class='input-group col-sm-10'>
+                                                                                        <input type='text'
+                                                                                               id="categoryname"
+                                                                                               name="name"
+                                                                                               class='form-control'>
                                                                                     </div>
                                                                                 </div>
+                                                                                <div style="margin-top:10px">
+                                                                                    <lable class='control-label col-sm-2 text-center'
+                                                                                           style='font-weight: bold;'>
+                                                                                        Model name:
+                                                                                    </lable>
+                                                                                    <div class='input-group col-sm-10'>
+                                                                                        <button type="button" icon="el-icon-plus"
+                                                                                                style="width: 100%" id ="selectmodel">
+                                                                                            Select Model
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;" id="step1_left">
+                                                                                    <div slot="header" class="clearfix">
+                                                                                        <span>Selected Items</span>
+                                                                                    </div>
+                                                                                    <!--<li v-for="site in tableDataarr"></li>-->
+                                                                                    <el-table
+                                                                                            :data="item.tabledata[0]"
+                                                                                            ref="leftTable"
+                                                                                            :max-height="tableMaxHeight">
+                                                                                        <el-table-column type="expand">
+                                                                                            <template slot-scope="props">
+                                                                                                <el-form label-position="left" inline class="demo-table-expand">
+                                                                                                    <el-form-item label="Contributor">
+                                                                                                        <span>{{ props.row.author }}</span>
+                                                                                                    </el-form-item>
+
+                                                                                                </el-form>
+                                                                                            </template>
+                                                                                        </el-table-column>
+                                                                                        <el-table-column
+                                                                                                label="Name">
+                                                                                            <template slot-scope="props">
+                                                                                                <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                                                                            </template>
+                                                                                        </el-table-column>
+
+                                                                                        <el-table-column fixed="right" label="Operation" width="100">
+                                                                                            <template slot-scope="scope">
+
+                                                                                                <el-button
+                                                                                                        size="mini"
+                                                                                                        type="danger"
+                                                                                                        @click="handleDelete(scope.$index, scope.row)">Delete
+                                                                                                </el-button>
+                                                                                            </template>
+                                                                                        </el-table-column>
+                                                                                    </el-table>
+                                                                                </el-card>
+
                                                                             </div>
-                                                                            <button type="button"
-                                                                                    class="btn btn-success btn-lg btn-block model-add"
-                                                                                    style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
-                                                                                Add
-                                                                            </button>
                                                                         </div>
+                                                                        <!--<div>-->
+                                                                            <!--<lable class='control-label col-sm-2 text-center'-->
+                                                                                   <!--style='font-weight: bold;'>-->
+                                                                                <!--Select Model Name:-->
+                                                                            <!--</lable>-->
+                                                                        <!--</div>-->
+                                                                    </br>
+
                                                                     </div>
-                                                                </div>
-                                                            </div>
+                                                                </el-tab-pane>
+                                                            </el-tabs>
+
+                                                            </el-card>
                                                         </div>
+                                                        <!--<div class="step-footer text-right">-->
+                                                            <!--<button class="btn btn-primary next" data-direction="next" id="step2_next">Next-->
+                                                            <!--</button>-->
+                                                        <!--</div>-->
                                                     </div>
                                                     <div class="step-tab-panel" id="step3">
                                                         <div class="panel panel-success" style="border:none">
                                                             <div class="panel-body">
-                                                                <div class="col-md-10 col-md-offset-1">
-
-                                                                    <div class="panel-group " id="accordion2">
-                                                                        <div id="providersPanel2" class="panel"
-                                                                             style="border-color:#424f63">
-                                                                            <div class="panel-heading"
-                                                                                 style="background-color: #424f63">
-                                                                                <h4 class="panel-title"
-                                                                                    style="color:white">
-                                                                                    <a class="accordion-toggle"
-                                                                                       data-parent="#accordion2">
-                                                                                        Data
-                                                                                    </a>
-                                                                                </h4>
-                                                                            </div>
-                                                                            <div id="provider_body2"
-                                                                                 class="panel-collapse collapse in"
-                                                                                 style="height: auto;">
-                                                                                <div class="panel-body providers"
-                                                                                     style="border-top: #424f63; padding:0px">
-                                                                                    <div class='panel panel-primary'>
-                                                                                        <div class='panel-heading info-head'>
-                                                                                            <h4 class='panel-title'>
-                                                                                                <a class='accordion-toggle collapsed'
-                                                                                                   style="color:white"
-                                                                                                   data-toggle='collapse'
-                                                                                                   data-target='#data1'
-                                                                                                   href="javascript:;">
-                                                                                                    NEW
-                                                                                                </a>
-                                                                                            </h4>
-                                                                                            <a href="javascript:;"
-                                                                                               class="fa fa-times author_close"
-                                                                                               style="float:right;margin-top:8px;color:white"></a>
-                                                                                        </div>
-                                                                                        <div id='data1'
-                                                                                             class='panel-collapse collapse in'>
-                                                                                            <div class='panel-body user-contents'>
-                                                                                                <div class='data-attr'>
-                                                                                                    <div>
-                                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                                               style='font-weight: bold;'>
-                                                                                                            Category Name:
-                                                                                                        </lable>
-                                                                                                        <div class='input-group col-sm-10'>
-                                                                                                            <input type='text'
-                                                                                                                   id="categoryname2"
-                                                                                                                   name="name"
-                                                                                                                   class='form-control'>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div style="margin-top:10px">
-                                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                                               style='font-weight: bold;'>
-                                                                                                            Data Name:
-                                                                                                        </lable>
-                                                                                                        <div class='input-group col-sm-10'>
-                                                                                                            <button  type="button" icon="el-icon-plus"
-                                                                                                                       style="width: 100%" id ="selectdata">
-                                                                                                                Select Data
-                                                                                                            </button>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                                                <el-card>
+                                                                <el-tabs  v-model="editableTabsValue_data" type="card" editable @edit="handleTabsEdit_data">
+                                                                    <el-tab-pane
+                                                                            :key="item.name"
+                                                                            v-for="(item, index) in editableTabs_data"
+                                                                            :label="item.title"
+                                                                            :name="item.name"
+                                                                    >
+                                                                        <div class='data-attr'>
+                                                                            <div>
+                                                                                <lable class='control-label col-sm-2 text-center'
+                                                                                       style='font-weight: bold;'>
+                                                                                    Category Name:
+                                                                                </lable>
+                                                                                <div class='input-group col-sm-10'>
+                                                                                    <input type='text'
+                                                                                           id="categoryname2"
+                                                                                           name="name"
+                                                                                           class='form-control'>
                                                                                 </div>
-                                                                                <button type="button"
-                                                                                        class="btn btn-success btn-lg btn-block data-add"
-                                                                                        style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
-                                                                                    Add
-                                                                                </button>
                                                                             </div>
+
+                                                                            <div style="margin-top:10px">
+                                                                                <lable class='control-label col-sm-2 text-center'
+                                                                                       style='font-weight: bold;'>
+                                                                                    Data Name:
+                                                                                </lable>
+                                                                                <div class='input-group col-sm-10'>
+                                                                                    <button  type="button" icon="el-icon-plus"
+                                                                                             style="width: 100%" id ="selectdata">
+                                                                                        Select Data
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+
                                                                         </div>
-                                                                    </div>
-                                                                </div>
+
+                                                                            <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;" id="step2_left">
+                                                                                <div slot="header" class="clearfix">
+                                                                                    <span>Selected Items</span>
+                                                                                </div>
+                                                                                <el-table
+                                                                                        :data="item.tabledata[0]"
+                                                                                        ref="leftTable"
+                                                                                        :max-height="tableMaxHeight">
+                                                                                    <el-table-column type="expand">
+                                                                                        <template slot-scope="props">
+                                                                                            <el-form label-position="left" inline class="demo-table-expand">
+                                                                                                <el-form-item label="Contributor">
+                                                                                                    <span>{{ props.row.author }}</span>
+                                                                                                </el-form-item>
+
+                                                                                            </el-form>
+                                                                                        </template>
+                                                                                    </el-table-column>
+                                                                                    <el-table-column
+                                                                                            label="Name">
+                                                                                        <template slot-scope="props">
+                                                                                            <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                                                                        </template>
+                                                                                    </el-table-column>
+
+                                                                                    <el-table-column fixed="right" label="Operation" width="100">
+                                                                                        <template slot-scope="scope">
+
+                                                                                            <el-button
+                                                                                                    size="mini"
+                                                                                                    type="danger"
+                                                                                                    @click="handleDelete(scope.$index, scope.row)">Delete
+                                                                                            </el-button>
+                                                                                        </template>
+                                                                                    </el-table-column>
+                                                                                </el-table>
+                                                                            </el-card>
+
+                                                                    </el-tab-pane>
+                                                                </el-tabs>
+                                                                </el-card>
                                                             </div>
                                                         </div>
+                                                        <!--<div class="step-footer text-right">-->
+                                                            <!--<button class="btn btn-primary next" data-direction="next" id="step3_next">Next-->
+                                                            <!--</button>-->
+                                                        <!--</div>-->
                                                     </div>
+
                                                     <div class="step-tab-panel" id="step4">
                                                         <div class="panel panel-success" style="border:none">
                                                             <div class="panel-body">
-                                                                <div class="col-md-10 col-md-offset-1">
-
-                                                                    <div class="panel-group " id="accordion3">
-                                                                        <div id="providersPanel" class="panel"
-                                                                             style="border-color:#424f63">
-                                                                            <div class="panel-heading"
-                                                                                 style="background-color: #424f63">
-                                                                                <h4 class="panel-title"
-                                                                                    style="color:white">
-                                                                                    <a class="accordion-toggle"
-                                                                                       data-parent="#accordion3">
-                                                                                        Applications
-                                                                                    </a>
-                                                                                </h4>
-                                                                            </div>
-                                                                            <div id="provider_body3"
-                                                                                 class="panel-collapse collapse in"
-                                                                                 style="height: auto;">
-                                                                                <div class="panel-body providers"
-                                                                                     style="border-top: #424f63; padding:0px">
-                                                                                    <div class='panel panel-primary'>
-                                                                                        <div class='panel-heading info-head'>
-                                                                                            <h4 class='panel-title'>
-                                                                                                <a class='accordion-toggle collapsed'
-                                                                                                   style="color:white"
-                                                                                                   data-toggle='collapse'
-                                                                                                   data-target='#applications1'
-                                                                                                   href="javascript:;">
-                                                                                                    NEW
-                                                                                                </a>
-                                                                                            </h4>
-                                                                                            <a href="javascript:;"
-                                                                                               class="fa fa-times author_close"
-                                                                                               style="float:right;margin-top:8px;color:white"></a>
-                                                                                        </div>
-                                                                                        <div id='applications1'
-                                                                                             class='panel-collapse collapse in'>
-                                                                                            <div class='panel-body user-contents'>
-                                                                                                <div class='user-attr3'>
-                                                                                                    <div>
-                                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                                               style='font-weight: bold;'>
-                                                                                                            Name:
-                                                                                                        </lable>
-                                                                                                        <div class='input-group col-sm-10'>
-                                                                                                            <input type='text'
-                                                                                                                   id="applicationname"
-                                                                                                                   name="name"
-                                                                                                                   class='form-control'>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div style="margin-top:10px">
-                                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                                               style='font-weight: bold;'>
-                                                                                                            Link:
-                                                                                                        </lable>
-                                                                                                        <div class='input-group col-sm-10'>
-                                                                                                            <input type='text'
-                                                                                                                   id="applicationlink"
-                                                                                                                   name="ins"
-                                                                                                                   class='form-control'>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div style="margin-top:10px">
-                                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                                               style='font-weight: bold;'>
-                                                                                                            Image:
-                                                                                                        </lable>
-                                                                                                        <div class="col-sm-10">
-                                                                                                            <img id="imgShow1" src=""/>
-                                                                                                            <div id="imgChange1">
-                                                                                                              <i class="fa fa-plus fa-5x"></i>
-                                                                                                            </div>
-                                                                                                            <input id="imgFile1" type="file"
-                                                                                                                   style="display: none"
-                                                                                                                   accept="image/*"/>
-                                                                                                        </div>
-                                                                                                    </div>
-
-
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                                                <el-card>
+                                                                <el-tabs v-model="editableTabsValue_applications" type="card" editable @edit="handleTabsEdit_applications">
+                                                                    <el-tab-pane
+                                                                            :key="item.name"
+                                                                            v-for="(item, index) in editableTabs_applications"
+                                                                            :label="item.title"
+                                                                            :name="item.name"
+                                                                            id="add_tabs"
+                                                                    >
+                                                                        <div class='user-attr3'>
+                                                                            <div>
+                                                                                <lable class='control-label col-sm-2 text-center'
+                                                                                       style='font-weight: bold;'>
+                                                                                    Name:
+                                                                                </lable>
+                                                                                <div class='input-group col-sm-10'>
+                                                                                    <input type='text'
+                                                                                           id="applicationname"
+                                                                                           name="name"
+                                                                                           class='form-control'>
                                                                                 </div>
-                                                                                <button type="button"
-                                                                                        class="btn btn-success btn-lg btn-block applications-add"
-                                                                                        style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
-                                                                                    Add
-                                                                                </button>
+                                                                            </div>
+                                                                            <div style="margin-top:10px">
+                                                                                <lable class='control-label col-sm-2 text-center'
+                                                                                       style='font-weight: bold;'>
+                                                                                    Link:
+                                                                                </lable>
+                                                                                <div class='input-group col-sm-10'>
+                                                                                    <input type='text'
+                                                                                           id="applicationlink"
+                                                                                           name="ins"
+                                                                                           class='form-control'>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div style="margin-top:10px">
+                                                                                <lable class='control-label col-sm-2 text-center'
+                                                                                       style='font-weight: bold;'>
+                                                                                    Image:
+                                                                                </lable>
+                                                                                <div class="col-sm-10">
+                                                                                    <img id="imgShow1" src=""/>
+                                                                                    <div id="imgChange1">
+                                                                                        <i class="fa fa-plus fa-5x"></i>
+                                                                                    </div>
+                                                                                    <input id="imgFile1" type="file"
+                                                                                           style="display: none"
+                                                                                           accept="image/*"/>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
+                                                                    </el-tab-pane>
+                                                                </el-tabs>
+                                                                </el-card>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -423,7 +411,9 @@
             </div>
         </div>
     </div>
+
     <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">
+    <el-card>
 
         <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
             <div slot="header" class="clearfix">
@@ -462,14 +452,12 @@
                 </el-table-column>
             </el-table>
         </el-card>
-
-
         <el-card class="box-card" style="width:59%;">
             <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
                 <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
             <el-table
-                    :data="pageOption.searchResult"
+                    :data="pageOption1.searchResult"
                     style="margin-top:17px;"
                     :max-height="tableMaxHeight">
                 <el-table-column type="expand">
@@ -498,24 +486,130 @@
                                 size="mini"
                                 @click="handleEdit(scope.$index, scope.row)">Add
                         </el-button>
-
                     </template>
                 </el-table-column>
             </el-table>
             <el-pagination style="text-align: center;margin-top:20px"
                            @current-change="handlePageChange"
-                           :current-page="pageOption.currentPage"
+                           :current-page="pageOption1.currentPage"
                            layout="total, prev, pager, next, jumper"
                            :page-size="5"
-                           :total="pageOption.total">
+                           :total="pageOption1.total">
             </el-pagination>
         </el-card>
+        <!--<div slot="footer" class="dialog-footer">-->
+        <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+        <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
+        <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+        <!--</div>-->
+    </el-card>
         <div slot="footer" class="dialog-footer">
             <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
             <el-button @click="dialogTableVisible = false;">Cancel</el-button>
             <el-button type="primary"  id="selectok">OK</el-button>
         </div>
     </el-dialog>
+
+    <!--<el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">-->
+
+        <!--<el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">-->
+            <!--<div slot="header" class="clearfix">-->
+                <!--<span>Selected Items</span>-->
+            <!--</div>-->
+            <!--<el-table-->
+                    <!--:data="tableData"-->
+                    <!--ref="leftTable"-->
+                    <!--:max-height="tableMaxHeight">-->
+                <!--<el-table-column type="expand">-->
+                    <!--<template slot-scope="props">-->
+                        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                            <!--<el-form-item label="Contributor">-->
+                                <!--<span>{{ props.row.author }}</span>-->
+                            <!--</el-form-item>-->
+
+                        <!--</el-form>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                        <!--label="Name">-->
+                    <!--<template slot-scope="props">-->
+                        <!--<a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+
+                <!--<el-table-column fixed="right" label="Operation" width="100">-->
+                    <!--<template slot-scope="scope">-->
+
+                        <!--<el-button-->
+                                <!--size="mini"-->
+                                <!--type="danger"-->
+                                <!--@click="handleDelete(scope.$index, scope.row)">Delete-->
+                        <!--</el-button>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+            <!--</el-table>-->
+        <!--</el-card>-->
+
+
+        <!--<el-card class="box-card" style="width:59%;">-->
+            <!--<el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">-->
+                <!--<el-button slot="append" icon="el-icon-search" @click="search()"></el-button>-->
+            <!--</el-input>-->
+            <!--<el-table-->
+                    <!--:data="pageOption.searchResult"-->
+                    <!--:data="pageOption.searchResult"-->
+                    <!--style="margin-top:17px;"-->
+                    <!--:max-height="tableMaxHeight">-->
+                <!--<el-table-column type="expand">-->
+                    <!--<template slot-scope="props">-->
+                        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                            <!--<el-form-item label="Detail">-->
+                                <!--<span>{{ props.row.description }}</span>-->
+                            <!--</el-form-item>-->
+
+                        <!--</el-form>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                        <!--label="Name">-->
+                    <!--<template slot-scope="props">-->
+                        <!--<a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                        <!--label="Contributor"-->
+                        <!--prop="author">-->
+                <!--</el-table-column>-->
+                <!--<el-table-column fixed="right" label="Operation" width="100">-->
+                    <!--<template slot-scope="scope">-->
+                        <!--<el-button-->
+                                <!--size="mini"-->
+                                <!--@click="handleEdit(scope.$index, scope.row)">Add-->
+                        <!--</el-button>-->
+
+                    <!--</template>-->
+                <!--</el-table-column>-->
+            <!--</el-table>-->
+            <!--<el-pagination style="text-align: center;margin-top:20px"-->
+                           <!--@current-change="handlePageChange"-->
+                           <!--:current-page="pageOption.currentPage"-->
+                           <!--layout="total, prev, pager, next, jumper"-->
+                           <!--:page-size="5"-->
+                           <!--:total="pageOption.total">-->
+            <!--</el-pagination>-->
+        <!--</el-card>-->
+        <!--<div slot="footer" class="dialog-footer">-->
+            <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+            <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
+            <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+        <!--</div>-->
+    <!--</el-dialog>-->
+
+
+
+
+
+
     <el-dialog :visible.sync="dialogTableVisible1" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">
 
         <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
@@ -555,14 +649,12 @@
                 </el-table-column>
             </el-table>
         </el-card>
-
-
         <el-card class="box-card" style="width:59%;">
             <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
                 <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
             <el-table
-                    :data="pageOption.searchResult"
+                    :data="pageOption2.searchResult"
                     style="margin-top:17px;"
                     :max-height="tableMaxHeight">
                 <el-table-column type="expand">
@@ -596,10 +688,10 @@
             </el-table>
             <el-pagination style="text-align: center;margin-top:20px"
                            @current-change="handlePageChange"
-                           :current-page="pageOption.currentPage"
+                           :current-page="pageOption2.currentPage"
                            layout="total, prev, pager, next, jumper"
                            :page-size="5"
-                           :total="pageOption.total">
+                           :total="pageOption2.total">
             </el-pagination>
         </el-card>
         <div slot="footer" class="dialog-footer">
@@ -607,171 +699,13 @@
             <el-button @click="dialogTableVisible1 = false;">Cancel</el-button>
             <el-button type="primary" id="selectok1">OK</el-button>
         </div>
+        <!--<div slot="footer" class="dialog-footer">-->
+            <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+            <!--<el-button @click="dialogTableVisible1 = false;">Cancel</el-button>-->
+            <!--<el-button type="primary" id="selectok1">OK</el-button>-->
+        <!--</div>-->
     </el-dialog>
 </div>
-<!-- 模态框（Modal） -->
-<div class="modal fade" id="refinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background: deepskyblue">
-                <h4 class="modal-title" id="myModalLabel" style="color:aliceblue">
-                    Reference Info
-                </h4>
-            </div>
-            <div class="modal-body" style="font-size: 20px;overflow: hidden">
-                <section class="panel">
-                    <header class="panel-heading custom-tab ">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
-                                    Reference</a>
-                            </li>
-                            <li class="">
-                                <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
-                                    Reference by DOI</a>
-                            </li>
-                        </ul>
-                    </header>
-                    <div class="panel-body">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="manually">
-                                <div class="form-group">
-                                    <label for="nameInput"
-                                           class="col-sm-2 control-label">Title</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control"
-                                               id="refTitle"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nameInput"
-                                           class="col-sm-2 control-label">Author</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control"
-                                               id="refAuthor"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nameInput"
-                                           class="col-sm-2 control-label">Date</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control"
-                                               id="refDate"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nameInput"
-                                           class="col-sm-2 control-label">Journal</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control"
-                                               id="refJournal"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nameInput"
-                                           class="col-sm-2 control-label">Pages</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control"
-                                               id="refPages"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nameInput"
-                                           class="col-sm-2 control-label">Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control"
-                                               id="refLink"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="automatically">
-                                <div class="form-group"
-                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
-                                    <lable class="control-label col-md-2">
-                                        DOI :
-                                    </lable>
-                                    <div class="input-group col-md-10">
-                                        <input id="doi_searchBox" type="text"
-                                               class="form-control">
-                                        <span class="input-group-btn">
-                                            <button id="doiSearch"
-                                                    class="btn btn-default"
-                                                    type="button">Search</button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div id="doiDetails" style="display:none">
-                                    <div class="form-group">
-                                        <lable class="control-label col-md-2">Title</lable>
-                                        <div class="col-md-10">
-                                            <textarea id="doiTitle" class="form-control" style="width:100%;"
-                                                      readonly></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nameInput"
-                                               class="col-sm-2 control-label">Author</label>
-                                        <div class="col-sm-10">
-                                            <textarea id="doiAuthor" class="form-control" style="width:100%;"
-                                                      readonly></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nameInput"
-                                               class="col-sm-2 control-label">Date</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control"
-                                                   id="doiDate" readonly/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nameInput"
-                                               class="col-sm-2 control-label">Journal</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control"
-                                                   id="doiJournal" readonly/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nameInput"
-                                               class="col-sm-2 control-label">Pages</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control"
-                                                   id="doiPages" readonly/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nameInput"
-                                               class="col-sm-2 control-label">Link</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control"
-                                                   id="doiLink" readonly/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-            <div class="modal-footer">
-                <a href="#">
-                    <button id="modal_save" type="button" class="btn btn-success" style="font-size:15px">
-                        Save
-                    </button>
-                    <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"
-                            style="font-size:15px">
-                        Cancel
-                    </button>
-                </a>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!--弹出框-->
-
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
@@ -784,14 +718,6 @@
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/static/data-tables/DT_bootstrap.js"></script>
-
-
-<script>
-    $(document).ready(function () {
-
-
-    });
-</script>
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/element-ui/index.js"></script>
 <script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>

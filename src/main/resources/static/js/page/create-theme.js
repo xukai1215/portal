@@ -1,6 +1,34 @@
 var vue = new Vue({
     el: "#app",
     data: {
+        editableTabsValue_model: '1',
+        editableTabsValue_data: '1',
+        editableTabsValue_applications: '1',
+        editableTabs_model: [{
+            tabledata:[],
+            //tabledata:[],
+            title: 'Tab 1',
+            name: '1',
+            content: '1'
+        }],
+        tabledataflag:0,
+        tabledataflag1:0,
+
+        editableTabs_data: [{
+            tabledata:[],
+            title: 'Tab 1',
+            name: '1',
+            content: 'Tab 1 content'
+        }],
+        editableTabs_applications: [{
+            title: 'Tab 1',
+            name: '1',
+            content: 'Tab 1 content'
+        }],
+        tabIndex: 1,
+
+        themeObj:{},
+
         oidnumber:0,
         numOfModelPerRow:5,
         classarr: [],
@@ -9,10 +37,24 @@ var vue = new Vue({
         dialogTableVisible: false,
         dialogTableVisible1: false,
         relateTitle: "",
+
+        //tableDataarr:[[]],//用来存储多个tabledata数据
+        // td:0,
         tableData: [],
         tableMaxHeight: 400,
         relateSearch: "",
-        pageOption: {
+        pageOption1: {
+            paginationShow: false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 5,
+
+            total: 264,
+            searchResult: [],
+        },
+
+        pageOption2: {
             paginationShow: false,
             progressBar: true,
             sortAsc: false,
@@ -54,111 +96,108 @@ var vue = new Vue({
 
     },
     methods: {
-
-        initmodel(index,classarr,contentarr,listidarr,listidarrrow){
-            const modelList = document.getElementById(listidarr[index-1]);
-            modelList.innerHTML = "";
-            const rowNum = Math.ceil(contentarr[index-1].length / this.numOfModelPerRow);
-            for (var i = 0; i < rowNum; i++) //行
-            {
-                const row = document.createElement("div");
-                row.setAttribute("class", "row");
-
-                for (let j = 0; j < this.numOfModelPerRow; j++)  //每行6个
-                {
-                    if ((i * this.numOfModelPerRow + j) < contentarr[index-1].length) {
-                        const model = document.createElement("div");
-                        model.setAttribute("class", "col-md-55");
-
-                        const modelThumbnail = document.createElement("div");
-                        modelThumbnail.setAttribute("class", "thumbnail");
-
-                        const a = document.createElement("a");
-                        a.setAttribute("href", contentarr[index-1][i * this.numOfModelPerRow + j].link);//每个模型的链接
-                        a.setAttribute("target", "_blank");  //target 属性规定在何处打开链接文档。_blank 浏览器总在一个新打开、未命名的窗口中载入目标文档。
-                        const picPanel = document.createElement("div");
-                        picPanel.setAttribute("class", "image view view-first");
-                        const img = document.createElement("img");
-                        //此处设置模型图片
-                        img.setAttribute("src", "/static/thematicmodel/css/images/model/thumb.png");
-
-                        const mask = document.createElement("div");
-                        mask.setAttribute("class", "mask");
-                        const p = document.createElement("p");
-                        p.innerText = contentarr[index-1][i * this.numOfModelPerRow + j].model;
-                        mask.appendChild(p);
-                        picPanel.appendChild(img);
-                        picPanel.appendChild(mask);
-                        a.appendChild(picPanel);
-                        modelThumbnail.appendChild(a);
-
-                        const caption = document.createElement("div");
-                        caption.setAttribute("class", "caption");
-                        const p2 = document.createElement("p");
-                        p2.innerText = contentarr[index-1][i * this.numOfModelPerRow + j].modelname;
-                        caption.appendChild(p2);
-                        modelThumbnail.appendChild(caption);
-
-                        model.appendChild(modelThumbnail);
-                        row.appendChild(model);
-                    }
+        handleTabsEdit_model(targetName, action) {
+            $("#step1_left").attr('id','step1_left_past');
+            $("#step1_right").attr('id','step1_right_past');
+            // $(".")
+            if (action === 'add') {
+                let newTabName = ++this.tabIndex + '';
+                this.editableTabs_model.push({
+                    tabledata:[],
+                    //tabledata:[],
+                    title: 'New Tab',
+                    name: newTabName,
+                    content: '2'
+                });
+                this.editableTabsValue_model = newTabName + '';
+            }
+            if (action === 'remove') {
+                let tabs = this.editableTabs_model;
+                let activeName = this.editableTabsValue_model;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
                 }
-                modelList.appendChild(row);
+
+                this.editableTabsValue_model = activeName;
+                this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
             }
-
-            for (var i = 2; i < rowNum; i++) {
-                $(listidarrrow[index-1]).eq(i).hide();
-            }
-
-
         },
-
-        changecolor(a) {
-            {
-                switch (a) {
-                    case 0:
-                        $("#theme").css("color","blue");
-                        break;
-                    case "expand":
-                        $("#ex").css("color","blue");
-                        break;
-                    case 1:
-                        $("#model-Image").css("color","blue");
-                        break;
-                    case 2:
-                        $("#model-Text ").css("color","blue");
-                        break;
-                    case 3:
-                        $("#model-Audio frequency").css("color","blue");
-                        break;
-                    case 4:
-                        $("#model-Video ").css("color","blue");
-                        break;
-                    case 5:
-                        $("#model-Semantic segmentation ").css("color","blue");
-                        break;
-                    case 6:
-                        $("#sidebar-data").css("color","blue");
-                        break;
-                    case 7:
-                        $("#applications").css("color","blue");
-                        break;
+        handleTabsEdit_data(targetName, action) {
+            if (action === 'add') {
+                let newTabName = ++this.tabIndex + '';
+                this.editableTabs_data.push({
+                    tabledata:[],
+                    title: 'New Tab',
+                    name: newTabName,
+                    content: 'New Tab content'
+                });
+                this.editableTabsValue_data = newTabName;
+            }
+            if (action === 'remove') {
+                let tabs = this.editableTabs_data;
+                let activeName = this.editableTabsValue_data;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
                 }
+
+                this.editableTabsValue_data = activeName;
+                this.editableTabs_data = tabs.filter(tab => tab.name !== targetName);
             }
         },
+        handleTabsEdit_applications(targetName, action) {
+            var app = {};
+            app.applicationname = $("#applicationname").val();
+            app.applicationlink = $("#applicationlink").val();
+            app.upload_application_image = $("#imgShow1").get(0).currentSrc;
+            this.themeObj.application.push(app);
 
-        initmenucolor(){
-            $("#theme").css("color","black");
-            $("#ex").css("color","black");
-            $("#model-Image").css("color","black");
-            $("#model-Text ").css("color","black");
-            $("#model-Audio frequency").css("color","black");
-            $("#model-Video ").css("color","black");
-            $("#model-Semantic segmentation ").css("color","black");
-            $("#sidebar-data").css("color","black");
-            $("#applications").css("color","black");
+
+            $("#applicationname").attr('id','applicationname_past');//改变当前id名称
+            $("#applicationlink").attr('id','applicationlink_past');//改变当前id名称
+            $("#imgShow1").attr('id','imgShow1_past');//改变当前id名称
+            $("#imgChange1").attr('id','imgChange1_past');//改变当前id名称
+
+            if (action === 'add') {
+                let newTabName = ++this.tabIndex + '';
+                this.editableTabs_applications.push({
+                    title: 'New Tab',
+                    name: newTabName,
+                    content: 'New Tab content'
+                });
+                this.editableTabsValue_applications = newTabName;
+            }
+            if (action === 'remove') {
+                let tabs = this.editableTabs_applications;
+                let activeName = this.editableTabsValue_applications;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue_applications = activeName;
+                this.editableTabs_applications = tabs.filter(tab => tab.name !== targetName);
+            }
         },
-
 
         handleClose(done) {
             this.$confirm('Are you sure to close？')
@@ -170,15 +209,15 @@ var vue = new Vue({
         },
 
         handlePageChange(val) {
-            this.pageOption.currentPage = val;
+            this.pageOption1.currentPage = val;
             this.search();
         },
 
         search() {
             var data = {
-                asc: this.pageOption.sortAsc,
-                page: this.pageOption.currentPage,
-                pageSize: this.pageOption.pageSize,
+                asc: this.pageOption1.sortAsc,
+                page: this.pageOption1.currentPage,
+                pageSize: this.pageOption1.pageSize,
                 searchText: this.relateSearch,
                 sortType: "default",
                 classifications: ["all"],
@@ -188,7 +227,7 @@ var vue = new Vue({
                 case "dataItem":
                     url="/dataItem/searchByName";
                     data = {
-                        page: this.pageOption.currentPage+1,
+                        page: this.pageOption1.currentPage+1,
                         pageSize: 5,
                         asc: true,
                         classifications: [],
@@ -237,12 +276,89 @@ var vue = new Vue({
                         let data = json.data;
                         console.log(data)
 
-                        this.pageOption.total = data.total;
-                        this.pageOption.pages = data.pages;
-                        this.pageOption.searchResult = data.list;
-                        this.pageOption.users = data.users;
-                        this.pageOption.progressBar = false;
-                        this.pageOption.paginationShow = true;
+                        this.pageOption1.total = data.total;
+                        this.pageOption1.pages = data.pages;
+                        this.pageOption1.searchResult = data.list;
+                        this.pageOption1.users = data.users;
+                        this.pageOption1.progressBar = false;
+                        this.pageOption1.paginationShow = true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+        search2() {
+            var data = {
+                asc: this.pageOption2.sortAsc,
+                page: this.pageOption2.currentPage,
+                pageSize: this.pageOption2.pageSize,
+                searchText: this.relateSearch,
+                sortType: "default",
+                classifications: ["all"],
+            };
+            let url, contentType;
+            switch (this.relateType) {
+                case "dataItem":
+                    url="/dataItem/searchByName";
+                    data = {
+                        page: this.pageOption2.currentPage+1,
+                        pageSize: 5,
+                        asc: true,
+                        classifications: [],
+                        category: '',
+                        searchText: this.relateSearch
+                    }
+                    data=JSON.stringify(data);
+                    contentType = "application/json";
+                    break;
+                case "concept":
+                    url = this.relateSearch.trim() == "" ? "/repository/getConceptList" : "/repository/searchConcept";
+                    data.asc = data.asc == true ? 0 : 1;
+                    data = JSON.stringify(data);
+                    contentType = "application/json";
+                    break;
+                case "spatialReference":
+                    url = this.relateSearch.trim() == "" ? "/repository/getSpatialReferenceList" : "/repository/searchSpatialReference";
+                    data.asc = data.asc == true ? 0 : 1;
+                    data = JSON.stringify(data);
+                    contentType = "application/json";
+                    break;
+                case "template":
+                    url = this.relateSearch.trim() == "" ? "/repository/getTemplateList" : "/repository/searchTemplate";
+                    data.asc = data.asc == true ? 0 : 1;
+                    data = JSON.stringify(data);
+                    contentType = "application/json";
+                    break;
+                case "unit":
+                    url = this.relateSearch.trim() == "" ? "/repository/getUnitList" : "/repository/searchUnit";
+                    data.asc = data.asc == true ? 0 : 1;
+                    data = JSON.stringify(data);
+                    contentType = "application/json";
+                    break;
+                default:
+                    url = "/" + this.relateType + "/list";
+                    contentType = "application/x-www-form-urlencoded";
+            }
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                async: true,
+                contentType: contentType,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption2.total = data.total;
+                        this.pageOption2.pages = data.pages;
+                        this.pageOption2.searchResult = data.list;
+                        this.pageOption2.users = data.users;
+                        this.pageOption2.progressBar = false;
+                        this.pageOption2.paginationShow = true;
 
                     }
                     else {
@@ -462,8 +578,8 @@ var vue = new Vue({
             //alert("ok");
             that.relateType = "modelItem";
             that.tableData = [];
-            that.pageOption.currentPage=0;
-            that.pageOption.searchResult = [];
+            that.pageOption1.currentPage=0;
+            that.pageOption1.searchResult = [];
             that.relateSearch = "";
             that.getRelation();
             that.search();
@@ -474,10 +590,11 @@ var vue = new Vue({
             //alert("ok");
             that.relateType = "dataItem";
             that.tableData = [];
-            that.pageOption.searchResult = [];
+            that.pageOption2.currentPage=0;
+            that.pageOption2.searchResult = [];
             that.relateSearch = "";
             that.getRelation();
-            that.search();
+            that.search2();
             that.dialogTableVisible1 = true;
         });
         const url="ModelDataDownloadServlet";
@@ -775,25 +892,6 @@ var vue = new Vue({
                 $('#imgShow1').show();
             }
         })
-        // $("#imgFile1").change(function () {
-        //     //获取input file的files文件数组;
-        //     //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-        //     //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-        //     var file = $('#imgFile1').get(0).files[0];
-        //     //创建用来读取此文件的对象
-        //     var reader = new FileReader();
-        //     //使用该对象读取file文件
-        //     reader.readAsDataURL(file);
-        //     //读取文件成功后执行的方法函数
-        //     reader.onload = function (e) {
-        //         //读取成功后返回的一个参数e，整个的一个进度事件
-        //         //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-        //         //的base64编码格式的地址
-        //         $('#imgShow1').get(0).src = e.target.result;
-        //         $('#imgShow1').show();
-        //     }
-        // });
-
         //table
         table = $('#dynamic-table').DataTable({
             //"aaSorting": [[ 0, "asc" ]],
@@ -932,62 +1030,44 @@ var vue = new Vue({
         }
 
 
-        var themeObj = {};
-        themeObj.classinfo = new Array();
-        themeObj.dataClassInfo = new Array();
-        themeObj.application = new Array();
+        // var themeObj = {};
+        that.themeObj.classinfo = new Array();
+        that.themeObj.dataClassInfo = new Array();
+        that.themeObj.application = new Array();
 
-        $(".next").click(()=> {
-            themeObj.themename = $("#nameInput").val();
-            themeObj.image = $('#imgShow').get(0).src;
 
-            var detail = tinyMCE.activeEditor.getContent();
-            themeObj.detail = detail.trim();
-
-            // themeObj.references = new Array();
-            // var ref_lines = $("#dynamic-table tr");
-            // for (i = 1; i < ref_lines.length; i++) {
-            //     var ref_prop = ref_lines.eq(i).children("td");
-            //     if (ref_prop != 0) {
-            //         var ref = {};
-            //         ref.title = ref_prop.eq(0).text();
-            //         if (ref.title == "No data available in table")
-            //             break;
-            //         ref.author = ref_prop.eq(1).text().split(",");
-            //         ref.date = ref_prop.eq(2).text();
-            //         ref.journal = ref_prop.eq(3).text();
-            //         ref.pages = ref_prop.eq(4).text();
-            //         ref.links = ref_prop.eq(5).text();
-            //         themeObj.references.push(ref);
-            //     }
-            // }
-
-            var detail = tinyMCE.activeEditor.getContent();
-            themeObj.detail = detail.trim();
-            console.log(themeObj);
-        });
-        //在这个函数中将需要初始化的重新初始化
         $("#selectok").click(()=>{
+
+            //将tabledata中的数据放到二维数组tabledata_two
+
             /*classinfo 类似于reference,将选择的model的oid放到classinfo中*/
             // themeObj.classinfo = new Array();
             var cla = {};
             cla.mcname = $("#categoryname").val();
             cla.modelsoid = this.moid;
-            themeObj.classinfo.push(cla);
+            that.themeObj.classinfo.push(cla);
+            // for(var i=0;i<that.tableData.length;i++){
+            //     that.editableTabs_model[that.tabledataflag].tabledata[i] = that.tableData[i];
+            // }
+            that.editableTabs_model[that.tabledataflag].tabledata.push(that.tableData);
+            that.tabledataflag++;
+            // that.editableTabs_model[that.tabledataflag++].tabledata.push(that.tableData);//将当前获取的tabledata追加到大数组中
 
             that.dialogTableVisible=false;
 
             $("#categoryname").attr('id','categoryname_past');//改变当前id名称
             this.oidnumber = 0;
             this.moid=[];
-            });
-
+        });
         $("#selectok1").click(()=>{
             /*dataclassinfo 类似于reference,将选择的model的oid放到dataclassinfo中*/
             var dcla = {};
             dcla.dcname = $("#categoryname2").val();
             dcla.datasoid = this.doid;
-            themeObj.dataClassInfo.push(dcla);
+            that.themeObj.dataClassInfo.push(dcla);
+
+            that.editableTabs_data[that.tabledataflag1].tabledata.push(that.tableData);
+            that.tabledataflag1++;
 
             that.dialogTableVisible1=false;
 
@@ -997,8 +1077,15 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+            //step1
+            that.themeObj.themename = $("#nameInput").val();
+            that.themeObj.image = $('#imgShow').get(0).src;
 
-            themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            var detail = tinyMCE.activeEditor.getContent();
+            that.themeObj.detail = detail.trim();
+            console.log(that.themeObj);
+
+            that.themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
             // themeObj.application_image = $('#imgShow1').get(0).src;
             // themeObj.upload_application_image = $('#imgShow1').get(0).currentSrc;
             let formData=new FormData();
@@ -1008,10 +1095,10 @@ var vue = new Vue({
             app.applicationname = $("#applicationname").val();
             app.applicationlink = $("#applicationlink").val();
             app.upload_application_image = $("#imgShow1").get(0).currentSrc;
-            themeObj.application.push(app);
+            that.themeObj.application.push(app);
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                let file = new File([JSON.stringify(themeObj)],'ant.txt',{
+                let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
                     type: 'text/plain',
                 });
                 formData.append("info",file);
@@ -1032,9 +1119,9 @@ var vue = new Vue({
                 })
             } else {
 
-                themeObj["oid"] = oid;
+                that.themeObj["oid"] = oid;
 
-                let file = new File([JSON.stringify(themeObj)],'ant.txt',{
+                let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
                     type: 'text/plain',
                 });
                 formData.append("info",file);
@@ -1069,110 +1156,6 @@ var vue = new Vue({
         });
 
         $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
-
-        //增加data输入框
-        // $(document).on('click','#adddata',function ($event) {
-        //     var e = $event.originalEvent.path[4];//获取当前div的源div，取得modelarr的div的class值
-        //     //data_num++;
-        //     var str = "<div style=\"margin-top:10px\"> <lable class='control-label col-sm-2 text-center' style='font-weight: bold;'>";
-        //     str += "Data name：";
-        //     //str += data_num +":";
-        //     str += "</lable> <div class='input-group col-sm-10'> <input type='text' name=\"ins\" class='form-control'> <span class=\"input-group-btn\"> " +
-        //         "<button id=\"adddata\" class=\"btn btn-success\" type=\"button\">add</button> </span></div></div>"
-        //     var dataarr;
-        //     dataarr = "."+e.className;
-        //     $(dataarr).append(str);
-        //     $(dataarr).find("button").eq(0).html("").remove();//定位到指定div下的button进行移除，可保证不会串div
-        // });
-        //模型添加
-        $(".model-add").click(function () {
-            m_attr++;
-            var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'><div class='panel-heading info-head'><h4 class='panel-title'><a class='accordion-toggle collapsed' style=\"color:white\" " +
-                "data-toggle='collapse' data-target='#model1' href=\"javascript:;\"> ";
-            str += "NEW";
-            str += "</a></h4> <a href=\"javascript:;\"class=\"fa fa-times author_close\"style=\"float:right;margin-top:8px;color:white\"></a></div> " +
-                "<div id='model1'class='panel-collapse collapse in'><div class='panel-body user-contents'>" +
-                " <div class='model-attr" + m_attr +"'";//改变modelarr的值，每次增加该class递增一，这样便于与addmodel的click事件对应起来
-            str+= "><div><lable class='control-label col-sm-2 text-center' style='font-weight: bold;'>";
-            str += "Category Name";
-            str += "</lable><div class='input-group col-sm-10'><input type='text'name=\"name\" id=\"categoryname\" class='form-control'></div></div><div style=\"margin-top:10px\">" +
-                "<lable class='control-label col-sm-2 text-center'" +
-                "style='font-weight: bold;'>";
-            str += "Model name:";
-            str += " </lable><div class='input-group col-sm-10'>\n" +
-                "   <button type=\"button\"  icon=\"el-icon-plus\" id =\"selectmodel\" style=\"width: 100%\">Select Model\n" +
-                "   </button>\n" +
-                "</div></div></div></div></div></div>";
-            content_box.append(str);
-        });
-        //数据输入框增加
-        $(".data-add").click(function () {
-            d_attr++;
-            var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'><div class='panel-heading info-head'><h4 class='panel-title'><a class='accordion-toggle collapsed' style=\"color:white\" " +
-                "data-toggle='collapse' data-target='#data1' href=\"javascript:;\"> ";
-            str += "NEW";
-            str += "</a></h4> <a href=\"javascript:;\"class=\"fa fa-times author_close\"style=\"float:right;margin-top:8px;color:white\"></a></div> " +
-                "<div id='data1'class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='data-attr" + d_attr +"'";//改变addarr的值，每次增加该class递增一，这样便于与adddata的click事件对应起来
-            str +="><div><lable class='control-label col-sm-2 text-center' style='font-weight: bold;'>";
-            str += "Category Name";
-            str += "</lable><div class='input-group col-sm-10'><input type='text'name=\"name\" id=\"categoryname2\" class='form-control'></div></div><div style=\"margin-top:10px\"><lable class='control-label col-sm-2 text-center'" +
-                "style='font-weight: bold;'>";
-            str += "Data Name:";
-            str += " </lable><div class='input-group col-sm-10'>\n" +
-                "   <button type=\"button\" id =\"selectdata\" icon=\"el-icon-plus\" style=\"width: 100%\">Select Data\n" +
-                "   </button>\n" +
-                "</div></div></div></div></div></div>"
-            content_box.append(str)
-        });
-        //应用输入框增加
-        $(".applications-add").click(function () {
-            var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'><div class='panel-heading info-head'><h4 class='panel-title'><a class='accordion-toggle collapsed' style=\"color:white\" " +
-                "data-toggle='collapse' data-target='#applications1' href=\"javascript:;\"> ";
-            str += "NEW";
-            str += "</a></h4> <a href=\"javascript:;\"class=\"fa fa-times author_close\"style=\"float:right;margin-top:8px;color:white\"></a></div> " +
-                "<div id='applications1'class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'><div><lable class='control-label col-sm-2 text-center'" +
-                "style='font-weight: bold;'>";
-            str += "Name";
-            str += "</lable><div class='input-group col-sm-10'><input type='text' name=\"name\" id=\"applicationname\" class='form-control'></div></div><div style=\"margin-top:10px\"><lable class='control-label col-sm-2 text-center'" +
-                "style='font-weight: bold;'>";
-            str += "Link:";
-            str += "</lable><div class='input-group col-sm-10'><input type='text' name=\"ins\" id=\"applicationlink\" class='form-control'></div></div>";
-            str +="    <div style=\"margin-top:10px\">\n" +
-                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                "                                                                                                               style='font-weight: bold;'>\n" +
-                "                                                                                                            Image:\n" +
-                "                                                                                                        </lable>\n" +
-                "                                                                                                        <div class=\"col-sm-10\">\n" +
-                "                                                                                                            <img id=\"imgShow1\" src=\"\"/>\n" +
-                "                                                                                                            <div id=\"imgChange1\">\n" +
-                "                                                                                                                <i class=\"fa fa-plus fa-5x\"></i>\n" +
-                "                                                                                                            </div>\n" +
-                "                                                                                                            <input id=\"imgFile1\" type=\"file\"\n" +
-                "                                                                                                                   style=\"display: none\"\n" +
-                "                                                                                                                   accept=\"image/*\"/>\n" +
-                "                                                                                                        </div>\n" +
-                "                                                                                                    </div>"
-            str +="</div></div></div></div></div>";
-            content_box.append(str);
-
-            var app = {};
-            app.applicationname = $("#applicationname").val();
-            app.applicationlink = $("#applicationlink").val();
-            app.upload_application_image = $("#imgShow1").get(0).currentSrc;
-            themeObj.application.push(app);
-
-
-            $("#applicationname").attr('id','applicationname_past');//改变当前id名称
-            $("#applicationlink").attr('id','applicationlink_past');//改变当前id名称
-            $("#imgShow1").attr('id','imgShow1_past');//改变当前id名称
-            $("#imgChange1").attr('id','imgChange1_past');//改变当前id名称
-            //还需要在finish里写一份，作为最后一次输入的追加
-
-
-        });
 
         $(document).on("keyup", ".username", function () {
 
