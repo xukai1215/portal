@@ -109,10 +109,6 @@ var vue = new Vue({
             }
             this.confirmflag = 0;
 
-
-            // $("#step1_left").attr('id','step1_left_past');
-            // $("#step1_right").attr('id','step1_right_past');
-            // $(".")
             if (action === 'add') {
                 let newTabName = ++this.tabIndex + '';
                 this.editableTabs_model.push({
@@ -615,6 +611,12 @@ var vue = new Vue({
             that.search1();
         })
         $("#step2_next").click(function () {
+            if (!that.confirmflag) {
+                alert("Please click confirm");
+                return false;
+            }
+            that.confirmflag = 0;
+
             that.relateType = "dataItem";
             that.tableData = [];
             that.pageOption2.currentPage=0;
@@ -624,8 +626,12 @@ var vue = new Vue({
             that.search2();
         })
         $("#step3_next").click(function () {
-
-        })
+            if (!that.confirmflag1) {
+                alert("Please click confirm");
+                return false;
+            }
+            that.confirmflag1 = 0;
+        });
 
         const url="ModelDataDownloadServlet";
         $("#data-list").on('click','.view',function () {
