@@ -105,7 +105,7 @@ var vue = new Vue({
 
             if (!this.confirmflag) {
                 alert("Please click confirm");
-                // return false;
+                return false;
             }
             this.confirmflag = 0;
 
@@ -145,6 +145,7 @@ var vue = new Vue({
 
             if (!this.confirmflag1) {
                 alert("Please click confirm");
+                return false;
             }
             this.confirmflag1 = 0;
 
@@ -602,6 +603,7 @@ var vue = new Vue({
             var theme_name = $("#nameInput").val();
             if (theme_name==""){
                 alert("Please input theme name!");
+                window.location.href = "/user/createTheme";
                 return false;
             }
             that.relateType = "modelItem";
