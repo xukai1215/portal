@@ -1,6 +1,9 @@
 var vue = new Vue({
     el: "#app",
     data: {
+        //判断是否已经点击confirm
+        confirmflag:0,
+        confirmflag1:0,
         editableTabsValue_model: '1',
         editableTabsValue_data: '1',
         editableTabsValue_applications: '1',
@@ -13,6 +16,11 @@ var vue = new Vue({
         }],
         tabledataflag:0,
         tabledataflag1:0,
+
+        tableflag1:0,
+        tableflag2:0,
+        titlename1:"",
+        titlename2:"",
 
         editableTabs_data: [{
             tabledata:[],
@@ -95,6 +103,14 @@ var vue = new Vue({
     },
     methods: {
         handleTabsEdit_model(targetName, action) {
+
+            if (!this.confirmflag) {
+                alert("Please click confirm");
+                // return false;
+            }
+            this.confirmflag = 0;
+
+
             // $("#step1_left").attr('id','step1_left_past');
             // $("#step1_right").attr('id','step1_right_past');
             // $(".")
@@ -127,6 +143,12 @@ var vue = new Vue({
             }
         },
         handleTabsEdit_data(targetName, action) {
+
+            if (!this.confirmflag1) {
+                alert("Please click confirm");
+            }
+            this.confirmflag1 = 0;
+
             if (action === 'add') {
                 let newTabName = ++this.tabIndex + '';
                 this.editableTabs_data.push({
@@ -578,6 +600,11 @@ var vue = new Vue({
         };
 
         $("#step1_next").click(function () {
+            var theme_name = $("#nameInput").val();
+            if (theme_name==""){
+                alert("Please input theme name!");
+                return false;
+            }
             that.relateType = "modelItem";
             that.tableData = [];
             that.pageOption1.currentPage=0;
@@ -1051,9 +1078,10 @@ var vue = new Vue({
 
 
         $(document).on('click','#selectok',function ($event) {
-
+            that.editableTabs_model[that.tableflag1++].title = $("#categoryname").val();
             //将tabledata中的数据放到二维数组tabledata_two
             $("#selectok").html("That's ok");
+            that.confirmflag = 1;
             $("#selectok").attr('id',"selectok_past");
             /*classinfo 类似于reference,将选择的model的oid放到classinfo中*/
             // themeObj.classinfo = new Array();
@@ -1075,8 +1103,9 @@ var vue = new Vue({
             that.moid=[];
         });
         $(document).on('click','#selectok1',function ($event) {
-
+            that.editableTabs_data[that.tableflag2++].title = $("#categoryname2").val();
             $("#selectok1").html("That's ok");
+            that.confirmflag1 = 1;
             $("#selectok1").attr('id',"selectok1_past");
             /*dataclassinfo 类似于reference,将选择的model的oid放到dataclassinfo中*/
             var dcla = {};
