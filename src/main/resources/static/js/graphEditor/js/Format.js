@@ -519,7 +519,7 @@ Format.prototype.refresh = function()
 
         addClickHandler(label4, modelPanel, idx++);
 
-        if (editModel === undefined || editModel === true)
+        if (typeof editModel === 'undefined' || editModel === true)
         {
             // Style
             if (containsLabel)
@@ -1607,7 +1607,7 @@ ModelPanel.prototype.addProcessLink = function(div)
     div.appendChild(text);
 
     // 添加 link 按钮
-    if (editModel === undefined || editModel === true){
+    if (typeof editModel === 'undefined' || editModel === true){
         if (graph.getSelectionCount() == 1){
             var btn = null;
             btn = mxUtils.button(mxResources.get('editLink'), mxUtils.bind(this, function(evt)

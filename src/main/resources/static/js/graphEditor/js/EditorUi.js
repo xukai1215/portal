@@ -3129,7 +3129,7 @@ EditorUi.prototype.createUi = function()
     // 创建菜单，分为四步：1、创建div class=geMenubarContainer；2、在menubarContainer中添加div class=geMenubar；
     //                   3、在menubar中添加statebar（暂时不明作用）；4、往container中添加menubarContainer
 	// 2：Creates menubar
-    if (editModel === undefined || editModel === true){
+    if (typeof editModel === 'undefined' || editModel === true){
         this.menubar = (this.editor.chromeless) ? null : this.menus.createMenubar(this.createDiv('geMenubar'));
     }
 	if (this.menubar != null)
@@ -3156,7 +3156,7 @@ EditorUi.prototype.createUi = function()
 
 	// 创建工具条，分为三步，同上
     // 2：Creates toolbar
-    if (editModel === undefined || editModel === true){
+    if (typeof editModel === 'undefined' || editModel === true){
         this.toolbar = (this.editor.chromeless) ? null : this.createToolbar(this.createDiv('geToolbar'));
     }
     if (this.toolbar != null)
@@ -3168,7 +3168,7 @@ EditorUi.prototype.createUi = function()
 
     // 创建左侧图形条
 	// 2：Creates the sidebar
-	if (editModel === undefined || editModel == true){
+	if (typeof editModel === 'undefined' || editModel == true){
         this.sidebar = (this.editor.chromeless) ? null : this.createSidebar(this.sidebarContainer);
 	}
 	if (this.sidebar != null)
