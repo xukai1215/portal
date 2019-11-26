@@ -70,6 +70,9 @@
                 false                       //! Debug button
             );
 
+            this.loadJson = this.loadJson.replace(new RegExp("\"ResponseParameter\":", "gm"), "\"dataDes\":");
+            this.loadJson = this.loadJson.replace(new RegExp("\"datasetReference\":", "gm"), "\"text\":");
+            this.loadJson = this.loadJson.replace(new RegExp("\"optional\":", "gm"), "\"option\":");
             mDiagram.loadJSON(this.loadJson);
 
             mDiagram.onStatedbClick(function(state){

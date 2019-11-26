@@ -7834,7 +7834,7 @@ if (typeof mxVertexHandler != 'undefined')
          * 2019.11.12
          * 根据全局变量editModel来判断cell是都可以转动
          */
-        if(editModel === undefined || editModel === true){
+        if(typeof editModel === 'undefined' || editModel === true){
             mxVertexHandler.prototype.rotationEnabled = true;
         }else{
         mxVertexHandler.prototype.rotationEnabled = false;
@@ -8430,7 +8430,7 @@ if (typeof mxVertexHandler != 'undefined')
 					 * 2019.11.14
 					 * 根据全局变量 editModel 来判断链接提示是否显示编辑和删除功能
                      */
-					if (editModel === undefined || editModel === true)
+					if (typeof editModel === 'undefined' || editModel === true)
 					{
                         if (this.graph.isEnabled() && typeof this.graph.editLink === 'function')
                         {

@@ -209,11 +209,19 @@ OGMSDiagram.prototype.init = function(container, opts, stateInfo, dataRefInfo, i
                 //! Remove all event
                 this.removeAllEventPanels();
 
-                //! Load temp event
-                this.events_tmp = JSON.parse(JSON.stringify(cell.state.events));
+                /**
+                 * 张硕
+                 * 2019.11.25
+                 * 开始结束节点没有event
+                 */
+                if (cell.state.events != null){
 
-                //! Load event panels
-                this.loadEventPanels(this.events_tmp);
+                    //! Load temp event
+                    this.events_tmp = JSON.parse(JSON.stringify(cell.state.events));
+
+                    //! Load event panels
+                    this.loadEventPanels(this.events_tmp);
+                }
 
                 //! Data Reference Window hide
                 this.dataSchameWin.hide();
@@ -472,10 +480,10 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
     '</li>').insertBefore($('#eventItemAdd'));
     var spanDataDes = '';
     if(dataDes == '[Undefined]'){
-        spanDataDes = '<span class="badge badge-default" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes + '</span>';
+        spanDataDes = '<span class="badge badge-default" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes[0].text + '</span>';
     }
     else {
-        spanDataDes = '<span class="badge badge-info" style="cursor:pointer" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes + '</span>';
+        spanDataDes = '<span class="badge badge-info" style="cursor:pointer" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes[0].text + '</span>';
     }
 
     /**
@@ -748,7 +756,7 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
     this.states.push(cell);
 
     for (var i = 0; i < jsBahavior.states.length; i++){
-        var v_cell = this.graph.insertVertex(parent, null, jsBahavior.states[i].name, 20 + i*120, 20, 100, 50, this.roundedStyle);
+        var v_cell = this.graph.insertVertex(parent, null, jsBahavior.states[i].name, 20 + i*120, 20, 150, 50, this.roundedStyle);
         v_cell['state'] = {
             id : jsBahavior.states[i].id,
             name : jsBahavior.states[i].name,
@@ -819,7 +827,7 @@ OGMSDiagram.prototype.orderGraphs = function(){
     var xIndex = 1;
     while(layer2.length != 0){
         for(var i = 0; i < layer2.length; i++){
-            this.moveState(layer2[i], xIndex*150, (i*80 + 60));
+            this.moveState(layer2[i], xIndex*175 - 50, (i*80 + 60));
         }
         xIndex++;
         var layer2 = this.getNextLayer(layer2);
