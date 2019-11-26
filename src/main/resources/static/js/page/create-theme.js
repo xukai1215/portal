@@ -97,8 +97,8 @@ var vue = new Vue({
     },
     methods: {
         handleTabsEdit_model(targetName, action) {
-            $("#step1_left").attr('id','step1_left_past');
-            $("#step1_right").attr('id','step1_right_past');
+            // $("#step1_left").attr('id','step1_left_past');
+            // $("#step1_right").attr('id','step1_right_past');
             // $(".")
             if (action === 'add') {
                 let newTabName = ++this.tabIndex + '';
