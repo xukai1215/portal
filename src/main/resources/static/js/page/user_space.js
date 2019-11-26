@@ -1038,7 +1038,7 @@ var vue = new Vue({
             let flag
             if(file.id!='0')
                 this.pathShown.push(file)
-            
+
             if(file.id==eval.id){
                 return 1
             }
@@ -1299,7 +1299,7 @@ var vue = new Vue({
 
         addFolderinTree(pageIndex,index){
             var node,data
-            if(pageIndex==1){
+            if(pageIndex=='myData'){
                 data=this.$refs.folderTree.getCurrentNode();
                 if(data==undefined) alert('Please select a file directory')
                 node=this.$refs.folderTree.getNode(data);
@@ -1309,6 +1309,8 @@ var vue = new Vue({
                 if(data==undefined) alert('Please select a file directory')
                 node=this.$refs.folderTree2[index].getNode(data);
             }
+
+            let folderExited=data.children
 
             console.log(node);
             let paths=[];
@@ -1327,6 +1329,13 @@ var vue = new Vue({
                 // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
                 // inputErrorMessage: '邮箱格式不正确'
             }).then(({ value }) => {
+                if(folderExited.some((item)=>{
+                   return  item.label===value;
+                })==true){
+                    alert('this name is existing in this path, please input a new one');
+                    return
+                }
+
                 $.ajax({
                     type: "POST",
                     url: "/user/addFolder",
@@ -4537,7 +4546,7 @@ var vue = new Vue({
 
         },
 
-        addDataToPortalBack(item){
+        addDataToPortalBack(item){//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
 
             var addItem=[]
             if(item==undefined) {
@@ -4594,32 +4603,41 @@ var vue = new Vue({
                     } else {
                         let idList=json.data
                         console.log(idList)
-                        if(this.uploadInPath==1){
-                            for(let i=0;i<this.uploadSource.length;i++)
-                            {
-                                console.log(this.uploadSource[i].file_name)
-                                let dataName7Suffix = this.uploadSource[i].file_name.split('.')
-                                const newChild = {
-                                    id:idList[i].id,
-                                    label: dataName7Suffix[0],
-                                    suffix: dataName7Suffix[1],
-                                    children: [],
-                                    package: false,
-                                    upload: true,
-                                    father: paths[0],
-                                    url:idList[i].url,
-                                };
-                                if (this.myFileShown.length === 0)
-                                    this.addChild(this.myFile, paths[0], newChild)
-                                this.myFileShown.push(newChild);
-                                console.log(this.myFileShown)
-                                // this.getFilePackage();
-                                console.log(this.myFile)
+                        if (item == undefined){
+                            if (this.uploadInPath == 1) {
+                                for (let i = 0; i < this.uploadSource.length; i++) {
+                                    console.log(this.uploadSource[i].file_name)
+                                    let dataName7Suffix = this.uploadSource[i].file_name.split('.')
+                                    const newChild = {
+                                        id: idList[i].id,
+                                        label: dataName7Suffix[0],
+                                        suffix: dataName7Suffix[1],
+                                        children: [],
+                                        package: false,
+                                        upload: true,
+                                        father: paths[0],
+                                        url: idList[i].url,
+                                    };
+                                    if (this.myFileShown.length === 0)
+                                        this.addChild(this.myFile, paths[0], newChild)
+                                    this.myFileShown.push(newChild);
+                                    console.log(this.myFileShown)
+                                    // this.getFilePackage();
+                                    console.log(this.myFile)
+                                }
+                            } else {
+                                this.refreshPackage(0);
+                                //要写一个前台按路径查找的函数
                             }
                         }else{
-                            this.refreshPackage(0);
-                            //要写一个前台按路径查找的函数
+                            let obj=item
+                            obj.id=idList[0].id
+                            obj.url=idList[0].url
+                            if (this.myFileShown.length === 0)
+                                this.addChild(this.myFile, paths[0], item)
+                            this.myFileShown.push(item);
                         }
+
                         this.addFolderIndex = false;
                         this.selectedPath=[];
 
