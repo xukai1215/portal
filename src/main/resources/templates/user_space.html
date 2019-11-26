@@ -2017,15 +2017,14 @@
                                 </el-row>
                                 <!--<el-button icon="el-icon-sold-out" class="dall" @click="dall()">download selected all files-->
                                 <!--</el-button>-->
-
-
+                                <!--  右键菜单-->
                                 <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu">
-                                    <el-button id="dbtn" @click="right_download()" type="text">download</el-button>
-                                    <br>
+                                    <el-button id="dbtn" @click="right_download()" v-if="!rightTargetItem.package" type="text">download</el-button>
+                                    <br v-if="!rightTargetItem.package">
                                     <el-button id="dbtn" @click="copyFile()" v-if="!rightTargetItem.package" type="text">copy to ...</el-button>
                                     <br v-if="!rightTargetItem.package">
-                                    <el-button id="dbtn" @click="pasteFile()" v-if="!rightTargetItem.package" type="text">paste</el-button>
-                                    <br v-if="!rightTargetItem.package">
+<!--                                    <el-button id="dbtn" @click="pasteFile()" v-if="!rightTargetItem.package" type="text">paste</el-button>-->
+<!--                                    <br v-if="!rightTargetItem.package">-->
                                     <el-button id="dbtn" @click="right_deleteFile()" type="text">delete</el-button>
                                     <br>
                                     <el-button id="sbtn" @click="right_share" type="text">share</el-button>
@@ -2155,7 +2154,7 @@
                                         <div class="modal-footer">
                                              <span>
                                                  <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
-                                                            @click="addFolderinTree(1)">Add new folder</el-button>
+                                                            @click="addFolderinTree('myData')">Add new folder</el-button>
                                                  <el-button @click="closeSelectFolder">Cancel</el-button>
                                                  <el-button type="primary" @click="confirmFolder()">OK</el-button>
                                              </span>
