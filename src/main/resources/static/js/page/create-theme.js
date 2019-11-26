@@ -16,11 +16,10 @@ var vue = new Vue({
         }],
         tabledataflag:0,
         tabledataflag1:0,
-
+//用作改变title时的计数
         tableflag1:0,
         tableflag2:0,
-        titlename1:"",
-        titlename2:"",
+        tableflag3:0,
 
         editableTabs_data: [{
             tabledata:[],
@@ -626,18 +625,6 @@ var vue = new Vue({
 
         })
 
-
-        // $(document).on('click','#selectdata',function ($event) {
-        //     //alert("ok");
-        //     that.relateType = "dataItem";
-        //     that.tableData = [];
-        //     that.pageOption2.currentPage=0;
-        //     that.pageOption2.searchResult = [];
-        //     that.relateSearch = "";
-        //     that.getRelation();
-        //     that.search2();
-        //     that.dialogTableVisible1 = true;
-        // });
         const url="ModelDataDownloadServlet";
         $("#data-list").on('click','.view',function () {
             const dataID=this.getAttribute("div_id");
@@ -671,52 +658,9 @@ var vue = new Vue({
             const dataID=this.attr("id");
             console.log(dataID);
         });
-        // themeObj.classinfo = new Array();
-        //const classarr = new Array(".modelimage",".modeltext",".modelaudio",".modelvideo",".modelsemantic",".sidebardata",".applications");//存储各种模型类的class
-        const contentarr = new Array("modelimage","modeltext","modelaudio","modelvideo","modelsemantic","sidebardata","applications");//存储模型类的模型内容名
-        const listidarr = new Array("modelimage","modeltext","modelaudio","modelvideo","modelsemantic","sidebardata","applications");//右侧展示id
-        const listidarrrow = new Array("modelimage.row","modeltext.row","modelaudio.row","modelvideo.row","modelsemantic.row","sidebardata.row","applications.row");//右侧展示id
-        //var bclassarr = "," + this.classarr[0];
-        console.log(this);
-        console.log(that);
+
         $("." + that.classarr[0]).on("click", () => {
             that.initmodel(index,classarr,contentarr,listidarr,listidarrrow);
-        });
-        /**
-         * 展开按钮
-         */
-        $(".expandBtn").click(function (e) {
-            if($(this).text().indexOf("Expand")>=0){ //$(this)是当前元素被jQuery处理的对象,即expandBtn的jquery对象。如果expandBtn的text中包含Expand
-                //显示剩余的每一行模型
-                $(this).parent().siblings(".x_content").children(".row").show();//选择expandBtn的父亲的所有兄弟中class="info"的元素的孩子中class="row"的元素，显示
-
-                $(this).html("Collapse&nbsp; <i class=\"fa fa-caret-up\"></i>");//同时给Collapse赋以内容
-            }else{
-                //隐藏所有行，然后只显示1.2行
-                $(this).parent().siblings(".x_content").children(".row").hide();
-                $(this).parent().siblings(".x_content").children(".row").eq(0).show();
-                $(this).parent().siblings(".x_content").children(".row").eq(1).show();
-                $(this).html("Expand&nbsp; <i class=\"fa fa-caret-down\"></i>");
-            }
-            e.preventDefault();
-        });
-
-
-        /**
-         * 左边的目录树点击事件
-         */
-        $(".navbarPanel .navigation a").click(function () {
-            index = $(this).attr("index")*1;  //获取当前点击的navigation的index
-            $(".infoPanel").hide();               //隐藏右边的所有页面
-            $(".infoPanel").eq(index).show();     //显示click的一个
-            if($(".infoPanel").eq(index).children(".info").children(".row").length<3){   //如果行数<3，则不显示expand
-                $(".infoPanel").eq(index).children(".expand").hide();
-            }
-            $(".infoPanel").eq(index).children(".info").children(".row").eq(0).show();   //否则显示前两行
-            $(".infoPanel").eq(index).children(".info").children(".row").eq(1).show();
-            //改变按钮背景色
-            that.initmenucolor();
-            that.changecolor(index);
         });
 
         $("input[name='Status']").iCheck({
@@ -910,6 +854,8 @@ var vue = new Vue({
 
 
         $(document).on('click','#imgChange1',function ($event) {
+            that.editableTabs_applications[that.tableflag3++].title = $("#applicationname").val();
+
             $("#imgFile1").click();
         })
         // $("#imgChange1").click(function () {
