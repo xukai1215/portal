@@ -149,7 +149,7 @@
                                         <el-col :span="4" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
                                                 <!--<a th:href="${dataClass.url[0].url_download[0]}" ><img src="/static/thematicmodel/css/images/model/thumb.png" class="image"></a>-->
-                                                <a th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}"><img src="/static/img/thematic_center/thumb.png" class="image"></a>
+                                                <a th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}"><img src="/static/img/thematic_center/thumb.png" class="image" id="data_image"></a>
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}"></span>
                                                     <!--<a th:href="${dataClass.url[0].url_select}"> <el-button  type="success" class="button" id ="rbtn">data</el-button></a>-->
@@ -173,7 +173,7 @@
                                         <el-col :span="4" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
                                             <a th:href="${item.link}">
                                                 <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
-                                                    <img th:src="'/static/upload'+${item.image}" class="image">
+                                                    <img th:src="'/static/upload'+${item.image}" class="image" id="application_image">
                                                     <div style="padding: 14px;">
                                                         <span th:text="${item.name}"></span>
                                                     </div>
