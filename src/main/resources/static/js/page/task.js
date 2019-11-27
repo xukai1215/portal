@@ -1,8 +1,8 @@
 var vue = new Vue({
     el: "#app",
     data: {
-        radioStyle:"Classic",
-        semanticsActiveStates:[0,1,2,3,4,5,6,7,8,9,10],
+        radioStyle: "Classic",
+        semanticsActiveStates: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
         tableLoading: true,
         first: true,
@@ -39,11 +39,11 @@ var vue = new Vue({
             }
         ],
 
-        exampleDataList:[
+        exampleDataList: [
             {
-                userName:'',
-                runTime:'',
-                description:''
+                userName: '',
+                runTime: '',
+                description: ''
             }
         ],
 
@@ -51,146 +51,220 @@ var vue = new Vue({
         outEvent: [],
         oid: null,
 
-        fileList:[],
+        fileList: [],
 
         //select data from user
-        selectDataDialog:false,
-        userOid:'',
-        loading:false,
-        userData:[],
-        totalNum:'',
-        page:1,
-        pageSize:10,
-        sortAsc:false,
-        selectData:[],
-        keyInput:'',
-        modelInEvent:{},
-        isFixed:false,
-        introHeight:1,
+        selectDataDialog: false,
+        userOid: '',
+        loading: false,
+        userData: [],
+        totalNum: '',
+        page: 1,
+        pageSize: 10,
+        sortAsc: false,
+        selectData: [],
+        keyInput: '',
+        modelInEvent: {},
+        isFixed: false,
+        introHeight: 1,
 
-        dataChosenIndex:1,
-        detailsIndex:1,
-        managerloading:true,
-        userTaskInfo:[{
-            content:{},
+        dataChosenIndex: 1,
+        detailsIndex: 1,
+        managerloading: true,
+        userTaskInfo: [{
+            content: {},
         }],
 
-        downloadDataSet:[],
-        downloadDataSetName:[],
-        packageContent:{},
+        downloadDataSet: [],
+        downloadDataSetName: [],
+        packageContent: {},
         userInfo: {
-            runTask:[
-                {
-
-                }
+            runTask: [
+                {}
             ]
         },
-        searchcontent:'',
-        databrowser:[],
-        loading:'false',
-        managerloading:true,
-        dataid:'',
-        rightMenuShow:false,
+        searchcontent: '',
+        databrowser: [],
+        loading: 'false',
+        managerloading: true,
+        dataid: '',
+        rightMenuShow: false,
 
-        introHeight:1,
+        introHeight: 1,
 
-        dataItemVisible:false,
-        categoryTree:[],
-        classifications:[],
-        dataItemSearchText:'',
-        currentData:{},
-        pageOption:{
-            page:0,
-            pageSize:5,
-            asc:false,
-            searchResult:[],
-            total:0,
+        dataItemVisible: false,
+        categoryTree: [],
+        classifications: [],
+        dataItemSearchText: '',
+        currentData: {},
+        pageOption: {
+            page: 0,
+            pageSize: 5,
+            asc: false,
+            searchResult: [],
+            total: 0,
         },
 
-        loadDataVisible:false,
+        loadDataVisible: false,
 
-        showDescriptionVisible:false,
+        showDescriptionVisible: false,
 
-        taskDescription:'',
+        taskDescription: '',
 
-        fileSpaceIndex:1,
+        fileSpaceIndex: 1,
 
-        myFile:[],
+        myFile: [],
 
-        myFileShown:[
+        myFileShown: [
             {
-                children:[],
+                children: [],
             }
         ],
 
-        fatherIndex:'',
+        fatherIndex: '',
 
-        pathShown:[],
+        pathShown: [],
 
-        clickTimeout:1000,
+        clickTimeout: 1000,
 
-        rotatevalue:0,
+        rotatevalue: 0,
 
         fileSearchResult:[],
 
-        loadjson:''
+        loadjson:'',
+        paramDialogVisible: false,
+        paramType: "",
+        externalUrl: "",
+        currentEventId: "",
+
+        loadjson: ''
     },
     computed: {},
     methods: {
-        tableRowKey(row){
+
+        arraySpanMethod({row, column, rowIndex, columnIndex}) {
+            if (row.children != undefined && columnIndex === 2) {
+                return [1, 3];
+            }
+        },
+        editParam(row) {
+            this.currentEventId = row.eventId;
+            let data = row.data[0];
+            this.paramType = data.dataType;
+            if (this.paramType == "internal") {
+                this.paramTable = data.nodes;
+            }
+            else {
+                this.externalUrl = "/repository/template/" + data.externalId.toLowerCase();
+            }
+            this.paramDialogVisible = true;
+        },
+
+        createAndUploadParamFile() {
+            let states = this.info.modelInfo.states;
+            for (i = 0; i < states.length; i++) {
+                let events = states[i].event;
+                let find = false;
+                for (j = 0; j < events.length; j++) {
+                    let event = events[j];
+                    if (event.children != undefined) {
+                        this.eventChoosing = event;
+                        //拼接文件内容
+                        let content = "<DataSet>";
+                        let children = event.children;
+                        for (k = 0; k < children.length; k++) {
+                            let child = children[k];
+                            content += "<XDO name=\"" + child.eventName + "\" kernelType=\"" + child.eventType + "\" value=\"" + child.value + "\" /> ";
+                        }
+                        content += "</Dataset>";
+
+                        //生成文件
+                        let file = new File([content], event.eventName + '.xml', {
+                            type: 'text/plain',
+                        });
+                        //上传文件
+                        let formData = new FormData();
+                        formData.append("file", file);
+
+                        formData.append("host", this.info.dxInfo.dxIP);
+                        formData.append("port", this.info.dxInfo.dxPort);
+                        formData.append("type", this.info.dxInfo.dxType);
+                        formData.append("userName", this.info.userInfo.userName);
+                        $.ajax({
+                            url: "/dispatchRequest/upload",
+                            type: "POST",
+                            processData: false,
+                            contentType: false,
+                            async: true,
+                            data: formData,
+                            success: ({data}) => {
+
+                                let {tag, suffix, url} = data;
+                                this.info.modelInfo.states[i].event[j].tag = tag;
+                                this.info.modelInfo.states[i].event[j].suffix = suffix;
+                                this.info.modelInfo.states[i].event[j].url = url;
+
+                            }
+                        });
+                    }
+                }
+            }
+
+        },
+        tableRowKey(row) {
             console.log(row)
-          return row.name;
+            return row.name;
         },
 
-        handlePageChange(){
+        handlePageChange() {
 
         },
-        handleView(){
+        handleView() {
 
         },
-        selectFromDataItem(event){
+        selectFromDataItem(event) {
             this.eventChoosing = event;
-            this.dataItemVisible=true;
+            this.dataItemVisible = true;
         },
-        clickData(item,event){
-            console.log(item,event)
-            if(this.currentData.url!=item.url) {
+        clickData(item, event) {
+            console.log(item, event)
+            if (this.currentData.url != item.url) {
 
                 this.currentData = item;
 
-                for(let parent of event.path){
-                    if(parent.id==item.url){
+                for (let parent of event.path) {
+                    if (parent.id == item.url) {
                         $(".dataitemisol").removeClass("clickdataitem");
                         parent.classList.add("clickdataitem")
                         break;
                     }
                 }
             }
-            else{
-                this.currentData={};
+            else {
+                this.currentData = {};
                 $(".dataitemisol").removeClass("clickdataitem")
             }
         },
-        searchDataItem(){
-            this.pageOption.classifications=this.classifications;
-            this.pageOption.searchText=this.dataItemSearchText;
-            axios.post("/dataItem/searchResourceByNameAndCate/",this.pageOption)
-                .then((res)=>{
+        searchDataItem() {
+            this.pageOption.classifications = this.classifications;
+            this.pageOption.searchText = this.dataItemSearchText;
+            axios.post("/dataItem/searchResourceByNameAndCate/", this.pageOption)
+                .then((res) => {
                     console.log(res)
-                    this.pageOption.searchResult=res.data.data.list;
-                    this.pageOption.total=res.data.data.total;
+                    this.pageOption.searchResult = res.data.data.list;
+                    this.pageOption.total = res.data.data.total;
                 });
         },
 
-        chooseCate(item,e){
-            if(this.classifications[0]!=item.id){
-                $(".taskDataCate").children().css("color","black")
-                e.target.style.color='deepskyblue';
+        chooseCate(item, e) {
+            if (this.classifications[0] != item.id) {
+                $(".taskDataCate").children().css("color", "black")
+                e.target.style.color = 'deepskyblue';
                 this.classifications.pop();
                 this.classifications.push(item.id);
             }
-            else{
-                e.target.style.color='black';
+            else {
+                e.target.style.color = 'black';
                 this.classifications.pop();
             }
 
@@ -198,106 +272,105 @@ var vue = new Vue({
 
         },
 
-        confirmData(){
-            if(this.currentDataUrl!="") {
-                this.dataItemVisible=false;
-                console.log(this.eventChoosing,this.currentData)
+        confirmData() {
+            if (this.currentDataUrl != "") {
+                this.dataItemVisible = false;
+                console.log(this.eventChoosing, this.currentData)
                 this.eventChoosing.tag = this.currentData.name;
                 this.eventChoosing.url = this.currentData.url;
             }
-            else{
+            else {
                 this.$message("Please select data first!")
             }
         },
-        downloadData(){
-            if(this.currentDataUrl!="") {
+        downloadData() {
+            if (this.currentDataUrl != "") {
                 window.open("/dispatchRequest/download?url=" + this.currentData.url);
             }
-            else{
+            else {
                 this.$message("Please select data first!")
             }
         },
 
-        initSize(){
-            this.$nextTick(() =>{
+        initSize() {
+            this.$nextTick(() => {
                 let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                let totalHeight= $('.taskMain').css('height')
-                let leftbarHeight= $("#introContainer").css("height");
+                let totalHeight = $('.taskMain').css('height')
+                let leftbarHeight = $("#introContainer").css("height");
 
-                if(scrollTop>62){
+                if (scrollTop > 62) {
                     $('#introContainer').addClass("fixed")
-                    if(parseInt(totalHeight)-parseInt(scrollTop)+62<parseInt(leftbarHeight)){
+                    if (parseInt(totalHeight) - parseInt(scrollTop) + 62 < parseInt(leftbarHeight)) {
                         $('#introContainer').removeClass("fixed")
                         $('#introContainer').addClass("stop")
-                    }else{
+                    } else {
                         $('#introContainer').removeClass("stop")
                         $('#introContainer').addClass("fixed")
                     }
-                }else{
+                } else {
                     $('#introContainer').removeClass("fixed")
                 }
 
-                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
-                    $('.introContent').css('display','none')
-                }else{
-                    $('.introContent').css('display','block')
+                if (parseInt(totalHeight) - parseInt(scrollTop) < 800) {
+                    $('.introContent').css('display', 'none')
+                } else {
+                    $('.introContent').css('display', 'block')
                 }
-
 
 
             })
 
         },
 
-        showtitle(ev){
-            return ev.fileName+"\n"+"Type:"+ev.suffix;
+        showtitle(ev) {
+            return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
 
-        generateId(key){
+        generateId(key) {
             return key;
         },
 
-        getUserTaskInfo(){
-            let { code, data, msg } =  fetch("/user/getUserInfo", {
+        getUserTaskInfo() {
+            let {code, data, msg} = fetch("/user/getUserInfo", {
                 method: "GET",
-            }).then((response)=>{
+            }).then((response) => {
                 return response.json();
-            }).then((data)=>{
-                this.userInfo=data.data.userInfo;
-                this.userTaskInfo=this.userInfo.runTask;
+            }).then((data) => {
+                this.userInfo = data.data.userInfo;
+                this.userTaskInfo = this.userInfo.runTask;
                 console.log(this.userInfo);
-                setTimeout(()=>{
-                    $('.el-loading-mask').css('display','none');
-                },355)
+                setTimeout(() => {
+                    $('.el-loading-mask').css('display', 'none');
+                }, 355)
 
             });
 
         },
 
-        share(){
-            for(let i=0;i<this.databrowser.length;i++){
-                if(this.databrowser[i].id===this.dataid){
-                    var item=this.databrowser[i];
+        share() {
+            for (let i = 0; i < this.databrowser.length; i++) {
+                if (this.databrowser[i].id === this.dataid) {
+                    var item = this.databrowser[i];
                     break;
                 }
             }
 
 
-            if(item!=null){
-                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                this.$alert("<input style='width: 100%' value="+url+">",{
+            if (item != null) {
+                let url = "/dataManager/downloadRemote?&sourceStoreId=" + item.sourceStoreId;
+                this.$alert("<input style='width: 100%' value=" + url + ">", {
                     dangerouslyUseHTMLString: true
                 })
                 // this.dataid='';
 
-            }else {
+            } else {
                 // console.log("从后台获取数据条目数组有误")
                 this.$message('please select file first!!');
             }
         },
 
-        backToPackage(){
-            this.detailsIndex=1;
+        backToPackage() {
+            this.detailsIndex = 1;
         },
 
         dateFormat(date, format) {
@@ -336,11 +409,11 @@ var vue = new Vue({
                 userName: this.info.userInfo.userName
             };
         },
-        handleDataDownloadClick({ sourceStoreId }) {
+        handleDataDownloadClick({sourceStoreId}) {
 
             window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
         },
-        handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
+        handleDataChooseClick({sourceStoreId, fileName, suffix}) {
             let url =
                 "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
@@ -368,7 +441,8 @@ var vue = new Vue({
             btns.css("color", "#636363");
             btns.eq(i - 1).css("color", "#428bca");
         },
-        init() {},
+        init() {
+        },
         inEventList(state) {
             return state.event.filter(value => {
                 return value.eventType === "response";
@@ -383,41 +457,40 @@ var vue = new Vue({
             return row.fromWhere === value;
         },
 
-        loadData(){
-            this.loadDataVisible=true
+        loadData() {
+            this.loadDataVisible = true
 
-            let href=window.location.href.split('/')
-            let modelId=href[href.length-1]
+            let href = window.location.href.split('/')
+            let modelId = href[href.length - 1]
 
-            axios.get("/task/getTasksByModel",{
+            axios.get("/task/getTasksByModel", {
                     params:
                         {
-                            modelId:modelId,
-                            page:0
+                            modelId: modelId,
+                            page: 0
                         }
-            }
-            ).then((res)=>{
-                for(let i=0;i<res.data.data.length;i++)
-                    res.data.data[i].runTime=this.dateFormat(res.data.data[i].runTime)
-                this.exampleDataList=res.data.data
+                }
+            ).then((res) => {
+                for (let i = 0; i < res.data.data.length; i++)
+                    res.data.data[i].runTime = this.dateFormat(res.data.data[i].runTime)
+                this.exampleDataList = res.data.data
             })
         },
 
-        handleSelectionChange(){
+        handleSelectionChange() {
 
         },
 
-        showDescription(item){
+        showDescription(item) {
             console.log(item)
-            if(item.description!='')
-            {
-                this.showDescriptionVisible=true;
-                this.taskDescription=item.description;
+            if (item.description != '') {
+                this.showDescriptionVisible = true;
+                this.taskDescription = item.description;
             }
 
         },
 
-        async loadExampleData(id){
+        async loadExampleData(id) {
             console.log(id)
             const loading = this.$loading({
                 lock: true,
@@ -426,38 +499,37 @@ var vue = new Vue({
                 background: "rgba(0, 0, 0, 0.7)"
             });
 
-            let{data,code,msg}=await (await fetch("/task/loadPublishedData",{
-                method:"post",
-                body:id
+            let {data, code, msg} = await (await fetch("/task/loadPublishedData", {
+                    method: "post",
+                    body: id
                 }
+            )).json()
 
-                )).json()
-
-            if (code == -1 || code==null || code==undefined) {
+            if (code == -1 || code == null || code == undefined) {
                 loading.close();
                 this.$message.error(msg);
                 return;
             }
             console.log(data)
-            data.forEach(data=>{ //填入前端变量
-                let state = this.info.modelInfo.states.find(state => {
-                    return state.name == data.state;
-                });
+            data.forEach(data => { //填入前端变量
+                    let state = this.info.modelInfo.states.find(state => {
+                        return state.name == data.state;
+                    });
 
-                let event = state.event.find(event => {
-                    return event.eventName == data.event;
-                });
-                if (event == undefined) return;
-                this.$set(event, "tag", data.tag);
-                this.$set(event, "suffix", data.suffix);
-                this.$set(event, "url", data.url);
+                    let event = state.event.find(event => {
+                        return event.eventName == data.event;
+                    });
+                    if (event == undefined) return;
+                    this.$set(event, "tag", data.tag);
+                    this.$set(event, "suffix", data.suffix);
+                    this.$set(event, "url", data.url);
+                    this.$set(event, "children", data.children);
 
                 }
-
             )
 
             loading.close();
-            this.loadDataVisible=false
+            this.loadDataVisible = false
         },
 
         async loadTest(type) {
@@ -474,7 +546,7 @@ var vue = new Vue({
                 type: this.info.dxInfo.dxType,
                 userName: this.info.userInfo.userName
             };
-            let { data, code ,msg} = await (await fetch("/task/loadTestData/", {
+            let {data, code, msg} = await (await fetch("/task/loadTestData/", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json"
@@ -482,7 +554,7 @@ var vue = new Vue({
                 body: JSON.stringify(body)
             })).json();
 
-            if (code == -1 || code==null || code==undefined) {
+            if (code == -1 || code == null || code == undefined) {
                 loading.close();
                 this.$message.error(msg);
                 return;
@@ -502,22 +574,40 @@ var vue = new Vue({
                 this.$set(event, "tag", el.tag);
                 this.$set(event, "suffix", el.suffix);
                 this.$set(event, "url", el.url);
+                if(el.children.length>0){
+                    if(el.children.length==1){
+                        event.children[0].value=el.children[0].value;
+                    }
+                    else {
+                        for (i = 0; i < el.children.length; i++) {
+                            let name=el.children[i].eventName
+                            let eventChild = event.children.find(child => {
+                                return child.eventName == name;
+                            })
+                            if(eventChild!=null) {
+                                eventChild.value = el.children[i].value;
+                            }
+                        }
+                    }
+                }
+
+
             });
             loading.close();
-            this.loadDataVisible=false
+            this.loadDataVisible = false
         },
 
-        goPersonCenter(oid){
-            window.open("/user/"+oid);
+        goPersonCenter(oid) {
+            window.open("/user/" + oid);
         },
 
         download(event) {
             //下载接口
-            if(event.url!=undefined) {
+            if (event.url != undefined) {
                 this.eventChoosing = event;
                 window.open("/dispatchRequest/download?url=" + this.eventChoosing.url);
             }
-            else{
+            else {
                 this.$message.error("No data can be downloaded.");
             }
         },
@@ -529,22 +619,22 @@ var vue = new Vue({
         beforeRemove(file) {
             return this.$confirm(`确定移除 ${file.name}？`);
         },
-        onSuccess({ data }) {
-            let { tag,suffix, url } = data;
+        onSuccess({data}) {
+            let {tag, suffix, url} = data;
             this.showUpload = false;
             this.eventChoosing.tag = tag;
             this.eventChoosing.suffix = suffix;
             this.eventChoosing.url = url;
             this.$refs.upload.clearFiles();
-            $("#eventInp_" + this.eventChoosing.eventId).val(tag+"."+suffix);
-            $("#download_" + this.eventChoosing.eventId).css("display","block");
+            $("#eventInp_" + this.eventChoosing.eventId).val(tag + "." + suffix);
+            $("#download_" + this.eventChoosing.eventId).css("display", "block");
         },
 
         myDataClick(index) {
             this.dataChosenIndex = index;
-            this.pathShown=[];
-            this.downloadDataSet=[];
-            this.downloadDataSetName=[];
+            this.pathShown = [];
+            this.downloadDataSet = [];
+            this.downloadDataSetName = [];
             this.getFilePackage()
         },
 
@@ -563,15 +653,15 @@ var vue = new Vue({
             this.eventChoosing = event;//此处把页面上的event与eventChoosing绑定
         },
 
-        selectDataFromPersonal(){
-            if(this.currentDataUrl!="") {
-                this.showDataChose=false;
-                console.log(this.eventChoosing,this.downloadDataSetName)
+        selectDataFromPersonal() {
+            if (this.currentDataUrl != "") {
+                this.showDataChose = false;
+                console.log(this.eventChoosing, this.downloadDataSetName)
                 this.eventChoosing.tag = this.downloadDataSetName[0].name;
                 this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
                 this.eventChoosing.url = this.downloadDataSetName[0].url;
             }
-            else{
+            else {
                 this.$message("Please select data first!")
             }
 
@@ -583,7 +673,7 @@ var vue = new Vue({
         },
         async getTableData(page) {
             this.tableLoading = true;
-            let { data } = await (await fetch(
+            let {data} = await (await fetch(
                 "/dispatchRequest/getUserRelatedDataFromDataContainer/?page=" +
                 page +
                 "&pageSize=10&" +
@@ -598,38 +688,38 @@ var vue = new Vue({
             };
         },
 
-        getPackageContent($event, eval,key){
+        getPackageContent($event, eval, key) {
             clearTimeout(this.clickTimeout)
-            if(eval.package===false)
+            if (eval.package === false)
                 return
-            let id=eval.id;
-            this.fatherIndex=this.myFileShown[key].id;
+            let id = eval.id;
+            this.fatherIndex = this.myFileShown[key].id;
             this.pathShown.push(this.myFileShown[key])
-            if(this.myFileShown[key].children.length!=0)
-                this.myFileShown= this.myFileShown[key].children;
+            if (this.myFileShown[key].children.length != 0)
+                this.myFileShown = this.myFileShown[key].children;
             else
-                this.myFileShown=[];
+                this.myFileShown = [];
 
-            this.renameIndex='';
+            this.renameIndex = '';
             console.log(this.myFileShown)
             // console.log(this.myFileShown.length)
             // console.log(this.fatherIndex)
 
         },
 
-        getFilePackage(){
-            axios.get("/user/getFolderAndFile",{})
-                .then(res=> {
-                    let json=res.data;
-                    if(json.code==-1){
+        getFilePackage() {
+            axios.get("/user/getFolderAndFile", {})
+                .then(res => {
+                    let json = res.data;
+                    if (json.code == -1) {
                         alert("Please login first!")
                         window.sessionStorage.setItem("history", window.location.href);
-                        window.location.href="/user/login"
+                        window.location.href = "/user/login"
                     }
                     else {
-                        this.myFile=res.data.data[0].children;
+                        this.myFile = res.data.data[0].children;
                         console.log(this.myFile)
-                        this.myFileShown=this.myFile;
+                        this.myFileShown = this.myFile;
                     }
 
 
@@ -637,58 +727,58 @@ var vue = new Vue({
         },
 
         //回到上一层目录
-        backToFather(){
+        backToFather() {
             // if(this.myFileShown.length==0||this.fatherIndex!=0) {
             //     this.findFather(this.myFile)
             //     this.fatherIndex=this.myFileShown[0].father;
             //     console.log()
             // }else if(this.fatherIndex==0)
             //     this.myFileShown=this.myFile;
-            this.pathShown.pop(this.pathShown.length-1)
-            $('.fa-arrow-left').animate({marginLeft:'-6px'},170)
+            this.pathShown.pop(this.pathShown.length - 1)
+            $('.fa-arrow-left').animate({marginLeft: '-6px'}, 170)
             let allFolder = [];
-            allFolder.children=this.myFile;
-            this.findFather(this.myFile,allFolder)
+            allFolder.children = this.myFile;
+            this.findFather(this.myFile, allFolder)
             console.log(this.myFileShown)
-            this.fatherIndex=this.myFileShown[0].father;
-            $('.fa-arrow-left').animate({marginLeft:'0'},170)
+            this.fatherIndex = this.myFileShown[0].father;
+            $('.fa-arrow-left').animate({marginLeft: '0'}, 170)
         },
 
-        findFather(file,father){
-            if(this.fatherIndex==='0')
-                this.myFileShown=this.myFile;
-            for(let i=0;i<file.length;i++){
-                if(file[i].id===this.fatherIndex){
-                    this.myFileShown=father.children;
+        findFather(file, father) {
+            if (this.fatherIndex === '0')
+                this.myFileShown = this.myFile;
+            for (let i = 0; i < file.length; i++) {
+                if (file[i].id === this.fatherIndex) {
+                    this.myFileShown = father.children;
                     console.log(this.myFileShown)
                     return;
-                }else{
-                    this.findFather(file[i].children,file[i])
+                } else {
+                    this.findFather(file[i].children, file[i])
                 }
             }
         },
 
-        refreshPackage(event,index){
+        refreshPackage(event, index) {
 
             let paths = []
-            if(index==1){
+            if (index == 1) {
                 let i = this.pathShown.length - 1;
                 while (i >= 0) {
                     paths.push(this.pathShown[i].id);
                     i--;
                 }
-                if (paths.length==0) paths = ['0']
+                if (paths.length == 0) paths = ['0']
 
-            }else{
-                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
-                while (i>=1) {
+            } else {
+                let i = this.selectedPath.length - 1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i >= 1) {
                     paths.push(this.selectedPath[i].key);
                     i--;
                 }
-                if (paths.length==0) paths=['0']
+                if (paths.length == 0) paths = ['0']
 
-                this.pathShown=[]
-                for(i=1;i<this.selectedPath.length;i++){
+                this.pathShown = []
+                for (i = 1; i < this.selectedPath.length; i++) {
                     this.pathShown.push(this.selectedPath[i].data)
                 }
 
@@ -697,7 +787,7 @@ var vue = new Vue({
 
             this.rotatevalue += 180;
             console.log($('.fa-refresh'))
-            $('.fa-refresh').css('transform','rotate('+this.rotatevalue+'deg)')
+            $('.fa-refresh').css('transform', 'rotate(' + this.rotatevalue + 'deg)')
 
             $.ajax({
                 type: "GET",
@@ -725,33 +815,33 @@ var vue = new Vue({
 
         },
 
-        refreshChild(file){
+        refreshChild(file) {
             console.log(this.fatherIndex)
-            for(let i=0;i<file.length;i++){
-                if(file[i].id===this.fatherIndex){
-                    file[i].children=this.myFileShown
+            for (let i = 0; i < file.length; i++) {
+                if (file[i].id === this.fatherIndex) {
+                    file[i].children = this.myFileShown
                     console.log(this.myFile)
                     return;
-                }else{
+                } else {
                     this.refreshChild(file[i].children)
                 }
             }
         },
 
         singleClick($event, eval) {
-            if(this.rightMenuShow==true){
-                this.rightMenuShow=false;
+            if (this.rightMenuShow == true) {
+                this.rightMenuShow = false;
                 return
             }
             clearTimeout(this.clickTimeout)
-            var target=$event.currentTarget;
-            var eval=eval;
-            var that=this
-            this.clickTimeout = setTimeout(function (){
+            var target = $event.currentTarget;
+            var eval = eval;
+            var that = this
+            this.clickTimeout = setTimeout(function () {
                 that.getid(target, eval)
-            },1)
+            }, 1)
 
-            this.renameIndex='';
+            this.renameIndex = '';
 
         },
 
@@ -782,184 +872,230 @@ var vue = new Vue({
         },
 
         async invoke() {
-
-            console.log(this.modelInEvent)
-            const loading = this.$loading({
+            let loading = this.$loading({
                 lock: true,
-                text: "Model is running, you can check running state and get results in \"User Space\" -> \"Task\"",
+                text: "Setting parameters...",
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            let json = {
-                oid: this.oid,
-                ip: this.info.taskInfo.ip,
-                port: this.info.taskInfo.port,
-                pid: this.info.taskInfo.pid,
-                inputs: []
-            };
-
-            try{
-                this.info.modelInfo.states.forEach(state => {
-                    let statename = state.name;
-                    state.event.forEach(el => {
-                        let event = el.eventName;
-                        let tag = el.tag;
-                        let url = el.url;
-                        let suffix=el.suffix;
-                        if (el.eventType == "response") {
-                            if (el.optional) {
-                                if(url === null || url === undefined){
-
-                                }else{
-                                    json.inputs.push({
-                                        statename,
-                                        event,
-                                        url,
-                                        tag,
-                                        suffix
-                                    });
-                                }
-                            } else {
-                                if (url === null || url === undefined) {
-                                    this.$message.error("Some input data is not provided");
-                                    throw new Error("Some input data is not provided");
-                                }
-                                json.inputs.push({
-                                    statename,
-                                    event,
-                                    url,
-                                    tag,
-                                    suffix
-                                });
+            let states = this.info.modelInfo.states;
+            for (i = 0; i < states.length; i++) {
+                let events = states[i].event;
+                for (j = 0; j < events.length; j++) {
+                    let event=events[j];
+                    if(event.optional==false&&event.children!=undefined){
+                        for(k=0;k<event.children.length;k++){
+                            let child=event.children[k];
+                            if(child.value==undefined||child.value.trim()==""){
+                                loading.close();
+                                this.$message.error("Some input parameters are not set");
+                                throw new Error("Some input parameters are not set");
+                                return;
                             }
                         }
-                    });
-                });
-            }catch(e){
-                loading.close();
-                return;
+                    }
+                }
             }
 
+            this.createAndUploadParamFile();
+            let prepare = setInterval(() => {
+                let prepared = true;
 
-            let { data, code, msg } = await (await fetch("/task/invoke", {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(json)
-            })).json();
+                for (i = 0; i < states.length; i++) {
+                    let events = states[i].event;
+                    for (j = 0; j < events.length; j++) {
+                        if (events.eventType=="response"&&events.url == undefined) {
+                            prepared = false;
+                            break;
+                        }
+                    }
+                    if (!prepared) {
+                        break;
+                    }
+                }
 
-            if (code == -1) {
-                this.$message.error(msg);
-                window.open("/user/login");
-            }
-
-            if (code == -2) {
-                this.$message.error(msg);
-                loading.close();
-                return;
-            }
-
-            let tid = data;
-
-            let interval = setInterval(async () => {
-                let { code, data, msg } = await (await fetch("/task/getResult", {
-                    method: "post",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
+                if (prepared) {
+                    clearInterval(prepare);
+                    console.log(this.modelInEvent)
+                    $(".el-loading-text").text("Model is running, you can check running state and get results in \"User Space\" -> \"Task\"")
+                    let json = {
+                        oid: this.oid,
                         ip: this.info.taskInfo.ip,
                         port: this.info.taskInfo.port,
-                        tid: tid
+                        pid: this.info.taskInfo.pid,
+                        inputs: []
+                    };
+
+                    try {
+                        this.info.modelInfo.states.forEach(state => {
+                            let statename = state.name;
+                            state.event.forEach(el => {
+                                let event = el.eventName;
+                                let tag = el.tag;
+                                let url = el.url;
+                                let suffix = el.suffix;
+                                let children=el.children;
+                                if (el.eventType == "response") {
+                                    if (el.optional) {
+                                        if (url === null || url === undefined) {
+
+                                        } else {
+                                            json.inputs.push({
+                                                statename,
+                                                event,
+                                                url,
+                                                tag,
+                                                suffix,
+                                                children
+                                            });
+                                        }
+                                    } else {
+                                        if (url === null || url === undefined) {
+                                            this.$message.error("Some input data are not provided");
+                                            throw new Error("Some input data are not provided");
+                                        }
+                                        json.inputs.push({
+                                            statename,
+                                            event,
+                                            url,
+                                            tag,
+                                            suffix,
+                                            children
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    } catch (e) {
+                        loading.close();
+                        return;
+                    }
+
+
+                    $.ajax({
+                        url: "/task/invoke",
+                        type: "POST",
+
+                        contentType: "application/json",
+                        async: false,
+                        data: JSON.stringify(json),
+                        success: ({data, code, msg})=> {
+                            if (code == -1) {
+                                this.$message.error(msg);
+                                window.open("/user/login");
+                            }
+
+                            if (code == -2) {
+                                this.$message.error(msg);
+                                loading.close();
+                                return;
+                            }
+                        }
                     })
-                })).json();
-                if (code === -1) {
-                    this.$message.error(msg);
-                    clearInterval(interval);
-                    loading.close();
-                }
-                if (data.status === -1) {
-                    this.$message.error("Some error occured when this model is running!");
-                    clearInterval(interval);
-                    loading.close();
-                } else if (data.status === 2) {
-                    this.$message.success("The model has run successfully!");
-                    clearInterval(interval);
-                    let outputs = data.outputdata;
 
-                    outputs.forEach(el => {
-                        let statename = el.statename;
-                        let eventName = el.event;
-                        let state = this.info.modelInfo.states.find(state => {
-                            return state.name == statename;
-                        });
-                        if (state == undefined) return;
-                        let event = state.event.find(event => {
-                            return event.eventName == eventName;
-                        });
-                        if (event == undefined) return;
-                        this.$set(event, "tag", el.tag);
-                        this.$set(event, "suffix", el.suffix);
-                        this.$set(event, "url", el.url);
-                    });
 
-                    loading.close();
-                } else {
+                    let tid = data;
+
+                    let interval = setInterval(async () => {
+                        let {code, data, msg} = await (await fetch("/task/getResult", {
+                            method: "post",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                ip: this.info.taskInfo.ip,
+                                port: this.info.taskInfo.port,
+                                tid: tid
+                            })
+                        })).json();
+                        if (code === -1) {
+                            this.$message.error(msg);
+                            clearInterval(interval);
+                            loading.close();
+                        }
+                        if (data.status === -1) {
+                            this.$message.error("Some error occured when this model is running!");
+                            clearInterval(interval);
+                            loading.close();
+                        } else if (data.status === 2) {
+                            this.$message.success("The model has run successfully!");
+                            clearInterval(interval);
+                            let outputs = data.outputdata;
+
+                            outputs.forEach(el => {
+                                let statename = el.statename;
+                                let eventName = el.event;
+                                let state = this.info.modelInfo.states.find(state => {
+                                    return state.name == statename;
+                                });
+                                if (state == undefined) return;
+                                let event = state.event.find(event => {
+                                    return event.eventName == eventName;
+                                });
+                                if (event == undefined) return;
+                                this.$set(event, "tag", el.tag);
+                                this.$set(event, "suffix", el.suffix);
+                                this.$set(event, "url", el.url);
+                            });
+
+                            loading.close();
+                        } else {
+                        }
+                    }, 5000);
                 }
-            }, 5000);
+            }, 2000)
         },
 
 
-        selectFromMyData(key,modelInEvent) {
+        selectFromMyData(key, modelInEvent) {
             this.selectDataDialog = true
-            this.selectData=[]
-            this.keyInput=key
+            this.selectData = []
+            this.keyInput = key
 
-            let that=this
-            axios.get("/dataManager/list",{
-                params:{
-                    author:this.useroid,
-                    type:"author"
+            let that = this;
+            axios.get("/dataManager/list", {
+                params: {
+                    author: this.useroid,
+                    type: "author"
                 }
 
             })
-                .then((res)=>{
+                .then((res) => {
 
                     // console.log("oid datas",this.userId,res.data.data)
-                    that.userData=res.data.data
+                    that.userData = res.data.data
                     that.totalNum = res.data.data.totalElements;
                     that.loading = false
                 })
 
 
-            this.modelInEvent=modelInEvent
+            this.modelInEvent = modelInEvent
 
 
         },
-        currentPage(){
+        currentPage() {
 
         },
 
-        loadMore(e){
+        loadMore(e) {
 
         },
-        selectUserData(item,e){
+        selectUserData(item, e) {
             // console.log(e)
-            this.$message("you have selected:  "+item.fileName+'.'+item.suffix);
-            if(this.selectData.length===0){
-                let d={e,item}
+            this.$message("you have selected:  " + item.fileName + '.' + item.suffix);
+            if (this.selectData.length === 0) {
+                let d = {e, item}
                 this.selectData.push(d)
-                e.target.style.background='aliceblue'
+                e.target.style.background = 'aliceblue'
 
-            }else{
-                let e2=this.selectData.pop();
+            } else {
+                let e2 = this.selectData.pop();
 
-                if(e2.e!=e){
+                if (e2.e != e) {
 
-                    let d={e,item}
-                    e2.e.target.style.background='';
-                    e.target.style.background='aliceblue';
+                    let d = {e, item}
+                    e2.e.target.style.background = '';
+                    e.target.style.background = 'aliceblue';
                     this.selectData.push(d)
 
                 }
@@ -969,45 +1105,44 @@ var vue = new Vue({
 
         },
 
-        showtitle(ev){
-            return ev.fileName+"\n"+"Type:"+ev.suffix;
+        showtitle(ev) {
+            return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
         getImg(item) {
-            let list=[]
-            if(item.id==0||item.package==true)
+            let list = []
+            if (item.id == 0 || item.package == true)
                 return "/static/img/filebrowser/package.png"
-            if(item.suffix=='unknow')
+            if (item.suffix == 'unknow')
                 return "/static/img/filebrowser/unknow.svg"
             return "/static/img/filebrowser/" + item.suffix + ".svg"
         },
-        generateId(key){
+        generateId(key) {
             return key;
         },
 
         //上传
-        upload_data_dataManager(){
+        upload_data_dataManager() {
 
 
-
-            if(this.sourceStoreId===''){
+            if (this.sourceStoreId === '') {
                 alert("请先上传数据")
-            }else{
-                var data={
+            } else {
+                var data = {
                     author: this.userId,
 
                     fileName: $("#managerFileName").val(),
-                    fromWhere:"PORTAL",
+                    fromWhere: "PORTAL",
                     mdlId: "string",
-                    sourceStoreId:this.sourceStoreId,
-                    suffix:$("#managerFileSuffix").val(),
+                    sourceStoreId: this.sourceStoreId,
+                    suffix: $("#managerFileSuffix").val(),
                     tags: $("#managerFileTags").tagsinput('items'),
                     type: "OTHER"
 
                 }
-                var that =this;
-                axios.post("http://172.21.212.64:8082/dataResource",data)
-                    .then(res=>{
-                        if(res.status==200){
+                var that = this;
+                axios.post("http://172.21.212.64:8082/dataResource", data)
+                    .then(res => {
+                        if (res.status == 200) {
                             alert("data upload success")
 
                             that.addAllData()
@@ -1020,77 +1155,73 @@ var vue = new Vue({
         },
 
         //下载
-        download_data_dataManager(){
+        download_data_dataManager() {
 
-            for(let i=0;i<this.databrowser.length;i++){
-                if(this.databrowser[i].id===this.dataid){
-                    var item=this.databrowser[i];
+            for (let i = 0; i < this.databrowser.length; i++) {
+                if (this.databrowser[i].id === this.dataid) {
+                    var item = this.databrowser[i];
                     break;
                 }
             }
 
 
-
-            if(item!=null){
-                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                let link =document.createElement('a');
-                link.style.display='none';
-                link.href=url;
+            if (item != null) {
+                let url = "/dataManager/downloadRemote?&sourceStoreId=" + item.sourceStoreId;
+                let link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
                 // link.setAttribute(item.fileName,'filename.'+item.suffix)
 
                 document.body.appendChild(link)
                 link.click();
 
-            }else {
+            } else {
                 this.$message('please select file first!!');
             }
 
 
         },
         //删除
-        delete_data_dataManager(){
+        delete_data_dataManager() {
 
-            if(confirm("Are you sure to delete?")){
-                let tha=this
-                axios.delete("/dataManager/delete",{
-                    params:{
-                        id:tha.dataid
+            if (confirm("Are you sure to delete?")) {
+                let tha = this
+                axios.delete("/dataManager/delete", {
+                    params: {
+                        id: tha.dataid
                     }
-                }).then((res)=>{
+                }).then((res) => {
 
 
-                    if(res.data.msg==="成功"){
+                    if (res.data.msg === "成功") {
                         //删除双向绑定的数组
-                        tha.rightMenuShow=false
-                        tha.databrowser=[]
+                        tha.rightMenuShow = false
+                        tha.databrowser = []
                         tha.addAllData()
                         alert("delete successful")
 
                     }
 
                 })
-            }else{
+            } else {
                 alert("ok")
             }
-
-
-
 
 
         },
 
 
-        showsearchresult(data){
+        showsearchresult(data) {
 
             //动态创建DOM节点
 
-            for(let i=0;i<this.databrowser.length;i++){
+            for (let i = 0; i < this.databrowser.length; i++) {
                 //匹配查询字段
-                if(this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase())>-1){
+                if (this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase()) > -1) {
                     //插入查找到的card
 
                     //card
-                    let searchresultcard=document.createElement("div");
+                    let searchresultcard = document.createElement("div");
                     searchresultcard.classList.add("el-card");
                     searchresultcard.classList.add("dataitemisol");
                     searchresultcard.classList.add("is-never-shadow");
@@ -1098,89 +1229,89 @@ var vue = new Vue({
 
 
                     //cardbody
-                    let secardbody=document.createElement("div");
+                    let secardbody = document.createElement("div");
                     secardbody.classList.add("el-card__body");
                     //card里添加cardbody
                     searchresultcard.appendChild(secardbody);
 
                     //el-row1
-                    let cardrow1=document.createElement("div");
+                    let cardrow1 = document.createElement("div");
                     cardrow1.classList.add("el-row");
                     secardbody.appendChild(cardrow1);
 
                     //3个div1
                     //div1
-                    let div1=document.createElement("div");
+                    let div1 = document.createElement("div");
                     div1.classList.add("el-col");
                     div1.classList.add("el-col-6");
 
-                    let text1=document.createTextNode(" ");
+                    let text1 = document.createTextNode(" ");
                     div1.appendChild(text1);
 
                     cardrow1.appendChild(div1)
 
                     //div2
-                    let div2=document.createElement("div");
+                    let div2 = document.createElement("div");
                     div2.classList.add("el-col");
                     div2.classList.add("el-col-12");
 
-                    let img=document.createElement("img");
-                    img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+                    let img = document.createElement("img");
+                    img.src = "/static/img/filebrowser/" + this.databrowser[i].suffix + ".svg";
 
-                    img.style.height='60%';
-                    img.style.width='100%';
-                    img.style.marginLeft='30%';
+                    img.style.height = '60%';
+                    img.style.width = '100%';
+                    img.style.marginLeft = '30%';
 
                     div2.appendChild(img);
 
                     cardrow1.appendChild(div2)
 
                     //div3
-                    let div3=document.createElement("div");
+                    let div3 = document.createElement("div");
                     div3.classList.add("el-col");
                     div3.classList.add("el-col-6");
 
-                    let text2=document.createTextNode(" ");
+                    let text2 = document.createTextNode(" ");
                     div3.appendChild(text2);
 
                     cardrow1.appendChild(div3);
 
 
                     //el-row2
-                    let cardrow2=document.createElement("div");
+                    let cardrow2 = document.createElement("div");
                     cardrow2.classList.add("el-row");
                     secardbody.appendChild(cardrow2);
 
                     //3个div2
                     //div4
-                    let div4=document.createElement("div");
+                    let div4 = document.createElement("div");
                     div4.classList.add("el-col");
                     div4.classList.add("el-col-2");
 
-                    let text3=document.createTextNode(" ");
+                    let text3 = document.createTextNode(" ");
                     div4.appendChild(text3);
 
                     cardrow2.appendChild(div4)
 
                     //div5
-                    let div5=document.createElement("div");
+                    let div5 = document.createElement("div");
                     div5.classList.add("el-col");
                     div5.classList.add("el-col-20");
 
-                    let p=document.createElement("p");
+                    let p = document.createElement("p");
                     div5.appendChild(p);
 
-                    let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                    let filenameandtype = document.createTextNode(this.databrowser[i].fileName + '.' + this.databrowser[i].suffix);
                     p.appendChild(filenameandtype)
 
                     cardrow2.appendChild(div5)
 
                     //div6
-                    let div6=document.createElement("div");
+                    let div6 = document.createElement("div");
                     div6.classList.add("el-col");
                     div6.classList.add("el-col-20");
 
-                    let text4=document.createTextNode(" ");
+                    let text4 = document.createTextNode(" ");
                     div6.appendChild(text4);
 
                     cardrow2.appendChild(div6)
@@ -1195,23 +1326,23 @@ var vue = new Vue({
                     //     this.dataid=i;
                     // });
                     searchresultcard.click(function () {
-                        this.dataid=this.databrowser[i].id;
+                        this.dataid = this.databrowser[i].id;
                     })
 
                 }
             }
         },
 
-        category(data){
+        category(data) {
 
-            for(let j=0;j<data.length;j++){
-                for(let i=0;i<this.databrowser.length;i++){
+            for (let j = 0; j < data.length; j++) {
+                for (let i = 0; i < this.databrowser.length; i++) {
                     //匹配查询字段
-                    if(this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase())>-1){
+                    if (this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase()) > -1) {
                         //插入查找到的card
 
                         //card
-                        let searchresultcard=document.createElement("div");
+                        let searchresultcard = document.createElement("div");
                         searchresultcard.classList.add("el-card");
                         searchresultcard.classList.add("dataitemisol");
                         searchresultcard.classList.add("is-never-shadow");
@@ -1219,89 +1350,89 @@ var vue = new Vue({
 
 
                         //cardbody
-                        let secardbody=document.createElement("div");
+                        let secardbody = document.createElement("div");
                         secardbody.classList.add("el-card__body");
                         //card里添加cardbody
                         searchresultcard.appendChild(secardbody);
 
                         //el-row1
-                        let cardrow1=document.createElement("div");
+                        let cardrow1 = document.createElement("div");
                         cardrow1.classList.add("el-row");
                         secardbody.appendChild(cardrow1);
 
                         //3个div1
                         //div1
-                        let div1=document.createElement("div");
+                        let div1 = document.createElement("div");
                         div1.classList.add("el-col");
                         div1.classList.add("el-col-6");
 
-                        let text1=document.createTextNode(" ");
+                        let text1 = document.createTextNode(" ");
                         div1.appendChild(text1);
 
                         cardrow1.appendChild(div1)
 
                         //div2
-                        let div2=document.createElement("div");
+                        let div2 = document.createElement("div");
                         div2.classList.add("el-col");
                         div2.classList.add("el-col-12");
 
-                        let img=document.createElement("img");
-                        img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+                        let img = document.createElement("img");
+                        img.src = "/static/img/filebrowser/" + this.databrowser[i].suffix + ".svg";
 
-                        img.style.height='60%';
-                        img.style.width='100%';
-                        img.style.marginLeft='30%';
+                        img.style.height = '60%';
+                        img.style.width = '100%';
+                        img.style.marginLeft = '30%';
 
                         div2.appendChild(img);
 
                         cardrow1.appendChild(div2)
 
                         //div3
-                        let div3=document.createElement("div");
+                        let div3 = document.createElement("div");
                         div3.classList.add("el-col");
                         div3.classList.add("el-col-6");
 
-                        let text2=document.createTextNode(" ");
+                        let text2 = document.createTextNode(" ");
                         div3.appendChild(text2);
 
                         cardrow1.appendChild(div3);
 
 
                         //el-row2
-                        let cardrow2=document.createElement("div");
+                        let cardrow2 = document.createElement("div");
                         cardrow2.classList.add("el-row");
                         secardbody.appendChild(cardrow2);
 
                         //3个div2
                         //div4
-                        let div4=document.createElement("div");
+                        let div4 = document.createElement("div");
                         div4.classList.add("el-col");
                         div4.classList.add("el-col-2");
 
-                        let text3=document.createTextNode(" ");
+                        let text3 = document.createTextNode(" ");
                         div4.appendChild(text3);
 
                         cardrow2.appendChild(div4)
 
                         //div5
-                        let div5=document.createElement("div");
+                        let div5 = document.createElement("div");
                         div5.classList.add("el-col");
                         div5.classList.add("el-col-20");
 
-                        let p=document.createElement("p");
+                        let p = document.createElement("p");
                         div5.appendChild(p);
 
-                        let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                        let filenameandtype = document.createTextNode(this.databrowser[i].fileName + '.' + this.databrowser[i].suffix);
                         p.appendChild(filenameandtype)
 
                         cardrow2.appendChild(div5)
 
                         //div6
-                        let div6=document.createElement("div");
+                        let div6 = document.createElement("div");
                         div6.classList.add("el-col");
                         div6.classList.add("el-col-20");
 
-                        let text4=document.createTextNode(" ");
+                        let text4 = document.createTextNode(" ");
                         div6.appendChild(text4);
 
                         cardrow2.appendChild(div6)
@@ -1316,7 +1447,7 @@ var vue = new Vue({
                         //     this.dataid=i;
                         // });
                         searchresultcard.click(function () {
-                            this.dataid=this.databrowser[i].id;
+                            this.dataid = this.databrowser[i].id;
                         })
 
                     }
@@ -1325,11 +1456,11 @@ var vue = new Vue({
 
         },
 
-        getid($event,eval){
+        getid($event, eval) {
             console.log(eval.id)
-            this.dataid=eval.id;
+            this.dataid = eval.id;
 
-            $event.closest('.el-card').className="el-card dataitemisol clickdataitem"
+            $event.closest('.el-card').className = "el-card dataitemisol clickdataitem"
 
             //再次点击取消选择
 
@@ -1344,14 +1475,14 @@ var vue = new Vue({
                 }
 
             } else {
-                this.downloadDataSet=[]
-                this.downloadDataSetName=[]
+                this.downloadDataSet = []
+                this.downloadDataSetName = []
                 this.downloadDataSet.push(eval)
-                let obj={
-                    name:eval.label,
-                    suffix:eval.suffix,
-                    package:eval.package,
-                    url:eval.url
+                let obj = {
+                    name: eval.label,
+                    suffix: eval.suffix,
+                    package: eval.package,
+                    url: eval.url
                 }
                 this.downloadDataSetName.push(obj)
             }
@@ -1363,21 +1494,21 @@ var vue = new Vue({
         },
 
 
-        getOneOfUserTasks(taskId){
+        getOneOfUserTasks(taskId) {
             $.ajax({
-                type:'GET',
-                url:"/task/getTaskByTaskId",
+                type: 'GET',
+                url: "/task/getTaskByTaskId",
                 // contentType:'application/json',
 
                 data:
                     {
-                        id:taskId,
+                        id: taskId,
                     },
                 // JSON.stringify(obj),
                 cache: false,
                 async: true,
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
@@ -1385,15 +1516,14 @@ var vue = new Vue({
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
-                        setTimeout(()=>{
+                    } else {
+                        setTimeout(() => {
                             const data = json.data;
                             this.resourceLoad = false;
                             // this.researchItems = data.list;
-                            this.packageContent=data;
+                            this.packageContent = data;
                             console.log(this.packageContent)
-                        },100)
-
+                        }, 100)
 
 
                     }
@@ -1401,138 +1531,132 @@ var vue = new Vue({
             })
         },
 
-        addDataClass($event,item){
-            this.rightMenuShow=false
+        addDataClass($event, item) {
+            this.rightMenuShow = false
 
 
-            if(this.downloadDataSet.indexOf(item)<0){
-                $event.currentTarget.className="el-card dataitemisol dataitemhover"
+            if (this.downloadDataSet.indexOf(item) < 0) {
+                $event.currentTarget.className = "el-card dataitemisol dataitemhover"
             }
 
-            this.dataid=item.id
+            this.dataid = item.id
 
 
         },
 
-        removeClass($event,item){
+        removeClass($event, item) {
 
 
-
-            if(this.downloadDataSet.indexOf(item)>-1){
-                $event.currentTarget.className="el-card dataitemisol clickdataitem"
-            }else{
-                $event.currentTarget.className="el-card dataitemisol"
+            if (this.downloadDataSet.indexOf(item) > -1) {
+                $event.currentTarget.className = "el-card dataitemisol clickdataitem"
+            } else {
+                $event.currentTarget.className = "el-card dataitemisol"
             }
-
 
 
         },
 
         //右键菜单
 
-        rightMenu(e){
+        rightMenu(e) {
             e.preventDefault();
 
-            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            e.currentTarget.className = "el-card dataitemisol clickdataitem"
 
 
             var dom = document.getElementsByClassName("browsermenu");
 
             console.log(e)
-            dom[0].style.top = e.pageY -100+"px"
+            dom[0].style.top = e.pageY - 100 + "px"
             // 125 > window.innerHeight
             //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
-            dom[0].style.left = e.pageX-200 +"px";
+            dom[0].style.left = e.pageX - 200 + "px";
 
-            this.rightMenuShow=true
-
-
+            this.rightMenuShow = true
 
 
         },
 
-        openWzhRightMenu(e){
+        openWzhRightMenu(e) {
             e.preventDefault();
 
-            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            e.currentTarget.className = "el-card dataitemisol clickdataitem"
             console.log(e)
 
             var dom = document.getElementsByClassName("wzhRightMenu");
 
-            dom[0].style.top = e.pageY -250+"px"
-            dom[0].style.left = e.pageX-230 +"px";
+            dom[0].style.top = e.pageY - 250 + "px"
+            dom[0].style.left = e.pageX - 230 + "px";
             console.log(e.style)
-            $('.wzhRightMenu').animate({height:'120'},150);
+            $('.wzhRightMenu').animate({height: '120'}, 150);
         },
 
-        myDataClick(index){
-            this.dataChosenIndex=index;
+        myDataClick(index) {
+            this.dataChosenIndex = index;
         },
 
-        outputDataClick(index){
-            this.dataChosenIndex=index;
+        outputDataClick(index) {
+            this.dataChosenIndex = index;
         },
 
-        userDownload(){
+        userDownload() {
             //todo 依据数组downloadDataSet批量下载
 
-            let sourceId=new Array()
+            let sourceId = new Array()
 
-            for(let i=0;i<this.downloadDataSet.length;i++){
+            for (let i = 0; i < this.downloadDataSet.length; i++) {
                 sourceId.push(this.downloadDataSet[i].sourceStoreId)
             }
 
 
-            if(this.downloadDataSet.length>0){
+            if (this.downloadDataSet.length > 0) {
 
-                const keys=sourceId.map(_=>`sourceStoreId=${_}`).join('&');
-                let url ="/dataManager/downloadSomeRemote?"+keys;
-                let link =document.createElement('a');
-                link.style.display='none';
-                link.href=url;
+                const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
+                let url = "/dataManager/downloadSomeRemote?" + keys;
+                let link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
                 // link.setAttribute(item.fileName,'filename.'+item.suffix)
 
                 document.body.appendChild(link)
                 link.click();
 
-            }else{
+            } else {
                 alert("please select first!!")
             }
 
 
         },
 
-        getTree(){
+        getTree() {
             return this.tree;
         },
 
 
-        submitForm (formName) {
+        submitForm(formName) {
             //包含上传的文件信息和服务端返回的所有信息都在这个对象里
             this.$refs.upload.uploadFiles
         },
 
-        confirmSelect(){
-            if(this.selectData.length==0){
+        confirmSelect() {
+            if (this.selectData.length == 0) {
                 this.$message("you have selected no data")
-            }else{
-                let da=this.selectData.pop()
+            } else {
+                let da = this.selectData.pop()
 
-                let key=this.keyInput
+                let key = this.keyInput
                 // $('#datainput'+key)[0].value=da.item.fileName
 
                 this.selectDataDialog = false
 
                 //todo 拼接url
-                this.modelInEvent.url="http://172.21.212.64:8082/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
-                this.modelInEvent.tag=da.item.fileName
-                
+                this.modelInEvent.url = "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" + da.item.sourceStoreId
+                this.modelInEvent.tag = da.item.fileName
+
             }
 
 
-            this.selectData=[]
-
-
+            this.selectData = []
 
 
         },
@@ -1541,16 +1665,16 @@ var vue = new Vue({
 
     async mounted() {
 
-        var tha=this
+        var tha = this
         axios.get("/dataItem/createTree")
-            .then(res=>{
-                tha.tObj=res.data;
-                for(var e in tha.tObj){
-                    var a={
-                        key:e,
-                        value:tha.tObj[e]
+            .then(res => {
+                tha.tObj = res.data;
+                for (var e in tha.tObj) {
+                    var a = {
+                        key: e,
+                        value: tha.tObj[e]
                     }
-                    if(e!='Data Resouces Hubs'){
+                    if (e != 'Data Resouces Hubs') {
                         tha.categoryTree.push(a);
                     }
 
@@ -1560,32 +1684,70 @@ var vue = new Vue({
             })
 
 
-        this.introHeight=$('.introContent').attr('height');
+        this.introHeight = $('.introContent').attr('height');
 
         console.log(this.introHeight)
         let ids = window.location.href.split("/");
         let id = ids[ids.length - 1];
         this.oid = id;
-        let { data } = await (await fetch("/task/TaskInit/" + id)).json();
-        if(data==null||data==undefined){
+        let {data} = await (await fetch("/task/TaskInit/" + id)).json();
+        if (data == null || data == undefined) {
             alert("Initialization error!")
         }
+        let states = data.modelInfo.states;
+        for (i = 0; i < states.length; i++) {
+            let state = states[i];
+            for (j = 0; j < state.event.length; j++) {
+                let nodes = state.event[j].data[0].nodes;
+                if(state.event[j].data[0].externalId!=undefined){
+                    state.event[j].externalId=state.event[j].data[0].externalId;
+                }
+                if (nodes != undefined) {
+                    let children = [];
+                    for (k = 0; k < nodes.length; k++) {
+                        let node = nodes[k];
+                        let child = {};
+                        child.eventId = node.text;
+                        child.eventName = node.text;
+                        child.eventDesc = node.desc;
+                        switch (node.dataType) {
+                            case "DTKT_INT":
+                                child.eventType = "int";
+                                break;
+                            case "DTKT_REAL":
+                                child.eventType = "real";
+                                break;
+                            case "DTKT_INT | DTKT_LIST":
+                                child.eventType = "int_array";
+                                break;
+                        }
+                        child.child = true;
+                        children.push(child);
+                    }
+                    data.modelInfo.states[i].event[j].children = children;
+                }
+            }
+        }
+
+        this.events = data.modelInfo.states[0].event;
+        console.log(this.events)
+        console.log(this.tableData)
         this.info = data;
         console.log(this.info);
 
 
         //get login user info
-        let that=this
+        let that = this
         axios.get("/user/load")
-            .then((res)=>{
-                if(res.status==200){
-                    that.useroid=res.data.oid
+            .then((res) => {
+                if (res.status == 200) {
+                    that.useroid = res.data.oid
                 }
 
             })
 
-        window.addEventListener('scroll',this.initSize);
-        window.addEventListener('resize',this.initSize);
+        window.addEventListener('scroll', this.initSize);
+        window.addEventListener('resize', this.initSize);
 
         $("#imgChange").click(function () {
             $("#imgFile").click();
@@ -1618,10 +1780,10 @@ var vue = new Vue({
          * 模型运行的图形界面
          */
 
-        let count=0;
+        let count = 0;
         $('#workFlow').click(function () {
             $(".mxWindow").remove();
-            if(count==0) {
+            if (count == 0) {
                 count++;
                 setTimeout(function () {
                     var diagram = new OGMSDiagram();
@@ -1682,25 +1844,25 @@ var vue = new Vue({
         });
         $('#classic').click(function () {
             $(".mxWindow").remove();
-            count=0;
+            count = 0;
         });
         $('#semantics').click(function () {
             $(".mxWindow").remove();
-            count=0;
+            count = 0;
         });
 
-        $(document).on("click",".eventBtn",function(e){
+        $(document).on("click", ".eventBtn", function (e) {
             var event_id = e.currentTarget.id;
             var start = event_id.search('_');
-            var eventId = event_id.slice(start+1);
-            var btnName = event_id.slice(0,start);
+            var eventId = event_id.slice(start + 1);
+            var btnName = event_id.slice(0, start);
 
             var find = false;
-            for (var i = 0; i<that.info.modelInfo.states.length; i++){
+            for (var i = 0; i < that.info.modelInfo.states.length; i++) {
                 var state = that.info.modelInfo.states[i];
-                for (var j = 0; j<state.event.length; j++){
+                for (var j = 0; j < state.event.length; j++) {
                     var event = state.event[j];
-                    if(eventId == event.eventId){
+                    if (eventId == event.eventId) {
                         switch (btnName) {
                             case 'select':
                                 that.selectFromDataItem(event);
@@ -1719,7 +1881,7 @@ var vue = new Vue({
                         break;
                     }
                 }
-                if (find == true){
+                if (find == true) {
                     break;
                 }
             }
@@ -1730,35 +1892,35 @@ var vue = new Vue({
          * 2019.11.22
          * Event的点击事件，作用是将tab中的input文件与vue中的info属性相关联
          */
-        $(document).on('click','.eventTab',function(e) {
+        $(document).on('click', '.eventTab', function (e) {
                 var href = e.currentTarget.href;
                 var start = href.search('#');
-                var eventId = href.slice(start+7);
+                var eventId = href.slice(start + 7);
 
                 var find = false;
-                for (var i = 0; i<that.info.modelInfo.states.length; i++){
+                for (var i = 0; i < that.info.modelInfo.states.length; i++) {
                     var state = that.info.modelInfo.states[i];
-                    for (var j = 0; j<state.event.length; j++){
+                    for (var j = 0; j < state.event.length; j++) {
                         var event = state.event[j];
-                        if(eventId == event.eventId){
+                        if (eventId == event.eventId) {
                             if (event.eventType == "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag+"."+event.suffix);
-                            }else if (event.eventType == "response") {
-                                $("#download_" + eventId).css("display","none");
-                            }else if (event.eventType != "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag+"."+event.suffix);
-                                $("#eventInp_" + eventId).css("width","90%");
-                                $("#select_" + eventId).css("display","none");
-                                $("#upload_" + eventId).css("display","none");
-                                $("#check_" + eventId).css("display","none");
-                            }else {
-                                $("#inputGroup_" + eventId).css("display","none");
+                                $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
+                            } else if (event.eventType == "response") {
+                                $("#download_" + eventId).css("display", "none");
+                            } else if (event.eventType != "response" && event.tag != undefined) {
+                                $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
+                                $("#eventInp_" + eventId).css("width", "90%");
+                                $("#select_" + eventId).css("display", "none");
+                                $("#upload_" + eventId).css("display", "none");
+                                $("#check_" + eventId).css("display", "none");
+                            } else {
+                                $("#inputGroup_" + eventId).css("display", "none");
                             }
                             find = true;
                             break;
                         }
                     }
-                    if (find == true){
+                    if (find == true) {
                         break;
                     }
                 }
@@ -1770,9 +1932,9 @@ var vue = new Vue({
         );
     },
 
-    destory(){
-        window.removeEventListener('scroll',this.initSize);
-        window.removeEventListener('resize',this.initSize);
+    destory() {
+        window.removeEventListener('scroll', this.initSize);
+        window.removeEventListener('resize', this.initSize);
     }
 
 
@@ -1780,18 +1942,18 @@ var vue = new Vue({
 
 $(function () {
     console.log('ha ha')
-    $(window).resize(function(){
-        let introHeaderHeight=$('.introHeader').css('width')
+    $(window).resize(function () {
+        let introHeaderHeight = $('.introHeader').css('width')
         console.log(introHeaderHeight)
-        if(parseInt(introHeaderHeight)<240){
-            $('.image').css('display','none')
-        }else{
-            $('.image').css('display','block')
+        if (parseInt(introHeaderHeight) < 240) {
+            $('.image').css('display', 'none')
+        } else {
+            $('.image').css('display', 'block')
         }
     })
 
-    $('#browsercont2').click((e)=>{
-        $('.wzhRightMenu').animate({height:'0'},50);
+    $('#browsercont2').click((e) => {
+        $('.wzhRightMenu').animate({height: '0'}, 50);
         console.log($('#browsercont'))
 
     })
@@ -1804,10 +1966,10 @@ $(function () {
     );
 
 
-    $('document').on('onclick','.backFatherBtn',()=>{
+    $('document').on('onclick', '.backFatherBtn', () => {
         console.log('11')
-        $('.fa-arrow-left').animate({marginLeft:'-6px'},170)
-        $('.fa-arrow-left').animate({marginLeft:'0'},170)
+        $('.fa-arrow-left').animate({marginLeft: '-6px'}, 170)
+        $('.fa-arrow-left').animate({marginLeft: '0'}, 170)
     });
 
 

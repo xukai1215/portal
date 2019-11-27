@@ -6,10 +6,10 @@ body{
 
 }
 
-.el-dialog{
-  max-height: 70%;
-  overflow-y: auto;
-}
+/*.el-dialog{*/
+  /*max-height: 70%;*/
+  /*overflow-y: auto;*/
+/*}*/
 
 .slider {
   /*border-right: solid 2px rgb(156, 154, 154);*/
@@ -102,7 +102,8 @@ body{
 }
 
 ._btn-group {
-  margin:0.5rem 0 0 1.5rem;
+  margin:0.5rem 0 0 1rem;
+  /*text-align: center;*/
 }
 
 ._btn-group .el-button{

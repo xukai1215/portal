@@ -14,6 +14,7 @@ import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.ParamInfo;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.utils.MyHttpUtils;
@@ -21,6 +22,7 @@ import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,9 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -273,8 +277,17 @@ public class TaskService {
             hasTest = true;
         }
         model_Info.put("hasTest", hasTest);
+
         JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
         JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
+        JSONArray dataItems=mdlObj.getJSONArray("DataItems");
+        JSONArray dataRefs=new JSONArray();
+        for(int i=0;i<dataItems.size();i++){
+            JSONObject dataRef=dataItems.getJSONArray(i).getJSONObject(0);
+            dataRefs.add(dataRef);
+        }
+
+
         JSONArray states = mdlObj.getJSONArray("states");
 
         for (int i = 0; i < states.size(); i++) {
@@ -297,12 +310,6 @@ public class TaskService {
             states.set(i, state);
         }
 
-        JSONArray dataItems=mdlObj.getJSONArray("DataItems");
-        JSONArray dataRefs=new JSONArray();
-        for(int i=0;i<dataItems.size();i++){
-            JSONObject dataRef=dataItems.getJSONArray(i).getJSONObject(0);
-            dataRefs.add(dataRef);
-        }
 
         model_Info.put("states", states);
         model_Info.put("dataRefs",dataRefs);
@@ -321,7 +328,7 @@ public class TaskService {
         String oid = testDataUploadDTO.getOid();
         String parentDirectory = resourcePath + "/computableModel/testify/" + oid;
         String configPath = parentDirectory + File.separator + "config.xml";
-        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory);
+        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory,oid);
         if (configInfoArray == null) {
             return null;
         }
@@ -333,13 +340,14 @@ public class TaskService {
             uploadDataDTO.setEvent(temp.getString("event"));
             uploadDataDTO.setState(temp.getString("state"));
             uploadDataDTO.setFilePath(temp.getString("file"));
+            uploadDataDTO.setChildren(temp.getJSONArray("children").toJavaList(ParamInfo.class));
             dataUploadList.add(uploadDataDTO);
         }
         return dataUploadList;
     }
 
     //读取xml信息，返回数据的State,Event和数据路径
-    private JSONArray getConfigInfo(String configPath, String parentDirectory) {
+    private JSONArray getConfigInfo(String configPath, String parentDirectory,String oid) {
         JSONArray resultArray = new JSONArray();
         Document result = null;
         SAXReader reader = new SAXReader();
@@ -349,6 +357,17 @@ public class TaskService {
             e.printStackTrace();
             return null;
         }
+        ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+        JSONObject mdlInfo = convertMdl(computableModel.getMdl());
+        JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
+        JSONArray dataItems=mdlObj.getJSONArray("DataItems");
+        JSONArray dataRefs=new JSONArray();
+        for(int i=0;i<dataItems.size();i++){
+            JSONObject dataRef=dataItems.getJSONArray(i).getJSONObject(0);
+            dataRefs.add(dataRef);
+        }
+        JSONArray states = mdlObj.getJSONArray("states");
+
         Element rootElement = result.getRootElement();
         List<Element> items = rootElement.elements();
         for (Element item : items) {
@@ -356,10 +375,78 @@ public class TaskService {
             String state = item.attributeValue("State");
             String event = item.attributeValue("Event");
             String filePath = parentDirectory + File.separator + fileName;
+
+            JSONArray children=new JSONArray();
+            Boolean find=false;
+            for(int i=0;i<states.size();i++){
+                JSONArray events=states.getJSONObject(i).getJSONArray("event");
+                for(int j=0;j<events.size();j++){
+                    JSONObject _event=events.getJSONObject(j);
+                    Boolean quit=false;
+                    if(_event.getString("eventName").equals(event)) {
+                        find=true;
+                        String type = _event.getString("eventType");
+                        if(type.equals("response")){
+                            JSONObject data=_event.getJSONArray("data").getJSONObject(0);
+                            if(data.getString("dataType").equals("internal")){
+                                String dataRefText=data.getString("text");
+                                for(int k=0;k<dataRefs.size();k++){
+                                    JSONObject dataRef=dataRefs.getJSONObject(k);
+                                    if(dataRef.getString("text").equals(dataRefText)) {
+                                        quit=true;
+                                        JSONArray nodes = dataRef.getJSONArray("nodes");
+                                        if(nodes!=null) {
+                                            if (nodes.size() > 0) {
+                                                try {
+
+                                                    BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
+                                                    String content = "";
+                                                    String temp;
+                                                    while ((temp = br.readLine()) != null) {
+                                                        content += temp;
+                                                    }
+
+                                                    Document mdlDoc = DocumentHelper.parseText(content);
+                                                    Element dataSetElement = mdlDoc.getRootElement();
+                                                    List<Element> XDOs = dataSetElement.elements();
+
+                                                    for (int x = 0; x < XDOs.size(); x++) {
+                                                        Element element = XDOs.get(x);
+                                                        JSONObject child = new JSONObject();
+                                                        child.put("eventName", element.attributeValue("name"));
+                                                        child.put("value", element.attributeValue("value"));
+                                                        children.add(child);
+                                                    }
+
+                                                } catch (Exception e) {
+                                                    e.fillInStackTrace();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
+                    if(quit){
+                        break;
+                    }
+                }
+                if(find){
+                    break;
+                }
+            }
+
+
+
             JSONObject tempObject = new JSONObject();
             tempObject.put("state", state);
             tempObject.put("event", event);
             tempObject.put("file", filePath);
+            tempObject.put("children", children);
             resultArray.add(tempObject);
         }
         return resultArray;
@@ -370,6 +457,7 @@ public class TaskService {
         ResultDataDTO resultDataDTO = new ResultDataDTO();
         resultDataDTO.setEvent(uploadDataDTO.getEvent());
         resultDataDTO.setStateId(uploadDataDTO.getState());
+        resultDataDTO.setChildren(uploadDataDTO.getChildren());
         String testDataPath = uploadDataDTO.getFilePath();
         String url = "http://" + managerServer + "/GeoModeling/computableModel/uploadData";
         //拼凑form表单
@@ -429,6 +517,7 @@ public class TaskService {
                 resultDataDTO.setEvent(task.getInputs().get(i).getEvent());
                 resultDataDTO.setTag(task.getInputs().get(i).getTag());
                 resultDataDTO.setSuffix(task.getInputs().get(i).getSuffix());
+                resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
                 resultDataDTOList.add(resultDataDTO);
             }
             for(int i=0; i<task.getOutputs().size();i++ ){
@@ -438,6 +527,7 @@ public class TaskService {
                 resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
                 resultDataDTO.setTag(task.getOutputs().get(i).getTag());
                 resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
+                resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
                 resultDataDTOList.add(resultDataDTO);
             }
         }

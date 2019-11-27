@@ -13,8 +13,6 @@
           href="/static/css/font-awesome/css/font-awesome.min.css"
     />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-theme.css"/>
-
     <link rel="stylesheet" type="text/css" stemedia="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/themeEditor.css"/>
@@ -26,6 +24,8 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-theme.css"/>
 
     <style>
         input.spinner {
@@ -131,7 +131,7 @@
                                                         </div>
                                                         <div>
                                                         <label for="nameInput"
-                                                               class="col-sm-2 control-label" style="width: 110px;font-weight: bold">Descriptions:</label>
+                                                               class="col-sm-2 control-label" style="width: 110px;font-weight: bold">Description:</label>
                                                         </div>
                                                         <textarea id="myText"></textarea>
                                                         <div class="step-footer text-right">
@@ -144,6 +144,7 @@
                                                         <div class="panel-body">
                                                             <!--实验tabs-->
                                                             <el-card>
+                                                                <el-button type="success" style="position: absolute;right: 35px;z-index: 999" @click="modelClass_add()">Add New Category</el-button>
                                                             <el-tabs v-model="editableTabsValue_model" type="card" editable @edit="handleTabsEdit_model">
                                                                 <el-tab-pane
                                                                         :key="item.name"
@@ -262,9 +263,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="step-tab-panel" id="step3">
-                                                        <div class="panel panel-success" style="border:none">
+
                                                             <div class="panel-body">
                                                                 <el-card>
+                                                                    <el-button type="success" style="position: absolute;right: 35px;z-index: 999" @click="dataClass_add()">Add New Category</el-button>
                                                                 <el-tabs  v-model="editableTabsValue_data" type="card" editable @edit="handleTabsEdit_data">
                                                                     <el-tab-pane
                                                                             :key="item.name"
@@ -377,7 +379,7 @@
                                                                 </el-tabs>
                                                                 </el-card>
                                                             </div>
-                                                        </div>
+
                                                         <div class="step-footer text-right">
                                                             <button class="btn btn-primary next" data-direction="next" id="step3_next">Next
                                                             </button>
@@ -385,8 +387,8 @@
                                                     </div>
 
                                                     <div class="step-tab-panel" id="step4">
-                                                        <div class="panel panel-success" style="border:none">
-                                                            <div class="panel-body">
+
+                                                        <div class="panel-body">
                                                                 <el-card>
                                                                 <el-tabs v-model="editableTabsValue_applications" type="card" editable @edit="handleTabsEdit_applications">
                                                                     <el-tab-pane
@@ -441,7 +443,7 @@
                                                                 </el-tabs>
                                                                 </el-card>
                                                             </div>
-                                                        </div>
+
                                                     </div>
                                                 </div>
                                                 <div class="step-footer text-right">

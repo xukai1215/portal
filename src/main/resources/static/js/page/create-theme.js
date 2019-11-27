@@ -101,6 +101,12 @@ var vue = new Vue({
 
     },
     methods: {
+        modelClass_add(){
+            $(".el-tabs__new-tab").eq(0).click();
+        },
+        dataClass_add(){
+            $(".el-tabs__new-tab").eq(1).click();
+        },
         handleTabsEdit_model(targetName, action) {
 
             if (!this.confirmflag) {
