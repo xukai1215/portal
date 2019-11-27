@@ -310,14 +310,6 @@ var vue = new Vue({
                 } else {
                     $('#introContainer').removeClass("fixed")
                 }
-
-                if (parseInt(totalHeight) - parseInt(scrollTop) < 800) {
-                    $('.introContent').css('display', 'none')
-                } else {
-                    $('.introContent').css('display', 'block')
-                }
-
-
             })
 
         },
@@ -883,7 +875,7 @@ var vue = new Vue({
                 let events = states[i].event;
                 for (j = 0; j < events.length; j++) {
                     let event=events[j];
-                    if(event.optional==false&&event.children!=undefined){
+                    if(event.eventType=="response"&&event.optional==false&&event.children!=undefined){
                         for(k=0;k<event.children.length;k++){
                             let child=event.children[k];
                             if(child.value==undefined||child.value.trim()==""){
@@ -972,6 +964,8 @@ var vue = new Vue({
                     }
 
 
+                    var tid;
+
                     $.ajax({
                         url: "/task/invoke",
                         type: "POST",
@@ -980,6 +974,8 @@ var vue = new Vue({
                         async: false,
                         data: JSON.stringify(json),
                         success: ({data, code, msg})=> {
+                            tid = data;
+
                             if (code == -1) {
                                 this.$message.error(msg);
                                 window.open("/user/login");
@@ -994,7 +990,7 @@ var vue = new Vue({
                     })
 
 
-                    let tid = data;
+
 
                     let interval = setInterval(async () => {
                         let {code, data, msg} = await (await fetch("/task/getResult", {
@@ -1698,33 +1694,35 @@ var vue = new Vue({
         for (i = 0; i < states.length; i++) {
             let state = states[i];
             for (j = 0; j < state.event.length; j++) {
-                let nodes = state.event[j].data[0].nodes;
-                if(state.event[j].data[0].externalId!=undefined){
-                    state.event[j].externalId=state.event[j].data[0].externalId;
-                }
-                if (nodes != undefined) {
-                    let children = [];
-                    for (k = 0; k < nodes.length; k++) {
-                        let node = nodes[k];
-                        let child = {};
-                        child.eventId = node.text;
-                        child.eventName = node.text;
-                        child.eventDesc = node.desc;
-                        switch (node.dataType) {
-                            case "DTKT_INT":
-                                child.eventType = "int";
-                                break;
-                            case "DTKT_REAL":
-                                child.eventType = "real";
-                                break;
-                            case "DTKT_INT | DTKT_LIST":
-                                child.eventType = "int_array";
-                                break;
-                        }
-                        child.child = true;
-                        children.push(child);
+                if(state.event[j].data!=undefined&&state.event[j].eventType=="response") {
+                    let nodes = state.event[j].data[0].nodes;
+                    if (state.event[j].data[0].externalId != undefined) {
+                        state.event[j].externalId = state.event[j].data[0].externalId;
                     }
-                    data.modelInfo.states[i].event[j].children = children;
+                    if (nodes != undefined) {
+                        let children = [];
+                        for (k = 0; k < nodes.length; k++) {
+                            let node = nodes[k];
+                            let child = {};
+                            child.eventId = node.text;
+                            child.eventName = node.text;
+                            child.eventDesc = node.desc;
+                            switch (node.dataType) {
+                                case "DTKT_INT":
+                                    child.eventType = "int";
+                                    break;
+                                case "DTKT_REAL":
+                                    child.eventType = "real";
+                                    break;
+                                case "DTKT_INT | DTKT_LIST":
+                                    child.eventType = "int_array";
+                                    break;
+                            }
+                            child.child = true;
+                            children.push(child);
+                        }
+                        data.modelInfo.states[i].event[j].children = children;
+                    }
                 }
             }
         }
