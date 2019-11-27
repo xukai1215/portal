@@ -345,14 +345,15 @@
                                     <h4 style="font-size: 16px;margin-bottom:20px">{{state.desc}}</h4>
 
                                     <el-table :data="state.event" :key="Math.random()" style="width: 100%"
-                                              row-key="eventName"
+                                              row-key="eventId"
                                               border
                                               default-expand-all
                                               :span-method="arraySpanMethod"
                                               :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
                                         <el-table-column
                                                 label="Type"
-                                                width="150">
+                                                width="140"
+                                        style="text-align: center;">
                                             <template slot-scope="scope">
                                                 <el-tag
                                                         :type="scope.row.eventType === 'response' ? 'primary' : (scope.row.eventType=== 'noresponse' ? 'success' : 'info')"
@@ -363,7 +364,7 @@
                                         <el-table-column
 
                                                 label="Event Name"
-                                                width="180">
+                                                width="200">
                                             <template slot-scope="scope">
 
                                                 <span v-if="scope.row.externalId==undefined" :title="scope.row.eventName">
