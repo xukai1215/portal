@@ -140,11 +140,9 @@ public class PortalApplicationTests {
     public void addTaskInfo(){
         List<Task> tasks = taskDao.findAll();
         for (Task task:tasks){
-            if(task.getIsPublic()==null)
+            if(task.getPermission()==null)
             {
-                List<String> id=new ArrayList<>();
-                id.add(task.getUserId());
-                task.setIsPublic(id);
+                task.setPermission("private");
                 taskDao.save(task);
                 taskDao.count();
             }

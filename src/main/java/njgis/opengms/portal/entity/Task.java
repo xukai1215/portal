@@ -27,7 +27,8 @@ public class Task {
 
     int status;//Started: 1, Finished: 2, Inited: 0, Error: -1
 
-    List<String> isPublic;//public ;noPublic ;userNames; all和noPublic都放数组头
+//    List<String> isPublic;//public ;noPublic ;userNames; public和noPublic都放数组头
+    String permission;
     List<TaskData> inputs;
     List<TaskData> outputs;
 

@@ -2960,13 +2960,13 @@ new Vue({
                         //     eX=endX
                         //     eY=endY
                         // }
-
                         // eX=75-(75-x)/times
                         // eY=75-(75-y)/times
+                        // console.log(eX,eY)
 
                         newX=75-(75-x)*timesP
                         newY=75-(75-y)*timesP
-                        console.log(eX,eY)
+
                         console.log(timesP)
                         console.log("wz"+newX,newY)
 

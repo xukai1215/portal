@@ -2222,3 +2222,7 @@ ul,li{
    max-height: 450px;
    overflow-y: auto;
  }
+
+ .cursorPointer{
+   cursor: pointer;
+ }
