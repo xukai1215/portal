@@ -255,6 +255,7 @@ var vue = new Vue({
             this.search2();
         },
 
+
         search1() {
             this.relateType = "modelItem";
             var data = {
@@ -504,15 +505,23 @@ var vue = new Vue({
                 // this.doid[index] = row.oid;
             }
         },
-        handleDelete(index, row) {
+        handleDelete1(index, row) {
             console.log(index, row);
             let table = new Array();
-            for (i = 0; i < this.tableData.length; i++) {
-                table.push(this.tableData[i]);
+            for (i = 0; i < this.editableTabs_model[this.tabledataflag].tabledata.length; i++) {
+                table.push(this.editableTabs_model[this.tabledataflag].tabledata[i]);
             }
             table.splice(index, 1);
-            this.tableData = table;
-
+            this.editableTabs_model[this.tabledataflag].tabledata = table;
+        },
+        handleDelete2(index, row) {
+            console.log(index, row);
+            let table = new Array();
+            for (i = 0; i < this.editableTabs_data[this.tabledataflag1].tabledata.length; i++) {
+                table.push(this.editableTabs_data[this.tabledataflag1].tabledata[i]);
+            }
+            table.splice(index, 1);
+            this.editableTabs_data[this.tabledataflag1].tabledata = table;
         },
 
         getRelation() {
