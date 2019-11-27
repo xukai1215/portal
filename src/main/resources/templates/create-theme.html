@@ -161,9 +161,9 @@
                                                                                     </lable>
                                                                                     <div class='input-group col-sm-10'>
                                                                                         <input type='text'
-                                                                                               id="categoryname"
+                                                                                               :id="'categoryname'+index"
                                                                                                name="name"
-                                                                                               class='form-control'>
+                                                                                               class='form-control category_name'>
                                                                                     </div>
                                                                                 </div>
 
@@ -204,7 +204,6 @@
                                                                                             </template>
                                                                                         </el-table-column>
                                                                                     </el-table>
-                                                                                    <el-button type="success" style="float:right" id="selectok">Confirm</el-button>
                                                                                 </el-card>
                                                                                 <el-card class="box-card" style="width:59%;" id="step1_right">
                                                                                     <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
@@ -282,16 +281,12 @@
                                                                                 </lable>
                                                                                 <div class='input-group col-sm-10'>
                                                                                     <input type='text'
-                                                                                           id="categoryname2"
+                                                                                           :id="'categoryname2'+index"
                                                                                            name="name"
-                                                                                           class='form-control'>
+                                                                                           class='form-control category_name2'>
                                                                                 </div>
                                                                             </div>
-
-
-
                                                                         </div>
-
                                                                             <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;" id="step2_left">
                                                                                 <div slot="header" class="clearfix">
                                                                                     <span>Selected Items</span>
@@ -328,7 +323,6 @@
                                                                                         </template>
                                                                                     </el-table-column>
                                                                                 </el-table>
-                                                                                <el-button type="success" style="float:right" id="selectok1">Confirm</el-button>
                                                                             </el-card>
                                                                             <el-card class="box-card" style="width:59%;" id="step2_right">
                                                                             <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">

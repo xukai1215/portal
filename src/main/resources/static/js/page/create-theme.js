@@ -1,9 +1,11 @@
 var vue = new Vue({
     el: "#app",
     data: {
-        //判断是否已经点击confirm
-        confirmflag:0,
-        confirmflag1:0,
+        //mnum用来模型计数
+        mnum:0,
+        mcnum:0,
+        dnum:0,
+        dcnum:0,
         editableTabsValue_model: '1',
         editableTabsValue_data: '1',
         editableTabsValue_applications: '1',
@@ -16,7 +18,7 @@ var vue = new Vue({
         }],
         tabledataflag:0,
         tabledataflag1:0,
-//用作改变title时的计数
+        //用作改变title时的计数
         tableflag1:0,
         tableflag2:0,
         tableflag3:0,
@@ -33,14 +35,23 @@ var vue = new Vue({
             content: 'Tab 1 content'
         }],
         tabIndex: 1,
-
-        themeObj:{},
+        //定义存储从前端获取的数据，用于与后台进行传输
+        themeObj:{
+            classinfo:[{
+                mcname:"",
+                modelsoid:[],
+            }],
+            dataClassInfo:[{
+                dcname:'',
+                datasoid:[],
+            }]
+        },
 
         oidnumber:0,
         numOfModelPerRow:5,
         classarr: [],
-        moid:[],
-        doid:[],
+        // moid:[],
+        // doid:[],
         dialogTableVisible: false,
         dialogTableVisible1: false,
         relateTitle: "",
@@ -102,18 +113,28 @@ var vue = new Vue({
     },
     methods: {
         modelClass_add(){
+            this.mcnum++;
+            this.tableflag1++;
+            this.tabledataflag++;
+            $("#categoryname").attr('id','categoryname_past');//改变当前id名称
+            this.themeObj.classinfo.push({
+                mcname:"",
+                modelsoid:[],
+            });
+
             $(".el-tabs__new-tab").eq(0).click();
         },
         dataClass_add(){
+            this.dcnum++;
+            this.tableflag2++;
+            this.tabledataflag1++;
+            this.themeObj.dataClassInfo.push({
+                dcname:"",
+                datasoid:[],
+            });
             $(".el-tabs__new-tab").eq(1).click();
         },
         handleTabsEdit_model(targetName, action) {
-
-            if (!this.confirmflag) {
-                alert("Please click confirm");
-                return false;
-            }
-            this.confirmflag = 0;
 
             if (action === 'add') {
                 let newTabName = ++this.tabIndex + '';
@@ -142,13 +163,9 @@ var vue = new Vue({
                 this.editableTabsValue_model = activeName;
                 this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
             }
+
         },
         handleTabsEdit_data(targetName, action) {
-
-            if (!this.confirmflag1) {
-                alert("Please click confirm");
-                return false;
-            }
             this.confirmflag1 = 0;
 
             if (action === 'add') {
@@ -461,7 +478,11 @@ var vue = new Vue({
             }
             if (!flag) {
                 this.editableTabs_model[this.tabledataflag].tabledata.push(row);
-                this.moid[this.oidnumber++] = row.oid;
+                this.themeObj.classinfo[this.mcnum].mcname = $("#categoryname"+this.tableflag1).val();
+                this.themeObj.classinfo[this.mcnum].modelsoid.push(row.oid);
+                // this.themeObj.classinfo[this.mcnum].mcname = $("#categoryname").val();
+                // this.themeObj.classinfo[this.mcnum].moid[this.mnum++] = row.oid;
+                // this.moid[this.oidnumber++] = row.oid;
             }
         },
         handleEdit1(index, row) {
@@ -477,7 +498,8 @@ var vue = new Vue({
             }
             if (!flag) {
                 this.editableTabs_data[this.tabledataflag1].tabledata.push(row);
-                this.doid[this.oidnumber++] = row.oid;
+                this.themeObj.dataClassInfo[this.dcnum].dcname = $("#categoryname2"+this.tableflag2).val();
+                this.themeObj.dataClassInfo[this.dcnum].datasoid.push(row.oid);
                 //待定
                 // this.doid[index] = row.oid;
             }
@@ -587,7 +609,34 @@ var vue = new Vue({
         let that = this;
 
 
-        var mcname;
+        //input的监听值变动的事件
+        $(document).on('keyup','.category_name',function ($event) {
+            let category_input=$(".category_name");
+            let index=0;
+            for(;index<category_input.length;index++){
+                if($(this)[0]==category_input.eq(index)[0]){
+                    break;
+                }
+            }
+            that.editableTabs_model[index].title = $(".category_name").eq(index).val();
+        });
+        $(document).on('keyup','.category_name2',function ($event) {
+            let category_input=$(".category_name2");
+            let index=0;
+            for(;index<category_input.length;index++){
+                if($(this)[0]==category_input.eq(index)[0]){
+                    break;
+                }
+            }
+            that.editableTabs_data[index].title = $(".category_name2").eq(index).val();
+        });
+        // $("#categoryname2").keyup('input propertychange',function () {
+        //     that.editableTabs_data[that.tableflag2].title = $("#categoryname2").val();
+        // });
+
+
+
+        // var mcname;
 
 
         const heights = $(window).height();
@@ -617,12 +666,6 @@ var vue = new Vue({
             that.search1();
         })
         $("#step2_next").click(function () {
-            if (!that.confirmflag) {
-                alert("Please click confirm");
-                return false;
-            }
-            that.confirmflag = 0;
-
             that.relateType = "dataItem";
             that.tableData = [];
             that.pageOption2.currentPage=0;
@@ -632,11 +675,6 @@ var vue = new Vue({
             that.search2();
         })
         $("#step3_next").click(function () {
-            if (!that.confirmflag1) {
-                alert("Please click confirm");
-                return false;
-            }
-            that.confirmflag1 = 0;
         });
 
         const url="ModelDataDownloadServlet";
@@ -1032,23 +1070,23 @@ var vue = new Vue({
 
 
         // var themeObj = {};
-        that.themeObj.classinfo = new Array();
-        that.themeObj.dataClassInfo = new Array();
+        // that.themeObj.classinfo = new Array();
+        // that.themeObj.dataClassInfo = new Array();
         that.themeObj.application = new Array();
 
 
         $(document).on('click','#selectok',function ($event) {
-            that.editableTabs_model[that.tableflag1++].title = $("#categoryname").val();
+
             //将tabledata中的数据放到二维数组tabledata_two
             $("#selectok").html("That's ok");
             that.confirmflag = 1;
             $("#selectok").attr('id',"selectok_past");
             /*classinfo 类似于reference,将选择的model的oid放到classinfo中*/
             // themeObj.classinfo = new Array();
-            var cla = {};
-            cla.mcname = $("#categoryname").val();
-            cla.modelsoid = that.moid;
-            that.themeObj.classinfo.push(cla);
+            // var cla = {};
+            // cla.mcname = $("#categoryname").val();
+            // cla.modelsoid = that.moid;
+            // that.themeObj.classinfo.push(cla);
             // for(var i=0;i<that.tableData.length;i++){
             //     that.editableTabs_model[that.tabledataflag].tabledata[i] = that.tableData[i];
             // }
@@ -1059,8 +1097,6 @@ var vue = new Vue({
             that.dialogTableVisible=false;
 
             $("#categoryname").attr('id','categoryname_past');//改变当前id名称
-            that.oidnumber = 0;
-            that.moid=[];
         });
         $(document).on('click','#selectok1',function ($event) {
             that.editableTabs_data[that.tableflag2++].title = $("#categoryname2").val();
@@ -1068,10 +1104,10 @@ var vue = new Vue({
             that.confirmflag1 = 1;
             $("#selectok1").attr('id',"selectok1_past");
             /*dataclassinfo 类似于reference,将选择的model的oid放到dataclassinfo中*/
-            var dcla = {};
-            dcla.dcname = $("#categoryname2").val();
-            dcla.datasoid = that.doid;
-            that.themeObj.dataClassInfo.push(dcla);
+            // var dcla = {};
+            // dcla.dcname = $("#categoryname2").val();
+            // dcla.datasoid = that.doid;
+            // that.themeObj.dataClassInfo.push(dcla);
 
             // that.editableTabs_data[that.tabledataflag1].tabledata.push(that.tableData);
             that.tabledataflag1++;
@@ -1079,8 +1115,6 @@ var vue = new Vue({
             that.dialogTableVisible1=false;
 
             $("#categoryname2").attr('id','categoryname2_past');//改变当前id名称
-            that.oidnumber = 0;
-            that.doid=[];
         });
 
         $(".finish").click(()=> {
