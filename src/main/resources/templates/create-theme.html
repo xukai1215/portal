@@ -384,6 +384,7 @@
 
                                                         <div class="panel-body">
                                                                 <el-card>
+                                                                    <el-button type="success" style="position: absolute;right: 35px;z-index: 999" @click="Application_add()">Add New Application</el-button>
                                                                 <el-tabs v-model="editableTabsValue_applications" type="card" editable @edit="handleTabsEdit_applications">
                                                                     <el-tab-pane
                                                                             :key="item.name"

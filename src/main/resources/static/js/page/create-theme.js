@@ -113,6 +113,8 @@ var vue = new Vue({
     },
     methods: {
         modelClass_add(){
+            this.themeObj.classinfo[this.mcnum].mcname = $("#categoryname"+this.tableflag1).val();
+
             this.mcnum++;
             this.tableflag1++;
             this.tabledataflag++;
@@ -125,6 +127,8 @@ var vue = new Vue({
             $(".el-tabs__new-tab").eq(0).click();
         },
         dataClass_add(){
+            this.themeObj.dataClassInfo[this.dcnum].dcname = $("#categoryname2"+this.tableflag2).val();
+
             this.dcnum++;
             this.tableflag2++;
             this.tabledataflag1++;
@@ -133,6 +137,9 @@ var vue = new Vue({
                 datasoid:[],
             });
             $(".el-tabs__new-tab").eq(1).click();
+        },
+        Application_add(){
+            $(".el-tabs__new-tab").eq(2).click();
         },
         handleTabsEdit_model(targetName, action) {
 
@@ -481,9 +488,6 @@ var vue = new Vue({
                 this.editableTabs_model[this.tabledataflag].tabledata.push(row);
                 this.themeObj.classinfo[this.mcnum].mcname = $("#categoryname"+this.tableflag1).val();
                 this.themeObj.classinfo[this.mcnum].modelsoid.push(row.oid);
-                // this.themeObj.classinfo[this.mcnum].mcname = $("#categoryname").val();
-                // this.themeObj.classinfo[this.mcnum].moid[this.mnum++] = row.oid;
-                // this.moid[this.oidnumber++] = row.oid;
             }
         },
         handleEdit1(index, row) {
@@ -501,8 +505,6 @@ var vue = new Vue({
                 this.editableTabs_data[this.tabledataflag1].tabledata.push(row);
                 this.themeObj.dataClassInfo[this.dcnum].dcname = $("#categoryname2"+this.tableflag2).val();
                 this.themeObj.dataClassInfo[this.dcnum].datasoid.push(row.oid);
-                //待定
-                // this.doid[index] = row.oid;
             }
         },
         handleDelete1(index, row) {
@@ -513,6 +515,13 @@ var vue = new Vue({
             }
             table.splice(index, 1);
             this.editableTabs_model[this.tabledataflag].tabledata = table;
+
+            let table1 = new Array();
+            for (i = 0; i < this.themeObj.classinfo[this.mcnum].modelsoid.length; i++) {
+                table1.push(this.themeObj.classinfo[this.mcnum].modelsoid[i]);
+            }
+            table1.splice(index, 1);
+            this.themeObj.classinfo[this.mcnum].modelsoid = table1;
         },
         handleDelete2(index, row) {
             console.log(index, row);
@@ -522,6 +531,13 @@ var vue = new Vue({
             }
             table.splice(index, 1);
             this.editableTabs_data[this.tabledataflag1].tabledata = table;
+
+            let table1 = new Array();
+            for (i = 0; i < this.themeObj.dataClassInfo[this.dcnum].datasoid.length; i++) {
+                table1.push(this.themeObj.dataClassInfo[this.dcnum].datasoid[i]);
+            }
+            table1.splice(index, 1);
+            this.themeObj.dataClassInfo[this.dcnum].datasoid = table1;
         },
 
         getRelation() {
@@ -675,6 +691,8 @@ var vue = new Vue({
             that.search1();
         })
         $("#step2_next").click(function () {
+            that.themeObj.classinfo[that.mcnum].mcname = $("#categoryname"+that.tableflag1).val();
+
             that.relateType = "dataItem";
             that.tableData = [];
             that.pageOption2.currentPage=0;
@@ -684,6 +702,7 @@ var vue = new Vue({
             that.search2();
         })
         $("#step3_next").click(function () {
+            that.themeObj.dataClassInfo[that.dcnum].dcname = $("#categoryname2"+that.tableflag2).val();
         });
 
         const url="ModelDataDownloadServlet";
