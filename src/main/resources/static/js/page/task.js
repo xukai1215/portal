@@ -71,85 +71,83 @@ var vue = new Vue({
         outEvent: [],
         oid: null,
 
-        fileList:[],
+        fileList: [],
 
         //select data from user
-        selectDataDialog:false,
-        userOid:'',
-        loading:false,
-        userData:[],
-        totalNum:'',
-        page:1,
-        pageSize:10,
-        sortAsc:false,
-        selectData:[],
-        keyInput:'',
-        modelInEvent:{},
-        isFixed:false,
-        introHeight:1,
+        selectDataDialog: false,
+        userOid: '',
+        loading: false,
+        userData: [],
+        totalNum: '',
+        page: 1,
+        pageSize: 10,
+        sortAsc: false,
+        selectData: [],
+        keyInput: '',
+        modelInEvent: {},
+        isFixed: false,
+        introHeight: 1,
 
-        dataChosenIndex:1,
-        detailsIndex:1,
-        managerloading:true,
-        userTaskInfo:[{
-            content:{},
+        dataChosenIndex: 1,
+        detailsIndex: 1,
+        managerloading: true,
+        userTaskInfo: [{
+            content: {},
         }],
 
-        downloadDataSet:[],
-        downloadDataSetName:[],
-        packageContent:{},
+        downloadDataSet: [],
+        downloadDataSetName: [],
+        packageContent: {},
         userInfo: {
-            runTask:[
-                {
-
-                }
+            runTask: [
+                {}
             ]
         },
-        searchcontent:'',
-        databrowser:[],
-        loading:'false',
-        managerloading:true,
-        dataid:'',
-        rightMenuShow:false,
+        searchcontent: '',
+        databrowser: [],
+        loading: 'false',
+        managerloading: true,
+        dataid: '',
+        rightMenuShow: false,
 
-        introHeight:1,
+        introHeight: 1,
 
-        dataItemVisible:false,
-        categoryTree:[],
-        classifications:[],
-        dataItemSearchText:'',
-        currentData:{},
-        pageOption:{
-            page:0,
-            pageSize:5,
-            asc:false,
-            searchResult:[],
-            total:0,
+        dataItemVisible: false,
+        categoryTree: [],
+        classifications: [],
+        dataItemSearchText: '',
+        currentData: {},
+        pageOption: {
+            page: 0,
+            pageSize: 5,
+            asc: false,
+            searchResult: [],
+            total: 0,
         },
 
-        loadDataVisible:false,
+        loadDataVisible: false,
 
-        showDescriptionVisible:false,
+        showDescriptionVisible: false,
 
-        taskDescription:'',
+        taskDescription: '',
 
-        fileSpaceIndex:1,
+        fileSpaceIndex: 1,
 
-        myFile:[],
+        myFile: [],
 
-        myFileShown:[
+        myFileShown: [
             {
-                children:[],
+                children: [],
             }
         ],
 
-        fatherIndex:'',
+        fatherIndex: '',
 
-        pathShown:[],
+        pathShown: [],
 
-        clickTimeout:1000,
+        clickTimeout: 1000,
 
-        rotatevalue:0,
+        rotatevalue: 0,
 
         fileSearchResult:[],
 
@@ -159,9 +157,7 @@ var vue = new Vue({
         externalUrl: "",
         currentEventId: "",
 
-        loadjson:'',
-
-        exampleTaskStatus:''
+        loadjson: ''
     },
     computed: {},
     methods: {
@@ -237,46 +233,46 @@ var vue = new Vue({
         },
         tableRowKey(row) {
             console.log(row)
-          return row.name;
+            return row.name;
         },
 
-        handlePageChange(){
+        handlePageChange() {
 
         },
-        handleView(){
+        handleView() {
 
         },
-        selectFromDataItem(event){
+        selectFromDataItem(event) {
             this.eventChoosing = event;
-            this.dataItemVisible=true;
+            this.dataItemVisible = true;
         },
-        clickData(item,event){
-            console.log(item,event)
-            if(this.currentData.url!=item.url) {
+        clickData(item, event) {
+            console.log(item, event)
+            if (this.currentData.url != item.url) {
 
                 this.currentData = item;
 
-                for(let parent of event.path){
-                    if(parent.id==item.url){
+                for (let parent of event.path) {
+                    if (parent.id == item.url) {
                         $(".dataitemisol").removeClass("clickdataitem");
                         parent.classList.add("clickdataitem")
                         break;
                     }
                 }
             }
-            else{
-                this.currentData={};
+            else {
+                this.currentData = {};
                 $(".dataitemisol").removeClass("clickdataitem")
             }
         },
-        searchDataItem(){
-            this.pageOption.classifications=this.classifications;
-            this.pageOption.searchText=this.dataItemSearchText;
-            axios.post("/dataItem/searchResourceByNameAndCate/",this.pageOption)
-                .then((res)=>{
+        searchDataItem() {
+            this.pageOption.classifications = this.classifications;
+            this.pageOption.searchText = this.dataItemSearchText;
+            axios.post("/dataItem/searchResourceByNameAndCate/", this.pageOption)
+                .then((res) => {
                     console.log(res)
-                    this.pageOption.searchResult=res.data.data.list;
-                    this.pageOption.total=res.data.data.total;
+                    this.pageOption.searchResult = res.data.data.list;
+                    this.pageOption.total = res.data.data.total;
                 });
         },
 
@@ -303,99 +299,98 @@ var vue = new Vue({
                 this.eventChoosing.tag = this.currentData.name;
                 this.eventChoosing.url = this.currentData.url;
             }
-            else{
+            else {
                 this.$message("Please select data first!")
             }
         },
-        downloadData(){
-            if(this.currentDataUrl!="") {
+        downloadData() {
+            if (this.currentDataUrl != "") {
                 window.open("/dispatchRequest/download?url=" + this.currentData.url);
             }
-            else{
+            else {
                 this.$message("Please select data first!")
             }
         },
 
-        initSize(){
-            this.$nextTick(() =>{
+        initSize() {
+            this.$nextTick(() => {
                 let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                let totalHeight= $('.taskMain').css('height')
-                let leftbarHeight= $("#introContainer").css("height");
+                let totalHeight = $('.taskMain').css('height')
+                let leftbarHeight = $("#introContainer").css("height");
 
-                if(scrollTop>62){
+                if (scrollTop > 62) {
                     $('#introContainer').addClass("fixed")
-                    if(parseInt(totalHeight)-parseInt(scrollTop)+62<parseInt(leftbarHeight)){
+                    if (parseInt(totalHeight) - parseInt(scrollTop) + 62 < parseInt(leftbarHeight)) {
                         $('#introContainer').removeClass("fixed")
                         $('#introContainer').addClass("stop")
-                    }else{
+                    } else {
                         $('#introContainer').removeClass("stop")
                         $('#introContainer').addClass("fixed")
                     }
-                }else{
+                } else {
                     $('#introContainer').removeClass("fixed")
                 }
 
-                if(parseInt(totalHeight)-parseInt(scrollTop)<800){
-                    $('.introContent').css('display','none')
-                }else{
-                    $('.introContent').css('display','block')
-                }
-
+                // if (parseInt(totalHeight) - parseInt(scrollTop) < 800) {
+                //     $('.introContent').css('display', 'none')
+                // } else {
+                //     $('.introContent').css('display', 'block')
+                // }
 
 
             })
 
         },
 
-        showtitle(ev){
-            return ev.fileName+"\n"+"Type:"+ev.suffix;
+        showtitle(ev) {
+            return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
 
-        generateId(key){
+        generateId(key) {
             return key;
         },
 
-        getUserTaskInfo(){
-            let { code, data, msg } =  fetch("/user/getUserInfo", {
+        getUserTaskInfo() {
+            let {code, data, msg} = fetch("/user/getUserInfo", {
                 method: "GET",
-            }).then((response)=>{
+            }).then((response) => {
                 return response.json();
-            }).then((data)=>{
-                this.userInfo=data.data.userInfo;
-                this.userTaskInfo=this.userInfo.runTask;
+            }).then((data) => {
+                this.userInfo = data.data.userInfo;
+                this.userTaskInfo = this.userInfo.runTask;
                 console.log(this.userInfo);
-                setTimeout(()=>{
-                    $('.el-loading-mask').css('display','none');
-                },355)
+                setTimeout(() => {
+                    $('.el-loading-mask').css('display', 'none');
+                }, 355)
 
             });
 
         },
 
-        share(){
-            for(let i=0;i<this.databrowser.length;i++){
-                if(this.databrowser[i].id===this.dataid){
-                    var item=this.databrowser[i];
+        share() {
+            for (let i = 0; i < this.databrowser.length; i++) {
+                if (this.databrowser[i].id === this.dataid) {
+                    var item = this.databrowser[i];
                     break;
                 }
             }
 
 
-            if(item!=null){
-                let url ="/dataManager/downloadRemote?&sourceStoreId="+item.sourceStoreId;
-                this.$alert("<input style='width: 100%' value="+url+">",{
+            if (item != null) {
+                let url = "/dataManager/downloadRemote?&sourceStoreId=" + item.sourceStoreId;
+                this.$alert("<input style='width: 100%' value=" + url + ">", {
                     dangerouslyUseHTMLString: true
                 })
                 // this.dataid='';
 
-            }else {
+            } else {
                 // console.log("从后台获取数据条目数组有误")
                 this.$message('please select file first!!');
             }
         },
 
-        backToPackage(){
-            this.detailsIndex=1;
+        backToPackage() {
+            this.detailsIndex = 1;
         },
 
         dateFormat(date, format) {
@@ -434,11 +429,11 @@ var vue = new Vue({
                 userName: this.info.userInfo.userName
             };
         },
-        handleDataDownloadClick({ sourceStoreId }) {
+        handleDataDownloadClick({sourceStoreId}) {
 
             window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
         },
-        handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
+        handleDataChooseClick({sourceStoreId, fileName, suffix}) {
             let url =
                 "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
                 sourceStoreId;
@@ -466,7 +461,8 @@ var vue = new Vue({
             btns.css("color", "#636363");
             btns.eq(i - 1).css("color", "#428bca");
         },
-        init() {},
+        init() {
+        },
         inEventList(state) {
             return state.event.filter(value => {
                 return value.eventType === "response";
@@ -576,7 +572,7 @@ var vue = new Vue({
 
         },
 
-        async loadExampleData(id){
+        async loadExampleData(id) {
             console.log(id)
             const loading = this.$loading({
                 lock: true,
@@ -615,7 +611,7 @@ var vue = new Vue({
             )
 
             loading.close();
-            this.loadDataVisible=false
+            this.loadDataVisible = false
         },
 
         async loadTest(type) {
@@ -969,7 +965,7 @@ var vue = new Vue({
                 let events = states[i].event;
                 for (j = 0; j < events.length; j++) {
                     let event=events[j];
-                    if(event.optional==false&&event.children!=undefined){
+                    if(event.eventType=="response"&&event.optional==false&&event.children!=undefined){
                         for(k=0;k<event.children.length;k++){
                             let child=event.children[k];
                             if(child.value==undefined||child.value.trim()==""){
@@ -1066,6 +1062,8 @@ var vue = new Vue({
                         async: false,
                         data: JSON.stringify(json),
                         success: ({data, code, msg})=> {
+                            tid = data;
+
                             if (code == -1) {
                                 this.$message.error(msg);
                                 window.open("/user/login");
@@ -1080,7 +1078,7 @@ var vue = new Vue({
                     })
 
 
-                    let tid = data;
+
 
                     let interval = setInterval(async () => {
                         let {code, data, msg} = await (await fetch("/task/getResult", {
@@ -1133,40 +1131,40 @@ var vue = new Vue({
         },
 
 
-        selectFromMyData(key,modelInEvent) {
+        selectFromMyData(key, modelInEvent) {
             this.selectDataDialog = true
-            this.selectData=[]
-            this.keyInput=key
+            this.selectData = []
+            this.keyInput = key
 
-            let that=this
-            axios.get("/dataManager/list",{
-                params:{
-                    author:this.useroid,
-                    type:"author"
+            let that = this;
+            axios.get("/dataManager/list", {
+                params: {
+                    author: this.useroid,
+                    type: "author"
                 }
 
             })
-                .then((res)=>{
+                .then((res) => {
 
                     // console.log("oid datas",this.userId,res.data.data)
-                    that.userData=res.data.data
+                    that.userData = res.data.data
                     that.totalNum = res.data.data.totalElements;
                     that.loading = false
                 })
 
 
-            this.modelInEvent=modelInEvent
+            this.modelInEvent = modelInEvent
 
 
         },
-        currentPage(){
+        currentPage() {
 
         },
 
-        loadMore(e){
+        loadMore(e) {
 
         },
-        selectUserData(item,e){
+        selectUserData(item, e) {
             // console.log(e)
             this.$message("you have selected:  " + item.fileName + '.' + item.suffix);
             if (this.selectData.length === 0) {
@@ -1207,20 +1205,20 @@ var vue = new Vue({
         },
 
         //上传
-        upload_data_dataManager(){
+        upload_data_dataManager() {
 
 
             if (this.sourceStoreId === '') {
                 alert("请先上传数据")
-            }else{
-                var data={
+            } else {
+                var data = {
                     author: this.userId,
 
                     fileName: $("#managerFileName").val(),
-                    fromWhere:"PORTAL",
+                    fromWhere: "PORTAL",
                     mdlId: "string",
-                    sourceStoreId:this.sourceStoreId,
-                    suffix:$("#managerFileSuffix").val(),
+                    sourceStoreId: this.sourceStoreId,
+                    suffix: $("#managerFileSuffix").val(),
                     tags: $("#managerFileTags").tagsinput('items'),
                     type: "OTHER"
 
@@ -1241,11 +1239,11 @@ var vue = new Vue({
         },
 
         //下载
-        download_data_dataManager(){
+        download_data_dataManager() {
 
-            for(let i=0;i<this.databrowser.length;i++){
-                if(this.databrowser[i].id===this.dataid){
-                    var item=this.databrowser[i];
+            for (let i = 0; i < this.databrowser.length; i++) {
+                if (this.databrowser[i].id === this.dataid) {
+                    var item = this.databrowser[i];
                     break;
                 }
             }
@@ -1261,35 +1259,35 @@ var vue = new Vue({
                 document.body.appendChild(link)
                 link.click();
 
-            }else {
+            } else {
                 this.$message('please select file first!!');
             }
 
 
         },
         //删除
-        delete_data_dataManager(){
+        delete_data_dataManager() {
 
-            if(confirm("Are you sure to delete?")){
-                let tha=this
-                axios.delete("/dataManager/delete",{
-                    params:{
-                        id:tha.dataid
+            if (confirm("Are you sure to delete?")) {
+                let tha = this
+                axios.delete("/dataManager/delete", {
+                    params: {
+                        id: tha.dataid
                     }
-                }).then((res)=>{
+                }).then((res) => {
 
 
-                    if(res.data.msg==="成功"){
+                    if (res.data.msg === "成功") {
                         //删除双向绑定的数组
-                        tha.rightMenuShow=false
-                        tha.databrowser=[]
+                        tha.rightMenuShow = false
+                        tha.databrowser = []
                         tha.addAllData()
                         alert("delete successful")
 
                     }
 
                 })
-            }else{
+            } else {
                 alert("ok")
             }
 
@@ -1297,17 +1295,17 @@ var vue = new Vue({
         },
 
 
-        showsearchresult(data){
+        showsearchresult(data) {
 
             //动态创建DOM节点
 
-            for(let i=0;i<this.databrowser.length;i++){
+            for (let i = 0; i < this.databrowser.length; i++) {
                 //匹配查询字段
-                if(this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase())>-1){
+                if (this.databrowser[i].fileName.toLowerCase().indexOf(data.toLowerCase()) > -1) {
                     //插入查找到的card
 
                     //card
-                    let searchresultcard=document.createElement("div");
+                    let searchresultcard = document.createElement("div");
                     searchresultcard.classList.add("el-card");
                     searchresultcard.classList.add("dataitemisol");
                     searchresultcard.classList.add("is-never-shadow");
@@ -1315,29 +1313,29 @@ var vue = new Vue({
 
 
                     //cardbody
-                    let secardbody=document.createElement("div");
+                    let secardbody = document.createElement("div");
                     secardbody.classList.add("el-card__body");
                     //card里添加cardbody
                     searchresultcard.appendChild(secardbody);
 
                     //el-row1
-                    let cardrow1=document.createElement("div");
+                    let cardrow1 = document.createElement("div");
                     cardrow1.classList.add("el-row");
                     secardbody.appendChild(cardrow1);
 
                     //3个div1
                     //div1
-                    let div1=document.createElement("div");
+                    let div1 = document.createElement("div");
                     div1.classList.add("el-col");
                     div1.classList.add("el-col-6");
 
-                    let text1=document.createTextNode(" ");
+                    let text1 = document.createTextNode(" ");
                     div1.appendChild(text1);
 
                     cardrow1.appendChild(div1)
 
                     //div2
-                    let div2=document.createElement("div");
+                    let div2 = document.createElement("div");
                     div2.classList.add("el-col");
                     div2.classList.add("el-col-12");
 
@@ -1353,51 +1351,51 @@ var vue = new Vue({
                     cardrow1.appendChild(div2)
 
                     //div3
-                    let div3=document.createElement("div");
+                    let div3 = document.createElement("div");
                     div3.classList.add("el-col");
                     div3.classList.add("el-col-6");
 
-                    let text2=document.createTextNode(" ");
+                    let text2 = document.createTextNode(" ");
                     div3.appendChild(text2);
 
                     cardrow1.appendChild(div3);
 
 
                     //el-row2
-                    let cardrow2=document.createElement("div");
+                    let cardrow2 = document.createElement("div");
                     cardrow2.classList.add("el-row");
                     secardbody.appendChild(cardrow2);
 
                     //3个div2
                     //div4
-                    let div4=document.createElement("div");
+                    let div4 = document.createElement("div");
                     div4.classList.add("el-col");
                     div4.classList.add("el-col-2");
 
-                    let text3=document.createTextNode(" ");
+                    let text3 = document.createTextNode(" ");
                     div4.appendChild(text3);
 
                     cardrow2.appendChild(div4)
 
                     //div5
-                    let div5=document.createElement("div");
+                    let div5 = document.createElement("div");
                     div5.classList.add("el-col");
                     div5.classList.add("el-col-20");
 
-                    let p=document.createElement("p");
+                    let p = document.createElement("p");
                     div5.appendChild(p);
 
-                    let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                    let filenameandtype = document.createTextNode(this.databrowser[i].fileName + '.' + this.databrowser[i].suffix);
                     p.appendChild(filenameandtype)
 
                     cardrow2.appendChild(div5)
 
                     //div6
-                    let div6=document.createElement("div");
+                    let div6 = document.createElement("div");
                     div6.classList.add("el-col");
                     div6.classList.add("el-col-20");
 
-                    let text4=document.createTextNode(" ");
+                    let text4 = document.createTextNode(" ");
                     div6.appendChild(text4);
 
                     cardrow2.appendChild(div6)
@@ -1412,23 +1410,23 @@ var vue = new Vue({
                     //     this.dataid=i;
                     // });
                     searchresultcard.click(function () {
-                        this.dataid=this.databrowser[i].id;
+                        this.dataid = this.databrowser[i].id;
                     })
 
                 }
             }
         },
 
-        category(data){
+        category(data) {
 
             for (let j = 0; j < data.length; j++) {
                 for (let i = 0; i < this.databrowser.length; i++) {
                     //匹配查询字段
-                    if(this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase())>-1){
+                    if (this.databrowser[i].suffix.toLowerCase().indexOf(data[j].toLowerCase()) > -1) {
                         //插入查找到的card
 
                         //card
-                        let searchresultcard=document.createElement("div");
+                        let searchresultcard = document.createElement("div");
                         searchresultcard.classList.add("el-card");
                         searchresultcard.classList.add("dataitemisol");
                         searchresultcard.classList.add("is-never-shadow");
@@ -1436,89 +1434,89 @@ var vue = new Vue({
 
 
                         //cardbody
-                        let secardbody=document.createElement("div");
+                        let secardbody = document.createElement("div");
                         secardbody.classList.add("el-card__body");
                         //card里添加cardbody
                         searchresultcard.appendChild(secardbody);
 
                         //el-row1
-                        let cardrow1=document.createElement("div");
+                        let cardrow1 = document.createElement("div");
                         cardrow1.classList.add("el-row");
                         secardbody.appendChild(cardrow1);
 
                         //3个div1
                         //div1
-                        let div1=document.createElement("div");
+                        let div1 = document.createElement("div");
                         div1.classList.add("el-col");
                         div1.classList.add("el-col-6");
 
-                        let text1=document.createTextNode(" ");
+                        let text1 = document.createTextNode(" ");
                         div1.appendChild(text1);
 
                         cardrow1.appendChild(div1)
 
                         //div2
-                        let div2=document.createElement("div");
+                        let div2 = document.createElement("div");
                         div2.classList.add("el-col");
                         div2.classList.add("el-col-12");
 
-                        let img=document.createElement("img");
-                        img.src="/static/img/filebrowser/"+this.databrowser[i].suffix+".svg";
+                        let img = document.createElement("img");
+                        img.src = "/static/img/filebrowser/" + this.databrowser[i].suffix + ".svg";
 
-                        img.style.height='60%';
-                        img.style.width='100%';
-                        img.style.marginLeft='30%';
+                        img.style.height = '60%';
+                        img.style.width = '100%';
+                        img.style.marginLeft = '30%';
 
                         div2.appendChild(img);
 
                         cardrow1.appendChild(div2)
 
                         //div3
-                        let div3=document.createElement("div");
+                        let div3 = document.createElement("div");
                         div3.classList.add("el-col");
                         div3.classList.add("el-col-6");
 
-                        let text2=document.createTextNode(" ");
+                        let text2 = document.createTextNode(" ");
                         div3.appendChild(text2);
 
                         cardrow1.appendChild(div3);
 
 
                         //el-row2
-                        let cardrow2=document.createElement("div");
+                        let cardrow2 = document.createElement("div");
                         cardrow2.classList.add("el-row");
                         secardbody.appendChild(cardrow2);
 
                         //3个div2
                         //div4
-                        let div4=document.createElement("div");
+                        let div4 = document.createElement("div");
                         div4.classList.add("el-col");
                         div4.classList.add("el-col-2");
 
-                        let text3=document.createTextNode(" ");
+                        let text3 = document.createTextNode(" ");
                         div4.appendChild(text3);
 
                         cardrow2.appendChild(div4)
 
                         //div5
-                        let div5=document.createElement("div");
+                        let div5 = document.createElement("div");
                         div5.classList.add("el-col");
                         div5.classList.add("el-col-20");
 
-                        let p=document.createElement("p");
+                        let p = document.createElement("p");
                         div5.appendChild(p);
 
-                        let filenameandtype=document.createTextNode(this.databrowser[i].fileName+'.'+this.databrowser[i].suffix);
+                        let filenameandtype = document.createTextNode(this.databrowser[i].fileName + '.' + this.databrowser[i].suffix);
                         p.appendChild(filenameandtype)
 
                         cardrow2.appendChild(div5)
 
                         //div6
-                        let div6=document.createElement("div");
+                        let div6 = document.createElement("div");
                         div6.classList.add("el-col");
                         div6.classList.add("el-col-20");
 
-                        let text4=document.createTextNode(" ");
+                        let text4 = document.createTextNode(" ");
                         div6.appendChild(text4);
 
                         cardrow2.appendChild(div6)
@@ -1533,7 +1531,7 @@ var vue = new Vue({
                         //     this.dataid=i;
                         // });
                         searchresultcard.click(function () {
-                            this.dataid=this.databrowser[i].id;
+                            this.dataid = this.databrowser[i].id;
                         })
 
                     }
@@ -1542,11 +1540,11 @@ var vue = new Vue({
 
         },
 
-        getid($event,eval){
+        getid($event, eval) {
             console.log(eval.id)
-            this.dataid=eval.id;
+            this.dataid = eval.id;
 
-            $event.closest('.el-card').className="el-card dataitemisol clickdataitem"
+            $event.closest('.el-card').className = "el-card dataitemisol clickdataitem"
 
             //再次点击取消选择
 
@@ -1561,14 +1559,14 @@ var vue = new Vue({
                 }
 
             } else {
-                this.downloadDataSet=[]
-                this.downloadDataSetName=[]
+                this.downloadDataSet = []
+                this.downloadDataSetName = []
                 this.downloadDataSet.push(eval)
-                let obj={
-                    name:eval.label,
-                    suffix:eval.suffix,
-                    package:eval.package,
-                    url:eval.url
+                let obj = {
+                    name: eval.label,
+                    suffix: eval.suffix,
+                    package: eval.package,
+                    url: eval.url
                 }
                 this.downloadDataSetName.push(obj)
             }
@@ -1580,21 +1578,21 @@ var vue = new Vue({
         },
 
 
-        getOneOfUserTasks(taskId){
+        getOneOfUserTasks(taskId) {
             $.ajax({
-                type:'GET',
-                url:"/task/getTaskByTaskId",
+                type: 'GET',
+                url: "/task/getTaskByTaskId",
                 // contentType:'application/json',
 
                 data:
                     {
-                        id:taskId,
+                        id: taskId,
                     },
                 // JSON.stringify(obj),
                 cache: false,
                 async: true,
-                xhrFields:{
-                    withCredentials:true
+                xhrFields: {
+                    withCredentials: true
                 },
                 crossDomain: true,
                 success: (json) => {
@@ -1602,14 +1600,14 @@ var vue = new Vue({
                     if (json.code != 0) {
                         alert("Please login first!");
                         window.location.href = "/user/login";
-                    }else {
-                        setTimeout(()=>{
+                    } else {
+                        setTimeout(() => {
                             const data = json.data;
                             this.resourceLoad = false;
                             // this.researchItems = data.list;
-                            this.packageContent=data;
+                            this.packageContent = data;
                             console.log(this.packageContent)
-                        },100)
+                        }, 100)
 
 
                     }
@@ -1617,20 +1615,20 @@ var vue = new Vue({
             })
         },
 
-        addDataClass($event,item){
-            this.rightMenuShow=false
+        addDataClass($event, item) {
+            this.rightMenuShow = false
 
 
-            if(this.downloadDataSet.indexOf(item)<0){
-                $event.currentTarget.className="el-card dataitemisol dataitemhover"
+            if (this.downloadDataSet.indexOf(item) < 0) {
+                $event.currentTarget.className = "el-card dataitemisol dataitemhover"
             }
 
-            this.dataid=item.id
+            this.dataid = item.id
 
 
         },
 
-        removeClass($event,item){
+        removeClass($event, item) {
 
 
             if (this.downloadDataSet.indexOf(item) > -1) {
@@ -1644,58 +1642,58 @@ var vue = new Vue({
 
         //右键菜单
 
-        rightMenu(e){
+        rightMenu(e) {
             e.preventDefault();
 
-            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            e.currentTarget.className = "el-card dataitemisol clickdataitem"
 
 
             var dom = document.getElementsByClassName("browsermenu");
 
             console.log(e)
-            dom[0].style.top = e.pageY -100+"px"
+            dom[0].style.top = e.pageY - 100 + "px"
             // 125 > window.innerHeight
             //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
-            dom[0].style.left = e.pageX-200 +"px";
+            dom[0].style.left = e.pageX - 200 + "px";
 
-            this.rightMenuShow=true
+            this.rightMenuShow = true
 
 
         },
 
-        openWzhRightMenu(e){
+        openWzhRightMenu(e) {
             e.preventDefault();
 
-            e.currentTarget.className="el-card dataitemisol clickdataitem"
+            e.currentTarget.className = "el-card dataitemisol clickdataitem"
             console.log(e)
 
             var dom = document.getElementsByClassName("wzhRightMenu");
 
-            dom[0].style.top = e.pageY -250+"px"
-            dom[0].style.left = e.pageX-230 +"px";
+            dom[0].style.top = e.pageY - 250 + "px"
+            dom[0].style.left = e.pageX - 230 + "px";
             console.log(e.style)
-            $('.wzhRightMenu').animate({height:'120'},150);
+            $('.wzhRightMenu').animate({height: '120'}, 150);
         },
 
-        myDataClick(index){
-            this.dataChosenIndex=index;
+        myDataClick(index) {
+            this.dataChosenIndex = index;
         },
 
-        outputDataClick(index){
-            this.dataChosenIndex=index;
+        outputDataClick(index) {
+            this.dataChosenIndex = index;
         },
 
-        userDownload(){
+        userDownload() {
             //todo 依据数组downloadDataSet批量下载
 
-            let sourceId=new Array()
+            let sourceId = new Array()
 
-            for(let i=0;i<this.downloadDataSet.length;i++){
+            for (let i = 0; i < this.downloadDataSet.length; i++) {
                 sourceId.push(this.downloadDataSet[i].sourceStoreId)
             }
 
 
-            if(this.downloadDataSet.length>0){
+            if (this.downloadDataSet.length > 0) {
 
                 const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
                 let url = "/dataManager/downloadSomeRemote?" + keys;
@@ -1707,30 +1705,30 @@ var vue = new Vue({
                 document.body.appendChild(link)
                 link.click();
 
-            }else{
+            } else {
                 alert("please select first!!")
             }
 
 
         },
 
-        getTree(){
+        getTree() {
             return this.tree;
         },
 
 
-        submitForm (formName) {
+        submitForm(formName) {
             //包含上传的文件信息和服务端返回的所有信息都在这个对象里
             this.$refs.upload.uploadFiles
         },
 
-        confirmSelect(){
-            if(this.selectData.length==0){
+        confirmSelect() {
+            if (this.selectData.length == 0) {
                 this.$message("you have selected no data")
-            }else{
-                let da=this.selectData.pop()
+            } else {
+                let da = this.selectData.pop()
 
-                let key=this.keyInput
+                let key = this.keyInput
                 // $('#datainput'+key)[0].value=da.item.fileName
 
                 this.selectDataDialog = false
@@ -1742,7 +1740,7 @@ var vue = new Vue({
             }
 
 
-            this.selectData=[]
+            this.selectData = []
 
 
         },
@@ -1751,7 +1749,7 @@ var vue = new Vue({
 
     async mounted() {
 
-        var tha=this
+        var tha = this
         axios.get("/dataItem/createTree")
             .then(res => {
                 tha.tObj = res.data;
@@ -1784,33 +1782,35 @@ var vue = new Vue({
         for (i = 0; i < states.length; i++) {
             let state = states[i];
             for (j = 0; j < state.event.length; j++) {
-                let nodes = state.event[j].data[0].nodes;
-                if(state.event[j].data[0].externalId!=undefined){
-                    state.event[j].externalId=state.event[j].data[0].externalId;
-                }
-                if (nodes != undefined) {
-                    let children = [];
-                    for (k = 0; k < nodes.length; k++) {
-                        let node = nodes[k];
-                        let child = {};
-                        child.eventId = node.text;
-                        child.eventName = node.text;
-                        child.eventDesc = node.desc;
-                        switch (node.dataType) {
-                            case "DTKT_INT":
-                                child.eventType = "int";
-                                break;
-                            case "DTKT_REAL":
-                                child.eventType = "real";
-                                break;
-                            case "DTKT_INT | DTKT_LIST":
-                                child.eventType = "int_array";
-                                break;
-                        }
-                        child.child = true;
-                        children.push(child);
+                if(state.event[j].data!=undefined&&state.event[j].eventType=="response") {
+                    let nodes = state.event[j].data[0].nodes;
+                    if (state.event[j].data[0].externalId != undefined) {
+                        state.event[j].externalId = state.event[j].data[0].externalId;
                     }
-                    data.modelInfo.states[i].event[j].children = children;
+                    if (nodes != undefined) {
+                        let children = [];
+                        for (k = 0; k < nodes.length; k++) {
+                            let node = nodes[k];
+                            let child = {};
+                            child.eventId = node.text;
+                            child.eventName = node.text;
+                            child.eventDesc = node.desc;
+                            switch (node.dataType) {
+                                case "DTKT_INT":
+                                    child.eventType = "int";
+                                    break;
+                                case "DTKT_REAL":
+                                    child.eventType = "real";
+                                    break;
+                                case "DTKT_INT | DTKT_LIST":
+                                    child.eventType = "int_array";
+                                    break;
+                            }
+                            child.child = true;
+                            children.push(child);
+                        }
+                        data.modelInfo.states[i].event[j].children = children;
+                    }
                 }
             }
         }
@@ -1866,10 +1866,10 @@ var vue = new Vue({
          * 模型运行的图形界面
          */
 
-        let count=0;
+        let count = 0;
         $('#workFlow').click(function () {
             $(".mxWindow").remove();
-            if(count==0) {
+            if (count == 0) {
                 count++;
                 setTimeout(function () {
                     var diagram = new OGMSDiagram();
@@ -1930,25 +1930,25 @@ var vue = new Vue({
         });
         $('#classic').click(function () {
             $(".mxWindow").remove();
-            count=0;
+            count = 0;
         });
         $('#semantics').click(function () {
             $(".mxWindow").remove();
-            count=0;
+            count = 0;
         });
 
-        $(document).on("click",".eventBtn",function(e){
+        $(document).on("click", ".eventBtn", function (e) {
             var event_id = e.currentTarget.id;
             var start = event_id.search('_');
             var eventId = event_id.slice(start + 1);
             var btnName = event_id.slice(0, start);
 
             var find = false;
-            for (var i = 0; i<that.info.modelInfo.states.length; i++){
+            for (var i = 0; i < that.info.modelInfo.states.length; i++) {
                 var state = that.info.modelInfo.states[i];
-                for (var j = 0; j<state.event.length; j++){
+                for (var j = 0; j < state.event.length; j++) {
                     var event = state.event[j];
-                    if(eventId == event.eventId){
+                    if (eventId == event.eventId) {
                         switch (btnName) {
                             case 'select':
                                 that.selectFromDataItem(event);
@@ -1967,7 +1967,7 @@ var vue = new Vue({
                         break;
                     }
                 }
-                if (find == true){
+                if (find == true) {
                     break;
                 }
             }
