@@ -173,25 +173,30 @@ public class TaskService {
         Task task = findByTaskId(taskId);
         //判断权限信息
         boolean hasPermission = false;
-        List<String> publicInfos = task.getIsPublic();
-        if (publicInfos.get(0).equals("public")) {
-            result.put("permission", "yes");
+
+        if(task.getPermission().equals("private")&&!task.getUserId().equals(userName)){
+            result.put("permission", "no");
             return result;
-        } else {
-
-            for (String publicInfo : publicInfos) {
-                if (publicInfo.equals(userName)) {
-                    hasPermission = true;
-                    result.put("permission", "yes");
-                    break;
-                }
-
-            }
-            if (hasPermission == false) {
-                result.put("permission", "no");
-                return result;
-            }
         }
+
+//        List<String> publicInfos = task.getIsPublic();
+//        if (publicInfos.get(0).equals("public")) {
+//            result.put("permission", "yes");
+//        } else {
+//
+//            for (String publicInfo : publicInfos) {
+//                if (publicInfo.equals(userName)) {
+//                    hasPermission = true;
+//                    result.put("permission", "yes");
+//                    break;
+//                }
+//
+//            }
+//            if (hasPermission == false) {
+//                result.put("permission", "no");
+//                return result;
+//            }
+//        }
 
         JsonResult jsonResult = generateTask(modelId, userName);
         JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
@@ -212,7 +217,7 @@ public class TaskService {
         taskInfo.put("pid", data.getString("pid"));
         taskInfo.put("creater", task.getUserId());
         taskInfo.put("description", task.getDescription());
-        taskInfo.put("public", task.getIsPublic());
+        taskInfo.put("permission", task.getPermission());
         taskInfo.put("outputs", task.getOutputs());
         taskInfo.put("inputs", task.getInputs());
         taskInfo.put("createTime", task.getRunTime());
@@ -509,7 +514,7 @@ public class TaskService {
 
         List<ResultDataDTO> resultDataDTOList=new ArrayList<>();
 
-        if(!task.getIsPublic().equals("noPublic")){
+//        if(task.getPermission().equals("public")){
             for(int i=0; i<task.getInputs().size();i++ ){
                 ResultDataDTO resultDataDTO=new ResultDataDTO();
                 resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
@@ -530,7 +535,7 @@ public class TaskService {
                 resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
                 resultDataDTOList.add(resultDataDTO);
             }
-        }
+//        }
         return resultDataDTOList;
     }
 
@@ -755,32 +760,72 @@ public class TaskService {
 
     }
 
-    public JSONArray getTasksByModelId(String modelId,int page){
-
+    public JSONObject getTasksByModelByUser(String modelId,int page,String userName){
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
-        Pageable pageable = PageRequest.of(page, 5, sort);
-        Page<Task> tasks = taskDao.findByComputableId(modelId,pageable);
-        List<Task> ts = tasks.getContent();
+        Pageable pageable = PageRequest.of(page, 4, sort);
+        //获取该用户所有关于task
+        Page<Task> tasksOfUser = taskDao.findByComputableIdAndUserId(modelId,userName,pageable);
         JSONArray taskArray=new JSONArray();
+        List<Task> ts = tasksOfUser.getContent();
+        long total=tasksOfUser.getTotalElements();
         for (Task task:ts) {
-            if(task.getIsPublic().get(0).equals("noPublic"))
-                continue;
-            String userName=task.getUserId();
+
+            String caculateUser=task.getUserId();
             String taskId=task.getTaskId();
             Date runTime=task.getRunTime();
+            String permission=task.getPermission();
             String description = task.getDescription();
-            List<String> isPublic = task.getIsPublic();
 
             JSONObject obj=new JSONObject();
-            obj.put("userName",userName);
+            obj.put("userName",caculateUser);
             obj.put("taskId",taskId);
             obj.put("runTime",runTime);
             obj.put("description",description);
-            obj.put("isPublic",isPublic);
+            obj.put("permission",permission);
             taskArray.add(obj);
 
         }
-        return taskArray;
+
+        JSONObject result=new JSONObject();
+        result.put("content",taskArray);
+        result.put("total",total);
+
+        return result;
+    }
+
+    public JSONObject getPublishedTasksByModelId(String modelId,int page,String userName){
+        Sort sort = new Sort(Sort.Direction.DESC, "runTime");
+        Pageable pageable = PageRequest.of(page, 4, sort);
+
+        //获取published task
+        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndUserIdNot(modelId,"public","njgis",pageable);
+        List<Task> ts = tasks.getContent();
+        long total=tasks.getTotalElements();
+        JSONArray taskArray=new JSONArray();
+        for (Task task:ts) {
+
+            String caculateUser=task.getUserId();
+            String taskId=task.getTaskId();
+            Date runTime=task.getRunTime();
+            String permission=task.getPermission();
+            String description = task.getDescription();
+
+            JSONObject obj=new JSONObject();
+            obj.put("userName",caculateUser);
+            obj.put("taskId",taskId);
+            obj.put("runTime",runTime);
+            obj.put("description",description);
+            obj.put("permission",permission);
+            taskArray.add(obj);
+
+        }
+
+        JSONObject result=new JSONObject();
+
+        result.put("content",taskArray);
+        result.put("total",total);
+
+        return result;
     }
 
     public Task findByTaskId(String taskId) {
@@ -831,14 +876,30 @@ public class TaskService {
 
     public String setPublic(String taskId) {
         Task task = taskDao.findFirstByTaskId(taskId);
-        if (task == null)
-            return "0";
-        List<String> isPublic = task.getIsPublic();
-        if (isPublic.get(0).equals("noPublic"))
-            isPublic.set(0, "public");
-        else if(!isPublic.get(0).equals("public"))
-            isPublic.add(0,"public");
+        String result=new String();
+        if (task == null){
+            result="0";
+            return result;
+        }
+
+        task.setPermission("public");
         taskDao.save(task);
-        return "1";
+        result=task.getPermission();
+        return result;
     }
+
+    public String setPrivate(String taskId) {
+        Task task = taskDao.findFirstByTaskId(taskId);
+        String result=new String();
+        if (task == null){
+            result="0";
+            return result;
+        }
+
+        task.setPermission("private");
+        taskDao.save(task);
+        result=task.getPermission();
+        return result;
+    }
+
 }

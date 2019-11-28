@@ -536,3 +536,28 @@ model_date{
   color: #3c91ff;
 }
 
+.flexColCenter{
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center;*/
+  align-items: center;
+}
+
+.innerBorder{
+  align-self: center;
+  width: 95.5%;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+
+.transform180{
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.wzhDialog .el-dialog__body{
+  max-height: 420px;
+  overflow-y: scroll;
+  overflow-y: overlay;
+
+}

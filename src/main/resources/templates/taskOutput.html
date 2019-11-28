@@ -79,7 +79,8 @@
                                     </el-button>
                                     <el-button v-if="info.userInfo.userName==info.taskInfo.creater" type="primary" @click="publishTask()" :disabled="!info.modelInfo.hasTest"
                                                style="min-width: 120px;margin-left: 5px;">
-                                        Publish
+                                        <span v-if="info.taskInfo.permission=='public'" >Set Private</span>
+                                        <span v-else>Publish</span>
                                     </el-button>
                                 </div>
                             </el-row>

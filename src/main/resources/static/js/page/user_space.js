@@ -837,6 +837,125 @@ var vue = new Vue({
 
         },
 
+        publishTask(task){
+            const h = this.$createElement;
+            if(task.permission=='private'){
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', { style: 'font-size:15px' }, 'All of the users will have'),h('span',{style:'font-weight:600'},' permission '),h('span','to this task.'),
+                        h('br'),
+                        h('span', null, 'Are you sure to set the task'),
+                        h('span', { style: 'color: #e6a23c;font-weight:600' }, ' public'),
+                        h('span', null, '?'),
+                    ]),
+                    type:'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
+                        let href=window.location.href.split('/')
+                        let ids=href[href.length-1]
+                        let taskId=ids.split('&')[1]
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            // instance.confirmButtonText = '...';
+                            setTimeout(() => {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/task/setPublic",
+                                    data: {taskId: task.taskId},
+                                    async: true,
+                                    contentType: "application/x-www-form-urlencoded",
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please login first!")
+                                            window.sessionStorage.setItem("history", window.location.href);
+                                            window.location.href = "/user/login"
+                                        } else {
+                                            // this.rightTargetItem=null;
+                                            task.permission=json.data;
+                                        }
+
+                                    }
+                                });
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 100);
+                            }, 100);
+                        } else {
+                            done();
+                        }
+                    }
+                }).then(action => {
+                    this.rightMenuShow=false
+                    this.$message({
+                        type: 'success',
+                        message: 'This task can be visited by public'
+                    });
+                });
+            }else{
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', { style: 'font-size:15px' }, 'Only you have'),h('span',{style:'font-weight:600'},' permission '),h('span','to this task.'),
+                        h('br'),
+                        h('span', null, 'Are you sure to'),
+                        h('span', { style: 'color: #67c23a;font-weight:600' }, ' continue'),
+                        h('span', null, '?'),
+                    ]),
+                    type:'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
+                        let href=window.location.href.split('/')
+                        let ids=href[href.length-1]
+                        let taskId=ids.split('&')[1]
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            // instance.confirmButtonText = '...';
+                            setTimeout(() => {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/task/setPrivate",
+                                    data: {taskId: task.taskId},
+                                    async: true,
+                                    contentType: "application/x-www-form-urlencoded",
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please login first!")
+                                            window.sessionStorage.setItem("history", window.location.href);
+                                            window.location.href = "/user/login"
+                                        } else {
+                                            // this.rightTargetItem=null;
+                                            task.permission=json.data;
+                                        }
+
+                                    }
+                                });
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 100);
+                            }, 100);
+                        } else {
+                            done();
+                        }
+                    }
+                }).then(action => {
+                    this.rightMenuShow=false
+                    this.$message({
+                        type: 'success',
+                        message: 'This task has been set private'
+                    });
+                });
+            }
+
+
+        },
+
         addOutputToMyData(output){
             console.log(output)
             this.outputToMyData=output
@@ -1995,99 +2114,99 @@ var vue = new Vue({
         },
 
         getCalcWithCurrent(){
-            this.curIndex=6
-            this.isInSearch = 0;
-            $.ajax({
-                type: "Get",
-                url: "/user/getUserInfo",
-                data: {},
-                crossDomain: true,
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: (json) => {
-                    data = json.data;
-                    console.log(data);
-                    this.statisticsInfo = data["record"];
-                    var modelInfo = data["userInfo"];
-
-                    this.resourceOption = {
-                        color: ['#3398DB'],
-                        tooltip: {
-                            trigger: 'axis',
-                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis: [
-                            {
-                                type: 'category',
-                                data: ['Model Items', 'Data Item', 'Conceputal Model', 'Logical Model', 'Computable Model'],
-                                axisTick: {
-                                    alignWithLabel: true
-                                },
-                                axisLabel: {
-                                    interval: 0,
-                                    formatter: function (params) {
-                                        var index = params.indexOf(" ");
-                                        var start = params.substring(0, index);
-                                        var end = params.substring(index + 1);
-                                        var newParams = start + "\n" + end;
-                                        return newParams
-                                    }
-                                }
-                            }
-                        ],
-                        yAxis: [
-                            {
-                                type: 'value'
-                            }
-                        ],
-                        series: [
-                            {
-                                name: 'count',
-                                type: 'bar',
-                                barWidth: '60%',
-                                data: [modelInfo["modelItems"], modelInfo["dataItems"], modelInfo["conceptualModels"], modelInfo["logicalModels"], modelInfo["computableModels"]]
-                            }
-                        ]
-                    }
-
-                    // var chart = echarts.init(document.getElementById('chartRes'));
-                    // chart.setOption(this.resourceOption);
-
-                    this.userInfo = modelInfo;
-
-                    //取出taskinfo放入userTaskInfo
-                    this.getUserTaskInfo()
-
-                    let orgs = this.userInfo.organizations;
-
-                    if (orgs.length != 0) {
-                        this.userInfo.orgStr = orgs[0];
-                        for (i = 1; i < orgs.length; i++) {
-                            this.userInfo.orgStr += ", " + orgs[i];
-                        }
-                    }
-
-                    let sas = this.userInfo.subjectAreas;
-                    if (sas != null && sas.length != 0) {
-                        this.userInfo.saStr = sas[0];
-                        for (i = 1; i < sas.length; i++) {
-                            this.userInfo.saStr += ", " + sas[i];
-                        }
-                    }
-
-
-                    this.load = false;
-                }
-            })
+            // this.curIndex=6
+            // this.isInSearch = 0;
+            // $.ajax({
+            //     type: "Get",
+            //     url: "/user/getUserInfo",
+            //     data: {},
+            //     crossDomain: true,
+            //     xhrFields: {
+            //         withCredentials: true
+            //     },
+            //     success: (json) => {
+            //         data = json.data;
+            //         console.log(data);
+            //         this.statisticsInfo = data["record"];
+            //         var modelInfo = data["userInfo"];
+            //
+            //         this.resourceOption = {
+            //             color: ['#3398DB'],
+            //             tooltip: {
+            //                 trigger: 'axis',
+            //                 axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            //                     type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            //                 }
+            //             },
+            //             grid: {
+            //                 left: '3%',
+            //                 right: '4%',
+            //                 bottom: '3%',
+            //                 containLabel: true
+            //             },
+            //             xAxis: [
+            //                 {
+            //                     type: 'category',
+            //                     data: ['Model Items', 'Data Item', 'Conceputal Model', 'Logical Model', 'Computable Model'],
+            //                     axisTick: {
+            //                         alignWithLabel: true
+            //                     },
+            //                     axisLabel: {
+            //                         interval: 0,
+            //                         formatter: function (params) {
+            //                             var index = params.indexOf(" ");
+            //                             var start = params.substring(0, index);
+            //                             var end = params.substring(index + 1);
+            //                             var newParams = start + "\n" + end;
+            //                             return newParams
+            //                         }
+            //                     }
+            //                 }
+            //             ],
+            //             yAxis: [
+            //                 {
+            //                     type: 'value'
+            //                 }
+            //             ],
+            //             series: [
+            //                 {
+            //                     name: 'count',
+            //                     type: 'bar',
+            //                     barWidth: '60%',
+            //                     data: [modelInfo["modelItems"], modelInfo["dataItems"], modelInfo["conceptualModels"], modelInfo["logicalModels"], modelInfo["computableModels"]]
+            //                 }
+            //             ]
+            //         }
+            //
+            //         // var chart = echarts.init(document.getElementById('chartRes'));
+            //         // chart.setOption(this.resourceOption);
+            //
+            //         this.userInfo = modelInfo;
+            //
+            //         //取出taskinfo放入userTaskInfo
+            //         this.getUserTaskInfo()
+            //
+            //         let orgs = this.userInfo.organizations;
+            //
+            //         if (orgs.length != 0) {
+            //             this.userInfo.orgStr = orgs[0];
+            //             for (i = 1; i < orgs.length; i++) {
+            //                 this.userInfo.orgStr += ", " + orgs[i];
+            //             }
+            //         }
+            //
+            //         let sas = this.userInfo.subjectAreas;
+            //         if (sas != null && sas.length != 0) {
+            //             this.userInfo.saStr = sas[0];
+            //             for (i = 1; i < sas.length; i++) {
+            //                 this.userInfo.saStr += ", " + sas[i];
+            //             }
+            //         }
+            //
+            //
+            //         this.load = false;
+            //     }
+            // })
         },
 
         getServersInfo() {

@@ -25,5 +25,13 @@ public interface TaskDao extends MongoRepository<Task,String> {
 
     Page<Task> findByComputableId(String modelId,Pageable pageable);
 
+    Page<Task> findByComputableIdAndPermission(String modelId,String permission,Pageable pageable);
+
+    Page<Task> findByComputableIdAndStatus(String modelId,int status,Pageable pageable);
+
+    Page<Task> findByComputableIdAndUserId(String modelId,String userId,Pageable pageable);
+//
+    Page<Task> findByComputableIdAndPermissionAndUserIdNot(String modelId,String permission,String userId,Pageable pageable);
+
     Task findFirstByOid(String oid);
 }

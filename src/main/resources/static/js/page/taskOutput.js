@@ -15,6 +15,7 @@ var vue = new Vue({
                 pott:'',
                 outputs:[],
                 description:'',
+                public:[]
             },
             userInfo: {}
         },
@@ -320,60 +321,120 @@ var vue = new Vue({
 
         publishTask(){
             const h = this.$createElement;
-            this.$msgbox({
-                title: ' ',
-                message: h('p', null, [
-                    h('span', { style: 'font-size:15px' }, 'All of the users will have'),h('span',{style:'font-weight:600'},' permission '),h('span','to this page and data.'),
-                    h('br'),
-                    h('span', null, 'Are you sure to '),
-                    h('span', { style: 'color: #e6a23c;font-weight:600' }, 'continue'),
-                    h('span', null, '?'),
-                ]),
-                type:'warning',
-                showCancelButton: true,
-                confirmButtonText: 'confirm',
-                cancelButtonText: 'cancel',
-                beforeClose: (action, instance, done) => {
-                    let href=window.location.href.split('/')
-                    let ids=href[href.length-1]
-                    let taskId=ids.split('&')[1]
-                    if (action === 'confirm') {
-                        instance.confirmButtonLoading = true;
-                        // instance.confirmButtonText = '...';
-                        setTimeout(() => {
-                            $.ajax({
-                                type: "POST",
-                                url: "/task/setPublic",
-                                data: {taskId: taskId},
-                                async: true,
-                                contentType: "application/x-www-form-urlencoded",
-                                success: (json) => {
-                                    if (json.code == -1) {
-                                        alert("Please login first!")
-                                        window.sessionStorage.setItem("history", window.location.href);
-                                        window.location.href = "/user/login"
-                                    } else {
-                                        // this.rightTargetItem=null;
-                                    }
-
-                                }
-                            });
-                            done();
+            if(this.info.taskInfo.permission=='private'){
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', { style: 'font-size:15px' }, 'All of the users will have'),h('span',{style:'font-weight:600'},' permission '),h('span','to this page and data.'),
+                        h('br'),
+                        h('span', null, 'Are you sure to '),
+                        h('span', { style: 'color: #e6a23c;font-weight:600' }, 'continue'),
+                        h('span', null, '?'),
+                    ]),
+                    type:'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
+                        let href=window.location.href.split('/')
+                        let ids=href[href.length-1]
+                        let taskId=ids.split('&')[1]
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            // instance.confirmButtonText = '...';
                             setTimeout(() => {
-                                instance.confirmButtonLoading = false;
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/task/setPublic",
+                                    data: {taskId: taskId},
+                                    async: true,
+                                    contentType: "application/x-www-form-urlencoded",
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please login first!")
+                                            window.sessionStorage.setItem("history", window.location.href);
+                                            window.location.href = "/user/login"
+                                        } else {
+                                            // this.rightTargetItem=null;
+                                            this.info.taskInfo.permission = json.data;
+                                        }
+
+                                    }
+                                });
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 100);
                             }, 100);
-                        }, 100);
-                    } else {
-                        done();
+                        } else {
+                            done();
+                        }
                     }
-                }
-            }).then(action => {
-                this.rightMenuShow=false
-                this.$message({
-                    type: 'success',
-                    message: 'This page can be visited by public'
+                }).then(action => {
+                    this.rightMenuShow=false
+                    this.$message({
+                        type: 'success',
+                        message: 'This page can be visited by public'
+                    });
                 });
-            });
+            }else {
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', {style: 'font-size:15px'}, 'Only you have'), h('span', {style: 'font-weight:600'}, ' permission '), h('span', 'to this task.'),
+                        h('br'),
+                        h('span', null, 'Are you sure to'),
+                        h('span', {style: 'color: #67c23a;font-weight:600'}, ' continue'),
+                        h('span', null, '?'),
+                    ]),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
+                        let href = window.location.href.split('/')
+                        let ids = href[href.length - 1]
+                        let taskId = ids.split('&')[1]
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            // instance.confirmButtonText = '...';
+                            setTimeout(() => {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/task/setPrivate",
+                                    data: {taskId: taskId},
+                                    async: true,
+                                    contentType: "application/x-www-form-urlencoded",
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please login first!")
+                                            window.sessionStorage.setItem("history", window.location.href);
+                                            window.location.href = "/user/login"
+                                        } else {
+                                            // this.rightTargetItem=null;
+                                            this.info.taskInfo.permission = json.data;
+                                        }
+
+                                    }
+                                });
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 100);
+                            }, 100);
+                        } else {
+                            done();
+                        }
+                    }
+                }).then(action => {
+                    this.rightMenuShow = false
+                    this.$message({
+                        type: 'success',
+                        message: 'This task has been set private'
+                    });
+                });
+            }
+
 
         },
 
@@ -540,9 +601,8 @@ var vue = new Vue({
         }
 
     },
-    async mounted() {
-        this.introHeight=$('.introContent').attr('height');
 
+    async created(){
         let hrefs = window.location.href.split("/");
         let ids = hrefs[hrefs.length - 1];
         let twoIds=ids.split('&')
@@ -555,13 +615,16 @@ var vue = new Vue({
         if(data==null||data==undefined){
             alert("Initialization error!")
         }else if(data.permission=='no'){
-            alert("You do not have a permission to this personal page")
+            alert("You do not have a permission to this private page")
 
         }
 
         this.info = data;
         console.log(this.info);
+    },
 
+    async mounted() {
+        this.introHeight=$('.introContent').attr('height');
 
         //get login user info
         let that=this

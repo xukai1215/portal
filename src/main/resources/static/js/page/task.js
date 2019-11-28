@@ -1,8 +1,8 @@
 var vue = new Vue({
     el: "#app",
     data: {
-        radioStyle: "Classic",
-        semanticsActiveStates: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        radioStyle:"Classic",
+        semanticsActiveStates:[0,1,2,3,4,5,6,7,8,9,10],
 
         tableLoading: true,
         first: true,
@@ -39,13 +39,33 @@ var vue = new Vue({
             }
         ],
 
-        exampleDataList: [
-            {
-                userName: '',
-                runTime: '',
-                description: ''
-            }
-        ],
+        exampleDataListOfUser:{
+            content: [
+                {
+                    userName:'',
+                    runTime:'',
+                    description:'',
+                    public:[],
+                    status:'',
+                    currentPage:1,
+                }
+            ],
+            total:0,
+        },
+
+        exampleDataList:{
+            content: [
+                {
+                    userName:'',
+                    runTime:'',
+                    description:'',
+                    public:[],
+                    status:'',
+                    currentPage:1,
+                }
+                ],
+            total:0,
+        },
 
         inEvent: [],
         outEvent: [],
@@ -256,15 +276,15 @@ var vue = new Vue({
                 });
         },
 
-        chooseCate(item, e) {
-            if (this.classifications[0] != item.id) {
-                $(".taskDataCate").children().css("color", "black")
-                e.target.style.color = 'deepskyblue';
+        chooseCate(item,e){
+            if(this.classifications[0]!=item.id){
+                $(".taskDataCate").children().css("color","black")
+                e.target.style.color='deepskyblue';
                 this.classifications.pop();
                 this.classifications.push(item.id);
             }
-            else {
-                e.target.style.color = 'black';
+            else{
+                e.target.style.color='black';
                 this.classifications.pop();
             }
 
@@ -272,10 +292,10 @@ var vue = new Vue({
 
         },
 
-        confirmData() {
-            if (this.currentDataUrl != "") {
-                this.dataItemVisible = false;
-                console.log(this.eventChoosing, this.currentData)
+        confirmData(){
+            if(this.currentDataUrl!="") {
+                this.dataItemVisible=false;
+                console.log(this.eventChoosing,this.currentData)
                 this.eventChoosing.tag = this.currentData.name;
                 this.eventChoosing.url = this.currentData.url;
             }
@@ -310,6 +330,14 @@ var vue = new Vue({
                 } else {
                     $('#introContainer').removeClass("fixed")
                 }
+
+                // if (parseInt(totalHeight) - parseInt(scrollTop) < 800) {
+                //     $('.introContent').css('display', 'none')
+                // } else {
+                //     $('.introContent').css('display', 'block')
+                // }
+
+
             })
 
         },
@@ -449,31 +477,93 @@ var vue = new Vue({
             return row.fromWhere === value;
         },
 
-        loadData() {
-            this.loadDataVisible = true
+        loadUserTask(val){
+            let href=window.location.href.split('/')
+            let modelId=href[href.length-1]
 
-            let href = window.location.href.split('/')
-            let modelId = href[href.length - 1]
-
-            axios.get("/task/getTasksByModel", {
+            axios.get("/task/getTasksByModelByUser",{
                     params:
                         {
-                            modelId: modelId,
-                            page: 0
+                            modelId:modelId,
+                            page:val-1
                         }
                 }
-            ).then((res) => {
-                for (let i = 0; i < res.data.data.length; i++)
-                    res.data.data[i].runTime = this.dateFormat(res.data.data[i].runTime)
-                this.exampleDataList = res.data.data
+            ).then((res)=>{
+
+                this.exampleDataListOfUser.content=res.data.data.content
+                this.exampleDataListOfUser.total=res.data.data.total
+                for(let i=0;i<this.exampleDataListOfUser.content.length;i++){
+                    this.exampleDataListOfUser.content[i].runTime=this.dateFormat(this.exampleDataListOfUser.content[i].runTime)
+                    // this.exampleDataListOfUser.content[i].status=this.exampleDataListOfUser.content[i].public[0]==='public'?'public':'private'
+                }
             })
         },
 
-        handleSelectionChange() {
+        loadPublishedData(val){
+            let href=window.location.href.split('/')
+            let modelId=href[href.length-1]
+
+            axios.get("/task/getPublishedTasksByModel",{
+                    params:
+                        {
+                            modelId:modelId,
+                            page:val-1
+                        }
+                }
+            ).then((res)=>{
+
+                this.exampleDataList.content=res.data.data.content
+                this.exampleDataList.total=res.data.data.total
+                for(let i=0;i<this.exampleDataList.content.length;i++){
+                    this.exampleDataList.content[i].runTime=this.dateFormat(this.exampleDataList.content[i].runTime)
+                    // this.exampleDataList.content[i].status=this.exampleDataList.content[i].public[0]==='public'?'public':'private'
+                }
+            })
+        },
+
+
+        loadData(val){
+            this.loadDataVisible=true
+
+            this.loadUserTask(1)
+            this.loadPublishedData(1)
 
         },
 
-        showDescription(item) {
+        expandMyCalcData(el){
+            console.log(el)
+            let arrow=el.currentTarget
+            if(arrow.className.indexOf('transform180')==-1)
+            {
+                arrow.setAttribute("class","fa fa-caret-square-o-down transform180")
+                $('.myCalcData').collapse('show')
+            }else{
+                arrow.setAttribute("class","fa fa-caret-square-o-down")
+                $('.myCalcData').collapse('hide')
+            }
+        },
+
+        expandPublishedData(el){
+            let arrow=el.currentTarget
+            if(arrow.className.indexOf('transform180')==-1)
+            {
+                arrow.setAttribute("class","fa fa-caret-square-o-down transform180")
+                $('.publishedData').collapse('show')
+            }else{
+                arrow.setAttribute("class","fa fa-caret-square-o-down")
+                $('.publishedData').collapse('hide')
+            }
+        },
+
+        filterPublic(value,row){
+            return  row.public[0] === 'public'
+        },
+
+        handleSelectionChange(){
+
+        },
+
+        showDescription(item){
             console.log(item)
             if (item.description != '') {
                 this.showDescriptionVisible = true;
@@ -491,22 +581,22 @@ var vue = new Vue({
                 background: "rgba(0, 0, 0, 0.7)"
             });
 
-            let {data, code, msg} = await (await fetch("/task/loadPublishedData", {
-                    method: "post",
-                    body: id
+            let{data,code,msg}=await (await fetch("/task/loadPublishedData",{
+                method:"post",
+                body:id
                 }
             )).json()
 
-            if (code == -1 || code == null || code == undefined) {
+            if (code == -1 || code==null || code==undefined) {
                 loading.close();
                 this.$message.error(msg);
                 return;
             }
-            console.log(data)
-            data.forEach(data => { //填入前端变量
-                    let state = this.info.modelInfo.states.find(state => {
-                        return state.name == data.state;
-                    });
+
+            data.forEach(data=>{ //填入前端变量
+                let state = this.info.modelInfo.states.find(state => {
+                    return state.name == data.state;
+                });
 
                     let event = state.event.find(event => {
                         return event.eventName == data.event;
@@ -779,7 +869,7 @@ var vue = new Vue({
 
             this.rotatevalue += 180;
             console.log($('.fa-refresh'))
-            $('.fa-refresh').css('transform', 'rotate(' + this.rotatevalue + 'deg)')
+            $('.fa-refresh').css('transform','rotate('+this.rotatevalue+'deg)')
 
             $.ajax({
                 type: "GET",
@@ -807,33 +897,33 @@ var vue = new Vue({
 
         },
 
-        refreshChild(file) {
+        refreshChild(file){
             console.log(this.fatherIndex)
-            for (let i = 0; i < file.length; i++) {
-                if (file[i].id === this.fatherIndex) {
-                    file[i].children = this.myFileShown
+            for(let i=0;i<file.length;i++){
+                if(file[i].id===this.fatherIndex){
+                    file[i].children=this.myFileShown
                     console.log(this.myFile)
                     return;
-                } else {
+                }else{
                     this.refreshChild(file[i].children)
                 }
             }
         },
 
         singleClick($event, eval) {
-            if (this.rightMenuShow == true) {
-                this.rightMenuShow = false;
+            if(this.rightMenuShow==true){
+                this.rightMenuShow=false;
                 return
             }
             clearTimeout(this.clickTimeout)
-            var target = $event.currentTarget;
-            var eval = eval;
-            var that = this
-            this.clickTimeout = setTimeout(function () {
+            var target=$event.currentTarget;
+            var eval=eval;
+            var that=this
+            this.clickTimeout = setTimeout(function (){
                 that.getid(target, eval)
-            }, 1)
+            },1)
 
-            this.renameIndex = '';
+            this.renameIndex='';
 
         },
 
@@ -963,8 +1053,6 @@ var vue = new Vue({
                         return;
                     }
 
-
-                    var tid;
 
                     $.ajax({
                         url: "/task/invoke",
@@ -1735,17 +1823,17 @@ var vue = new Vue({
 
 
         //get login user info
-        let that = this
+        let that=this
         axios.get("/user/load")
-            .then((res) => {
-                if (res.status == 200) {
-                    that.useroid = res.data.oid
+            .then((res)=>{
+                if(res.status==200){
+                    that.useroid=res.data.oid
                 }
 
             })
 
-        window.addEventListener('scroll', this.initSize);
-        window.addEventListener('resize', this.initSize);
+        window.addEventListener('scroll',this.initSize);
+        window.addEventListener('resize',this.initSize);
 
         $("#imgChange").click(function () {
             $("#imgFile").click();
@@ -1930,9 +2018,9 @@ var vue = new Vue({
         );
     },
 
-    destory() {
-        window.removeEventListener('scroll', this.initSize);
-        window.removeEventListener('resize', this.initSize);
+    destory(){
+        window.removeEventListener('scroll',this.initSize);
+        window.removeEventListener('resize',this.initSize);
     }
 
 

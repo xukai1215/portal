@@ -29,8 +29,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
-
 @RestController
 @RequestMapping(value = "/task")
 public class TaskRestController {
@@ -138,14 +136,25 @@ public class TaskRestController {
 
     }
 
-    @RequestMapping(value="/getTasksByModel",method = RequestMethod.GET)
+    @RequestMapping(value="/getTasksByModelByUser",method = RequestMethod.GET)
+    public JsonResult getTasksByModelByUser(@RequestParam(value = "modelId") String modelId, @RequestParam(value = "page")int page, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String userName = request.getSession().getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getTasksByModelByUser(modelId,page,userName));
+        }
+    }
+
+    @RequestMapping(value="/getPublishedTasksByModel",method = RequestMethod.GET)
     public JsonResult getTasksByModel(@RequestParam(value = "modelId") String modelId, @RequestParam(value = "page")int page, HttpServletRequest request){
         HttpSession session = request.getSession();
         if(session.getAttribute("uid") == null){
             return ResultUtils.error(-1, "no login");
         }else{
             String userName = request.getSession().getAttribute("uid").toString();
-            return ResultUtils.success(taskService.getTasksByModelId(modelId,page));
+            return ResultUtils.success(taskService.getPublishedTasksByModelId(modelId,page,userName));
         }
     }
 
@@ -229,8 +238,7 @@ public class TaskRestController {
                 task.setComputableName(computableModel.getName());
                 task.setTaskId(result);
                 task.setUserId(username);
-                List<String> isp=asList(username);
-                task.setIsPublic(isp);
+                task.setPermission("private");
                 task.setIp(lists.getString("ip"));
                 task.setPort(lists.getInteger("port"));
                 task.setRunTime(new Date());
@@ -364,4 +372,19 @@ public class TaskRestController {
         }
 
     }
+
+    @RequestMapping(value = "/setPrivate",method = RequestMethod.POST)
+    public JsonResult setPrivate(@RequestParam String taskId,HttpServletRequest httpServletRequest)
+    {
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.setPrivate(taskId));
+        }
+
+    }
+
 }

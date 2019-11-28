@@ -323,18 +323,18 @@
                                     </div>
                                 </div>
                                 <div class="panel-body padding-0">
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 cursorPointer" @click="getCalcWithCurrent">
                                         <div class="widget widget-info widget-item-icon">
                                             <div class="widget-item-left">
                                                 <span class="fa fa-spinner"></span>
                                             </div>
                                             <div class="widget-data">
                                                 <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
-                                                <div class="widget-title" @click="getCalcWithCurrent">On Going Calculations</div>
+                                                <div class="widget-title">On Going Calculations</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 cursorPointer">
                                         <div class="widget widget-success widget-item-icon">
                                             <div class="widget-item-left">
                                                 <span class="fa fa-tasks"></span>
@@ -346,7 +346,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 cursorPointer">
                                         <div class="widget widget-danger widget-item-icon">
                                             <div class="widget-item-left">
                                                 <span class="fa fa-support"></span>
@@ -3114,17 +3114,24 @@
                         <div class="col-sm-12" v-for="(task,index) in searchResult">
                             <div class="panel"
                                  :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
-                                <div class="panel-heading">
+                                <div class="panel-heading flexRowSpaceBetween">
                                     <a class="panel-title" :href="'/task/'+task.computableId" style="font-weight: bold">
                                         {{task.computableName}}
                                     </a>
-                                    <button class="btn btn-info btn-sm" @click="sharingTaskData(task)" style="margin-left: 15px"><i
-                                            class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item
-                                    </button>
-                                    <el-button type="primary"
-                                               style="float: right;margin-right: 3px;background-color: rgb(0,200,255)"
-                                               @click="checkOutput(task.computableId,task.taskId)">Check Output
-                                    </el-button>
+                                    <div class="">
+                                        <el-button type="warning" size="mini" @click="publishTask(task)">
+                                            <span v-if="task.permission=='public'"><span><i class="fa fa-unlock"></i></span>Public</span>
+                                            <span v-else><span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private</span>
+                                        </el-button>
+                                        <button class="btn btn-sm wzhButton" @click="sharingTaskData(task)" style="margin-right: 5px;border-radius: 3px;"><i
+                                                class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item
+                                        </button>
+                                        <el-button type="primary" size="mini"
+                                                   style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
+                                                   @click="checkOutput(task.computableId,task.taskId)">Check Task Info
+                                        </el-button>
+                                    </div>
+
 
                                 </div>
                                 <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
@@ -3144,7 +3151,7 @@
                                     <ul v-if="task.status==1">
                                         <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
                                         <li class="flagcontent clearfix" v-for="(input,key) in task.inputs">
-                                                <span style="margin-top: 5px; displaay: inline-block;">
+                                                <span style="margin-top: 5px; display: inline-block;">
                                                     {{input.event}}
                                                 </span>
                                             <button class="pull-right clearfix btn btn-primary downloadAFile" style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
@@ -3270,7 +3277,8 @@
                                 :filter-method="filterType"
                                 filter-placement="bottom-start"
                                 filter-multiple="false"
-                                show-overflow-tooltip>
+                                show-overflow-tooltip
+                        >
                             <template slot-scope="scope">
                                 <el-tag
                                         :type="scope.row.type === 'Input' ? 'primary' : 'success'"

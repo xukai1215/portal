@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div class="btn-list">
-                        <el-button plain type="primary" @click="loadData()" :disabled="!info.modelInfo.hasTest"
+                        <el-button plain type="primary" @click="loadData(1)" :disabled="!info.modelInfo.hasTest"
                                    style="min-width: 120px">
                             Load data
                         </el-button>
@@ -91,57 +91,145 @@
                     </div>
                 </div>
             </el-col>
-            <el-dialog :visible.sync="loadDataVisible" title="Load Data" >
+            <el-dialog :visible.sync="loadDataVisible" title="Load Data" class="wzhDialog" style="height: 915px !important;">
                 <el-button type="primary" @click="loadTest">Load Test Data</el-button>
-                <div style="max-height: 400px;overflow-y: auto">
-                    <h4>Published example</h4>
-                    <el-table
-                            ref="exampleDataTable"
-                            :data="exampleDataList"
-                            tooltip-effect="dark"
-                            style="width: 100%"
-                            @selection-change="handleSelectionChange">
-                        <!--                    <el-table-column-->
-                        <!--                            type="selection"-->
-                        <!--                            width="60">-->
-                        <!--                    </el-table-column>-->
-                        <el-table-column
-                                type="index"
-                                width="40">
-                        </el-table-column>
-                        <el-table-column
-                                prop="userName"
-                                label="user"
-                                width="120">
-                        </el-table-column>
-                        <el-table-column
-                                prop="runTime"
-                                label="creat time"
-                                width="170">
-                        </el-table-column>
-                        <el-table-column
-                                label="description"
-                                width="270">
-                            <template slot-scope="scope">
-                                <el-input type="textarea" :value="scope.row.description"
-                                          placeholder="description of this task" @click.native="showDescription(scope.row)">
+                <h4>My caculated data &nbsp&nbsp<i class="fa fa-caret-square-o-down" style="cursor: pointer;color: #66bbff" @click="expandMyCalcData"></i></h4>
+                <div class="collapse myCalcData">
+                    <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;">
 
-                                </el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                width="120">
-                            <template slot-scope="scope">
-                                <el-button  plain
-                                            size="mini"
-                                            type="primary"
-                                            @click="loadExampleData(scope.row.taskId)">
-                                    load data
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                        <el-table
+                                empty-text="No Data"
+                                ref="exampleDataOfUserTable"
+                                :data="exampleDataListOfUser.content"
+                                tooltip-effect="dark"
+                                style="width: 100%"
+                                @selection-change="handleSelectionChange">
+                            <!--                    <el-table-column-->
+                            <!--                            type="selection"-->
+                            <!--                            width="60">-->
+                            <!--                    </el-table-column>-->
+                            <el-table-column
+                                    type="index"
+                                    width="90">
+                            </el-table-column>
+                            <!--                        <el-table-column-->
+                            <!--                                prop="userName"-->
+                            <!--                                label="user"-->
+                            <!--                                width="120">-->
+                            <!--                        </el-table-column>-->
+                            <el-table-column
+                                    prop="runTime"
+                                    label="creat time"
+                                    width="205">
+                            </el-table-column>
+                            <el-table-column
+                                    label="description"
+                                    width="315">
+                                <template slot-scope="scope">
+                                    <el-input type="textarea" :value="scope.row.description"
+                                              placeholder="description of this task" @click.native="showDescription(scope.row)">
+
+                                    </el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot-scope="scope">
+                                    <el-button  plain
+                                                size="mini"
+                                                type="primary"
+                                                @click="loadExampleData(scope.row.taskId)"
+                                    >
+                                        load data
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination
+                                small
+                                @current-change="loadUserTask"
+                                :current-page="exampleDataListOfUser.currentPage"
+                                page-size="4"
+                                layout="total, prev, pager, next, jumper"
+                                :total="exampleDataListOfUser.total">
+                        </el-pagination>
+                        <div class="innerBorder"></div>
+                    </div>
                 </div>
+
+                <h4 style="margin-top: 10px">Published example &nbsp&nbsp<i class="fa fa-caret-square-o-down" style="cursor: pointer;color: #66bbff" @click="expandPublishedData"></i></h4>
+                <div class="collapse publishedData">
+                    <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;">
+
+                        <el-table
+                                empty-text="No Data"
+                                ref="exampleDataTable"
+                                :data="exampleDataList.content"
+                                tooltip-effect="dark"
+                                style="width: 100%"
+                                @selection-change="handleSelectionChange">
+                            <!--                    <el-table-column-->
+                            <!--                            type="selection"-->
+                            <!--                            width="60">-->
+                            <!--                    </el-table-column>-->
+                            <el-table-column
+                                    type="index"
+                                    width="40">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="userName"
+                                    label="user"
+                                    width="160">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="runTime"
+                                    label="creat time"
+                                    width="165">
+                            </el-table-column>
+                            <!--                        <el-table-column-->
+                            <!--                                prop="status"-->
+                            <!--                                label="status"-->
+                            <!--                                width="80">-->
+                            <!--                            <template slot-scope="scope">-->
+                            <!--                                <el-tag-->
+                            <!--                                        :type="scope.row.status === 'public' ? 'success' : 'warning'"-->
+                            <!--                                        disable-transitions>{{scope.row.status}}-->
+                            <!--                                </el-tag>-->
+                            <!--                            </template>-->
+                            </el-table-column>
+                            <el-table-column
+                                    label="description"
+                                    width="245">
+                                <template slot-scope="scope">
+                                    <el-input type="textarea" :value="scope.row.description"
+                                              placeholder="description of this task" @click.native="showDescription(scope.row)">
+
+                                    </el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot-scope="scope">
+                                    <el-button  plain
+                                                size="mini"
+                                                type="primary"
+                                                @click="loadExampleData(scope.row.taskId)"
+                                    >
+                                        load data
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination
+                                small
+                                @current-change="loadPublishedData"
+                                :current-page="exampleDataList.currentPage"
+                                page-size="4"
+                                layout="total, prev, pager, next, jumper"
+                                :total="exampleDataList.total">
+                        </el-pagination>
+
+                    </div>
+                </div>
+
 
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="loadDataVisible = false">cancel</el-button>
