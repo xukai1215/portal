@@ -207,7 +207,7 @@ var vue = new Vue({
             var app = {};
             app.applicationname = $("#applicationname").val();
             app.applicationlink = $("#applicationlink").val();
-            app.upload_application_image = $("#imgShow1").get(0).currentSrc;
+            app.upload_application_image = $(".img_Show1").get(0).currentSrc;
             this.themeObj.application.push(app);
 
 
@@ -632,8 +632,6 @@ var vue = new Vue({
     },
     mounted() {
         let that = this;
-
-
         //input的监听值变动的事件
         $(document).on('keyup','.category_name',function ($event) {
             let category_input=$(".category_name");
@@ -655,9 +653,16 @@ var vue = new Vue({
             }
             that.editableTabs_data[index].title = $(".category_name2").eq(index).val();
         });
-        // $("#categoryname2").keyup('input propertychange',function () {
-        //     that.editableTabs_data[that.tableflag2].title = $("#categoryname2").val();
-        // });
+        $(document).on('keyup','.application_name',function ($event) {
+                    let category_input=$(".application_name");
+                    let index=0;
+                    for(;index<category_input.length;index++){
+                        if($(this)[0]==category_input.eq(index)[0]){
+                            break;
+                        }
+                    }
+                    that.editableTabs_applications[index].title = $(".application_name").eq(index).val();
+         });
 
 
 
