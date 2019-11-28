@@ -554,3 +554,10 @@ model_date{
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
 }
+
+.wzhDialog .el-dialog__body{
+  max-height: 420px;
+  overflow-y: scroll;
+  overflow-y: overlay;
+
+}

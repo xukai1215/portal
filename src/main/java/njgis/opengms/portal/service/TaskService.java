@@ -514,7 +514,7 @@ public class TaskService {
 
         List<ResultDataDTO> resultDataDTOList=new ArrayList<>();
 
-        if(task.getPermission().equals("public")){
+//        if(task.getPermission().equals("public")){
             for(int i=0; i<task.getInputs().size();i++ ){
                 ResultDataDTO resultDataDTO=new ResultDataDTO();
                 resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
@@ -535,9 +535,7 @@ public class TaskService {
                 resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
                 resultDataDTOList.add(resultDataDTO);
             }
-        }else{
-            ResultDataDTO resultDataDTO=new ResultDataDTO();
-        }
+//        }
         return resultDataDTOList;
     }
 
@@ -766,7 +764,7 @@ public class TaskService {
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 4, sort);
         //获取该用户所有关于task
-        Page<Task> tasksOfUser = taskDao.findByUserId(userName,pageable);
+        Page<Task> tasksOfUser = taskDao.findByComputableIdAndUserId(modelId,userName,pageable);
         JSONArray taskArray=new JSONArray();
         List<Task> ts = tasksOfUser.getContent();
         long total=tasksOfUser.getTotalElements();
