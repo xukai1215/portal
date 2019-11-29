@@ -617,7 +617,7 @@ html,body{
 }
 #model_col2{
     width:161px;
-    height: 161px;
+    /*height: 161px;*/
 }
 #data_image{
     width:161px;
@@ -628,6 +628,7 @@ html,body{
     height: 161px;
 }
 #model_col{
+    margin-top: 50px;
     width:161px;
-    height: 161px;
+    /*height: 161px;*/
 }
