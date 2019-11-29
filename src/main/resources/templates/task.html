@@ -457,14 +457,14 @@
 
                                                 <span v-if="scope.row.externalId==undefined" :title="scope.row.eventName">
                                                             <span
-                                                                    v-if="!scope.row.optional&&scope.row.eventType != 'noresponse'"
+                                                                    v-if="!scope.row.optional&&scope.row.eventType == 'response'"
                                                                     style="color:red">*</span>
                                                             {{scope.row.eventName}}
                                                         </span>
 
                                                 <span v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
                                                             <span
-                                                                    v-if="!scope.row.optional&&scope.row.eventType != 'noresponse'"
+                                                                    v-if="!scope.row.optional&&scope.row.eventType == 'response'"
                                                                     style="color:red">*</span>
                                                             <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.eventName}}</a>
                                                         </span>

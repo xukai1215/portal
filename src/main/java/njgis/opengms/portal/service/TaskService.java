@@ -532,7 +532,7 @@ public class TaskService {
                 resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
                 resultDataDTO.setTag(task.getOutputs().get(i).getTag());
                 resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
-                resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
+                resultDataDTO.setChildren(task.getOutputs().get(i).getChildren());
                 resultDataDTOList.add(resultDataDTO);
             }
 //        }

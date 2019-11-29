@@ -593,19 +593,34 @@ var vue = new Vue({
                 return;
             }
 
-            data.forEach(data=>{ //填入前端变量
+            data.forEach(el=>{ //填入前端变量
                 let state = this.info.modelInfo.states.find(state => {
-                    return state.name == data.state;
+                    return state.name == el.state;
                 });
 
-                    let event = state.event.find(event => {
-                        return event.eventName == data.event;
-                    });
-                    if (event == undefined) return;
-                    this.$set(event, "tag", data.tag);
-                    this.$set(event, "suffix", data.suffix);
-                    this.$set(event, "url", data.url);
-                    this.$set(event, "children", data.children);
+                let event = state.event.find(event => {
+                    return event.eventName == el.event;
+                });
+                if (event == undefined) return;
+                this.$set(event, "tag", el.tag);
+                this.$set(event, "suffix", el.suffix);
+                this.$set(event, "url", el.url);
+                if(el.children!=undefined){
+                    if(el.children.length==1){
+                        event.children[0].value=el.children[0].value;
+                    }
+                    else {
+                        for (i = 0; i < el.children.length; i++) {
+                            let name=el.children[i].eventName
+                            let eventChild = event.children.find(child => {
+                                return child.eventName == name;
+                            })
+                            if(eventChild!=null) {
+                                eventChild.value = el.children[i].value;
+                            }
+                        }
+                    }
+                }
 
                 }
             )
