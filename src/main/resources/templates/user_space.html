@@ -294,7 +294,8 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/repository/createTemplate">
-                                                <i class="fal fa-pencil-paintbrush"></i>
+                                                <img src="/static/img/model/template.png"
+                                                     style="width:90px;height: 90px;" class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Date Template</div>
                                         </el-card>
@@ -306,6 +307,15 @@
                                                      class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Unit & Metric</div>
+                                        </el-card>
+                                    </div>
+                                    <div class="el-col pull-left text-center" style="width:20%">
+                                        <el-card shadow="hover">
+                                            <a href="/user/createTheme">
+                                                <img src="/static/img/model/theme.png" style="width:90px;height: 90px;"
+                                                     class="image">
+                                            </a>
+                                            <div style="text-align: center;padding: 10px 0 5px;">Theme</div>
                                         </el-card>
                                     </div>
                                 </div>
@@ -3119,7 +3129,6 @@
                                     </a>
                                     <div class="">
                                         <el-button type="warning" size="mini" @click="publishTask(task)">
-                                            <span v-if="task.permission=='public'"><span><i class="fa fa-unlock"></i></span>Public</span>
                                             <span v-if="task.permission=='public'"><span><i class="fa fa-unlock"></i></span>Public</span>
                                             <span v-else><span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private</span>
                                         </el-button>
