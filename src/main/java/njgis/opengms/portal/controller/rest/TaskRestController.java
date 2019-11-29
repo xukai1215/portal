@@ -9,23 +9,34 @@ import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
+import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
+import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.TaskService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -154,7 +165,7 @@ public class TaskRestController {
             return ResultUtils.error(-1, "no login");
         }else{
             String userName = request.getSession().getAttribute("uid").toString();
-            return ResultUtils.success(taskService.getPublishedTasksByModelId(modelId,page));
+            return ResultUtils.success(taskService.getPublishedTasksByModelId(modelId,page,userName));
         }
     }
 
@@ -203,6 +214,87 @@ public class TaskRestController {
         else {
             String username = session.getAttribute("uid").toString();
             return ResultUtils.success(taskService.getTasksByUserId(username,sortType,sortAsc));
+        }
+    }
+
+    @RequestMapping(value="/runIntegratedTask",method = RequestMethod.POST)
+    JsonResult runIntegratedModel(@RequestParam("file") MultipartFile file,
+                                  @RequestParam("name") String name,
+                                  HttpServletRequest request) throws IOException {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            RestTemplate restTemplate=new RestTemplate();
+            String url="http://" + managerServerIpAndPort + "/GeoModeling/task";//远程接口
+            String suffix="."+FilenameUtils.getExtension(file.getOriginalFilename());
+            File temp=File.createTempFile("temp",suffix);
+            file.transferTo(temp);
+            FileSystemResource resource = new FileSystemResource(temp);
+            MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+            param.add("file", resource);
+            param.add("userName",username);
+            HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
+            ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, JSONObject.class);
+            if (responseEntity.getStatusCode()!=HttpStatus.OK){
+                throw new MyException("远程服务出错");
+            }
+            else{
+
+                JSONObject body=responseEntity.getBody();
+                if(body.getInteger("code")==-1){
+                    return ResultUtils.error(-2,body.getString("msg"));
+                }
+                else {
+                    String taskId = responseEntity.getBody().getString("data");
+                    Task task = new Task();
+                    task.setOid(UUID.randomUUID().toString());
+                    task.setTaskId(taskId);
+                    task.setComputableName(name);
+                    task.setIntegrate(true);
+                    task.setStatus(1);
+                    task.setUserId(username);
+                    task.setRunTime(new Date());
+                    task.setPermission("private");
+                    taskService.save(task);
+                    return ResultUtils.success(taskId);
+                }
+            }
+
+        }
+    }
+
+    @RequestMapping(value="/checkIntegratedTask/{taskId}", method = RequestMethod.GET)
+    JsonResult checkIntegratedTask(@PathVariable("taskId") String taskId){
+
+        RestTemplate restTemplate=new RestTemplate();
+        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkRecord?taskId={taskId}";//远程接口
+        Map<String, String> params = new HashMap<>();
+        params.put("taskId", taskId);
+        ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
+        if (responseEntity.getStatusCode()!=HttpStatus.OK){
+            throw new MyException("远程服务出错");
+        }
+        else {
+            Task task=taskService.findByTaskId(taskId);
+            JSONObject data = responseEntity.getBody().getJSONObject("data");
+            int status = data.getInteger("status");
+            switch (status){
+                case 0:
+                    break;
+                case -1:
+                    task.setStatus(-1);
+                    taskService.save(task);
+                    break;
+                case 1:
+                    task.setStatus(2);
+                    task.setModels(data.getJSONArray("models").toJavaList(Model.class));
+                    taskService.save(task);
+                    break;
+            }
+            return ResultUtils.success(data);
         }
     }
 

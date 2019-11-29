@@ -114,6 +114,10 @@
             color:black;
         }
 
+        .el-button+.el-button {
+            margin-left: 0;
+        }
+
     </style>
 </head>
 
@@ -180,10 +184,10 @@
                                         <!--<div class="title">Subject Areas</div>-->
                                         <!--<div class="desk">{{userInfo.saStr}}</div>-->
                                         <!--</li>-->
-                                        <!--<li v-if="userInfo.description!=''">-->
-                                        <!--<div class="title">Description</div>-->
-                                        <!--<div class="desk">{{userInfo.description}}</div>-->
-                                        <!--</li>-->
+                                        <li v-if="userInfo.description!=''">
+                                        <div class="title">Description</div>
+                                        <div class="desk">{{userInfo.description}}</div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -332,37 +336,43 @@
                                     </div>
                                 </div>
                                 <div class="panel-body padding-0">
-                                    <div class="col-md-4 cursorPointer" @click="getCalcWithCurrent">
-                                        <div class="widget widget-info widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-spinner"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
-                                                <div class="widget-title">On Going Calculations</div>
+                                    <div class="row" style="margin:0; padding:15px 15px 0 15px;">
+                                        <el-button style="font-size: 18px;float:left;width:49%;margin-right:2%;" type="primary" @click="window.open('/modelItem/repository')">Find Computable Model</el-button>
+                                        <el-button style="font-size: 18px;float:left;width:49%;" type="warning">Model Intergrating</el-button>
+                                    </div>
+                                    <div class="row" style="margin:0;">
+                                        <div class="col-md-4" @click="getCalcWithCurrent">
+                                            <div class="widget widget-info widget-item-icon">
+                                                <div class="widget-item-left">
+                                                    <span class="fa fa-spinner"></span>
+                                                </div>
+                                                <div class="widget-data">
+                                                    <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
+                                                    <div class="widget-title">On Going Calculations</div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4 cursorPointer">
-                                        <div class="widget widget-success widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-tasks"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.success}}</div>
-                                                <div class="widget-title">Success Calculations</div>
+                                        <div class="col-md-4">
+                                            <div class="widget widget-success widget-item-icon">
+                                                <div class="widget-item-left">
+                                                    <span class="fa fa-tasks"></span>
+                                                </div>
+                                                <div class="widget-data">
+                                                    <div class="widget-int num-count">{{statisticsInfo.success}}</div>
+                                                    <div class="widget-title">Success Calculations</div>
 
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4 cursorPointer">
-                                        <div class="widget widget-danger widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-support"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
-                                                <div class="widget-title">Fail Calculations</div>
+                                        <div class="col-md-4">
+                                            <div class="widget widget-danger widget-item-icon">
+                                                <div class="widget-item-left">
+                                                    <span class="fa fa-support"></span>
+                                                </div>
+                                                <div class="widget-data">
+                                                    <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
+                                                    <div class="widget-title">Fail Calculations</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
