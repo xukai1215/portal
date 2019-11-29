@@ -92,10 +92,24 @@
                 </div>
             </el-col>
             <el-dialog :visible.sync="loadDataVisible" title="Load Data" class="wzhDialog" style="height: 915px !important;">
-                <el-button type="primary" @click="loadTest">Load Test Data</el-button>
-                <h4>My caculated data &nbsp&nbsp<i class="fa fa-caret-square-o-down" style="cursor: pointer;color: #66bbff" @click="expandMyCalcData"></i></h4>
-                <div class="collapse myCalcData">
-                    <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;">
+                <ul class="flexRowContainer headRadius loadDataUl" style="width: 98%;background-color: #ecf5ff;">
+                    <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==1}" @click="testDataClick(1)" style="flex: 1;"><h4>Test data</h4></li>
+                    <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==2}" @click="myCalcDataClick(2)" style="flex: 1;">
+                        <h4>My caculated data</h4>
+                    </li>
+                    <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==3}" @click="publishedExampClick(3)" style="flex: 1;">
+                        <h4 style="margin-top: 10px">Published example &nbsp</h4>
+                    </li>
+
+                </ul>
+                <div class="innerBorder" style="margin-top:5px;width: 98% "></div>
+                <div class="flexRowSpaceBetween" v-if="loadDataIndex==1" style="width: 90%">
+                    <h5 style="font-style: italic">We have provide data for you to test this model </h5>
+                    <el-button type="primary" @click="loadTest" >Load Test Data</el-button>
+                </div>
+
+                <div class="myCalcData">
+                    <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;" v-if="loadDataIndex==2">
 
                         <el-table
                                 empty-text="No Data"
@@ -126,10 +140,7 @@
                                     label="description"
                                     width="315">
                                 <template slot-scope="scope">
-                                    <el-input type="textarea" :value="scope.row.description"
-                                              placeholder="description of this task" @click.native="showDescription(scope.row)">
-
-                                    </el-input>
+                                    <div @click="showDescription(scope.row)" style="max-height: 50px;overflow-y: auto">{{scope.row.description}}</div>
                                 </template>
                             </el-table-column>
                             <el-table-column>
@@ -156,8 +167,7 @@
                     </div>
                 </div>
 
-                <h4 style="margin-top: 10px">Published example &nbsp&nbsp<i class="fa fa-caret-square-o-down" style="cursor: pointer;color: #66bbff" @click="expandPublishedData"></i></h4>
-                <div class="collapse publishedData">
+                <div class="publishedData" v-if="loadDataIndex==3">
                     <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;">
 
                         <el-table
@@ -200,10 +210,7 @@
                                     label="description"
                                     width="245">
                                 <template slot-scope="scope">
-                                    <el-input type="textarea" :value="scope.row.description"
-                                              placeholder="description of this task" @click.native="showDescription(scope.row)">
-
-                                    </el-input>
+                                    <div :value="scope.row.description" @click.native="showDescription(scope.row)" style="overflow-y: auto"></div>
                                 </template>
                             </el-table-column>
                             <el-table-column>
@@ -602,14 +609,14 @@
 
                         <el-dialog title="Personal Center Data" :visible.sync="showDataChose" width="70%">
                             <div class="researchTitle">
-                                <ul class="researchMenu flexRowContainer">
-                                    <li :class="{researchMenuChoosed:dataChosenIndex==1}" style="cursor: pointer;"
-                                        @click="myDataClick(1)">My Data
-                                    </li>
-                                    <li :class="{researchMenuChoosed:dataChosenIndex==2}" style="cursor: pointer;"
-                                        @click="outputDataClick(2)">Output Data
-                                    </li>
-                                </ul>
+<!--                                <ul class="researchMenu flexRowContainer">-->
+<!--                                    <li :class="{researchMenuChoosed:dataChosenIndex==1}" style="cursor: pointer;"-->
+<!--                                        @click="myDataClick(1)">My Data-->
+<!--                                    </li>-->
+<!--                                    <li :class="{researchMenuChoosed:dataChosenIndex==2}" style="cursor: pointer;"-->
+<!--                                        @click="outputDataClick(2)">Output Data-->
+<!--                                    </li>-->
+<!--                                </ul>-->
                                 <el-col :span="9" style="float: right;font-weight: 500" >
                                 <el-input id="searchinput"
                                           placeholder="input keywords, press enter to search "
@@ -695,28 +702,7 @@
                                                     </div>
                                                 </el-card>
 
-                                                <el-card style="height: 100%;overflow-y:auto;width:100%" id="browsercont"
-                                                         v-loading="managerloading" :style="{display:fileSpaceIndex==2?'block':'none'}">
-                                                    <div :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
-                                                         :id="generateId(key)"
-                                                         v-for="(item,key) in databrowser"
-                                                         :key="key"
-                                                         @click="getid($event,item)"
-                                                         @mouseover="addDataClass($event,item)"
-                                                         @mouseout="removeClass($event,item)">
-                                                        <el-row style="height: 80%">
-                                                            <el-col :span="6">&nbsp</el-col>
-                                                            <el-col :span="14" style="height: 100%;"><img :src="getImg(item)"
-                                                                                                          style="height: 100%;width:100%">
-                                                            </el-col>
-                                                            <el-col :span="4">&nbsp</el-col>
-                                                        </el-row>
-                                                        <el-row type="flex" justify="center">
-                                                            <p> {{item.fileName}}.{{item.suffix}} </p>
-                                                        </el-row>
-                                                        <!--menu item -->
-                                                    </div>
-                                                </el-card>
+
 
                                             </el-col>
                                         </el-row>
@@ -969,6 +955,7 @@
                                                 <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                             </template>
                                         </el-table-column>
+                                        <el-table-column fixed="right" label="Operation" width="100">
                                         <el-table-column fixed="right" label="Operation" width="100">
                                             <template slot-scope="scope">
                                                 <el-button
