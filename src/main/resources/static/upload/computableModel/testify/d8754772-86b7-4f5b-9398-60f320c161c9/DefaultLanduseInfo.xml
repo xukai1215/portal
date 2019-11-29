@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LandUseClassificationInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ConvertValues>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>耕地</LanduseTypeChsName>
+      <LanduseTypeEnName>Arable Land</LanduseTypeEnName>
+      <LanduseTypeChtName>耕地</LanduseTypeChtName>
+      <LanduseTypeValue>1</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-66</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>草地</LanduseTypeChsName>
+      <LanduseTypeEnName>Meadow</LanduseTypeEnName>
+      <LanduseTypeChtName>草地</LanduseTypeChtName>
+      <LanduseTypeValue>3</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-6029453</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>未利用地</LanduseTypeChsName>
+      <LanduseTypeEnName>Unused Land</LanduseTypeEnName>
+      <LanduseTypeChtName>未利用地</LanduseTypeChtName>
+      <LanduseTypeValue>6</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-16706</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+  </ConvertValues>
+  <NotToConvertValues>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>水域</LanduseTypeChsName>
+      <LanduseTypeEnName>Water Body</LanduseTypeEnName>
+      <LanduseTypeChtName>水體</LanduseTypeChtName>
+      <LanduseTypeValue>4</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-16748289</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>林地</LanduseTypeChsName>
+      <LanduseTypeEnName>Woodland</LanduseTypeEnName>
+      <LanduseTypeChtName>林地</LanduseTypeChtName>
+      <LanduseTypeValue>2</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-13064192</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+  </NotToConvertValues>
+  <UrbanValues>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>城乡建设用地</LanduseTypeChsName>
+      <LanduseTypeEnName>Construction Land</LanduseTypeEnName>
+      <LanduseTypeChtName>城乡建设用地</LanduseTypeChtName>
+      <LanduseTypeValue>5</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-5767168</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+  </UrbanValues>
+  <AllTypesCount>6</AllTypesCount>
+  <AllTypes>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>城乡建设用地</LanduseTypeChsName>
+      <LanduseTypeEnName>Construction Land</LanduseTypeEnName>
+      <LanduseTypeChtName>城乡建设用地</LanduseTypeChtName>
+      <LanduseTypeValue>5</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-5767168</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>耕地</LanduseTypeChsName>
+      <LanduseTypeEnName>Arable Land</LanduseTypeEnName>
+      <LanduseTypeChtName>耕地</LanduseTypeChtName>
+      <LanduseTypeValue>1</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-66</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>草地</LanduseTypeChsName>
+      <LanduseTypeEnName>Meadow</LanduseTypeEnName>
+      <LanduseTypeChtName>草地</LanduseTypeChtName>
+      <LanduseTypeValue>3</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-6029453</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>水域</LanduseTypeChsName>
+      <LanduseTypeEnName>Water</LanduseTypeEnName>
+      <LanduseTypeChtName>水體</LanduseTypeChtName>
+      <LanduseTypeValue>4</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-16748289</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>林地</LanduseTypeChsName>
+      <LanduseTypeEnName>Woodland</LanduseTypeEnName>
+      <LanduseTypeChtName>林地</LanduseTypeChtName>
+      <LanduseTypeValue>2</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-13064192</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+    <StructLanduseInfo>
+      <LanduseTypeChsName>未利用地</LanduseTypeChsName>
+      <LanduseTypeEnName>Unused Land</LanduseTypeEnName>
+      <LanduseTypeChtName>未利用地</LanduseTypeChtName>
+      <LanduseTypeValue>6</LanduseTypeValue>
+      <LanduseTypeColorIntValue>-16706</LanduseTypeColorIntValue>
+    </StructLanduseInfo>
+  </AllTypes>
+  <NullValue>
+    <LanduseTypeChsName>数据空值</LanduseTypeChsName>
+    <LanduseTypeEnName>Null Data</LanduseTypeEnName>
+    <LanduseTypeChtName>空值數據</LanduseTypeChtName>
+    <LanduseTypeValue>-9999</LanduseTypeValue>
+    <LanduseTypeColorIntValue>-1</LanduseTypeColorIntValue>
+  </NullValue>
+</LandUseClassificationInfo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DebugData tag="GeoSOS_ANN_WRAPTestData" detail="The Default Test data for GeoSOS_ANN_WRAPTestData Model" Title="Default">
+  <Item State="85e66199-1f1c-4fa0-a697-c38f0dc31d9e" Event="InitialImageNameforMining" Type="Zip" File="landuse2000.zip" />
+  <Item State="85e66199-1f1c-4fa0-a697-c38f0dc31d9e" Event="FinalImageNameforMining" Type="Zip" File="landuse2005.zip" />
+  <Item State="85e66199-1f1c-4fa0-a697-c38f0dc31d9e" Event="SpatialVariablesCity" Type="Zip" File="dtcity.zip" />
+  <Item State="85e66199-1f1c-4fa0-a697-c38f0dc31d9e" Event="SpatialVariablesRailway" Type="Zip" File="dtrailway.zip" />
+  <Item State="85e66199-1f1c-4fa0-a697-c38f0dc31d9e" Event="SpatialVariablesFreeway" Type="Zip" File="dtfreeway.zip" />
+  <Item State="85e66199-1f1c-4fa0-a697-c38f0dc31d9e" Event="SpatialVariablesRoad" Type="Zip" File="dtroad.zip" />
+  <Item State="de90205e-bbc3-4f82-99e8-955d0e87bacd" Event="DataSamplingScale" Type="Xml" File="DataSamplingScale.xml" />
+  <Item State="de90205e-bbc3-4f82-99e8-955d0e87bacd" Event="NeighborConfiguration" Type="Xml" File="NeighborConfiguration.xml" />
+  <Item State="de90205e-bbc3-4f82-99e8-955d0e87bacd" Event="LandUseInfo" Type="Raw" File="DefaultLanduseInfo.xml" />
+  <Item State="3b292504-fec9-4120-9fe6-e54e4dd5caa2" Event="AnnTrainingScale" Type="Xml" File="AnnTrainingScale.xml" />
+  <Item State="3b292504-fec9-4120-9fe6-e54e4dd5caa2" Event="ValidationScale" Type="Xml" File="ValidationScale.xml" />
+  <Item State="3b292504-fec9-4120-9fe6-e54e4dd5caa2" Event="HiddenNeurons" Type="Xml" File="HiddenNeurons.xml" />
+  <Item State="3b292504-fec9-4120-9fe6-e54e4dd5caa2" Event="LearningRate" Type="Xml" File="LearningRate.xml" />
+  <Item State="3b292504-fec9-4120-9fe6-e54e4dd5caa2" Event="ANNTrainingIterations" Type="Xml" File="ANNTrainingIterations.xml" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="InitialLandUseDataforSimulationorPrediction" Type="Zip" File="landuse2005.zip" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="LandUseDataforSimulationValidation" Type="Zip" File="landuse2006.zip" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="ConvertedCells" Type="Xml" File="ConvertedCells.xml" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="SimulationorPredictionIterations" Type="Xml" File="SimulationorPredictionIterations.xml" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="ConversionSuitabilityMatrix" Type="Raw" File="SuitableMatrix.xml" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="Alpha" Type="Xml" File="Alpha.xml" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="Threshold" Type="Xml" File="Threshold.xml" />
+  <Item State="1d0a0d18-bfb6-438f-8617-81e143a80076" Event="RefreshInterval" Type="Xml" File="RefreshInterval.xml" />
+</DebugData>

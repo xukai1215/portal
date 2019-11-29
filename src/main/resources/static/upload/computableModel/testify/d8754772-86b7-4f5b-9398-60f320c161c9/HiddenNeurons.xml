@@ -1,0 +1,3 @@
+<Dataset name="Dataset" kernelType="any">
+  <XDO name="HiddenNeurons" kernelType="int" value="10" />
+</Dataset>
