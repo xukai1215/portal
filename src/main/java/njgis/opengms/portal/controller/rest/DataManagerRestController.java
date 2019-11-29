@@ -2,6 +2,7 @@ package njgis.opengms.portal.controller.rest;
 
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/dataManager")
 public class DataManagerRestController {

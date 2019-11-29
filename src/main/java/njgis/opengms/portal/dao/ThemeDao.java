@@ -5,7 +5,6 @@ import njgis.opengms.portal.entity.Theme;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import sun.security.krb5.internal.PAData;
 
 /**
  * @Auther mingyuan
@@ -15,6 +14,8 @@ public interface ThemeDao extends MongoRepository<Theme,String> {
     Theme findByOid(String oid);
 
     Theme findFirstByOid(String id);
+
+    Page<ThemeResultDTO> findByAuthor(String author, Pageable pageable);
 
 //    Page<Theme> findByClassarr(String classarr, Pageable pageable);
 //

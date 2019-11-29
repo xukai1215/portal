@@ -2,6 +2,8 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
@@ -17,6 +19,8 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,6 +40,7 @@ import java.util.List;
  * @Version 1.0.0
  * TODO
  */
+@Slf4j
 @RestController
 @RequestMapping(value = "/computableModel")
 public class ComputableModelRestController {
@@ -51,6 +56,22 @@ public class ComputableModelRestController {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @RequestMapping(value = "/downloadPackage/{id}/{index}", method = RequestMethod.GET, produces ="application/json;charset=UTF-8")
+    @ResponseBody
+    @ApiOperation(value = "下载模型部署包", httpMethod = "GET", produces = "application/json;charset=UTF-8")
+    public Object downloadModel(@PathVariable ("id") String id,
+                                @PathVariable ("index") int index){
+
+
+        ResponseEntity<InputStreamResource> response = null;
+        try {
+//            response = DownloadFileUtils.download(PATH, FILENAME, "导入模板");
+        } catch (Exception e) {
+            log.error("下载模板失败");
+        }
+        return response;
+    }
 
     @RequestMapping (value="/add",method = RequestMethod.POST)
     JsonResult add(HttpServletRequest request) throws IOException {

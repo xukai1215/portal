@@ -1825,7 +1825,10 @@ var vue = new Vue({
                     that.loadjson = that.loadjson.replace(new RegExp("\"eventDesc\":", "gm"), "\"description\":");
                     that.loadjson = that.loadjson.replace(new RegExp("\"optional\":", "gm"), "\"option\":");
                     that.loadjson = that.loadjson.replace(new RegExp("\"data\":", "gm"), "\"dataDes\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"dataType\":", "gm"), "\"type\":");
+                    that.loadjson = that.loadjson.replace(new RegExp("\"text\":", "gm"), "\"name\":");
                     diagram.loadJSON(that.loadjson);
+                    console.log(JSON.parse(that.loadjson))
 
                     diagram.onStatedbClick(function (state) {
                         diagram.showStateWin({
@@ -1901,7 +1904,13 @@ var vue = new Vue({
                     for (var j = 0; j < state.event.length; j++) {
                         var event = state.event[j];
                         if (eventId == event.eventId) {
-                            if (event.eventType == "response" && event.tag != undefined) {
+                            if(event.eventType == "response"&&event.children!=undefined){
+                                for(k=0;k<event.children.length;k++){
+                                    let child=event.children[k];
+                                    $("#eventInp_"+child.eventName).val(child.value);
+                                }
+                            }
+                            else if (event.eventType == "response" && event.tag != undefined) {
                                 $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
                             } else if (event.eventType == "response") {
                                 $("#download_" + eventId).css("display", "none");
@@ -1928,6 +1937,25 @@ var vue = new Vue({
 
             }.bind(this)
         );
+
+        $(document).on('keyup','.StateWindowEvent',(e)=>{
+            let states=this.info.modelInfo.states;
+            for(i=0;i<states.length;i++){
+                let events=states[i].event;
+                for(j=0;j<events.length;j++){
+                    let event=events[j];
+                    if(event.eventId==e.target.dataset.parent){
+                        for(k=0;k<event.children.length;k++){
+                            let child=event.children[k];
+                            if(child.eventName==e.target.name){
+                                this.info.modelInfo.states[i].event[j].children[k].value=e.target.value;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        })
     },
 
     destory() {

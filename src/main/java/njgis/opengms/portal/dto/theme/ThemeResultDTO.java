@@ -3,11 +3,8 @@ package njgis.opengms.portal.dto.theme;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import njgis.opengms.portal.entity.support.Application;
-import njgis.opengms.portal.entity.support.ClassInfo;
-import njgis.opengms.portal.entity.support.DataClassInfo;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * @Auther mingyuan
@@ -18,12 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class ThemeResultDTO {
     String oid;
-    String name;
+    String themename;
     String image;
-    String description;
+    String detail;
     String author;
+    Date createTime;
 
-    List<ClassInfo> classarr;
-    List<DataClassInfo>dataClassInfo;
-    List<Application>application;
 }
