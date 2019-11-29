@@ -3121,6 +3121,7 @@
                                     <div class="">
                                         <el-button type="warning" size="mini" @click="publishTask(task)">
                                             <span v-if="task.permission=='public'"><span><i class="fa fa-unlock"></i></span>Public</span>
+                                            <span v-if="task.permission=='public'"><span><i class="fa fa-unlock"></i></span>Public</span>
                                             <span v-else><span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private</span>
                                         </el-button>
                                         <button class="btn btn-sm wzhButton" @click="sharingTaskData(task)" style="margin-right: 5px;border-radius: 3px;"><i

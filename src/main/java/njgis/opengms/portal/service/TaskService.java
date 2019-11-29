@@ -514,7 +514,7 @@ public class TaskService {
 
         List<ResultDataDTO> resultDataDTOList=new ArrayList<>();
 
-//        if(task.getPermission().equals("public")){
+//        if(task.getStatus()==1){
             for(int i=0; i<task.getInputs().size();i++ ){
                 ResultDataDTO resultDataDTO=new ResultDataDTO();
                 resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
@@ -764,7 +764,7 @@ public class TaskService {
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 4, sort);
         //获取该用户所有关于task
-        Page<Task> tasksOfUser = taskDao.findByComputableIdAndUserId(modelId,userName,pageable);
+        Page<Task> tasksOfUser = taskDao.findByComputableIdAndUserIdAndStatus(modelId,userName,2,pageable);
         JSONArray taskArray=new JSONArray();
         List<Task> ts = tasksOfUser.getContent();
         long total=tasksOfUser.getTotalElements();
@@ -798,7 +798,7 @@ public class TaskService {
         Pageable pageable = PageRequest.of(page, 4, sort);
 
         //获取published task
-        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndUserIdNot(modelId,"public","njgis",pageable);
+        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndStatusAndUserIdNot(modelId,"public",2,userName,pageable);
         List<Task> ts = tasks.getContent();
         long total=tasks.getTotalElements();
         JSONArray taskArray=new JSONArray();
