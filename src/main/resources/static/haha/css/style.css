@@ -6,6 +6,10 @@ body{
 
 }
 
+ul li{
+  cursor: pointer;
+}
+
 /*.el-dialog{*/
   /*max-height: 70%;*/
   /*overflow-y: auto;*/
@@ -299,12 +303,16 @@ model_date{
 
 }
 
+.flexRowSpaceBetween{
+  display: flex;
+  justify-content: space-between;
+}
+
 .flexCenter{
   display: flex;
   justify-content:center;
   align-items:center;
 }
-
 
 .subTitle{
   width: 100%;
@@ -355,6 +363,15 @@ model_date{
 .researchMenuChoosed{
   background-color: #fcf5f9;
   color: #333333;
+}
+
+.loadDataChoosed{
+  background-color: #ffffff;
+  border-width: 2px 1px 1px 0;
+  border: solid;
+  border-color: #ecf5ff;
+  border-bottom-color: white;
+  color: #606266;
 }
 
 .showHidden{
@@ -440,7 +457,6 @@ model_date{
 }
 
 .containerShallowBlue{
-
   font-family:sans-serif;
   border-radius: 8px;
   /*border:4px dotted ;*/
@@ -556,8 +572,20 @@ model_date{
 }
 
 .wzhDialog .el-dialog__body{
-  max-height: 420px;
+  max-height: 480px;
   overflow-y: scroll;
   overflow-y: overlay;
 
+}
+
+.headRadius{
+  border-radius: 4px 4px 0 0;
+}
+
+.loadDataUl li{
+  transition: .25s;
+}
+
+.loadDataUl h4{
+  font-size: 16px;
 }

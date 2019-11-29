@@ -211,10 +211,10 @@ button:focus{
 }
 
 .innerBorder{
-    align-self: center;
-    width: 95.5%;
-    border-bottom: 1px solid #e1e1e1;
-}
+     align-self: center;
+     width: 95.5%;
+     border-bottom: 1px solid #e1e1e1;
+ }
 
 
 .innerBorderCol{

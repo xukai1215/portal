@@ -157,7 +157,9 @@ var vue = new Vue({
         externalUrl: "",
         currentEventId: "",
 
-        loadjson: ''
+        loadjson: '',
+
+        loadDataIndex:1,
     },
     computed: {},
     methods: {
@@ -475,6 +477,18 @@ var vue = new Vue({
         },
         filterTag(value, row) {
             return row.fromWhere === value;
+        },
+
+        testDataClick(index){
+            this.loadDataIndex=index
+        },
+
+        myCalcDataClick(index){
+            this.loadDataIndex=index
+        },
+
+        publishedExampClick(index){
+            this.loadDataIndex=index
         },
 
         loadUserTask(val){
