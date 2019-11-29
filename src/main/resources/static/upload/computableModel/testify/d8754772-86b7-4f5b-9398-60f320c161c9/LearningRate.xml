@@ -1,0 +1,3 @@
+<Dataset name="Dataset" kernelType="any">
+  <XDO name="LearningRate" kernelType="real" value="0.05" />
+</Dataset>

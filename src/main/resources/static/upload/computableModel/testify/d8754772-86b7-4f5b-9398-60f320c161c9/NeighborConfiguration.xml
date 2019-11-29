@@ -1,0 +1,3 @@
+<Dataset name="Dataset" kernelType="any">
+  <XDO name="NeighborConfiguration" kernelType="int" value="7" />
+</Dataset>

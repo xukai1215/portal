@@ -1,0 +1,3 @@
+<Dataset name="Dataset" kernelType="any">
+  <XDO name="AnnTrainingScale" kernelType="int" value="80" />
+</Dataset>
