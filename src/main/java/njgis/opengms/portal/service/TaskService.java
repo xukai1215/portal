@@ -793,12 +793,12 @@ public class TaskService {
         return result;
     }
 
-    public JSONObject getPublishedTasksByModelId(String modelId,int page,String userName){
+    public JSONObject getPublishedTasksByModelId(String modelId,int page){
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 4, sort);
 
         //获取published task
-        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndUserIdNot(modelId,"public","njgis",pageable);
+        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndUserIdNot(modelId,"public","",pageable);
         List<Task> ts = tasks.getContent();
         long total=tasks.getTotalElements();
         JSONArray taskArray=new JSONArray();

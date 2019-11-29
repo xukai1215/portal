@@ -154,7 +154,7 @@ public class TaskRestController {
             return ResultUtils.error(-1, "no login");
         }else{
             String userName = request.getSession().getAttribute("uid").toString();
-            return ResultUtils.success(taskService.getPublishedTasksByModelId(modelId,page,userName));
+            return ResultUtils.success(taskService.getPublishedTasksByModelId(modelId,page));
         }
     }
 
