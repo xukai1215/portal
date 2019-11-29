@@ -1614,6 +1614,13 @@ var vue = new Vue({
                     this.getUnits();
                     this.pageControlIndex = this.curIndex;
                     break;
+                case '5':
+                    this.searchText = '';
+                    this.searchResult = [];
+                    this.page = 1;
+                    this.getTheme();
+                    this.pageControlIndex = this.curIndex;
+                    break;
                 // case '5-1':
                 // case '5-2':
                 // case '5-3':
@@ -3322,6 +3329,45 @@ var vue = new Vue({
             })
         },
 
+        getTheme() {
+            this.pageSize = 10;
+            this.isInSearch = 0;
+            var url = "/repository/getThemesByUserId";
+            var name = "themes";
+
+            $.ajax({
+                type: "Get",
+                url: url,
+                data: {
+                    page: this.page - 1,
+                    sortType: this.sortType,
+                    asc: -1
+                },
+                cache: false,
+                async: true,
+
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (json) => {
+                    if (json.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        data = json.data;
+                        this.resourceLoad = false;
+                        this.totalNum = data.count;
+                        this.searchCount = Number.parseInt(data["count"]);
+                        this.searchResult = data[name];
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            })
+        },
+
         getArticleResult() {
             this.pageSize = 5;
             this.researchItems = [];
@@ -3833,6 +3879,15 @@ var vue = new Vue({
                 if (this.curIndex != 1)
                     this.pageControlIndex = this.curIndex;
                 else this.pageControlIndex = 'research';
+
+                this.resourceLoad = true;
+                this.searchResult = [];
+                //not result scroll
+                //window.scrollTo(0, 0);
+                this.curPage = pageNo;
+                this.getPageList();
+                this.page = pageNo;
+
                 switch (this.pageControlIndex) {
                     // this.computerModelsDeploy = [];
                     // this.resourceLoad = true;
@@ -3844,13 +3899,7 @@ var vue = new Vue({
                     case '2-2':
                     case '2-3':
                     case '2-4':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getModels();
                         else this.searchModels();
@@ -3858,88 +3907,52 @@ var vue = new Vue({
                     //
                     case '3-1':
                     case '3-2':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getDataItems();
                         else this.searchDataItem();
                         break;
 
                     case '4-1':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getConcepts();
                         else this.searchConcepts();
                         break;
                     case '4-2':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getSpatials();
                         else this.searchSpatials()
                         break;
                     case '4-3':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getTemplates();
                         else this.searchTemplates();
                         break;
                     case '4-4':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getUnits();
                         else this.searchUnits();
                         break;
 
+                    case '5':
+                        if (this.isInSearch == 0)
+                            this.getTheme();
+                        else {}
+                        break;
+
                     case '6':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         if (this.isInSearch == 0)
                             this.getModels();
                         else this.searchModels();
                         break;
 
                     case 'research':
-                        this.resourceLoad = true;
-                        this.searchResult = [];
-                        //not result scroll
-                        //window.scrollTo(0, 0);
-                        this.curPage = pageNo;
-                        this.getPageList();
-                        this.page = pageNo;
+
                         switch (this.researchIndex) {
                             case 1:
                                 this.getArticleResult();

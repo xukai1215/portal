@@ -22,11 +22,11 @@ import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitResultDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
+import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.Application;
 import njgis.opengms.portal.entity.support.ClassInfo;
 import njgis.opengms.portal.entity.support.DataClassInfo;
-import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -35,7 +35,6 @@ import org.dom4j.DocumentHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -419,6 +418,21 @@ public class RepositoryService {
         ConceptObject.put("count", concepts.getTotalElements());
         ConceptObject.put("concepts", concepts.getContent());
         return ConceptObject;
+
+    }
+
+    public JSONObject getThemesByUserId(String userId, int page, String sortType, int asc) {
+
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<ThemeResultDTO> themes = themeDao.findByAuthor(userId, pageable);
+
+        JSONObject themeObject = new JSONObject();
+        themeObject.put("count", themes.getTotalElements());
+        themeObject.put("themes", themes.getContent());
+        return themeObject;
 
     }
 

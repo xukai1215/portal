@@ -176,6 +176,21 @@ public class RepositoryRestController {
     public ModelAndView getThemePage(@PathVariable("id") String id,HttpServletRequest req){
         return repositoryService.getThemePage(id,req);
     }
+    @RequestMapping(value = "/getThemesByUserId",method = RequestMethod.GET)
+    public JsonResult getThemesByUserId(HttpServletRequest request,
+                                          @RequestParam(value="page") int page,
+                                          @RequestParam(value="sortType") String sortType,
+                                          @RequestParam(value="asc") int sortAsc){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String uid=session.getAttribute("uid").toString();
+
+        JSONObject result=repositoryService.getThemesByUserId(uid,page,sortType,sortAsc);
+
+        return ResultUtils.success(result);
+    }
 
     @RequestMapping (value="/getConceptInfo/{id}",method = RequestMethod.GET)
     public JsonResult getConceptInfo(@PathVariable ("id") String id){

@@ -448,7 +448,7 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
         name = 'NewEvent' + OGMSDiagram.uuid().substr(0, 5);
     }
     if(type == null){
-        type = 'responese';
+        type = 'response';
     }
     if(option == null){
         option = 'False';
@@ -480,10 +480,10 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
     '</li>').insertBefore($('#eventItemAdd'));
     var spanDataDes = '';
     if(dataDes == '[Undefined]'){
-        spanDataDes = '<span class="badge badge-default" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes[0].text + '</span>';
+        spanDataDes = '<span class="badge badge-default" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes[0].name + '</span>';
     }
     else {
-        spanDataDes = '<span class="badge badge-info" style="cursor:pointer" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes[0].text + '</span>';
+        spanDataDes = '<span class="badge badge-info" style="cursor:pointer" id="dataTemplate_' + id + '" data-tag="' + id + '">' + dataDes[0].name + '</span>';
     }
 
     /**
@@ -536,7 +536,7 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
         '</div>' +
         '</div>';
     var str2 =  '<div id="inputGroup_' + id + '" class="form-group mxWinPanel">' +
-        '<label for="eventInp_' + id + '" class="col-sm-3 control-label">Input</label>' +
+        '<label for="eventInp_' + id + '" class="col-sm-3 control-label">'+ (type=="response"?"Input":"Output") +'</label>' +
         '<div class="col-sm-8" style="height: 24px !important;">' +
         '<input type="text" class="form-control" ' + enable + ' id="eventInp_' + id + '" style="width:60%"  placeholder="Please select upload file" />' +
         '<button id="select_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 30%" ><span><i class="fa fa-th-large"></i></span></button>'+
@@ -544,16 +544,40 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
         '<button id="check_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 10%"><span><i class="fa fa-folder-open"></i></span></button>'+
         '<button id="download_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 0%"><span><i class="fa fa-download"></i></span></button>'+
         '</div>' +
-        '</div>' +
-
-        '</form>' +
         '</div>';
     var str3 = '</form>' + '</div>';
+    var param="";
+    if(type=="response"&&dataDes[0].type=="internal"&&dataDes[0].nodes!=undefined){
+        let nodes=dataDes[0].nodes;
+        param += '<div id="inputGroup_' + id + '" class="form-group mxWinPanel">';
+        for(i=0;i<nodes.length;i++) {
+            let node=nodes[i];
+            let nodeType="";
+            switch (node.type) {
+                case "DTKT_INT":
+                    nodeType = "INT";
+                    break;
+                case "DTKT_REAL":
+                    nodeType = "REAL";
+                    break;
+                case "DTKT_INT | DTKT_LIST":
+                    nodeType = "INT_Array";
+                    break;``
+            }
+            param +='<label for="eventInp_' + node.name + '" class="col-sm-3 control-label" title="'+node.description+'">' + node.name + '</label>' +
+            '<div class="col-sm-8" style="height: 24px !important;">' +
+            '<input type="text" class="form-control StateWindowEvent" name="'+node.name+'" data-parent="'+id+'" id="eventInp_' + node.name + '" style="width:100%;padding: 0 10px;"  placeholder="Data Type: '+nodeType+'" />' +
+            '</div>'
+        }
+        param += '</div>'
+    }
     var str = '';
     if (infoPage === true)
         str = str1+str3;
+    else if(type=="response"&&dataDes[0].type=="internal"&&dataDes[0].nodes!=undefined)
+        str = str1+param+str3;
     else
-        str = str1+str2;
+        str = str1+str2+str3;
 
     $('#eventTabContent').append(str);
     $('#eventType_' + id + ' option[value="' + type + '"]').attr('selected','selected');
@@ -800,7 +824,9 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
             name : jsBahavior.dataRef[i].name,
             type : jsBahavior.dataRef[i].type,
             description : jsBahavior.dataRef[i].description,
-            value : jsBahavior.dataRef[i].value
+            value : jsBahavior.dataRef[i].value,
+            nodes : jsBahavior.dataRef[i].nodes,
+            externalId : jsBahavior.dataRef[i].externalId,
         });
     }
 

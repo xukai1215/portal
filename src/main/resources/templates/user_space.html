@@ -2991,7 +2991,7 @@
                 <!--                </div>-->
             </div>
             <!-- end model-items -->
-<!--start theme-->
+            <!--start theme-->
             <div :style="{display:curIndex=='5'?'block':'none'}">
                 <ul class="breadcrumb">
                     <li class="active">Theme</li>
@@ -3033,15 +3033,15 @@
 
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <a :href="'/theme/'+theme.oid" target="_blank"
+                                    <a :href="'/repository/theme/'+theme.oid" target="_blank"
                                        @click="setSession('themeInfo_id',theme.model_oid)">
-                                        {{theme.name}}
+                                        {{theme.themename}}
                                     </a>
                                     <div class="pull-right" style="margin-top: -3px;">
-                                        <a href="/user/createTheme"
-                                           @click="setSession('editTheme_id',theme.oid)">
-                                            <button class="btn btn-default editBtn">Edit</button>
-                                        </a>
+                                        <!--<a href="/user/createTheme"-->
+                                           <!--@click="setSession('editTheme_id',theme.oid)">-->
+                                            <!--<button class="btn btn-default editBtn">Edit</button>-->
+                                        <!--</a>-->
                                         <button class="btn btn-danger deleteBtn"
                                                 @click="deleteModel(theme.oid)">Delete
                                         </button>
