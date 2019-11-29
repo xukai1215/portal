@@ -254,7 +254,9 @@ var vue = new Vue({
         },
 
         handlePageChange1(val) {
+            // val--;
             this.pageOption1.currentPage = val;
+
             this.search1();
         },
         handlePageChange2(val) {
@@ -265,9 +267,13 @@ var vue = new Vue({
 
         search1() {
             this.relateType = "modelItem";
+            if(this.pageOption1.currentPage==0){
+                this.pageOption1.currentPage++;
+            };
             var data = {
                 asc: this.pageOption1.sortAsc,
-                page: this.pageOption1.currentPage,
+
+                page: this.pageOption1.currentPage-1,
                 pageSize: this.pageOption1.pageSize,
                 searchText: this.relateSearch,
                 sortType: "default",
@@ -344,9 +350,12 @@ var vue = new Vue({
         },
         search2() {
             this.relateType = "dataItem";
+            if(this.pageOption2.currentPage==0){
+                this.pageOption2.currentPage++;
+            };
             var data = {
                 asc: this.pageOption2.sortAsc,
-                page: this.pageOption2.currentPage,
+                page: this.pageOption2.currentPage-1,
                 pageSize: this.pageOption2.pageSize,
                 searchText: this.relateSearch,
                 sortType: "default",
@@ -632,6 +641,27 @@ var vue = new Vue({
     },
     mounted() {
         let that = this;
+
+        //页面加载前先执行获取数据函数
+        $(document).ready(function () {
+            that.relateType = "modelItem";
+            that.tableData = [];
+            that.pageOption1.currentPage=0;
+            that.pageOption1.searchResult = [];
+            that.relateSearch = "";
+            that.getRelation();
+            that.search1();
+
+
+            that.relateType = "dataItem";
+            that.tableData = [];
+            that.pageOption2.currentPage=0;
+            that.pageOption2.searchResult = [];
+            that.relateSearch = "";
+            that.getRelation();
+            that.search2();
+        });
+
         //input的监听值变动的事件
         $(document).on('keyup','.category_name',function ($event) {
             let category_input=$(".category_name");
@@ -687,24 +717,10 @@ var vue = new Vue({
                 window.location.href = "/user/createTheme";
                 return false;
             }
-            that.relateType = "modelItem";
-            that.tableData = [];
-            that.pageOption1.currentPage=0;
-            that.pageOption1.searchResult = [];
-            that.relateSearch = "";
-            that.getRelation();
-            that.search1();
+
         })
         $("#step2_next").click(function () {
             that.themeObj.classinfo[that.mcnum].mcname = $("#categoryname"+that.tableflag1).val();
-
-            that.relateType = "dataItem";
-            that.tableData = [];
-            that.pageOption2.currentPage=0;
-            that.pageOption2.searchResult = [];
-            that.relateSearch = "";
-            that.getRelation();
-            that.search2();
         })
         $("#step3_next").click(function () {
             that.themeObj.dataClassInfo[that.dcnum].dcname = $("#categoryname2"+that.tableflag2).val();
