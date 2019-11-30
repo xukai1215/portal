@@ -1200,7 +1200,6 @@ var vue = new Vue({
                     async: false,
                     data: formData,
                     success: function (result) {
-
                         if (result.code == "0") {
                             alert("Create Success");
                             window.location.href = "/repository/theme/" + result.data;//刷新当前页面

@@ -14,6 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ThemeResultDTO {
+
+    String creator_name;
+
     String oid;
     String themename;
     String image;

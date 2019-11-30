@@ -100,6 +100,21 @@
 
 
 
+                <i th:each="theme,index:${themeResult}">
+                    <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card shadow="hover">
+                        <a th:href="'../repository/theme/'+${theme.oid}"  target="_blank">
+                            <img th:src="'../static/upload'+${theme.img}"  style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a th:href="'../repository/theme/'+${theme.oid}" th:utext="${theme.name}" target="_blank" style="font-size: 20px;font-weight: bold"></a>
+                        </div>
+                    </el-card>
+                    </div>
+                </i>
+
+
+
 
             </div>
 
