@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
@@ -17,6 +18,7 @@ import njgis.opengms.portal.dto.Unit.UnitAddDTO;
 import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
+import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.RepositoryService;
@@ -33,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/repository")
@@ -824,6 +827,18 @@ public class RepositoryRestController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("Thematic");
+
+        List<Theme> themes= themeDao.findAll();
+        JSONArray themeRs = new JSONArray();
+        for (int i=0;i<themes.size();i++){
+            JSONObject themeR = new JSONObject();
+            themeR.put("oid",themes.get(i).getOid());
+            themeR.put("img",themes.get(i).getImage());
+            themeR.put("creator_name",themes.get(i).getCreator_name());
+            themeR.put("name",themes.get(i).getThemename());
+            themeRs.add(themeR);
+        }
+        modelAndView.addObject("themeResult",themeRs);
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)

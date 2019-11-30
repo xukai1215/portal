@@ -12,9 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ThemeFindDTO {
-    private Integer page = 1;
-    private Integer pageSize = 10;
-    private Boolean asc = false;
+    Integer page = 1;
+    Integer pageSize = 10;
+    Boolean asc = false;
+
+
+    String creator_name;
+    String oid;
 
     //用作多条件查询
     private String searchText;

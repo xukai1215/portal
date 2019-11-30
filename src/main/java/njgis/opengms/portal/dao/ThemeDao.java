@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 /**
  * @Auther mingyuan
  * @Data 2019.10.23 17:13
@@ -16,6 +18,8 @@ public interface ThemeDao extends MongoRepository<Theme,String> {
     Theme findFirstByOid(String id);
 
     Page<ThemeResultDTO> findByAuthor(String author, Pageable pageable);
+
+    List<Theme> findAll();
 
 //    Page<Theme> findByClassarr(String classarr, Pageable pageable);
 //

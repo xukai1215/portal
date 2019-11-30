@@ -301,8 +301,6 @@ public class RepositoryService {
             classObj.put("content",models);
             classInfos_result.add(classObj);
         }
-
-
         List<DataClassInfo> dataClassInfos = theme.getDataClassInfo();
         JSONArray dataClassInfos_result = new JSONArray();
         for(int i=0;i<dataClassInfos.size();i++){
@@ -368,6 +366,17 @@ public class RepositoryService {
             modelAndView.addObject("logged", "0");
         return modelAndView;
     }
+//    public ModelAndView getThematic(String id, HttpServletRequest req) {
+//
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("Thematic");
+//
+//        Theme theme = themeDao.findByOid(id);
+//        modelAndView.addObject("info", theme);
+//        themeDao.save(theme);
+//
+//        return modelAndView;
+//    }
 
     public JSONObject searchConcept(RepositoryQueryDTO repositoryQueryDTO) {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
