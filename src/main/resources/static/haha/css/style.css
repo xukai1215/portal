@@ -168,7 +168,7 @@ ul li{
 }
 
 .model_title{
-  margin: 3.8rem 0 1rem;
+  margin: 3rem 0 1rem;
 }
 model_date{
   font-size: 0.6rem;
@@ -219,7 +219,7 @@ model_date{
   text-align: center;
 }
 .image i{
-  font-size: 8rem;
+  font-size: 6rem;
   /*margin-left: 4rem;*/
   margin-top: 3rem;
   color: #3DA0DB;

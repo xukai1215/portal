@@ -33,6 +33,7 @@ public class Task {
     List<TaskData> inputs;
     List<TaskData> outputs;
 
+    //集成模型
     Boolean integrate;
     List<Model> models;
 

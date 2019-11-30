@@ -24,10 +24,14 @@
         input[type=file] {
             display: none;
         }
+
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<div id="app" >
+<div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
     <div class="taskMain">
         <el-row type="flex" justify="space-around">
@@ -58,11 +62,11 @@
                                     <p style="font-size: 18px;margin-bottom: 0">&nbsp&nbsp<span style="font-style: italic;">Data</span> of this caculation</p>
                                 </el-row>
                                 <div v-cloak style="margin-right: 5px;font-style: italic">
-                                    <span style="font-size: 15px">Runned by </span><span @click="openCreateUserPage(info.taskInfo.creater)" style="color: #389bdb;font-size: 22px;cursor: pointer">{{info.taskInfo.creater}}</span>
+                                    <span style="font-size: 15px">Runned by </span><span @click="window.open('/user/'+info.userInfo.userOid)" style="color: #389bdb;font-size: 22px;cursor: pointer">{{info.userInfo.userName}}</span>
                                     <span style="font-size: 15px">at</span> <span style="margin-right: 15px">{{dateFormat(info.taskInfo.createTime)}}</span>
-                                    <span style="font-style: normal">
-                                        <i style="font-size: 18px!important;" class="fa fa-bar-chart"></i> 0 &nbsp
-                                    </span>
+                                    <!--<span style="font-style: normal">-->
+                                        <!--<i style="font-size: 18px!important;" class="fa fa-bar-chart"></i> 0 &nbsp-->
+                                    <!--</span>-->
                                 </div>
 
                             </el-row>
@@ -246,11 +250,14 @@
 <!--            </el-col>-->
         </el-row>
     </div>
-    </div>
+
     <div th:replace="fragments/footer :: footer"></div>
 </div>
 </body>
-
+<script th:inline="javascript">
+    var info=[[${info}]]
+    info = JSON.parse(info);
+</script>
 <!--<script src="/static/js/common/knockout-3.4.2.js"></script>-->
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
@@ -269,6 +276,7 @@
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/clipboard.min.js"></script>
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
 <script src="/static/js/page/taskOutput.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>

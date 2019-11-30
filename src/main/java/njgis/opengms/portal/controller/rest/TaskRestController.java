@@ -87,17 +87,28 @@ public class TaskRestController {
     @RequestMapping(value = "/output/{id}", method = RequestMethod.GET)
     ModelAndView getTaskOutput(@PathVariable("id") String ids, HttpServletRequest request) {
         HttpSession session = request.getSession();
+        ModelAndView modelAndView = new ModelAndView();
         if (session.getAttribute("uid") == null) {
-            ModelAndView modelAndView = new ModelAndView();
+
             modelAndView.setViewName("login");
             modelAndView.addObject("unlogged", "1");
             return modelAndView;
         } else {
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("taskOutput");
-            modelAndView.addObject("logged", "0");
+            String userName = request.getSession().getAttribute("uid").toString();
+            JSONObject info=taskService.initTaskOutput(ids, userName);
+            if(info.getString("permission").equals("forbid")){
+                modelAndView.setViewName("error/404");
+            }
+            else {
+
+                modelAndView.setViewName("taskOutput");
+                modelAndView.addObject("logged", "0");
+                modelAndView.addObject("info", info);
+            }
             return modelAndView;
         }
+
+
 
     }
 
@@ -330,6 +341,7 @@ public class TaskRestController {
                 task.setComputableName(computableModel.getName());
                 task.setTaskId(result);
                 task.setUserId(username);
+                task.setIntegrate(false);
                 task.setPermission("private");
                 task.setIp(lists.getString("ip"));
                 task.setPort(lists.getInteger("port"));
