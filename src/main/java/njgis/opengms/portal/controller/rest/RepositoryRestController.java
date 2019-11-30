@@ -828,6 +828,7 @@ public class RepositoryRestController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("Thematic");
 
+
         List<Theme> themes= themeDao.findAll();
         JSONArray themeRs = new JSONArray();
         for (int i=0;i<themes.size();i++){
@@ -839,6 +840,7 @@ public class RepositoryRestController {
             themeRs.add(themeR);
         }
         modelAndView.addObject("themeResult",themeRs);
+
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
