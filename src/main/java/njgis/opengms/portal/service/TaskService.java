@@ -14,6 +14,7 @@ import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.ParamInfo;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
@@ -165,7 +166,11 @@ public class TaskService {
         JSONObject userJson = new JSONObject();
         userJson.put("compute_model_user_name", user.getUserName());
         userJson.put("compute_model_user_oid", user.getOid());
-        userJson.put("userName", userName);
+
+        user=userDao.findFirstByUserName(userName);
+
+        userJson.put("userName", user.getName());
+        userJson.put("userOid", user.getOid());
 
         JSONObject result = new JSONObject();
 
@@ -175,8 +180,11 @@ public class TaskService {
         boolean hasPermission = false;
 
         if(task.getPermission().equals("private")&&!task.getUserId().equals(userName)){
-            result.put("permission", "no");
+            result.put("permission", "forbid");
             return result;
+        }
+        else {
+            result.put("permission", "allow");
         }
 
 //        List<String> publicInfos = task.getIsPublic();
@@ -532,7 +540,7 @@ public class TaskService {
                 resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
                 resultDataDTO.setTag(task.getOutputs().get(i).getTag());
                 resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
-                resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
+                resultDataDTO.setChildren(task.getOutputs().get(i).getChildren());
                 resultDataDTOList.add(resultDataDTO);
             }
 //        }
@@ -652,6 +660,7 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
+                    param.put("integrate",task.getIntegrate());
 
                     futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
@@ -664,19 +673,39 @@ public class TaskService {
                         JSONObject jsonResult = JSON.parseObject(result);
                         String tid = jsonResult.getString("tid");
                         int remoteStatus = jsonResult.getInteger("status");
-                        List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
-                        Task task = taskDao.findFirstByTaskId(tid);
 
-                        if (task.getStatus() != remoteStatus) {
-                            task.setStatus(remoteStatus);
-                            task.setOutputs(outputs);
-                            taskDao.save(task);
-                            for (int i = 0; i < ts.size(); i++) {
-                                Task task1 = ts.get(i);
-                                if (task1.getTaskId().equals(tid)) {
-                                    task1.setStatus(remoteStatus);
-                                    task1.setOutputs(outputs);
-                                    break;
+                        Task task = taskDao.findFirstByTaskId(tid);
+                        if(jsonResult.getBoolean("integrate")){
+                            List<Model> models=jsonResult.getJSONArray("models").toJavaList(Model.class);
+
+                            if (task.getStatus() != remoteStatus) {
+                                task.setStatus(remoteStatus);
+                                task.setModels(models);
+                                taskDao.save(task);
+                                for (int i = 0; i < ts.size(); i++) {
+                                    Task task1 = ts.get(i);
+                                    if (task1.getTaskId().equals(tid)) {
+                                        task1.setStatus(remoteStatus);
+                                        task1.setModels(models);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
+
+                            if (task.getStatus() != remoteStatus) {
+                                task.setStatus(remoteStatus);
+                                task.setOutputs(outputs);
+                                taskDao.save(task);
+                                for (int i = 0; i < ts.size(); i++) {
+                                    Task task1 = ts.get(i);
+                                    if (task1.getTaskId().equals(tid)) {
+                                        task1.setStatus(remoteStatus);
+                                        task1.setOutputs(outputs);
+                                        break;
+                                    }
                                 }
                             }
                         }

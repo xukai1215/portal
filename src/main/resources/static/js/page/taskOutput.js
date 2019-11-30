@@ -238,15 +238,6 @@ var vue = new Vue({
             loading.close();
         },
 
-        openCreateUserPage(userName){
-            axios.get('/user/getUserByName',{
-                params: {userId:userName}
-            }).then((res)=>{
-                let oid=res.data.data.oid
-                window.open("/user/"+oid);
-            })
-        },
-
         goPersonCenter(oid){
             window.open("/user/"+oid);
         },
@@ -603,27 +594,30 @@ var vue = new Vue({
     },
 
     async created(){
-        let hrefs = window.location.href.split("/");
-        let ids = hrefs[hrefs.length - 1];
-        let twoIds=ids.split('&')
-        let modelId=twoIds[0];
-        let taskId=twoIds[1];
-        this.oid = modelId;
-        this.taskId = taskId;
-        console.log(modelId)
-        let { data } = await (await fetch("/task/TaskOutputInit/" + ids)).json();
-        if(data==null||data==undefined){
-            alert("Initialization error!")
-        }else if(data.permission=='no'){
-            alert("You do not have a permission to this private page")
+        // let hrefs = window.location.href.split("/");
+        // let ids = hrefs[hrefs.length - 1];
+        // let twoIds=ids.split('&')
+        // let modelId=twoIds[0];
+        // let taskId=twoIds[1];
+        // this.oid = modelId;
+        // this.taskId = taskId;
+        // console.log(modelId)
+        // let { data } = await (await fetch("/task/TaskOutputInit/" + ids)).json();
+        // if(data==null||data==undefined){
+        //     alert("Initialization error!")
+        // }else if(data.permission=='no'){
+        //     alert("You do not have a permission to this private page")
+        //
+        // }
 
-        }
 
-        this.info = data;
-        console.log(this.info);
     },
 
     async mounted() {
+
+        this.info = info;
+        console.log(this.info);
+
         this.introHeight=$('.introContent').attr('height');
 
         //get login user info

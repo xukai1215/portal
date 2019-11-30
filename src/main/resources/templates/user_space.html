@@ -114,6 +114,10 @@
             color:black;
         }
 
+        .el-button+.el-button {
+            margin-left: 0;
+        }
+
     </style>
 </head>
 
@@ -180,10 +184,10 @@
                                         <!--<div class="title">Subject Areas</div>-->
                                         <!--<div class="desk">{{userInfo.saStr}}</div>-->
                                         <!--</li>-->
-                                        <!--<li v-if="userInfo.description!=''">-->
-                                        <!--<div class="title">Description</div>-->
-                                        <!--<div class="desk">{{userInfo.description}}</div>-->
-                                        <!--</li>-->
+                                        <li v-if="userInfo.description!=''">
+                                        <div class="title">Description</div>
+                                        <div class="desk">{{userInfo.description}}</div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -312,7 +316,7 @@
                                     <div class="el-col pull-left text-center" style="width:20%">
                                         <el-card shadow="hover">
                                             <a href="/user/createTheme">
-                                                <img src="/static/img/model/theme.png" style="width:90px;height: 90px;"
+                                                <img src="/static/img/model/theme.png" style="width:100px;height: 90px;"
                                                      class="image">
                                             </a>
                                             <div style="text-align: center;padding: 10px 0 5px;">Theme</div>
@@ -332,37 +336,43 @@
                                     </div>
                                 </div>
                                 <div class="panel-body padding-0">
-                                    <div class="col-md-4 cursorPointer" @click="getCalcWithCurrent">
-                                        <div class="widget widget-info widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-spinner"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
-                                                <div class="widget-title">On Going Calculations</div>
+                                    <div class="row" style="margin:0; padding:15px 15px 0 15px;">
+                                        <el-button style="font-size: 18px;float:left;width:49%;margin-right:2%;" type="primary" @click="window.open('/modelItem/repository')">Find Computable Model</el-button>
+                                        <el-button style="font-size: 18px;float:left;width:49%;" type="warning">Model Intergrating</el-button>
+                                    </div>
+                                    <div class="row" style="margin:0;">
+                                        <div class="col-md-4" @click="getCalcWithCurrent">
+                                            <div class="widget widget-info widget-item-icon">
+                                                <div class="widget-item-left">
+                                                    <span class="fa fa-spinner"></span>
+                                                </div>
+                                                <div class="widget-data">
+                                                    <div class="widget-int num-count">{{statisticsInfo.calculating}}</div>
+                                                    <div class="widget-title">On Going Calculations</div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4 cursorPointer">
-                                        <div class="widget widget-success widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-tasks"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.success}}</div>
-                                                <div class="widget-title">Success Calculations</div>
+                                        <div class="col-md-4">
+                                            <div class="widget widget-success widget-item-icon">
+                                                <div class="widget-item-left">
+                                                    <span class="fa fa-tasks"></span>
+                                                </div>
+                                                <div class="widget-data">
+                                                    <div class="widget-int num-count">{{statisticsInfo.success}}</div>
+                                                    <div class="widget-title">Success Calculations</div>
 
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4 cursorPointer">
-                                        <div class="widget widget-danger widget-item-icon">
-                                            <div class="widget-item-left">
-                                                <span class="fa fa-support"></span>
-                                            </div>
-                                            <div class="widget-data">
-                                                <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
-                                                <div class="widget-title">Fail Calculations</div>
+                                        <div class="col-md-4">
+                                            <div class="widget widget-danger widget-item-icon">
+                                                <div class="widget-item-left">
+                                                    <span class="fa fa-support"></span>
+                                                </div>
+                                                <div class="widget-data">
+                                                    <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
+                                                    <div class="widget-title">Fail Calculations</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -571,7 +581,7 @@
                         </div>
                         <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
                         <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model
-                            items</h4>
+                            item</h4>
                     </div>
                     <!--尾部按钮-->
                     <div class="row">
@@ -1356,7 +1366,7 @@
                             </div>
                         </div>
                         <h4 class="text-center" v-if="resourceLoad">Loading ...</h4>
-                        <h4 class="text-center" v-if="searchResult.length==0&&resourceLoad==false">No data items</h4>
+                        <h4 class="text-center" v-if="searchResult.length==0&&resourceLoad==false">No data item</h4>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 text-center">
@@ -2806,7 +2816,7 @@
                         </div>
                         <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
                         <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model
-                            items</h4>
+                            item</h4>
                     </div>
                     <!--尾部按钮-->
                     <div class="row">
@@ -3065,8 +3075,7 @@
                             </div>
                         </div>
                         <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
-                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No model
-                            items</h4>
+                        <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No theme</h4>
                     </div>
                     <!--尾部按钮-->
                     <div class="row">
@@ -3128,9 +3137,11 @@
                                         {{task.computableName}}
                                     </a>
                                     <div class="">
-                                        <el-button type="warning" size="mini" @click="publishTask(task)">
-                                            <span v-if="task.permission=='public'"><span><i class="fa fa-unlock"></i></span>Public</span>
-                                            <span v-else><span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private</span>
+                                        <el-button v-if="task.permission=='public'" type="success" size="mini" @click="publishTask(task)">
+                                            <span style="margin-right: 2px"><i class="fa fa-unlock"></i></span>Public
+                                        </el-button>
+                                        <el-button v-else type="warning" size="mini" @click="publishTask(task)">
+                                            <span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private
                                         </el-button>
                                         <button class="btn btn-sm wzhButton" @click="sharingTaskData(task)" style="margin-right: 5px;border-radius: 3px;"><i
                                                 class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item

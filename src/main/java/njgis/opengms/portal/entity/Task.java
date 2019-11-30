@@ -1,6 +1,7 @@
 package njgis.opengms.portal.entity;
 
 import lombok.Data;
+import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.TaskData;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,5 +32,9 @@ public class Task {
     String permission;
     List<TaskData> inputs;
     List<TaskData> outputs;
+
+    //集成模型
+    Boolean integrate;
+    List<Model> models;
 
 }
