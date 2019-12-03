@@ -581,6 +581,9 @@ zhtml,body{
 #subcard{
     width: 280px;
     height: 100%;
+    margin-top: 62px;
+    position: fixed;
+    Z-index: 2;
 }
 #right_content{
     left: 280px;
@@ -631,4 +634,18 @@ zhtml,body{
     margin-top: 50px;
     width:161px;
     /*height: 161px;*/
+}
+.wrap{
+    Z-index:1;
+    position: fixed
+}
+.data_name{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:2;
+}
+.model_name{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:2;
 }
