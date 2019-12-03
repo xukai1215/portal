@@ -31,14 +31,14 @@
 <body class="scrollbar">
 <div id="app">
 
-    <div th:replace="fragments/navbar :: unlog"></div>
+    <div th:replace="fragments/navbar :: unlog" class="head"></div>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
                 <div class="row">
                     <!--左侧菜单栏-->
-                    <el-card style="position:fixed;" id="subcard">
+                    <el-card id="subcard">
                                 <div class="logoPanel">
                                 </div>
                                 <div slot="header" class="clearfix text-center">
@@ -121,13 +121,13 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
 
                                         <el-col :span="4" th:each="item:${modelClass.content}" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto" id="model_card">
+                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
                                                 <a th:href="'http://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
                                                     <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
                                                 </a>
                                                 <div style="padding: 14px;">
-                                                    <span th:text="${item.name}"></span>
+                                                    <span th:text="${item.name}" class="model_name"></span>
                                                 </div>
                                             </el-card>
                                         </el-col>
@@ -152,11 +152,9 @@
                                                 <!--<a th:href="${dataClass.url[0].url_download[0]}" ><img src="/static/thematicmodel/css/images/model/thumb.png" class="image"></a>-->
                                                 <a th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
                                                     <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
-                                                    <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="data_image">-->
                                                 </a>
                                                 <div style="padding: 14px;">
-                                                    <span th:text="${item.name}"></span>
-                                                    <!--<a th:href="${dataClass.url[0].url_select}"> <el-button  type="success" class="button" id ="rbtn">data</el-button></a>-->
+                                                    <span th:text="${item.name}" class="data_name"></span>
                                                 </div>
                                             </el-card>
                                         </el-col>
