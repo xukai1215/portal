@@ -123,7 +123,8 @@
                                         <el-col :span="4" th:each="item:${modelClass.content}" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto" id="model_card">
                                                 <a th:href="'http://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
-                                                    <img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">
+                                                    <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
+                                                    <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
                                                 </a>
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}"></span>
@@ -149,7 +150,10 @@
                                         <el-col :span="4" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
                                                 <!--<a th:href="${dataClass.url[0].url_download[0]}" ><img src="/static/thematicmodel/css/images/model/thumb.png" class="image"></a>-->
-                                                <a th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}"><img src="/static/img/thematic_center/thumb.png" class="image" id="data_image"></a>
+                                                <a th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
+                                                    <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
+                                                    <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="data_image">-->
+                                                </a>
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}"></span>
                                                     <!--<a th:href="${dataClass.url[0].url_select}"> <el-button  type="success" class="button" id ="rbtn">data</el-button></a>-->
@@ -200,5 +204,5 @@
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/page/load-theme.js"></script>
 <script src="/static/js/common/navbar.js"></script>
-
+<script src="/static/js/common/vue-avatar.min.js"></script>
 </html>
