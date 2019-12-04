@@ -75,6 +75,32 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
     @Test
+    public void correctDes(){
+
+        List<ComputableModel> allComputableModel = computableModelDao.findByContentType("Package");
+
+        for(int i = 0; i<allComputableModel.size(); i++){
+            String mdl = allComputableModel.get(i).getMdl();
+            StringBuilder smdl = new StringBuilder(mdl);
+
+//            String str = "[\\u4e00-\\u9fa5]<[0-9]";
+            String str = "<=";
+            Pattern pattern = Pattern.compile(str);
+            Matcher matcher = pattern.matcher(mdl);
+            while(matcher.find()) {
+                System.out.println(matcher.group());
+                System.out.println(matcher.start());
+                System.out.println(matcher.end());
+//                smdl.replace(matcher.start()+1,matcher.end()-1,"&lt;");
+                smdl.replace(matcher.start(),matcher.end()-1,"&lt;");
+                System.out.println(smdl.toString());
+//                allComputableModel.get(i).setMdl(smdl.toString());
+//                computableModelDao.save(allComputableModel.get(i));
+            }
+        }
+    }
+
+    @Test
     public void testGet(){
         RestTemplate restTemplate=new RestTemplate();
         Map<String,Object> map=new HashMap();

@@ -173,7 +173,7 @@ var vue = new Vue({
                     var bindOid=this.getSession("bindOid");
                     this.computableModel.bindOid=bindOid;
                     $.ajax({
-                        data: "Get",
+                        type: "Get",
                         url: "/modelItem/getInfo/"+bindOid,
                         data: { },
                         cache: false,
