@@ -263,6 +263,7 @@ public class Utils {
             Element rootElement = mdlDoc.getRootElement();
             mdlObj.put("name", rootElement.attributeValue("name"));
 
+
             Element AttributeSet = rootElement.element("AttributeSet");
             Element Behavior = rootElement.element("Behavior");
 
@@ -418,6 +419,7 @@ public class Utils {
             mdlObj.put("states", states);
             //State结束
         } catch (DocumentException e) {
+            System.out.println(mdl);
             e.printStackTrace();
         }
         JSONObject result = new JSONObject();

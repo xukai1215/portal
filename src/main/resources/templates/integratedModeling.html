@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Integrated Modeling</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+
+    <script th:inline="javascript">
+        var computableModelList =  [[${computableModelList}]];
+        var allComputableModel =  [[${allComputableModel}]];
+    </script>
+    <style>
+        body{
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+
+        <div>
+            <el-button style="float: right;margin: 2px 8%;" @click="run">Run</el-button>
+        </div>
+
+        <div id="MxGraph">
+            <iframe id="ModelEditor" src="/common/integratedModelEditor"  style="width:96%;height:700px;border:0px;position:relative;margin-left: 2%;"></iframe>
+        </div>
+
+
+
+        <el-dialog title="模型集成运行" :visible.sync="runVisible" width="70%">
+            <el-tabs v-model="activeName">
+                <el-tab-pane v-for="(model,index) in models" :key="index" :label="model.name" :name="model.name">
+
+                    <el-table :data="model.inputEvents"  style="width: 100%"
+                          :key="Math.random()"
+                          row-key="dataId"
+                          border
+                          default-expand-all>
+
+                    <el-table-column
+                            label="Event Name"
+                            width="200">
+                        <template slot-scope="scope">
+                                <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
+                                    <span v-if="!scope.row.optional"
+                                          style="color:red">*</span>
+                                        {{scope.row.event}}
+                                </span>
+
+                            <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
+                                    <span v-if="!scope.row.optional"
+                                          style="color:red">*</span>
+                                    <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.event}}</a>
+                                </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="description"
+                            label="Description">
+                    </el-table-column>
+                    <el-table-column
+                            label="Value"
+                            width="200">
+                        <template slot-scope="scope">
+
+                            <el-input class="model-input"
+                                      :key="scope.row.dataId"
+                                      v-if="scope.row.children==undefined&&scope.row.child!=true"
+                                      :value="scope.row.fileName==undefined? scope.row.value :(scope.row.fileName+'.'+scope.row.suffix)"
+                                      :id="'datainput'+scope.row.dataId"
+                                      disabled="false">
+                            </el-input>
+
+                            <el-input class="model-input"
+                                      v-if="scope.row.children==undefined&&scope.row.child==true"
+                                      v-model="scope.row.value"
+                                      :id="'datainput'+scope.row.dataId">
+                            </el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Operation"
+                            width="120">
+                        <template slot-scope="scope">
+                            <div class="_btn-group" v-if="scope.row.children==undefined">
+
+                                <el-button v-if="scope.row.value ==''|| scope.row.value.match(/http/)"
+                                            plain round type="primary" size="small" @click="upload(scope.row)">
+                                    <i class="fa fa-cloud-upload"></i>
+                                </el-button>
+
+
+                                <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                           v-if="scope.row.fileName!=''&&scope.row.fileName!=null"
+                                           @click="download(scope.row)" style="margin-left: 0px;">
+                                    <i class="fa fa-download"></i>
+                                </el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                </el-tab-pane>
+            </el-tabs>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="runVisible = false">取 消</el-button>
+                <el-button type="primary" @click="runModels">RunRunRun</el-button>
+            </div>
+        </el-dialog>
+
+        <input id="uploadInputData" type="file" style="display:none" />
+
+    </div>
+</body>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/page/integratedModeling.js"></script>
+<script>
+
+
+</script>
+</html>

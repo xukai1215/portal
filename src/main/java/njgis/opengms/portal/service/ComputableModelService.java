@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static njgis.opengms.portal.utils.Utils.convertMdl;
 import static njgis.opengms.portal.utils.Utils.saveFiles;
 
 /**
@@ -88,6 +89,37 @@ public class ComputableModelService {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    public Page<ComputableModel> integratingList(int page, String sortType, int sortAsc){
+
+        Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<ComputableModel> comModelList = computableModelDao.findByContentType("Package",pageable);
+
+        for(int i = 0; i<comModelList.getContent().size(); i++){
+            String mdl = comModelList.getContent().get(i).getMdl();
+            comModelList.getContent().get(i).setMdlJson(convertMdl(mdl));
+        }
+
+        return comModelList;
+    }
+
+    public ModelAndView integrate(Page<ComputableModel> computableModelList){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("integratedModeling");
+
+        List<ComputableModel> allComputableModel = computableModelDao.findByContentType("Package");
+        for(int i = 0; i<allComputableModel.size(); i++){
+            String mdl = allComputableModel.get(i).getMdl();
+            allComputableModel.get(i).setMdlJson(convertMdl(mdl));
+        }
+
+        mv.addObject("computableModelList", computableModelList);
+        mv.addObject("allComputableModel", allComputableModel);
+        return mv;
+    }
 
     public ModelAndView getPage(String id, HttpServletRequest httpServletRequest) {
         //条目信息

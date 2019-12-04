@@ -52,6 +52,15 @@ public class CommonRestController {
         return  modelAndView;
     }
 
+    @RequestMapping(value = "/integratedModelEditor", method = RequestMethod.GET)
+    public ModelAndView mxGraph_integrated() {
+
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("integratedModelEditor");
+
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/logicalModelEditor", method = RequestMethod.GET)
     public ModelAndView mxGraph_logical() {
 

@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -211,6 +212,17 @@ public class ComputableModelRestController {
     @RequestMapping (value="/list",method = RequestMethod.POST)
     JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
         return ResultUtils.success(computableModelService.list(modelItemFindDTO,classes));
+    }
+
+    @RequestMapping (value="/integratingList",method = RequestMethod.GET)
+    Page<ComputableModel> integratingList(int page,String sortType, int sortAsc){
+        return computableModelService.integratingList(page,sortType,sortAsc);
+    }
+
+    @RequestMapping(value = "/integrating",method = RequestMethod.GET)
+    ModelAndView integrating(){
+        Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
+        return computableModelService.integrate(computableModelList);
     }
 
     @RequestMapping (value="/advance",method = RequestMethod.POST)
