@@ -6,9 +6,18 @@ var vue = new Vue({
     data:function () {
         return{
             defaultActive:'1',
+            dialogVisible: false
         }
     },
     methods:{
+
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {});
+        },
         handleCurrentChange(data, checked, indeterminate) {
             this.setUrl("/modelItem/repository?category="+data.oid);
             this.pageOption.searchResult=[];

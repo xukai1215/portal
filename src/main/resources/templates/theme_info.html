@@ -24,9 +24,6 @@
             border:none;
         }
     </style>
-
-
-
 </head>
 <body class="scrollbar">
 <div id="app">
@@ -105,6 +102,19 @@
                                     <span>Theme Info</span>
                                 </h3>
                             </div>
+                            <!--<el-button type="success" @click="dialogVisible = true" style="width: 100%;">+ Create Your Theme Info</el-button>-->
+                            <!--<el-dialog-->
+                                    <!--title="Create Theme Info"-->
+                                    <!--:visible.sync="dialogVisible"-->
+                                    <!--width="40%"-->
+                                    <!--:before-close="handleClose">-->
+
+                                <!--&lt;!&ndash;<span>这是一段信息</span>&ndash;&gt;-->
+                                <!--<span slot="footer" class="dialog-footer">-->
+                                <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
+                                <!--<el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+                                <!--</span>-->
+                            <!--</el-dialog>-->
                             <div th:utext="${detail}" id="detailinfo" class="detailIntroducePanel">
                             </div>
                         </div>
