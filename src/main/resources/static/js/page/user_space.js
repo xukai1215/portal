@@ -329,6 +329,11 @@ var vue = new Vue({
 
         outputToMyData:{},
 
+        uploadDialogVisible:false,
+        selectFolderVisible:false,
+        uploadFileList:[],
+
+
     },
 
     methods: {
@@ -4567,16 +4572,34 @@ var vue = new Vue({
         },
 
         //上传
+
+        handleSuccess(result,file,fileList){
+            console.log(result)
+            let uploadSource=[];
+            uploadSource.push(result.data);
+            this.upload_data_dataManager(uploadSource);
+        },
+
+        submitUpload() {
+            this.$refs.upload.submit();
+        },
+
         uploadClick(index){
             this.uploadInPath=index;
             this.uploadSource=[];
             this.selectedPath=[];
-            $('#managerUpload').modal("show");
-            $('#manager-upload').fileinput('clear');
+
+            this.uploadDialogVisible=true;
+
+        },
+
+        uploadBeforeClose(){
+            this.uploadDialogVisible=false;
+            this.$refs.upload.clearFiles();
         },
 
         selectFolder(){
-            $('#selectFolder').modal('show')
+            this.selectFolderVisible=true;
             this.selectedPath=[];
 
             axios.get("/user/getFolder",{})
@@ -4591,7 +4614,6 @@ var vue = new Vue({
                         this.folderTree=res.data.data;
                         this.selectPathDialog=true;
                     }
-
 
                 });
         },
@@ -4626,28 +4648,36 @@ var vue = new Vue({
             this.selectedPath.unshift(allFder)
             console.log(this.selectedPath)
             this.selectPathDialog=false;
-            $('#selectFolder').modal('hide')
+            this.selectFolderVisible=false;
 
         },
 
         closeSelectFolder(){
-            $('#selectFolder').modal('hide')
+            this.selectFolderVisible=false;
         },
 
-        upload_data_dataManager() {
+        selectFile(){
+            if(this.selectedPath.length==0) {
+                alert('Please select a folder')
+                return;
+            }
+            $("#uploadFile").click()
+        },
+
+        upload_data_dataManager(uploadSource) {
             console.log(this.fileNames)
             this.fileNames.filter(res=>typeof (res)!="undefined")
-            console.log(this.uploadSource)
+            console.log(uploadSource)
             console.log($('.file-caption').val())
-            if (this.uploadSource.length == 0) {
+            if (uploadSource.length == 0) {
                 alert("Please upload the file into the template first")
             } else {
-                for(let i=0;i<this.uploadSource.length;i++){
-                    let dataName=this.uploadSource[i].file_name.split('&')[1];
+                for(let i=0;i<uploadSource.length;i++){
+                    let dataName=uploadSource[i].file_name;
                     let dataname7suffix=dataName.split('.')
                     let fileName=dataname7suffix[0]
                     let suffix=dataname7suffix[1]
-                    let dataId=this.uploadSource[i].source_store_id;
+                    let dataId=uploadSource[i].source_store_id;
                     var data = {
                         author: this.userId,
                         fileName: fileName,
@@ -4671,7 +4701,7 @@ var vue = new Vue({
                             }
                         });
                 }
-                this.addDataToPortalBack();
+                this.addDataToPortalBack(uploadSource);
 
 
             }
@@ -4681,10 +4711,10 @@ var vue = new Vue({
         addDataToPortalBack(item){//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
 
             var addItem=[]
-            if(item==undefined) {
-                addItem=this.uploadSource;
-                for(let i=0;i<addItem.length;i++)
-                    addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
+            if(item instanceof Array) {
+                addItem=item;
+                // for(let i=0;i<addItem.length;i++)
+                //     addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
             }
             else{
                 let obj={
@@ -4704,7 +4734,7 @@ var vue = new Vue({
 
             }else{
                 if(this.selectedPath.length==0) {
-                    alert('Please a file folder')
+                    alert('Please select a folder')
                     return
                 }
 
@@ -4737,9 +4767,9 @@ var vue = new Vue({
                         console.log(idList)
                         if (item == undefined){
                             if (this.uploadInPath == 1) {
-                                for (let i = 0; i < this.uploadSource.length; i++) {
-                                    console.log(this.uploadSource[i].file_name)
-                                    let dataName7Suffix = this.uploadSource[i].file_name.split('.')
+                                for (let i = 0; i < item.length; i++) {
+                                    console.log(item[i].file_name)
+                                    let dataName7Suffix = item[i].file_name.split('.')
                                     const newChild = {
                                         id: idList[i].id,
                                         label: dataName7Suffix[0],
@@ -4771,15 +4801,15 @@ var vue = new Vue({
                         }
 
                         this.addFolderIndex = false;
-                        this.selectedPath=[];
+                        //this.selectedPath=[];
 
                     }
 
                 }
             });
 
-            alert('Upload File successfully!')
-            $('#managerUpload').modal("hide")
+            // alert('Upload File successfully!')
+
 
         },
 
@@ -5802,50 +5832,50 @@ var vue = new Vue({
         });
 
 
-        //上传数据相关
-        $("#manager-upload").fileinput({
-
-            theme: 'fas',
-            uploadUrl: '/dispatchRequest/uploadFiles', // /file/apk_upload   you must set a valid URL here else you will get an error
-            overwriteInitial: false,
-            uploadAsync: true, //默认异步上传,
-            showUpload: true, //是否显示上传按钮
-            showRemove: true, //显示移除按钮
-            showPreview: true, //是否显示预览
-            showCaption: true,//是否显示标题
-            browseClass: "btn btn-primary", //按钮样式
-            maxFileSize: 50000,
-            maxFilesNum: 10,
-            enctype: 'multipart/form-data',
-            validateInitialCount: true,
-            msgFilesTooMany: "You have chosen ({n}) files, more than {m} files！",
-            //allowedFileTypes: ['image', 'video', 'flash'],
-            slugCallback: function (filename) {
-                return filename.replace('(', '_').replace(']', '_');
-            }
-        }).on('filepreupload', function (event, data, previewId, index) {//上传中
-            console.log(data)
-            // console.log('文件正在上传');
-        }).on("fileuploaded", function (event, data, previewId, index) {
-            console.log(data)//一个文件上传成功
-            var form = data.form, files = data.files, extra = data.extra,fileNames=data.filenames
-            response = data.response, reader = data.reader;
-
-            if (response != null) {
-                // alert("数据上传成功")
-            }
-            //get dataResource add sourceStoreId
-
-            // console.log(that.fileNames)
-            // that.fileNames.push(fileName)
-            that.uploadSource.push(response.data);
-            // console.log(response);//打印出返回的json
-            // console.log(that.uploadSource);
-
-
-        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
-            // console.log('文件上传失败！'+data.status);
-        });
+        // //上传数据相关
+        // $("#manager-upload").fileinput({
+        //
+        //     theme: 'fas',
+        //     uploadUrl: '/dispatchRequest/uploadFiles', // /file/apk_upload   you must set a valid URL here else you will get an error
+        //     overwriteInitial: false,
+        //     uploadAsync: true, //默认异步上传,
+        //     showUpload: true, //是否显示上传按钮
+        //     showRemove: true, //显示移除按钮
+        //     showPreview: true, //是否显示预览
+        //     showCaption: true,//是否显示标题
+        //     browseClass: "btn btn-primary", //按钮样式
+        //     maxFileSize: 50000,
+        //     maxFilesNum: 10,
+        //     enctype: 'multipart/form-data',
+        //     validateInitialCount: true,
+        //     msgFilesTooMany: "You have chosen ({n}) files, more than {m} files！",
+        //     //allowedFileTypes: ['image', 'video', 'flash'],
+        //     slugCallback: function (filename) {
+        //         return filename.replace('(', '_').replace(']', '_');
+        //     }
+        // }).on('filepreupload', function (event, data, previewId, index) {//上传中
+        //     console.log(data)
+        //     // console.log('文件正在上传');
+        // }).on("fileuploaded", function (event, data, previewId, index) {
+        //     console.log(data)//一个文件上传成功
+        //     var form = data.form, files = data.files, extra = data.extra,fileNames=data.filenames
+        //     response = data.response, reader = data.reader;
+        //
+        //     if (response != null) {
+        //         // alert("数据上传成功")
+        //     }
+        //     //get dataResource add sourceStoreId
+        //
+        //     // console.log(that.fileNames)
+        //     // that.fileNames.push(fileName)
+        //     that.uploadSource.push(response.data);
+        //     // console.log(response);//打印出返回的json
+        //     // console.log(that.uploadSource);
+        //
+        //
+        // }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
+        //     // console.log('文件上传失败！'+data.status);
+        // });
 
 
         $('#tree').treeview({data: this.getTree()});
