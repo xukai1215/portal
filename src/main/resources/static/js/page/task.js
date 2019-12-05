@@ -157,11 +157,16 @@ var vue = new Vue({
         externalUrl: "",
         currentEventId: "",
 
-        loadjson: '',
-
         loadDataIndex:1,
+
+        currentFile:null,
     },
     computed: {},
+    watch:{
+      currentFile:function (file) {
+          this.uploadToDataContainer(file);
+      }
+    },
     methods: {
 
         arraySpanMethod({row, column, rowIndex, columnIndex}) {
@@ -182,6 +187,64 @@ var vue = new Vue({
             this.paramDialogVisible = true;
         },
 
+        uploadToDataContainer(file){
+
+            $.get("/dataManager/dataContainerIpAndPort",(result)=>{
+                let ipAndPort=result.data;
+                let formData = new FormData();
+                formData.append("file",file);
+                $.ajax({
+                    type:"post",
+                    url: "http://"+ipAndPort+"/file/upload/store_dataResource_files",
+                    data: formData,
+                    async:false,
+                    processData: false,
+                    contentType: false,
+                    success: (result)=>{
+                        if (result.code == 0){
+                            let data = result.data;
+                            let dataName = data.file_name.match(/.+(?=\.)/)[0];
+                            let dataSuffix = data.file_name.match(/(?=\.).+/)[0];
+                            let dataId = data.source_store_id;
+                            let dataUrl = "http://"+ipAndPort+"/dataResource";
+                            let form = {
+                                "author":"njgis",
+                                "fileName":dataName,
+                                "sourceStoreId":dataId,
+                                "suffix":dataSuffix,
+                                "type":"OTHER",
+                                "fromWhere":"PORTAL"
+                            };
+
+                            $.ajax({
+                                type:"post",
+                                url: dataUrl,
+                                data: JSON.stringify(form),
+
+                                async:false,
+
+                                contentType:'application/json',
+                                success:(res) => {
+                                    if(res.code == 0){
+                                        this.$set(this.eventChoosing,'url',"http://"+ipAndPort+"/dataResource/getResource?sourceStoreId="+res.data.sourceStoreId);
+                                        this.$set(this.eventChoosing,'tag',res.data.fileName)
+                                        this.$set(this.eventChoosing,'suffix',res.data.suffix)
+
+                                        $("#uploadInputData").val("");
+                                        console.log(this.info.modelInfo);
+
+                                    }
+                                }
+                            })
+
+
+
+                        }
+                    }
+                })
+            })
+        },
+
         createAndUploadParamFile() {
             let states = this.info.modelInfo.states;
             for (i = 0; i < states.length; i++) {
@@ -189,7 +252,7 @@ var vue = new Vue({
                 let find = false;
                 for (j = 0; j < events.length; j++) {
                     let event = events[j];
-                    if (event.children != undefined) {
+                    if (event.eventType=="response"&&event.children != undefined) {
                         this.eventChoosing = event;
                         //拼接文件内容
                         let content = "<DataSet>";
@@ -205,29 +268,30 @@ var vue = new Vue({
                             type: 'text/plain',
                         });
                         //上传文件
-                        let formData = new FormData();
-                        formData.append("file", file);
-
-                        formData.append("host", this.info.dxInfo.dxIP);
-                        formData.append("port", this.info.dxInfo.dxPort);
-                        formData.append("type", this.info.dxInfo.dxType);
-                        formData.append("userName", this.info.userInfo.userName);
-                        $.ajax({
-                            url: "/dispatchRequest/upload",
-                            type: "POST",
-                            processData: false,
-                            contentType: false,
-                            async: true,
-                            data: formData,
-                            success: ({data}) => {
-
-                                let {tag, suffix, url} = data;
-                                this.info.modelInfo.states[i].event[j].tag = tag;
-                                this.info.modelInfo.states[i].event[j].suffix = suffix;
-                                this.info.modelInfo.states[i].event[j].url = url;
-
-                            }
-                        });
+                        this.uploadToDataContainer(file);
+                        // let formData = new FormData();
+                        // formData.append("file", file);
+                        //
+                        // formData.append("host", this.info.dxInfo.dxIP);
+                        // formData.append("port", this.info.dxInfo.dxPort);
+                        // formData.append("type", this.info.dxInfo.dxType);
+                        // formData.append("userName", this.info.userInfo.userName);
+                        // $.ajax({
+                        //     url: "/dispatchRequest/upload",
+                        //     type: "POST",
+                        //     processData: false,
+                        //     contentType: false,
+                        //     async: true,
+                        //     data: formData,
+                        //     success: ({data}) => {
+                        //
+                        //         let {tag, suffix, url} = data;
+                        //         this.eventChoosing.tag = tag;
+                        //         this.eventChoosing.suffix = suffix;
+                        //         this.eventChoosing.url = url;
+                        //
+                        //     }
+                        // });
                     }
                 }
             }
@@ -724,8 +788,8 @@ var vue = new Vue({
         },
         upload(event) {
             //上传接口
-            this.showUpload = true;
             this.eventChoosing = event;
+            $("#uploadInputData").click();
         },
         beforeRemove(file) {
             return this.$confirm(`确定移除 ${file.name}？`);
@@ -1864,30 +1928,11 @@ var vue = new Vue({
         window.addEventListener('scroll',this.initSize);
         window.addEventListener('resize',this.initSize);
 
-        $("#imgChange").click(function () {
-            $("#imgFile").click();
-        });
-        $("#imgFile").change(function () {
-            //获取input file的files文件数组;
-            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            var file = $('#imgFile').get(0).files[0];
-            //创建用来读取此文件的对象
-            var reader = new FileReader();
-            //使用该对象读取file文件
-            reader.readAsDataURL(file);
-            //读取文件成功后执行的方法函数
-            reader.onload = function (e) {
-                //读取成功后返回的一个参数e，整个的一个进度事件
-                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                //的base64编码格式的地址
-                $('#imgShow').get(0).src = e.target.result;
-                $('#imgShow').show();
+        $("#uploadInputData").change(()=> {
+            this.currentFile = $('#uploadInputData')[0].files[0];
+            //this.uploadToDataContainer(file);
 
-                that.data_img.push(e.target.result)
-
-            }
-        });
+        })
 
         /**
          * 张硕

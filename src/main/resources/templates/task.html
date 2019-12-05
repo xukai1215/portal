@@ -51,10 +51,6 @@
             cursor: default;
         }
 
-        [v-cloak] {
-            display: none;
-        }
-
     </style>
 </head>
 <body>
@@ -410,7 +406,7 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1">
-                                                        <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
+                                                        <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+modelOutEvent.suffix)"
                                                                   :disabled="true">
                                                         </el-input>
                                                     </el-col>
@@ -492,7 +488,7 @@
                                             <template slot-scope="scope">
                                                 <el-input class="model-input"
                                                           v-if="scope.row.children==undefined&&scope.row.child!=true"
-                                                          :value="scope.row.tag==undefined?'':(scope.row.tag+'.'+scope.row.suffix)"
+                                                          :value="scope.row.tag==undefined?'':(scope.row.tag+scope.row.suffix)"
                                                           :id="'datainput'+scope.row.eventId"
                                                           disabled="false">
                                                 </el-input>
@@ -604,13 +600,14 @@
                             </el-button>
                         </el-col>
 
-                        <el-dialog title="Choose Data" :visible.sync="showUpload" width="30%">
-                            <el-upload ref="upload" drag action="/dispatchRequest/upload" :data="uploadData()"
-                                       :before-remove="beforeRemove" :file-list="fileList"
-                                       :on-success="onSuccess">
-                                <el-button slot="trigger" size="small" type="primary">Choose File</el-button>
-                            </el-upload>
-                        </el-dialog>
+                        <input type="file" id="uploadInputData" style="display: none;"/>
+                        <!--<el-dialog title="Choose Data" :visible.sync="showUpload" width="30%">-->
+                            <!--<el-upload ref="upload" drag action="/dispatchRequest/upload" :data="uploadData()"-->
+                                       <!--:before-remove="beforeRemove" :file-list="fileList"-->
+                                       <!--:on-success="onSuccess">-->
+                                <!--<el-button slot="trigger" size="small" type="primary">Choose File</el-button>-->
+                            <!--</el-upload>-->
+                        <!--</el-dialog>-->
 
                         <el-dialog title="Personal Center Data" :visible.sync="showDataChose" width="70%">
                             <div class="researchTitle">
@@ -960,7 +957,6 @@
                                                 <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                             </template>
                                         </el-table-column>
-                                        <el-table-column fixed="right" label="Operation" width="100">
                                         <el-table-column fixed="right" label="Operation" width="100">
                                             <template slot-scope="scope">
                                                 <el-button

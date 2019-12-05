@@ -33,6 +33,11 @@ public class DataManagerRestController {
     String dataContainerIpAndPort;
 
 
+    @RequestMapping(value="/dataContainerIpAndPort",method = RequestMethod.GET)
+    JsonResult getDataContainerIpAndPort(){
+        return ResultUtils.success(dataContainerIpAndPort);
+    }
+
     /**
      * 展示所有数据条目
      * @param author
