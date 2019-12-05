@@ -2109,10 +2109,10 @@
                                     <!--                                    <br v-if="!rightTargetItem.package">-->
                                     <el-button id="dbtn" @click="right_deleteFile()" type="text">Delete</el-button>
                                     <br>
-                                    <el-button id="sbtn" @click="right_share" type="text">Link</el-button>
-                                    <br>
+                                    <el-button id="sbtn" @click="right_share" v-if="!rightTargetItem.package" type="text">Link</el-button>
+                                    <br v-if="!rightTargetItem.package">
                                     <el-button id="sbtn" @click="rename" type="text"
-                                               v-if="rightTargetItem.label!='All Folder'&&rightTargetItem.label!='My Data'">
+                                               >
                                         Rename
                                     </el-button>
                                     <!--                                    <el-button id="sbtn" @click="relatedModels_dataManager()" type="text">relatedModels-->
