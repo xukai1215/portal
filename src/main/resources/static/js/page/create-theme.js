@@ -1,7 +1,11 @@
 var vue = new Vue({
     el: "#app",
     data: {
+        // remove_flag:0,
+        // idflag:"",
         //mnum用来模型计数
+        model_num:0,
+        data_num:0,
         mnum:0,
         mcnum:0,
         dnum:0,
@@ -10,6 +14,7 @@ var vue = new Vue({
         editableTabsValue_data: '1',
         editableTabsValue_applications: '1',
         editableTabs_model: [{
+            id:1,
             tabledata:[],
             //tabledata:[],
             title: 'Tab 1',
@@ -24,6 +29,7 @@ var vue = new Vue({
         tableflag3:0,
 
         editableTabs_data: [{
+            id:"1",
             tabledata:[],
             title: 'Tab 1',
             name: '1',
@@ -40,10 +46,12 @@ var vue = new Vue({
         //定义存储从前端获取的数据，用于与后台进行传输
         themeObj:{
             classinfo:[{
+                id:"1",
                 mcname:"",
-                modelsoid:[],
+                modelsoid:[] ,
             }],
             dataClassInfo:[{
+                id:"1",
                 dcname:'',
                 datasoid:[],
             }]
@@ -52,8 +60,6 @@ var vue = new Vue({
         oidnumber:0,
         numOfModelPerRow:5,
         classarr: [],
-        // moid:[],
-        // doid:[],
         dialogTableVisible: false,
         dialogTableVisible1: false,
         relateTitle: "",
@@ -115,16 +121,11 @@ var vue = new Vue({
     },
     methods: {
         modelClass_add(){
-
-
             this.mcnum++;
             this.tableflag1++;
             this.tabledataflag++;
-            $("#categoryname").attr('id','categoryname_past');//改变当前id名称
-            this.themeObj.classinfo.push({
-                mcname:"",
-                modelsoid:[],
-            });
+            // $("#categoryname").attr('id','categoryname_past');//改变当前id名称
+
 
             $(".el-tabs__new-tab").eq(0).click();
         },
@@ -134,28 +135,37 @@ var vue = new Vue({
             this.dcnum++;
             this.tableflag2++;
             this.tabledataflag1++;
-            this.themeObj.dataClassInfo.push({
-                dcname:"",
-                datasoid:[],
-            });
+
             $(".el-tabs__new-tab").eq(1).click();
         },
         Application_add(){
             $(".el-tabs__new-tab").eq(2).click();
         },
         handleTabsEdit_model(targetName, action) {
-
             if (action === 'add') {
                 let newTabName = ++this.tabIndex_model + '';
+                this.themeObj.classinfo.push({
+                    id:newTabName,
+                    mcname:"",
+                    modelsoid:[],
+                });
+                // this.idflag = newTabName;
                 this.editableTabs_model.push({
+                    id:newTabName,
                     tabledata:[],
                     title: 'New Tab',
                     name: newTabName,
                     content: '2'
                 });
                 this.editableTabsValue_model = newTabName + '';
+
             }
             if (action === 'remove') {
+
+                // this.tabIndex_model--;
+                // let last_tab = $(".el-tabs__item").last();
+                // console.log(last_tab);
+                // this.tab_dele_num_model++;
                 let tabs = this.editableTabs_model;
                 let activeName = this.editableTabsValue_model;
                 if (activeName === targetName) {
@@ -171,6 +181,36 @@ var vue = new Vue({
 
                 this.editableTabsValue_model = activeName;
                 this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
+
+
+                //当remove操作时，将remove的tab的后面的tab的id中的数字均减一
+                // let tablist = $(".el-tabs__nav").eq(0);
+                // let last_tab = tablist.find('.el-tabs__item').last();//取出tab中的当前最新的tab的id
+                // console.log(last_tab);
+                // let str = last_tab[0].id;
+                // let tabnum = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
+                // console.log(tabnum);
+                // for (let i= parseInt(targetName)+1;i<=tabnum;i++){
+                //     let id = '#' + 'tab-' + i;
+                //     let new_id ='tab-' + (i-1);
+                //     let new_aria = 'pane-'+(i-1);
+                //     // let nid = '#' + 'tab-' + (i-1);
+                //     $(id).attr("aria-controls",new_aria);
+                //     $(id).attr('id',new_id);
+                // }
+                // this.remove_flag++;
+                // this.tabIndex_model = tabnum-1;
+                // this.editableTabsValue_model--;
+
+                let num;
+                for (i=0;i<this.themeObj.classinfo.length;i++) {
+                    if(this.themeObj.classinfo[i].id == targetName){
+                        num=i;
+                        break;
+                    }
+                }
+                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
+                this.themeObj.classinfo.splice(num,1);
             }
 
         },
@@ -179,7 +219,15 @@ var vue = new Vue({
 
             if (action === 'add') {
                 let newTabName = ++this.tabIndex_data + '';
+                // this.idflag = newTabName;
+                this.themeObj.dataClassInfo.push({
+                    id:newTabName,
+                    // id:"",
+                    dcname:"",
+                    datasoid:[],
+                });
                 this.editableTabs_data.push({
+                    id:newTabName,
                     tabledata:[],
                     title: 'New Tab',
                     name: newTabName,
@@ -188,6 +236,7 @@ var vue = new Vue({
                 this.editableTabsValue_data = newTabName;
             }
             if (action === 'remove') {
+                // this.tab_dele_num_data++;
                 let tabs = this.editableTabs_data;
                 let activeName = this.editableTabsValue_data;
                 if (activeName === targetName) {
@@ -203,6 +252,17 @@ var vue = new Vue({
 
                 this.editableTabsValue_data = activeName;
                 this.editableTabs_data = tabs.filter(tab => tab.name !== targetName);
+
+                let num;
+                for (i=0;i<this.themeObj.dataClassInfo.length;i++) {
+                    if(this.themeObj.dataClassInfo[i].id == targetName){
+                        num=i;
+                        break;
+                    }
+                }
+                // if (this.themeObj.dataClassInfo.id)
+                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除,这种方式不行，只是将元素置为undefine
+                this.themeObj.dataClassInfo.splice(num,1);
             }
         },
         handleTabsEdit_applications(targetName, action) {
@@ -484,18 +544,27 @@ var vue = new Vue({
         },
 
         handleEdit(index, row) {
-            let tablist = $(".el-tabs__nav").eq(0);//取出model的tablist
-            let tab_id = tablist.find('.is-active');//过滤出active的tab
-            console.log(tab_id[0].id);
-            let str = tab_id[0].id;
-            let num = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
-            console.log(num);
-            console.log(row);
-            num--;
+            // let tablist = $(".el-tabs__nav").eq(0);//取出model的tablist
+            // let tab_id = tablist.find('.is-active');//过滤出active的tab
+            // console.log(tab_id[0].id);
+            // let str = tab_id[0].id;
+            // let num = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
+            // console.log(num);
+            // console.log(row);
+            // num--;
+            // num = num - this.tab_dele_num_model;
             let flag = false;
             let j=0;
-            for (i = 0; i < this.editableTabs_model[this.tabledataflag].tabledata.length; i++) {
-                let tableRow = this.editableTabs_model[this.tabledataflag].tabledata[i];
+            let num;
+            // let num;
+            for (i=0;i<this.editableTabs_model.length;i++) {
+                if(this.editableTabs_model[i].id == this.editableTabsValue_model){
+                    num=i;
+                    break;
+                }
+            }
+            for (i = 0; i < this.editableTabs_model[num].tabledata.length; i++) {
+                let tableRow = this.editableTabs_model[num].tabledata[i];
                 if (tableRow.oid == row.oid) {
                     flag = true;
                     break;
@@ -509,18 +578,25 @@ var vue = new Vue({
             }
         },
         handleEdit1(index, row) {
-            let tablist = $(".el-tabs__nav").eq(1);//取出model的tablist
-            let tab_id = tablist.find('.is-active');//过滤出active的tab
-            console.log(tab_id[0].id);
-            let str = tab_id[0].id;
-            let num = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
-            console.log(num);
-            console.log(row);
-            num--;
+            // let tablist = $(".el-tabs__nav").eq(1);//取出model的tablist
+            // let tab_id = tablist.find('.is-active');//过滤出active的tab
+            // console.log(tab_id[0].id);
+            // let str = tab_id[0].id;
+            // let num = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
+            // console.log(num);
+            // console.log(row);
+            // num--;
             let flag = false;
             let j=0;
-            for (i = 0; i < this.editableTabs_data[this.tabledataflag1].tabledata.length; i++) {
-                let tableRow = this.editableTabs_data[this.tabledataflag1].tabledata[i];
+            let num;
+            for (i=0;i<this.editableTabs_data.length;i++) {
+                if(this.editableTabs_data[i].id == this.editableTabsValue_data){
+                    num=i;
+                    break;
+                }
+            }
+            for (i = 0; i < this.editableTabs_data[num].tabledata.length; i++) {
+                let tableRow = this.editableTabs_data[num].tabledata[i];
                 if (tableRow.oid == row.oid) {
                     flag = true;
                     break;
@@ -754,13 +830,6 @@ var vue = new Vue({
             }
 
         })
-        $("#step2_next").click(function () {
-            that.themeObj.classinfo[that.mcnum].mcname = $("#categoryname"+that.tableflag1).val();
-        })
-        $("#step3_next").click(function () {
-            that.themeObj.dataClassInfo[that.dcnum].dcname = $("#categoryname2"+that.tableflag2).val();
-        });
-
         const url="ModelDataDownloadServlet";
         $("#data-list").on('click','.view',function () {
             const dataID=this.getAttribute("div_id");
@@ -1202,6 +1271,13 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+
+            var theme_name = $("#nameInput").val();
+            if (theme_name==""){
+                alert("Please input theme name!");
+                window.location.href = "/user/createTheme";
+                return false;
+            }
             //step1
             that.themeObj.themename = $("#nameInput").val();
             that.themeObj.image = $('#imgShow').get(0).src;
