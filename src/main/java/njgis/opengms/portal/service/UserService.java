@@ -708,6 +708,14 @@ public class UserService {
         return fileMetaList;
     }
 
+    public List<String> deleteFiles(List<FileMeta> deletes,String userName){
+        List<String> result = new ArrayList<>() ;
+        for(FileMeta file : deletes ){
+            String id=file.getId();
+            result.add(deleteFile(id,userName)) ;
+        }
+        return result;
+    }
 
     public String deleteFile(String id, String userName){
         User user = userDao.findFirstByUserName(userName);

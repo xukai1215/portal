@@ -1892,6 +1892,10 @@
                                                     @click="allFileShareAsDataItem()">
                                                 <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Share as Data Item</span>
                                             </button>
+                                            <button class="dwload btn btn-primary btn-md" v-if="downloadDataSet.length>0"
+                                                    @click="deleteAll()">
+                                                <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
+                                            </button>
                                             <!--//todo share-->
                                             <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
                                             <!--<i class="glyphicon glyphicon-share">&nbsp;share</i>-->
@@ -1997,9 +2001,9 @@
                                                         </div>
                                                     </el-col>
                                                     <el-col :span="15" style="height: 100%;">
-                                                        <img class="fileImg" :src="getImg(item)"
+                                                        <img class="fileImg" :src="getImg(item)"  align="middle"
                                                              onerror=src="/static/img/filebrowser/unknow.svg"
-                                                             style="height: 100%;width:100%;cursor: pointer">
+                                                             style="height: 100%;width:100%;object-fit: contain;cursor: pointer">
                                                     </el-col>
                                                     <el-col :span="4">&nbsp
                                                         <div v-if="item.upload==true"

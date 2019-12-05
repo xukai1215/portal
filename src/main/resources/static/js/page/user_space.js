@@ -4959,6 +4959,85 @@ var vue = new Vue({
 
         },
 
+        deleteAll(){
+            const h = this.$createElement;
+            if(this.rightTargetItem.package==false){
+                var sourceId=this.getSourceId(this.rightTargetItem.url)
+            }
+
+            this.$msgbox({
+                title: ' ',
+                message: h('p', null, [
+                    h('span', { style: 'font-size:15px' }, 'All of the selected files will be deleted.'),
+                    h('br'),
+                    h('span', null, 'Are you sure to '),
+                    h('span', { style: 'color: #e6a23c;font-weight:600' }, 'continue'),
+                    h('span', null, '?'),
+                ]),
+                type:'warning',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                beforeClose: (action, instance, done) => {
+
+                    if (action === 'confirm') {
+                        if(this.rightTargetItem.package==false)
+                            this.delete_data_dataManager(sourceId)
+                        instance.confirmButtonLoading = true;
+                        instance.confirmButtonText = 'deleting...';
+                        setTimeout(() => {
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/deleteSomeFiles",
+                                data: JSON.stringify({deleteTarget:this.downloadDataSet}),
+                                async: true,
+                                contentType:"application/json",
+                                success: (json) => {
+                                    let data = json.data;
+                                    if (json.code == -1) {
+                                        alert("Please login first!")
+                                        window.sessionStorage.setItem("history", window.location.href);
+                                        window.location.href = "/user/login"
+                                    } else {
+                                        for(let i=0;i<data.length;i++)
+                                            this.deleteInfront(data[i],this.myFile)
+
+                                        this.downloadDataSet=[];
+                                        this.downloadDataSetName=[];
+                                        // this.rightTargetItem=null;
+
+                                    }
+
+                                }
+                            });
+                            done();
+                            setTimeout(() => {
+                                instance.confirmButtonLoading = false;
+                            }, 300);
+                        }, 300);
+                    } else {
+                        done();
+                    }
+                }
+            }).then(action => {
+                this.rightMenuShow=false
+                this.$message({
+                    type: 'success',
+                    message: 'delete successful '
+                });
+            });
+        },
+
+        deleteInfront(id,file){
+            for(let i=file.length-1;i>=0;i--){
+                if(file[i].package==true)
+                    this.deleteInfront(id,file[i].children)
+                else if(file[i].id==id){
+                    file.splice(i,1)
+                }
+            }
+        },
+
         right_deleteFile(){
             const h = this.$createElement;
             if(this.rightTargetItem.package==false){
