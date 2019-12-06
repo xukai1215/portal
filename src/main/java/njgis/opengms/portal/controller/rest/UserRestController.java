@@ -2,11 +2,10 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.models.Model;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.*;
-import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.FileMeta;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.LabService;
@@ -637,6 +636,22 @@ public class UserRestController {
             return ResultUtils.error(-1,"no login");
         }
         String result=userService.deleteFile(dataId,userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/deleteSomeFiles",method = RequestMethod.POST)
+    JsonResult deleteFiles(@RequestBody JSONObject deleteFiles,
+                          HttpServletRequest httpServletRequest){
+
+        JSONArray jsonArray= deleteFiles.getJSONArray("deleteTarget");
+        List<FileMeta> deleteFileList= jsonArray.toJavaList(FileMeta.class);
+        HttpSession httpSession=httpServletRequest.getSession();
+        String userName= Utils.checkLoginStatus(httpSession);
+        if(userName==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        List<String> result=userService.deleteFiles(deleteFileList,userName);
 
         return ResultUtils.success(result);
     }
