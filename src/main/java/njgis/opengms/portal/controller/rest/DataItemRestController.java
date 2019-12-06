@@ -130,7 +130,6 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.searchResourceByNameAndCate(dataItemFindDTO));
     }
 
-
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
     JsonResult searchByTitle(DataItemFindDTO dataItemFindDTO, String oid){
         System.out.println("data"+dataItemFindDTO);
@@ -523,10 +522,6 @@ public class DataItemRestController {
         dataItemService.delete(id);
         return ResultUtils.success();
     }
-
-
-
-
 
     /**
      * 个人中心动态创建分类树

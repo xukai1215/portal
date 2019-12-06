@@ -39,6 +39,8 @@ var vue = new Vue({
             }
         ],
 
+        relatedDataList:{},
+
         exampleDataListOfUser:{
             content: [
                 {
@@ -123,6 +125,14 @@ var vue = new Vue({
             asc: false,
             searchResult: [],
             total: 0,
+        },
+
+        relatePageOption:{
+            page: 0,
+            pageSize: 5,
+            searchResult: [],
+            total: 0,
+            oid:"",
         },
 
         loadDataVisible: false,
@@ -311,6 +321,7 @@ var vue = new Vue({
         selectFromDataItem(event) {
             this.eventChoosing = event;
             this.dataItemVisible = true;
+            // this.relatedDataItem();
         },
         clickData(item, event) {
             console.log(item, event)
@@ -339,6 +350,18 @@ var vue = new Vue({
                     console.log(res)
                     this.pageOption.searchResult = res.data.data.list;
                     this.pageOption.total = res.data.data.total;
+                });
+        },
+
+        relatedDataItem() {
+            let paths=window.location.href.split("/");
+            this.relatePageOption.oid=paths[paths.length-1];
+            axios.get("/computableModel/getRelatedDataByPage", {
+                params:this.relatePageOption
+            }).then((res) => {
+                    console.log(res)
+                    this.relatePageOption.searchResult = res.data.list;
+                    this.relatePageOption.total = res.data.total;
                 });
         },
 
@@ -1860,6 +1883,8 @@ var vue = new Vue({
 
             })
 
+        this.relatedDataItem();
+
 
         this.introHeight = $('.introContent').attr('height');
 
@@ -1877,10 +1902,12 @@ var vue = new Vue({
             for (j = 0; j < state.event.length; j++) {
                 if(state.event[j].data!=undefined&&state.event[j].eventType=="response") {
                     let nodes = state.event[j].data[0].nodes;
+                    let refName=state.event[j].data[0].text.toLowerCase();
                     if (state.event[j].data[0].externalId != undefined) {
                         state.event[j].externalId = state.event[j].data[0].externalId;
                     }
-                    if (nodes != undefined) {
+
+                    if (nodes != undefined&&refName!="grid"&&refName!="table") {
                         let children = [];
                         for (k = 0; k < nodes.length; k++) {
                             let node = nodes[k];
@@ -1888,22 +1915,17 @@ var vue = new Vue({
                             child.eventId = node.text;
                             child.eventName = node.text;
                             child.eventDesc = node.desc;
-                            switch (node.dataType) {
-                                case "DTKT_INT":
-                                    child.eventType = "int";
-                                    break;
-                                case "DTKT_REAL":
-                                    child.eventType = "real";
-                                    break;
-                                case "DTKT_INT | DTKT_LIST":
-                                    child.eventType = "int_array";
-                                    break;
-                            }
+                            child.eventType = node.dataType;
+
                             child.child = true;
                             children.push(child);
                         }
                         data.modelInfo.states[i].event[j].children = children;
                     }
+                    else{
+                        data.modelInfo.states[i].event[j].data[0].nodes=undefined;
+                    }
+
                 }
             }
         }

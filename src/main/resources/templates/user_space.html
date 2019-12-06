@@ -118,6 +118,20 @@
             display: none;
         }
 
+        .serverCard{
+            margin-top:20px;
+            padding:0 15px;
+            border-top:8px solid #373D41;
+        }
+
+        .serverCard .content{
+            padding:10px 0 20px 0;
+        }
+
+        .serverCard:hover{
+            border-top: 8px solid #00C1DE;
+        }
+
     </style>
 </head>
 
@@ -919,50 +933,105 @@
 
             <!-- start server-nodes -->
             <div :style="{display:curIndex=='7'?'block':'none'}">
-                <div class="page-content-wrap container-fluid" style="margin-top:-10px;">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>My model server container</a>
+                    </li>
+
+                </ul>
+                <div class="page-content-wrap container-fluid">
                     <div class="row">
-                        <div id="graphic" class="col-md-12" style="padding:0">
-                            <div id="echartMap" style="height: 490px"></div>
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="height: 61px;">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <a>
+                                                    <button class="btn btn-warning" @click="registerModelContainerVisible=true">
+                                                        <i class="fa fa-globe fa-fw"></i>Add Server
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <!--<div class="col-md-8">-->
+                                                <!--<div class="input-group" @keydown.enter="search()">-->
+                                                    <!--<input type="text" class="form-control" name="searchText"-->
+                                                           <!--placeholder="please enter name" v-model="searchText">-->
+                                                    <!--<div class="input-group-btn">-->
+                                                        <!--<button class="btn btn-primary" @click="search()">Search-->
+                                                        <!--</button>-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1 col-sm-12" style="margin-top:20px">
-                            <span class="h3">My Model Server Container</span>
-                            <span>
-                                <el-button type="success"
-                                           @click="registerModelContainerVisible=true">Register</el-button>
-                            </span>
-                        </div>
-                        <!--<div id="computerNodePanel" class="col-sm-12">-->
-                        <!--<div class="col-md-10 col-md-offset-1 col-sm-12"-->
-                        <!--v-for="computerNodeCity in computerNodesInfos"-->
-                        <!--:id="computerNodeCity.name">-->
-                        <!--<div class="headTitle">-->
-                        <!--<h3 style="font-weight:normal">-->
-                        <!--<span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>-->
-                        <!--</h3>-->
+                    <div class="page-content-wrap container-fluid" style="margin-top:-10px;">
+                        <!--<div class="row">-->
+                            <!--<div id="graphic" class="col-md-12" style="padding:0">-->
+                                <!--<div id="echartMap" style="height: 490px"></div>-->
+                            <!--</div>-->
                         <!--</div>-->
-                        <!--<div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">-->
-                        <!--<div class="serverNodeInfo">-->
-                        <!--<h3>{{computerNodeInfo.name}}</h3>-->
-                        <!--<span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>-->
-                        <!--<a href="../computer-node-info/computer-node-info.html"-->
-                        <!--v-if="computerNodeInfo.status"-->
-                        <!--@click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</div>-->
+                        <div class="row">
 
-                        <el-card class="box-card">
-                            <div slot="header" class="clearfix">
-                                <span>卡片名称</span>
-                                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                            <div class="col-sm-12 col-md-6 col-lg-4 ">
+                                <el-card class="box-card serverCard" >
+                                    <div class="content">
+                                        <div class="clearfix">
+                                            <div class="pull-left">
+                                                <h4>
+                                                    WIN-1234567
+
+                                                </h4>
+                                                <p>1核 - 1GB内存 - 系统盘 40GB SSD云盘 - 上海</p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix" style="margin-top:10px">
+                                            <div class="serverStatus pull-left">
+                                                <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                                Running
+                                            </div>
+                                            <div class="serverIp pull-right">
+                                                112.234.253.269
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-card>
                             </div>
-                            <div v-for="o in 4" :key="o" class="text item">
-                                {{'列表内容 ' + o }}
-                            </div>
-                        </el-card>
+
+                            <!--<div class="col-md-10 col-md-offset-1 col-sm-12" style="margin-top:20px">-->
+                                <!--<span class="h3">My Model Server Container</span>-->
+                                <!--<span>-->
+                                    <!--<el-button type="success"-->
+                                               <!--@click="registerModelContainerVisible=true">Register</el-button>-->
+                                <!--</span>-->
+                            <!--</div>-->
+
+                            <!--<div id="computerNodePanel" class="col-sm-12">-->
+                            <!--<div class="col-md-10 col-md-offset-1 col-sm-12"-->
+                            <!--v-for="computerNodeCity in computerNodesInfos"-->
+                            <!--:id="computerNodeCity.name">-->
+                            <!--<div class="headTitle">-->
+                            <!--<h3 style="font-weight:normal">-->
+                            <!--<span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>-->
+                            <!--</h3>-->
+                            <!--</div>-->
+                            <!--<div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">-->
+                            <!--<div class="serverNodeInfo">-->
+                            <!--<h3>{{computerNodeInfo.name}}</h3>-->
+                            <!--<span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>-->
+                            <!--<a href="../computer-node-info/computer-node-info.html"-->
+                            <!--v-if="computerNodeInfo.status"-->
+                            <!--@click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+                        </div>
 
                     </div>
                 </div>

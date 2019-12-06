@@ -74,6 +74,9 @@ public class ComputableModelService {
     ModelItemDao modelItemDao;
 
     @Autowired
+    DataItemDao dataItemDao;
+
+    @Autowired
     UserDao userDao;
 
     @Autowired
@@ -261,6 +264,28 @@ public class ComputableModelService {
             System.out.println("有人乱查数据库！！该ID不存在Model Item对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
+    }
+
+    public JSONObject getRelatedDataByPage(ComputableModelFindDTO computableModelFindDTO,String oid){
+        ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
+        JSONObject jsonObject = new JSONObject();
+        if(computableModel.getRelateModelItem()!=null) {
+            ModelItem modelItem=modelItemDao.findFirstByOid(computableModel.getRelateModelItem());
+            List<String> relatedDataItem = modelItem.getRelatedData();
+            int page = computableModelFindDTO.getPage();
+            int pageSize = computableModelFindDTO.getPageSize();
+
+            JSONArray jsonArray = new JSONArray();
+            for (int i = page * pageSize; i < relatedDataItem.size(); i++) {
+                DataItem dataItem = dataItemDao.findFirstById(relatedDataItem.get(i));
+                jsonArray.add(dataItem);
+                if (jsonArray.size() == pageSize)
+                    break;
+            }
+            jsonObject.put("list", jsonArray);
+            jsonObject.put("total", relatedDataItem.size());
+        }
+        return jsonObject;
     }
 
     public JSONObject doPostWithDeployPackage(String url, String savefileName, String fileName, String param) {
