@@ -35,6 +35,8 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     Page<ComputableModel> findByNameContains(String name,Pageable pageable);
 
+    List<ComputableModel> findByNameContainsIgnoreCaseAndContentType(String name, String contentType);
+
     Page<ComputableModel> findByAuthor(String author,Pageable pageable);
 
     Page<ComputableModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);

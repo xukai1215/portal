@@ -232,8 +232,15 @@ public class TaskRestController {
     JsonResult runIntegratedModel(@RequestParam("file") MultipartFile file,
                                   @RequestParam("name") String name,
                                   HttpServletRequest request) throws IOException {
+
+
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null) {
+//            ModelAndView modelAndView = new ModelAndView();
+//            modelAndView.setViewName("login");
+//            modelAndView.addObject("unlogged", "1");
+//            return modelAndView;
+//
             return ResultUtils.error(-1, "no login");
         }
         else {

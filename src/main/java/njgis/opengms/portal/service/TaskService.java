@@ -604,9 +604,11 @@ public class TaskService {
 
         JSONObject result = postJSON("http://" + managerServerIpAndPort + "/GeoModeling/computableModel/invoke", lists);
 
-        if (result.getInteger("code") == 1) {
+        if(result!=null) {
+            if (result.getInteger("code") == 1) {
 
-            return result.getJSONObject("data").getString("tid");
+                return result.getJSONObject("data").getString("tid");
+            }
         }
 
         return null;

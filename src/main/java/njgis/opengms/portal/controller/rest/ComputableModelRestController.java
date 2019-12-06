@@ -214,6 +214,11 @@ public class ComputableModelRestController {
         return ResultUtils.success(computableModelService.list(modelItemFindDTO,classes));
     }
 
+    /**
+     * 张硕
+     * 2019.12.04
+     * 模型集成相关接口 "/integratingList" "/integrating" "/getComputableModelsBySearchTerms"
+     */
     @RequestMapping (value="/integratingList",method = RequestMethod.GET)
     Page<ComputableModel> integratingList(int page,String sortType, int sortAsc){
         return computableModelService.integratingList(page,sortType,sortAsc);
@@ -224,6 +229,12 @@ public class ComputableModelRestController {
         Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
         return computableModelService.integrate(computableModelList);
     }
+
+    @RequestMapping(value = "/getComputableModelsBySearchTerms",method = RequestMethod.GET)
+    List<ComputableModel> getComputableModelsBySearchTerms(String searchTerms){
+        return computableModelService.getComputableModelsBySearchTerms(searchTerms);
+    }
+    /**/
 
     @RequestMapping (value="/advance",method = RequestMethod.POST)
     JsonResult advanced(ModelItemFindDTO modelItemFindDTO,

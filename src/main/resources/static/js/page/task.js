@@ -1169,7 +1169,7 @@ var vue = new Vue({
                         return;
                     }
 
-
+                    var tid;
                     $.ajax({
                         url: "/task/invoke",
                         type: "POST",

@@ -373,7 +373,6 @@ Format.prototype.refresh = function()
 	{
 		evt.preventDefault();
 	}));
-	
 	if (graph.isSelectionEmpty())
 	{
 		mxUtils.write(label, mxResources.get('diagram'));
