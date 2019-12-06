@@ -1407,9 +1407,9 @@ var vue = new Vue({
                             if(this.myFileShown.length===0)
                                 this.addChild(this.myFile,paths[0],newChild)
                             this.myFileShown.push(newChild);//myfileShown是一个指向myFile子元素的地址，修改则myFile也变化
-                            console.log(this.myFileShown)
+                            // console.log(this.myFileShown)
                             // this.getFilePackage();
-                            console.log(this.myFile)
+                            // console.log(this.myFile)
                             alert('Add folder successfully')
                             this.newFolderName='';
                             this.addFolderIndex=false;
@@ -1479,7 +1479,9 @@ var vue = new Vue({
                             }
                             data.children.push(newChild);
 
-                            this.addChild(this.myFile,paths[0],newChild)
+                            if(this.myFileShown.length===0)
+                                this.addChild(this.myFile,paths[0],newChild)
+                            this.myFileShown.push(newChild);
 
                             setTimeout(()=>{
                                     this.$refs.folderTree.setCurrentKey(newChild.id)
@@ -4441,21 +4443,22 @@ var vue = new Vue({
 
             for (let i = 0; i < this.downloadDataSet.length; i++) {
                 sourceId.push(this.getSourceId(this.downloadDataSet[i].url))
-                console.log(sourceId)
+                // console.log(sourceId)
             }
 
 
             if (this.downloadDataSet.length > 0) {
 
                 const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                let url = "/dataManager/downloadSomeRemote?" + keys;
-                let link = document.createElement('a');
-                link.style.display = 'none';
-                link.href = url;
-                // link.setAttribute(item.fileName,'filename.'+item.suffix)
-
-                document.body.appendChild(link)
-                link.click();
+                let url = "http://111.229.14.128:8082/dataResource/getResources?" + keys;
+                window.open(url)
+                // let link = document.createElement('a');
+                // link.style.display = 'none';
+                // link.href = url;
+                // // link.setAttribute(item.fileName,'filename.'+item.suffix)
+                //
+                // document.body.appendChild(link)
+                // link.click();
 
             } else {
                 alert("please select first!!")
@@ -4765,7 +4768,7 @@ var vue = new Vue({
                     } else {
                         let idList=json.data
                         console.log(idList)
-                        if (item == undefined){
+                        if (item instanceof Array){
                             if (this.uploadInPath == 1) {
                                 for (let i = 0; i < item.length; i++) {
                                     console.log(item[i].file_name)
@@ -4914,10 +4917,10 @@ var vue = new Vue({
         },
 
         right_download(){
-            let url=this.rightTargetItem.url
+            let id=this.rightTargetItem.url.split('=')[1]
             //下载接口
-            if(url!=undefined) {
-                window.open("/dispatchRequest/download?url=" + url);
+            if(id!=undefined) {
+                window.open( 'http://111.229.14.128:8082/dataResource/getResource?sourceStoreId='+id);
             }
             else{
                 this.$message.error("No data can be downloaded.");
@@ -4954,6 +4957,85 @@ var vue = new Vue({
             }
 
 
+        },
+
+        deleteAll(){
+            const h = this.$createElement;
+            if(this.rightTargetItem.package==false){
+                var sourceId=this.getSourceId(this.rightTargetItem.url)
+            }
+
+            this.$msgbox({
+                title: ' ',
+                message: h('p', null, [
+                    h('span', { style: 'font-size:15px' }, 'All of the selected files will be deleted.'),
+                    h('br'),
+                    h('span', null, 'Are you sure to '),
+                    h('span', { style: 'color: #e6a23c;font-weight:600' }, 'continue'),
+                    h('span', null, '?'),
+                ]),
+                type:'warning',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                beforeClose: (action, instance, done) => {
+
+                    if (action === 'confirm') {
+                        if(this.rightTargetItem.package==false)
+                            this.delete_data_dataManager(sourceId)
+                        instance.confirmButtonLoading = true;
+                        instance.confirmButtonText = 'deleting...';
+                        setTimeout(() => {
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/deleteSomeFiles",
+                                data: JSON.stringify({deleteTarget:this.downloadDataSet}),
+                                async: true,
+                                contentType:"application/json",
+                                success: (json) => {
+                                    let data = json.data;
+                                    if (json.code == -1) {
+                                        alert("Please login first!")
+                                        window.sessionStorage.setItem("history", window.location.href);
+                                        window.location.href = "/user/login"
+                                    } else {
+                                        for(let i=0;i<data.length;i++)
+                                            this.deleteInfront(data[i],this.myFile)
+
+                                        this.downloadDataSet=[];
+                                        this.downloadDataSetName=[];
+                                        // this.rightTargetItem=null;
+
+                                    }
+
+                                }
+                            });
+                            done();
+                            setTimeout(() => {
+                                instance.confirmButtonLoading = false;
+                            }, 300);
+                        }, 300);
+                    } else {
+                        done();
+                    }
+                }
+            }).then(action => {
+                this.rightMenuShow=false
+                this.$message({
+                    type: 'success',
+                    message: 'delete successful '
+                });
+            });
+        },
+
+        deleteInfront(id,file){
+            for(let i=file.length-1;i>=0;i--){
+                if(file[i].package==true)
+                    this.deleteInfront(id,file[i].children)
+                else if(file[i].id==id){
+                    file.splice(i,1)
+                }
+            }
         },
 
         right_deleteFile(){

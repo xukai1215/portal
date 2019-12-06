@@ -669,7 +669,7 @@ public class UserService {
         for (int i = 0; i < files.size(); i++) {
 
             String fileName = files.get(i).get("file_name").toString();
-            String url = "http://" + dataContainerIpAndPort + "/dataResource/getResources?sourceStoreId=" + files.get(i).get("source_store_id").toString();
+            String url = "http://" + dataContainerIpAndPort + "/dataResource/getResource?sourceStoreId=" + files.get(i).get("source_store_id").toString();
             String[] a = fileName.split("\\.");
             String name = a[0];
             String suffix = a[1];
@@ -708,6 +708,14 @@ public class UserService {
         return fileMetaList;
     }
 
+    public List<String> deleteFiles(List<FileMeta> deletes,String userName){
+        List<String> result = new ArrayList<>() ;
+        for(FileMeta file : deletes ){
+            String id=file.getId();
+            result.add(deleteFile(id,userName)) ;
+        }
+        return result;
+    }
 
     public String deleteFile(String id, String userName){
         User user = userDao.findFirstByUserName(userName);
