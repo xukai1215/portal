@@ -403,6 +403,7 @@ public class ModelItemService {
         return modelAndView;
     }
 
+
     public ModelItem getByOid(String id) {
         try {
             ModelItem modelItem=modelItemDao.findFirstByOid(id);
@@ -507,6 +508,13 @@ public class ModelItemService {
                 File file=new File(resourcePath+modelItem.getImage());
                 if(file.exists()&&file.isFile())
                     file.delete();
+            }
+
+            List<String> relatedData=new ArrayList<>();
+            for(int i=0;i<relatedData.size();i++){
+                DataItem dataItem=dataItemDao.findFirstById(relatedData.get(i));
+                dataItem.getRelatedModels().remove(oid);
+                dataItemDao.save(dataItem);
             }
 
             modelItemDao.delete(modelItem);
@@ -728,6 +736,53 @@ public class ModelItemService {
 
         switch (type){
             case "dataItem":
+
+                List<String> relationDelete=new ArrayList<>();
+                for(int i=0;i<modelItem.getRelatedData().size();i++){
+                    relationDelete.add(modelItem.getRelatedData().get(i));
+                }
+                List<String> relationAdd=new ArrayList<>();
+                for(int i=0;i<relations.size();i++){
+                    relationAdd.add(relations.get(i));
+                }
+
+                for(int i=0;i<relationDelete.size();i++){
+                    for(int j=0;j<relationAdd.size();j++){
+                        if(relationDelete.get(i).equals(relationAdd.get(j))){
+                            relationDelete.set(i,"");
+                            relationAdd.set(j,"");
+                            break;
+                        }
+                    }
+                }
+
+                for(int i=0;i<relationDelete.size();i++){
+                    String id=relationDelete.get(i);
+                    if(!id.equals("")) {
+                        DataItem dataItem = dataItemDao.findFirstById(id);
+                        if(dataItem.getRelatedModels()!=null) {
+                            dataItem.getRelatedModels().remove(oid);
+                            dataItemDao.save(dataItem);
+                        }
+                    }
+                }
+
+                for(int i=0;i<relationAdd.size();i++){
+                    String id=relationAdd.get(i);
+                    if(!id.equals("")) {
+                        DataItem dataItem = dataItemDao.findFirstById(id);
+                        if(dataItem.getRelatedModels()!=null) {
+                            dataItem.getRelatedModels().add(oid);
+                        }
+                        else{
+                            List<String> relatedModels=new ArrayList<>();
+                            relatedModels.add(oid);
+                            dataItem.setRelatedModels(relatedModels);
+                        }
+                        dataItemDao.save(dataItem);
+                    }
+                }
+
                 modelItem.setRelatedData(relations);
                 break;
             case "modelItem":

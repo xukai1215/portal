@@ -539,8 +539,8 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
         '<label for="eventInp_' + id + '" class="col-sm-3 control-label">'+ (type=="response"?"Input":"Output") +'</label>' +
         '<div class="col-sm-8" style="height: 24px !important;">' +
         '<input type="text" class="form-control" ' + enable + ' id="eventInp_' + id + '" style="width:60%"  placeholder="Please select upload file" />' +
-        '<button id="select_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 30%" ><span><i class="fa fa-th-large"></i></span></button>'+
-        '<button id="upload_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 20%" ><span><i class="fa fa-cloud-upload"></i></span></button>'+
+        '<button id="upload_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 30%" ><span><i class="fa fa-cloud-upload"></i></span></button>'+
+        '<button id="select_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 20%" ><span><i class="fa fa-th-large"></i></span></button>'+
         '<button id="check_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 10%"><span><i class="fa fa-folder-open"></i></span></button>'+
         '<button id="download_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 0%"><span><i class="fa fa-download"></i></span></button>'+
         '</div>' +
@@ -552,22 +552,12 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
         param += '<div id="inputGroup_' + id + '" class="form-group mxWinPanel">';
         for(i=0;i<nodes.length;i++) {
             let node=nodes[i];
-            let nodeType="";
-            switch (node.type) {
-                case "DTKT_INT":
-                    nodeType = "INT";
-                    break;
-                case "DTKT_REAL":
-                    nodeType = "REAL";
-                    break;
-                case "DTKT_INT | DTKT_LIST":
-                    nodeType = "INT_Array";
-                    break;``
-            }
-            param +='<label for="eventInp_' + node.name + '" class="col-sm-3 control-label" title="'+node.description+'">' + node.name + '</label>' +
+            let nodeType=node.type;
+
+            param +='<div class="clearfix" style="margin-bottom:15px"><label for="eventInp_' + node.name + '" class="col-sm-3 control-label" title="'+node.description+'">' + node.name + '</label>' +
             '<div class="col-sm-8" style="height: 24px !important;">' +
             '<input type="text" class="form-control StateWindowEvent" name="'+node.name+'" data-parent="'+id+'" id="eventInp_' + node.name + '" style="width:100%;padding: 0 10px;"  placeholder="Data Type: '+nodeType+'" />' +
-            '</div>'
+            '</div></div>'
         }
         param += '</div>'
     }

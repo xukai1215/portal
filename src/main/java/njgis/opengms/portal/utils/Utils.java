@@ -432,7 +432,24 @@ public class Utils {
             for (Element udxNode : udxNodes) {
                 JSONObject node = new JSONObject();
                 node.put("text", udxNode.attributeValue("name"));
-                node.put("dataType", udxNode.attributeValue("type"));
+                String dataType=udxNode.attributeValue("type");
+                String dataType_result="";
+                switch (dataType) {
+                    case "DTKT_INT | DTKT_LIST":
+                        dataType_result = "int_array";
+                        break;
+                    default:
+                        String[] strings=dataType.split("_");
+                        for(int i=0;i<strings.length;i++){
+                            if(!strings[i].equals("DTKT")){
+                                dataType_result+=strings[i];
+                                if(i!=strings.length-1){
+                                    dataType_result+="_";
+                                }
+                            }
+                        }
+                }
+                node.put("dataType", dataType_result);
                 node.put("desc", udxNode.attributeValue("description"));
                 if (udxNode.attributeValue("type").equals("external")) {
                     node.put("externalId", udxNode.attributeValue("externalId"));

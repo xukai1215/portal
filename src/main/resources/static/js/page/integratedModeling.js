@@ -32,17 +32,8 @@ var vue = new Vue({
                             child.dataId = node.text;
                             child.event = node.text;
                             child.description = node.desc;
-                            switch (node.dataType) {
-                                case "DTKT_INT":
-                                    child.eventType = "int";
-                                    break;
-                                case "DTKT_REAL":
-                                    child.eventType = "real";
-                                    break;
-                                case "DTKT_INT | DTKT_LIST":
-                                    child.eventType = "int_array";
-                                    break;
-                            }
+                            child.eventType = node.dataType;
+
                             child.child = true;
                             children.push(child);
                         }

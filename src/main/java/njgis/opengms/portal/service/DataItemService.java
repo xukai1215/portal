@@ -127,6 +127,13 @@ public class DataItemService {
 
         }
 
+        List<String> relatedModels=data.getRelatedModels();
+        for(int i=0;i<relatedModels.size();i++){
+            ModelItem modelItem=modelItemDao.findFirstByOid(relatedModels.get(i));
+            modelItem.getRelatedData().remove(id);
+            modelItemDao.save(modelItem);
+        }
+
 
         dataItemDao.deleteById(id);
     }
@@ -1276,8 +1283,56 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
     public String setRelation(String id, List<String> relations){
 
         DataItem dataItem=dataItemDao.findFirstById(id);
+
+        List<String> relationDelete=new ArrayList<>();
+        for(int i=0;i<dataItem.getRelatedModels().size();i++){
+            relationDelete.add(dataItem.getRelatedModels().get(i));
+        }
+        List<String> relationAdd=new ArrayList<>();
+        for(int i=0;i<relations.size();i++){
+            relationAdd.add(relations.get(i));
+        }
+
+        for(int i=0;i<relationDelete.size();i++){
+            for(int j=0;j<relationAdd.size();j++){
+                if(relationDelete.get(i).equals(relationAdd.get(j))){
+                    relationDelete.set(i,"");
+                    relationAdd.set(j,"");
+                    break;
+                }
+            }
+        }
+
+        for(int i=0;i<relationDelete.size();i++){
+            String oid=relationDelete.get(i);
+            if(!oid.equals("")) {
+                ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+                if(modelItem.getRelatedData()!=null) {
+                    modelItem.getRelatedData().remove(id);
+                    modelItemDao.save(modelItem);
+                }
+            }
+        }
+
+        for(int i=0;i<relationAdd.size();i++){
+            String oid=relationAdd.get(i);
+            if(!oid.equals("")) {
+                ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+                if(modelItem.getRelatedData()!=null) {
+                    modelItem.getRelatedData().add(id);
+                }
+                else{
+                    List<String> relatedData=new ArrayList<>();
+                    relatedData.add(id);
+                    modelItem.setRelatedData(relatedData);
+                }
+                modelItemDao.save(modelItem);
+            }
+        }
+
         dataItem.setRelatedModels(relations);
         dataItemDao.save(dataItem);
+
         return "suc";
 
     }

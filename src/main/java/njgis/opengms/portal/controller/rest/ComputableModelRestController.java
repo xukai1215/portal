@@ -311,6 +311,11 @@ public class ComputableModelRestController {
         return ResultUtils.success(user.getOid());
 
     }
+    @RequestMapping(value = "/getRelatedDataByPage",method = RequestMethod.GET)
+    public JsonResult getRelatedDataByPage(ComputableModelFindDTO computableModelFindDTO, @RequestParam(value = "oid") String oid){
+
+        return ResultUtils.success(computableModelService.getRelatedDataByPage(computableModelFindDTO,oid));
+    }
 
 
 

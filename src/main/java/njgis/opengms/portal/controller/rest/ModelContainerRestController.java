@@ -3,16 +3,14 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ModelContainerDao;
+import njgis.opengms.portal.dto.ModelContainerDTO;
 import njgis.opengms.portal.entity.ModelContainer;
 import njgis.opengms.portal.entity.support.GeoInfoMeta;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +26,19 @@ public class ModelContainerRestController {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @RequestMapping(value = "/add",method = RequestMethod.POST)
+    JsonResult add(@RequestBody ModelContainerDTO modelContainerDTO){
+
+        return ResultUtils.success();
+    }
+
+    @RequestMapping(value = "/remove",method = RequestMethod.POST)
+    JsonResult remove(@RequestParam("userName") String userName,
+                      @RequestParam("mac") String mac) {
+
+        return ResultUtils.success();
+    }
 
     @RequestMapping(value = "/register/{ip}", method = RequestMethod.POST)
     JsonResult register(@PathVariable("ip") String ip, HttpServletRequest request) {
