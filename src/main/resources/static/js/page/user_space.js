@@ -333,6 +333,9 @@ var vue = new Vue({
         selectFolderVisible:false,
         uploadFileList:[],
 
+        //server
+        modelContainerList:[],
+
 
     },
 
@@ -435,9 +438,9 @@ var vue = new Vue({
         },
 
         getAllPackageTasks(){
-            for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
-                this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
-            }
+            // for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
+            //     this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
+            // }
             console.log(this.packageContentList)
         },
 
@@ -1541,6 +1544,7 @@ var vue = new Vue({
             }
         },
 
+        //
         handleSelect(index, indexPath) {
             console.log(index)
             this.resourceLoad = true;
@@ -1635,7 +1639,7 @@ var vue = new Vue({
                 //     this.getResearchItems();
                 //     break;
                 case '7':
-                    this.getServersInfo()
+                    this.getServersInfo();
                     break;
             }
         },
@@ -2224,24 +2228,24 @@ var vue = new Vue({
         },
 
         getServersInfo() {
-            $.ajax({
-                type: "GET",
-                url: "/node/computerNodesByUserId",
-                data: {},
-
-                crossDomain: true,
-                xhrFields: {
-                    withCredentials: true
-                },
-                async: true,
-                success: (data) => {
-                    data = JSON.parse(data);
-                    console.log(data);
-                    var chartInfo = this.createChartInfo(data.computerNodes);
-                    this.computerNodesInfos = chartInfo.cityCount;
-                    this.createChartMap(chartInfo);
-                }
-            })
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/node/computerNodesByUserId",
+            //     data: {},
+            //
+            //     crossDomain: true,
+            //     xhrFields: {
+            //         withCredentials: true
+            //     },
+            //     async: true,
+            //     success: (data) => {
+            //         data = JSON.parse(data);
+            //         console.log(data);
+            //         var chartInfo = this.createChartInfo(data.computerNodes);
+            //         this.computerNodesInfos = chartInfo.cityCount;
+            //         this.createChartMap(chartInfo);
+            //     }
+            // })
 
         },
 
@@ -5792,6 +5796,20 @@ var vue = new Vue({
             //this.getModels();
         });
 
+        $.ajax({
+            type: "GET",
+            url: "/modelContainer/all",
+            data: {},
+
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            async: true,
+            success: (res) => {
+                this.modelContainerList=res.data;
+            }
+        })
 
         //managerUpload
 

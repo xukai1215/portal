@@ -107,12 +107,9 @@ var vue = new Vue({
         },
         searchcontent: '',
         databrowser: [],
-        loading: 'false',
-        managerloading: true,
-        dataid: '',
+
         rightMenuShow: false,
 
-        introHeight: 1,
 
         dataItemVisible: false,
         categoryTree: [],
@@ -130,9 +127,9 @@ var vue = new Vue({
         relatePageOption:{
             page: 0,
             pageSize: 5,
+            asc: false,
             searchResult: [],
             total: 0,
-            oid:"",
         },
 
         loadDataVisible: false,
@@ -360,8 +357,8 @@ var vue = new Vue({
                 params:this.relatePageOption
             }).then((res) => {
                     console.log(res)
-                    this.relatePageOption.searchResult = res.data.list;
-                    this.relatePageOption.total = res.data.total;
+                    this.relatePageOption.searchResult = res.data.data.list;
+                    this.relatePageOption.total = res.data.data.total;
                 });
         },
 
@@ -1907,7 +1904,7 @@ var vue = new Vue({
                         state.event[j].externalId = state.event[j].data[0].externalId;
                     }
 
-                    if (nodes != undefined&&refName!="grid"&&refName!="table") {
+                    if (nodes != undefined&&refName!="grid"&&refName!="table"&&refName!="shapes") {
                         let children = [];
                         for (k = 0; k < nodes.length; k++) {
                             let node = nodes[k];

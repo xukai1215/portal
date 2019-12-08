@@ -435,16 +435,16 @@ new Vue({
             let url, contentType;
             switch (this.relateType) {
                 case "dataItem":
-                    url="/dataItem/searchByName";
+                    url = "/dataItem/searchByName";
                     data = {
-                        page: this.pageOption.currentPage+1,
+                        page: this.pageOption.currentPage + 1,
                         pageSize: 5,
                         asc: true,
                         classifications: [],
                         category: '',
                         searchText: this.relateSearch
                     }
-                    data=JSON.stringify(data);
+                    data = JSON.stringify(data);
                     contentType = "application/json";
                     break;
                 case "concept":
@@ -607,54 +607,74 @@ new Vue({
         },
 
         addRelation(order) {
-            switch (order) {
-                case 1:
-                    this.relateType = "modelItem";
-                    this.relateTitle = "Add Related Model Item"
-                    break;
-                case 2:
-                    this.relateType = "conceptualModel";
-                    this.relateTitle = "Add Related Conceptual Model"
-                    break;
-                case 3:
-                    this.relateType = "logicalModel";
-                    this.relateTitle = "Add Related Logical Model"
-                    break;
-                case 4:
-                    this.relateType = "computableModel";
-                    this.relateTitle = "Add Related Computable Model"
-                    break;
-                case 5:
-                    this.relateType = "concept";
-                    this.relateTitle = "Add Related Concept & Semantic"
-                    break;
-                case 6:
-                    this.relateType = "spatialReference";
-                    this.relateTitle = "Add Related Spatial Reference"
-                    break;
-                case 7:
-                    this.relateType = "template";
-                    this.relateTitle = "Add Related Data Template"
-                    break;
-                case 8:
-                    this.relateType = "unit";
-                    this.relateTitle = "Add Related Unit & Metric"
-                    break;
-                case 9:
-                    this.relateType = "dataItem";
-                    this.relateTitle = "Add Related Data Item";
-                    break;
-            }
-            this.tableData = [];
-            this.pageOption.currentPage=0;
-            this.pageOption.searchResult = [];
-            this.relateSearch = "";
-            this.getRelation();
-            this.search();
-            this.dialogTableVisible = true;
-        }
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    data = JSON.parse(data);
+                    if (data.oid == "") {
+                        alert("Please login first");
+                        this.setSession("history", window.location.href);
+                        window.location.href = "/user/login";
+                    }
+                    else {
+                        switch (order) {
+                            case 1:
+                                this.relateType = "modelItem";
+                                this.relateTitle = "Add Related Model Item"
+                                break;
+                            case 2:
+                                this.relateType = "conceptualModel";
+                                this.relateTitle = "Add Related Conceptual Model"
+                                break;
+                            case 3:
+                                this.relateType = "logicalModel";
+                                this.relateTitle = "Add Related Logical Model"
+                                break;
+                            case 4:
+                                this.relateType = "computableModel";
+                                this.relateTitle = "Add Related Computable Model"
+                                break;
+                            case 5:
+                                this.relateType = "concept";
+                                this.relateTitle = "Add Related Concept & Semantic"
+                                break;
+                            case 6:
+                                this.relateType = "spatialReference";
+                                this.relateTitle = "Add Related Spatial Reference"
+                                break;
+                            case 7:
+                                this.relateType = "template";
+                                this.relateTitle = "Add Related Data Template"
+                                break;
+                            case 8:
+                                this.relateType = "unit";
+                                this.relateTitle = "Add Related Unit & Metric"
+                                break;
+                            case 9:
+                                this.relateType = "dataItem";
+                                this.relateTitle = "Add Related Data Item";
+                                break;
+                        }
+                        this.tableData = [];
+                        this.pageOption.currentPage = 0;
+                        this.pageOption.searchResult = [];
+                        this.relateSearch = "";
+                        this.getRelation();
+                        this.search();
+                        this.dialogTableVisible = true;
+                    }
+                }
+            })
 
-
+        },
     },
     mounted() {
         let currenturl = window.location.href;
@@ -741,7 +761,7 @@ $(function () {
 
     $(".ab").click(function () {
 
-            if(!$(this).hasClass('transform180'))
+            if (!$(this).hasClass('transform180'))
                 $(this).addClass('transform180')
             else
                 $(this).removeClass('transform180')
