@@ -278,7 +278,23 @@ public class ComputableModelService {
             JSONArray jsonArray = new JSONArray();
             for (int i = page * pageSize; i < relatedDataItem.size(); i++) {
                 DataItem dataItem = dataItemDao.findFirstById(relatedDataItem.get(i));
-                jsonArray.add(dataItem);
+
+                JSONObject obj=new JSONObject();
+                obj.put("name",dataItem.getName());
+                obj.put("id",dataItem.getId());
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                obj.put("createTime",simpleDateFormat.format(dataItem.getCreateTime()));
+                obj.put("description",dataItem.getDescription());
+                obj.put("contentType",dataItem.getContentType());
+                obj.put("url",dataItem.getReference());
+                obj.put("dataList",dataItem.getDataList());
+                JSONObject author=new JSONObject();
+                User user=userDao.findFirstByOid(dataItem.getAuthor());
+                author.put("name",user.getName());
+                author.put("oid",user.getOid());
+                obj.put("author",author);
+
+                jsonArray.add(obj);
                 if (jsonArray.size() == pageSize)
                     break;
             }

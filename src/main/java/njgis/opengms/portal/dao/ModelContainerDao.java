@@ -5,4 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ModelContainerDao extends MongoRepository<ModelContainer,String> {
 
+    ModelContainer findFirstByUserAndMac(String user,String mac);
+
 }

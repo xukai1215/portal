@@ -29,6 +29,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -505,6 +506,8 @@ public class DataItemService {
             object.put("author",userObj);
             object.put("dataList",dataItem.getDataList());
             object.put("dataStr",dataStr);
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+            object.put("createTime",simpleDateFormat.format(dataItem.getCreateTime()));
 
 
 
