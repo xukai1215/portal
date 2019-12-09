@@ -104,8 +104,14 @@ public class ModelItemService {
         //getpage函数通过id获取需要的页面
     public ModelAndView getPage(String id, HttpServletRequest request){
         //条目信息
-
-        ModelItem modelInfo=getByOid(id);
+        ModelItem modelInfo=new ModelItem();
+        ModelAndView modelAndView=new ModelAndView();
+        try {
+            modelInfo = getByOid(id);
+        }catch (MyException e){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
 
         modelInfo=(ModelItem)itemService.recordViewCount(modelInfo);
 
@@ -372,7 +378,7 @@ public class ModelItemService {
 
 
 
-        ModelAndView modelAndView=new ModelAndView();
+
         modelAndView.setViewName("model_item_info");
         modelAndView.addObject("modelInfo",modelInfo);
         modelAndView.addObject("metaKeywords",meta_keywords);
