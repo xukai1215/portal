@@ -145,10 +145,16 @@ public class RepositoryService {
 
     //concept
     public ModelAndView getConceptPage(String id, HttpServletRequest req) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("conceptInfo");
 
+        ModelAndView modelAndView = new ModelAndView();
         Concept concept = conceptDao.findByOid(id);
+        if(concept==null){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
+
+
+        modelAndView.setViewName("conceptInfo");
 
         concept=(Concept)itemService.recordViewCount(concept);
 //        concept.setLoadCount(concept.getLoadCount() + 1);
@@ -263,9 +269,15 @@ public class RepositoryService {
     public ModelAndView getThemePage(String id, HttpServletRequest req) {
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("theme_info");
+
 
         Theme theme = themeDao.findByOid(id);
+        if(theme==null){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("theme_info");
         modelAndView.addObject("info", theme);
         themeDao.save(theme);
 
@@ -610,10 +622,14 @@ public class RepositoryService {
     //spatialReference
     public ModelAndView getSpatialReferencePage(String id,HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("spatialReferenceInfo");
 
         SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
+        if(spatialReference==null){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
 
+        modelAndView.setViewName("spatialReferenceInfo");
         spatialReference=(SpatialReference)itemService.recordViewCount(spatialReference);
         spatialReferenceDao.save(spatialReference);
 
@@ -923,6 +939,10 @@ public class RepositoryService {
         modelAndView.setViewName("templateInfo");
 
         Template template = templateDao.findByOid(id);
+        if(template==null){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
 
         template=(Template)itemService.recordViewCount(template);
         templateDao.save(template);
@@ -1208,6 +1228,10 @@ public class RepositoryService {
         modelAndView.setViewName("unitInfo");
 
         Unit unit = unitDao.findByOid(id);
+        if(unit==null){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
 
         unit=(Unit)itemService.recordViewCount(unit);
         unitDao.save(unit);

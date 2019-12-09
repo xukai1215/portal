@@ -27,6 +27,14 @@
         .el-card__body a {
             color: black;
         }
+        .author{
+            height: 41px;
+            display: none; /*flex;*/
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #EBEEF5;
+            padding: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -51,8 +59,7 @@
                             <a href="http://geomodeling.njnu.edu.cn/hydro-model-integration/main" target="_blank" style="font-size: 20px;font-weight: bold">Hydrological</a>
                         </div>
                     </el-card>
-                    <div class="el-row author"
-                         style="display: flex; justify-content: center; align-items: center;border-bottom:1px solid #EBEEF5;padding:20px 0">
+                    <div class="el-row author">
                         <div class="el-col el-col-4 el-col-offset-3">
                             <img th:src="'/static/img/icon/default.png'"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
@@ -74,8 +81,7 @@
                             <a href="http://geomodeling.njnu.edu.cn/FGM-theme/" target="_blank" style="font-size: 19px;font-weight: bold">Forest Growth</a>
                         </div>
                     </el-card>
-                    <div class="el-row author"
-                         style="display: flex; justify-content: center; align-items: center;border-bottom:1px solid #EBEEF5;padding:20px 0">
+                    <div class="el-row author">
                         <div class="el-col el-col-4 el-col-offset-3">
                             <img th:src="'/static/img/icon/default.png'"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
@@ -97,8 +103,7 @@
                             <a href="http://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html" target="_blank" style="font-size: 20px;font-weight: bold">SAGA</a>
                         </div>
                     </el-card>
-                    <div class="el-row author"
-                         style="display: flex; justify-content: center; align-items: center;border-bottom:1px solid #EBEEF5;padding:20px 0">
+                    <div class="el-row author">
                         <div class="el-col el-col-4 el-col-offset-3">
                             <img th:src="'/static/img/icon/default.png'"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
@@ -120,8 +125,7 @@
                             <a href="http://geomodeling.njnu.edu.cn/TrafficNoiseTheme/" target="_blank" style="font-size: 20px;font-weight: bold">Traffic Noise</a>
                         </div>
                     </el-card>
-                    <div class="el-row author"
-                         style="display: flex; justify-content: center; align-items: center;border-bottom:1px solid #EBEEF5;padding:20px 0">
+                    <div class="el-row author">
                         <div class="el-col el-col-4 el-col-offset-3">
                             <img th:src="'/static/img/icon/default.png'"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
@@ -144,8 +148,7 @@
                             <a href="http://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info" target="_blank" style="font-size: 20px;font-weight: bold">Bicycle-sharing</a>
                         </div>
                     </el-card>
-                    <div class="el-row author"
-                         style="display: flex; justify-content: center; align-items: center;border-bottom:1px solid #EBEEF5;padding:20px 0">
+                    <div class="el-row author">
                         <div class="el-col el-col-4 el-col-offset-3">
                             <img th:src="'/static/img/icon/default.png'"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
@@ -170,8 +173,7 @@
                             <a th:href="'../repository/theme/'+${theme.oid}" th:utext="${theme.name}" target="_blank" style="font-size: 20px;font-weight: bold"></a>
                         </div>
                     </el-card>
-                        <div class="el-row author"
-                             style="display: flex; justify-content: center; align-items: center;border-bottom:1px solid #EBEEF5;padding:20px 0">
+                        <div class="el-row author">
                             <div class="el-col el-col-4 el-col-offset-3">
                                 <img th:src="'/static/img/icon/default.png'"
                                      class="round_icon" style="width:40px;height: 40px;float:left;">
