@@ -918,18 +918,6 @@ var vue = new Vue({
                 }
                 if (currentIndex === 3) {
                     return true;
-                    // if (stepDirection === "forward"){
-                    //     if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
-                    //         return true;
-                    //     }else {
-                    //         for(i = 0;i<that.themeObj.application.length; i++){
-                    //             if (that.themeObj.application[i].applicationname == ""||that.themeObj.application[i].applicationlink ==""||that.themeObj.application[i].upload_application_image==""){
-                    //                 alert("Please complete the information");
-                    //                 return false;
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
             }
         });
