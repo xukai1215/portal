@@ -47,11 +47,11 @@ var vue = new Vue({
         },
 
     },
+    mounted(){
+        let that = this;
 
-    mounted:{
     }
 });
-
 function show(id,container){
     $(".x_content").hide();
     $("#"+id).show();

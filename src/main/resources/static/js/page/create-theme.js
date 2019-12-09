@@ -14,7 +14,7 @@ var vue = new Vue({
         editableTabsValue_data: '1',
         editableTabsValue_applications: '1',
         editableTabs_model: [{
-            id:1,
+            id:"1",
             tabledata:[],
             //tabledata:[],
             title: 'Tab 1',
@@ -36,6 +36,7 @@ var vue = new Vue({
             content: 'Tab 1 content'
         }],
         editableTabs_applications: [{
+            id:"1",
             title: 'Tab 1',
             name: '1',
             content: 'Tab 1 content'
@@ -54,6 +55,12 @@ var vue = new Vue({
                 id:"1",
                 dcname:'',
                 datasoid:[],
+            }],
+            application:[{
+                id:"1",
+                applicationname:'',
+                applicationlink:'',
+                upload_application_image:'',
             }]
         },
 
@@ -215,7 +222,7 @@ var vue = new Vue({
 
         },
         handleTabsEdit_data(targetName, action) {
-            this.confirmflag1 = 0;
+            // this.confirmflag1 = 0;
 
             if (action === 'add') {
                 let newTabName = ++this.tabIndex_data + '';
@@ -266,21 +273,29 @@ var vue = new Vue({
             }
         },
         handleTabsEdit_applications(targetName, action) {
-            var app = {};
-            app.applicationname = $("#applicationname").val();
-            app.applicationlink = $("#applicationlink").val();
-            app.upload_application_image = $(".img_Show1").get(0).currentSrc;
-            this.themeObj.application.push(app);
+            // var app = {};
+            // app.applicationname = $("#applicationname").val();
+            // app.applicationlink = $("#applicationlink").val();
+            // app.upload_application_image = $(".img_Show1").get(0).currentSrc;
+            // this.themeObj.application.push(app);
 
 
-            $("#applicationname").attr('id','applicationname_past');//改变当前id名称
-            $("#applicationlink").attr('id','applicationlink_past');//改变当前id名称
-            $("#imgShow1").attr('id','imgShow1_past');//改变当前id名称
-            $("#imgChange1").attr('id','imgChange1_past');//改变当前id名称
+            // $("#applicationname").attr('id','applicationname_past');//改变当前id名称
+            // $("#applicationlink").attr('id','applicationlink_past');//改变当前id名称
+            // $("#imgShow1").attr('id','imgShow1_past');//改变当前id名称
+            // $("#imgChange1").attr('id','imgChange1_past');//改变当前id名称
 
             if (action === 'add') {
                 let newTabName = ++this.tabIndex_application + '';
+                this.themeObj.application.push({
+                    id:newTabName,
+                    applicationname:'',
+                    applicationlink:'',
+                    upload_application_image:'',
+                })
+
                 this.editableTabs_applications.push({
+                    id:newTabName,
                     title: 'New Tab',
                     name: newTabName,
                     content: 'New Tab content'
@@ -303,6 +318,17 @@ var vue = new Vue({
 
                 this.editableTabsValue_applications = activeName;
                 this.editableTabs_applications = tabs.filter(tab => tab.name !== targetName);
+                
+                
+                
+                let num;
+                for (i=0;i<this.themeObj.application.length;i++){
+                    if(this.themeObj.application[i].id == targetName){
+                        num = i;
+                        break;
+                    }
+                }
+                this.themeObj.application.splice(num,1);
             }
         },
 
@@ -557,6 +583,8 @@ var vue = new Vue({
             let j=0;
             let num;
             // let num;
+
+            //找到当前选定的tab对应的数值与id对应
             for (i=0;i<this.editableTabs_model.length;i++) {
                 if(this.editableTabs_model[i].id == this.editableTabsValue_model){
                     num=i;
@@ -795,15 +823,27 @@ var vue = new Vue({
             that.editableTabs_data[index].title = $(".category_name2").eq(index).val();
         });
         $(document).on('keyup','.application_name',function ($event) {
-                    let category_input=$(".application_name");
+                    let name_input=$(".application_name");
                     let index=0;
-                    for(;index<category_input.length;index++){
-                        if($(this)[0]==category_input.eq(index)[0]){
+                    for(;index<name_input.length;index++){
+                        if($(this)[0]==name_input.eq(index)[0]){
                             break;
                         }
                     }
+                    that.themeObj.application[index].applicationname = $("#applicationname"+ index).val();
                     that.editableTabs_applications[index].title = $(".application_name").eq(index).val();
          });
+
+        $(document).on('keyup','.application_link',function ($event) {
+            let link_input=$(".application_link");
+            let index = 0;
+            for (;index<link_input.length;index++){
+                if($(this)[0]==link_input.eq(index)[0]){
+                    break;
+                }
+            }
+            that.themeObj.application[index].applicationlink = $("#applicationlink"+ index).val();
+        })
 
 
 
@@ -821,15 +861,78 @@ var vue = new Vue({
             $(".infoPanel").css("min-height",minH+"px");
         };
 
-        $("#step1_next").click(function () {
-            var theme_name = $("#nameInput").val();
-            if (theme_name==""){
-                alert("Please input theme name!");
-                window.location.href = "/user/createTheme";
-                return false;
-            }
+        // $("#step1_next").click(function () {
+        //     var theme_name = $("#nameInput").val();
+        //     if (theme_name==""){
+        //         alert("Please input theme name!");
+        //         window.location.href = "/user/createTheme";
+        //         return false;
+        //     }
+        //
+        // })
+        $(".step").steps({
 
-        })
+            onFinish: function () {
+                alert('complete');
+            },
+            onChange: function (currentIndex, newIndex, stepDirection) {
+                if (currentIndex === 0) {
+                    if (stepDirection === "forward") {
+                        if ($("#nameInput").val().length == 0) {
+                            alert('Please Input Theme Name!');
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+
+                if (currentIndex === 1) {
+                    if (stepDirection === "forward") {
+                        if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0){
+                            return true
+                        } else{
+                            for (i = 0; i < that.themeObj.classinfo.length; i++) {
+                                if (that.themeObj.classinfo[i].mcname == "" || that.themeObj.classinfo[i].modelsoid.length == 0) {
+                                    alert("Please complete the information");
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                }if (currentIndex === 2) {
+                    if (stepDirection === "forward") {
+                        if (that.themeObj.dataClassInfo.length==1&&that.themeObj.dataClassInfo[0].dcname==""&&that.themeObj.dataClassInfo[0].datasoid.length==0){
+                            return true;
+                        } else {
+                            for (i = 0; i < that.themeObj.dataClassInfo.length; i++) {
+                                if (that.themeObj.dataClassInfo[i].dcname == "" || that.themeObj.dataClassInfo[i].datasoid.length == 0) {
+                                    alert("Please complete the information");
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                }
+                if (currentIndex === 3) {
+                    return true;
+                    // if (stepDirection === "forward"){
+                    //     if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+                    //         return true;
+                    //     }else {
+                    //         for(i = 0;i<that.themeObj.application.length; i++){
+                    //             if (that.themeObj.application[i].applicationname == ""||that.themeObj.application[i].applicationlink ==""||that.themeObj.application[i].upload_application_image==""){
+                    //                 alert("Please complete the information");
+                    //                 return false;
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                }
+            }
+        });
         const url="ModelDataDownloadServlet";
         $("#data-list").on('click','.view',function () {
             const dataID=this.getAttribute("div_id");
@@ -1017,7 +1120,7 @@ var vue = new Vue({
                         }
                     });
                 }
-            })
+            });
             window.sessionStorage.setItem("edittheme_id", "");
         }
 
@@ -1058,21 +1161,33 @@ var vue = new Vue({
         });
 
 
-        $(document).on('click','#imgChange1',function ($event) {
-            that.editableTabs_applications[that.tableflag3++].title = $("#applicationname").val();
-
-            $("#imgFile1").click();
+        $(document).on('click','.imgChange',function ($event) {
+            let num = that.editableTabsValue_applications-1;
+            let img_input = $(".img_file");
+            let index = 0;
+            for (;index<img_input.length;index++){
+                if($(this)[0].nextElementSibling==img_input.eq(index)[0]){
+                    break;
+                }
+            }
+            $('#imgFile'+index).click();
         })
-        // $("#imgChange1").click(function () {
-        //     $("#imgFile1").click();
-        // });
-        $("#imgFile1").change(function () {
+        $(document).on('change','.img_file',function ($event) {
+        // $(".img_file").change(function () {
+            //匹配id，增加image
+            let num;
+            for (i=0;i<that.themeObj.application.length;i++){
+                if(that.themeObj.application[i].id==that.editableTabsValue_applications){
+                    num = i;
+                    break;
+                }
+            }
             //获取input file的files文件数组;
             //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
             //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            var file = $('#imgFile1').get(0).files[0];
+            let file = $('#imgFile'+num).get(0).files[0];
             //创建用来读取此文件的对象
-            var reader = new FileReader();
+            let reader = new FileReader();
             //使用该对象读取file文件
             reader.readAsDataURL(file);
             //读取文件成功后执行的方法函数
@@ -1080,10 +1195,13 @@ var vue = new Vue({
                 //读取成功后返回的一个参数e，整个的一个进度事件
                 //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
                 //的base64编码格式的地址
-                $('#imgShow1').get(0).src = e.target.result;
-                $('#imgShow1').show();
+
+                $('#imgShow'+num).get(0).src = e.target.result;
+                that.themeObj.application[num].upload_application_image = e.target.result;
+                $('#imgShow'+num).show();
             }
-        })
+            //console.log($('#imgShow1').get(0).currentSrc);
+        });
         //table
         table = $('#dynamic-table').DataTable({
             //"aaSorting": [[ 0, "asc" ]],
@@ -1225,7 +1343,7 @@ var vue = new Vue({
         // var themeObj = {};
         // that.themeObj.classinfo = new Array();
         // that.themeObj.dataClassInfo = new Array();
-        that.themeObj.application = new Array();
+        // that.themeObj.application = new Array();
 
 
         $(document).on('click','#selectok',function ($event) {
@@ -1271,13 +1389,34 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+            if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
 
-            var theme_name = $("#nameInput").val();
-            if (theme_name==""){
-                alert("Please input theme name!");
-                window.location.href = "/user/createTheme";
-                return false;
+            }else {
+                for(i = 0;i<that.themeObj.application.length; i++){
+                    if (that.themeObj.application[i].applicationname == ""||that.themeObj.application[i].applicationlink ==""||that.themeObj.application[i].upload_application_image==""){
+                        alert("Please complete the information");
+                        return false;
+                    }
+                }
             }
+            //查看classinfo与dataClassInfo，如果存在一个也未输入，则删除
+            if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0) {
+                that.themeObj.classinfo.splice(0,1);
+            }
+            if (that.themeObj.dataClassInfo.length==1&&that.themeObj.dataClassInfo[0].dcname==""&&that.themeObj.dataClassInfo[0].datasoid.length==0) {
+                that.themeObj.dataClassInfo.splice(0,1);
+            }
+            if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+                that.themeObj.application.splice(0,1);
+            }
+
+
+            // var theme_name = $("#nameInput").val();
+            // if (theme_name==""){
+            //     alert("Please input theme name!");
+            //     window.location.href = "/user/createTheme";
+            //     return false;
+            // }
             //step1
             that.themeObj.themename = $("#nameInput").val();
             that.themeObj.image = $('#imgShow').get(0).src;
@@ -1292,11 +1431,11 @@ var vue = new Vue({
             let formData=new FormData();
 
             //第二份追加，因为输入最后一次后，不需要再点击add，只需要点击finish
-            var app = {};
-            app.applicationname = $("#applicationname").val();
-            app.applicationlink = $("#applicationlink").val();
-            app.upload_application_image = $("#imgShow1").get(0).currentSrc;
-            that.themeObj.application.push(app);
+            // var app = {};
+            // app.applicationname = $("#applicationname").val();
+            // app.applicationlink = $("#applicationlink").val();
+            // app.upload_application_image = $("#imgShow1").get(0).currentSrc;
+            // that.themeObj.application.push(app);
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
