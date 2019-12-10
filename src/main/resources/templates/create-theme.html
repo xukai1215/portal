@@ -81,7 +81,7 @@
                             <div class="col-md-12 nopadding">
                                 <div class="panel panel-success" style="border: none">
                                     <div class="panel-body">
-                                        <div id="step">
+                                        <div class="step" id="step">
                                             <div class="step-app">
                                                 <ul class="step-steps text-center">
 
@@ -401,7 +401,7 @@
                                                                                 </lable>
                                                                                 <div class='input-group col-sm-10'>
                                                                                     <input type='text'
-                                                                                           id="applicationname"
+                                                                                           :id="'applicationname'+index"
                                                                                            name="name"
                                                                                            class='form-control application_name'>
                                                                                 </div>
@@ -413,9 +413,9 @@
                                                                                 </lable>
                                                                                 <div class='input-group col-sm-10'>
                                                                                     <input type='text'
-                                                                                           id="applicationlink"
-                                                                                           name="ins"
-                                                                                           class='form-control'>
+                                                                                           :id="'applicationlink'+index"
+                                                                                           name="name"
+                                                                                           class='form-control application_link'>
                                                                                 </div>
                                                                             </div>
                                                                             <div style="margin-top:10px">
@@ -424,11 +424,25 @@
                                                                                     Image:
                                                                                 </lable>
                                                                                 <div class="col-sm-10">
-                                                                                    <img id="imgShow1" class="img_Show1" src=""/>
-                                                                                    <div id="imgChange1">
+                                                                                    <img :id="'imgShow'+index" class="img_Show1" style="
+                                                                                            border: 1px solid #ccc;
+                                                                                            width: 100px;
+                                                                                            height: 100px;
+                                                                                            text-align: center;
+                                                                                            display: none;
+                                                                                            float: left;
+                                                                                            margin-right: 10px;"  src=""/>
+                                                                                    <div id="'imgChange'+index" class="imgChange" style=" border: 1px solid #ccc;
+                                                                                            width: 100px;
+                                                                                            height: 100px;
+                                                                                            text-align: center;
+                                                                                            line-height: 150px;
+                                                                                            vertical-align: middle;
+                                                                                            color: #ccc;
+                                                                                            float: left;">
                                                                                         <i class="fa fa-plus fa-5x"></i>
                                                                                     </div>
-                                                                                    <input id="imgFile1" type="file"
+                                                                                    <input :id="'imgFile'+index" class="img_file" type="file"
                                                                                            style="display: none"
                                                                                            accept="image/*"/>
                                                                                 </div>

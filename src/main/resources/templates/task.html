@@ -52,6 +52,10 @@
             cursor: default;
         }
 
+        .el-form-item{
+            margin-bottom:0;
+        }
+
     </style>
 </head>
 <body>
@@ -963,13 +967,9 @@
                                                     <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                                 </template>
                                             </el-table-column>
-                                            <el-table-column fixed="right" label="Operation" width="100">
+                                            <el-table-column label="Create Time" width="120px">
                                                 <template slot-scope="scope">
-                                                    <el-button
-                                                            size="mini"
-                                                            @click="handleView(scope.$index, scope.row)">View
-                                                    </el-button>
-
+                                                    {{scope.row.createTime}}
                                                 </template>
                                             </el-table-column>
                                         </el-table>
@@ -977,7 +977,7 @@
                                                        @current-change="handlePageChange"
                                                        :current-page="pageOption.page"
                                                        layout="total, prev, pager, next, jumper"
-                                                       :page-size="5"
+                                                       :page-size="pageOption.pageSize"
                                                        :total="pageOption.total">
                                         </el-pagination>
 
@@ -1022,9 +1022,12 @@
                                                     </el-card>
                                                 </div>
                                                 <div v-else>
-                                                    <el-form-item label="Link">
-                                                        <span>{{ props.row.sourceSite }}</span>
-                                                    </el-form-item>
+                                                    <el-form label-position="left" inline class="demo-table-expand">
+                                                        <el-form-item label="Link">
+                                                            <a :href="props.row.url" target="_blank">{{ props.row.url }}</a>
+                                                        </el-form-item>
+                                                    </el-form>
+
                                                 </div>
                                             </template>
                                         </el-table-column>
@@ -1035,27 +1038,22 @@
                                                    target="_blank">{{props.row.name}}</a>
                                             </template>
                                         </el-table-column>
-                                        <el-table-column
-                                                label="Contributor"
-                                        >
+                                        <el-table-column label="Contributor">
                                             <template slot-scope="scope">
                                                 <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                             </template>
                                         </el-table-column>
-                                        <el-table-column fixed="right" label="Operation" width="100">
+                                        <el-table-column label="Create Time" width="120px">
                                             <template slot-scope="scope">
-                                                <el-button
-                                                        size="mini"
-                                                        @click="handleView(scope.$index, scope.row)">View
-                                                </el-button>
-
+                                                {{scope.row.createTime}}
                                             </template>
                                         </el-table-column>
+
                                     </el-table>
                                     <el-pagination style="text-align: center;margin-top:20px"
                                                    @current-change="handlePageChange"
                                                    :current-page="relatePageOption.page"
-                                                   layout="total, prev, pager, next, jumper"
+                                                   layout="total, prev, pager, next"
                                                    :page-size="relatePageOption.pageSize"
                                                    :total="relatePageOption.total">
                                     </el-pagination>

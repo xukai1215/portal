@@ -132,6 +132,22 @@
             border-top: 8px solid #00C1DE;
         }
 
+        .addModelContainer {
+            margin: 10px;
+            border-radius: 5px;
+            border: 2px dashed deepskyblue;
+            text-align: center;
+            padding: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            -webkit-transition: .3s;
+            transition: .3s;
+        }
+
+        .addModelContainer:hover{
+            color:deepskyblue;
+        }
+
     </style>
 </head>
 
@@ -977,16 +993,17 @@
                         <!--</div>-->
                         <div class="row">
 
-                            <div class="col-sm-12 col-md-6 col-lg-4 ">
+                            <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0" v-for="(container,index) in modelContainerList">
                                 <el-card class="box-card serverCard" >
                                     <div class="content">
                                         <div class="clearfix">
                                             <div class="pull-left">
                                                 <h4>
-                                                    WIN-1234567
+                                                    {{container.hardware.hostName}}
 
                                                 </h4>
-                                                <p>1核 - 1GB内存 - 系统盘 40GB SSD云盘 - 上海</p>
+                                                <p style="margin-bottom:5px">{{container.hardware.platform}} {{container.hardware.version}}</p>
+                                                <p>{{container.hardware.cpu_Core}} Core - {{container.hardware.totalMemory}} RAM - {{container.hardware.diskAll}} Hard Disk</p>
                                             </div>
                                         </div>
                                         <div class="clearfix" style="margin-top:10px">
@@ -998,6 +1015,15 @@
                                                 112.234.253.269
                                             </div>
                                         </div>
+                                    </div>
+                                </el-card>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length==0">
+                                <el-card class="box-card serverCard" >
+                                    <div class="addModelContainer" @click="registerModelContainerVisible=true">
+                                        <i class="el-icon-circle-plus-outline" style="font-size: 35px;margin-bottom:10px"></i>
+                                        <br/>
+                                        Add Model Container
                                     </div>
                                 </el-card>
                             </div>
@@ -1055,18 +1081,24 @@
                     </center>
                 </el-card>
                 <el-card :style="{display:(registerModelContainerActive==1?'block':'none')}" shadow="never">
-                    <el-col :offset="6" :span="12" style="padding:20px">
-                        <el-form label-position="top" :model="taskDataForm" style="font-size: 20px">
+                    <center style="font-size:18px;line-height: 2.5em;padding:20px">
+                        <p><b>Step4:</b> Open web browser, enter localhost:8060/setting</a></p>
+                        <p><b>Step5:</b> Click "Register" Button, enter OpenGMS portal account and password.</p>
 
-                            <el-form-item label="Please enter container IP:" required>
-                                <el-input v-model="modelContainerInfo.ip"></el-input>
-                            </el-form-item>
+                        <p>After finishing these steps, please <b>refresh</b> this page.</p>
+                    </center>
+                    <!--<el-col :offset="6" :span="12" style="padding:20px">-->
+                        <!--<el-form label-position="top" :model="taskDataForm" style="font-size: 20px">-->
 
-                            <center>
-                                <el-button type="success" @click="modelContainerRegister">Register</el-button>
-                            </center>
-                        </el-form>
-                    </el-col>
+                            <!--<el-form-item label="Please enter container IP:" required>-->
+                                <!--<el-input v-model="modelContainerInfo.ip"></el-input>-->
+                            <!--</el-form-item>-->
+
+                            <!--<center>-->
+                                <!--<el-button type="success" @click="modelContainerRegister">Register</el-button>-->
+                            <!--</center>-->
+                        <!--</el-form>-->
+                    <!--</el-col>-->
                 </el-card>
 
 

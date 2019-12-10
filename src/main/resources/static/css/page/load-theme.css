@@ -642,10 +642,10 @@ zhtml,body{
 .data_name{
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp:2;
+    /*-webkit-line-clamp:2;*/
 }
 .model_name{
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp:2;
+    /*-webkit-line-clamp:2;*/
 }

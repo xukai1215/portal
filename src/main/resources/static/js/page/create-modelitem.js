@@ -655,7 +655,7 @@ var vue = new Vue({
                     });
                 }
             })
-            window.sessionStorage.setItem("editModelItem_id", "");
+            // window.sessionStorage.setItem("editModelItem_id", "");
         }
 
         $("#step").steps({

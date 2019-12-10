@@ -347,12 +347,37 @@ var  data_item_info= new Vue({
 
         addRelation(order){
 
-            this.tableData=[];
-            this.pageOption.searchResult=[];
-            this.relateSearch="";
-            this.getRelation();
-            this.search();
-            this.dialogTableVisible=true;
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    data = JSON.parse(data);
+                    if (data.oid == "") {
+                        alert("Please login first");
+                        this.setSession("history", window.location.href);
+                        window.location.href = "/user/login";
+                    }
+                    else {
+                        this.tableData = [];
+                        this.pageOption.searchResult = [];
+                        this.relateSearch = "";
+                        this.getRelation();
+                        this.search();
+                        this.dialogTableVisible = true;
+                    }
+                }
+            })
+        },
+
+        setSession(name, value) {
+            window.sessionStorage.setItem(name, value);
         },
         jump(){
             $.ajax({

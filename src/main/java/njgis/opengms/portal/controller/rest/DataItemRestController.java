@@ -17,6 +17,7 @@ import njgis.opengms.portal.entity.Categorys;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.ItemService;
 import njgis.opengms.portal.service.ModelItemService;
@@ -208,8 +209,14 @@ public class DataItemRestController {
         ModelAndView view = new ModelAndView();
 
 //        view.setViewName("/dataItems/"+id);
+        DataItem dataItem=new DataItem();
+        try {
+            dataItem=dataItemService.getById(id);
+        }catch (MyException e){
+            view.setViewName("error/404");
+            return view;
+        }
 
-        DataItem dataItem=dataItemService.getById(id);
 
         dataItem=(DataItem)itemService.recordViewCount(dataItem);
         dataItemDao.save(dataItem);
