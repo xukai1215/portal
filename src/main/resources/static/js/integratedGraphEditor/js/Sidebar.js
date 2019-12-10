@@ -485,10 +485,14 @@ Sidebar.prototype.searchEntries = function(searchTerms, count, page, success, er
                 searchTerms:searchTerms
             },
             success:(result)=> {
-                searchTermsComputableModel = result;
+                // searchTermsComputableModel = result;
+                // hasSearchedTermsComputableModel += searchTermsComputableModel;
+                for(let m in result){
+                	hasSearchedTermsComputableModel.push(result[m]);
+				};
                 // 填充字典
-                for (var i=0; i< searchTermsComputableModel.length; i++){
-                    var model = searchTermsComputableModel[i];
+                for (var i=0; i< result.length; i++){
+                    var model = result[i];
                     var modelName = model.name;
                     this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
                 }
@@ -3393,6 +3397,7 @@ Sidebar.prototype.createEventVertexTemplate = function(style, width, height, val
     cells[0].optional = event.optional;
     cells[0].description = event.eventDesc;
     cells[0].data = event.data;
+    cells[0].url = "";
 
     if (eventType == true){
         cells[0].response = true;

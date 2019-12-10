@@ -15,11 +15,14 @@
 
     <script th:inline="javascript">
         var computableModelList =  [[${computableModelList}]];
+        var graphXml = [[${graphXml}]];
+        var modelParams = [[${modelParams}]];
+        var models = [[${models}]];
         // var allComputableModel =  [[${allComputableModel}]];
     </script>
     <style>
         body{
-            background: url(/static/img/carousels/Banner.jpg);
+            background: url(/static/img/carousels/BGPhoto.jpg);
             margin: 0px;
         }
         .spinner{
@@ -34,16 +37,18 @@
 
         <div>
             <div>
-                <el-button style="float: right;margin: 1% 8% 5px;" @click="run">Run</el-button>
+                <h1 style="float: left;color: whitesmoke;margin-left: 40%;padding: 10px;font-weight: 700">
+                    Integrated Modeling
+                </h1>
+                <el-button :disabled="executeDisabled" style="float: right;margin: 2% 7% 5px;font-weight: 700;color: #009900;" @click="executeVisible=true">Execution</el-button>
+                <el-button style="float: right;margin: 2% -6% 5px;font-weight: 700;color: #009900;" @click="configuration">Input Data Configuration</el-button>
             </div>
 
             <div id="MxGraph">
-                <iframe id="ModelEditor" src="/common/integratedModelEditor"  style="width:86%;height:760px;border:0px;position:relative;margin-left: 7%;"></iframe>
+                <iframe id="ModelEditor" src="/common/integratedModelEditor"  style="width:86%;height:760px;border:0px;position:relative;margin-left: 7%;margin-bottom: 3%"></iframe>
             </div>
 
-
-
-            <el-dialog title="模型集成运行" :visible.sync="runVisible" width="70%">
+            <el-dialog title="Input Data Configuration" :visible.sync="configVisible" width="70%">
                 <el-tabs v-model="activeName">
                     <el-tab-pane v-for="(model,index) in models" :key="index" :label="model.name" :name="model.name">
 
@@ -58,7 +63,7 @@
                                     width="250">
                                 <template slot-scope="scope">
                                 <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
-                                    <span v-if="!scope.row.optional"
+                                    <span v-if="!scope.row.optional&&!scope.row.child"
                                           style="color:red">*</span>
                                         {{scope.row.event}}
                                 </span>
@@ -89,7 +94,7 @@
 
                                     <el-input class="model-input"
                                               v-if="scope.row.children==undefined&&scope.row.child==true"
-                                              v-model="scope.row.value"
+                                              v-model="scope.row.val"
                                               :id="'datainput'+scope.row.dataId">
                                     </el-input>
                                 </template>
@@ -117,8 +122,16 @@
                     </el-tab-pane>
                 </el-tabs>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="runVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="runModels">RunRunRun</el-button>
+                    <el-button type="primary" @click="checkData">OK</el-button>
+                </div>
+            </el-dialog>
+
+            <el-dialog title="Integrated Models Execution" :visible.sync="executeVisible" width="30%">
+                <div style="font-size: 18px">
+                    Task Name : <el-input v-model="taskName" placeholder="Please name this task!" style="width: 80%;"></el-input>
+                </div>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="execute">Execute & Save</el-button>
                 </div>
             </el-dialog>
 
@@ -128,10 +141,18 @@
         <div th:replace="fragments/footer :: footer"></div>
     </div>
 </body>
+
+
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
+
+
 <script src="/static/js/page/integratedModeling.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<script src="/static/js/common/navbarJquery.js/"></script>
+
 <script>
 
 

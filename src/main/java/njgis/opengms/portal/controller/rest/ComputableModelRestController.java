@@ -10,9 +10,13 @@ import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.intergrate.Model;
+import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
+import njgis.opengms.portal.service.TaskService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.IOUtils;
@@ -54,6 +58,9 @@ public class ComputableModelRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    TaskService taskService;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -228,6 +235,20 @@ public class ComputableModelRestController {
     ModelAndView integrating(){
         Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
         return computableModelService.integrate(computableModelList);
+    }
+
+    @RequestMapping(value = "/getIntegratedTask/{taskId}",method = RequestMethod.GET)
+    ModelAndView getIntegratedTask(@PathVariable("taskId") String taskId){
+
+        Task task = taskService.findByTaskId(taskId);
+        String xml = task.getGraphXml();
+        List<ModelParam> modelParams = task.getModelParams();
+        List<Model> models = task.getModels();
+
+
+        Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
+        return computableModelService.getIntegratedTask(computableModelList,xml,modelParams,models);
+
     }
 
     @RequestMapping(value = "/getComputableModelsBySearchTerms",method = RequestMethod.GET)

@@ -11,6 +11,8 @@ import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.intergrate.Model;
+import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -129,6 +131,17 @@ public class ComputableModelService {
         return mv;
     }
 
+    public ModelAndView getIntegratedTask(Page<ComputableModel> computableModelList, String xml,List<ModelParam> modelParams,List<Model> models){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("integratedModeling");
+        mv.addObject("computableModelList", computableModelList);
+        mv.addObject("graphXml", xml);
+        mv.addObject("modelParams", modelParams);
+        mv.addObject("models", models);
+
+        return mv;
+    }
+
     public List<ComputableModel> getComputableModelsBySearchTerms(String searchTerms){
         String[] terms = searchTerms.toLowerCase().split(" ");
         String tmp = terms[0];
@@ -141,6 +154,8 @@ public class ComputableModelService {
         return searchTermsComputableModel;
     }
     /**/
+
+
 
     public ModelAndView getPage(String id, HttpServletRequest httpServletRequest) {
         //条目信息

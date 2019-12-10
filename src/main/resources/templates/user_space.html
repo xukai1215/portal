@@ -372,8 +372,9 @@
                                                    type="primary" @click="window.open('/modelItem/repository')">Find
                                             Computable Model
                                         </el-button>
-                                        <el-button style="font-size: 18px;float:left;width:49%;" type="warning">Model
-                                            Intergrating
+                                        <el-button style="font-size: 18px;float:left;width:49%;" type="warning"
+                                                @click="window.open('/computableModel/integrating')">
+                                            Model Intergrating
                                         </el-button>
                                     </div>
                                     <div class="row" style="margin:0;">
@@ -3158,7 +3159,8 @@
                 <!--                    &lt;!&ndash; /.modal-dialog &ndash;&gt;-->
                 <!--                </div>-->
             </div>
-            <!-- end model-items -->
+
+
             <!--start theme-->
             <div :style="{display:curIndex=='5'?'block':'none'}">
                 <ul class="breadcrumb">
@@ -3253,6 +3255,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- start task -->
             <div :style="{display:curIndex=='6'?'block':'none'}">
                 <div class="page-content-wrap container-fluid" style="margin-top:10px">
@@ -3298,7 +3301,7 @@
                                         </button>
                                         <el-button type="primary" size="mini"
                                                    style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
-                                                   @click="checkOutput(task.computableId,task.taskId)">Check Task Info
+                                                   @click="checkOutput(task.computableId,task.taskId,task.integrate)">Check Task Info
                                         </el-button>
                                     </div>
 
@@ -3437,6 +3440,7 @@
                     </div>
                 </div>
             </div>
+
             <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Share as Data Item"
                        :visible.sync="taskSharingVisible" :before-close="handleClose">
                 <el-steps style="margin-bottom: 15px;" align-center :active="taskSharingActive" finish-status="success">

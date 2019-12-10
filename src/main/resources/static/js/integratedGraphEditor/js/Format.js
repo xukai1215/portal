@@ -5671,10 +5671,10 @@ EventPanel.prototype.init = function()
     }
 
     if (i >= computableModelList.size) {
-        for (var j=0; j<searchTermsComputableModel.length; j++){
-            if(modelId == searchTermsComputableModel[j].id){
-                model = searchTermsComputableModel[j];
-                var states = searchTermsComputableModel[j].mdlJson.mdl.states;
+        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+            if(modelId == hasSearchedTermsComputableModel[j].id){
+                model = hasSearchedTermsComputableModel[j];
+                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
                 for (var k = 0; k<states.length; k++){
                     var state = states[k];
                     for (var l = 0; l<state.event.length; l++){
@@ -5782,10 +5782,10 @@ InputEventPanel.prototype.init = function()
     }
 
     if (i >= computableModelList.size) {
-        for (var j=0; j<searchTermsComputableModel.length; j++){
-            if(modelId == searchTermsComputableModel[j].id){
-                model = searchTermsComputableModel[j];
-                var states = searchTermsComputableModel[j].mdlJson.mdl.states;
+        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+            if(modelId == hasSearchedTermsComputableModel[j].id){
+                model = hasSearchedTermsComputableModel[j];
+                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
                 for (var k = 0; k<states.length; k++){
                     var state = states[k];
                     for (var l = 0; l<state.event.length; l++){
@@ -5801,7 +5801,7 @@ InputEventPanel.prototype.init = function()
         }
     }
     this.container.appendChild(this.addInputEventInfo(this.createPanel(),event,model.name));
-    // this.container.appendChild(this.addUploadDownload(this.createPanel(),event));
+    // this.container.appendChild(this.addDownload(this.createPanel(),event,url));
 };
 
 InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
@@ -5858,33 +5858,27 @@ InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
     return div;
 };
 
-InputEventPanel.prototype.addUploadDownload = function(div, event){
+InputEventPanel.prototype.addDownload = function(div, event, url){
     var ui = this.editorUi;
 
-    var title = this.createTitle("Download Data: ");
+    var title = this.createTitle("Download Data : ");
     title.style.paddingBottom = '6px';
     title.style.fontSize = "14px";
     title.style.cursor = "default";
     div.appendChild(title);
 
-    var uploadLabel = document.createElement("p");
-    var upload = document.createElement("input");
-    uploadLabel.textContent = "Input Data : ";
-    upload.disabled = "false";
-    upload.id = event.eventName;
-	div.appendChild(uploadLabel);
-	div.appendChild(upload);
+    var downloadLabel = document.createElement("p");
+    var download = document.createElement("a");
+    downloadLabel.textContent = "Input Event :  ";
+    download.href = url;
+    download.innerText = event.eventName;
+    download.style.textDecoration = "underline";
+    download.style.color = "#f90";
 
-	var brDiv = document.createElement("br");
-    div.appendChild(brDiv);
+    downloadLabel.appendChild(download);
+    div.appendChild(downloadLabel);
 
-    var downloadBtn = document.createElement("button");
-    downloadBtn.style.height = "30px";
-    downloadBtn.style.margin = "5px 5px 5px 0";
-    downloadBtn.innerText = "download";
-    div.appendChild(downloadBtn);
-
-	return div;
+    return div;
 };
 /**
  * 张硕
@@ -5927,10 +5921,10 @@ OutputEventPanel.prototype.init = function()
     }
 
     if (i >= computableModelList.size) {
-        for (var j=0; j<searchTermsComputableModel.length; j++){
-            if(modelId == searchTermsComputableModel[j].id){
-                model = searchTermsComputableModel[j];
-                var states = searchTermsComputableModel[j].mdlJson.mdl.states;
+        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+            if(modelId == hasSearchedTermsComputableModel[j].id){
+                model = hasSearchedTermsComputableModel[j];
+                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
                 for (var k = 0; k<states.length; k++){
                     var state = states[k];
                     for (var l = 0; l<state.event.length; l++){
@@ -5945,8 +5939,13 @@ OutputEventPanel.prototype.init = function()
             }
         }
     }
+
     this.container.appendChild(this.addOutputEventInfo(this.createPanel(),event,model.name));
-    // this.container.appendChild(this.addDownload(this.createPanel(),event));
+
+    if (graph.getSelectionModel().cells[0].url != undefined && graph.getSelectionModel().cells[0].url != ""){
+    	var url = graph.getSelectionModel().cells[0].url;
+        this.container.appendChild(this.addDownload(this.createPanel(),event,url));
+	}
 };
 
 OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
@@ -6003,7 +6002,7 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     return div;
 };
 
-OutputEventPanel.prototype.addDownload = function(div, event){
+OutputEventPanel.prototype.addDownload = function(div, event, url){
     var ui = this.editorUi;
 
     var title = this.createTitle("Download Data : ");
@@ -6013,21 +6012,15 @@ OutputEventPanel.prototype.addDownload = function(div, event){
     div.appendChild(title);
 
     var downloadLabel = document.createElement("p");
-    var download = document.createElement("input");
-    downloadLabel.textContent = "Output Data : ";
-    download.disabled = "false";
-    download.id = event.eventName;
+    var download = document.createElement("a");
+    downloadLabel.textContent = "Output Event :  ";
+    download.href = url;
+    download.innerText = event.eventName;
+    download.style.textDecoration = "underline";
+    download.style.color = "#f90";
+
+    downloadLabel.appendChild(download);
     div.appendChild(downloadLabel);
-    div.appendChild(download);
-
-    var brDiv = document.createElement("br");
-    div.appendChild(brDiv);
-
-    var downloadBtn = document.createElement("button");
-    downloadBtn.style.height = "30px";
-    downloadBtn.style.margin = "5px 5px 5px 0";
-    downloadBtn.innerText = "download";
-    div.appendChild(downloadBtn);
 
     return div;
 };

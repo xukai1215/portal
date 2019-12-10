@@ -2,35 +2,41 @@ var vue = new Vue({
     el: "#app",
     data:{
         models:[],
+        modelParams:[],
 
-        runVisible: false,
+        configVisible: false,
+        executeVisible: false,
+        executeDisabled: true,
+
+        taskName:"IntegratedModelingTest",
 
         activeName: "",
         formData: new FormData(),
 
         currentEvent:{},
-
+        iframeWindow:{},
 
     },
     methods:{
-        run(){
+        configuration(){
 
-            this.runVisible = true;
+            this.configVisible = true;
 
-            let iframeWindow=$("#ModelEditor")[0].contentWindow;
-            var xml = iframeWindow.getCXml();
+            this.iframeWindow=$("#ModelEditor")[0].contentWindow;
+            // var xml = this.iframeWindow.getCXml();
 
-            if(iframeWindow.currentXml != xml){
-                this.models = iframeWindow.getModels();
+            var mdls = this.models;
 
-                this.activeName = this.models[0].name;
+            this.models = this.iframeWindow.getModels();
 
-                for (var i = 0; i<this.models.length; i++){
-                    for(var j = 0; j<this.models[i].inputEvents.length; j++){
-                        var event = this.models[i].inputEvents[j];
-                        var nodes = event.data[0].nodes;
+            this.activeName = this.models[0].name;
 
-                    if (nodes != undefined) {
+            for (var i = 0; i<this.models.length; i++){
+                for(var j = 0; j<this.models[i].inputEvents.length; j++) {
+                    var event = this.models[i].inputEvents[j];
+                    var nodes = event.data[0].nodes;
+                    let refName=event.data[0].text.toLowerCase();
+                    if (nodes != undefined&&refName!="grid"&&refName!="table"&&refName!="shapes") {
                         let children = [];
                         for (k = 0; k < nodes.length; k++) {
                             let node = nodes[k];
@@ -39,144 +45,373 @@ var vue = new Vue({
                             child.event = node.text;
                             child.description = node.desc;
                             child.eventType = node.dataType;
+                            child.val = "";
 
                             child.child = true;
                             children.push(child);
                         }
-                        event.children = children;
+                        // event.children = children;
+                        // 为vue变量添加属性，这句代码比上句更robust！
+                        this.$set(event,'children',children);
                     }
                 }
             }
 
+            // 将上一次已经上传的 value fileName 和  suffix 复制给新打开的数据配置窗口
+            if (mdls.length > 0){
+                var mdls = this.iframeWindow.getModels();
+
+                for (let i = 0; i < mdls.length; i++) {
+                    for (let j = 0; j < this.models.length; j++) {
+                        if (mdls[i].pid == this.models[j].pid){
+                            this.models[j] == mdls[j];
+                        }
+                    }
+
+                }
+
+
+            }
 
         },
 
         upload(event) {
             $('#uploadInputData').click();
             this.currentEvent=event;
-
         },
 
-        runModels(){
-            var xml = "";
-            var uid = this.generateGUID();
-            var name = "TEST";
-            var version = "1.0";
+        execute(){
 
-            xml += "<TaskConfiguration uid='"+uid+"' name='"+name+"' version='"+version+"'>" +
-                "<Models>";
-            for (var i = 0; i<this.models.length; i++){
-                xml += "<Model name='"+this.models[i].name+"' pid='"+this.models[i].md5+"' description='"+this.models[i].description+"'>"+
-                    "<InputData>";
-                for(var j = 0; j<this.models[i].inputEvents.length; j++){
-                   xml +=  "<DataTemplate state='"+this.models[i].inputEvents[j].state+"' event='"+this.models[i].inputEvents[j].event+"' value='"+this.models[i].inputEvents[j].value+"' dataId='"+this.models[i].inputEvents[j].dataId+"' type='"+this.models[i].inputEvents[j].type+"'/>";
-                }
-                xml += "</InputData>"+
-                     "<OutputData>";
-                for(var k = 0; k<this.models[i].outputEvents.length; k++){
-                    xml +="<DataTemplate state='"+this.models[i].outputEvents[k].state+"' event='"+this.models[i].outputEvents[k].event+"' value='"+this.models[i].outputEvents[k].value+"' dataId='"+this.models[i].outputEvents[k].dataId+"' type='"+this.models[i].outputEvents[k].type+"'/>";
-                }
-                xml += "</OutputData>"+
-                    "</Model>";
-            }
-            xml += "</Models>"+
-                "</TaskConfiguration>";
+            this.createAndUploadParamFile();
+            let prepare = setInterval(() => {
+                let prepared = true;
 
-            console.log(xml);
-
-            var xml2 = "<TaskConfiguration uid=\"d3f91907-f5ac-4170-b54b-cf7aadd8654d\" name=\"SAGA_DEMO\" version=\"1.0\">\n" +
-            "<Models>\n" +
-            "\t\t<Model name=\"shapes_polygons_3-Convert_Lines_to_Polygons\" pid=\"926895554c5552b1429031242ecaf517\" description=\"shapes_polygons_3-Convert_Lines_to_Polygons\">\n" +
-            "\t\t\t<InputData>\n" +
-            "\t\t\t\t<DataTemplate state=\"RUNSTATE\" event=\"LINES\" value=\"http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=f3a7f532-6a7b-4196-a693-29e8653564b4\" dataId=\"802aa210-44af-4f46-8f41-4f65d9003289\" type=\"url\" />\n" +
-            "\t\t\t</InputData>\n" +
-            "\t\t\t<OutputData>\n" +
-            "\t\t\t\t<DataTemplate state=\"RUNSTATE\" event=\"POLYGONS\" value=\"\" dataId=\"4caf0d8a-f71a-48b7-a99f-d82fc44837bb\" type=\"url\" />\n" +
-            "\t\t\t</OutputData>\n" +
-            "\t\t</Model>\n" +
-            "\t\t<Model name=\"shapes_tools_18-Shapes_Buffer\" pid=\"9096db4dc61ec3f9987de55ba6666503\" description=\"shapes_tools_18-Shapes_Buffer\">\n" +
-            "\t\t\t<InputData>\n" +
-            "\t\t\t\t<DataTemplate state=\"RUNSTATE\" event=\"SHAPES\" value=\"4caf0d8a-f71a-48b7-a99f-d82fc44837bb\" dataId=\"a5d2950b-8c1d-40da-ae6d-9bf33d812ee8\" type=\"link\" />\n" +
-            "\t\t\t</InputData>\n" +
-            "\t\t\t<OutputData>\n" +
-            "\t\t\t\t<DataTemplate state=\"RUNSTATE\" event=\"BUFFER\" value=\"\" dataId=\"1cf2fa21-68ff-42d8-a34f-b4c55649de59\" type=\"url\" />\n" +
-            "\t\t\t</OutputData>\n" +
-            "\t\t</Model>\n" +
-            "\t</Models>\n" +
-            "</TaskConfiguration>";
-
-
-            console.log(xml2);
-            let file = new File([xml],'test.xml',{
-                type: 'text/xml',
-            });
-            var formData = new FormData();
-            formData.append("file",file);
-            formData.append("name","test");
-
-            $.ajax({
-                url:"/task/runIntegratedTask",
-                data:formData,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                success:(result) =>{
-                    var taskId = result.data;
-                    let interval=setInterval(()=>{
-                        $.ajax({
-                            url:"/task/checkIntegratedTask/"+taskId,
-                            data:{},
-                            type: "GET",
-                            success: (obj)=> {
-                                let status=obj.data.status;
-                                if (status == 0){
-                                    console.log(status);
-                                }
-                                else if(status==-1){
-                                    console.log(status);
-                                    clearInterval(interval);
-                                    this.$alert('Integrated model run failed!', 'Error', {
-                                        confirmButtonText: 'OK',
-                                        callback: action => {
-                                            this.$message({
-                                                type: 'danger',
-                                                message: `action: ${ action }`
-                                            });
-                                        }
-                                    });
-                                }
-                                else{
-                                    console.log(status);
-                                    clearInterval(interval);
-                                    this.$alert('Integrated model run Success', 'Success', {
-                                        confirmButtonText: 'OK',
-                                        callback: action => {
-                                            this.$message({
-                                                type: 'success',
-                                                message: `action: ${ action }`
-                                            });
-                                        }
-                                    });
-
-                                    let models=obj.data.models;
-                                    console.log(models)
+                for (var i = 0; i<this.models.length; i++) {
+                    for (var j = 0; j < this.models[i].inputEvents.length; j++) {
+                        var event = this.models[i].inputEvents[j];
+                        //判断参数文件是否已经上传
+                        let children = event.children;
+                        if (children === undefined) {
+                            continue;
+                        }
+                        else {
+                            let hasFile = false;
+                            for (k = 0; k < children.length; k++) {
+                                if (children[k].val != undefined && children[k].val.trim() != "") {
+                                    hasFile = true;
+                                    break;
                                 }
                             }
-                        })
-                    },3000)
+                            if (hasFile) {
+                                if (event.value == undefined) {
+                                    prepared = false;
+                                    break;
+                                }
+                            }
 
+                        }
+                    }
+                    if (!prepared) {
+                        break;
+                    }
                 }
-            })
+
+                if (prepared) {
+                    clearInterval(prepare);
+
+
+                    this.executeVisible = false;
+
+                    this.$notify.info({
+                        title: 'Start Executing !',
+                        message: 'You could wait it,and you could also find this task in your Space!',
+                    });
+
+                    var xml = "";
+                    var uid = this.generateGUID();
+                    var name = this.taskName;
+                    var version = "1.0";
+
+                    xml += "<TaskConfiguration uid='"+uid+"' name='"+name+"' version='"+version+"'>\n" +
+                        "\t<Models>\n";
+                    for (var i = 0; i<this.models.length; i++){
+                        xml += "\t\t<Model name='"+this.models[i].name+"' pid='"+this.models[i].md5+"' description='"+this.models[i].description+"'>\n"+
+                            "\t\t\t<InputData>\n";
+                        for(var j = 0; j<this.models[i].inputEvents.length; j++){
+                            if (this.models[i].inputEvents[j].value != ""){
+                                xml +=  "\t\t\t\t<DataTemplate state='"+this.models[i].inputEvents[j].state+"' event='"+this.models[i].inputEvents[j].event+"' value='"+this.models[i].inputEvents[j].value+"' dataId='"+this.models[i].inputEvents[j].dataId+"' type='"+this.models[i].inputEvents[j].type+"'/>\n";
+                            }
+                        }
+                        xml += "\t\t\t</InputData>\n"+
+                            "\t\t\t<OutputData>\n";
+                        for(var k = 0; k<this.models[i].outputEvents.length; k++){
+                            xml +="\t\t\t\t<DataTemplate state='"+this.models[i].outputEvents[k].state+"' event='"+this.models[i].outputEvents[k].event+"' value='"+this.models[i].outputEvents[k].value+"' dataId='"+this.models[i].outputEvents[k].dataId+"' type='"+this.models[i].outputEvents[k].type+"'/>\n";
+                        }
+                        xml += "\t\t\t</OutputData>\n"+
+                            "\t\t</Model>\n";
+                    }
+                    xml += "\t</Models>\n"+
+                        "</TaskConfiguration>";
+
+                    console.log(xml);
+
+                    let file = new File([xml], name + '.xml',{
+                        type: 'text/xml',
+                    });
+
+
+                    var formData = new FormData();
+                    formData.append("file",file);
+                    formData.append("name",this.taskName);
+
+                    $.ajax({
+                        url:"/task/runIntegratedTask",
+                        data:formData,
+                        type: "POST",
+                        processData: false,
+                        contentType: false,
+                        success:(result) =>{
+                            var taskId = result.data;
+
+                            let interval=setInterval(()=>{
+                                $.ajax({
+                                    url:"/task/checkIntegratedTask/"+taskId,
+                                    data:{},
+                                    type: "GET",
+                                    success: (obj)=> {
+                                        let status=obj.data.status;
+                                        if (status == 0){
+                                            console.log(status);
+                                        }
+                                        else if(status==-1){
+                                            console.log(status);
+                                            clearInterval(interval);
+                                            this.$alert('Integrated model run failed!', 'Error', {
+                                                confirmButtonText: 'OK',
+                                                callback: action => {
+                                                    this.$message({
+                                                        type: 'danger',
+                                                        message: `action: ${ action }`
+                                                    });
+                                                }
+                                            });
+                                        }
+                                        else{
+                                            console.log(status);
+                                            clearInterval(interval);
+                                            this.$alert('Integrated model run Success', 'Success', {
+                                                confirmButtonText: 'OK',
+                                                callback: action => {
+                                                    this.$message({
+                                                        type: 'success',
+                                                        message: `action: ${ action }`
+                                                    });
+                                                }
+                                            });
+
+                                            let models=obj.data.models;
+                                            console.log(models);
+
+
+
+                                            var cxml = this.iframeWindow.getCXml();
+                                            var doc = this.string2XML(cxml);
+
+
+                                            for (let i = 0; i < models.length; i++) {
+                                                var output = models[i].outputData.outputs;
+                                                for (var j = 0; j<output.length; j++){
+                                                    for (var k = 0; k< doc.getElementsByTagName('mxCell').length; k++){
+                                                        var mxCell = doc.getElementsByTagName('mxCell')[k];
+                                                        if (output[j].dataId == mxCell.getAttribute('eid')){
+                                                            mxCell.setAttribute('url',output[j].value);
+                                                        }
+                                                    }
+                                                }
+
+                                                // var input = models[i].inputData.inputs;
+                                                // for (var j = 0; j<input.length; j++){
+                                                //     for (var k = 0; k< doc.getElementsByTagName('mxCell').length; k++){
+                                                //         var mxCell = doc.getElementsByTagName('mxCell')[k];
+                                                //         if (input[j].dataId == mxCell.getAttribute('eid')){
+                                                //             mxCell.setAttribute('url',input[j].value);
+                                                //         }
+                                                //     }
+                                                // }
+                                            }
+                                            var xml = this.xml2String(doc);
+
+                                            this.iframeWindow.setCXml(xml);
+
+                                            // Save
+                                            $.ajax({
+                                                url:"/task/saveIntegratedTask",
+                                                async:true,
+                                                data:{
+                                                    taskId:taskId,
+                                                    graphXml: xml,
+                                                    modelParams: this.modelParams,
+                                                },
+                                                type:"POST",
+                                                success:(result)=>{
+                                                    console.log(result);
+                                                }
+
+                                            })
+
+                                        }
+                                    }
+                                })
+                            },3000)
+
+                        }
+                    })
+                }
+            }, 2000);
+
+        },
+
+        checkData(){
+
+            this.configVisible=false;
+            //检查输入数据是否齐全
+            if(true){
+                this.executeDisabled = false;
+            }
+        },
+
+        createAndUploadParamFile() {
+            let modelParas = [];
+            for (i = 0; i < this.models.length; i++) {
+                let modelPara =  {};
+                modelPara.mId = this.models[i].pid;
+                let inputsPara = [];
+                let inputPara = {};
+
+                let inputs = this.models[i].inputEvents;
+                for (j = 0; j < inputs.length; j++) {
+
+                    inputPara = {};
+                    inputPara.eventName = inputs[j].event;
+                    inputPara.stateName = inputs[j].state;
+                    inputPara.eventId = inputs[j].dataId;
+                    inputPara.eventDesc = inputs[j].description;
+                    let params = [];
+                    let param = {};
+
+                    let event = inputs[j];
+                    if (event.children != undefined) {
+                        this.currentEvent = event;
+                        //拼接文件内容
+                        let content = "";
+                        let children = event.children;
+                        for (k = 0; k < children.length; k++) {
+                            let child = children[k];
+                            if (child.val != undefined||child.val.trim() != ""){
+
+                                param = {};
+                                param.name = child.event;
+                                param.type = child.eventType;
+                                param.value = child.val;
+                                param.desc = child.description;
+                                params.push(param);
+
+                                content += "<XDO name=\"" + child.event + "\" kernelType=\"" + child.eventType.toLowerCase() + "\" value=\"" + child.val + "\" /> ";
+                            }
+                        }
+                        if(content===""){
+                            continue;
+                        }
+                        else{
+                            content = "<Dataset> " + content + " </Dataset>";
+                        }
+
+                        //生成文件
+                        let file = new File([content], event.eventName + '.xml', {
+                            type: 'text/plain',
+                        });
+                        //上传文件
+                        this.uploadToDataContainer(file, event);
+
+                        inputPara.params = params;
+                    }
+                }
+
+                inputsPara.push(inputPara);
+                modelPara.inputs = inputsPara;
+                if (modelPara.inputs[0].params.length > 0){
+                    this.modelParams.push(modelPara);
+                }
+            }
+
 
 
         },
 
+        uploadToDataContainer(file,event){
+            this.currentEvent = event;
+
+            $.get("/dataManager/dataContainerIpAndPort",(result)=>{
+                let ipAndPort=result.data;
+                let formData = new FormData();
+                formData.append("file",file);
+                $.ajax({
+                    type:"post",
+                    url: "http://"+ipAndPort+"/file/upload/store_dataResource_files",
+                    data: formData,
+                    async:false,
+                    processData: false,
+                    contentType: false,
+                    success: (result)=>{
+                        if (result.code == 0){
+                            let data = result.data;
+                            let dataName = data.file_name.match(/.+(?=\.)/)[0];
+                            let dataSuffix = data.file_name.match(/(?=\.).+/)[0];
+                            let dataId = data.source_store_id;
+                            let dataUrl = "http://"+ipAndPort+"/dataResource";
+                            let form = {
+                                "author":"njgis",
+                                "fileName":dataName,
+                                "sourceStoreId":dataId,
+                                "suffix":dataSuffix,
+                                "type":"OTHER",
+                                "fromWhere":"PORTAL"
+                            };
+
+                            $.ajax({
+                                type:"post",
+                                url: dataUrl,
+                                data: JSON.stringify(form),
+
+                                async:false,
+
+                                contentType:'application/json',
+                                success:(result) => {
+                                    if(result.code == 0){
+
+                                        this.currentEvent.value = "http://"+ipAndPort+"/dataResource/getResource?sourceStoreId="+result.data.sourceStoreId;
+                                        this.currentEvent.fileName = result.data.fileName;
+                                        this.currentEvent.suffix = result.data.suffix;
+
+                                    }
+
+                                    $("#uploadInputData").val("");
+                                }
+                            })
+
+
+
+                        }
+                    }
+                })
+            })
+        },
 
         download(event) {
             //下载接口
             if (event.value != undefined) {
-                this.eventChoosing = event;
-                window.open("/dispatchRequest/download?url=" + this.eventChoosing.url);
+                this.currentEvent = event;
+                window.open("/dispatchRequest/download?url=" + this.currentEvent.url);
             }
             else {
                 this.$message.error("No data can be downloaded.");
@@ -195,7 +430,16 @@ var vue = new Vue({
 
             var uuid = s.join("");
             return uuid;
-        }
+        },
+        string2XML(string){
+            let parser = new DOMParser();
+            let xmlObject = parser.parseFromString(string, "text/xml");
+            return xmlObject;
+        },
+        xml2String(xml){
+            return (new XMLSerializer()).serializeToString(xml);
+        },
+
     },
     mounted(){
 
@@ -206,58 +450,122 @@ var vue = new Vue({
             var file = $('#uploadInputData')[0].files[0];
             var formData = new FormData();
             formData.append("file",file);
-            $.ajax({
-                type:"post",
-                url: "http://111.229.14.128:8082/file/upload/store_dataResource_files",
-                data: formData,
-                async:true,
-                processData: false,
-                contentType: false,
-                success: (result)=>{
-                    if (result.code == 0){
-                        var data = result.data;
-                        var dataName = data.file_name.match(/.+(?=\.)/)[0];
-                        var dataSuffix = data.file_name.match(/(?=\.).+/)[0];
-                        var dataId = data.source_store_id;
-                        var dataUrl = "http://111.229.14.128:8082/dataResource";
-                        var form = {
-                            "author":"njgis",
-                            "fileName":dataName,
-                            "sourceStoreId":dataId,
-                            "suffix":dataSuffix,
-                            "type":"OTHER",
-                            "fromWhere":"PORTAL"
-                        };
 
-                        $.ajax({
-                            type:"post",
-                            url: dataUrl,
-                            data: JSON.stringify(form),
-                            processData: false,
-                            async:true,
-                            contentType:'application/json',
-                            success:(result) => {
-                                if(result.code == 0){
+            $.get("/dataManager/dataContainerIpAndPort",(result)=>{
+                let ipAndPort=result.data;
 
-                                    this.currentEvent.value = "http://111.229.14.128:8082/dataResource/getResource?sourceStoreId="+result.data.sourceStoreId;
-                                    this.currentEvent.fileName = result.data.fileName;
-                                    this.currentEvent.suffix = result.data.suffix;
+                $.ajax({
+                    type:"post",
+                    url: "http://"+ipAndPort+"/file/upload/store_dataResource_files",
+                    data: formData,
+                    async:true,
+                    processData: false,
+                    contentType: false,
+                    success: (result)=>{
+                        if (result.code == 0){
+                            var data = result.data;
+                            var dataName = data.file_name.match(/.+(?=\.)/)[0];
+                            var dataSuffix = data.file_name.match(/(?=\.).+/)[0];
+                            var dataId = data.source_store_id;
+                            var dataUrl = "http://"+ipAndPort+"/dataResource";
+                            var form = {
+                                "author":"njgis",
+                                "fileName":dataName,
+                                "sourceStoreId":dataId,
+                                "suffix":dataSuffix,
+                                "type":"OTHER",
+                                "fromWhere":"PORTAL"
+                            };
+
+                            $.ajax({
+                                type:"post",
+                                url: dataUrl,
+                                data: JSON.stringify(form),
+                                processData: false,
+                                async:true,
+                                contentType:'application/json',
+                                success:(result) => {
+                                    if(result.code == 0){
+
+                                        this.currentEvent.value = "http://"+ipAndPort+"/dataResource/getResource?sourceStoreId="+result.data.sourceStoreId;
+                                        this.currentEvent.fileName = result.data.fileName;
+                                        this.currentEvent.suffix = result.data.suffix;
+
+                                    }
+
+                                    $("#uploadInputData").val("");
+
+                                    $('#datainput'+this.currentEvent.dataId).removeClass("spinner");
 
                                 }
-
-                                $("#uploadInputData").val("");
-
-                                $('#datainput'+this.currentEvent.dataId).removeClass("spinner");
-
-                            }
-                        })
+                            })
 
 
 
+                        }
                     }
-                }
+                })
             })
         });
+
+        setTimeout(()=>{
+            if (graphXml != undefined){
+                this.iframeWindow = $("#ModelEditor")[0].contentWindow;
+                this.iframeWindow.setCXml(graphXml);
+
+                // 把图形中的计算模型，加载到词典中
+                this.models = this.iframeWindow.getModels();
+                this.models.forEach((model)=>{
+                    $.ajax({
+                        url: '/computableModel/getComputableModelsBySearchTerms',
+                        data: {
+                            searchTerms: model.name
+                        },
+                        async: true,
+                        success: (result) => {
+                            for (let m in result) {
+                                this.iframeWindow.hasSearchedTermsComputableModel.push(result[m]);
+                            }
+                        }
+                    });
+                });
+
+
+                this.activeName = this.models[0].name;
+
+                for (var i = 0; i<this.models.length; i++){
+                    for(var j = 0; j<this.models[i].inputEvents.length; j++) {
+                        var event = this.models[i].inputEvents[j];
+
+                        // 把输入数据的 value fileName 和  suffix 复制给 this.models
+
+
+                        // 把计算模型的 参数数据 复制给 this.models
+
+                        var nodes = event.data[0].nodes;
+                        let refName=event.data[0].text.toLowerCase();
+                        if (nodes != undefined&&refName!="grid"&&refName!="table"&&refName!="shapes") {
+                            let children = [];
+                            for (k = 0; k < nodes.length; k++) {
+                                let node = nodes[k];
+                                let child = {};
+                                child.dataId = node.text;
+                                child.event = node.text;
+                                child.description = node.desc;
+                                child.eventType = node.dataType;
+
+                                child.child = true;
+                                children.push(child);
+                            }
+                            event.children = children;
+                        }
+                    }
+                }
+
+
+            }
+        },500);
+
 
     }
 

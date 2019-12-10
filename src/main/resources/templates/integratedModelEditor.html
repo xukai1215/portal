@@ -45,7 +45,8 @@
         SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
         var computableModelList = parent.computableModelList;
-        var searchTermsComputableModel = null;
+        // var searchTermsComputableModel = null;
+        var hasSearchedTermsComputableModel = [];
         // var allComputableModel = parent.allComputableModel;
     </script>
 
@@ -180,6 +181,13 @@
 
     function getCXml() {
         return ui.editor.getGraphXml().outerHTML;
+    }
+
+    function setCXml(xml) {
+
+        var x = mxUtils.parseXml(xml).documentElement;
+        ui.editor.setGraphXml(x);
+
     }
 
     function getModels(){
