@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link rel="stylesheet" href="/static/css/other/page.css">
     <link rel="stylesheet" type="text/css" href="/static/js/integratedGraphEditor/styles/grapheditor.css">
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
@@ -45,7 +45,9 @@
         SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
         var computableModelList = parent.computableModelList;
-        var allComputableModel = parent.allComputableModel;
+        // var searchTermsComputableModel = null;
+        var hasSearchedTermsComputableModel = [];
+        // var allComputableModel = parent.allComputableModel;
     </script>
 
     <script type="text/javascript">var language = "en";</script>
@@ -174,7 +176,23 @@
 </body>
 <script>
 
+    var currentModels = [];
+    var currentXml = '';
+
+    function getCXml() {
+        return ui.editor.getGraphXml().outerHTML;
+    }
+
+    function setCXml(xml) {
+
+        var x = mxUtils.parseXml(xml).documentElement;
+        ui.editor.setGraphXml(x);
+
+    }
+
     function getModels(){
+        currentXml = getCXml();
+
         var models = [];
         var cells = graph.getModel().cells;
         for(let i in cells) {
@@ -190,6 +208,7 @@
                 models.push(modelTmp);
             }
         }
+        currentModels = models;
         return models;
     }
 
@@ -208,10 +227,12 @@
                 for (let j in cells){
                     if (cells[j].target != null && cells[j].target.id == target2){
                         var eid = cells[cells[j].source.id].eid;
+                        var iName = cells[cells[j].source.id].value;
                         event = {};
                         event.state = input.state;
                         event.event = input.value;
                         event.value = eid;
+                        event.iName = iName;
                         event.dataId = input.eid;
                         event.type = "link";
                         event.optional = input.optional;
@@ -281,8 +302,8 @@
                 sortAsc: 1,
             },
             type:'get',
-            success:(computableModelList)=>{
-                // console.log(computableModelList);
+            success:(result)=>{
+                computableModelList = result;
                 $('#number_'+(page+1)).attr('class','number');
                 page = num;
                 $('#pageModelContainer').empty();
@@ -290,7 +311,7 @@
                 $('#number_'+(page+1)).attr('class','number active');
 
                 // 知识点：jquery选择器和原生选择器之间的区别
-                if(page == 0){
+                if(page <= 4){
                     if ($('.btn-quickprev').length > 0){
                         $('.btn-quickprev')[0].innerText = '2';
                         $('.btn-quickprev')[0].id = 'number_2';
@@ -313,7 +334,7 @@
                     }
 
                 }
-                if(page == computableModelList.totalPages-1){
+                if(page >= computableModelList.totalPages-5){
                     if ($('.btn-quicknext').length > 0){
                         $('.btn-quicknext')[0].innerText = (computableModelList.totalPages-1);
                         $('.btn-quicknext')[0].id = 'number_'+(computableModelList.totalPages-1);
@@ -341,52 +362,45 @@
     }
 
     function changeNext() {
-        if (page < computableModelList.totalPages-1){
-            var i = Math.floor((page+1)/3);
-            if (i == 0) {
+        if (page >= 4 && page < computableModelList.totalPages-5){
+            var i = (page+1)%3;
+            if (i == 0 || i ==1){
                 getModelListByPage(page+1);
-            }else{
-                var j = (page+1)%3;
-                if (j ==0 || j ==1){
-                    getModelListByPage(page+1);
-                } else{
-                    changePageNext();
-                }
+            } else{
+                changePageNext();
             }
 
+        }else if((page >= 0 && page < 4) || (page >= computableModelList.totalPages-6 && page < computableModelList.totalPages-1)){
+            getModelListByPage(page+1);
         }
     }
 
     function changePrev() {
-        if (page > 0){
-            var i = Math.floor((page+1)/3);
-            if (i == 0) {
+        if (page == computableModelList.totalPages-5){
+            changePagePrev();
+        }else if (page > 4 && page < computableModelList.totalPages-5){
+            var i = (page+1)%3;
+            if (i ==1 || i ==2){
                 getModelListByPage(page-1);
-            }else{
-                var j = (page+1)%3;
-                if (j ==1 || j ==2){
-                    getModelListByPage(page-1);
-                } else{
-                    changePagePrev();
-                }
+            } else{
+                changePagePrev();
             }
+        }else if((page > 0 && page <= 4) || (page > computableModelList.totalPages-5 && page <= computableModelList.totalPages-1)){
+            getModelListByPage(page-1);
         }
     }
 
     function changePageNext() {
+        var i = Math.floor((page+1)/3);
+        i = i<1 ? 1:i;
+        console.log(i);
+        $('#number_'+(page+1)).attr('class','number');
 
         if(page<5){
             $('#number_2').text('');
             $('#number_2').attr('class','el-icon more btn-quickprev el-icon-more');
             $('#number_2').attr('id','');
         }
-
-
-        $('#number_'+(page+1)).attr('class','number');
-
-        var i = Math.floor((page+1)/3);
-        i = i<1 ? 1:i;
-        console.log(i);
 
         $('#number_'+3*i).text(3*(i+1));
         $('#number_'+3*i).attr('id','number_'+3*(i+1));
@@ -400,49 +414,46 @@
 
         page = 3*(i+1);
         getModelListByPage(page);
-        //思路有点混乱 稍后再加修改
-        // if(page>computableModelList.totalPages-6){
-        //     $('.btn-quicknext')[0].innerText = (computableModelList.totalPages-1);
-        //     $('.btn-quicknext')[0].id = 'number_'+(computableModelList.totalPages-1);
-        //     $('.btn-quicknext')[0].className = 'number';
-        // }
+
 
     }
 
     function changePagePrev() {
-
-        // if(page>computableModelList.totalPages-6){
-        //     $('#number_'+computableModelList.totalPages-2).text('');
-        //     $('#number_'+computableModelList.totalPages-2).attr('class','el-icon more btn-quicknext el-icon-more');
-        //     $('#number_'+computableModelList.totalPages-2).attr('id','');
-        //
-        // }
-
+        var i = Math.floor((page+1)/3);
         $('#number_'+(page+1)).attr('class','number');
 
-        var i = Math.floor((page+1)/3);
-        i = i<1 ? 1:i;
-        console.log(i);
+        if(page>computableModelList.totalPages-6){
+            i = Math.floor((computableModelList.totalPages-2)/3);
 
-        $('#number_'+3*i).text(3*(i-1));
-        $('#number_'+3*i).attr('id','number_'+3*(i-1));
+            $('#number_'+(computableModelList.totalPages-1)).text('');
+            $('#number_'+(computableModelList.totalPages-1)).attr('class','el-icon more btn-quicknext el-icon-more');
+            $('#number_'+(computableModelList.totalPages-1)).attr('id','');
 
-        $('#number_'+(3*i+1)).text((3*(i-1)+1));
-        $('#number_'+(3*i+1)).attr('class','number active');
-        $('#number_'+(3*i+1)).attr('id','number_'+(3*(i-1)+1));
 
-        $('#number_'+(3*i+2)).text((3*(i-1)+2));
-        $('#number_'+(3*i+2)).attr('id','number_'+(3*(i-1)+2));
+            $('#number_'+(computableModelList.totalPages-2)).text((3*(i-1)+2));
+            $('#number_'+(computableModelList.totalPages-2)).attr('id','number_'+(3*(i-1)+2));
+
+            $('#number_'+(computableModelList.totalPages-3)).text((3*(i-1)+1));
+            $('#number_'+(computableModelList.totalPages-3)).attr('class','number active');
+            $('#number_'+(computableModelList.totalPages-3)).attr('id','number_'+(3*(i-1)+1));
+
+            $('#number_'+(computableModelList.totalPages-4)).text(3*(i-1));
+            $('#number_'+(computableModelList.totalPages-4)).attr('id','number_'+3*(i-1));
+        }else{
+
+            $('#number_'+3*i).text(3*(i-1));
+            $('#number_'+3*i).attr('id','number_'+3*(i-1));
+
+            $('#number_'+(3*i+1)).text((3*(i-1)+1));
+            $('#number_'+(3*i+1)).attr('class','number active');
+            $('#number_'+(3*i+1)).attr('id','number_'+(3*(i-1)+1));
+
+            $('#number_'+(3*i+2)).text((3*(i-1)+2));
+            $('#number_'+(3*i+2)).attr('id','number_'+(3*(i-1)+2));
+        }
 
         page = 3*(i-1);
         getModelListByPage(page);
-
-
-        if(page<5){
-            $('.btn-quickprev')[0].innerText = '2';
-            $('.btn-quickprev')[0].id = 'number_2';
-            $('.btn-quickprev')[0].className = 'number';
-        }
 
     }
 

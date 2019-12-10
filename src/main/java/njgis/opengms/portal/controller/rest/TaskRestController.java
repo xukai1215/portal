@@ -10,6 +10,7 @@ import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.intergrate.Model;
+import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.exception.MyException;
@@ -213,6 +214,12 @@ public class TaskRestController {
         }
     }
 
+    /**
+     * xukai & zhangshuo
+     * 2019.12.09
+     * 继承运行模型接口
+     */
+
     @RequestMapping(value = "/getTasksByUserIdNoPage", method = RequestMethod.GET)
     JsonResult getTasksByUserIdNoPage(HttpServletRequest request,
                                 @RequestParam(value="sortType") String sortType,
@@ -232,8 +239,15 @@ public class TaskRestController {
     JsonResult runIntegratedModel(@RequestParam("file") MultipartFile file,
                                   @RequestParam("name") String name,
                                   HttpServletRequest request) throws IOException {
+
+
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null) {
+//            ModelAndView modelAndView = new ModelAndView();
+//            modelAndView.setViewName("login");
+//            modelAndView.addObject("unlogged", "1");
+//            return modelAndView;
+//
             return ResultUtils.error(-1, "no login");
         }
         else {
@@ -308,6 +322,18 @@ public class TaskRestController {
             return ResultUtils.success(data);
         }
     }
+
+    @RequestMapping(value = "/saveIntegratedTask", method = RequestMethod.POST)
+    JsonResult saveIntegratedTask(@RequestParam("taskId") String taskId, @RequestParam("graphXml") String graphXml, @RequestParam("modelParams") List<ModelParam> modelParams){
+        Task task = taskService.findByTaskId(taskId);
+        task.setGraphXml(graphXml);
+        task.setModelParams(modelParams);
+        taskService.save(task);
+        return ResultUtils.success(task);
+    }
+
+    /**/
+
 
     @RequestMapping(value = "/createTask/{id}", method = RequestMethod.POST)
     JsonResult createTask(@PathVariable("id") String id, HttpServletRequest request) {

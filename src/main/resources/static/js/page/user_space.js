@@ -5511,8 +5511,14 @@ var vue = new Vue({
                 })
         },
 
-        checkOutput(modelId, taskId) {
-            window.open('/task/output/' + modelId + '&' + taskId);
+        checkOutput(modelId, taskId, integrate) {
+            if (integrate){
+                window.open('/computableModel/getIntegratedTask/' + taskId);
+            } else{
+                window.open('/task/output/' + modelId + '&' + taskId);
+            }
+
+
         },
 
         // initDataTree(){

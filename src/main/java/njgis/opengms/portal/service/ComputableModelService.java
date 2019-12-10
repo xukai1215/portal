@@ -11,6 +11,8 @@ import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.intergrate.Model;
+import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -93,6 +95,11 @@ public class ComputableModelService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    /**
+     * 张硕
+     * 2019.12.04
+     * 模型集成相关方法 "integratingList" "integrating" "getComputableModelsBySearchTerms"
+     */
     public Page<ComputableModel> integratingList(int page, String sortType, int sortAsc){
 
         Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
@@ -113,16 +120,42 @@ public class ComputableModelService {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("integratedModeling");
 
-        List<ComputableModel> allComputableModel = computableModelDao.findByContentType("Package");
-        for(int i = 0; i<allComputableModel.size(); i++){
-            String mdl = allComputableModel.get(i).getMdl();
-            allComputableModel.get(i).setMdlJson(convertMdl(mdl));
-        }
+//        List<ComputableModel> allComputableModel = computableModelDao.findByContentType("Package");
+//        for(int i = 0; i<allComputableModel.size(); i++){
+//            String mdl = allComputableModel.get(i).getMdl();
+//            allComputableModel.get(i).setMdlJson(convertMdl(mdl));
+//        }
 
         mv.addObject("computableModelList", computableModelList);
-        mv.addObject("allComputableModel", allComputableModel);
+//        mv.addObject("allComputableModel", allComputableModel);
         return mv;
     }
+
+    public ModelAndView getIntegratedTask(Page<ComputableModel> computableModelList, String xml,List<ModelParam> modelParams,List<Model> models){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("integratedModeling");
+        mv.addObject("computableModelList", computableModelList);
+        mv.addObject("graphXml", xml);
+        mv.addObject("modelParams", modelParams);
+        mv.addObject("models", models);
+
+        return mv;
+    }
+
+    public List<ComputableModel> getComputableModelsBySearchTerms(String searchTerms){
+        String[] terms = searchTerms.toLowerCase().split(" ");
+        String tmp = terms[0];
+
+        List<ComputableModel> searchTermsComputableModel = computableModelDao.findByNameContainsIgnoreCaseAndContentType(tmp,"Package");
+        for(int i = 0; i<searchTermsComputableModel.size(); i++){
+            String mdl = searchTermsComputableModel.get(i).getMdl();
+            searchTermsComputableModel.get(i).setMdlJson(convertMdl(mdl));
+        }
+        return searchTermsComputableModel;
+    }
+    /**/
+
+
 
     public ModelAndView getPage(String id, HttpServletRequest httpServletRequest) {
         //条目信息

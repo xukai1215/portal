@@ -83,7 +83,7 @@ Sidebar.prototype.init = function()
 
     // this.addGeneralPalette(true);
 
-    this.addComputabelModel(allComputableModel,computableModelList,true);
+    this.addComputabelModel(computableModelList,true);
 
 	// this.addMiscPalette(false);
 	// this.addAdvancedPalette(false);
@@ -210,6 +210,8 @@ Sidebar.prototype.defaultImageWidth = 80;
  * Specifies the height for clipart images. Default is 80.
  */
 Sidebar.prototype.defaultImageHeight = 80;
+
+Sidebar.prototype.activeTerms = "";
 
 /**
  * Adds all palettes to the sidebar.
@@ -470,62 +472,153 @@ Sidebar.prototype.addEntry = function(tags, fn)
  */
 Sidebar.prototype.searchEntries = function(searchTerms, count, page, success, error)
 {
-	if (this.taglist != null && searchTerms != null)
-	{
-		var tmp = searchTerms.toLowerCase().split(' ');
-		var dict = new mxDictionary();
-		var max = (page + 1) * count;
-		var results = [];
-		var index = 0;
-		
-		for (var i = 0; i < tmp.length; i++)
-		{
-			if (tmp[i].length > 0)
-			{
-				var entry = this.taglist[tmp[i]];
-				var tmpDict = new mxDictionary();
-				
-				if (entry != null)
-				{
-					var arr = entry.entries;
-					results = [];
+    /**
+	 * 张硕
+	 * 2019.12.04
+	 * 拿着 searchTerms 去数据库里搜索
+     */
+    if (this.activeTerms == '' || this.activeTerms != searchTerms){
+    	this.activeTerms = searchTerms;
+        $.ajax({
+            url:'/computableModel/getComputableModelsBySearchTerms',
+            data:{
+                searchTerms:searchTerms
+            },
+            success:(result)=> {
+                // searchTermsComputableModel = result;
+                // hasSearchedTermsComputableModel += searchTermsComputableModel;
+                for(let m in result){
+                	hasSearchedTermsComputableModel.push(result[m]);
+				};
+                // 填充字典
+                for (var i=0; i< result.length; i++){
+                    var model = result[i];
+                    var modelName = model.name;
+                    this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
+                }
 
-					for (var j = 0; j < arr.length; j++)
-					{
-						var entry = arr[j];
-	
-						// NOTE Array does not contain duplicates
-						if ((index == 0) == (dict.get(entry) == null))
-						{
-							tmpDict.put(entry, entry);
-							results.push(entry);
-							
-							if (i == tmp.length - 1 && results.length == max)
-							{
-								success(results.slice(page * count, max), max, true, tmp);
-								
-								return;
-							}
-						}
-					}
-				}
-				else
-				{
-					results = [];
-				}
-				
-				dict = tmpDict;
-				index++;
-			}
-		}
-		
-		var len = results.length;
-		success(results.slice(page * count, (page + 1) * count), len, false, tmp);
+                //
+                if (this.taglist != null && searchTerms != null)
+                {
+                    var tmp = searchTerms.toLowerCase().split(' ');
+                    var dict = new mxDictionary();
+                    var max = (page + 1) * count;
+                    var results = [];
+                    var index = 0;
+
+                    for (var i = 0; i < tmp.length; i++)
+                    {
+                        if (tmp[i].length > 0)
+                        {
+                            var entry = this.taglist[tmp[i]];
+                            var tmpDict = new mxDictionary();
+
+                            if (entry != null)
+                            {
+                                var arr = entry.entries;
+                                results = [];
+
+                                for (var j = 0; j < arr.length; j++)
+                                {
+                                    var entry = arr[j];
+
+                                    // NOTE Array does not contain duplicates
+                                    if ((index == 0) == (dict.get(entry) == null))
+                                    {
+                                        tmpDict.put(entry, entry);
+                                        results.push(entry);
+
+                                        if (i == tmp.length - 1 && results.length == max)
+                                        {
+                                            success(results.slice(page * count, max), max, true, tmp);
+
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                results = [];
+                            }
+
+                            dict = tmpDict;
+                            index++;
+                        }
+                    }
+
+                    var len = results.length;
+                    success(results.slice(page * count, (page + 1) * count), len, false, tmp);
+                }
+                else
+                {
+                    success([], null, null, tmp);
+                }
+            }
+        });
+
+	} else if (this.activeTerms == searchTerms){
+        if (this.taglist != null && searchTerms != null)
+        {
+            var tmp = searchTerms.toLowerCase().split(' ');
+            var dict = new mxDictionary();
+            var max = (page + 1) * count;
+            var results = [];
+            var index = 0;
+
+            for (var i = 0; i < tmp.length; i++)
+            {
+                if (tmp[i].length > 0)
+                {
+                    var entry = this.taglist[tmp[i]];
+                    var tmpDict = new mxDictionary();
+
+                    if (entry != null)
+                    {
+                        var arr = entry.entries;
+                        results = [];
+
+                        for (var j = 0; j < arr.length; j++)
+                        {
+                            var entry = arr[j];
+
+                            // NOTE Array does not contain duplicates
+                            if ((index == 0) == (dict.get(entry) == null))
+                            {
+                                tmpDict.put(entry, entry);
+                                results.push(entry);
+
+                                if (i == tmp.length - 1 && results.length == max)
+                                {
+                                    success(results.slice(page * count, max), max, true, tmp);
+
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        results = [];
+                    }
+
+                    dict = tmpDict;
+                    index++;
+                }
+            }
+
+            var len = results.length;
+            success(results.slice(page * count, (page + 1) * count), len, false, tmp);
+        }
+        else
+        {
+            success([], null, null, tmp);
+        }
 	}
-	else
-	{
-		success([], null, null, tmp);
-	}
+
+
+
+
 };
 
 /**
@@ -3135,7 +3228,7 @@ Sidebar.prototype.itemClicked = function(cells, ds, evt, elt)
 	else
 	{
 		var pt = graph.getFreeInsertPoint();
-		
+
 		if (mxEvent.isAltDown(evt))
 		{
 			var bounds = graph.getGraphBounds();
@@ -3144,7 +3237,7 @@ Sidebar.prototype.itemClicked = function(cells, ds, evt, elt)
 			pt.x = bounds.x / s - tr.x + bounds.width / s + graph.gridSize;
 			pt.y = bounds.y / s - tr.y;
 		}
-		
+
 		ds.drop(graph, evt, null, pt.x, pt.y, true);
 		
 		if (this.editorUi.hoverIcons != null && (mxEvent.isTouchEvent(evt) || mxEvent.isPenEvent(evt)))
@@ -3223,14 +3316,18 @@ Sidebar.prototype.addClickHandler = function(elt, ds, cells)
         if (graph.getSelectionModel().cells.length>0){
             var event = graph.getSelectionModel().cells[0];
             if (event.response == "1") {
-                var edge = graph.insertEdge(parent, null, '', event, state,"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;");
+                graph.insertEdge(parent, null, '', event, state,"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+
             }else if(event.response == "0"){
-                graph.insertEdge(parent, null, '', state, event,"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;");
+                graph.insertEdge(parent, null, '', state, event,"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+
             }
         }
 
     };
 };
+
+
 
 /**
  * Creates a drop handler for inserting the given cells.
@@ -3300,6 +3397,7 @@ Sidebar.prototype.createEventVertexTemplate = function(style, width, height, val
     cells[0].optional = event.optional;
     cells[0].description = event.eventDesc;
     cells[0].data = event.data;
+    cells[0].url = "";
 
     if (eventType == true){
         cells[0].response = true;
@@ -3308,6 +3406,7 @@ Sidebar.prototype.createEventVertexTemplate = function(style, width, height, val
     }
     return this.createVertexTemplateFromCells(cells, width, height, title, showLabel, showTitle, allowCellsInserted);
 };
+
 
 
 /**
@@ -3691,7 +3790,7 @@ Sidebar.prototype.destroy = function()
  * 2019.11.27
  * 添加计算模型
  */
-Sidebar.prototype.addComputabelModel = function (allComputableModel, computableModelList, expand) {
+Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
 
 	var elt = document.createElement('div');
     this.container.appendChild(elt);
@@ -3708,17 +3807,17 @@ Sidebar.prototype.addComputabelModel = function (allComputableModel, computableM
     elt.appendChild(div);
 
 	// 填充字典
-    for (var i=0; i<allComputableModel.length; i++){
-        var model = allComputableModel[i];
-        var modelName = model.name;
-        this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
-    }
+    // for (var i=0; i<allComputableModel.length; i++){
+    //     var model = allComputableModel[i];
+    //     var modelName = model.name;
+    //     this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
+    // }
 
     //绘制指定页码的是个计算模型
     for (var j=0; j<computableModelList.size; j++){
         var model = computableModelList.content[j];
         var modelName = model.name;
-        var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#329932;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
+        var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
         div.appendChild(a);
     }
 
@@ -3781,7 +3880,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
     for (var i=0; i<computableModelList.numberOfElements; i++){
         var model = computableModelList.content[i];
         var modelName = model.name;
-        var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#329932;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
+        var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
         div.appendChild(a);
     }
 };

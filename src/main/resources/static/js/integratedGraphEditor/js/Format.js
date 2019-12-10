@@ -482,7 +482,7 @@ Format.prototype.refresh = function()
          *
          */
         var idx = 0;
-        if ( graph.getSelectionModel().cells[0].response == undefined) {
+        if ( graph.getSelectionModel().cells[0].md5 != undefined && graph.getSelectionModel().cells[0].response == undefined) {
             mxUtils.write(label, mxResources.get('input&output'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
@@ -5649,7 +5649,8 @@ EventPanel.prototype.init = function()
     var modelId = graph.getSelectionModel().cells[0].mid;
     var inputEvents = [];
     var outputEvents = [];
-    for (var i=0; i<computableModelList.size; i++){
+    var i;
+    for (i=0; i<computableModelList.size; i++){
         if(modelId == computableModelList.content[i].id){
         	model = computableModelList.content[i];
             var states = computableModelList.content[i].mdlJson.mdl.states;
@@ -5666,6 +5667,28 @@ EventPanel.prototype.init = function()
                 }
             }
             break;
+        }
+    }
+
+    if (i >= computableModelList.size) {
+        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+            if(modelId == hasSearchedTermsComputableModel[j].id){
+                model = hasSearchedTermsComputableModel[j];
+                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
+                for (var k = 0; k<states.length; k++){
+                    var state = states[k];
+                    for (var l = 0; l<state.event.length; l++){
+                        var event = state.event[l];
+                        event.stateName = state.name;
+                        if (event.eventType == "response"){
+                            inputEvents.push(event);
+                        } else{
+                            outputEvents.push(event);
+                        }
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -5687,7 +5710,7 @@ EventPanel.prototype.addInputEvents = function(div,inputEvents,model){
         event.style.margin = '0px';
         div.appendChild(event);
 
-        event = ui.sidebar.createEventVertexTemplate('shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;strokeColor=#000000;', 200, 50, inputEvents[i].eventName, null, null, null,true, model,true,inputEvents[i]);
+        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputEvents[i].eventName, null, null, null,true, model,true,inputEvents[i]);
 
         div.appendChild(event);
     }
@@ -5709,7 +5732,7 @@ EventPanel.prototype.addOutputEvents = function(div,outputEvents,model){
         event.style.margin = '0px';
         div.appendChild(event);
 
-        event = ui.sidebar.createEventVertexTemplate('shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;strokeColor=#000000;', 200, 50, outputEvents[i].eventName, null, null, null,true,model,false,outputEvents[i]);
+        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, outputEvents[i].eventName, null, null, null,true,model,false,outputEvents[i]);
 
         div.appendChild(event);
     }
@@ -5739,7 +5762,8 @@ InputEventPanel.prototype.init = function()
     var modelId = graph.getSelectionModel().cells[0].mid;
     var eventName = graph.getSelectionModel().cells[0].value;
     var event = null;
-    for (var i=0; i<computableModelList.size; i++){
+    var i;
+    for (i=0; i<computableModelList.size; i++){
         if(modelId == computableModelList.content[i].id){
             model = computableModelList.content[i];
             var states = computableModelList.content[i].mdlJson.mdl.states;
@@ -5757,8 +5781,27 @@ InputEventPanel.prototype.init = function()
         }
     }
 
+    if (i >= computableModelList.size) {
+        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+            if(modelId == hasSearchedTermsComputableModel[j].id){
+                model = hasSearchedTermsComputableModel[j];
+                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
+                for (var k = 0; k<states.length; k++){
+                    var state = states[k];
+                    for (var l = 0; l<state.event.length; l++){
+                        var eventTmp = state.event[l];
+                        if (eventTmp.eventName == eventName){
+                            event = eventTmp;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
     this.container.appendChild(this.addInputEventInfo(this.createPanel(),event,model.name));
-    // this.container.appendChild(this.addUploadDownload(this.createPanel(),event));
+    // this.container.appendChild(this.addDownload(this.createPanel(),event,url));
 };
 
 InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
@@ -5815,33 +5858,27 @@ InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
     return div;
 };
 
-InputEventPanel.prototype.addUploadDownload = function(div, event){
+InputEventPanel.prototype.addDownload = function(div, event, url){
     var ui = this.editorUi;
 
-    var title = this.createTitle("Download Data: ");
+    var title = this.createTitle("Download Data : ");
     title.style.paddingBottom = '6px';
     title.style.fontSize = "14px";
     title.style.cursor = "default";
     div.appendChild(title);
 
-    var uploadLabel = document.createElement("p");
-    var upload = document.createElement("input");
-    uploadLabel.textContent = "Input Data : ";
-    upload.disabled = "false";
-    upload.id = event.eventName;
-	div.appendChild(uploadLabel);
-	div.appendChild(upload);
+    var downloadLabel = document.createElement("p");
+    var download = document.createElement("a");
+    downloadLabel.textContent = "Input Event :  ";
+    download.href = url;
+    download.innerText = event.eventName;
+    download.style.textDecoration = "underline";
+    download.style.color = "#f90";
 
-	var brDiv = document.createElement("br");
-    div.appendChild(brDiv);
+    downloadLabel.appendChild(download);
+    div.appendChild(downloadLabel);
 
-    var downloadBtn = document.createElement("button");
-    downloadBtn.style.height = "30px";
-    downloadBtn.style.margin = "5px 5px 5px 0";
-    downloadBtn.innerText = "download";
-    div.appendChild(downloadBtn);
-
-	return div;
+    return div;
 };
 /**
  * 张硕
@@ -5864,7 +5901,8 @@ OutputEventPanel.prototype.init = function()
     var modelId = graph.getSelectionModel().cells[0].mid;
     var eventName = graph.getSelectionModel().cells[0].value;
     var event = null;
-    for (var i=0; i<computableModelList.size; i++){
+    var i;
+    for (i=0; i<computableModelList.size; i++){
         if(modelId == computableModelList.content[i].id){
             model = computableModelList.content[i];
             var states = computableModelList.content[i].mdlJson.mdl.states;
@@ -5882,8 +5920,32 @@ OutputEventPanel.prototype.init = function()
         }
     }
 
+    if (i >= computableModelList.size) {
+        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+            if(modelId == hasSearchedTermsComputableModel[j].id){
+                model = hasSearchedTermsComputableModel[j];
+                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
+                for (var k = 0; k<states.length; k++){
+                    var state = states[k];
+                    for (var l = 0; l<state.event.length; l++){
+                        var eventTmp = state.event[l];
+                        if (eventTmp.eventName == eventName){
+                            event = eventTmp;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
     this.container.appendChild(this.addOutputEventInfo(this.createPanel(),event,model.name));
-    // this.container.appendChild(this.addDownload(this.createPanel(),event));
+
+    if (graph.getSelectionModel().cells[0].url != undefined && graph.getSelectionModel().cells[0].url != ""){
+    	var url = graph.getSelectionModel().cells[0].url;
+        this.container.appendChild(this.addDownload(this.createPanel(),event,url));
+	}
 };
 
 OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
@@ -5940,7 +6002,7 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     return div;
 };
 
-OutputEventPanel.prototype.addDownload = function(div, event){
+OutputEventPanel.prototype.addDownload = function(div, event, url){
     var ui = this.editorUi;
 
     var title = this.createTitle("Download Data : ");
@@ -5950,21 +6012,15 @@ OutputEventPanel.prototype.addDownload = function(div, event){
     div.appendChild(title);
 
     var downloadLabel = document.createElement("p");
-    var download = document.createElement("input");
-    downloadLabel.textContent = "Output Data : ";
-    download.disabled = "false";
-    download.id = event.eventName;
+    var download = document.createElement("a");
+    downloadLabel.textContent = "Output Event :  ";
+    download.href = url;
+    download.innerText = event.eventName;
+    download.style.textDecoration = "underline";
+    download.style.color = "#f90";
+
+    downloadLabel.appendChild(download);
     div.appendChild(downloadLabel);
-    div.appendChild(download);
-
-    var brDiv = document.createElement("br");
-    div.appendChild(brDiv);
-
-    var downloadBtn = document.createElement("button");
-    downloadBtn.style.height = "30px";
-    downloadBtn.style.margin = "5px 5px 5px 0";
-    downloadBtn.innerText = "download";
-    div.appendChild(downloadBtn);
 
     return div;
 };

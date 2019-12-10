@@ -43,5 +43,4 @@ var vue = new Vue({
             timer =setInterval(Slider,12);
         }
     }
-
 })
