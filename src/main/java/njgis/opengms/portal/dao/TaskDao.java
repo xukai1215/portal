@@ -17,6 +17,8 @@ public interface TaskDao extends MongoRepository<Task,String> {
 
     Page<Task> findByUserId(String userId,Pageable pageable);
 
+    Page<Task> findByUserIdAndStatusBetween(String userId,int statusFrom,int statusTo,Pageable pageable);
+
     List<Task> findByUserId(String userId, Sort sort);
 
     Page<Task> findByUserIdAndIntegrate(String userId,Boolean integrate,Pageable pageable);

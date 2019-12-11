@@ -2226,3 +2226,16 @@ ul,li{
  .cursorPointer{
    cursor: pointer;
  }
+
+ .wzhSelectContainer input{
+   border: 0;
+   background: rgba(0, 171, 255, 0.91);
+   color: white;
+   width: 110px;
+   text-align: center;
+   font-size: 14px;
+ }
+
+ .wzhSelectContainer i{
+   color: whitesmoke !important;
+ }

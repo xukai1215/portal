@@ -379,23 +379,23 @@
                                     </div>
                                     <div class="row" style="margin:0;">
                                         <div class="col-md-4">
-                                            <div class="widget widget-info widget-item-icon">
+                                            <div class="widget widget-info widget-item-icon" style="border-radius: 4px;">
                                                 <div class="widget-item-left">
                                                     <span class="fa fa-spinner"></span>
                                                 </div>
-                                                <div class="widget-data">
+                                                <div class="widget-data cursorPointer" @click="showTasksByStatus('calculating')" >
                                                     <div class="widget-int num-count">{{statisticsInfo.calculating}}
                                                     </div>
-                                                    <div class="widget-title">On Going Calculations</div>
+                                                    <div class="widget-title ">On Going Calculations</div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="widget widget-success widget-item-icon">
+                                            <div class="widget widget-success widget-item-icon" style="border-radius: 4px;">
                                                 <div class="widget-item-left">
                                                     <span class="fa fa-tasks"></span>
                                                 </div>
-                                                <div class="widget-data">
+                                                <div class="widget-data cursorPointer" @click="showTasksByStatus('successful')">
                                                     <div class="widget-int num-count">{{statisticsInfo.success}}</div>
                                                     <div class="widget-title">Success Calculations</div>
 
@@ -403,11 +403,11 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="widget widget-danger widget-item-icon">
+                                            <div class="widget widget-danger widget-item-icon" style="border-radius: 4px;">
                                                 <div class="widget-item-left">
                                                     <span class="fa fa-support"></span>
                                                 </div>
-                                                <div class="widget-data">
+                                                <div class="widget-data cursorPointer" @click="showTasksByStatus('failed')">
                                                     <div class="widget-int num-count">{{statisticsInfo.fail}}</div>
                                                     <div class="widget-title">Fail Calculations</div>
                                                 </div>
@@ -3264,7 +3264,17 @@
                             <div class="panel panel-default">
                                 <div class="panel-body" style="height: 61px;">
                                     <div class="form-horizontal">
-                                        <div class="form-group">
+                                        <div class="form-group flexRowContainer flexColCenter">
+                                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer">Task status:
+                                                <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus">
+                                                <el-option
+                                                        v-for="item in options"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                    <!--                                        v-if="isSelect(item.value)">-->
+                                                </el-option>
+                                            </el-select> </div>
                                             <div class="col-md-8 col-md-offset-4">
                                                 <div class="input-group" @keydown.enter="search()">
                                                     <input type="text" class="form-control" name="searchText"

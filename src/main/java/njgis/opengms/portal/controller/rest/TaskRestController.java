@@ -214,6 +214,21 @@ public class TaskRestController {
         }
     }
 
+    @RequestMapping(value="/getTasksByUserIdByStatus",method = RequestMethod.GET )
+    JsonResult getTasksByUserByStatus(HttpServletRequest request, @RequestParam(value="status") String status,@RequestParam(value="page") int page,
+                                      @RequestParam(value="sortType") String sortType,
+                                      @RequestParam(value="asc") int sortAsc) {
+        HttpSession session = request.getSession();
+        String userId = session.getAttribute("uid").toString();
+        if (userId == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getTasksByUserIdByStatus(username,status,page,sortType,sortAsc));
+        }
+
+    }
+
     /**
      * xukai & zhangshuo
      * 2019.12.09
@@ -239,15 +254,8 @@ public class TaskRestController {
     JsonResult runIntegratedModel(@RequestParam("file") MultipartFile file,
                                   @RequestParam("name") String name,
                                   HttpServletRequest request) throws IOException {
-
-
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null) {
-//            ModelAndView modelAndView = new ModelAndView();
-//            modelAndView.setViewName("login");
-//            modelAndView.addObject("unlogged", "1");
-//            return modelAndView;
-//
             return ResultUtils.error(-1, "no login");
         }
         else {
