@@ -5684,7 +5684,7 @@ var vue = new Vue({
                 success: function (result) {
                     if (result.code == -1) {
                         alert("Please login first!")
-                        //window.location.href="/user/login";
+                        window.location.href="/user/login";
                     } else {
                         let data = result.data;
                         if (data == 1) {
@@ -5804,7 +5804,7 @@ var vue = new Vue({
 
         $.ajax({
             type: "GET",
-            url: "/modelContainer/all",
+            url: "/modelContainer/getModelContainerByUserName",
             data: {},
 
             crossDomain: true,
@@ -5813,7 +5813,12 @@ var vue = new Vue({
             },
             async: true,
             success: (res) => {
-                this.modelContainerList=res.data;
+                if (res.code == -1) {
+                    alert("Please login first!")
+                    window.location.href="/user/login";
+                } else {
+                    this.modelContainerList = res.data;
+                }
             }
         })
 

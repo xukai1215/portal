@@ -166,13 +166,12 @@ var vue = new Vue({
 
         loadDataIndex:1,
 
-        currentFile:null,
     },
     computed: {},
     watch:{
-      currentFile:function (file) {
-          this.uploadToDataContainer(file);
-      }
+      // currentFile:function (file) {
+      //     this.uploadToDataContainer(file);
+      // }
     },
     methods: {
 
@@ -194,7 +193,7 @@ var vue = new Vue({
             this.paramDialogVisible = true;
         },
 
-        uploadToDataContainer(file){
+        uploadToDataContainer(file,event){
 
             $.get("/dataManager/dataContainerIpAndPort",(result)=>{
                 let ipAndPort=result.data;
@@ -204,14 +203,14 @@ var vue = new Vue({
                     type:"post",
                     url: "http://"+ipAndPort+"/file/upload/store_dataResource_files",
                     data: formData,
-                    async:false,
+                    async:true,
                     processData: false,
                     contentType: false,
                     success: (result)=>{
                         if (result.code == 0){
                             let data = result.data;
                             let dataName = data.file_name.match(/.+(?=\.)/)[0];
-                            let dataSuffix = data.file_name.match(/(?=\.).+/)[0];
+                            let dataSuffix = data.file_name.match(/(?=\.).+/)[0].substring(1);
                             let dataId = data.source_store_id;
                             let dataUrl = "http://"+ipAndPort+"/dataResource";
                             let form = {
@@ -228,17 +227,43 @@ var vue = new Vue({
                                 url: dataUrl,
                                 data: JSON.stringify(form),
 
-                                async:false,
+                                async:true,
 
                                 contentType:'application/json',
                                 success:(res) => {
+                                    this.$delete(event,"uploading");
                                     if(res.code == 0){
-                                        this.$set(this.eventChoosing,'url',"http://"+ipAndPort+"/dataResource/getResource?sourceStoreId="+res.data.sourceStoreId);
-                                        this.$set(this.eventChoosing,'tag',res.data.fileName)
-                                        this.$set(this.eventChoosing,'suffix',res.data.suffix)
+                                        if(event==null) {
+                                            this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/dataResource/getResource?sourceStoreId=" + res.data.sourceStoreId);
+                                            this.$set(this.eventChoosing, 'tag', res.data.fileName)
+                                            this.$set(this.eventChoosing, 'suffix', res.data.suffix)
+
+                                            let uploadEle=$("#upload_" + this.eventChoosing.eventId);
+                                            uploadEle.removeAttr("disabled");
+                                            uploadEle.children().children().removeClass("el-icon-loading");
+                                            uploadEle.children().children().addClass("fa");
+                                            uploadEle.children().children().addClass("fa-cloud-upload");
+                                            $("#eventInp_" + this.eventChoosing.eventId).val(res.data.fileName + res.data.suffix);
+                                            $("#download_" + this.eventChoosing.eventId).css("display", "block");
+                                        }
+                                        else{
+
+                                            this.$set(event, 'url', "http://" + ipAndPort + "/dataResource/getResource?sourceStoreId=" + res.data.sourceStoreId);
+                                            this.$set(event, 'tag', res.data.fileName)
+                                            this.$set(event, 'suffix', res.data.suffix)
+
+                                            let uploadEle=$("#upload_" + event.eventId);
+                                            uploadEle.removeAttr("disabled");
+                                            uploadEle.children().children().removeClass("el-icon-loading");
+                                            uploadEle.children().children().addClass("fa");
+                                            uploadEle.children().children().addClass("fa-cloud-upload");
+                                            $("#eventInp_" + event.eventId).val(res.data.fileName + res.data.suffix);
+                                            $("#download_" + event.eventId).css("display", "block");
+                                        }
 
                                         $("#uploadInputData").val("");
-                                        console.log(this.info.modelInfo);
+
+
 
                                     }
                                 }
@@ -260,45 +285,33 @@ var vue = new Vue({
                 for (j = 0; j < events.length; j++) {
                     let event = events[j];
                     if (event.eventType=="response"&&event.children != undefined) {
-                        this.eventChoosing = event;
                         //拼接文件内容
-                        let content = "<DataSet>";
+                        let content = "";
                         let children = event.children;
                         for (k = 0; k < children.length; k++) {
                             let child = children[k];
-                            content += "<XDO name=\"" + child.eventName + "\" kernelType=\"" + child.eventType + "\" value=\"" + child.value + "\" /> ";
+                            if(child.value===undefined||child.value.trim()===''){
+                                continue;
+                            }
+                            else {
+                                content += "<XDO name=\"" + child.eventName + "\" kernelType=\"" + child.eventType.toLowerCase() + "\" value=\"" + child.value + "\" /> ";
+                            }
                         }
-                        content += "</Dataset>";
+                        if(content===""){
+                            continue;
+                        }
+                        else{
+                            content = "<Dataset> " + content + " </Dataset>";
+                        }
+
 
                         //生成文件
                         let file = new File([content], event.eventName + '.xml', {
                             type: 'text/plain',
                         });
                         //上传文件
-                        this.uploadToDataContainer(file);
-                        // let formData = new FormData();
-                        // formData.append("file", file);
-                        //
-                        // formData.append("host", this.info.dxInfo.dxIP);
-                        // formData.append("port", this.info.dxInfo.dxPort);
-                        // formData.append("type", this.info.dxInfo.dxType);
-                        // formData.append("userName", this.info.userInfo.userName);
-                        // $.ajax({
-                        //     url: "/dispatchRequest/upload",
-                        //     type: "POST",
-                        //     processData: false,
-                        //     contentType: false,
-                        //     async: true,
-                        //     data: formData,
-                        //     success: ({data}) => {
-                        //
-                        //         let {tag, suffix, url} = data;
-                        //         this.eventChoosing.tag = tag;
-                        //         this.eventChoosing.suffix = suffix;
-                        //         this.eventChoosing.url = url;
-                        //
-                        //     }
-                        // });
+                        this.uploadToDataContainer(file,event);
+
                     }
                 }
             }
@@ -515,18 +528,18 @@ var vue = new Vue({
                 userName: this.info.userInfo.userName
             };
         },
-        handleDataDownloadClick({sourceStoreId}) {
-
-            window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
-        },
-        handleDataChooseClick({sourceStoreId, fileName, suffix}) {
-            let url =
-                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
-                sourceStoreId;
-            this.showDataChose = false;
-            this.eventChoosing.tag = fileName + "." + suffix;
-            this.eventChoosing.url = url;
-        },
+        // handleDataDownloadClick({sourceStoreId}) {
+        //
+        //     window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
+        // },
+        // handleDataChooseClick({sourceStoreId, fileName, suffix}) {
+        //     let url =
+        //         "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
+        //         sourceStoreId;
+        //     this.showDataChose = false;
+        //     this.eventChoosing.tag = fileName + "." + suffix;
+        //     this.eventChoosing.url = url;
+        // },
         switchClick(i) {
             if (i == 1) {
                 $(".tab1").css("display", "block");
@@ -814,16 +827,16 @@ var vue = new Vue({
         beforeRemove(file) {
             return this.$confirm(`确定移除 ${file.name}？`);
         },
-        onSuccess({data}) {
-            let {tag, suffix, url} = data;
-            this.showUpload = false;
-            this.eventChoosing.tag = tag;
-            this.eventChoosing.suffix = suffix;
-            this.eventChoosing.url = url;
-            this.$refs.upload.clearFiles();
-            $("#eventInp_" + this.eventChoosing.eventId).val(tag + "." + suffix);
-            $("#download_" + this.eventChoosing.eventId).css("display", "block");
-        },
+        // onSuccess({data}) {
+        //     let {tag, suffix, url} = data;
+        //     this.showUpload = false;
+        //     this.eventChoosing.tag = tag;
+        //     this.eventChoosing.suffix = suffix;
+        //     this.eventChoosing.url = url;
+        //     this.$refs.upload.clearFiles();
+        //     $("#eventInp_" + this.eventChoosing.eventId).val(tag + "." + suffix);
+        //     $("#download_" + this.eventChoosing.eventId).css("display", "block");
+        // },
 
         myDataClick(index) {
             this.dataChosenIndex = index;
@@ -1099,9 +1112,28 @@ var vue = new Vue({
                 for (i = 0; i < states.length; i++) {
                     let events = states[i].event;
                     for (j = 0; j < events.length; j++) {
-                        if (events.eventType=="response"&&events.url == undefined) {
-                            prepared = false;
-                            break;
+                        //判断参数文件是否已经上传
+                        if (events[j].eventType=="response") {
+
+                            let children = events[j].children;
+                            if (children === undefined) {
+                                continue;
+                            }
+                            else {
+                                let hasFile = false;
+                                for (k = 0; k < children.length; k++) {
+                                    if (children[k].value != undefined && children[k].value.trim() != "") {
+                                        hasFile = true;
+                                        break;
+                                    }
+                                }
+                                if(hasFile){
+                                    if(events[j].url==undefined){
+                                        prepared = false;
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                     if (!prepared) {
@@ -1172,7 +1204,6 @@ var vue = new Vue({
                         type: "POST",
 
                         contentType: "application/json",
-                        async: false,
                         data: JSON.stringify(json),
                         success: ({data, code, msg})=> {
                             tid = data;
@@ -1317,39 +1348,6 @@ var vue = new Vue({
             return key;
         },
 
-        //上传
-        upload_data_dataManager() {
-
-
-            if (this.sourceStoreId === '') {
-                alert("请先上传数据")
-            } else {
-                var data = {
-                    author: this.userId,
-
-                    fileName: $("#managerFileName").val(),
-                    fromWhere: "PORTAL",
-                    mdlId: "string",
-                    sourceStoreId: this.sourceStoreId,
-                    suffix: $("#managerFileSuffix").val(),
-                    tags: $("#managerFileTags").tagsinput('items'),
-                    type: "OTHER"
-
-                }
-                var that = this;
-                axios.post("http://172.21.212.64:8082/dataResource", data)
-                    .then(res => {
-                        if (res.status == 200) {
-                            alert("data upload success")
-
-                            that.addAllData()
-                            that.close()
-                        }
-                    });
-
-            }
-
-        },
 
         //下载
         download_data_dataManager() {
@@ -1835,28 +1833,6 @@ var vue = new Vue({
             this.$refs.upload.uploadFiles
         },
 
-        confirmSelect() {
-            if (this.selectData.length == 0) {
-                this.$message("you have selected no data")
-            } else {
-                let da = this.selectData.pop()
-
-                let key = this.keyInput
-                // $('#datainput'+key)[0].value=da.item.fileName
-
-                this.selectDataDialog = false
-
-                //todo 拼接url
-                this.modelInEvent.url = "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" + da.item.sourceStoreId
-                this.modelInEvent.tag = da.item.fileName
-
-            }
-
-
-            this.selectData = []
-
-
-        },
 
     },
 
@@ -1948,8 +1924,23 @@ var vue = new Vue({
         window.addEventListener('resize',this.initSize);
 
         $("#uploadInputData").change(()=> {
-            this.currentFile = $('#uploadInputData')[0].files[0];
-            //this.uploadToDataContainer(file);
+            this.$delete(this.eventChoosing,"tag");
+            this.$delete(this.eventChoosing,"suffix");
+            this.$delete(this.eventChoosing,"url");
+            this.$set(this.eventChoosing,"uploading",true);
+
+            let uploadEle=$("#upload_" + this.eventChoosing.eventId);
+            uploadEle.attr("disabled",true);
+            uploadEle.children().children().removeClass("fa");
+            uploadEle.children().children().removeClass("fa-cloud-upload");
+            uploadEle.children().children().addClass("el-icon-loading");
+            uploadEle.children().children().css("font-size","12px")
+
+            $("#eventInp_" + this.eventChoosing.eventId).val("");
+            $("#download_" + this.eventChoosing.eventId).css("display", "none");
+
+            let file = $('#uploadInputData')[0].files[0];
+            this.uploadToDataContainer(file,this.eventChoosing);
 
         })
 
@@ -2092,11 +2083,11 @@ var vue = new Vue({
                                 }
                             }
                             else if (event.eventType == "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
+                                $("#eventInp_" + eventId).val(event.tag + event.suffix);
                             } else if (event.eventType == "response") {
                                 $("#download_" + eventId).css("display", "none");
                             } else if (event.eventType != "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
+                                $("#eventInp_" + eventId).val(event.tag + event.suffix);
                                 $("#eventInp_" + eventId).css("width", "90%");
                                 $("#select_" + eventId).css("display", "none");
                                 $("#upload_" + eventId).css("display", "none");

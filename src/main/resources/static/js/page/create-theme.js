@@ -1377,6 +1377,12 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+            let loading = this.$loading({
+                lock: true,
+                text: "Uploading...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
 
             }else {
@@ -1435,12 +1441,20 @@ var vue = new Vue({
                     type: "POST",
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
                     success: function (result) {
+                        loading.close();
                         if (result.code == "0") {
                             alert("Create Success");
                             window.location.href = "/repository/theme/" + result.data;//刷新当前页面
+                        }
+                        else if(result.code==-1){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
+                        }
+                        else{
+                            alert("Create failed!")
                         }
                     }
                 })
@@ -1457,10 +1471,11 @@ var vue = new Vue({
                     type: "POST",
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
 
                     success: function (result) {
+                        loading.close();
                         if (result.code === 0) {
                             if(result.data.method==="update") {
                                 alert("Update Success");
@@ -1473,6 +1488,10 @@ var vue = new Vue({
                             }
                             // window.location.href = "/theme/" + result.data;
                             //window.location.reload();
+                        }
+                        else if(result.code==-2){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
                         }
                         else{
                             alert(result.msg);

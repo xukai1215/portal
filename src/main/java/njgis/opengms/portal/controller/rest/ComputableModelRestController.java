@@ -232,9 +232,15 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping(value = "/integrating",method = RequestMethod.GET)
-    ModelAndView integrating(){
+    ModelAndView integrating(HttpServletRequest request){
         Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
-        return computableModelService.integrate(computableModelList);
+        ModelAndView modelAndView = computableModelService.integrate(computableModelList);
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("unlogged", "1");
+        else
+            modelAndView.addObject("logged", "0");
+        return modelAndView;
     }
 
     @RequestMapping(value = "/getIntegratedTask/{taskId}",method = RequestMethod.GET)

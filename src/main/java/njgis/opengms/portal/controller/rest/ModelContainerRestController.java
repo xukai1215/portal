@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping(value = "/modelContainer")
 public class ModelContainerRestController {
@@ -74,6 +77,16 @@ public class ModelContainerRestController {
     @RequestMapping(value="/all",method=RequestMethod.GET)
     JsonResult getAll(){
         return ResultUtils.success(modelContainerDao.findAll());
+    }
+
+    @RequestMapping(value="/getModelContainerByUserName",method=RequestMethod.GET)
+    JsonResult getModelContainerByUserName(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=session.getAttribute("uid").toString();
+        return ResultUtils.success(modelContainerDao.findAllByUser(userName));
     }
 
 //    @RequestMapping(value = "/register/{ip}", method = RequestMethod.POST)

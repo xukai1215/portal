@@ -414,6 +414,12 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=>{
+            let loading = this.$loading({
+                lock: true,
+                text: "Uploading...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             if($("#bind").html() == "bind"){
                 alert("please bind model item (Step1)")
                 return;
@@ -474,8 +480,9 @@ var vue = new Vue({
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: false
+                    async: true
                 }).done(function (res) {
+                    loading.close();
                     switch (res.data.code) {
                         case 1:
                             alert("create logical model successfully!");
@@ -509,8 +516,9 @@ var vue = new Vue({
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: false
+                    async: true
                 }).done(function (res) {
+                    loading.close();
                     console.log(res)
                     if(res.code===0) {
                         switch (res.data.code) {

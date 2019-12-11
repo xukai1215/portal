@@ -229,6 +229,7 @@ public class TaskService {
         taskInfo.put("outputs", task.getOutputs());
         taskInfo.put("inputs", task.getInputs());
         taskInfo.put("createTime", task.getRunTime());
+        taskInfo.put("status",task.getStatus());
 
         boolean hasTest;
         if (modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")) {
@@ -1025,16 +1026,27 @@ public class TaskService {
             task.setStatus(remoteState);
         }
         if (remoteState == 2) {
+            boolean hasValue=false;
+            JSONArray outputs=result.getJSONObject("data").getJSONArray("outputs");
+            for(int i=0;i<outputs.size();i++){
+                if(!outputs.getJSONObject(i).getString("url").equals("")){
+                    hasValue=true;
+                    break;
+                }
+            }
+            if(!hasValue){
+                task.setStatus(-1);
+            }
             task.setOutputs(result.getJSONObject("data").getJSONArray("outputs").toJavaList(TaskData.class));
         }
         save(task);
 
 
-        if (remoteState == 0) {
+        if (task.getStatus() == 0) {
             out.put("status", 0);
-        } else if (remoteState == 1) {
+        } else if (task.getStatus() == 1) {
             out.put("status", 1);
-        } else if (remoteState == 2) {
+        } else if (task.getStatus() == 2) {
             out.put("status", 2);
             out.put("outputdata", task.getOutputs());
         } else {

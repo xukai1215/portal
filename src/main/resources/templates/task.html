@@ -32,13 +32,7 @@
             display: none;
         }
 
-        .el-icon-loading {
-            font-size: 40px;
-        }
 
-        .el-loading-spinner .el-loading-text {
-            font-size: 20px;
-        }
 
         .el-collapse-item__header{
             font-size:16px;
@@ -98,7 +92,7 @@
                 </div>
             </el-col>
             <el-dialog :visible.sync="loadDataVisible" title="Load Data" class="wzhDialog" style="height: 915px !important;">
-                <ul class="flexRowContainer headRadius loadDataUl" style="width: 98%;background-color: #ecf5ff;">
+                <ul class="flexRowContainer headRadius loadDataUl" style="background-color: #ecf5ff;">
                     <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==1}" @click="testDataClick(1)" style="flex: 1;"><h4>Test data</h4></li>
 
                     <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==2}" @click="myCalcDataClick(2)" style="flex: 1;">
@@ -109,9 +103,9 @@
                     </li>
 
                 </ul>
-                <div class="innerBorder" style="margin-top:5px;width: 98% "></div>
-                <div class="flexRowSpaceBetween" v-if="loadDataIndex==1" style="width: 90%">
-                    <h4 style="font-style: italic">We have provide data for you to test this model </h4>
+                <div class="innerBorder" style="margin-top:5px;width: 100% "></div>
+                <div class="flexRowSpaceBetween" v-if="loadDataIndex==1" style="padding-top: 10px;">
+                    <h4 style="font-style: italic">We have provide data for you to test this model. </h4>
                     <el-button type="primary" @click="loadTest" >Load Test Data</el-button>
                 </div>
 
@@ -329,9 +323,10 @@
                                                                            <!--circle>-->
                                                                     <!--<i class="fa fa-edit"></i>-->
                                                                 <!--</el-button>-->
-                                                                <el-button plain round type="primary"
-                                                                           @click="upload(modelInEvent)">
-                                                                    <i class="fa fa-cloud-upload"></i>
+                                                                <el-button  plain round type="primary"
+                                                                           @click="upload(modelInEvent)" :disabled="modelInEvent.uploading">
+                                                                    <i v-if="!modelInEvent.uploading" class="fa fa-cloud-upload"></i>
+                                                                    <i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>
                                                                 </el-button>
 
                                                                 <el-button plain round type="primary"
@@ -414,7 +409,7 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1">
-                                                        <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+modelOutEvent.suffix)"
+                                                        <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
                                                                   :disabled="true">
                                                         </el-input>
                                                     </el-col>
@@ -496,7 +491,7 @@
                                             <template slot-scope="scope">
                                                 <el-input class="model-input"
                                                           v-if="scope.row.children==undefined&&scope.row.child!=true"
-                                                          :value="scope.row.tag==undefined?'':(scope.row.tag+scope.row.suffix)"
+                                                          :value="scope.row.tag==undefined?'':(scope.row.tag+'.'+scope.row.suffix)"
                                                           :id="'datainput'+scope.row.eventId"
                                                           disabled="false">
                                                 </el-input>
@@ -512,11 +507,13 @@
                                                 width="280">
                                             <template slot-scope="scope">
                                                 <div class="_btn-group" v-if="scope.row.children==undefined">
-                                                    <el-button plain round type="primary"
-                                                               v-if="scope.row.eventType === 'response' ?true:false"
-                                                               @click="upload(scope.row)">
-                                                        <i class="fa fa-cloud-upload"></i>
+                                                    <el-button  plain round type="primary"
+                                                                v-if="scope.row.eventType === 'response' ?true:false"
+                                                                @click="upload(scope.row)" :disabled="scope.row.uploading">
+                                                        <i v-if="!scope.row.uploading" class="fa fa-cloud-upload"></i>
+                                                        <i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>
                                                     </el-button>
+
                                                     <el-button plain round type="primary"
                                                                v-if="scope.row.eventType === 'response' ?true:false"
                                                                @click="selectFromDataItem(scope.row)"

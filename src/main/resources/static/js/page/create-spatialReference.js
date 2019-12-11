@@ -316,6 +316,12 @@ var vue = new Vue({
         });
 
         $(".finish").click(() => {
+            let loading = this.$loading({
+                lock: true,
+                text: "Uploading...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             spatialObj.classifications = this.cls;
             spatialObj.name = $("#nameInput").val();
             spatialObj.wkname = $("#wknameInput").val();
@@ -343,15 +349,22 @@ var vue = new Vue({
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
                     success: function (result) {
-
+                        loading.close();
                         if (result.code == "0") {
                             alert("Create Success");
 
                             window.location.href = "/repository/spatialReference/" + result.data;
                             //window.location.reload();
+                        }
+                        else if(result.code==-1){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
+                        }
+                        else{
+                            alert("Create failed!")
                         }
                     }
                 })
@@ -368,10 +381,11 @@ var vue = new Vue({
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
 
                     success: function (result) {
+                        loading.close();
                         if (result.code === 0) {
                             if (result.data.method === "update") {
                                 alert("Update Success");
@@ -387,6 +401,10 @@ var vue = new Vue({
 
                                 }
 
+                        }
+                        else if(result.code==-2){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
                         }
                         else {
                             alert(result.msg);

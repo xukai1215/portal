@@ -3212,9 +3212,9 @@
                                         <!--@click="setSession('editTheme_id',theme.oid)">-->
                                         <!--<button class="btn btn-default editBtn">Edit</button>-->
                                         <!--</a>-->
-                                        <button class="btn btn-danger deleteBtn"
-                                                @click="deleteModel(theme.oid)">Delete
-                                        </button>
+                                        <!--<button class="btn btn-danger deleteBtn"-->
+                                                <!--@click="deleteModel(theme.oid)">Delete-->
+                                        <!--</button>-->
                                     </div>
                                 </div>
                                 <div class="panel-body">
@@ -3286,16 +3286,18 @@
                             <div class="panel"
                                  :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
                                 <div class="panel-heading flexRowSpaceBetween">
-                                    <a class="panel-title" :href="'/task/'+task.computableId" style="font-weight: bold">
+                                    <a class="panel-title" :href="'/task/'+task.computableId" target="_blank" style="font-weight: bold">
                                         {{task.computableName}}
+                                        <el-tag v-if="task.integrate" style="margin-left:10px">Integrated Model</el-tag>
                                     </a>
+
                                     <div class="">
-                                        <el-button type="warning" size="mini" @click="publishTask(task)">
+                                        <el-button v-if="task.status==2&&!task.integrate" type="warning" size="mini" @click="publishTask(task)">
                                             <span v-if="task.permission=='public'"><span><i
                                                     class="fa fa-unlock"></i></span>Public</span>
                                             <span v-else><span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private</span>
                                         </el-button>
-                                        <button class="btn btn-sm wzhButton" @click="sharingTaskData(task)"
+                                        <button v-if="task.status==2&&!task.integrate"  class="btn btn-sm wzhButton" @click="sharingTaskData(task)"
                                                 style="margin-right: 5px;border-radius: 3px;"><i
                                                 class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item
                                         </button>

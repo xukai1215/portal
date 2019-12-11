@@ -51,48 +51,50 @@ var app = new Vue({
             $('#infoPanel').css('display', 'none');
             lockFlag=false;
         },
-        panelmove(){$
+        panelmove(){
             console.log("abc");
             let dragBox = function (drag, wrap) {
-            let dragBox = function (drag, wrap) {
+                let dragBox = function (drag, wrap) {
 
-                console.log(drag,wrap)
-                function getCss(ele, prop) {
-                    return parseInt(window.getComputedStyle(ele)[prop]);
-                }
+                    console.log(drag, wrap)
 
-                let initX,
-                    initY,
-                    dragable = false,
-                    wrapLeft = getCss(wrap, "left"),
-                    wrapRight = getCss(wrap, "top");
-
-                drag.addEventListener("mousedown", function (e) {
-                    console.log(drag);
-                    dragable = true;
-                    initX = e.clientX;
-                    initY = e.clientY;
-                }, false);
-
-                document.addEventListener("mousemove", function (e) {
-                    if (dragable === true) {
-                        let nowX = e.clientX,
-                            nowY = e.clientY,
-                            disX = nowX - initX,
-                            disY = nowY - initY;
-                        wrap.style.left = wrapLeft + disX + "px";
-                        wrap.style.top = wrapRight + disY + "px";
+                    function getCss(ele, prop) {
+                        return parseInt(window.getComputedStyle(ele)[prop]);
                     }
-                });
 
-                drag.addEventListener("mouseup", function (e) {
-                    dragable = false;
-                    wrapLeft = getCss(wrap, "left");
-                    wrapRight = getCss(wrap, "top");
-                }, false);
+                    let initX,
+                        initY,
+                        dragable = false,
+                        wrapLeft = getCss(wrap, "left"),
+                        wrapRight = getCss(wrap, "top");
 
-            };
-            dragBox(document.querySelector("#bar"), document.querySelector("#infoPanel"));
+                    drag.addEventListener("mousedown", function (e) {
+                        console.log(drag);
+                        dragable = true;
+                        initX = e.clientX;
+                        initY = e.clientY;
+                    }, false);
+
+                    document.addEventListener("mousemove", function (e) {
+                        if (dragable === true) {
+                            let nowX = e.clientX,
+                                nowY = e.clientY,
+                                disX = nowX - initX,
+                                disY = nowY - initY;
+                            wrap.style.left = wrapLeft + disX + "px";
+                            wrap.style.top = wrapRight + disY + "px";
+                        }
+                    });
+
+                    drag.addEventListener("mouseup", function (e) {
+                        dragable = false;
+                        wrapLeft = getCss(wrap, "left");
+                        wrapRight = getCss(wrap, "top");
+                    }, false);
+
+                };
+                dragBox(document.querySelector("#bar"), document.querySelector("#infoPanel"));
+            }
         },
         loadPage() {
             let that = this;
