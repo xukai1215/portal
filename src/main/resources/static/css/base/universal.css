@@ -40,6 +40,14 @@ dt{
     float: left;
 }
 
+.el-icon-loading {
+    font-size: 40px;
+}
+
+.el-loading-spinner .el-loading-text {
+    font-size: 20px;
+}
+
 .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
     background-color:#d9edf7
 }

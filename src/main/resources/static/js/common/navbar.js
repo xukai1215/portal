@@ -700,7 +700,7 @@ function watchWidth() {
             break;
         }
 
-        case hrefElement=='repository':{
+        case hrefElement=='repository'||hrefElement=='server':{
             for(let i=0;i<clickMenu.length;i++){
                 if(i==3)
                     clickMenu[i].classList.add('clickBlue');

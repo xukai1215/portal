@@ -162,12 +162,12 @@
                                                         {{modelOutEvent.eventName}}
                                                     </span>
                                                     </el-col>
-                                                    <el-col :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
+                                                    <el-col  v-if="info.taskInfo.status==2" :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
                                                         <el-input id="dataNameInput" type="textarea" v-if="output.event==modelOutEvent.eventName" class="model-input"
                                                                   :value="output.tag==undefined?'':(output.tag+'.'+output.suffix)" readonly>
                                                         </el-input>
                                                     </el-col>
-                                                    <el-col :span="5">
+                                                    <el-col  v-if="info.taskInfo.status==2" :span="5">
                                                         <div class="_btn-group" v-for="output in info.taskInfo.outputs">
                                                             <el-button v-if="output.event==modelOutEvent.eventName" plain round type="success"
                                                                        @click="share(output.url)" >
@@ -272,7 +272,6 @@
 <!--</script>-->
 <!--<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>-->
 <!--<script type="text/javascript" src="/static/js/common/computableEditorTest.js"></script>-->
-<script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/clipboard.min.js"></script>
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->

@@ -852,6 +852,12 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+            let loading = this.$loading({
+                lock: true,
+                text: "Uploading...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             modelItemObj.status=$("input[name='Status']:checked").val();
             modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
@@ -907,15 +913,22 @@ var vue = new Vue({
                     type: "POST",
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
                     success: function (result) {
-
+                        loading.close();
                         if (result.code == "0") {
-                            alert("Create Success");
+                            alert("Create successful!");
 
                             window.location.href = "/modelItem/" + result.data;
                             //window.location.reload();
+                        }
+                        else if(result.code==-1){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
+                        }
+                        else{
+                            alert("Create failed!")
                         }
                     }
                 })
@@ -932,10 +945,11 @@ var vue = new Vue({
                     type: "POST",
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
 
                     success: function (result) {
+                        loading.close();
                         if (result.code === 0) {
                             if(result.data.method==="update") {
                                 alert("Update Success");
@@ -950,6 +964,10 @@ var vue = new Vue({
 
                             // window.location.href = "/modelItem/" + result.data;
                             //window.location.reload();
+                        }
+                        else if(result.code==-2){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
                         }
                         else{
                             alert(result.msg);

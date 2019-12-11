@@ -341,6 +341,12 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=> {
+            let loading = this.$loading({
+                lock: true,
+                text: "Uploading...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             templateObj.classifications = this.cls;
             templateObj.name = $("#nameInput").val();
             templateObj.uploadImage = $('#imgShow').get(0).currentSrc;
@@ -368,16 +374,23 @@ var vue = new Vue({
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: false,
+                    async: true,
                     data: formData,
                     success: function (result) {
-
+                        loading.close();
                         if (result.code == "0") {
                             alert("Create Success");
                             //$("#editModal",parent.document).remove();
 
                             window.location.href = "/repository/template/" + result.data;
                             //window.location.reload();
+                        }
+                        else if(result.code==-1){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
+                        }
+                        else{
+                            alert("Create failed!")
                         }
 
                     }
@@ -409,6 +422,10 @@ var vue = new Vue({
                                 window.location.href = "/user/userSpace";
 
                             }
+                        }
+                        else if(result.code==-2){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
                         }
                         else{
                             alert(result.msg);

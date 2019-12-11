@@ -445,6 +445,12 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=>{
+            let loading = this.$loading({
+                lock: true,
+                text: "Uploading...",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             if($("#bind").html() == "bind"){
                 alert("please bind model item (Step1)")
                 return;
@@ -476,8 +482,8 @@ var vue = new Vue({
                 });
                 this.formData.append("computableModel", file)
 
-                $("#step").css("display", "none");
-                $(".uploading").css("display", "block");
+                // $("#step").css("display", "none");
+                // $(".uploading").css("display", "block");
 
                 $.ajax({
                     url: '/computableModel/add',
@@ -488,8 +494,9 @@ var vue = new Vue({
                     contentType: false,
                     async: true
                 }).done((res) => {
-                    $("#step").css("display", "block");
-                    $(".uploading").css("display", "none");
+                    loading.close();
+                    // $("#step").css("display", "block");
+                    // $(".uploading").css("display", "none");
                     switch (res.data.code) {
                         case 1:
                             alert("create computable model successfully!");
@@ -528,8 +535,9 @@ var vue = new Vue({
                     contentType: false,
                     async: true
                 }).done((res) => {
-                    $("#step").css("display", "block");
-                    $(".uploading").css("display", "none");
+                    loading.close();
+                    // $("#step").css("display", "block");
+                    // $(".uploading").css("display", "none");
                     if(res.code===0) {
                         switch (res.data.code) {
                             case 1:
