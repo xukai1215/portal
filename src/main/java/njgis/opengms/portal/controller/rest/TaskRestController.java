@@ -57,6 +57,9 @@ public class TaskRestController {
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
 
+    @Value("${dataContainerIpAndPort}")
+    private String dataContainerIpAndPort;
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     ModelAndView getTask(@PathVariable("id") String id, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -434,6 +437,9 @@ public class TaskRestController {
     public JsonResult loadTestData(@RequestBody TestDataUploadDTO testDataUploadDTO, HttpServletRequest request){
 
         HttpSession session = request.getSession();
+        String[] dataIpAndPort=dataContainerIpAndPort.split(":");
+            testDataUploadDTO.setHost(dataIpAndPort[0]);
+            testDataUploadDTO.setPort(Integer.parseInt(dataIpAndPort[1]));
 
             //处理得到进行数据上传的List数组
             List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArray(testDataUploadDTO);
