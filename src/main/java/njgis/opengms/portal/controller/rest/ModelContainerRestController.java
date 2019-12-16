@@ -1,6 +1,10 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.model.CityResponse;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ModelContainerDao;
 import njgis.opengms.portal.dto.ModelContainerDTO;
@@ -11,11 +15,16 @@ import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.net.InetAddress;
+import java.util.Date;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/modelContainer")
 public class ModelContainerRestController {
@@ -34,11 +43,15 @@ public class ModelContainerRestController {
         if (modelContainer == null) {
             ModelContainer modelContainer_add = new ModelContainer();
             BeanUtils.copyProperties(modelContainerDTO, modelContainer_add);
+            Date now=new Date();
+            modelContainer_add.setDate(now);
+            modelContainer_add.setUpdateDate(now);
             try {
                 modelContainer_add.setGeoInfo(getGeoInfoMeta(modelContainerDTO.getIp()));
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
+
             modelContainerDao.insert(modelContainer_add);
 
             return ResultUtils.success("Insert suc!");
@@ -46,6 +59,8 @@ public class ModelContainerRestController {
             modelContainer.setHardware(modelContainerDTO.getHardware());
             modelContainer.setSoftware(modelContainerDTO.getSoftware());
             modelContainer.setIp(modelContainerDTO.getIp());
+            Date now=new Date();
+            modelContainer.setUpdateDate(now);
             try {
                 modelContainer.setGeoInfo(getGeoInfoMeta(modelContainerDTO.getIp()));
             } catch (Exception e) {
@@ -152,27 +167,49 @@ public class ModelContainerRestController {
 //    }
 
     private GeoInfoMeta getGeoInfoMeta(String host) throws Exception {
-        String url = "http://ip-api.com/json/" + host;
-        String result = MyHttpUtils.GET(url, "UTF-8", null);
+        String filePath = "/static/GeoLite2-City.mmdb";
+        DatabaseReader reader;
         GeoInfoMeta geoInfoMeat = new GeoInfoMeta();
-        JSONObject res = JSONObject.parseObject(result);
-        //judge
-        if (res.getString("status").equals("fail")) {
-            //后面移除该部分，说明该要注册的任务服务器不是公网服务器，直接抛出错误
-            geoInfoMeat.setCity("Nanjing");
-            geoInfoMeat.setRegion("Jiangsu");
-            geoInfoMeat.setCountryCode("CN");
-            geoInfoMeat.setCountryName("China");
-            geoInfoMeat.setLatitude("32.0617");
-            geoInfoMeat.setLongitude("118.7778");
-        } else {
-            geoInfoMeat.setCity(res.getString("city").replace(" ", "_"));
-            geoInfoMeat.setRegion(res.getString("region"));
-            geoInfoMeat.setCountryCode(res.getString("countryCode"));
-            geoInfoMeat.setCountryName(res.getString("country"));
-            geoInfoMeat.setLatitude(res.getString("lat"));
-            geoInfoMeat.setLongitude(res.getString("lon"));
+        try {
+            File file = new ClassPathResource(filePath).getFile();
+            reader = new DatabaseReader.Builder(file).build();
+            InetAddress address = InetAddress.getByName(host);
+            CityResponse city = reader.city(address);
+            JSONObject res = JSON.parseObject(city.toJson());
+
+            geoInfoMeat.setCity(res.getJSONObject("city").getJSONObject("names").getString("en"));
+            geoInfoMeat.setRegion(res.getJSONArray("subdivisions").getJSONObject(0).getJSONObject("names").getString("en"));
+            geoInfoMeat.setCountryCode(res.getJSONObject("country").getString("iso_code"));
+            geoInfoMeat.setCountryName(res.getJSONObject("country").getJSONObject("names").getString("en"));
+            geoInfoMeat.setLatitude(res.getJSONObject("location").getFloat("latitude").toString());
+            geoInfoMeat.setLongitude(res.getJSONObject("location").getFloat("longitude").toString());
+
+        } catch (Exception e) {
+            log.error("Plan 1 failed: " + e.getMessage(), e);
+
+            String url = "http://ip-api.com/json/" + host;
+            String result = MyHttpUtils.GET(url, "UTF-8", null);
+            JSONObject res = JSONObject.parseObject(result);
+            //judge
+            if (res.getString("status").equals("fail")) {
+                //后面移除该部分，说明该要注册的任务服务器不是公网服务器，直接抛出错误
+                geoInfoMeat.setCity("Nanjing");
+                geoInfoMeat.setRegion("Jiangsu");
+                geoInfoMeat.setCountryCode("CN");
+                geoInfoMeat.setCountryName("China");
+                geoInfoMeat.setLatitude("32.0617");
+                geoInfoMeat.setLongitude("118.7778");
+            } else {
+                geoInfoMeat.setCity(res.getString("city").replace(" ", "_"));
+                geoInfoMeat.setRegion(res.getString("region"));
+                geoInfoMeat.setCountryCode(res.getString("countryCode"));
+                geoInfoMeat.setCountryName(res.getString("country"));
+                geoInfoMeat.setLatitude(res.getString("lat"));
+                geoInfoMeat.setLongitude(res.getString("lon"));
+            }
+
         }
+
         return geoInfoMeat;
     }
 

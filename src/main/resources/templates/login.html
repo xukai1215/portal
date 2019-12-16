@@ -25,7 +25,7 @@
 </head>
 <body>
     <!--<h1 th:text="${name}">Hello World</h1>-->
-    <div id="app">
+    <div id="app" v-cloak>
         <div th:replace="fragments/navbar :: unlog"></div>
         <div class="alert alert-warning fade in text-center" th:if="${notice}">
             <button type="button" class="close close-sm" data-dismiss="alert">
