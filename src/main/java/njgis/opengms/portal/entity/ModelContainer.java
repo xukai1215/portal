@@ -22,5 +22,5 @@ public class ModelContainer {
     String ip;
     GeoInfoMeta geoInfo;
     Date date;
-
+    Date updateDate;
 }

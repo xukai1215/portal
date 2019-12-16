@@ -43,12 +43,15 @@ public class ModelContainerRestController {
         if (modelContainer == null) {
             ModelContainer modelContainer_add = new ModelContainer();
             BeanUtils.copyProperties(modelContainerDTO, modelContainer_add);
+            Date now=new Date();
+            modelContainer_add.setDate(now);
+            modelContainer_add.setUpdateDate(now);
             try {
                 modelContainer_add.setGeoInfo(getGeoInfoMeta(modelContainerDTO.getIp()));
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
-            modelContainer_add.setDate(new Date());
+
             modelContainerDao.insert(modelContainer_add);
 
             return ResultUtils.success("Insert suc!");
@@ -56,6 +59,8 @@ public class ModelContainerRestController {
             modelContainer.setHardware(modelContainerDTO.getHardware());
             modelContainer.setSoftware(modelContainerDTO.getSoftware());
             modelContainer.setIp(modelContainerDTO.getIp());
+            Date now=new Date();
+            modelContainer.setUpdateDate(now);
             try {
                 modelContainer.setGeoInfo(getGeoInfoMeta(modelContainerDTO.getIp()));
             } catch (Exception e) {
