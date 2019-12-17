@@ -175,7 +175,7 @@
                 </div>
             </div>
 
-            <div id="MDL" class="detail_block" th:if="${modelInfo.mdlJson}!=null">
+            <div id="MDL" class="detail_block" th:if="${mdlJson}!=null">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>MDL</h4>
@@ -491,6 +491,7 @@
 
 <script th:inline="javascript">
     var Behavior = [[${behavior}]];
+    console.log([[${mdlJson}]])
 </script>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>

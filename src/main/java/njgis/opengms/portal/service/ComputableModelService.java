@@ -267,6 +267,9 @@ public class ComputableModelService {
                 modelAndView.addObject("user", userJson);
                 modelAndView.addObject("authorship", authorshipString);
                 modelAndView.addObject("resources", resourceArray);
+                if(modelInfo.getMdl()!=null) {
+                    modelAndView.addObject("mdlJson", Utils.convertMdl(modelInfo.getMdl()).getJSONObject("mdl"));
+                }
                 JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
                 if (mdlJson != null) {
                     JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);

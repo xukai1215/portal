@@ -74,6 +74,44 @@ public class PortalApplicationTests {
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
 
+
+
+    @Test
+    public void adjustModelViewCount(){
+        List<ModelItem> modelItemList=modelItemDao.findAll();
+        for(ModelItem modelItem:modelItemList){
+            int viewCount=modelItem.getViewCount();
+            if(modelItem.getRelate().getComputableModels().size()==0){
+                modelItem.setViewCount(viewCount/2);
+            }
+            else{
+                List<String> computableIds=modelItem.getRelate().getComputableModels();
+                boolean good=true;
+                for(int i=0;i<computableIds.size();i++){
+                    ComputableModel computableModel=computableModelDao.findFirstByOid(computableIds.get(i));
+                    try {
+                        if(computableModel.getName().equals("参数")){
+                            good=false;
+                            modelItem.setViewCount(viewCount/2);
+                            break;
+                        }
+                    }catch (Exception e){
+                        good=false;
+                        modelItem.setViewCount(viewCount/2);
+                        System.out.println(computableIds.get(i));
+                        break;
+                    }
+
+                }
+                if(good) {
+                    modelItem.setViewCount(viewCount + 20);
+                }
+            }
+            modelItemDao.save(modelItem);
+            Utils.count();
+        }
+    }
+
     @Test
     public void correctDes(){
 
