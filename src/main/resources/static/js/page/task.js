@@ -166,6 +166,13 @@ var vue = new Vue({
 
         loadDataIndex:1,
 
+        uploadDialogVisible:false,
+        selectFolderVisible:false,
+        uploadFileList:[],
+        selectedPath:[],
+        uploadInPath:"",
+        folderTree:[],
+
     },
     computed: {},
     watch:{
@@ -174,6 +181,299 @@ var vue = new Vue({
       // }
     },
     methods: {
+
+        selectFile(){
+            if(this.selectedPath.length==0) {
+                alert('Please select a folder first!')
+                return;
+            }
+            $("#uploadFile").click()
+        },
+
+        handleSuccess(result,file,fileList){
+            console.log(result)
+            let uploadSource=[];
+            uploadSource.push(result.data);
+            this.upload_data_dataManager(uploadSource);
+        },
+
+        upload_data_dataManager(uploadSource) {
+            // console.log(this.fileNames)
+            // this.fileNames.filter(res=>typeof (res)!="undefined")
+            console.log(uploadSource)
+            console.log($('.file-caption').val())
+            if (uploadSource.length == 0) {
+                alert("Please upload the file into the template first")
+            } else {
+                for(let i=0;i<uploadSource.length;i++){
+                    let dataName=uploadSource[i].file_name;
+                    let dataname7suffix=dataName.split('.')
+                    let fileName=dataname7suffix[0]
+                    let suffix=dataname7suffix[1]
+                    let dataId=uploadSource[i].source_store_id;
+                    var data = {
+                        author: this.userId,
+                        fileName: fileName,
+                        fromWhere: "PORTAL",
+                        mdlId: "string",
+                        sourceStoreId: dataId,
+                        suffix: suffix,
+                        tags: $("#managerFileTags").tagsinput('items'),
+                        type: "OTHER"
+
+                    }
+                    var that = this;
+                    var sucUpload
+                    axios.post("/dispatchRequest/addRecordToDataContainer", data)
+                        .then(res => {
+                            if (res.status == 200) {
+
+                                that.addAllData()
+                                that.close()
+                                sucUpload=res.status
+                            }
+                        });
+                }
+                this.addDataToPortalBack(uploadSource);
+
+
+            }
+
+        },
+
+        addDataToPortalBack(item){//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
+
+            var addItem=[]
+            if(item instanceof Array) {
+                addItem=item;
+                // for(let i=0;i<addItem.length;i++)
+                //     addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
+            }
+            else{
+                let obj={
+                    file_name:item.label+'.'+item.suffix,
+                    source_store_id:item.url.split('=')[1]
+                }
+                addItem[0]=obj
+            }
+            let paths=[]
+            if(this.uploadInPath==1){
+                let i=this.pathShown.length-1;
+                while (i>=0) {
+                    paths.push(this.pathShown[i].id);
+                    i--;
+                }
+                if(paths.length==0)paths=['0']
+
+            }else{
+                if(this.selectedPath.length==0) {
+                    alert('Please select a folder')
+                    return
+                }
+
+                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i>=1) {
+                    paths.push(this.selectedPath[i].key);
+                    i--;
+                }
+                if(paths.length==0)paths=['0']
+            }
+            let that = this;
+            $.ajax({
+                type: "POST",
+                url: "/user/addFile",
+                data: JSON.stringify({
+                    files: addItem,
+                    paths: paths
+                }),
+
+                async: true,
+                traditional:true,
+                contentType: "application/json",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        let idList=json.data
+                        console.log(idList)
+                        if (item instanceof Array){
+                            if (this.uploadInPath == 1) {
+                                for (let i = 0; i < item.length; i++) {
+                                    console.log(item[i].file_name)
+                                    let dataName7Suffix = item[i].file_name.split('.')
+                                    const newChild = {
+                                        id: idList[i].id,
+                                        label: dataName7Suffix[0],
+                                        suffix: dataName7Suffix[1],
+                                        children: [],
+                                        package: false,
+                                        upload: true,
+                                        father: paths[0],
+                                        url: idList[i].url,
+                                    };
+                                    if (this.myFileShown.length === 0)
+                                        this.addChild(this.myFile, paths[0], newChild)
+                                    this.myFileShown.push(newChild);
+                                    console.log(this.myFileShown)
+                                    // this.getFilePackage();
+                                    console.log(this.myFile)
+                                }
+                            } else {
+                                this.refreshPackage(0);
+                                //要写一个前台按路径查找的函数
+                            }
+                        }else{
+                            let obj=item
+                            obj.id=idList[0].id
+                            obj.url=idList[0].url
+                            if (this.myFileShown.length === 0)
+                                this.addChild(this.myFile, paths[0], item)
+                            this.myFileShown.push(item);
+                        }
+
+                        this.addFolderIndex = false;
+                        //this.selectedPath=[];
+
+                    }
+
+                }
+            });
+
+            // alert('Upload File successfully!')
+
+
+        },
+
+        uploadBeforeClose(){
+            this.uploadDialogVisible=false;
+            this.$refs.upload.clearFiles();
+        },
+
+        addFolderInTree(pageIndex,index){
+            var node,data
+            if(pageIndex=='myData'){
+                data=this.$refs.folderTree.getCurrentNode();
+                if(data==undefined) alert('Please select a file directory')
+                node=this.$refs.folderTree.getNode(data);
+            }
+            else{
+                data=this.$refs.folderTree2[index].getCurrentNode();
+                if(data==undefined) alert('Please select a file directory')
+                node=this.$refs.folderTree2[index].getNode(data);
+            }
+
+            let folderExited=data.children
+
+            console.log(node);
+            let paths=[];
+            while(node.key!=undefined&&node.key!=0){
+                paths.push(node.key);
+                node=node.parent;
+            }
+            if(paths.length==0) paths.push('0')
+            console.log(paths)
+
+            var newChild={id:""}
+
+            this.$prompt(null, 'Enter Folder Name', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            }).then(({ value }) => {
+                if(folderExited.some((item)=>{
+                    return  item.label===value;
+                })==true){
+                    alert('this name is existing in this path, please input a new one');
+                    return
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addFolder",
+                    data: {paths: paths, name: value},
+                    async: false,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == -1) {
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href = "/user/login"
+                        }
+                        else {
+                            newChild = {id: json.data, label: value, children: [], father: data.id ,package:true,suffix:'',upload:false, url:'',};
+                            if (!data.children) {
+                                this.$set(data, 'children', []);
+                            }
+                            data.children.push(newChild);
+
+                            if(this.myFileShown.length===0)
+                                this.addChild(this.myFile,paths[0],newChild)
+                            this.myFileShown.push(newChild);
+
+                            setTimeout(()=>{
+                                this.$refs.folderTree.setCurrentKey(newChild.id)
+                            },100)
+                        }
+
+                    }
+
+                });
+
+
+            }).then(()=>{
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Cancel'
+                });
+            });
+
+
+        },
+
+        selectFolder(){
+
+            this.selectedPath=[];
+
+            axios.get("/user/getFolder",{})
+                .then(res=> {
+                    let json=res.data;
+                    if(json.code==-1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href="/user/login"
+                    }
+                    else {
+                        this.folderTree=res.data.data;
+                        this.selectFolderVisible=true;
+
+                    }
+
+                });
+        },
+
+        confirmFolder(){
+            let data=this.$refs.folderTree.getCurrentNode();
+            let node=this.$refs.folderTree.getNode(data);
+
+            while(node.key!=undefined&&node.key!=0){
+                this.selectedPath.unshift(node);
+                node=node.parent;
+            }
+            let allFder={
+                key:'0',
+                label:'All Folder'
+            }
+            this.selectedPath.unshift(allFder)
+            console.log(this.selectedPath)
+            this.selectPathDialog=false;
+            this.selectFolderVisible=false;
+
+        },
 
         arraySpanMethod({row, column, rowIndex, columnIndex}) {
             if (row.children != undefined && columnIndex === 2) {
@@ -439,10 +739,6 @@ var vue = new Vue({
 
             })
 
-        },
-
-        showtitle(ev) {
-            return ev.fileName + "\n" + "Type:" + ev.suffix;
         },
 
         generateId(key) {
@@ -848,6 +1144,7 @@ var vue = new Vue({
 
 
         async checkPersonData(event) {
+            this.eventChoosing = event;//此处把页面上的event与eventChoosing绑定
             if (this.first == true) {
                 let d = await this.getTableData(0);
                 this.dataFromDataContainer = d.content;
@@ -858,7 +1155,7 @@ var vue = new Vue({
             this.getUserTaskInfo()
             this.getFilePackage()
 
-            this.eventChoosing = event;//此处把页面上的event与eventChoosing绑定
+
         },
 
         selectDataFromPersonal() {
@@ -868,6 +1165,9 @@ var vue = new Vue({
                 this.eventChoosing.tag = this.downloadDataSetName[0].name;
                 this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
                 this.eventChoosing.url = this.downloadDataSetName[0].url;
+
+                $("#eventInp_" + this.eventChoosing.eventId).val( this.eventChoosing.tag + this.eventChoosing.suffix);
+                $("#download_" + this.eventChoosing.eventId).css("display", "block");
             }
             else {
                 this.$message("Please select data first!")
@@ -1037,6 +1337,9 @@ var vue = new Vue({
         },
 
         singleClick($event, eval) {
+            if(eval.package==true){
+                return;
+            }
             if(this.rightMenuShow==true){
                 this.rightMenuShow=false;
                 return
@@ -1334,7 +1637,7 @@ var vue = new Vue({
         },
 
         showtitle(ev) {
-            return ev.fileName + "\n" + "Type:" + ev.suffix;
+            return ev.label + "\n" + "Type: " + ev.suffix;
         },
         getImg(item) {
             let list = []
@@ -2083,11 +2386,11 @@ var vue = new Vue({
                                 }
                             }
                             else if (event.eventType == "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag + event.suffix);
+                                $("#eventInp_" + eventId).val(event.tag +"."+ event.suffix);
                             } else if (event.eventType == "response") {
                                 $("#download_" + eventId).css("display", "none");
                             } else if (event.eventType != "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag + event.suffix);
+                                $("#eventInp_" + eventId).val(event.tag +"."+ event.suffix);
                                 $("#eventInp_" + eventId).css("width", "90%");
                                 $("#select_" + eventId).css("display", "none");
                                 $("#upload_" + eventId).css("display", "none");

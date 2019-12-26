@@ -486,6 +486,7 @@ public class ModelItemService {
         modelItem.setStatus(modelItemAddDTO.getStatus());
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
+        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
 
         String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
         String[] strs=modelItemAddDTO.getUploadImage().split(",");
@@ -552,6 +553,7 @@ public class ModelItemService {
                     modelItem.setImage(path);
                 }
                 modelItem.setLastModifyTime(new Date());
+                modelItem.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
                 modelItemDao.save(modelItem);
 
                 JSONObject result = new JSONObject();
@@ -586,6 +588,7 @@ public class ModelItemService {
                 modelItemVersion.setModifyTime(curDate);
                 modelItemVersion.setVerNumber(curDate.getTime());
                 modelItemVersion.setStatus(0);
+                modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
                 modelItemVersionDao.insert(modelItemVersion);
 
                 modelItem.setLock(true);

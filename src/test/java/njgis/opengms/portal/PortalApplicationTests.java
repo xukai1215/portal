@@ -8,6 +8,7 @@ import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
+import org.apache.commons.io.FileUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -19,9 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -74,7 +73,95 @@ public class PortalApplicationTests {
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
 
+    @Test
+    public void printUser(){
+        List<User> users = userDao.findAll();
+        for(User user:users){
+            System.out.println(user.getName()+" "+user.getEmail()+" "+user.getOrganizations());
+        }
+    }
 
+    @Test
+    public void extractDetailImage(){
+        List<ModelItem> modelItemList=modelItemDao.findAll();
+        for(int i=0;i<modelItemList.size();i++) {
+            ModelItem modelItem = modelItemList.get(i);//modelItemDao.findFirstByName("城市综合实力指数");
+            String detail = modelItem.getDetail();
+            if(detail!=null) {
+                int startIndex = 0, endIndex = 0, index = 0;
+                while (detail.indexOf("src=\"data:im", startIndex) != -1) {
+                    int Start = detail.indexOf("src=\"data:im", startIndex) + 5;
+                    int typeStart = detail.indexOf("/", Start) + 1;
+                    int typeEnd = detail.indexOf(";", typeStart);
+                    String type = detail.substring(typeStart, typeEnd);
+                    startIndex = typeEnd + 8;
+                    endIndex = detail.indexOf("\"", startIndex);
+                    String imgStr = detail.substring(startIndex, endIndex);
+
+                    String imageName = "/detailImage/" + modelItem.getOid() + "/" + modelItem.getOid() + "_" + (index++) + "." + type;
+                    Utils.base64StrToImage(imgStr, "D:/upload_1111" + imageName);
+
+                    detail = detail.substring(0, Start) + "/static" + imageName + detail.substring(endIndex, detail.length());
+                }
+//            ModelItem modelItem1=new ModelItem();
+//            BeanUtils.copyProperties(modelItem,modelItem1);
+//            modelItem1.setId(UUID.randomUUID().toString());
+//
+//            modelItem1.setOid(UUID.randomUUID().toString());
+//            modelItem1.setDetail(detail);
+//            modelItem1.setCreateTime(new Date());
+//            modelItemDao.insert(modelItem1);
+                modelItem.setDetail(detail);
+                modelItemDao.save(modelItem);
+            }
+            Utils.count();
+        }
+
+    }
+
+    @Test
+    public void copyComputableZip(){
+        List<ComputableModel> computableModelList = computableModelDao.findByContentType("Code");
+        String path = "D:\\文件\\computable code";		//要遍历的路径
+        File file = new File(path);		//获取其file对象
+        func(file,computableModelList);
+    }
+
+    private static void func(File file,List<ComputableModel> computableModelList){
+        File[] fs = file.listFiles();
+        for(File f:fs){
+            if(f.isDirectory())	//若是目录，则递归打印该目录下的文件
+                func(f,computableModelList);
+            if(f.isFile())		//若是文件，直接打印
+            {
+                String fileName=f.getName();
+                boolean find=false;
+
+                for(int i=0;i<computableModelList.size();i++){
+                    ComputableModel computableModel=computableModelList.get(i);
+
+                    if(computableModel.getResources().size()!=0) {
+                        String resourcePath = computableModel.getResources().get(0);
+                        String[] paths = resourcePath.split("/");
+                        String name = paths[paths.length - 1].substring(14);
+                        if (fileName.equals(name)) {
+                            find=true;
+                            try {
+                                FileUtils.copyFile(f, new File("D:/computableModelCode" + resourcePath));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e.getMessage());
+                            }
+                            break;
+                        }
+                    }
+
+                }
+                if(!find){
+                    System.out.println(fileName);
+                }
+            }
+        }
+    }
 
     @Test
     public void adjustModelViewCount(){

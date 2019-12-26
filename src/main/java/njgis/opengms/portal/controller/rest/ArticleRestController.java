@@ -27,12 +27,12 @@ public class ArticleRestController {
     JsonResult searchByTitle(ArticleFindDTO articleFindDTO, HttpServletRequest request){
         System.out.println("/searchArticle"+articleFindDTO);
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
 
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-
+        String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(articleService.searchByTitle(articleFindDTO,userName));
     }
 
@@ -53,10 +53,11 @@ public class ArticleRestController {
 //        articleFindDTO.setPageSize(pageSize);
 //        articleFindDTO.setSortElement(sortElement);
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(articleService.getByUserOidBySort(articleFindDTO,userName));
     }
 
@@ -64,10 +65,11 @@ public class ArticleRestController {
     public JsonResult addNewArticle(@RequestBody ArticleAddDTO articleAddDTO, HttpServletRequest httpServletRequest){
         System.out.println(articleAddDTO);
         HttpSession session=httpServletRequest.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=session.getAttribute("uid").toString();
         int index=articleService.addNewArticle(articleAddDTO,userName);
         return ResultUtils.success(index);
     }
@@ -84,12 +86,11 @@ public class ArticleRestController {
     public JsonResult deleteByOid(@RequestParam(value="oid") String oid, HttpServletRequest request){
 
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
 
-        System.out.println("/deleteByOid"+oid+userName);
-        if(userName==null){
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }else{
+            String userName=session.getAttribute("uid").toString();
             JsonResult result= ResultUtils.success(articleService.deleteByOid(oid,userName));
             System.out.println(result);
             return result;

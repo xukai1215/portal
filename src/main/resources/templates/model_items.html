@@ -27,6 +27,11 @@
             padding: 15px 10px;
         }
 
+        .el-switch{
+            display: inline-block !important;
+            margin-top: -5px;
+        }
+
     </style>
 </head>
 <body>
@@ -194,21 +199,27 @@
                                 <a :class="modelItem.viewCount>500?'hot':''" :href="'/modelItem/'+ modelItem.oid"
                                    target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
                             </div>
-                            <div class="detail_overview">
-                                <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                    <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
-                                            :rounded="false"></avatar>
-                                    <img v-if="modelItem.image!=''" :src="modelItem.image"
-                                         style="width:90px;height: 90px;">
+                            <div :style="{'display':statistic[key]?'none':'block'}">
 
-                                </a>
+                                <div class="detail_overview">
+                                    <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                        <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
+                                                :rounded="false"></avatar>
+                                        <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                             style="width:90px;height: 90px;">
 
-                                <div class="info">
-                                    <p :style="{'-webkit-line-clamp':(modelItem.keywords.length>0?2:4)}">{{modelItem.description}}</p>
-                                    <div class="tags" v-if="modelItem.keywords.length>0">
-                                        <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
+                                    </a>
+
+                                    <div class="info">
+                                        <p :style="{'-webkit-line-clamp':(modelItem.keywords.length>0?2:4)}">{{modelItem.description}}</p>
+                                        <div class="tags" v-if="modelItem.keywords.length>0">
+                                            <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div :style="{'height':statistic[key]?'200px':'0','visibility':statistic[key]?'visible':'hidden'}">
+                                <div :id="'chart'+key" style="height: 200px"></div>
                             </div>
                             <hr>
                             <div class="detail_bottom">
@@ -226,8 +237,16 @@
                                         {{modelItem.createTime.substring(0,10)}} </h4>
                                 </div>
                                 <div class="detail_option">
+                                    <el-switch
+                                            v-model="statistic[key]"
+                                            active-color="#13ce66"
+                                            inactive-color="#409eff"
+                                            active-text="Statistics"
+                                            inactive-text="Overview"
 
-                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                                            @change="switchChange(key)">
+                                    </el-switch>
+                                    <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
                                     <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
                                 </div>
                                 <br>
@@ -238,7 +257,7 @@
                     <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow"
                                    @current-change="handlePageChange"
                                    :current-page="pageOption.currentPage"
-                                   layout="prev, pager, next"
+                                   layout="total, prev, pager, next"
                                    :total="pageOption.total">
                     </el-pagination>
                 </div>
@@ -254,7 +273,7 @@
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-
+<script src="/static/js/common/echarts.min.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>

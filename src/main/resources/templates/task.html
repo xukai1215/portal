@@ -32,6 +32,10 @@
             display: none;
         }
 
+        .form-horizontal .form-group{
+            margin-left: 0;
+            margin-right: 0;
+        }
 
 
         .el-collapse-item__header{
@@ -49,6 +53,11 @@
         .el-form-item{
             margin-bottom:0;
         }
+
+        .el-table .cell{
+            word-break: break-word;
+        }
+
 
     </style>
 </head>
@@ -72,7 +81,7 @@
                         </div>
                     </div>
                     <div class="btn-list">
-                        <el-button plain type="primary" @click="loadData(1)" :disabled="!info.modelInfo.hasTest"
+                        <el-button plain type="primary" @click="loadData(1)"
                                    style="min-width: 120px">
                             Load data
                         </el-button>
@@ -92,9 +101,16 @@
                 </div>
             </el-col>
             <el-dialog :visible.sync="loadDataVisible" title="Load Data" class="wzhDialog" style="height: 915px !important;">
+                <el-tag class="flexRowSpaceBetween" v-if="info.modelInfo.hasTest" style="margin-bottom:10px;height:auto;padding: 5px 0;justify-content: space-around;align-items: baseline">
+                    <h4 style="font-style: italic;">There is a dataset for you to test this model. </h4>
+                    <el-button type="primary" @click="loadTest" >Load Test Dataset</el-button>
+                </el-tag>
                 <ul class="flexRowContainer headRadius loadDataUl" style="background-color: #ecf5ff;">
-                    <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==1}" @click="testDataClick(1)" style="flex: 1;"><h4>Test data</h4></li>
+                    <!--<li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==1}" @click="testDataClick(1)" style="flex: 1;"><h4>Test data</h4></li>-->
 
+                    <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==1}" @click="myCalcDataClick(1)" style="flex: 1;">
+                        <h4>Related Data Items</h4>
+                    </li>
                     <li class="headRadius flexCenter" :class="{loadDataChoosed:loadDataIndex==2}" @click="myCalcDataClick(2)" style="flex: 1;">
                         <h4>My calculated data</h4>
                     </li>
@@ -104,13 +120,85 @@
 
                 </ul>
                 <div class="innerBorder" style="margin-top:5px;width: 100% "></div>
-                <div class="flexRowSpaceBetween" v-if="loadDataIndex==1" style="padding-top: 10px;">
-                    <h4 style="font-style: italic">We have provide data for you to test this model. </h4>
-                    <el-button type="primary" @click="loadTest" >Load Test Data</el-button>
+
+
+                <div class="relatedDataItem" v-if="loadDataIndex==1">
+                    <el-table
+                            :data="relatePageOption.searchResult"
+                            style="margin-top:17px;"
+                    >
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <div v-if="props.row.contentType=='resource'">
+                                    <el-card v-for="item,key in props.row.dataList"
+                                             :title="item.name" class="dataitemisol" shadow="never"
+                                             :id="item.url"
+                                             :key="key" @click.native="clickData(item,$event)">
+
+                                        <el-row>
+                                            <el-col :span="6">&nbsp</el-col>
+                                            <el-col :span="12"><img
+                                                    :src="'/static/img/filebrowser/'+item.suffix+'.svg'"
+                                                    style="height: 60%;width:100%"></el-col>
+                                            <el-col :span="6">&nbsp</el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="2">&nbsp</el-col>
+                                            <el-col :span="20">
+
+                                                <p style="text-align: center;word-break: break-all;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;">
+                                                    {{item.name+(item.suffix!='unknow'?item.suffix:'')}}
+                                                </p>
+                                            </el-col>
+                                            <el-col :span="2">&nbsp</el-col>
+
+                                        </el-row>
+
+                                        <!--menu item -->
+
+
+                                    </el-card>
+                                </div>
+                                <div v-else>
+                                    <el-form label-position="left" inline class="demo-table-expand">
+                                        <el-form-item label="Link">
+                                            <a :href="props.row.url" target="_blank">{{ props.row.url }}</a>
+                                        </el-form-item>
+                                    </el-form>
+
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/dataItem/'+props.row.id"
+                                   target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Contributor">
+                            <template slot-scope="scope">
+                                <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Create Time" width="120px">
+                            <template slot-scope="scope">
+                                {{scope.row.createTime}}
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="relatePageOption.page"
+                                   layout="total, prev, pager, next"
+                                   :page-size="relatePageOption.pageSize"
+                                   :total="relatePageOption.total">
+                    </el-pagination>
                 </div>
 
-                <div class="myCalcData">
-                    <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;" v-if="loadDataIndex==2">
+                <div class="myCalcData" v-if="loadDataIndex==2">
+                    <div class="flexColCenter" style="max-height: 400px;overflow-y: auto;">
 
                         <el-table
                                 empty-text="No Data"
@@ -134,17 +222,18 @@
                             <!--                        </el-table-column>-->
                             <el-table-column
                                     prop="runTime"
-                                    label="creat time"
+                                    label="Run Time"
                                     width="205">
                             </el-table-column>
                             <el-table-column
-                                    label="description"
+                                    label="Description"
                                     width="315">
                                 <template slot-scope="scope">
                                     <div @click="showDescription(scope.row)" style="max-height: 50px;overflow-y: auto">{{scope.row.description}}</div>
                                 </template>
                             </el-table-column>
-                            <el-table-column>
+                            <el-table-column
+                                    label="Load">
                                 <template slot-scope="scope">
                                     <el-button  plain
                                                 size="mini"
@@ -156,7 +245,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <el-pagination
+                        <el-pagination style="padding:10px"
                                 small
                                 @current-change="loadUserTask"
                                 :current-page="exampleDataListOfUser.currentPage"
@@ -188,12 +277,12 @@
                             </el-table-column>
                             <el-table-column
                                     prop="userName"
-                                    label="user"
+                                    label="User"
                                     width="160">
                             </el-table-column>
                             <el-table-column
                                     prop="runTime"
-                                    label="creat time"
+                                    label="Run Time"
                                     width="165">
                             </el-table-column>
                             <!--                        <el-table-column-->
@@ -208,13 +297,14 @@
                             <!--                            </template>-->
                             </el-table-column>
                             <el-table-column
-                                    label="description"
+                                    label="Description"
                                     width="245">
                                 <template slot-scope="scope">
                                     <div :value="scope.row.description" @click.native="showDescription(scope.row)" style="overflow-y: auto"></div>
                                 </template>
                             </el-table-column>
-                            <el-table-column>
+                            <el-table-column
+                                    label="Load">
                                 <template slot-scope="scope">
                                     <el-button  plain
                                                 size="mini"
@@ -226,7 +316,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <el-pagination
+                        <el-pagination style="padding:10px"
                                 small
                                 @current-change="loadPublishedData"
                                 :current-page="exampleDataList.currentPage"
@@ -234,6 +324,7 @@
                                 layout="total, prev, pager, next, jumper"
                                 :total="exampleDataList.total">
                         </el-pagination>
+                        <div class="innerBorder"></div>
 
                     </div>
                 </div>
@@ -289,21 +380,22 @@
                                                 <el-row>
 
 
-                                                    <el-col :span="9" class="_event-desc">
+                                                    <el-col :span="11" class="_event-desc">
 
-                                                        <span v-if="modelInEvent.data[0].externalId==undefined" class="event-name" :title="modelInEvent.eventName">
+                                                        <span class="event-name" :title="modelInEvent.eventName">
                                                             <span
                                                                     v-show="!modelInEvent.optional"
                                                                     style="color:red">*</span>
                                                             {{modelInEvent.eventName}}
                                                         </span>
+                                                        <span v-if="modelInEvent.data[0].externalId!=undefined">
 
-                                                        <span v-if="modelInEvent.data[0].externalId!=undefined" class="event-name" :title="modelInEvent.eventName">
-                                                            <span
-                                                                    v-show="!modelInEvent.optional"
-                                                                    style="color:red">*</span>
-                                                            <a style="text-decoration: underline;" :href="'/repository/template/'+modelInEvent.data[0].externalId.toLowerCase()" target="_blank">{{modelInEvent.eventName}}</a>
+                                                            <el-tag type="info">
+                                                                Data Type:
+                                                                <a style="text-decoration: underline" :href="'/repository/template/'+modelInEvent.data[0].externalId.toLowerCase()" target="_blank">{{modelInEvent.data[0].text}}</a>
+                                                            </el-tag>
                                                         </span>
+
 
                                                     </el-col>
                                                     <div v-if="modelInEvent.data[0].nodes==undefined">
@@ -316,24 +408,25 @@
                                                             </el-input>
                                                         </el-col>
 
-                                                        <el-col :span="8">
+                                                        <el-col :span="6">
                                                             <div class="_btn-group">
                                                                 <!--<el-button plain round type="primary"-->
                                                                            <!--@click="editParam(modelInEvent)"-->
                                                                            <!--circle>-->
                                                                     <!--<i class="fa fa-edit"></i>-->
                                                                 <!--</el-button>-->
-                                                                <el-button  plain round type="primary"
-                                                                           @click="upload(modelInEvent)" :disabled="modelInEvent.uploading">
-                                                                    <i v-if="!modelInEvent.uploading" class="fa fa-cloud-upload"></i>
-                                                                    <i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>
-                                                                </el-button>
 
-                                                                <el-button plain round type="primary"
-                                                                           @click="selectFromDataItem(modelInEvent)"
-                                                                           circle>
-                                                                    <i class="fa fa-th-large"></i>
-                                                                </el-button>
+                                                                <!--<el-button  plain round type="primary"-->
+                                                                           <!--@click="upload(modelInEvent)" :disabled="modelInEvent.uploading">-->
+                                                                    <!--<i v-if="!modelInEvent.uploading" class="fa fa-cloud-upload"></i>-->
+                                                                    <!--<i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>-->
+                                                                <!--</el-button>-->
+
+                                                                <!--<el-button plain round type="primary"-->
+                                                                           <!--@click="selectFromDataItem(modelInEvent)"-->
+                                                                           <!--circle>-->
+                                                                    <!--<i class="fa fa-th-large"></i>-->
+                                                                <!--</el-button>-->
 
 
                                                                 <el-button plain round type="success"
@@ -368,7 +461,7 @@
                                                         >
                                                         </el-table-column>
                                                         <el-table-column
-                                                                label="Type"
+                                                                label="Data Type"
                                                         >
                                                             <template slot-scope="scope">
                                                                 <el-tag type="info">
@@ -390,7 +483,9 @@
                                                 </el-row>
                                                 <el-row>
                                                     <p class="event-desc" :title="modelInEvent.eventDesc">
-                                                        {{modelInEvent.eventDesc}}</p>
+                                                        {{modelInEvent.eventDesc}}
+
+                                                    </p>
                                                 </el-row>
 
                                             </el-row>
@@ -403,7 +498,7 @@
                                             <el-row v-for="(modelOutEvent,outEventIndex) in outEventList(state)"
                                                     :key="outEventIndex" class="_item">
                                                 <el-row>
-                                                    <el-col :span="9" class="_event-desc">
+                                                    <el-col :span="11" class="_event-desc">
                                                       <span class="event-name" :title="modelOutEvent.eventName">
                                                         {{modelOutEvent.eventName}}
                                                     </span>
@@ -413,7 +508,7 @@
                                                                   :disabled="true">
                                                         </el-input>
                                                     </el-col>
-                                                    <el-col :span="5" v-show="modelOutEvent.url!=null">
+                                                    <el-col :span="6" v-show="modelOutEvent.url!=null">
                                                         <div class="_btn-group">
                                                             <el-button plain round type="warning"
                                                                        @click="download(modelOutEvent)">
@@ -456,7 +551,7 @@
                                             <template slot-scope="scope">
                                                 <el-tag
                                                         :type="scope.row.eventType === 'response' ? 'primary' : (scope.row.eventType=== 'noresponse' ? 'success' : 'info')"
-                                                        disable-transitions>{{scope.row.eventType === 'response'?'Input':(scope.row.eventType=== 'noresponse' ? 'Output':scope.row.eventType)}}
+                                                        disable-transitions>{{scope.row.eventType === 'response'?'Input':(scope.row.eventType=== 'noresponse' ? 'Output':'Parameter')}}
                                                 </el-tag>
                                             </template>
                                         </el-table-column>
@@ -466,19 +561,10 @@
                                                 width="200">
                                             <template slot-scope="scope">
 
-                                                <span v-if="scope.row.externalId==undefined" :title="scope.row.eventName">
-                                                            <span
-                                                                    v-if="!scope.row.optional&&scope.row.eventType == 'response'"
-                                                                    style="color:red">*</span>
-                                                            {{scope.row.eventName}}
-                                                        </span>
-
-                                                <span v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
-                                                            <span
-                                                                    v-if="!scope.row.optional&&scope.row.eventType == 'response'"
-                                                                    style="color:red">*</span>
-                                                            <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.eventName}}</a>
-                                                        </span>
+                                                <span :title="scope.row.eventName">
+                                                    <span v-if="!scope.row.optional&&scope.row.eventType == 'response'" style="color:red">*</span>
+                                                    {{scope.row.eventName}}
+                                                </span>
                                             </template>
                                         </el-table-column>
                                         <el-table-column
@@ -486,8 +572,20 @@
                                                 label="Description">
                                         </el-table-column>
                                         <el-table-column
+                                                label="Data Type"
+                                                width="200">
+                                            <template slot-scope="scope">
+                                                <el-tag type="info" v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
+                                                    <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.data[0].text}}</a>
+                                                </el-tag>
+                                                <el-tag type="info" v-if="scope.row.eventType!='response'&&scope.row.eventType!='noresponse'" :title="scope.row.eventName">
+                                                    {{scope.row.eventType}}
+                                                </el-tag>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
                                                 label="Value"
-                                                width="180">
+                                                width="200">
                                             <template slot-scope="scope">
                                                 <el-input class="model-input"
                                                           v-if="scope.row.children==undefined&&scope.row.child!=true"
@@ -504,26 +602,26 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Operation"
-                                                width="280">
+                                                width="180">
                                             <template slot-scope="scope">
                                                 <div class="_btn-group" v-if="scope.row.children==undefined">
-                                                    <el-button  plain round type="primary"
-                                                                v-if="scope.row.eventType === 'response' ?true:false"
-                                                                @click="upload(scope.row)" :disabled="scope.row.uploading">
-                                                        <i v-if="!scope.row.uploading" class="fa fa-cloud-upload"></i>
-                                                        <i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>
-                                                    </el-button>
+                                                    <!--<el-button  plain round type="primary"-->
+                                                                <!--v-if="scope.row.eventType === 'response' ?true:false"-->
+                                                                <!--@click="upload(scope.row)" :disabled="scope.row.uploading">-->
+                                                        <!--<i v-if="!scope.row.uploading" class="fa fa-cloud-upload"></i>-->
+                                                        <!--<i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>-->
+                                                    <!--</el-button>-->
 
-                                                    <el-button plain round type="primary"
-                                                               v-if="scope.row.eventType === 'response' ?true:false"
-                                                               @click="selectFromDataItem(scope.row)"
-                                                               circle>
-                                                        <i class="fa fa-th-large"></i>
-                                                    </el-button>
+                                                    <!--<el-button plain round type="primary"-->
+                                                               <!--v-if="scope.row.eventType === 'response' ?true:false"-->
+                                                               <!--@click="selectFromDataItem(scope.row)"-->
+                                                               <!--circle>-->
+                                                        <!--<i class="fa fa-th-large"></i>-->
+                                                    <!--</el-button>-->
 
                                                     <el-button plain round type="success"
                                                                v-if="scope.row.eventType === 'response' ?true:false"
-                                                               @click="check(scope.row)">
+                                                               @click="checkPersonData(scope.row)">
                                                         <i class="fa fa-folder-open"></i>
                                                     </el-button>
 
@@ -615,8 +713,8 @@
                             <!--</el-upload>-->
                         <!--</el-dialog>-->
 
-                        <el-dialog title="Personal Center Data" :visible.sync="showDataChose" width="70%">
-                            <div class="researchTitle">
+                        <el-dialog title="Personal Center Data ( User Space -> My Data )" :visible.sync="showDataChose" width="70%">
+                            <div class="researchTitle" style="justify-content: space-between">
 <!--                                <ul class="researchMenu flexRowContainer">-->
 <!--                                    <li :class="{researchMenuChoosed:dataChosenIndex==1}" style="cursor: pointer;"-->
 <!--                                        @click="myDataClick(1)">My Data-->
@@ -625,7 +723,11 @@
 <!--                                        @click="outputDataClick(2)">Output Data-->
 <!--                                    </li>-->
 <!--                                </ul>-->
-                                <el-col :span="9" style="float: right;font-weight: 500" >
+                                <button id="uploadButton" class="dwload btn btn-primary btn-md"
+                                        @click="uploadDialogVisible = true">
+                                    <i class="glyphicon glyphicon-upload"></i><span style="font-size: 15px"> Upload</span>
+                                </button>
+                                <el-col :span="9" style="font-weight: 500" >
                                 <el-input id="searchinput"
                                           placeholder="input keywords, press enter to search "
                                           v-model="searchcontent"
@@ -647,9 +749,9 @@
                                     <div style="height: 100%">
                                         <div class="infoBar" role="alert" id="outputDataChosen">
                                             <div>
-                                                <span><i class="el-icon-document"></i>&nbsp&nbsp You have selected:</span>&nbsp;&nbsp;&nbsp;
-                                                <span v-if="downloadDataSetName.length==0">no data..</span>
-                                                <span v-for="item in downloadDataSetName">{{item.name}}<span v-if="item.package==false">.{{item.suffix}}</span>, </span>
+                                                <span><i class="el-icon-document"></i>&nbsp&nbsp Selection:</span>&nbsp;&nbsp;&nbsp;
+                                                <span v-if="downloadDataSetName.length==0">no data</span>
+                                                <span v-for="item in downloadDataSetName">{{item.name}}<span v-if="item.package==false">.{{item.suffix}}</span> </span>
                                             </div>
                                             <div class="flexRowContainer">
                                             </div>
@@ -673,27 +775,27 @@
                                                             </div>
                                                         </div>
 
-                                                        <p style="font-style: italic;color: #999999;float: right;margin: 0">
-                                                            Left or right click can call out some function</p>
+                                                        <!--<p style="font-style: italic;color: #999999;float: right;margin: 0">-->
+                                                            <!--Left or right click can call out some function</p>-->
                                                     </div>
                                                     <div v-if="myFileShown.length!=0" :title="showtitle(item)" class="el-card dataitemisol" shadow="never"
                                                          :id="generateId(key)" :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
                                                          v-for="(item,key) in myFileShown"
                                                          :key="key"
-
+                                                         @click="singleClick($event,item)"
                                                          @mouseover="addDataClass($event,item)"
                                                          @mouseout="removeClass($event,item)">
                                                         <el-row style="height: 80%" @dblclick.native="getPackageContent($event,item,key)">
-                                                            <el-col :span="5">&nbsp
-                                                                <div class="squareButtonMini flexCenter" style="margin: 4px;float: inherit;cursor: pointer" @click="singleClick($event,item)"
-                                                                     v-if="item.package==false">
+                                                            <el-col :span="5">
+                                                                <div class="squareButtonMini flexCenter" style="visibility:hidden;margin: 4px;float: inherit;cursor: pointer" @click="singleClick($event,item)"
+                                                                     >
                                                                     <i style="font-size: 16px;color:#1b7cde" :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}" class="fa fa-check"></i>
                                                                 </div>
                                                             </el-col>
                                                             <el-col :span="15" style="height: 100%;" >
                                                                 <img class="fileImg" :src="getImg(item)" onerror=src="/static/img/filebrowser/unknow.svg" style="height: 100%;width:100%;cursor: pointer">
                                                             </el-col>
-                                                            <el-col :span="4">&nbsp
+                                                            <el-col :span="4">
                                                                 <div v-if="item.upload==true" style="margin-right: 5px;margin-top: 4px;float: right">
                                                                     <i class="fa fa-user-circle-o" style="font-size: 16px;color:#1b7cde"></i>
                                                                 </div>
@@ -854,6 +956,107 @@
                             </span>
                         </el-dialog>
                         <!--                                 dialog end                       -->
+                        <el-dialog
+                                title="Upload Data"
+                                :visible.sync="uploadDialogVisible"
+                                width="30%"
+                                :before-close="uploadBeforeClose"
+                        >
+
+
+                            <!--<div class="file-loading">-->
+
+                            <!--<input id="file-1"   type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-theme="fas">-->
+                            <!--</div>-->
+
+
+                            <div class="uploaded">
+
+                                <div class="form-group flexColCenter">
+                                    <label style="margin-right:5px;">Storage path :</label>
+                                    <el-button type="primary" plain size="mini" @click="selectFolder"
+                                               v-if="selectedPath.length==0&&uploadInPath==0">Select Folder
+                                    </el-button>
+                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
+                                         v-if="uploadInPath==0">
+                                        <div v-for="(path,index) in selectedPath" @click="selectFolder"
+                                             style="text-decoration:underline;cursor: pointer"> /{{path.label}}
+                                        </div>
+                                    </div>
+                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
+                                         v-if="uploadInPath==1">
+                                        <div v-for="(path,index) in pathShown"> /{{path.label}}</div>
+                                    </div>
+                                    <!--                                                    <el-button style="margin-left: calc(50% - 180px)" type="primary"-->
+                                    <!--                                                               @click="selectPathClick">Select-->
+                                    <!--                                                    </el-button>-->
+                                </div>
+                                <div class="form-group flexColCenter" style="margin-bottom: -15px">
+                                    <label style="margin-right:5px;">Upload files :</label>
+                                    <el-button size="mini" @click="selectFile()">Select File</el-button>
+                                </div>
+                                <el-upload
+                                        class="upload-demo"
+                                        multiple="true"
+                                        ref="upload"
+                                        action="http://111.229.14.128:8082/file/upload/store_dataResource_files"
+                                        :on-success="handleSuccess"
+                                        :file-list="uploadFileList"
+                                        :auto-upload="true">
+                                    <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
+                                               type="primary">选取文件
+                                    </el-button>
+
+                                </el-upload>
+
+                            </div>
+
+                            <!--<span slot="footer" class="dialog-footer">-->
+                            <!--<div class="modal-footer">-->
+                            <!--<button type="button" class="btn btn-primary"-->
+                            <!--@click="upload_data_dataManager">-->
+                            <!--Confirm-->
+                            <!--</button>-->
+
+                            <!--<button type="button" class="btn btn-default" data-dismiss="modal"-->
+                            <!--@click="close()">-->
+                            <!--Cancel-->
+                            <!--</button>-->
+                            <!--</div>-->
+                            <!--</span>-->
+                        </el-dialog>
+                        <el-dialog
+                                title="Select Folder"
+                                :visible.sync="selectFolderVisible"
+                                width="550px"
+                        >
+
+                            <div class=""
+                                 style="min-height: 305px;padding: 10px 15px;font-size: 16px;font-family: sans-serif">
+                                <!--                                            <el-card style="min-height: 300px;width: 95%">-->
+                                <el-tree
+                                        :data="folderTree"
+                                        ref="folderTree"
+                                        node-key="id"
+                                        highlight-current
+                                        default-expand-all
+                                        :expand-on-click-node="false"
+                                >
+                                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                    <span>{{ node.label }}</span>
+                                                </span>
+                                </el-tree>
+                                <!--                                            </el-card>-->
+                            </div>
+                            <div class="modal-footer">
+                                             <span>
+                                                 <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
+                                                            @click="addFolderInTree('myData')">Add new folder</el-button>
+                                                 <el-button @click="selectFolderVisible = false">Cancel</el-button>
+                                                 <el-button type="primary" @click="confirmFolder()">OK</el-button>
+                                             </span>
+                            </div>
+                        </el-dialog>
 
                         <el-dialog top="40px" :width="paramType=='internal'?'70%':'90%'" title="Parameter Detail" :visible.sync="paramDialogVisible">
                             <el-table v-if="paramType=='internal'"

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dao.ComputableModelDao;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
@@ -11,6 +12,7 @@ import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.intergrate.ModelParam;
+import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.exception.MyException;
@@ -37,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -53,6 +56,9 @@ public class TaskRestController {
 
     @Autowired
     ComputableModelService computableModelService;
+
+    @Autowired
+    ComputableModelDao computableModelDao;
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
@@ -390,6 +396,29 @@ public class TaskRestController {
                 userTaskInfo.setCreateTime(task.getRunTime());
                 userTaskInfo.setModelName(task.getComputableName());
                 userTaskInfo.setTaskId(task.getTaskId());
+
+                Date now = new Date();
+                DailyViewCount newInvokeCount = new DailyViewCount(now, 1);
+                List<DailyViewCount> dailyInvokeCount = computableModel.getDailyInvokeCount();
+//                if(computableModel.getDailyInvokeCount()!=null){
+//                    dailyInvokeCount = computableModel.getDailyInvokeCount();
+//                }
+                if(dailyInvokeCount.size()>0) {
+                    DailyViewCount dailyViewCount = dailyInvokeCount.get(dailyInvokeCount.size() - 1);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                    if (sdf.format(dailyViewCount.getDate()).equals(sdf.format(now))) {
+                        dailyViewCount.setCount(dailyViewCount.getCount() + 1);
+                        dailyInvokeCount.set(dailyInvokeCount.size() - 1, dailyViewCount);
+                    } else {
+                        dailyInvokeCount.add(newInvokeCount);
+                    }
+                }
+                else{
+                    dailyInvokeCount.add(newInvokeCount);
+                }
+                computableModel.setInvokeCount(computableModel.getInvokeCount()+1);
+                computableModelDao.save(computableModel);
 
                 //存入用户信息记录
                 String msg= userService.addTaskInfo(username,userTaskInfo);

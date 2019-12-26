@@ -55,7 +55,7 @@ public class UserService {
         try {
             Random random = new Random();
             String password = "";
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 8; i++) {
                 int num = random.nextInt(62);
                 if (num >= 0 && num < 10) {
                     password += num;
@@ -77,11 +77,18 @@ public class UserService {
                 user.setPassword(password);
                 userDao.save(user);
                 String subject="OpenGMS Portal Password Reset";
-                String content="Your password has been reset to <b>"+password+"</b>.";
+                String content="Hello " + user.getName() + ":<br/>"+
+                        "Your password has been reset to <b>"+password+"</b>. You can change the password after logging in.<br/>"+
+                        "Welcome to <a href='http://geomodeling.njnu.edu.cn' target='_blank'>OpenGMS</a> !";
 
-                commonService.sendEmail(email,subject,content);
+                Boolean flag = commonService.sendEmail(email,subject,content);
+                if(flag) {
 
-                return "suc";
+                    return "suc";
+                }
+                else{
+                    return "send fail";
+                }
             }
             else {
                 return "no user";
@@ -89,7 +96,7 @@ public class UserService {
 
         }
         catch (Exception e){
-            return "fail";
+            return "error";
         }
     }
     //++
