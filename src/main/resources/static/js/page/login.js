@@ -36,7 +36,9 @@ new Vue({
             },
 
             inputVisible: false,
-            inputValue: ''
+            inputValue: '',
+
+            reset:false,
         }
     },
     methods: {
@@ -109,6 +111,7 @@ new Vue({
             });
         },
         resetPassword() {
+            this.reset=true;
             this.$prompt('Please enter your email:', 'Reset Password', {
                 confirmButtonText: 'Confirm',
                 cancelButtonText: 'Cancel',
@@ -116,8 +119,8 @@ new Vue({
                 inputErrorMessage: 'E-mail format is incorrect.'
             }).then(({ value }) => {
                 let info=this.$notify.info({
-                    title: 'Reset',
-                    message: 'Reseting password...',
+                    title: 'Reseting password',
+                    message: 'Please wait for a while, new password will be sent to your email.',
                     offset: 70,
                     duration: 0
                 });
@@ -131,6 +134,7 @@ new Vue({
                     // dataType : 'json',
                     success: (result) => {
                         info.close();
+                        // this.reset=false;
                         if (result.data=="suc") {
 
                             this.$notify.success({
@@ -141,19 +145,21 @@ new Vue({
                             });
 
                         }
-                        else if(result.data=="fail") {
+                        else if(result.data=="no user") {
                             this.$notify({
                                 title: 'Fail',
-                                message: 'Reset password failed, please try again.',
+                                message: 'Email does not exist, please check again or register a new account.',
                                 offset: 70,
-                                type: 'warning'
+                                type: 'warning',
+                                duration: 0
                             });
                         }
                         else{
                             this.$notify.error({
                                 title: 'Fail',
-                                message: 'Email is not exists, please check again or register a new account.',
+                                message: 'Reset password failed, Please try again or contact nj_gis@163.com',
                                 offset: 70,
+                                duration: 0
                             });
                         }
                     },
@@ -176,13 +182,10 @@ new Vue({
         }
 
         $(document).keydown((event)=> {
-            if (event.keyCode == 13) {
+            if (!this.reset && event.keyCode == 13) {
                 this.login();
             }
         });
 
-        $("#resetPW").click(function(){
-
-        })
     }
 })

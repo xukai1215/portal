@@ -60,7 +60,7 @@
         <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
             <div class="detail">
                 <div class="detail_title">
-                    <h2 th:utext="${info.name}+'&nbsp&nbsp'" style="display: inline-block"></h2>
+                    <h2 th:utext="${info.name}" style="display: inline-block;margin-right:15px;"></h2>
                     <a th:if="${history!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
@@ -75,7 +75,7 @@
                     </div>
 
                     <div class="info">
-                        <p th:text="${info.description_EN}" style="word-break: break-word;"></p>
+                        <p th:text="${info.description}" style="word-break: break-word;"></p>
                         <div class="tags">
                             <span class="badge badge-info">Unit & Metric</span>
                         </div>

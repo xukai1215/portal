@@ -60,11 +60,16 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView getLogin() {
+    public ModelAndView getLogin(HttpServletRequest request) {
         System.out.println("login");
+        HttpSession session=request.getSession();
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
-        modelAndView.addObject("name","OpenGMS");
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("name","OpenGMS");
+        }else{
+            modelAndView.setViewName("redirect:/user/userSpace");
+        }
 
         return modelAndView;
     }
@@ -92,10 +97,11 @@ public class UserRestController {
     @RequestMapping(value="/saveUserIcon",method = RequestMethod.POST)
     public JsonResult saveUserIcon(@RequestParam(value="img") String img, HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }else{
+            String userName=session.getAttribute("uid").toString();
             return ResultUtils.success(userService.saveUserIcon(img,userName)) ;
         }
     }
@@ -103,10 +109,11 @@ public class UserRestController {
     @RequestMapping(value="/addTaskInfo", method = RequestMethod.POST)
     public JsonResult addTaskInfo(@RequestBody UserTaskInfo userTaskInfo, HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }else{
+            String userName=session.getAttribute("uid").toString();
             return ResultUtils.success(userService.addTaskInfo(userName,userTaskInfo));
         }
     }
@@ -396,11 +403,12 @@ public class UserRestController {
         List<String> researchInterests=userIntroDTO.getResearchInterests();
         List<String> subjectAreas=userIntroDTO.getSubjectAreas();
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
 
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result1=userService.updateDescription(description,userName);
         String result2=userService.updateResearchInterest(researchInterests,userName);
         String result3=userService.updateSubjectAreas(subjectAreas,userName);
@@ -417,11 +425,11 @@ public class UserRestController {
         System.out.println("/updateDescription"+descriptionDTO);
         String description=descriptionDTO.getDescription();
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        System.out.println(userName);
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateDescription(description,userName);
 
         return ResultUtils.success(result);
@@ -433,10 +441,11 @@ public class UserRestController {
         System.out.println("/updateResearchInterest");
         List<String> researchInterests=researchInterestDTO.getResearchInterests();
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateResearchInterest(researchInterests,userName);
 
         return ResultUtils.success(result);
@@ -446,10 +455,11 @@ public class UserRestController {
     JsonResult updateUserAffiliation(@RequestBody AffiliationDTO affiliationDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updateAffiliation"+affiliationDTO);
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateAffiliation(affiliationDTO,userName);
 
         return ResultUtils.success(result);
@@ -459,11 +469,11 @@ public class UserRestController {
     JsonResult updateUserLab(@RequestBody UserLabDTO labDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updateLab"+labDTO);
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-
+        String userName=httpSession.getAttribute("uid").toString();
         JSONObject labResult=labService.updateByLabName(labDTO,userName);
         String result=userService.updateLab(labDTO,userName);
         System.out.println("labResult"+labResult);
@@ -477,10 +487,11 @@ public class UserRestController {
         System.out.println("/updateSubjectAreas");
         List<String> subjectAreas=subjectAreasDTO.getSubjectAreas();
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateSubjectAreas(subjectAreas,userName);
 
         return ResultUtils.success(result);
@@ -490,10 +501,11 @@ public class UserRestController {
     JsonResult updateUserEduExperience(@RequestBody EducationExperienceDTO educationExperienceDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updateEduEx"+educationExperienceDTO);
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateEduExperience(educationExperienceDTO,userName);
 
         return ResultUtils.success(result);
@@ -503,10 +515,10 @@ public class UserRestController {
     JsonResult updateUserAwdHonor(@RequestBody AwdHonorDTO awdHonorDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updateEduEx"+awdHonorDTO);
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateAwdHonor(awdHonorDTO,userName);
 
         return ResultUtils.success(result);
@@ -516,10 +528,11 @@ public class UserRestController {
     JsonResult updateContact(@RequestBody ContactDTO contactDTO, HttpServletRequest httpServletRequest){
         System.out.println("/updatecontact"+contactDTO);
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.updateContact(contactDTO,userName);
 
         return ResultUtils.success(result);
@@ -676,15 +689,15 @@ public class UserRestController {
         System.out.println(dataIds);
         System.out.println(dataItemId);
         HttpSession httpSession=httpServletRequest.getSession();
-        String userName=httpSession.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(httpSession.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
 
         if(paths.get(0).equals("root")){
             paths.remove(0);
         }
-
+        String userName=httpSession.getAttribute("uid").toString();
         String result=userService.forkData(paths,dataIds,dataItemId,userName);
 
         return ResultUtils.success();

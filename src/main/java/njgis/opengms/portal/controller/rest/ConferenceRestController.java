@@ -6,6 +6,7 @@ import njgis.opengms.portal.dto.conference.ConferenceFindDTO;
 import njgis.opengms.portal.entity.support.Conference;
 import njgis.opengms.portal.service.ConferenceService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +29,12 @@ public class ConferenceRestController {
     @RequestMapping(value="/searchByTitle",method=RequestMethod.GET)
     JsonResult searchByTitle(ConferenceFindDTO conferenceFindDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
 
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-
+        String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(conferenceService.searchByTitle(conferenceFindDTO,userName));
     }
 
@@ -50,7 +51,7 @@ public class ConferenceRestController {
 //        articleFindDTO.setPageSize(pageSize);
 //        articleFindDTO.setSortElement(sortElement);
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
@@ -61,10 +62,11 @@ public class ConferenceRestController {
     public JsonResult addNewArticle(@RequestBody ConferenceAddDTO conferenceAddDTO, HttpServletRequest httpServletRequest){
 //        System.out.println(conferenceAddDTO);
         HttpSession session=httpServletRequest.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+        String userName=session.getAttribute("uid").toString();
         int index=conferenceService.addNewconference(conferenceAddDTO,userName);
 //        System.out.println("/addConference");
         return ResultUtils.success(index);
@@ -82,7 +84,7 @@ public class ConferenceRestController {
     @RequestMapping(value="/deleteByOid",method=RequestMethod.POST)
     public JsonResult deleteByOid(String oid,HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }else{

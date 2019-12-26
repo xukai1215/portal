@@ -6,6 +6,7 @@ import njgis.opengms.portal.dto.educationExperience.EducationExperienceFindDTO;
 import njgis.opengms.portal.entity.support.EducationExperience;
 import njgis.opengms.portal.service.EducationExperienceService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class EducationExperienceRestController {
     public JsonResult addNewEduExp(@RequestBody EducationExperienceAddDTO educationExperienceAddDTO, HttpServletRequest httpServletRequest){
         System.out.println("/addedu"+educationExperienceAddDTO);
         HttpSession session=httpServletRequest.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
@@ -41,7 +42,7 @@ public class EducationExperienceRestController {
     public JsonResult deleteByOid(@RequestParam(value="oid") String oid, HttpServletRequest request){
 
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
 
         if(userName==null){
             return ResultUtils.error(-1,"no login");
