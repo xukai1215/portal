@@ -1,11 +1,11 @@
 var vue = new Vue({
-    el:"#app",
+    el: "#app",
     components: {
         'avatar': VueAvatar.Avatar
     },
-    data:{
-        defaultActive:'4-1',
-        curIndex:'4-1',
+    data: {
+        defaultActive: '4-1',
+        curIndex: '6',
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
@@ -20,13 +20,12 @@ var vue = new Vue({
         activeIndex: 2,
 
 
-
-        userInfo:{
+        userInfo: {
             //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
+            name: "",
+            email: "",
+            phone: "",
+            insName: ""
         },
 
 
@@ -36,7 +35,7 @@ var vue = new Vue({
         classifications2: ["13b822a2-fecd-4af7-aeb8-0503244abe8f"],
         currentClass: "Sedris",
         pageOption: {
-            paginationShow:false,
+            paginationShow: false,
             progressBar: true,
             sortAsc: false,
             currentPage: 1,
@@ -442,7 +441,7 @@ var vue = new Vue({
                 id: 57,
                 "oid": "8EJMTXTYB0QQ3RX02BV34BGBQXT0ILOL",
                 "label": "Earth System(in Chinese)",
-                children:[
+                children: [
                     {
                         id: 58,
                         "nameCn": "冰川地质学",
@@ -815,54 +814,73 @@ var vue = new Vue({
             children: 'children',
             label: 'label'
         },
-        cls:[],
-        clsStr:'',
-        parId:"",
-        related:[""],
-        relatedOid:[],
+        cls: [],
+        clsStr: '',
+        parId: "",
+        related: [""],
+        relatedOid: [],
 
-        conceptInfo:{}
+        conceptInfo: {}
     },
-    methods:{
-        handleSelect(index,indexPath){
-            this.setSession("index",index);
-            window.location.href="/user/userSpace"
+    methods: {
+        changeRter(index){
+            this.curIndex = index;
+            var urls={
+                1:'/user/userSpace',
+                2:'/user/userSpace/model',
+                3:'/user/userSpace/data',
+                4:'/user/userSpace/server',
+                5:'/user/userSpace/task',
+                6:'/user/userSpace/community',
+                7:'/user/userSpace/theme',
+                8:'/user/userSpace/account',
+                9:'/user/userSpace/feedback',
+            }
+
+            this.setSession('curIndex',index)
+            window.location.href=urls[index]
+
+        },
+
+        handleSelect(index, indexPath) {
+            this.setSession("index", index);
+            window.location.href = "/user/userSpace"
         },
         handleCheckChange(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree2.getCheckedNodes()
             let classes = [];
-            let str='';
+            let str = '';
             for (let i = 0; i < checkedNodes.length; i++) {
                 // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
+                if (checkedNodes[i].children != undefined) {
                     continue;
                 }
 
                 classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
+                str += checkedNodes[i].label;
+                if (i != checkedNodes.length - 1) {
+                    str += ", ";
                 }
             }
-            this.cls=classes;
-            this.clsStr=str;
+            this.cls = classes;
+            this.clsStr = str;
 
         },
         handleCurrentChange(data, checked, indeterminate) {
-            this.pageOption.searchResult=[];
-            this.pageOption.total=0;
-            this.pageOption.paginationShow=false;
-            this.currentClass=data.label;
+            this.pageOption.searchResult = [];
+            this.pageOption.total = 0;
+            this.pageOption.paginationShow = false;
+            this.currentClass = data.label;
             let classes = [];
             classes.push(data.oid);
             this.classifications1 = classes;
             this.getChildren(data.children)
-            this.pageOption.currentPage=1;
-            this.searchText="";
+            this.pageOption.currentPage = 1;
+            this.searchText = "";
             this.getConcepts();
         },
-        selectConcept(){
-          this.relatedStr = "hello"
+        selectConcept() {
+            this.relatedStr = "hello"
         },
         changeOpen(n) {
             this.activeIndex = n;
@@ -871,14 +889,14 @@ var vue = new Vue({
             window.sessionStorage.setItem(name, value);
         },
         getUserData(UsersInfo, prop) {
-            let index=0;
-            for(i=0;i<UsersInfo.length;i+=4){
+            let index = 0;
+            for (i = 0; i < UsersInfo.length; i += 4) {
                 let value1 = UsersInfo.eq(i)[0].value.trim();
                 let value2 = UsersInfo.eq(i)[0].value.trim();
                 let value3 = UsersInfo.eq(i)[0].value.trim();
                 let value4 = UsersInfo.eq(i)[0].value.trim();
-                if(value1==''&&value2==''&&value3==''&&value4==''){
-                    index=i+4;
+                if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
+                    index = i + 4;
                 }
 
             }
@@ -895,8 +913,7 @@ var vue = new Vue({
                         prop.push(eval('(' + result + ')'));
                     }
                     result = "{";
-                }
-                else {
+                } else {
                     result += "'" + Info.name + "':'" + Info.value + "',";
                 }
 
@@ -913,32 +930,31 @@ var vue = new Vue({
                 asc: this.pageOption.sortAsc,
                 page: this.pageOption.currentPage - 1,
                 pageSize: this.pageOption.pageSize,
-                searchText : this.searchText,
-                classifications : this.classifications1.length == 0 ? ["all"] : this.classifications1
+                searchText: this.searchText,
+                classifications: this.classifications1.length == 0 ? ["all"] : this.classifications1
 
             };
             this.Query(data, this.queryType);
         },
         Query(data, type) {
-            let query={ };
-            query.oid=data.classifications[0];
-            query.page=data.page;
-            query.sortType= this.pageOption.sortType;
-            if(data.asc){
-                query.asc= 0;
-            }else{
+            let query = {};
+            query.oid = data.classifications[0];
+            query.page = data.page;
+            query.sortType = this.pageOption.sortType;
+            if (data.asc) {
+                query.asc = 0;
+            } else {
                 query.asc = 1;
             }
-            query.searchText=data.searchText;
+            query.searchText = data.searchText;
 
-            let url="";
-            if(query.searchText.trim()==""){
-                url="/repository/getConceptList";
-            }
-            else{
-                url="/repository/searchConcept";
-                this.classifications1=[""];
-                this.currentClass="ALL";
+            let url = "";
+            if (query.searchText.trim() == "") {
+                url = "/repository/getConceptList";
+            } else {
+                url = "/repository/searchConcept";
+                this.classifications1 = [""];
+                this.currentClass = "ALL";
                 this.$refs.tree1.setCurrentKey(null);
             }
 
@@ -952,25 +968,24 @@ var vue = new Vue({
                     if (json.code == 0) {
                         let data = json.data;
                         this.pageOption.total = data.total;
-                        for (var i = 0; i < data.list.length; i++){
-                            data.list[i].exist=false;
+                        for (var i = 0; i < data.list.length; i++) {
+                            data.list[i].exist = false;
                         }
                         this.pageOption.searchResult = data.list;
                         this.pageOption.progressBar = false;
-                        this.pageOption.paginationShow=true;
+                        this.pageOption.paginationShow = true;
 
-                        for(var i=0; i<this.pageOption.searchResult.length; i++){
-                            for(var j=0; j<this.relatedOid.length; j++){
-                                if(this.relatedOid[j] == this.pageOption.searchResult[i].oid){
-                                    this.pageOption.searchResult[i].exist=true;
+                        for (var i = 0; i < this.pageOption.searchResult.length; i++) {
+                            for (var j = 0; j < this.relatedOid.length; j++) {
+                                if (this.relatedOid[j] == this.pageOption.searchResult[i].oid) {
+                                    this.pageOption.searchResult[i].exist = true;
                                     break;
-                                }else {
-                                    this.pageOption.searchResult[i].exist=false;
+                                } else {
+                                    this.pageOption.searchResult[i].exist = false;
                                 }
                             }
                         }
-                    }
-                    else {
+                    } else {
                         console.log("query error!")
                     }
                 }
@@ -994,10 +1009,10 @@ var vue = new Vue({
         },
 
         //添加related
-        addRelated(event){
+        addRelated(event) {
 
             console.log(event);
-            this.pageOption.searchResult[event].exist=true;
+            this.pageOption.searchResult[event].exist = true;
 
             con = this.pageOption.searchResult[event].name;
             oid = this.pageOption.searchResult[event].oid;
@@ -1012,18 +1027,18 @@ var vue = new Vue({
                 placeholder: 'Enter keywords ...'
             });
         },
-        deleteRelated(event){
+        deleteRelated(event) {
             console.log(event);
-            this.pageOption.searchResult[event].exist=false;
+            this.pageOption.searchResult[event].exist = false;
 
             con = this.pageOption.searchResult[event].name;
             oid = this.pageOption.searchResult[event].oid;
 
             this.related = this.related.filter(function (item) {
-                return item!=con;
+                return item != con;
             });
             this.relatedOid = this.relatedOid.filter(function (item) {
-                return item!=oid;
+                return item != oid;
             });
 
             $('#related').tagEditor('destroy')
@@ -1034,13 +1049,13 @@ var vue = new Vue({
             });
         },
 
-        searchByOid(oid){
+        searchByOid(oid) {
             $.ajax({
                 url: "/repository/getConceptInfo/" + oid,
-                type:'GET',
+                type: 'GET',
                 data: {},
-                async:false,
-                success:(result)=>{
+                async: false,
+                success: (result) => {
                     console.log(result);
                     var basicInfo = result.data;
                     var relate = basicInfo.name;
@@ -1050,8 +1065,20 @@ var vue = new Vue({
         }
     },
     mounted() {
+        $(() => {
+            let height = document.documentElement.clientHeight;
+            this.ScreenMinHeight = (height) + "px";
+            this.ScreenMaxHeight = (height) + "px";
 
-        var oid = window.sessionStorage.getItem("editConcept_id");
+            window.onresize = () => {
+                console.log('come on ..');
+                height = document.documentElement.clientHeight;
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+            };
+        })
+
+        var oid = window.sessionStorage.getItem("editOid");
 
         this.search();
 
@@ -1059,7 +1086,8 @@ var vue = new Vue({
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
-            $("#title").text("Create Concept & Semantic")
+            // $("#title").text("Create Concept & Semantic")
+            $("#subRteTitle").text("/Create Concept & Semantic")
 
             $("#myText").html("");
             tinymce.init({
@@ -1095,11 +1123,11 @@ var vue = new Vue({
                     return img.hasAttribute('internal-blob');
                 }
             });
-        }
-        else {
+        } else {
 
-            $("#title").text("Modify Concept & Semantic")
-            document.title="Modify Concept & Semantic | OpenGMS"
+            // $("#title").text("Modify Concept & Semantic")
+            $("#subRteTitle").text("/Modify Concept & Semantic")
+            document.title = "Modify Concept & Semantic | OpenGMS"
 
             $.ajax({
                 url: "/repository/getConceptInfo/" + oid,
@@ -1113,21 +1141,21 @@ var vue = new Vue({
 
                     //cls
                     this.cls = basicInfo.classifications;
-                    let ids=[];
-                    for(i=0;i<this.cls.length;i++){
-                        for(j=0;j<2;j++){
-                            for(k=0;k<this.treeData[j].children.length;k++){
-                                if(this.cls[i]==this.treeData[j].children[k].oid){
+                    let ids = [];
+                    for (i = 0; i < this.cls.length; i++) {
+                        for (j = 0; j < 2; j++) {
+                            for (k = 0; k < this.treeData[j].children.length; k++) {
+                                if (this.cls[i] == this.treeData[j].children[k].oid) {
                                     ids.push(this.treeData[j].children[k].id);
                                     this.parid = this.treeData[j].children[k].id;
-                                    this.clsStr+=this.treeData[j].children[k].label;
-                                    if(i!=this.cls.length-1){
-                                        this.clsStr+=", ";
+                                    this.clsStr += this.treeData[j].children[k].label;
+                                    if (i != this.cls.length - 1) {
+                                        this.clsStr += ", ";
                                     }
                                     break;
                                 }
                             }
-                            if(ids.length-1==i){
+                            if (ids.length - 1 == i) {
                                 break;
                             }
                         }
@@ -1138,11 +1166,11 @@ var vue = new Vue({
                     $(".providers").children(".panel").remove();
 
                     $("#nameInput").val(basicInfo.name);
-                    if(basicInfo.description != null){
+                    if (basicInfo.description != null) {
                         $("#descInput").val(basicInfo.description);
-                    }else if(basicInfo.description_EN != ""){
+                    } else if (basicInfo.description_EN != "") {
                         $("#descInput").val(basicInfo.description_EN);
-                    }else if(basicInfo.description_ZH != ""){
+                    } else if (basicInfo.description_ZH != "") {
                         $("#descInput").val(basicInfo.description_ZH);
                     }
 
@@ -1166,7 +1194,7 @@ var vue = new Vue({
                     });
 
                     //detail
-                    if(basicInfo.detail != null){
+                    if (basicInfo.detail != null) {
                         $("#myText").html(basicInfo.detail);
                     }
                     tinymce.init({
@@ -1223,13 +1251,12 @@ var vue = new Vue({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
+                data = JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
                     window.location.href = "/user/login";
-                }
-                else {
+                } else {
                     this.userId = data.oid;
                     this.userName = data.name;
                 }
@@ -1249,7 +1276,7 @@ var vue = new Vue({
 
 
         var conceptObj = {};
-        $(".next").click(()=> {
+        $(".next").click(() => {
 
             if (this.cls.length == 0) {
                 alert("Please select parent node");
@@ -1261,7 +1288,7 @@ var vue = new Vue({
             }
         });
 
-        $(".finish").click(()=> {
+        $(".finish").click(() => {
             let loading = this.$loading({
                 lock: true,
                 text: "Uploading...",
@@ -1278,14 +1305,14 @@ var vue = new Vue({
             conceptObj.detail = detail.trim();
             console.log(conceptObj)
 
-            if(conceptObj.name.trim()==""){
+            if (conceptObj.name.trim() == "") {
                 alert("please enter name")
                 return;
             }
 
-            let formData=new FormData();
+            let formData = new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                let file = new File([JSON.stringify(conceptObj)],'ant.txt',{
+                let file = new File([JSON.stringify(conceptObj)], 'ant.txt', {
                     type: 'text/plain',
                 });
                 formData.append("info", file);
@@ -1304,19 +1331,17 @@ var vue = new Vue({
 
                             window.location.href = "/repository/concept/" + result.data;
                             //window.location.reload();
-                        }
-                        else if(result.code==-1){
+                        } else if (result.code == -1) {
                             alert("Please login first!");
-                            window.location.href="/user/login";
-                        }
-                        else{
+                            window.location.href = "/user/login";
+                        } else {
                             alert("Create failed!")
                         }
                     }
                 })
             } else {
                 conceptObj["oid"] = oid;
-                let file = new File([JSON.stringify(conceptObj)],'ant.txt',{
+                let file = new File([JSON.stringify(conceptObj)], 'ant.txt', {
                     type: 'text/plain',
                 });
                 formData.append("info", file)
@@ -1334,18 +1359,15 @@ var vue = new Vue({
                             if (result.data.method === "update") {
                                 alert("Update Success");
                                 window.location.href = "/repository/concept/" + result.data.oid;
-                            }
-                            else {
+                            } else {
                                 alert("Success! Changes have been submitted, please wait for the webmaster to review.");
                                 window.location.href = "/user/userSpace";
 
                             }
-                        }
-                        else if(result.code==-2){
+                        } else if (result.code == -2) {
                             alert("Please login first!");
-                            window.location.href="/user/login";
-                        }
-                        else{
+                            window.location.href = "/user/login";
+                        } else {
                             alert(result.msg);
                         }
                     }
@@ -1357,8 +1379,7 @@ var vue = new Vue({
 
             if ($(this).val()) {
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html($(this).val());
-            }
-            else {
+            } else {
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
             }
         })

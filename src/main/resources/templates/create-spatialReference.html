@@ -19,10 +19,13 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
 
     <style>
         .btn-block {
@@ -47,14 +50,21 @@
         </div>
     </div>
 
-    <div class="page-container">
-
-        <div th:replace="fragments/sidebar :: side"></div>
-
-        <div class="page-content clearfix scrollbar"
-             :style="{'min-height':ScreenMaxHeight,'max-height':ScreenMaxHeight}" style="overflow-x: hidden;">
-
-            <div th:replace="fragments/sidebar :: top"></div>
+    <div class="page-container" style="height: 2000px">
+        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                     style="margin-left: 240px;overflow-x: hidden"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <section role="description" class="flexJustBetween flexColCenter contentSection"
+                             style="max-width: 1050px;margin: 15px 10px;">
+                        <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
+                            <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../community">Community </a><span
+                                    id="subRteTitle"></span></h3>
+                        </div>
+                    </section>
 
             <div class="page-content-wrap container-fluid">
                 <!-- START WIDGETS -->
@@ -424,9 +434,14 @@
 
     });
 </script>
-
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-router.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/element-ui/index.js"></script>
+
+<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
 <script src="/static/js/page/create-spatialReference.js"></script>
 
 </html>

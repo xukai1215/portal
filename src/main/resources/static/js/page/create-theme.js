@@ -97,7 +97,7 @@ var vue = new Vue({
         },
 
         defaultActive:'5',
-        curIndex:'5',
+        curIndex:7,
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
@@ -127,6 +127,25 @@ var vue = new Vue({
 
     },
     methods: {
+        changeRter(index){
+            this.curIndex = index;
+            var urls={
+                1:'/user/userSpace',
+                2:'/user/userSpace/model',
+                3:'/user/userSpace/data',
+                4:'/user/userSpace/server',
+                5:'/user/userSpace/task',
+                6:'/user/userSpace/community',
+                7:'/user/userSpace/theme',
+                8:'/user/userSpace/account',
+                9:'/user/userSpace/feedback',
+            }
+
+            this.setSession('curIndex',index)
+            window.location.href=urls[index]
+
+        },
+
         modelClass_add(){
             this.mcnum++;
             this.tableflag1++;
@@ -776,6 +795,19 @@ var vue = new Vue({
         },
     },
     mounted() {
+        $(() => {
+            let height = document.documentElement.clientHeight;
+            this.ScreenMinHeight = (height) + "px";
+            this.ScreenMaxHeight = (height) + "px";
+
+            window.onresize = () => {
+                console.log('come on ..');
+                height = document.documentElement.clientHeight;
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+            };
+        })
+
         let that = this;
 
         //页面加载前先执行获取数据函数
@@ -987,7 +1019,7 @@ var vue = new Vue({
             }
         })
 
-        var oid = window.sessionStorage.getItem("edittheme_id");
+        var oid = window.sessionStorage.getItem("editOid");
 
         //var model_num = 1;
         //var data_num = 1;
@@ -996,7 +1028,8 @@ var vue = new Vue({
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
-            $("#title").text("Create Theme");
+            // $("#title").text("Create Theme");
+            $("#subRteTitle").text("/Create Theme");
 
             tinymce.init({
                 selector: "textarea#myText",
@@ -1033,7 +1066,8 @@ var vue = new Vue({
             });
         }
         else {
-            $("#title").text("Modify Theme")
+            // $("#title").text("Modify Theme")
+            $("#subRteTitle").text("/Modify Theme")
             document.title="Modify Theme | OpenGMS"
             $.ajax({
                 url: "/theme/getInfo/" + oid,

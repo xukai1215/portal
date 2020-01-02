@@ -22,7 +22,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     DataItem findFirstById(String id);
 
-    Page<DataItem> findByAuthorAndNameContaining(Pageable pageable, String author, String name);
+    Page<DataItem> findByAuthorAndNameContains(Pageable pageable, String author, String name);
 
     Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
 

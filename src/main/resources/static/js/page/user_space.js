@@ -476,9 +476,9 @@ var vue = new Vue({
         },
 
         getAllPackageTasks(){
-            // for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
-            //     this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
-            // }
+            for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
+                this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
+            }
             console.log(this.packageContentList)
         },
 
@@ -2861,11 +2861,11 @@ var vue = new Vue({
             var da = {
                 userOid: this.userId,
                 page: this.page,
-                pagesize: this.pageSize,
+                pageSize: this.pageSize,
                 asc: false,
                 searchText: this.searchText
             }
-            axios.get("/dataItem/searchDataByUserId/", {
+            axios.get("/dataItem/searchDataByUserId", {
                 params: da
             })
                 .then((res) => {

@@ -1333,9 +1333,12 @@ var vue = new Vue({
 
         },
 
+        //显示鼠标hover的title
         showtitle(ev) {
-            return ev.fileName + "\n" + "Type:" + ev.suffix;
+            let suffix=(ev.suffix==''?'folder':ev.suffix)
+            return ev.label + "\n" + suffix;
         },
+
         getImg(item) {
             let list = []
             if (item.id == 0 || item.package == true)

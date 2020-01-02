@@ -2,7 +2,7 @@ var vue = new Vue({
     el:"#app",
     data:{
         defaultActive:'4-4',
-        curIndex:'4-4',
+        curIndex:'6',
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
@@ -68,6 +68,26 @@ var vue = new Vue({
         unitInfo:{}
     },
     methods:{
+        changeRter(index){
+            this.curIndex = index;
+            var urls={
+                1:'/user/userSpace',
+                2:'/user/userSpace/model',
+                3:'/user/userSpace/data',
+                4:'/user/userSpace/server',
+                5:'/user/userSpace/task',
+                6:'/user/userSpace/community',
+                7:'/user/userSpace/theme',
+                8:'/user/userSpace/account',
+                9:'/user/userSpace/feedback',
+            }
+
+            this.setSession('curIndex',index)
+            window.location.href=urls[index]
+
+        },
+
+
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -133,13 +153,27 @@ var vue = new Vue({
     },
     mounted() {
 
-        var oid = window.sessionStorage.getItem("editUnit_id");
+        $(() => {
+            let height = document.documentElement.clientHeight;
+            this.ScreenMinHeight = (height) + "px";
+            this.ScreenMaxHeight = (height) + "px";
+
+            window.onresize = () => {
+                console.log('come on ..');
+                height = document.documentElement.clientHeight;
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+            };
+        })
+
+        var oid = window.sessionStorage.getItem("editOid");
 
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
-            $("#title").text("Create Unit & Metric")
+            // $("#title").text("Create Unit & Metric")
+            $("#subRteTitle").text("/Create Unit & Metric")
 
             $("#myText").html("");
             tinymce.init({
@@ -178,7 +212,8 @@ var vue = new Vue({
         }
         else {
 
-            $("#title").text("Modify Unit & Metric")
+            // $("#title").text("Modify Unit & Metric")
+            $("#subRteTitle").text("/Modify Unit & Metric")
             document.title="Modify Unit & Metric | OpenGMS"
 
             $.ajax({

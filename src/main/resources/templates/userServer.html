@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>server</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
+
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+
+    <style>
+        .serverCard{
+            margin-top:20px;
+            padding:0 15px;
+            border-top:8px solid #373D41;
+        }
+
+        .serverCard .content{
+            padding:10px 0 20px 0;
+        }
+
+        .serverCard:hover{
+            border-top: 8px solid #00C1DE;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container" style="height: 2000px;" v-cloak>
+        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                     style="margin-left: 240px;padding-bottom: 100px"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                    <div class="flexColContainer mainContent" style="padding:20px 10px;max-width: 1120px">
+                        <section role="description" class="flexJustBetween flexColCenter contentSection"
+                                 style="max-width: 1050px">
+                            <div class="flexRowContainer flexColCenter">
+                                <img class="square_40" style="margin-top: 10px"
+                                     src="../../../static/img/model/server.png">
+                                <h3 style="margin-left: 10px" >My model server container</h3>
+
+                            </div>
+                            <!--                        <h5>You can manager your model and data here</h5>-->
+<!--                            <div class="btn btn-info btn-round btn-noShadow" style="margin-top: 20px"-->
+<!--                                 @click="creatItem(1)">-->
+<!--                                create new <span><i class="fa fa-arrow-right"></i></span>-->
+<!--                            </div>-->
+                        </section>
+                        <section class="flexRowContainer flexWrap " style="max-width: 1050px">
+                            <div class="page-content-wrap container-fluid">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-default">
+                                            <div class="panel-body" style="height: 61px;">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            <a>
+                                                                <button class="btn btn-warning" @click="registerModelContainerVisible=true">
+                                                                    <i class="fa fa-globe fa-fw"></i>Add Server
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <!--<div class="col-md-8">-->
+                                                        <!--<div class="input-group" @keydown.enter="search()">-->
+                                                        <!--<input type="text" class="form-control" name="searchText"-->
+                                                        <!--placeholder="please enter name" v-model="searchText">-->
+                                                        <!--<div class="input-group-btn">-->
+                                                        <!--<button class="btn btn-primary" @click="search()">Search-->
+                                                        <!--</button>-->
+                                                        <!--</div>-->
+                                                        <!--</div>-->
+                                                        <!--</div>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="page-content-wrap container-fluid" style="margin-top:-10px;">
+                                    <!--<div class="row">-->
+                                    <!--<div id="graphic" class="col-md-12" style="padding:0">-->
+                                    <!--<div id="echartMap" style="height: 490px"></div>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                    <div class="row">
+
+                                        <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0" v-for="(container,index) in modelContainerList">
+                                            <el-card class="box-card serverCard" >
+                                                <div class="content">
+                                                    <div class="clearfix">
+                                                        <div class="pull-left">
+                                                            <h4>
+                                                                {{container.hardware.hostName}}
+
+                                                            </h4>
+                                                            <p style="margin-bottom:5px">{{container.hardware.platform}} {{container.hardware.version}}</p>
+                                                            <p>{{container.hardware.cpu_Core}} Core - {{container.hardware.totalMemory}} RAM - {{container.hardware.diskAll}} Hard Disk</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clearfix" style="margin-top:10px">
+                                                        <div class="serverStatus pull-left">
+                                                            <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                                            Running
+                                                        </div>
+                                                        <div class="serverIp pull-right">
+                                                            112.234.253.269
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </el-card>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length==0">
+                                            <el-card class="box-card serverCard" >
+                                                <div class="addModelContainer" @click="registerModelContainerVisible=true">
+                                                    <i class="el-icon-circle-plus-outline" style="font-size: 35px;margin-bottom:10px"></i>
+                                                    <br/>
+                                                    Add Model Container
+                                                </div>
+                                            </el-card>
+                                        </div>
+
+                                        <!--<div class="col-md-10 col-md-offset-1 col-sm-12" style="margin-top:20px">-->
+                                        <!--<span class="h3">My Model Server Container</span>-->
+                                        <!--<span>-->
+                                        <!--<el-button type="success"-->
+                                        <!--@click="registerModelContainerVisible=true">Register</el-button>-->
+                                        <!--</span>-->
+                                        <!--</div>-->
+
+                                        <!--<div id="computerNodePanel" class="col-sm-12">-->
+                                        <!--<div class="col-md-10 col-md-offset-1 col-sm-12"-->
+                                        <!--v-for="computerNodeCity in computerNodesInfos"-->
+                                        <!--:id="computerNodeCity.name">-->
+                                        <!--<div class="headTitle">-->
+                                        <!--<h3 style="font-weight:normal">-->
+                                        <!--<span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>-->
+                                        <!--</h3>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">-->
+                                        <!--<div class="serverNodeInfo">-->
+                                        <!--<h3>{{computerNodeInfo.name}}</h3>-->
+                                        <!--<span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>-->
+                                        <!--<a href="../computer-node-info/computer-node-info.html"-->
+                                        <!--v-if="computerNodeInfo.status"-->
+                                        <!--@click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
+
+                                    </div>
+
+                                </div>
+                            </div>
+<!--                            <nav aria-label="Page navigation example">-->
+<!--                                <ul class="pagination pagination-circle pg-blue wzhPageControl">-->
+<!--                                    <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a-->
+<!--                                            class="page-link"-->
+<!--                                            style="border-radius: 10%;background-color: inherit">First</a></li>-->
+<!--                                    <li class="page-item " :class="curPage!=1?'':'disabled'"-->
+<!--                                        @click="changePage(curPage-1)">-->
+<!--                                        <a class="page-link" aria-label="Previous">-->
+<!--                                            <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>-->
+<!--                                            <span class="sr-only">Previous</span>-->
+<!--                                        </a>-->
+<!--                                    </li>-->
+<!--                                    <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">-->
+<!--                                        <a class="page-link btn-round"-->
+<!--                                           @click="changePage(page)">{{page}}</a></li>-->
+<!--                                    <li class="page-item" :class="curPage!=totalPage?'':'disable'"-->
+<!--                                        @click="changePage(curPage+1)">-->
+<!--                                        <a class="page-link" aria-label="Next">-->
+<!--                                            <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>-->
+<!--                                            <span class="sr-only">Next</span>-->
+<!--                                        </a>-->
+<!--                                    </li>-->
+<!--                                    <li class="page-item" :class="curPage!=totalPage?'':'disabled'"-->
+<!--                                        @click="changePage(totalPage)">-->
+<!--                                        <a class="page-link">Last</a></li>-->
+
+<!--                                </ul>-->
+<!--                            </nav>-->
+                        </section>
+                    </div>
+                    <el-dialog id="registerModelContainer" top="20px" width="70%" title="Register Model Server Container"
+                               :visible.sync="registerModelContainerVisible">
+                        <el-steps style="margin-bottom: 15px;" align-center :active="registerModelContainerActive"
+                                  finish-status="success">
+                            <el-step class="registerModelContainerStep" title="Download"></el-step>
+                            <el-step class="registerModelContainerStep" title="Register"></el-step>
+
+                        </el-steps>
+                        <el-card :style="{display:(registerModelContainerActive==0?'block':'none')}" shadow="never">
+                            <center style="font-size:18px;line-height: 2.5em;padding:20px">
+                                <p><b>Step1:</b> Download <a href="/static/ContainerPacking.rar">ContainerPacking.rar</a></p>
+                                <p><b>Step2:</b> Extract all the files in the package to any folder.</p>
+                                <p><b>Step3:</b> Run <i>ComputerResourceConsole.exe</i> and <b>Do Not close the terminal
+                                    window!</b></p>
+                                <p>After finishing these steps, please click <b>Next</b>.</p>
+                            </center>
+                        </el-card>
+                        <el-card :style="{display:(registerModelContainerActive==1?'block':'none')}" shadow="never">
+                            <center style="font-size:18px;line-height: 2.5em;padding:20px">
+                                <p><b>Step4:</b> Open web browser, enter localhost:8060/setting</a></p>
+                                <p><b>Step5:</b> Click "Register" Button, enter OpenGMS portal's account and password.</p>
+
+                                <p>After finishing these steps, please <b>refresh</b> this page.</p>
+                            </center>
+                            <!--<el-col :offset="6" :span="12" style="padding:20px">-->
+                            <!--<el-form label-position="top" :model="taskDataForm" style="font-size: 20px">-->
+
+                            <!--<el-form-item label="Please enter container IP:" required>-->
+                            <!--<el-input v-model="modelContainerInfo.ip"></el-input>-->
+                            <!--</el-form-item>-->
+
+                            <!--<center>-->
+                            <!--<el-button type="success" @click="modelContainerRegister">Register</el-button>-->
+                            <!--</center>-->
+                            <!--</el-form>-->
+                            <!--</el-col>-->
+                        </el-card>
+
+
+                        <el-button :style="{visibility:(registerModelContainerActive>0?'visible':'hidden')}"
+                                   class="el-button--primary"
+                                   style="margin-top: 12px;position: absolute;left:4%;top:55px;"
+                                   @click="registerModelContainerActive--">Previous
+                        </el-button>
+                        <el-button v-if="registerModelContainerActive<1" class="el-button--primary"
+                                   style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                                   @click="registerModelContainerActive++">Next
+                        </el-button>
+
+                    </el-dialog>
+
+
+                </div>
+            </div>
+
+            <!--        </div>-->
+
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/jquery.rotate.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/mdb.min.js"></script>
+<script src="/static/js/common/piexif.min.js"></script>
+<script src="/static/js/common/fileinput.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+
+
+<!--<script src="/static/js/common/echarts.min.js"></script>-->
+<!--<script src="/static/js/common/world.js"></script>-->
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-router.js"></script>
+
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<!--<script src="/static/js/page/user_space.js"></script>-->
+<!--<script src="/static/js/page/userSpace1.js"></script>-->
+
+<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+<script src="/static/js/page/userServer.js"></script>
+</html>

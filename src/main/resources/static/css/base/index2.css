@@ -73,7 +73,8 @@
 }
 
 .wzhFilter::before{
-    filter: blur(5px);
+    /*filter: blur(5px);*/
+    backdrop-filter: blur(4px);
     content: '';
     top: 0;
     left: 0;
@@ -83,10 +84,10 @@
     /*width: 102%;*/
     /*height: 60px;*/
     position: absolute;
-    background-color: rgba(255,255,255,0);
+    /*background-color: rgba(255,255,255,0);*/
     z-index:-1;
-    background-image: url("/static/img/carousels/Banner.jpg");
-    background-position: center;
+    /*background-image: url("/static/img/carousels/Banner.jpg");*/
+    /*background-position: center;*/
     /*background-size: cover;*/
     /*background-attachment: fixed;*/
     background-position-x: -590px;

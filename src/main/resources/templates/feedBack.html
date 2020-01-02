@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact Us | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+
+    <style>
+        @font-face{
+            font-family:'Multicolore-Regular';
+            src: url('static/css/fonts/Multicolore-Regular.ttf')  format('truetype');
+            font-weight:normal;
+            font-style:normal;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container" style="height: 2000px;" v-cloak>
+        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <!--        <div class="innerShadowTop" style="height: 10px">-->
+        <!--        </div>-->
+        <!--        <div th:replace="fragments/newSideBar :: sidebarNew"></div>-->
+
+        <div class="innerShadowCol">
+
+            <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                 style="margin-left: 240px;"
+                 :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                 id="pageContent">
+                <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                <div class="flexColContainer mainContent" style="">
+                    <section role="description" class="flexCol flexCenter contentSection" style="margin-top: 30px">
+<!--                        <H3 style="font-family: 'Multicolore-Regular'">A<span style="color: #d48634">P</span>PR<span style="color: #00c0ff">E</span>CI<span style="color: #6549D7">A</span>TE <span style="color: #ff7a00"> !</span> </H3>-->
+                        <H3 style="font-family: 'Multicolore-Regular'">APPRECIATE !</H3>
+                        <p style="text-align: center;font-weight: 500;font-size: 18px ">We appreciate for using our platform, your feedback will be taken seriously.</p>
+                    </section>
+                    <section class="flexRowContainer flexWrap contentSection">
+                        <div class="contentCard flexCol flexColCenter" style="height: 450px;max-width: 800px">
+                            <div v-cloak class="col-md-12" style="padding: 0 50px">
+
+                                <div class="panel-body">
+                                    <h4 style="margin-left: -5px">Send Feedback</h4>
+                                </div>
+
+                            </div>
+
+                            <div class="md-form amber-textarea active-amber-textarea-2" style="width: 91%;padding-right: 20px;margin-top: 0">
+                                <i class="fas fa-pencil-alt prefix"></i>
+                                <textarea id="form24" class="md-textarea form-control" rows="3" style="height: 235px"></textarea>
+                                <label for="form24" style="font-size: 14px">input your feedback here</label>
+                            </div>
+                            <div class="flexJustEnd" style="width: 90%;margin-top: 10px">
+                                <button id="changePass"
+                                        class="btn btn-noShadow btn-default btn-round btn-block btn-lg"
+                                        style="color: #fff;text-transform: capitalize;font-size: 16px;flex:1;max-width: 350px"
+                                        @click="send()">Send
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </section>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/jquery.rotate.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/mdb.min.js"></script>
+<script src="/static/js/common/piexif.min.js"></script>
+<script src="/static/js/common/fileinput.js"></script>
+
+<!--<script src="/static/js/common/echarts.min.js"></script>-->
+<!--<script src="/static/js/common/world.js"></script>-->
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+
+<script src="/static/element-ui/index.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<!--<script src="/static/js/page/user_space.js"></script>-->
+<!--<script src="/static/js/page/userSpace1.js"></script>-->
+
+<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+<script src="/static/js/page/feedBack.js"></script>
+</html>

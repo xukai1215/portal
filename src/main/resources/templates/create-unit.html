@@ -19,10 +19,14 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
+
 
     <style>
         .btn-block {
@@ -47,196 +51,217 @@
         </div>
     </div>
 
-    <div class="page-container">
+    <div class="page-container" style="height: 2000px">
+        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
 
-        <div th:replace="fragments/sidebar :: side"></div>
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                     style="margin-left: 240px;overflow-x: hidden"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <section role="description" class="flexJustBetween flexColCenter contentSection"
+                             style="max-width: 1050px;margin: 15px 10px;">
+                        <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
+                            <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../community">Community </a><span
+                                    id="subRteTitle"></span></h3>
+                        </div>
+                    </section>
 
-        <div class="page-content clearfix scrollbar"
-             :style="{'min-height':ScreenMaxHeight,'max-height':ScreenMaxHeight}" style="overflow-x: hidden;">
-
-            <div th:replace="fragments/sidebar :: top"></div>
-
-            <div class="page-content-wrap container-fluid">
-                <!-- START WIDGETS -->
-                <div class="row">
-
-                </div>
-                <!-- END WIDGETS -->
-
-                <div class="row">
-                    <div class="container-fluid" id="mainInfo">
+                    <div class="page-content-wrap container-fluid">
+                        <!-- START WIDGETS -->
                         <div class="row">
-                            <div class="col-md-12 nopadding">
-                                <div class="panel panel-success" style="border: none">
-                                    <div class="panel-body">
-                                        <div id="step">
-                                            <div class="step-app">
-                                                <ul class="step-steps text-center">
-                                                    <li>
-                                                        <a href="#step1">Basic Info</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#step2">Content</a>
-                                                    </li>
 
-                                                </ul>
+                        </div>
+                        <!-- END WIDGETS -->
 
-                                                <div class="step-content">
-                                                    <div class="step-tab-panel" id="step1">
-                                                        <div class="col-sm-4 tree" style="margin-top:10px">
-                                                            <el-card>
-                                                                <div slot="header" class="clearfix text-center">
-                                                                    <span style="font-size: 20px;color:#444">Unit & Metric Classifications</span>
+                        <div class="row">
+                            <div class="container-fluid" id="mainInfo">
+                                <div class="row">
+                                    <div class="col-md-12 nopadding">
+                                        <div class="panel panel-success" style="border: none">
+                                            <div class="panel-body">
+                                                <div id="step">
+                                                    <div class="step-app">
+                                                        <ul class="step-steps text-center">
+                                                            <li>
+                                                                <a href="#step1">Basic Info</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#step2">Content</a>
+                                                            </li>
+
+                                                        </ul>
+
+                                                        <div class="step-content">
+                                                            <div class="step-tab-panel" id="step1">
+                                                                <div class="col-sm-4 tree" style="margin-top:10px">
+                                                                    <el-card>
+                                                                        <div slot="header" class="clearfix text-center">
+                                                                            <span style="font-size: 20px;color:#444">Unit & Metric Classifications</span>
+                                                                        </div>
+                                                                        <el-tree style="height: 320px;overflow: auto"
+                                                                                 id="tree2"
+                                                                                 ref="tree2"
+                                                                                 :data="treeData"
+                                                                                 show-checkbox
+                                                                                 node-key="id"
+                                                                                 :default-expanded-keys="[]"
+                                                                                 :current-node-key="100"
+                                                                                 @check-change="handleCheckChange"
+                                                                                 :props="defaultProps">
+                                                                        </el-tree>
+                                                                    </el-card>
                                                                 </div>
-                                                                <el-tree style="height: 320px;overflow: auto"
-                                                                         id="tree2"
-                                                                         ref="tree2"
-                                                                         :data="treeData"
-                                                                         show-checkbox
-                                                                         node-key="id"
-                                                                         :default-expanded-keys="[]"
-                                                                         :current-node-key="100"
-                                                                         @check-change="handleCheckChange"
-                                                                         :props="defaultProps">
-                                                                </el-tree>
-                                                            </el-card>
-                                                        </div>
-                                                        <div class="col-sm-8">
-                                                            <div id="RepositoryParentsPanel">
-                                                                <div class="form-horizontal">
-                                                                    <div class="form-group" >
-                                                                        <label for="parentNode"
-                                                                               class="col-sm-2 control-label">Classifications</label>
-                                                                        <div class="col-sm-10">
+                                                                <div class="col-sm-8">
+                                                                    <div id="RepositoryParentsPanel">
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="parentNode"
+                                                                                       class="col-sm-2 control-label">Classifications</label>
+                                                                                <div class="col-sm-10">
                                                                             <textarea class="form-control"
                                                                                       id="parentNode"
                                                                                       v-model="clsStr"
                                                                                       readonly></textarea>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="nameInput"
-                                                                               class="col-sm-2 control-label">Name</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="nameInput"/>
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="nameInput"
+                                                                                       class="col-sm-2 control-label">Name</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text"
+                                                                                           class="form-control"
+                                                                                           id="nameInput"/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="descInput"
-                                                                               class="col-sm-2 control-label">Overview</label>
-                                                                        <div class="col-sm-10">
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="descInput"
+                                                                                       class="col-sm-2 control-label">Overview</label>
+                                                                                <div class="col-sm-10">
                                                                             <textarea rows="4" class="form-control"
                                                                                       id="descInput"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="nameInput"
-                                                                               class="col-sm-2 control-label">Image</label>
-                                                                        <div class="col-sm-10">
-                                                                            <img id="imgShow" src=""/>
-                                                                            <div id="imgChange">
-                                                                                <i class="fa fa-plus fa-5x"></i>
+                                                                                </div>
                                                                             </div>
-                                                                            <input id="imgFile" type="file"
-                                                                                   style="display: none"
-                                                                                   accept="image/*"/>
+                                                                        </div>
+
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="nameInput"
+                                                                                       class="col-sm-2 control-label">Image</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <img id="imgShow" src=""/>
+                                                                                    <div id="imgChange">
+                                                                                        <i class="fa fa-plus fa-5x"></i>
+                                                                                    </div>
+                                                                                    <input id="imgFile" type="file"
+                                                                                           style="display: none"
+                                                                                           accept="image/*"/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="step-tab-panel" id="step2">
+                                                            <div class="step-tab-panel" id="step2">
                                                         <textarea id="myText">
                                                             <div>
-                                                                 <table class="table table-bordered"style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${unitInfo.name_EN != ''}">
+                                                                 <table class="table table-bordered"
+                                                                        style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;"
+                                                                        v-if="${unitInfo.name_EN != ''}">
                                                                     <thead>
                                                                         <tr>
                                                                             <th class="thMain"> EN_US</th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
-                                                                <table class="table table-bordered" style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${unitInfo.name_EN != ''}">
+                                                                <table class="table table-bordered"
+                                                                       style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;"
+                                                                       v-if="${unitInfo.name_EN != ''}">
                                                                     <colgroup>
                                                                         <col width="25%">
                                                                         <col width="75%">
                                                                     </colgroup>
                                                                     <tr>
                                                                         <td>Name</td>
-                                                                        <td >{{unitInfo.name_EN}}</td>
+                                                                        <td>{{unitInfo.name_EN}}</td>
                                                                     </tr>
                                                                     <tr v-if="${unitInfo.description_EN != ''}">
                                                                         <td>Description</td>
-                                                                        <td >{{unitInfo.description_EN}}</td>
+                                                                        <td>{{unitInfo.description_EN}}</td>
                                                                     </tr>
                                                                 </table>
-                                                                <table class="table table-bordered" style="width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${unitInfo.name_ZH != ''}">
+                                                                <table class="table table-bordered"
+                                                                       style="width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;"
+                                                                       v-if="${unitInfo.name_ZH != ''}">
                                                                     <thead>
                                                                         <tr>
                                                                             <th class="thMain"> ZH_CN</th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
-                                                                <table class="table table-bordered " style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;" v-if="${unitInfo.name_ZH != ''}">
+                                                                <table class="table table-bordered "
+                                                                       style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;"
+                                                                       v-if="${unitInfo.name_ZH != ''}">
                                                                     <colgroup>
                                                                         <col width="25%">
                                                                         <col width="75%">
                                                                     </colgroup>
                                                                     <tr>
                                                                         <td>Name</td>
-                                                                        <td >{{unitInfo.name_ZH}}</td>
+                                                                        <td>{{unitInfo.name_ZH}}</td>
                                                                     </tr>
                                                                     <tr v-if="${unitInfo.description_ZH != ''}">
                                                                         <td>Description</td>
-                                                                        <td >{{unitInfo.description_ZH}}</td>
+                                                                        <td>{{unitInfo.description_ZH}}</td>
                                                                     </tr>
                                                                 </table>
                                                             </div>
                                                         </textarea>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="step-footer text-right">
+                                                            <button class="btn btn-warning prev" data-direction="prev">
+                                                                Previous
+                                                            </button>
+                                                            <button class="btn btn-primary next" data-direction="next">
+                                                                Next
+                                                            </button>
+                                                            <button class="btn btn-success finish"
+                                                                    data-direction="finish">
+                                                                Finish
+                                                            </button>
+                                                        </div>
                                                     </div>
-
-                                                </div>
-
-                                                <div class="step-footer text-right">
-                                                    <button class="btn btn-warning prev" data-direction="prev">
-                                                        Previous
-                                                    </button>
-                                                    <button class="btn btn-primary next" data-direction="next">Next
-                                                    </button>
-                                                    <button class="btn btn-success finish" data-direction="finish">
-                                                        Finish
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- /.panel -->
                                     </div>
                                 </div>
-                                <!-- /.panel -->
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
-
         </div>
-    </div>
-</div>
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-router.js"></script>
 <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
@@ -244,8 +269,8 @@
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/static/data-tables/DT_bootstrap.js"></script>
-
-
+<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
 
 <script>
     $(document).ready(function () {
@@ -291,8 +316,7 @@
                     return img.hasAttribute('internal-blob');
                 }
             });
-        }
-        else {
+        } else {
             $.ajax({
                 url: "/modelItem/getInfo/" + oid,
                 type: "get",
@@ -417,7 +441,6 @@
                 $('#imgShow').show();
             }
         });
-
 
 
     });
