@@ -8,6 +8,7 @@ import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -23,6 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -103,18 +107,19 @@ public class ModelItemRestController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateModelItem(HttpServletRequest request) throws IOException{
 
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        String model=IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        ModelItemUpdateDTO modelItemUpdateDTO=JSONObject.toJavaObject(jsonObject,ModelItemUpdateDTO.class);
-
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
         {
             return ResultUtils.error(-2,"未登录");
         }
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        ModelItemUpdateDTO modelItemUpdateDTO=JSONObject.toJavaObject(jsonObject,ModelItemUpdateDTO.class);
+
         JSONObject result=modelItemService.update(modelItemUpdateDTO,uid);
         if(result==null){
             return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
@@ -260,7 +265,88 @@ public class ModelItemRestController {
 
     }
 
+    @RequestMapping (value="/getDailyViewCount",method = RequestMethod.GET)
+    public JsonResult getDailyViewCount(@RequestParam(value="oid") String oid){
+        ModelItem modelItem=modelItemService.getByOid(oid);
+        List<DailyViewCount> dailyViewCountList=modelItem.getDailyViewCount();
+        JSONArray dateList = new JSONArray();
+        JSONArray valueList = new JSONArray();
+        Date now = new Date();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(now);
+        int max=0;
+        if(dailyViewCountList==null||dailyViewCountList.size()==0){
 
+            c.add(Calendar.DATE,-7);
+            for(int i=0;i<7;i++){
+                dateList.add(sdf.format(c.getTime()));
+                valueList.add(0);
+                c.add(Calendar.DATE,1);
+            }
+
+        }else{
+            DailyViewCount dailyViewCount=dailyViewCountList.get(0);
+            Date firstDate = dailyViewCount.getDate();
+            c.add(Calendar.MONTH,-1);
+
+            if(dailyViewCountList.get(dailyViewCountList.size()-1).getDate().before(c.getTime())){
+                c.setTime(now);
+                c.add(Calendar.DATE,-7);
+            }
+
+            int index=0;
+            if(c.getTime().before(firstDate)){
+                c.setTime(firstDate);
+            }
+            else{
+                while(index<dailyViewCountList.size()&&c.getTime().after(dailyViewCountList.get(index).getDate())){
+                    index++;
+                }
+            }
+
+
+            Calendar nowCalendar = Calendar.getInstance();
+            nowCalendar.setTime(now);
+            nowCalendar.add(Calendar.DATE, 1);
+
+            while (!isSameDay(c.getTime(),nowCalendar.getTime())){
+                dateList.add(sdf.format(c.getTime()));
+                if(index<dailyViewCountList.size()) {
+                    DailyViewCount daily = dailyViewCountList.get(index);
+
+                    if (isSameDay(daily.getDate(), c.getTime())) {
+                        int count=daily.getCount();
+                        if(count>max){
+                            max=count;
+                        }
+                        valueList.add(count);
+                        index++;
+                    } else {
+                        valueList.add(0);
+                    }
+                }
+                else{
+                    valueList.add(0);
+                }
+
+                c.add(Calendar.DATE,1);
+            }
+        }
+        JSONObject result=new JSONObject();
+        result.put("dateList",dateList);
+        result.put("valueList",valueList);
+        result.put("max",max);
+        return ResultUtils.success(result);
+    }
+
+    private boolean isSameDay(Date day1,Date day2){
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String d1=simpleDateFormat.format(day1);
+        String d2=simpleDateFormat.format(day2);
+        return d1.equals(d2);
+
+    }
 
 
 }

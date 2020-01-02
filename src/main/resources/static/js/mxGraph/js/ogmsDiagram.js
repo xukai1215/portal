@@ -538,9 +538,9 @@ OGMSDiagram.prototype.addEventPanel = function(id, name, type, option, descripti
     var str2 =  '<div id="inputGroup_' + id + '" class="form-group mxWinPanel">' +
         '<label for="eventInp_' + id + '" class="col-sm-3 control-label">'+ (type=="response"?"Input":"Output") +'</label>' +
         '<div class="col-sm-8" style="height: 24px !important;">' +
-        '<input type="text" class="form-control" ' + enable + ' id="eventInp_' + id + '" style="width:60%"  placeholder="Please select upload file" />' +
-        '<button id="upload_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 30%" ><span><i class="fa fa-cloud-upload"></i></span></button>'+
-        '<button id="select_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 20%" ><span><i class="fa fa-th-large"></i></span></button>'+
+        '<input type="text" class="form-control" ' + enable + ' id="eventInp_' + id + '" style="width:80%"  placeholder="Please select upload file" />' +
+        // '<button id="upload_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 30%" ><span><i class="fa fa-cloud-upload"></i></span></button>'+
+        // '<button id="select_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 20%" ><span><i class="fa fa-th-large"></i></span></button>'+
         '<button id="check_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 10%"><span><i class="fa fa-folder-open"></i></span></button>'+
         '<button id="download_' + id + '" class="eventBtn" type="button" style="float:right;margin: -30px 0%"><span><i class="fa fa-download"></i></span></button>'+
         '</div>' +

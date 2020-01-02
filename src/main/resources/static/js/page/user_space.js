@@ -4772,15 +4772,15 @@ var vue = new Vue({
 
         selectFile(){
             if(this.selectedPath.length==0) {
-                alert('Please select a folder')
+                alert('Please select a folder first!')
                 return;
             }
             $("#uploadFile").click()
         },
 
         upload_data_dataManager(uploadSource) {
-            console.log(this.fileNames)
-            this.fileNames.filter(res=>typeof (res)!="undefined")
+            // console.log(this.fileNames)
+            // this.fileNames.filter(res=>typeof (res)!="undefined")
             console.log(uploadSource)
             console.log($('.file-caption').val())
             if (uploadSource.length == 0) {

@@ -21,10 +21,12 @@ public class AwardandHonorRestController {
     @RequestMapping(value = "/getByUserOidBySort",method = RequestMethod.GET)
     JsonResult getByUserOidBySort(AwardandHonorFindDTO awardandHonorFindDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
+
+        String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(awardandHonorService.getByUserOidBySort(awardandHonorFindDTO,userName));
     }
 
@@ -49,12 +51,11 @@ public class AwardandHonorRestController {
     public JsonResult deleteByOid(@RequestParam(value="oid") String oid, HttpServletRequest request){
 
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
 
-        System.out.println("/deleteawdByOid"+oid+userName);
-        if(userName==null){
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }else{
+            String userName=session.getAttribute("uid").toString();
             JsonResult result= ResultUtils.success(awardandHonorService.deleteByOid(oid,userName));
             System.out.println(result);
             return result;

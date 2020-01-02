@@ -1,0 +1,249 @@
+[
+	{
+		"value":1276,
+		"name":"Earth System",
+		"path":"Earth System",
+		"children":[
+			{
+				"value":243,
+				"name":"Hydrosphere",
+				"path":"Earth System/Hydrosphere"
+			},
+			{
+				"value":178,
+				"name":"Lithosphere",
+				"path":"Earth System/Lithosphere"
+			},
+			{
+				"value":165,
+				"name":"Atmosphere",
+				"path":"Earth System/Atmosphere"
+			},
+			{
+				"value":227,
+				"name":"Biosphere",
+				"path":"Earth System/Biosphere"
+			},
+			{
+				"value":410,
+				"name":"Anthroposphere",
+				"path":"Earth System/Anthroposphere"
+			},
+			{
+				"value":53,
+				"name":"Global",
+				"path":"Earth System/Global"
+			}
+			
+		
+		]
+	},
+	{
+		"value":1494,
+		"name":"Physical Geography",
+		"path":"Physical Geography",
+		"children":[
+			{
+				"value":229,
+				"name":"Hydrology",
+				"path":"Physical Geography/Hydrology"
+			},
+			{
+				"value":67,
+				"name":"Geomorphology",
+				"path":"Physical Geography/Geomorphology"
+			},
+			{
+				"value":0,
+				"name":"Glaciology",
+				"path":"Physical Geography/Glaciology"
+			},
+			{
+				"value":102,
+				"name":"Biogeography",
+				"path":"Physical Geography/Biogeography"
+			},
+			{
+				"value":0,
+				"name":"Meteorology",
+				"path":"Physical Geography/Meteorology"
+			},
+			{
+				"value":156,
+				"name":"Climatology",
+				"path":"Physical Geography/Climatology"
+			},
+			{
+				"value":111,
+				"name":"Pedology",
+				"path":"Physical Geography/Pedology"
+			},
+			{
+				"value":0,
+				"name":"Oceanography",
+				"path":"Physical Geography/Oceanography"
+			},
+			{
+				"value":0,
+				"name":"Coastal",
+				"path":"Physical Geography/Coastal"
+			},
+			{
+				"value":28,
+				"name":"Landscape Ecology",
+				"path":"Physical Geography/Landscape Ecology"
+			},
+			{
+				"value":801,
+				"name":"Ecosystem",
+				"path":"Physical Geography/Ecosystem"
+			},
+			{
+				"value":0,
+				"name":"Paleogeography",
+				"path":"Physical Geography/Paleogeography"
+			},
+			{
+				"value":0,
+				"name":"Quaternary Science",
+				"path":"Physical Geography/Quaternary Science"
+			},
+			{
+				"value":0,
+				"name":"Environmental Management",
+				"path":"Physical Geography/Environmental Management"
+			},
+			{
+				"value":0,
+				"name":"Holistic Synthesis",
+				"path":"Physical Geography/Holistic Synthesis"
+			},
+			{
+				"value":0,
+				"name":"Others",
+				"path":"Physical Geography/Others"
+			}			
+		
+		]
+	},
+	{
+		"value":410,
+		"name":"Human Geography",
+		"path":"Human Geography",
+		"children":[
+			{
+				"value":255,
+				"name":"Agriculture Geography",
+				"path":"Human Geography/Agriculture Geography"
+			},
+			{
+				"value":46,
+				"name":"Urban Geography",
+				"path":"Human Geography/Urban Geography"
+			},
+			{
+				"value":29,
+				"name":"Industrial Geography",
+				"path":"Human Geography/Industrial Geography"
+			},
+			{
+				"value":7,
+				"name":"Traffic Geography",
+				"path":"Human Geography/Traffic Geography"
+			},
+			{
+				"value":13,
+				"name":"Tourism Geography",
+				"path":"Human Geography/Tourism Geography"
+			},
+			{
+				"value":60,
+				"name":"Regional Geography",
+				"path":"Human Geography/Regional Geography"
+			}
+			
+		]
+	},
+	{
+		"value":1134,
+		"name":"GIScience & Remote Sensing",
+		"path":"GIScience & Remote Sensing",
+		"children":[
+			{
+				"value":91,
+				"name":"Shapes",
+				"path":"GIScience & Remote Sensing/Shapes"
+			},
+			{
+				"value":105,
+				"name":"Grid",
+				"path":"GIScience & Remote Sensing/Grid"
+			},
+			{
+				"value":32,
+				"name":"Imagery",
+				"path":"GIScience & Remote Sensing/Imagery"
+			},
+			{
+				"value":81,
+				"name":"Data Management",
+				"path":"GIScience & Remote Sensing/Data Management"
+			},
+			{
+				"value":42,
+				"name":"Spatial Analysis",
+				"path":"GIScience & Remote Sensing/Spatial Analysis"
+			},
+			{
+				"value":2,
+				"name":"Geostatistics",
+				"path":"GIScience & Remote Sensing/Geostatistics"
+			},
+			{
+				"value":107,
+				"name":"Terrain Analysis",
+				"path":"GIScience & Remote Sensing/Terrain Analysis"
+			},
+			{
+				"value":7,
+				"name":"3D Analysis",
+				"path":"GIScience & Remote Sensing/3D Analysis"
+			},
+			{
+				"value":0,
+				"name":"Network Analysis",
+				"path":"GIScience & Remote Sensing/Network Analysis"
+			},
+			{
+				"value":23,
+				"name":"Geographic Simulation",
+				"path":"GIScience & Remote Sensing/Geographic Simulation"
+			},
+			{
+				"value":19,
+				"name":"Climate Tools",
+				"path":"GIScience & Remote Sensing/Climate Tools"
+			},
+			{
+				"value":317,
+				"name":"Generic Tools",
+				"path":"GIScience & Remote Sensing/Generic Tools"
+			},
+			{
+				"value":34,
+				"name":"Cartography",
+				"path":"GIScience & Remote Sensing/Cartography"
+			},
+			{
+				"value":141,
+				"name":"Remote Sensing Imagery",
+				"path":"GIScience & Remote Sensing/Remote Sensing Imagery"
+			},
+			{
+				"value":133,
+				"name":"Ground Feature Spectrum",
+				"path":"GIScience & Remote Sensing/Ground Feature Spectrum"
+			}
+		]
+	}
+]

@@ -2,8 +2,10 @@ package njgis.opengms.portal.entity;
 
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.DailyViewCount;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,4 +46,7 @@ public class ComputableModel extends Item {
     String testDataPath;
 
     Object mdlJson;
+
+    int invokeCount = 0;
+    List<DailyViewCount> dailyInvokeCount = new ArrayList<>();
 }

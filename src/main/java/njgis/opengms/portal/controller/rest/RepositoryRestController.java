@@ -244,7 +244,12 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateConcept",method = RequestMethod.POST)
-    public JsonResult updateConcept(@RequestBody ConceptUpdateDTO conceptUpdateDTO, HttpServletRequest request){
+    public JsonResult updateConcept(HttpServletRequest request) throws IOException {
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        ConceptUpdateDTO conceptUpdateDTO=JSONObject.toJavaObject(jsonObject,ConceptUpdateDTO.class);
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -409,7 +414,12 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateSpatialReference",method = RequestMethod.POST)
-    public JsonResult updateSpatialReference(@RequestBody SpatialUpdateDTO spatialUpdateDTO, HttpServletRequest request){
+    public JsonResult updateSpatialReference(HttpServletRequest request) throws IOException{
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        SpatialUpdateDTO spatialUpdateDTO=JSONObject.toJavaObject(jsonObject,SpatialUpdateDTO.class);
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -565,7 +575,12 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateTemplate",method = RequestMethod.POST)
-    public JsonResult updateTemplate(@RequestBody TemplateUpdateDTO templateUpdateDTO, HttpServletRequest request){
+    public JsonResult updateTemplate(HttpServletRequest request) throws IOException{
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        TemplateUpdateDTO templateUpdateDTO=JSONObject.toJavaObject(jsonObject,TemplateUpdateDTO.class);
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)
@@ -712,7 +727,12 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/updateUnit",method = RequestMethod.POST)
-    public JsonResult updateUnit(@RequestBody UnitUpdateDTO unitUpdateDTO, HttpServletRequest request){
+    public JsonResult updateUnit(HttpServletRequest request) throws IOException{
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        UnitUpdateDTO unitUpdateDTO=JSONObject.toJavaObject(jsonObject,UnitUpdateDTO.class);
         HttpSession session=request.getSession();
         String uid=session.getAttribute("uid").toString();
         if(uid==null)

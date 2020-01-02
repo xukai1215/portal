@@ -6,6 +6,8 @@ new Vue({
     },
     data: function () {
         return {
+            statistic:[false,false,false,false,false,false,false,false,false,false],
+
             activeIndex: '2',
             queryType: 'normal',
             searchText: '',
@@ -311,6 +313,53 @@ new Vue({
         }
     },
     methods: {
+        switchChange(key){
+            if(this.statistic[key]){
+                let chart=echarts.init(document.getElementById('chart'+key));
+                chart.showLoading();
+                $.get("/modelItem/getDailyViewCount",{oid:this.pageOption.searchResult[key].oid},(result)=> {
+                    let dateList = result.data.dateList;//["2000-06-05", "2000-06-06", "2000-06-07", "2000-06-08", "2000-06-09"];
+                    let valueList = result.data.valueList;//[0, 0, 0, 0, 0];
+                    console.log(result)
+                    chart.hideLoading();
+                    let option = {
+
+                        // Make gradient line here
+                        visualMap: [{
+                            show: false,
+                            type: 'continuous',
+                            seriesIndex: 0,
+                            min: 0,
+                            max: result.data.max
+                        }],
+                        title: [{
+                            left: 'center',
+                            text: 'Daily View Count'
+                        }],
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: [{
+                            data: dateList
+                        }],
+                        yAxis: [{
+                            splitLine: {show: false}
+                        }],
+                        grid: [{
+                            top: '10%',
+                            bottom: '15%'
+                        }],
+                        series: [{
+                            type: 'line',
+                            showSymbol: false,
+                            data: valueList
+                        }]
+                    };
+
+                    chart.setOption(option)
+                })
+            }
+        },
         contribute(){
             $.ajax({
                 url: '/user/load',
@@ -341,6 +390,9 @@ new Vue({
         },
         //页码change
         handlePageChange(val) {
+            for(i=0;i<this.statistic.length;i++){
+                this.statistic[i]=false;
+            }
             let data=this.$refs.tree1.getCurrentNode();
             if(data!=null) {
                 this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);

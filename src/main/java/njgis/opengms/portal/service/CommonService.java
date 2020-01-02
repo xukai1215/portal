@@ -2,7 +2,6 @@ package njgis.opengms.portal.service;
 
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -10,21 +9,15 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.mail.internet.MimeMessage;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,19 +52,22 @@ public class CommonService {
 
     @Autowired
     private JavaMailSender mailSender;
-    public void sendEmail(String to,String subject,String content) {
+    public Boolean sendEmail(String to,String subject,String content) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             //true表示需要创建一个multipart message
             MimeMessageHelper helper=new MimeMessageHelper(message,true);
             helper.setFrom("nj_gis@163.com");
             helper.setTo(to);
+            helper.setCc("nj_gis@163.com");
             helper.setSubject(subject);
             helper.setText(content,true);
             mailSender.send(message);
             System.out.println("html格式邮件发送成功");
+            return true;
         }catch (Exception e){
             System.out.println("html格式邮件发送失败");
+            return false;
         }
 
     }

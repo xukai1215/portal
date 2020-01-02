@@ -6,6 +6,7 @@ import njgis.opengms.portal.dto.project.ProjectFindDTO;
 import njgis.opengms.portal.entity.support.Project;
 import njgis.opengms.portal.service.ProjectService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,11 @@ public class ProjectRestController {
     @RequestMapping(value = "/getByUserOidBySort",method = RequestMethod.GET)
     JsonResult getByUserOidBySort(ProjectFindDTO projectFindDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
-        if(userName==null){
+
+        if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-
+        String userName=session.getAttribute("uid").toString();
         System.out.println("/project");
         return ResultUtils.success(projectService.getByUserOidBySort(projectFindDTO,userName));
     }
@@ -36,7 +37,7 @@ public class ProjectRestController {
     @RequestMapping(value="/searchByName",method= RequestMethod.GET)
     JsonResult searchByTitle(ProjectFindDTO projectFindDTO, HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
 
         if(userName==null){
             return ResultUtils.error(-1,"no login");
@@ -60,7 +61,7 @@ public class ProjectRestController {
     public JsonResult addNewProject(@RequestBody ProjectAddDTO projectAddDTO, HttpServletRequest httpServletRequest){
         System.out.println(projectAddDTO);
         HttpSession session=httpServletRequest.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }
@@ -81,7 +82,7 @@ public class ProjectRestController {
     @RequestMapping(value="/deleteByOid",method=RequestMethod.POST)
     public JsonResult deleteByOid(String oid,HttpServletRequest request){
         HttpSession session=request.getSession();
-        String userName=session.getAttribute("uid").toString();
+        String userName=Utils.checkLoginStatus(session);
         if(userName==null){
             return ResultUtils.error(-1,"no login");
         }else{
