@@ -820,8 +820,7 @@ var vue = new Vue(
 
             //显示鼠标hover的title
             showtitle(ev) {
-                let suffix=(ev.suffix==''?'folder':ev.suffix)
-                return ev.label + "\n" + suffix;
+                return ev.label + "\n" + "Type: " + ev.suffix;
             },
 
             getImg(item) {
