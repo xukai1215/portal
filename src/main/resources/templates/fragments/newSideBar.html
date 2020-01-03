@@ -173,9 +173,9 @@
 
 </body>
 <script th:fragment="sideBarComponent" th:inline="javascript">
-    Vue.component('head-side-bar', {
+    Vue.component('headSideBar', {
         template: '#headSideBar',
-        props: ['userInfoinParent','curIndexParent'],
+        props: ['userInfoinParent','curindexParent'],
 
         data() {
             return {
@@ -190,9 +190,9 @@
         },
 
         watch: {
-            curIndexParent: {
+            curindexParent: {
                 handler() {
-                    this.curIndex = this.curIndexParent
+                    this.curIndex = this.curindexParent
                     console.log('parent change')
                 },
                 immediate: true
@@ -204,14 +204,14 @@
                 this.curIndex = index;
                 var urls={
                     1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
+                    2:'/user/userSpace#/model',
+                    3:'/user/userSpace#/data',
+                    4:'/user/userSpace#/server',
+                    5:'/user/userSpace#/task',
+                    6:'/user/userSpace#/community',
+                    7:'/user/userSpace#/userTheme',
+                    8:'/user/userSpace#/account',
+                    9:'/user/userSpace#/feedback',
                 }
 
                 this.setSession('curIndex',index)

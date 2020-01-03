@@ -1,8 +1,6 @@
-ELEMENT.locale(ELEMENT.lang.en)
-
-var vue = new Vue(
+var userDataItems = Vue.extend(
     {
-        el: "#app",
+        template: "#userDataItems",
         data(){
             return{
                 //页面样式控制

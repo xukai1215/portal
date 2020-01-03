@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,7 +49,7 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-
+        <template id="userModels" th:fragment="userModels">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;padding-bottom: 100px"
@@ -63,16 +64,16 @@
                                      :src="getIcon()">
                                 <div class="dropdown flexRow flexColCenter">
 
-<!--                                    小标题-->
-                                <h3 style="margin-left: 10px" >{{itemTitle}}</h3>
+                                    <!--                                    小标题-->
+                                    <h3 style="margin-left: 10px" >{{itemTitle}}</h3>
 
                                     <button class="fakeButton dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown"
                                             aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-caret-down" style="font-size: 20px;margin-top: 12px;"></i>
-                                </button>
-<!--                                    <div class="fdbtn dropdown-toggle">-->
-<!--                                        <i class="fa fa-caret-down" style="font-size: 21px;"></i>-->
-<!--                                    </div>-->
+                                    </button>
+                                    <!--                                    <div class="fdbtn dropdown-toggle">-->
+                                    <!--                                        <i class="fa fa-caret-down" style="font-size: 21px;"></i>-->
+                                    <!--                                    </div>-->
                                     <div class="dropdown-menu flexDrop" aria-labelledby="dropdownMenu4" style="width: 215px; ">
                                         <a class="dropdown-item" :class="itemTitle == 'Model Item'?'active':''" @click="manageItem(1)">
                                             <h4>Model Item</h4></a>
@@ -140,6 +141,8 @@
 
                 </div>
             </div>
+        </template>
+
 
             <!--        </div>-->
 
@@ -147,7 +150,8 @@
         </div>
     </div>
 </div>
-<template id="modelItemShow">
+<!--子组件-->
+<template id="modelItemShow" th:fragment="modelItemShow">
     <div class="" style="width: 100%;">
         <div v-for="(modelItem,index) in searchResultRaw" :key="index"
              class="contentCard_w100 flexCol flexColCenter">

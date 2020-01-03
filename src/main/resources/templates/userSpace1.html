@@ -49,115 +49,10 @@
     </div>
 
     <div class="page-container" style="height: 2000px;" v-cloak>
-        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-        <div class="innerShadowCol">
-            <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack" style="margin-left: 240px;"
-                 :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
-                 id="pageContent">
-                <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
-                <div class="flexColContainer mainContent" style="">
-                    <section role="description" class="flexCol flexCenter contentSection">
-                        <h3>My Space</h3>
-                        <h5>You can manage your model and data here</h5>
-
-                    </section>
-                    <section class="flexRowContainer flexWrap contentSection">
-                        <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol" style="align-items: flex-start">
-                                <h4>Model Items</h4>
-                                <p>You can manage model provided by yourself or create a new one</p>
-                                <div class="flexCol flexCenter " style="">
-                                    <div class="lineButton flexCol" @click="changeRter(2)">
-                                        <p style="margin-block-end: 0">Manage My Model</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="innerBorderCol"></div>
-                            <div class="content_w32">
-                                <h4>Create a</h4>
-                                <h4 style="color: #00c0ff">new</h4>
-                                <h4>one</h4>
-                                <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px" @click="creatItem(1)">
-                                    <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol" style="align-items: flex-start">
-                                <h4>Data Items</h4>
-                                <p>You can manage Data provided by yourself or create a new one</p>
-                                <div class="flexCol flexCenter " style="">
-                                    <div class="lineButton flexCol" @click="changeRter(3)">
-                                        <p style="margin-block-end: 0">Manage My Data</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="innerBorderCol"></div>
-                            <div class="content_w32">
-                                <h4>Create a</h4>
-                                <h4 style="color: #00c0ff">new</h4>
-                                <h4>one</h4>
-                                <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px">
-                                    <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol" style="align-items: flex-start">
-                                <h4>Task</h4>
-                                <p>You can manage model provided by yourself or create a new one</p>
-                                <div class="flexCol flexCenter " style="">
-                                    <div class="lineButton flexCol" @click="changeRter(5)">
-                                        <p style="margin-block-end: 0">View my task</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="innerBorderCol"></div>
-                            <div class="content_w32">
-                                <h4>Create a</h4>
-                                <h4 style="color: #00c0ff">new</h4>
-                                <h4>one</h4>
-                                <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px">
-                                    <i class="fa fa-arrow-right"></i>
-
-                                </button>
-                            </div>
-                        </div>
-                        <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol " style="align-items: flex-start">
-                                <h4>Community</h4>
-                                <p>You can manage model provided by yourself or create a new one</p>
-                                <div class="flexCol flexCenter " style="">
-                                    <div class="lineButton flexCol " @click="changeRter(6)">
-                                        <p style="margin-block-end: 0">Manage My Community</p>
-                                        <div class="hoverLine"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="innerBorderCol"></div>
-                            <div class="content_w32">
-                                <h4>Create a</h4>
-                                <h4 style="color: #00c0ff">new</h4>
-                                <h4>one</h4>
-                                <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px">
-                                    <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                    </section>
-                </div>
+        <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
+        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" :itemindex-raw="itemIndex"></router-view>
 
 
-            </div>
-        </div>
 
     </div>
 
@@ -165,6 +60,8 @@
 </div>
 </div>
 </body>
+
+
 <script src="/static/js/common/jquery-3.3.1.js"></script>
 <script src="/static/js/common/jquery.rotate.min.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
@@ -179,7 +76,7 @@
 <!--<script src="/static/js/common/world.js"></script>-->
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
-
+<script src="/static/js/common/vue-router.js"></script>
 <!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script src="/static/element-ui/index.js"></script>
@@ -189,10 +86,49 @@
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <!--<script src="/static/js/page/user_space.js"></script>-->
-<script src="/static/js/common/axios.min.js"></script>
 
-<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<!--sideBar组件-->
+<template th:replace="fragments/newSideBar :: headSideBar"></template>
 <script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+<!--主页面组件-->
+<template th:replace="userSpaceHome :: userSpaceHome"></template>
+<script src="/static/js/page/userSpaceHome.js"></script>
+<!--userModel组件-->
+<template th:replace="userModel :: userModel"></template>
+<script src="/static/js/page/userModel.js"></script>
+<!--userModelItems展示组件-->
+<template th:replace="userModels :: userModels"></template>
+<template th:replace="userModels :: modelItemShow"></template>
+<script src="/static/js/page/userModels.js"></script>
+<!--userData组件-->
+<template th:replace="userData :: userData"></template>
+<script src="/static/js/page/userData.js"></script>
+<!--userDataItems展示组件-->
+<template th:replace="userDataItems :: userDataItems"></template>
+<script src="/static/js/page/userDataItems.js"></script>
+<!--userServer组件-->
+<template th:replace="userServer :: userServer"></template>
+<script src="/static/js/page/userServer.js"></script>
+<!--userTask组件-->
+<template th:replace="userTask :: userTask"></template>
+<script src="/static/js/page/userspaceTask.js"></script>
+<!--userCommunity组件-->
+<template th:replace="userCommunity :: userCommunity"></template>
+<script src="/static/js/page/userCommunity.js"></script>
+<!--userCommunities展示组件-->
+<template th:replace="userCommunities :: userCommunities"></template>
+<template th:replace="userCommunities :: communityItems"></template>
+<script src="/static/js/page/userCommunities.js"></script>
+<!--userTheme组件-->
+<template th:replace="userTheme :: userTheme"></template>
+<script src="/static/js/page/userTheme.js"></script>
+<!--userAccount组件-->
+<template th:replace="userAccount :: userAccount"></template>
+<script src="/static/js/page/userAccount.js"></script>
+<!--feedback组件-->
+<template th:replace="feedback :: feedback"></template>
+<script src="/static/js/page/feedBack.js"></script>
+
 <script src="/static/js/page/userSpace1.js"></script>
 
 </html>

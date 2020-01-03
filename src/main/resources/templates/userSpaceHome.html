@@ -1,0 +1,112 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="userSpaceHome" th:fragment="userSpaceHome">
+    <div class="innerShadowCol">
+        <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack" style="margin-left: 240px;"
+             :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+             id="pageContent">
+            <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+            <div class="flexColContainer mainContent" style="">
+                <section role="description" class="flexCol flexCenter contentSection">
+                    <h3>My Space</h3>
+                    <h5>You can manage your model and data here</h5>
+                </section>
+                <section class="flexRowContainer flexWrap contentSection">
+                    <div class="contentCard flexRowContainer flexColCenter">
+                        <div class="content_w68 flexCol" style="align-items: flex-start">
+                            <h4>Model Items</h4>
+                            <p>You can manage model provided by yourself or create a new one</p>
+                            <div class="flexCol flexCenter " style="">
+                                <div class="lineButton flexCol" @click="manageItem(1)">
+                                    <p style="margin-block-end: 0">Manage My Model</p>
+                                    <div class="hoverLine"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="innerBorderCol"></div>
+                        <div class="content_w32">
+                            <h4>Create a</h4>
+                            <h4 style="color: #00c0ff">new</h4>
+                            <h4>one</h4>
+                            <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px" @click="creatItem(1)">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="contentCard flexRowContainer flexColCenter">
+                        <div class="content_w68 flexCol" style="align-items: flex-start">
+                            <h4>Data Items</h4>
+                            <p>You can manage Data provided by yourself or create a new one</p>
+                            <div class="flexCol flexCenter " style="">
+                                <div class="lineButton flexCol" @click="manageItem(2)">
+                                    <p style="margin-block-end: 0">Manage My Data</p>
+                                    <div class="hoverLine"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="innerBorderCol"></div>
+                        <div class="content_w32">
+                            <h4>Create a</h4>
+                            <h4 style="color: #00c0ff">new</h4>
+                            <h4>one</h4>
+                            <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="contentCard flexRowContainer flexColCenter">
+                        <div class="content_w68 flexCol" style="align-items: flex-start">
+                            <h4>Task</h4>
+                            <p>You can manage model provided by yourself or create a new one</p>
+                            <div class="flexCol flexCenter " style="">
+                                <div class="lineButton flexCol" @click="manageItem(3)">
+                                    <p style="margin-block-end: 0">View my task</p>
+                                    <div class="hoverLine"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="innerBorderCol"></div>
+                        <div class="content_w32">
+                            <h4>Create a</h4>
+                            <h4 style="color: #00c0ff">new</h4>
+                            <h4>one</h4>
+                            <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="contentCard flexRowContainer flexColCenter">
+                        <div class="content_w68 flexCol " style="align-items: flex-start">
+                            <h4>Community</h4>
+                            <p>You can manage model provided by yourself or create a new one</p>
+                            <div class="flexCol flexCenter " style="">
+                                <div class="lineButton flexCol " @click="manageItem(4)">
+                                    <p style="margin-block-end: 0">Manage My Community</p>
+                                    <div class="hoverLine"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="innerBorderCol"></div>
+                        <div class="content_w32">
+                            <h4>Create a</h4>
+                            <h4 style="color: #00c0ff">new</h4>
+                            <h4>one</h4>
+                            <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</template>
+
+</body>
+</html>

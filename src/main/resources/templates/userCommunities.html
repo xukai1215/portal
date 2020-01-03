@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,7 +49,7 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-
+        <template id="userCommunities" th:fragment="userCommunities">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;padding-bottom: 100px"
@@ -140,6 +141,8 @@
 
                 </div>
             </div>
+        </template>
+
 
             <!--        </div>-->
 
@@ -147,7 +150,7 @@
         </div>
     </div>
 </div>
-<template id="modelItemShow">
+<template id="communityShow" th:fragment="communityItems">
     <div class="" style="width: 100%;">
         <div v-for="(modelItem,index) in searchResultRaw" :key="index"
              class="contentCard_w100 flexCol flexColCenter">
@@ -197,156 +200,7 @@
     </div>
 
 </template>
-<template id="conceptualShow">
-    <div class="" style="width: 100%;">
-        <div v-for="(modelItem,index) in searchResultRaw" :key="index"
-             class="contentCard_w100 flexCol flexColCenter">
-            <div class="content_h32 flexRow noPadding">
-                <div class="content_w68 flexJustStart">
-                    <div>
-                        <a :href="'/modelItem/'+modelItem.oid"
-                           @click="setSession('modelItemInfo_id',modelItem.model_oid)">
-                            <h4 class="itemTitle">{{modelItem.name}}</h4></a>
-                    </div>
 
-                </div>
-                <div class="content_w32 flexJustAround flexColCenter buttonZone">
-                    <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,modelItem.oid)">
-                        <i class="fa fa-edit" style="margin-right: 5px"></i>
-                        <div class="lineButton flexCol">
-                            <p style="margin-block-end: 0">Edit</p>
-                            <div class="hoverLine"></div>
-                        </div>
-                    </div>
-                    <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
-                         @click="comDeleteItem(1,modelItem.oid)">
-                        <i class="fa fa-trash-o"></i>
-                        <p>Delete</p>
-                    </div>
-
-                </div>
-            </div>
-            <!--                            <div class="innerBorderGrey89"></div>-->
-            <div class="content_h68 flexCol noPadding" style="width: 100%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                <div class=" acrylicBack flexRow"
-                     style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                    <div class="flexRow " style="width: 100%;">
-                        <div class="content_w100" style="padding-top: 23px">
-                            <p style="word-break: break-all;">
-                                <b style="margin-right: 25px">Overview:</b>{{modelItem.description}}</p>
-                            <p>
-                                <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(modelItem.createTime)}}</p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</template>
-<template id="logicalShow">
-    <div class="" style="width: 100%;">
-        <div v-for="(modelItem,index) in searchResultRaw" :key="index"
-             class="contentCard_w100 flexCol flexColCenter">
-            <div class="content_h32 flexRow noPadding">
-                <div class="content_w68 flexJustStart">
-                    <div>
-                        <a :href="'/modelItem/'+modelItem.oid"
-                           @click="setSession('modelItemInfo_id',modelItem.model_oid)">
-                            <h4 class="itemTitle">{{modelItem.name}}</h4></a>
-                    </div>
-
-                </div>
-                <div class="content_w32 flexJustAround flexColCenter buttonZone">
-                    <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,modelItem.oid)">
-                        <i class="fa fa-edit" style="margin-right: 5px"></i>
-                        <div class="lineButton flexCol">
-                            <p style="margin-block-end: 0">Edit</p>
-                            <div class="hoverLine"></div>
-                        </div>
-                    </div>
-                    <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
-                         @click="comDeleteItem(1,modelItem.oid)">
-                        <i class="fa fa-trash-o"></i>
-                        <p>Delete</p>
-                    </div>
-
-                </div>
-            </div>
-            <!--                            <div class="innerBorderGrey89"></div>-->
-            <div class="content_h68 flexCol noPadding" style="width: 100%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                <div class=" acrylicBack flexRow"
-                     style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                    <div class="flexRow " style="width: 100%;">
-                        <div class="content_w100" style="padding-top: 23px">
-                            <p style="word-break: break-all;">
-                                <b style="margin-right: 25px">Overview:</b>{{modelItem.description}}</p>
-                            <p>
-                                <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(modelItem.createTime)}}</p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</template>
-<template id="computableShow">
-    <div class="" style="width: 100%;">
-        <div v-for="(modelItem,index) in searchResultRaw" :key="index"
-             class="contentCard_w100 flexCol flexColCenter">
-            <div class="content_h32 flexRow noPadding">
-                <div class="content_w68 flexJustStart">
-                    <div>
-                        <a :href="'/modelItem/'+modelItem.oid"
-                           @click="setSession('modelItemInfo_id',modelItem.model_oid)">
-                            <h4 class="itemTitle">{{modelItem.name}}</h4></a>
-                    </div>
-
-                </div>
-                <div class="content_w32 flexJustAround flexColCenter buttonZone">
-                    <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,modelItem.oid)">
-                        <i class="fa fa-edit" style="margin-right: 5px"></i>
-                        <div class="lineButton flexCol">
-                            <p style="margin-block-end: 0">Edit</p>
-                            <div class="hoverLine"></div>
-                        </div>
-                    </div>
-                    <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
-                         @click="comDeleteItem(1,modelItem.oid)">
-                        <i class="fa fa-trash-o"></i>
-                        <p>Delete</p>
-                    </div>
-
-                </div>
-            </div>
-            <!--                            <div class="innerBorderGrey89"></div>-->
-            <div class="content_h68 flexCol noPadding" style="width: 100%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                <div class=" acrylicBack flexRow"
-                     style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                    <div class="flexRow " style="width: 100%;">
-                        <div class="content_w100" style="padding-top: 23px">
-                            <p style="word-break: break-all;">
-                                <b style="margin-right: 25px">Overview:</b>{{modelItem.description}}</p>
-                            <p>
-                                <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(modelItem.createTime)}}</p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</template>
 </body>
 <script src="/static/js/common/jquery-3.3.1.js"></script>
 <script src="/static/js/common/jquery.rotate.min.js"></script>

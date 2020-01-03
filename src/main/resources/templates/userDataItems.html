@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,7 +49,7 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-
+        <template id="userDataItems" th:fragment="userDataItems">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;padding-bottom: 100px"
@@ -168,7 +169,7 @@
             </div>
 
             <!--        </div>-->
-
+        </template>
 
         </div>
     </div>

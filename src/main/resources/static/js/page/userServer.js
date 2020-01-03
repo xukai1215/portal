@@ -1,8 +1,6 @@
-ELEMENT.locale(ELEMENT.lang.en)
-
-var vue = new Vue(
+var userServer = Vue.extend(
     {
-        el: "#app",
+        template:'#userServer',
         data(){
             return{
                 //页面样式控制
@@ -87,25 +85,6 @@ var vue = new Vue(
                     return t;
                 else
                     callback(t);
-            },
-
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
             },
 
             setSession(name, value) {
@@ -332,139 +311,9 @@ var vue = new Vue(
             //     }
             // },
 
-            //create chart map
-            createChartMap(chartInfo) {
-                var myChart = echarts.init(document.getElementById('echartMap'));
-                myChart.showLoading();
-                var chartdata = [];
-                for (var i = 0; i < chartInfo.cityCount.length; i++) {
-                    let cityObj = {
-                        name: '',
-                        value: 0
-                    };
-                    let city = chartInfo.cityCount[i];
-                    let geoCoord = chartInfo.geoCoord[city.name];
-                    geoCoord.push(city.value);
-                    cityObj.name = city.name;
-                    cityObj.value = geoCoord;
-                    chartdata.push(cityObj);
-                }
-                myChart.hideLoading();
-                var MapOptions = {
-                    backgroundColor: "transparent",
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: '{b}'
-                    },
-                    geo: {
-                        show: true,
-                        map: 'world',
-                        label: {
-                            normal: {
-                                show: false,
-                                textStyle: {
-                                    color: 'rgba(0,0,0,0.4)'
-                                }
-                            },
-                            emphasis: {
-                                show: true,
-                                backgroundColor: '#2c3037',
-                                color: '#fff',
-                                padding: 5,
-                                fontSize: 14,
-                                borderRadius: 5
-                            }
-
-                        },
-                        roam: false,
-                        itemStyle: {
-                            normal: {
-                                areaColor: '#b6d2c8',
-                                borderColor: '#404a59',
-                                borderWidth: 0.5
-                            },
-                            emphasis: {
-                                areaColor: '#b6d2c8'
-                            }
-
-                        },
-
-                    },
-                    series: [
-                        {
-                            name: '点',
-                            type: 'scatter',
-                            coordinateSystem: 'geo',
-                            symbol: 'pin', //气泡
-                            symbolSize: 40
-                            ,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    textStyle: {
-                                        color: '#fff',
-                                        fontSize: 9,
-                                    }
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#00c0ff', //标志颜色
-                                }
-                            },
-                            zlevel: 6,
-                            data: chartdata
-                        },
-                        {
-                            name: 'Top 5',
-                            type: 'effectScatter',
-                            coordinateSystem: 'geo',
-                            data: chartdata,
-                            symbolSize: 20,
-                            showEffectOn: 'render',
-                            rippleEffect: {
-                                brushType: 'stroke'
-                            },
-                            hoverAnimation: true,
-                            label: {
-                                normal: {
-                                    formatter: '{b}',
-                                    position: 'right',
-                                    show: false
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#3daadb',
-                                    shadowBlur: 0,
-                                    shadowColor: '#3daadb'
-                                }
-                            },
-                            zlevel: 1
-                        },
-                    ]
-                };
-                this.computerNodesMapOptions = MapOptions;
-                myChart.setOption(MapOptions);
-                console.log('wait to load');
-
-                window.onresize = () => {
-                    height = document.documentElement.clientHeight;
-                    this.ScreenMinHeight = (height) + "px";
-                    myChart.resize();
-                };
-
-                //添加地图点击事件
-                myChart.on('click', function (params) {
-                    if (params.componentType == "series") {
-                        {
-                            $("#pageContent").stop(true);
-                            $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
-                        }
-                    }
-                })
-
-            },
+            sendcurIndexToParent(){
+                this.$emit('com-sendcurindex',this.curIndex)
+            }
 
         },
 
@@ -523,11 +372,6 @@ var vue = new Vue(
 
                             $("#author").val(this.userName);
 
-                            var index = window.sessionStorage.getItem("index");
-                            //判断显示哪一个item
-                            var itemIndex = window.sessionStorage.getItem("itemIndex");
-                            this.itemIndex=itemIndex
-
                             if (index != null && index != undefined && index != "" && index != NaN) {
                                 this.defaultActive = index;
                                 this.handleSelect(index, null);
@@ -553,6 +397,8 @@ var vue = new Vue(
             });
 
 
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
         },
 
     }

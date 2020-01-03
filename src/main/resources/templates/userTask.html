@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -60,7 +61,7 @@
 <!--        <div class="innerShadowTop" style="height: 10px">-->
 <!--        </div>-->
 <!--        <div th:replace="fragments/newSideBar :: sidebarNew"></div>-->
-
+        <template id="userTask" th:fragment="userTask">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;padding-bottom: 100px"
@@ -286,8 +287,8 @@
 
                 </div>
 
-<!--                share as data item 编辑框-->
-                  <!--                富文本编辑器-->
+                <!--                share as data item 编辑框-->
+                <!--                富文本编辑器-->
                 <textarea id="detail" style="display: none"
                           placeholder="Input detail about the data here."></textarea>
                 <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Share as Data Item"
@@ -508,6 +509,8 @@
                                @click="taskSharingFinish"></el-button>
                 </el-dialog>
             </div>
+        </template>
+
 
             <!--        </div>-->
 

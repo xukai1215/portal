@@ -2096,6 +2096,10 @@ var vue = new Vue(
                 });
             },
 
+            sendcurIndexToParent(){
+                this.$emit('com-sendcurindex',this.curIndex)
+            }
+
         },
 
         created() {
@@ -2190,6 +2194,9 @@ var vue = new Vue(
 
                 //this.getModels();
             });
+
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
 
             $(function () {
 

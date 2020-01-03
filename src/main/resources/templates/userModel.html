@@ -49,133 +49,136 @@
     </div>
 
     <div class="page-container" style="height: 2000px;" v-cloak>
-        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-        <div class="innerShadowCol">
-            <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
-                 style="margin-left: 240px;"
-                 :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
-                 id="pageContent">
-                <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
-                <div class="flexColContainer mainContent" style="">
-                    <section role="description" class="flexCol flexCenter contentSection">
-                        <h3>My Model</h3>
-                        <h5>You can manage your model and data here</h5>
+        <head-side-bar :user-infoin-parent="userInfo" :curIndexParent="curIndex"></head-side-bar>
+        <template id="userModel" th:fragment="userModel">
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                     style="margin-left: 240px;"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                    <div class="flexColContainer mainContent" style="">
+                        <section role="description" class="flexCol flexCenter contentSection">
+                            <h3>My Model</h3>
+                            <h5>You can manage your model and data here</h5>
 
-                    </section>
-                    <section class="flexRowContainer flexWrap contentSection">
-                        <div class="contentCard flexCol flexColCenter">
-                            <div class="content_h68 flexRow noPadding">
-                                <div class="content_w68 flexCol flexJustAround">
-                                    <h4>My Model Items</h4>
-                                    <p>You can manage Data provided by yourself or create a new one</p>
-                                </div>
-                                <div class="flexCenter content_w32" style="">
-                                    <img class="square_80" style="" src="../../static/img/model/model.png">
-                                </div>
-                            </div>
-<!--                            <div class="innerBorderGrey89"></div>-->
-                            <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                                <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                                    <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
-                                        <div class="lineButton flexCol" @click="manageItem(1)">
-                                            <p style="margin-block-end: 0">manage</p>
-                                            <div class="hoverLine"></div>
-                                        </div>
-                                        <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(1)">create new <span><i
-                                                class="fa fa-arrow-right"></i></span></div>
+                        </section>
+                        <section class="flexRowContainer flexWrap contentSection">
+                            <div class="contentCard flexCol flexColCenter">
+                                <div class="content_h68 flexRow noPadding">
+                                    <div class="content_w68 flexCol flexJustAround">
+                                        <h4>My Model Items</h4>
+                                        <p>You can manage Data provided by yourself or create a new one</p>
+                                    </div>
+                                    <div class="flexCenter content_w32" style="">
+                                        <img class="square_80" style="" src="../../static/img/model/model.png">
                                     </div>
                                 </div>
-                            </div>
-
-                        </div>
-                        <div class="contentCard flexCol flexColCenter">
-                            <div class="content_h68 flexRow noPadding">
-                                <div class="content_w68 flexCol flexJustAround">
-                                    <h4>My Conceptual Models</h4>
-                                    <p>You can manage Data provided by yourself or create a new one</p>
-                                </div>
-                                <div class="flexCenter content_w32" style="">
-                                    <img class="square_80" style="" src="../../static/img/model/conceptual.png">
-                                </div>
-                            </div>
-                            <!--                            <div class="innerBorderGrey89"></div>-->
-                            <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
+                                <!--                            <div class="innerBorderGrey89"></div>-->
+                                <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
                             background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                                <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                                    <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
-                                        <div class="lineButton flexCol" @click="manageItem(2)">
-                                            <p style="margin-block-end: 0">manage</p>
-                                            <div class="hoverLine"></div>
+                                    <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                                        <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
+                                            <div class="lineButton flexCol" @click="manageItem(1)">
+                                                <p style="margin-block-end: 0">manage</p>
+                                                <div class="hoverLine"></div>
+                                            </div>
+                                            <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(1)">create new <span><i
+                                                    class="fa fa-arrow-right"></i></span></div>
                                         </div>
-                                        <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(2)">create new <span><i
-                                                class="fa fa-arrow-right"></i></span></div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="contentCard flexCol flexColCenter">
-                            <div class="content_h68 flexRow noPadding">
-                                <div class="content_w68 flexCol flexJustAround">
-                                    <h4>My Logical Models</h4>
-                                    <p>You can manage Data provided by yourself or create a new one</p>
-                                </div>
-                                <div class="flexCenter content_w32" style="">
-                                    <img class="square_80" style="" src="../../static/img/model/logical.png">
-                                </div>
-                            </div>
-                            <!--                            <div class="innerBorderGrey89"></div>-->
-                            <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                                <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                                    <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
-                                        <div class="lineButton flexCol" @click="manageItem(3)">
-                                            <p style="margin-block-end: 0">manage</p>
-                                            <div class="hoverLine"></div>
-                                        </div>
-                                        <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(3)">create new <span><i
-                                                class="fa fa-arrow-right"></i></span></div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="contentCard flexCol flexColCenter">
-                            <div class="content_h68 flexRow noPadding">
-                                <div class="content_w68 flexCol flexJustAround">
-                                    <h4>My Computable Models</h4>
-                                    <p>You can manage Data provided by yourself or create a new one</p>
-                                </div>
-                                <div class="flexCenter content_w32" style="">
-                                    <img class="square_80" style="" src="../../static/img/model/calcModel.png">
-                                </div>
-                            </div>
-                            <!--                            <div class="innerBorderGrey89"></div>-->
-                            <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                                <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                                    <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
-                                        <div class="lineButton flexCol" @click="manageItem(4)">
-                                            <p style="margin-block-end: 0">manage</p>
-                                            <div class="hoverLine"></div>
-                                        </div>
-                                        <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(4)">create new <span><i
-                                                class="fa fa-arrow-right"></i></span></div>
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="contentCard flexCol flexColCenter">
+                                <div class="content_h68 flexRow noPadding">
+                                    <div class="content_w68 flexCol flexJustAround">
+                                        <h4>My Conceptual Models</h4>
+                                        <p>You can manage Data provided by yourself or create a new one</p>
+                                    </div>
+                                    <div class="flexCenter content_w32" style="">
+                                        <img class="square_80" style="" src="../../static/img/model/conceptual.png">
+                                    </div>
+                                </div>
+                                <!--                            <div class="innerBorderGrey89"></div>-->
+                                <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
+                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
+                                    <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                                        <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
+                                            <div class="lineButton flexCol" @click="manageItem(2)">
+                                                <p style="margin-block-end: 0">manage</p>
+                                                <div class="hoverLine"></div>
+                                            </div>
+                                            <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(2)">create new <span><i
+                                                    class="fa fa-arrow-right"></i></span></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="contentCard flexCol flexColCenter">
+                                <div class="content_h68 flexRow noPadding">
+                                    <div class="content_w68 flexCol flexJustAround">
+                                        <h4>My Logical Models</h4>
+                                        <p>You can manage Data provided by yourself or create a new one</p>
+                                    </div>
+                                    <div class="flexCenter content_w32" style="">
+                                        <img class="square_80" style="" src="../../static/img/model/logical.png">
+                                    </div>
+                                </div>
+                                <!--                            <div class="innerBorderGrey89"></div>-->
+                                <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
+                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
+                                    <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                                        <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
+                                            <div class="lineButton flexCol" @click="manageItem(3)">
+                                                <p style="margin-block-end: 0">manage</p>
+                                                <div class="hoverLine"></div>
+                                            </div>
+                                            <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(3)">create new <span><i
+                                                    class="fa fa-arrow-right"></i></span></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="contentCard flexCol flexColCenter">
+                                <div class="content_h68 flexRow noPadding">
+                                    <div class="content_w68 flexCol flexJustAround">
+                                        <h4>My Computable Models</h4>
+                                        <p>You can manage Data provided by yourself or create a new one</p>
+                                    </div>
+                                    <div class="flexCenter content_w32" style="">
+                                        <img class="square_80" style="" src="../../static/img/model/calcModel.png">
+                                    </div>
+                                </div>
+                                <!--                            <div class="innerBorderGrey89"></div>-->
+                                <div class="content_h32 flexCol noPadding" style="width: 100%;height: 32%;
+                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
+                                    <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                                        <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
+                                            <div class="lineButton flexCol" @click="manageItem(4)">
+                                                <p style="margin-block-end: 0">manage</p>
+                                                <div class="hoverLine"></div>
+                                            </div>
+                                            <div class="btn btn-info btn-round btn-noShadow" style="" @click="creatItem(4)">create new <span><i
+                                                    class="fa fa-arrow-right"></i></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
-                        </div>
+                        </section>
+                    </div>
 
-                    </section>
+
                 </div>
-
-
             </div>
-        </div>
+        </template>
+
         </div>
 
 
