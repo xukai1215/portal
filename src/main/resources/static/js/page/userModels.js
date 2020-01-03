@@ -1,0 +1,616 @@
+ELEMENT.locale(ELEMENT.lang.en)
+//组件
+var modelItem = Vue.extend({
+    template: '#modelItemShow',
+    props: ['searchResultRaw'],
+    created(){
+        console.log(this.searchResultRaw);
+    },
+    watch:{
+        searchResultRaw:{
+            handler(val) {
+                this.searchResultRaw = val;
+            },
+            deep:true,
+            immediate:true
+        }
+    },
+    data() {
+        return {
+            itemIndex:1,
+        }
+
+    },
+
+    methods:{
+        formatDateChild(val){
+            let res
+            this.$emit('com-format',val,a => { res = a })
+            return res
+
+        },
+
+        setSession(name, value) {
+            window.sessionStorage.setItem(name, value);
+            // this.editOid = sessionStorage.getItem('editItemOid');
+        },
+
+        comEditItem(index,oid){
+            this.$emit('com-edit',index,oid)
+        },
+
+        comDeleteItem(index,oid){
+            this.$emit('com-delete',index,oid)
+        },
+    },
+
+    created(){
+        // this.$parent.reloadPage()
+        // this.$parent.getModels(1);
+    }
+
+})
+
+
+// Vue.component('myComponent',modelItem)
+
+//路由
+var router = new VueRouter({
+        routes:[
+            {
+                path:'/',
+                redirect:'/modelitem',
+            },
+            {
+                path:'/modelitem',
+                component:modelItem,
+            },
+
+            {
+                path:'/conceptualmodel',
+                component:modelItem,
+            },
+
+            {
+                path:'/logicalmodel',
+                component:modelItem,
+            },
+
+            {
+                path:'/computablemodel',
+                component:modelItem,
+            }
+        ]
+}
+
+)
+
+var vue = new Vue(
+    {
+        el: "#app",
+        data(){
+            return{
+                //页面样式控制
+                loading: 'false',
+                load: true,
+                ScreenMinHeight: "0px",
+                ScreenMaxHeight: "0px",
+
+                //显示控制
+                curIndex:2,
+
+                itemIndex:1,
+                //
+                userInfo:{
+
+                },
+
+                //分页控制
+                page: 1,
+                sortAsc: -1,//1 -1
+                sortType: "default",
+                pageSize: 10,// 每页数据条数
+                totalPage: 0,// 总页数
+                curPage: 1,// 当前页码
+                pageList: [],
+                totalNum: 0,
+
+                //展示变量\
+                itemTitle:'Model Item',
+
+                searchResult: [],
+                modelItemResult: [],
+
+                searchCount: 0,
+                ScreenMaxHeight: "0px",
+                searchText: "",
+
+                isInSearch:0,
+            }
+        },
+
+        components: {
+        },
+
+        methods:{
+            //公共功能
+            formatDate(value,callback) {
+                const date = new Date(value);
+                y = date.getFullYear();
+                M = date.getMonth() + 1;
+                d = date.getDate();
+                H = date.getHours();
+                m = date.getMinutes();
+                s = date.getSeconds();
+                if (M < 10) {
+                    M = '0' + M;
+                }
+                if (d < 10) {
+                    d = '0' + d;
+                }
+                if (H < 10) {
+                    H = '0' + H;
+                }
+                if (m < 10) {
+                    m = '0' + m;
+                }
+                if (s < 10) {
+                    s = '0' + s;
+                }
+
+                const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+                if(callback == null||callback == undefined)
+                    return t;
+                else
+                    callback(t);
+            },
+
+            changeRter(index){
+                this.curIndex = index;
+                var urls={
+                    1:'/user/userSpace',
+                    2:'/user/userSpace/model',
+                    3:'/user/userSpace/data',
+                    4:'/user/userSpace/server',
+                    5:'/user/userSpace/task',
+                    6:'/user/userSpace/community',
+                    7:'/user/userSpace/theme',
+                    8:'/user/userSpace/account',
+                    9:'/user/userSpace/feedback',
+                }
+
+                this.setSession('curIndex',index)
+                window.location.href=urls[index]
+
+            },
+
+            setSession(name, value) {
+                window.sessionStorage.setItem(name, value);
+                // this.editOid = sessionStorage.getItem('editItemOid');
+            },
+
+            manageItem(index){
+                //此处跳转至统一页面，vue路由管理显示
+                this.itemIndex=index;
+                this.searchText = ''
+                var urls={
+                    1:'/user/userSpace/model/#/modelitem',
+                    2:'/user/userSpace/model/#/conceptualmodel',
+                    3:'/user/userSpace/model/#/logicalmodel',
+                    4:'/user/userSpace/model/#/computablemodel',
+                };
+                window.sessionStorage.setItem('itemIndex',index);
+                this.reloadPage();
+                this.getModels(index);
+                window.location.href=urls[index]
+
+            },
+
+            //page
+            // 初始化page并显示第一页
+            pageInit() {
+                this.totalPage = Math.floor((this.totalNum + this.pageSize - 1) / this.pageSize);
+                if (this.totalPage < 1) {
+                    this.totalPage = 1;
+                }
+                this.getPageList();
+                this.changePage(1);
+            },
+
+            getPageList() {
+                this.pageList = [];
+
+                if (this.totalPage < 5) {
+                    for (let i = 0; i < this.totalPage; i++) {
+                        this.pageList.push(i + 1);
+                    }
+                } else if (this.totalPage - this.curPage < 5) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+
+                    this.pageList = [
+                        this.totalPage - 4,
+                        this.totalPage - 3,
+                        this.totalPage - 2,
+                        this.totalPage - 1,
+                        this.totalPage,
+                    ];
+                } else {
+                    let cur = Math.floor((this.curPage - 1) / 5) * 5 + 1;
+                    if (this.curPage % 5 === 0) {
+                        cur = cur + 1;
+
+                    }
+                    this.pageList = [
+                        cur,
+                        cur + 1,
+                        cur + 2,
+                        cur + 3,
+                        cur + 4,
+                    ]
+                }
+            },
+
+            changePage(pageNo) {
+                if ((this.curPage === 1) && (pageNo === 1)) {
+                    return;
+                }
+                if ((this.curPage === this.totalPage) && (pageNo === this.totalPage)) {
+                    return;
+                }
+                if ((pageNo > 0) && (pageNo <= this.totalPage)) {
+                    if (this.curIndex != 1)
+                        this.pageControlIndex = this.curIndex;
+                    else this.pageControlIndex = 'research';
+
+                    this.resourceLoad = true;
+                    this.searchResult = [];
+                    //not result scroll
+                    //window.scrollTo(0, 0);
+                    this.curPage = pageNo;
+                    this.getPageList();
+                    this.page = pageNo;
+
+                    switch (this.pageControlIndex) {
+                        // this.computerModelsDeploy = [];
+                        // this.resourceLoad = true;
+                        // this.curPage = pageNo;
+                        // this.getPageList();
+                        // this.page = pageNo;
+                        // this.getDataItems();
+                        case 2:
+
+                            if (this.isInSearch == 0)
+                                this.getModels();
+                            else this.searchItems();
+                            break;
+                        //
+
+
+
+                    }
+                    // if(this.researchIndex==1||this.researchIndex==2||this.researchIndex==3){
+                    //     this.resourceLoad = true;
+                    //     this.searchResult = [];
+                    //     //not result scroll
+                    //     //window.scrollTo(0, 0);
+                    //     this.curPage = pageNo;
+                    //     this.getPageList();
+                    //     this.pageSize=4;
+                    //     this.page = pageNo;
+                    //     this.getResearchItems();
+                    // }
+                    //this.changeCurPage.emit(this.curPage);
+                }
+            },
+
+            creatItem(index){
+                var urls={
+                    1:'./createModelItem',
+                    2:'./createConceptualModel',
+                    3:'./createLogicalModel',
+                    4:'./createComputableModel',
+                }
+                window.sessionStorage.removeItem('editOid');
+                window.location.href=urls[this.itemIndex]
+            },
+
+            reloadPage(){//重新装订分页诸元
+                this.pageSize = 10;
+                this.isInSearch = 0;
+                this.page = 1;
+            },
+
+            getModels(index) {
+                this.pageSize = 10;
+                this.isInSearch = 0;
+                if(index!=null&&index!=undefined)
+                this.itemIndex = index;
+                //副标题切换
+                let titles={
+                    1:'Model Item',
+                    2:'Conceptual Model',
+                    3:'Logical Model',
+                    4:'Computable Model'
+                }
+                this.itemTitle=titles[this.itemIndex]
+
+                var url = "";
+                var name = "";
+                console.log(this.searchResult);
+                if (this.itemIndex == 1) {
+                    url = "/modelItem/getModelItemsByUserId";
+                    name = "modelItems";
+                } else if (this.itemIndex == 2) {
+                    url = "/conceptualModel/getConceptualModelsByUserId"
+                    name = "conceptualModels";
+                } else if (this.itemIndex == 3) {
+                    url = "/logicalModel/getLogicalModelsByUserId"
+                    name = "logicalModels";
+                } else if (this.itemIndex == 4) {
+                    url = "/computableModel/getComputableModelsByUserId";
+                    name = "computableModels";
+                }
+
+                this.$forceUpdate();
+
+                $.ajax({
+                    type: "Get",
+                    url: url,
+                    data: {
+                        page: this.page - 1,
+                        sortType: this.sortType,
+                        asc: -1
+                    },
+                    cache: false,
+                    async: true,
+
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (json) => {
+                        if (json.code != 0) {
+                            alert("Please login first!");
+                            window.location.href = "/user/login";
+                        } else {
+                            data = json.data;
+                            this.resourceLoad = false;
+                            this.totalNum = data.count;
+                            // this.searchCount = Number.parseInt(data["count"]);
+                            //this.searchResult = data[name];
+                            // for (var i = 0; i < data[name].length; i++) {
+                            //     // this.searchResult.push(data[name][i]);
+                            //     this.searchResult.splice(i, 0, data[name][i]);
+                            //     console.log(data[name][i]);
+                            // }
+                            this.$set(this,"searchResult",data[name]);
+                            console.log(this.searchResult);
+                            //this.modelItemResult = data[name];
+                            if (this.page == 1) {
+                                this.pageInit();
+                            }
+
+                        }
+                    }
+                })
+
+            },
+
+
+            searchItems() {
+                this.resourceLoad = true;
+                this.pageSize = 10;
+                this.isInSearch = 1;
+                let urls={
+                    1:'/modelItem/searchModelItemsByUserId',
+                    2:'/conceptualModel/searchConceptualModelsByUserId',
+                    3:'/logicalModel/searchLogicalModelsByUserId',
+                    4:'/computableModel/searchComputableModelsByUserId',
+                }
+                let names={
+                    1:'modelItems',
+                    2:'conceptualModels',
+                    3:'logicalModels',
+                    4:'computableModels',
+                }
+                let url=urls[this.itemIndex];
+                let name=names[this.itemIndex];
+
+                if (this.deploys_show) {
+                    this.searchComputerModelsForDeploy();
+                } else {
+                    $.ajax({
+                        type: "Get",
+                        url: url,
+                        data: {
+                            searchText: this.searchText,
+                            page: this.page - 1,
+                            pagesize: this.pageSize,
+                            sortType: this.sortType,
+                            asc: this.sortAsc
+                        },
+                        cache: false,
+                        async: true,
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: (json) => {
+                            if (json.code != 0) {
+                                alert("Please login first!");
+                                window.location.href = "/user/login";
+                            } else {
+                                data = json.data;
+                                this.resourceLoad = false;
+                                this.totalNum = data.count;
+                                this.searchCount = Number.parseInt(data["count"]);
+                                this.$set(this,"searchResult",data[name]);
+                                console.log(this.searchResult)
+                                if (this.page == 1) {
+                                    this.pageInit();
+                                }
+
+                            }
+
+                        }
+                    })
+                }
+            },
+
+            editItem(index,oid){
+                var urls={
+                    1:'/user/userSpace/model/manageModelItem',
+                    2:'/user/userSpace/model/manageConceptualModel',
+                    3:'/user/userSpace/model/manageLogicalModel',
+                    4:'/user/userSpace/model/manageComputableModel',
+                }
+                this.setSession('editOid', oid)
+                window.location.href=urls[this.itemIndex]
+            },
+
+            deleteItem(index,oid) {
+                if (confirm("Are you sure to delete this model?")) {
+                    var urls = {
+                        1:"/modelItem/delete",
+                        2:"/conceptualModel/delete",
+                        3:"/logicalModel/delete",
+                        4:"/computableModel/delete",
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: urls[index],
+                        data: {
+                            oid: oid
+                        },
+                        cache: false,
+                        async: true,
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: (json) => {
+                            if (json.code == -1) {
+                                alert("Please log in first!")
+                            } else {
+                                if (json.data == 1) {
+                                    alert("delete successfully!")
+                                } else {
+                                    alert("delete failed!")
+                                }
+                            }
+                            if (this.searchText.trim() != "") {
+                                this.searchModels();
+                            } else {
+                                this.getModels(index);
+                            }
+
+                        }
+                    })
+                }
+            },
+
+            getIcon(){
+                var srcs={
+                    1:'/static/img/model/model.png',
+                    2:'/static/img/model/conceptual.png',
+                    3:'/static/img/model/logical.png',
+                    4:'/static/img/model/calcModel.png',
+                }
+                return srcs[this.itemIndex]
+
+            }
+
+        },
+
+        router:router,
+
+        created() {
+
+
+        },
+
+        mounted() {
+
+            $(() => {
+
+                let height = document.documentElement.clientHeight;
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+
+                window.onresize = () => {
+                    console.log('come on ..');
+                    height = document.documentElement.clientHeight;
+                    this.ScreenMinHeight = (height) + "px";
+                    this.ScreenMaxHeight = (height) + "px";
+                };
+
+
+                $.ajax({
+                    type: "GET",
+                    url: "/user/load",
+                    data: {},
+                    cache: false,
+                    async: false,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (data) => {
+                        data = JSON.parse(data);
+
+                        console.log(data);
+
+                        if (data.oid == "") {
+                            alert("Please login");
+                            window.location.href = "/user/login";
+                        } else {
+                            this.userId = data.oid;
+                            this.userName = data.name;
+                            console.log(this.userId)
+                            // this.addAllData()
+
+                            // axios.get("/dataItem/amountofuserdata",{
+                            //     params:{
+                            //         userOid:this.userId
+                            //     }
+                            // }).then(res=>{
+                            //     that.dcount=res.data
+                            // });
+
+                            $("#author").val(this.userName);
+
+                            var index = window.sessionStorage.getItem("index");
+                            //判断显示哪一个item
+                            var itemIndex = window.sessionStorage.getItem("itemIndex");
+                            this.itemIndex=itemIndex
+                            this.getModels(this.itemIndex);
+
+                            if (index != null && index != undefined && index != "" && index != NaN) {
+                                this.defaultActive = index;
+                                this.handleSelect(index, null);
+                                window.sessionStorage.removeItem("index");
+                                this.curIndex=index
+
+
+                            } else {
+                                // this.changeRter(1);
+                            }
+
+                            window.sessionStorage.removeItem("tap");
+                            //this.getTasksInfo();
+                            this.load = false;
+                        }
+                    }
+                })
+
+
+                //this.getModels();
+            });
+
+
+        },
+
+    }
+)

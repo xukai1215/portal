@@ -2,7 +2,7 @@ var vue = new Vue({
     el: "#app",
     data: {
         defaultActive:'2-1',
-        curIndex:'2-1',
+        curIndex:'2',
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",
@@ -314,10 +314,29 @@ var vue = new Vue({
 
     },
     methods: {
-        handleSelect(index,indexPath){
-            this.setSession("index",index);
-            window.location.href="/user/userSpace"
+        changeRter(index){
+            this.curIndex = index;
+            var urls={
+                1:'/user/userSpace',
+                2:'/user/userSpace/model',
+                3:'/user/userSpace/data',
+                4:'/user/userSpace/server',
+                5:'/user/userSpace/task',
+                6:'/user/userSpace/community',
+                7:'/user/userSpace/theme',
+                8:'/user/userSpace/account',
+                9:'/user/userSpace/feedback',
+            }
+
+            this.setSession('curIndex',index)
+            window.location.href=urls[index]
+
         },
+
+        // handleSelect(index,indexPath){
+        //     this.setSession("index",index);
+        //     window.location.href="/user/userSpace"
+        // },
         handleCheckChange(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree2.getCheckedNodes()
             let classes = [];
@@ -338,6 +357,7 @@ var vue = new Vue({
             this.clsStr=str;
 
         },
+
         changeOpen(n) {
             this.activeIndex = n;
         },
@@ -379,6 +399,76 @@ var vue = new Vue({
     },
     mounted() {
 
+        $(() => {
+            let height = document.documentElement.clientHeight;
+            this.ScreenMinHeight = (height) + "px";
+            this.ScreenMaxHeight = (height) + "px";
+
+            window.onresize = () => {
+                console.log('come on ..');
+                height = document.documentElement.clientHeight;
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+            };
+
+
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    data = JSON.parse(data);
+
+                    console.log(data);
+
+                    if (data.oid == "") {
+                        alert("Please login");
+                        window.location.href = "/user/login";
+                    } else {
+                        this.userId = data.oid;
+                        this.userName = data.name;
+                        console.log(this.userId)
+                        // this.addAllData()
+
+                        // axios.get("/dataItem/amountofuserdata",{
+                        //     params:{
+                        //         userOid:this.userId
+                        //     }
+                        // }).then(res=>{
+                        //     that.dcount=res.data
+                        // });
+
+                        $("#author").val(this.userName);
+
+                        var index = window.sessionStorage.getItem("index");
+                        this.itemIndex=index
+                        if (index != null && index != undefined && index != "" && index != NaN) {
+                            this.defaultActive = index;
+                            this.handleSelect(index, null);
+                            window.sessionStorage.removeItem("index");
+                            this.curIndex=index
+
+                        } else {
+                            // this.changeRter(1);
+                        }
+
+                        window.sessionStorage.removeItem("tap");
+                        //this.getTasksInfo();
+                        this.load = false;
+                    }
+                }
+            })
+
+
+            //this.getModels();
+        });
+
         $("input[name='Status']").iCheck({
             //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
             radioClass: 'iradio_flat-green',
@@ -413,13 +503,14 @@ var vue = new Vue({
             }
         })
 
-        var oid = window.sessionStorage.getItem("editModelItem_id");
+        var oid = window.sessionStorage.getItem("editOid");
 
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
-            $("#title").text("Create Model Item")
+            // $("#title").text("Create Model Item")
+            $("#subRteTitle").text("/Create Model Item")
 
             tinymce.init({
                 selector: "textarea#myText",
@@ -456,7 +547,9 @@ var vue = new Vue({
             });
         }
         else {
-            $("#title").text("Modify Model Item")
+            // $("#title").text("Modify Model Item")
+            $("#subRteTitle").text("/Modify Model Item")
+
             document.title="Modify Model Item | OpenGMS"
             $.ajax({
                 url: "/modelItem/getInfo/" + oid,

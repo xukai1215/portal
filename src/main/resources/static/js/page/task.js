@@ -1636,9 +1636,11 @@ var vue = new Vue({
 
         },
 
+        //显示鼠标hover的title
         showtitle(ev) {
             return ev.label + "\n" + "Type: " + ev.suffix;
         },
+
         getImg(item) {
             let list = []
             if (item.id == 0 || item.package == true)

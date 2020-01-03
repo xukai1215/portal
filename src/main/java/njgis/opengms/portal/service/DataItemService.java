@@ -1,5 +1,6 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
@@ -61,12 +62,12 @@ public class DataItemService {
 
 
     public void update(String id, DataItemUpdateDTO dataItemUpdateDTO) {
-        DataItem dataItem=dataItemDao.findById(id).orElseGet(()->{
+        DataItem dataItem = dataItemDao.findById(id).orElseGet(() -> {
             System.out.println("有人乱查数据库！！该ID不存在对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         });
-        BeanUtils.copyProperties(dataItemUpdateDTO,dataItem);
-        Date now =new Date();
+        BeanUtils.copyProperties(dataItemUpdateDTO, dataItem);
+        Date now = new Date();
         dataItem.setLastModifyTime(now);
         //更新评论
 //        dataItem.getComments().setCommentDate(now);
@@ -74,36 +75,37 @@ public class DataItemService {
     }
 
     public void delete(String id) {
+        //需要在catagory中删除此data item记录,以及在data item集合中删除本身
+        DataItem data = new DataItem();
+        data = getById(id);
 
-        DataItem data=new DataItem();
-        data=getById(id);
+        List<String> cate = new ArrayList<>();
 
-        List<String> cate=new ArrayList<>();
-
-        List<String> ids=new ArrayList<>();
-        List<String> newids=new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        List<String> newids = new ArrayList<>();
 
         String parid;
 
         List<Categorys> p;
 
-        List<String> allDataItem ;
+        List<String> allDataItem;
 
-        cate=data.getClassifications();
+        cate = data.getClassifications();//获得该data item所在分类
+        //catagory中有两处要删，一处是所属的小类，一处是该小类所在大类中的“...all”中的记录
+        //先删除...all中记录
+        for (int i = 0; i < cate.size(); i++) {
+            Categorys categorys = getCategoryById(cate.get(i));//data item所属类
 
-        for (int i = 0; i <cate.size() ; i++) {
-            Categorys categorys=getCategoryById(cate.get(i));
+            parid = categorys.getParentCategory();//data item所属父类（大类）id
+            p = new ArrayList<>();
+            p = categoryDao.findAllByCategory("...All");//找到所有all的类
 
-            parid=categorys.getParentCategory();
-            p=new ArrayList<>();
-            p=categoryDao.findAllByCategory("...All");
+            for (int k = 0; k < p.size(); k++) {//通过父类匹配到存在该data item的all，删除记录
+                if (p.get(k).getParentCategory().equals(parid)) {
+                    allDataItem = new ArrayList<>();
+                    allDataItem = delOneOfArrayList(p.get(k).getDataItem(), id);//返回删除后的data item集合
 
-            for (int k = 0; k <p.size() ; k++) {
-                if(p.get(k).getParentCategory().equals(parid)){
-                    allDataItem=new ArrayList<>();
-                    allDataItem=delOneOfArrayList(p.get(k).getDataItem(),id);
-
-                    p.get(k).setDataItem(allDataItem);
+                    p.get(k).setDataItem(allDataItem);//重新赋值
 
                     categoryDao.save(p.get(k));
 
@@ -111,16 +113,16 @@ public class DataItemService {
                 }
             }
 
+            ids = categorys.getDataItem();
 
-
-            ids=categorys.getDataItem();
-
-            for (int j = 0; j <ids.size() ; j++) {
-                if(ids.get(j).equals(id)){
-                    newids=delOneOfArrayList(ids,id);
-                    break;
+            //删除所属小类中的记录
+            if (ids.size() > 0&&ids != null)
+                for (int j = 0; j < ids.size(); j++) {
+                    if (ids.get(j).equals(id)) {
+                        newids = delOneOfArrayList(ids, id);
+                        break;
+                    }
                 }
-            }
             //用户中心删除数控条目时，category库里同时删除
             categorys.setDataItem(newids);
             categoryDao.save(categorys);
@@ -128,55 +130,50 @@ public class DataItemService {
 
         }
 
-        List<String> relatedModels=data.getRelatedModels();
-        for(int i=0;i<relatedModels.size();i++){
-            ModelItem modelItem=modelItemDao.findFirstByOid(relatedModels.get(i));
-            modelItem.getRelatedData().remove(id);
-            modelItemDao.save(modelItem);
-        }
+        List<String> relatedModels = data.getRelatedModels();
+        if (relatedModels!=null)
+            for (int i = 0; i < relatedModels.size(); i++) {
+                ModelItem modelItem = modelItemDao.findFirstByOid(relatedModels.get(i));
+                modelItem.getRelatedData().remove(id);
+                modelItemDao.save(modelItem);
+            }
 
 
         dataItemDao.deleteById(id);
     }
 
-    public List<String> delOneOfArrayList(List<String> arr,String str){
-        List<String> st=new ArrayList<>();
+    public List<String> delOneOfArrayList(List<String> arr, String str) {
+        List<String> st = new ArrayList<>();
 
         for (int i = 0; i < arr.size(); i++) {
-            if(!arr.get(i).equals(str)){
+            if (!arr.get(i).equals(str)) {
                 st.add(arr.get(i));
             }
         }
 
-        return  st;
+        return st;
     }
-
-
 
 
     public DataItem getById(String id) {
 
 
-
         return dataItemDao.findById(id).orElseGet(() -> {
 
-            System.out.println("有人乱查数据库！！该ID不存在对象:"+id);
+            System.out.println("有人乱查数据库！！该ID不存在对象:" + id);
 
             throw new MyException(ResultEnum.NO_OBJECT);
 
         });
 
 
-
-
-
     }
 
 
-    public Categorys getCateId(String id){
+    public Categorys getCateId(String id) {
         return categoryDao.findById(id).orElseGet(() -> {
 
-            System.out.println("有人乱查数据库！！该ID不存在对象:"+id);
+            System.out.println("有人乱查数据库！！该ID不存在对象:" + id);
 
             throw new MyException(ResultEnum.NO_OBJECT);
 
@@ -186,35 +183,30 @@ public class DataItemService {
     public ModelItem getModelById(String id) {
 
 
-
         return modelItemDao.findById(id).orElseGet(() -> {
 
-            System.out.println("有人乱查数据库！！该ID不存在对象:"+id);
+            System.out.println("有人乱查数据库！！该ID不存在对象:" + id);
 
             throw new MyException(ResultEnum.NO_OBJECT);
 
         });
 
 
-
-
-
     }
 
 
-
-    long dataCount(){
+    long dataCount() {
         return dataItemDao.count();
     }
 
 
-    public List<DataItem> generatehtmls(int page){
+    public List<DataItem> generatehtmls(int page) {
 
 
 //        PageRequest pageRequest=new PageRequest(0,10);
-        PageRequest pageRequest=new PageRequest(page,10);
+        PageRequest pageRequest = new PageRequest(page, 10);
 
-        Page<DataItem> alldata=dataItemDao.findAll(pageRequest);
+        Page<DataItem> alldata = dataItemDao.findAll(pageRequest);
 
 //        long allcount=dataItemDao.count();
         return alldata.getContent();
@@ -222,25 +214,25 @@ public class DataItemService {
     }
 
     //对评论的评论
-    public void reply(CommentsAddDTO commentsAddDTO){
+    public void reply(CommentsAddDTO commentsAddDTO) {
 
-        String id=commentsAddDTO.getId();
-        String commentId=commentsAddDTO.getCommentid();
+        String id = commentsAddDTO.getId();
+        String commentId = commentsAddDTO.getCommentid();
 
-        DataItem dataItem=getById(id);
-        List<CommentInfo> co=new ArrayList<>();
+        DataItem dataItem = getById(id);
+        List<CommentInfo> co = new ArrayList<>();
 
-        List<Comments> comments=dataItem.getComments();
+        List<Comments> comments = dataItem.getComments();
         //todo 用id找到对应评论
 
         for (int i = 0; i < comments.size(); i++) {
-            if(comments.get(i).getId().equals(commentId)){
+            if (comments.get(i).getId().equals(commentId)) {
 
-                co=comments.get(i).getCommentsForComment();
+                co = comments.get(i).getCommentsForComment();
 
                 //如果没有对评论的评论时
-                if(co==null){
-                    co=new ArrayList<>();
+                if (co == null) {
+                    co = new ArrayList<>();
                 }
 
                 co.add(commentsAddDTO.getCommentsForComment());
@@ -254,15 +246,16 @@ public class DataItemService {
 
 
     }
+
     //提交评论
-    public void putComment(CommentsAddDTO commentsAddDTO){
-        String id=commentsAddDTO.getId();
+    public void putComment(CommentsAddDTO commentsAddDTO) {
+        String id = commentsAddDTO.getId();
 
-        DataItem dataItem=getById(id);
+        DataItem dataItem = getById(id);
 
-        List<Comments> comment=new ArrayList<>();
+        List<Comments> comment = new ArrayList<>();
 
-        comment=dataItem.getComments();
+        comment = dataItem.getComments();
 
         comment.add(commentsAddDTO.getMyComment());
 
@@ -272,49 +265,50 @@ public class DataItemService {
         dataItemDao.save(dataItem);
 
     }
-    //点赞
-    public Integer thumbsUp(CommentsUpdateDTO commentsUpdateDTO){
-        String commentid =commentsUpdateDTO.getCommentId();
-        DataItem dataItem=getById(commentsUpdateDTO.getDataId());
 
-        List<Comments> comments=dataItem.getComments();
-        Integer zan=new Integer(-1);
+    //点赞
+    public Integer thumbsUp(CommentsUpdateDTO commentsUpdateDTO) {
+        String commentid = commentsUpdateDTO.getCommentId();
+        DataItem dataItem = getById(commentsUpdateDTO.getDataId());
+
+        List<Comments> comments = dataItem.getComments();
+        Integer zan = new Integer(-1);
 
         for (int i = 0; i < comments.size(); i++) {
-            if(comments.get(i).getId().equals(commentid)){
-                    zan=comments.get(i).getThumbsUpNumber();
-                comments.get(i).setThumbsUpNumber(zan+1);
+            if (comments.get(i).getId().equals(commentid)) {
+                zan = comments.get(i).getThumbsUpNumber();
+                comments.get(i).setThumbsUpNumber(zan + 1);
                 break;
             }
         }
 
         dataItemDao.save(dataItem);
 
-        return zan+1;
+        return zan + 1;
     }
 
     //用户拿到上传的所有条目
-    public Page<DataItem> getUsersUploadData(String author,Integer page,Integer pagesize,Integer asc){
+    public Page<DataItem> getUsersUploadData(String author, Integer page, Integer pagesize, Integer asc) {
 
-        boolean as=false;
-        if(asc==1){
-            as=true;
-        }else{
-            as=false;
+        boolean as = false;
+        if (asc == 1) {
+            as = true;
+        } else {
+            as = false;
         }
 
         Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pagesize, sort);
-        return dataItemDao.findByAuthor(pageable,author);
+        return dataItemDao.findByAuthor(pageable, author);
 
     }
 
     //获得用户创建条目的总数
-    public Integer getAmountOfData(String userOid){
+    public Integer getAmountOfData(String userOid) {
 
 
-        List<DataItem> resultList= new ArrayList<DataItem>();
-        resultList=dataItemDao.findAllByAuthor(userOid);
+        List<DataItem> resultList = new ArrayList<DataItem>();
+        resultList = dataItemDao.findAllByAuthor(userOid);
         return resultList.size();
     }
 
@@ -330,17 +324,17 @@ public class DataItemService {
         String path;
         path = PortalApplication.class.getClassLoader().getResource("").getPath();
 
-        File dataitemfile=new File(path+"/templates/dataItems");
+        File dataitemfile = new File(path + "/templates/dataItems");
 
-        if(!dataitemfile.exists()){
+        if (!dataitemfile.exists()) {
             dataitemfile.mkdir();
         }
 
-        Context context=new Context();
-        context.setVariable("datainfo",ResultUtils.success(getById(id)));
+        Context context = new Context();
+        context.setVariable("datainfo", ResultUtils.success(getById(id)));
 
-        FileWriter writer=new FileWriter(path+"/templates/dataItems/"+id+".html");
-        templateEngine.process("data_item_info",context,writer);
+        FileWriter writer = new FileWriter(path + "/templates/dataItems/" + id + ".html");
+        templateEngine.process("data_item_info", context, writer);
 
         writer.flush();
         writer.close();
@@ -349,32 +343,32 @@ public class DataItemService {
 
 
     }
-    //viewPlus
-    public  Integer viewCountPlus(String id){
-        DataItem dataItem=getById(id);
 
-        Integer viewCount=dataItem.getViewCount();
-        dataItem.setViewCount(viewCount+1);
+    //viewPlus
+    public Integer viewCountPlus(String id) {
+        DataItem dataItem = getById(id);
+
+        Integer viewCount = dataItem.getViewCount();
+        dataItem.setViewCount(viewCount + 1);
 
         dataItemDao.save(dataItem);
         return 1;
     }
-    //getViewCount
-    public  Integer getViewCount(String id){
-        DataItem dataItem=getById(id);
 
-        Integer viewCount=dataItem.getViewCount();
+    //getViewCount
+    public Integer getViewCount(String id) {
+        DataItem dataItem = getById(id);
+
+        Integer viewCount = dataItem.getViewCount();
 
         return viewCount;
     }
 
 
-
-
     public DataItem insert(DataItemAddDTO dataItemAddDTO) {
-        DataItem dataItem=new DataItem();
-        BeanUtils.copyProperties(dataItemAddDTO,dataItem);
-        Date now=new Date();
+        DataItem dataItem = new DataItem();
+        BeanUtils.copyProperties(dataItemAddDTO, dataItem);
+        Date now = new Date();
         dataItem.setCreateTime(now);
 
 //        dataItem.getComments().setCommentDate(now);
@@ -384,131 +378,124 @@ public class DataItemService {
     }
 
 
-
-
-
-    public Page<DataItem> test(DataItemFindDTO dataItemFindDTO){
+    public Page<DataItem> test(DataItemFindDTO dataItemFindDTO) {
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
         Pageable pageable = PageRequest.of(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort);
 
-        return  dataItemDao.findByClassificationsIsIn(pageable,dataItemFindDTO.getCategoryId());
+        return dataItemDao.findByClassificationsIsIn(pageable, dataItemFindDTO.getCategoryId());
 
     }
 
-    public Page<DataItem> searchFromAllData(DataItemFindDTO dataItemFindDTO){
+    public Page<DataItem> searchFromAllData(DataItemFindDTO dataItemFindDTO) {
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
         Pageable pageable = PageRequest.of(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort);
-        String se=dataItemFindDTO.getSearchContent().get(0);
+        String se = dataItemFindDTO.getSearchContent().get(0);
 
-        return  dataItemDao.findByNameContainingOrDescriptionContainingOrKeywordsContaining(pageable,se,se,se);
+        return dataItemDao.findByNameContainingOrDescriptionContainingOrKeywordsContaining(pageable, se, se, se);
 
     }
-
 
 
     //分类加关键字
-    public Page<DataItem> listBySearch(DataItemFindDTO dataItemFindDTO){
+    public Page<DataItem> listBySearch(DataItemFindDTO dataItemFindDTO) {
 
 
-        List<String> dataItemsId=new ArrayList<>();
-        dataItemsId=getCateId(dataItemFindDTO.getCategoryId()).getDataItem();
+        List<String> dataItemsId = new ArrayList<>();
+        dataItemsId = getCateId(dataItemFindDTO.getCategoryId()).getDataItem();
 
-        DataItem dataItem=new DataItem();
+        DataItem dataItem = new DataItem();
 
-        List<DataItem> result=new ArrayList<>();
+        List<DataItem> result = new ArrayList<>();
 
 
-        for (int i = 0; i <dataItemsId.size() ; i++) {
-            dataItem=getById(dataItemsId.get(i));
+        for (int i = 0; i < dataItemsId.size(); i++) {
+            dataItem = getById(dataItemsId.get(i));
 
 
             for (int j = 0; j < dataItemFindDTO.getSearchContent().size(); j++) {
-                if(dataItem.getName().contains(dataItemFindDTO.getSearchContent().get(j)) || dataItem.getDescription().contains(dataItemFindDTO.getSearchContent().get(j))){
+                if (dataItem.getName().contains(dataItemFindDTO.getSearchContent().get(j)) || dataItem.getDescription().contains(dataItemFindDTO.getSearchContent().get(j))) {
                     result.add(dataItem);
 
                 }
             }
 
         }
-        List<DataItem> flist=new ArrayList<>();
+        List<DataItem> flist = new ArrayList<>();
 
-        Integer ind=(dataItemFindDTO.getPage())*dataItemFindDTO.getPageSize()-dataItemFindDTO.getPageSize();
-
-
-        if(result.size()<=dataItemFindDTO.getPageSize()){
-            flist=result;
-        }else {
-
-            if(ind+dataItemFindDTO.getPageSize()>result.size()){
-                int exp=result.size()%dataItemFindDTO.getPageSize();
+        Integer ind = (dataItemFindDTO.getPage()) * dataItemFindDTO.getPageSize() - dataItemFindDTO.getPageSize();
 
 
-                if((ind%dataItemFindDTO.getPageSize())==exp){
-                    flist.add(result.get(ind)) ;
+        if (result.size() <= dataItemFindDTO.getPageSize()) {
+            flist = result;
+        } else {
 
-                }else{
-                    flist=result.subList(ind,ind+exp);
+            if (ind + dataItemFindDTO.getPageSize() > result.size()) {
+                int exp = result.size() % dataItemFindDTO.getPageSize();
+
+
+                if ((ind % dataItemFindDTO.getPageSize()) == exp) {
+                    flist.add(result.get(ind));
+
+                } else {
+                    flist = result.subList(ind, ind + exp);
                 }
 
-            }else {
-                flist=result.subList(ind,ind+dataItemFindDTO.getPageSize());
+            } else {
+                flist = result.subList(ind, ind + dataItemFindDTO.getPageSize());
             }
 
         }
 
 
-        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC,"createTime");
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
-        Page pageResult =new PageImpl(flist,new PageRequest(dataItemFindDTO.getPage(),dataItemFindDTO.getPageSize(),sort),result.size());
-
+        Page pageResult = new PageImpl(flist, new PageRequest(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort), result.size());
 
 
         return pageResult;
 
 
-
     }
 
-    public JSONObject searchResourceByNameAndCate(DataItemFindDTO dataItemFindDTO){
+    public JSONObject searchResourceByNameAndCate(DataItemFindDTO dataItemFindDTO) {
 
-        int page= dataItemFindDTO.getPage();
+        int page = dataItemFindDTO.getPage();
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchText();
 
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<DataItem> dataItemPage=dataItemDao.findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn("resource",searchText,dataItemFindDTO.getClassifications(),pageable);
-        List<DataItem> dataItems=dataItemPage.getContent();
+        Page<DataItem> dataItemPage = dataItemDao.findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn("resource", searchText, dataItemFindDTO.getClassifications(), pageable);
+        List<DataItem> dataItems = dataItemPage.getContent();
 
-        JSONArray list=new JSONArray();
-        for(int i=0;i< dataItems.size();i++){
-            JSONObject object=new JSONObject();
-            DataItem dataItem=dataItems.get(i);
+        JSONArray list = new JSONArray();
+        for (int i = 0; i < dataItems.size(); i++) {
+            JSONObject object = new JSONObject();
+            DataItem dataItem = dataItems.get(i);
 
-            String oid=dataItem.getAuthor();
-            User user=userDao.findFirstByOid(oid);
-            JSONObject userObj=new JSONObject();
-            userObj.put("oid",user.getOid());
-            userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
-            userObj.put("name",user.getName());
+            String oid = dataItem.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObj = new JSONObject();
+            userObj.put("oid", user.getOid());
+            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+            userObj.put("name", user.getName());
 
-            String dataStr="";
-            List<DataMeta> dataMetaList=dataItem.getDataList();
-            for(int j=0;j<dataMetaList.size();j++){
-                DataMeta dataMeta=dataMetaList.get(j);
-                dataStr+=j==0?"":", ";
-                dataStr+=dataMeta.getName()+(dataMeta.getSuffix().equals("unknow")?"":dataMeta.getSuffix());
+            String dataStr = "";
+            List<DataMeta> dataMetaList = dataItem.getDataList();
+            for (int j = 0; j < dataMetaList.size(); j++) {
+                DataMeta dataMeta = dataMetaList.get(j);
+                dataStr += j == 0 ? "" : ", ";
+                dataStr += dataMeta.getName() + (dataMeta.getSuffix().equals("unknow") ? "" : dataMeta.getSuffix());
             }
 
-            object.put("id",dataItem.getId());
-            object.put("name",dataItem.getName());
-            object.put("author",userObj);
-            object.put("dataList",dataItem.getDataList());
-            object.put("dataStr",dataStr);
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-            object.put("createTime",simpleDateFormat.format(dataItem.getCreateTime()));
-
+            object.put("id", dataItem.getId());
+            object.put("name", dataItem.getName());
+            object.put("author", userObj);
+            object.put("dataList", dataItem.getDataList());
+            object.put("dataStr", dataStr);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            object.put("createTime", simpleDateFormat.format(dataItem.getCreateTime()));
 
 
             list.add(object);
@@ -519,7 +506,7 @@ public class DataItemService {
 
         }
 
-        JSONObject result=new JSONObject();
+        JSONObject result = new JSONObject();
         result.put("list", list);
         result.put("total", dataItemPage.getTotalElements());
 
@@ -527,27 +514,27 @@ public class DataItemService {
 
     }
 
-    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO){
+    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO) {
 
-        int page= dataItemFindDTO.getPage()-1;
+        int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchText();
 
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataItemResultDTO> dataItemPage=dataItemDao.findByNameLike(pageable,searchText);
+        Page<DataItemResultDTO> dataItemPage = dataItemDao.findByNameLike(pageable, searchText);
 
-        List<DataItemResultDTO> dataItems=dataItemPage.getContent();
-        JSONArray users=new JSONArray();
+        List<DataItemResultDTO> dataItems = dataItemPage.getContent();
+        JSONArray users = new JSONArray();
 
-        for(int i=0;i< dataItems.size();i++){
-            DataItemResultDTO dataItem=dataItems.get(i);
-            String oid=dataItem.getAuthor();
-            User user=userDao.findFirstByOid(oid);
-            JSONObject userObj=new JSONObject();
-            userObj.put("oid",user.getOid());
-            userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
-            userObj.put("name",user.getName());
+        for (int i = 0; i < dataItems.size(); i++) {
+            DataItemResultDTO dataItem = dataItems.get(i);
+            String oid = dataItem.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObj = new JSONObject();
+            userObj.put("oid", user.getOid());
+            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+            userObj.put("name", user.getName());
             users.add(userObj);
 
             dataItems.get(i).setAuthor(user.getName());
@@ -555,11 +542,11 @@ public class DataItemService {
 
         }
 
-        JSONObject result=new JSONObject();
+        JSONObject result = new JSONObject();
         result.put("list", dataItems);
         result.put("total", dataItemPage.getTotalElements());
         result.put("pages", dataItemPage.getTotalPages());
-        result.put("users",users);
+        result.put("users", users);
 
         return result;
 
@@ -567,21 +554,21 @@ public class DataItemService {
 
 
     //search
-    public JSONObject searchByTitleByOid(DataItemFindDTO dataItemFindDTO, String oid){
-        String userName=userDao.findFirstByOid(oid).getUserName();
-        int page=dataItemFindDTO.getPage();
+    public JSONObject searchByTitleByOid(DataItemFindDTO dataItemFindDTO, String oid) {
+        String userName = userDao.findFirstByOid(oid).getUserName();
+        int page = dataItemFindDTO.getPage();
         int pageSize = dataItemFindDTO.getPageSize();
-        String sortElement=dataItemFindDTO.getSortElement();
+        String sortElement = dataItemFindDTO.getSortElement();
         Boolean asc = dataItemFindDTO.getAsc();
-        String name= dataItemFindDTO.getSearchText();
+        String name = dataItemFindDTO.getSearchText();
 
-        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
-        Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<DataItemResultDTO> dataItemResultDTOPage=dataItemDao.findByNameContainsIgnoreCaseAndUserName(name,userName,pageable);
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<DataItemResultDTO> dataItemResultDTOPage = dataItemDao.findByNameContainsIgnoreCaseAndUserName(name, userName, pageable);
 
-        JSONObject result=new JSONObject();
-        result.put("list",dataItemResultDTOPage.getContent());
-        result.put("total",dataItemResultDTOPage.getTotalElements());
+        JSONObject result = new JSONObject();
+        result.put("list", dataItemResultDTOPage.getContent());
+        result.put("total", dataItemResultDTOPage.getTotalElements());
         System.out.println(result);
         return result;
 
@@ -589,70 +576,70 @@ public class DataItemService {
 
     //分类
 
-    public JSONObject findByCategory(String categorysId,Integer page,boolean asc,Integer pageSize){
+    public JSONObject findByCategory(String categorysId, Integer page, boolean asc, Integer pageSize) {
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        List<String> cates=new ArrayList<>();
+        List<String> cates = new ArrayList<>();
         cates.add(categorysId);
-        Page<DataItemResultDTO> dataItemResultDTOPage = dataItemDao.findByClassificationsIn(pageable,cates);
-        List<DataItemResultDTO> dataItemResultDTOList=dataItemResultDTOPage.getContent();
+        Page<DataItemResultDTO> dataItemResultDTOPage = dataItemDao.findByClassificationsIn(pageable, cates);
+        List<DataItemResultDTO> dataItemResultDTOList = dataItemResultDTOPage.getContent();
 
-        JSONArray users=new JSONArray();
-        for(DataItemResultDTO data:dataItemResultDTOList){
-            String author=data.getAuthor();
-            User user=userDao.findFirstByOid(author);
-            JSONObject userJson=new JSONObject();
-            userJson.put("name",user.getName());
-            userJson.put("oid",user.getOid());
-            String img=user.getImage();
-            userJson.put("image",img.equals("")?"":htmlLoadPath+user.getImage());
+        JSONArray users = new JSONArray();
+        for (DataItemResultDTO data : dataItemResultDTOList) {
+            String author = data.getAuthor();
+            User user = userDao.findFirstByOid(author);
+            JSONObject userJson = new JSONObject();
+            userJson.put("name", user.getName());
+            userJson.put("oid", user.getOid());
+            String img = user.getImage();
+            userJson.put("image", img.equals("") ? "" : htmlLoadPath + user.getImage());
             users.add(userJson);
         }
 
-        JSONObject result=new JSONObject();
-        result.put("content",dataItemResultDTOPage.getContent());
-        result.put("totalElements",dataItemResultDTOPage.getTotalElements());
-        result.put("users",users);
+        JSONObject result = new JSONObject();
+        result.put("content", dataItemResultDTOPage.getContent());
+        result.put("totalElements", dataItemResultDTOPage.getTotalElements());
+        result.put("users", users);
 
         return result;
 
     }
 
 
-    public JSONObject findByCateg(String categorysId,Integer page,boolean asc,Integer pageSize){
+    public JSONObject findByCateg(String categorysId, Integer page, boolean asc, Integer pageSize) {
 
 
-        List<String> category= new ArrayList<>();
+        List<String> category = new ArrayList<>();
         //从category拿到dataItemid
-        category=findByCa(categorysId);
+        category = findByCa(categorysId);
 
 
-        List<Map<String,Object>> resultList=new ArrayList<>();
+        List<Map<String, Object>> resultList = new ArrayList<>();
 
 
-        List<Map<String,Object>> flist=new ArrayList<>();
+        List<Map<String, Object>> flist = new ArrayList<>();
 
-        DataItem it=new DataItem();
+        DataItem it = new DataItem();
 
-        Map<String,Object> everyData;
+        Map<String, Object> everyData;
 
-        Integer start=(page-1)*10;
-        Integer end=-1;
+        Integer start = (page - 1) * 10;
+        Integer end = -1;
         Integer p;
-        if(category.size()<10){
-            end=category.size();
-        }else{
+        if (category.size() < 10) {
+            end = category.size();
+        } else {
 
-            if(category.size()%10==0){
-                p=category.size()/10;
-                end=start+10;
+            if (category.size() % 10 == 0) {
+                p = category.size() / 10;
+                end = start + 10;
 
-            }else if(category.size()%10!=0){
-                p=category.size()/10+1;
-                if(page.equals(p)){
-                    end=start+category.size()%10;
-                }else{
-                    end=start+10;
+            } else if (category.size() % 10 != 0) {
+                p = category.size() / 10 + 1;
+                if (page.equals(p)) {
+                    end = start + category.size() % 10;
+                } else {
+                    end = start + 10;
                 }
 
 
@@ -662,8 +649,8 @@ public class DataItemService {
 
 
         //从dataItem中取得项
-        JSONArray users=new JSONArray();
-        for(int i=start;i<end;i++) {
+        JSONArray users = new JSONArray();
+        for (int i = start; i < end; i++) {
 
             everyData = new HashMap<>();
             it = getById(category.get(i));
@@ -677,9 +664,9 @@ public class DataItemService {
             User user = userDao.findFirstByOid(getById(category.get(i)).getAuthor());
             JSONObject userJson = new JSONObject();
             userJson.put("name", user.getName());
-            userJson.put("oid",user.getOid());
-            String img=user.getImage();
-            userJson.put("image",img.equals("")?"":htmlLoadPath+user.getImage());
+            userJson.put("oid", user.getOid());
+            String img = user.getImage();
+            userJson.put("image", img.equals("") ? "" : htmlLoadPath + user.getImage());
             users.add(userJson);
 
             everyData.put("author", user.getName());
@@ -691,12 +678,12 @@ public class DataItemService {
 
 
         //后端分页
-        Integer ind=(page)*pageSize-pageSize;
+        Integer ind = (page) * pageSize - pageSize;
 
 
-        if(resultList.size()<=pageSize){
-            flist=resultList;
-        }else {
+        if (resultList.size() <= pageSize) {
+            flist = resultList;
+        } else {
 
             if (ind + pageSize > resultList.size()) {
                 int exp = resultList.size() % pageSize;
@@ -716,74 +703,75 @@ public class DataItemService {
         }
 
 
-        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC,"viewCount");
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
 
-        Page pageResult =new PageImpl(flist,new PageRequest(page-1,pageSize,sort),category.size());
+        Page pageResult = new PageImpl(flist, new PageRequest(page - 1, pageSize, sort), category.size());
 
-        JSONObject result=new JSONObject();
-        result.put("content",pageResult.getContent());
-        result.put("totalElements",pageResult.getTotalElements());
-        result.put("users",users);
+        JSONObject result = new JSONObject();
+        result.put("content", pageResult.getContent());
+        result.put("totalElements", pageResult.getTotalElements());
+        result.put("users", users);
 
         return result;
 
     }
 
 
-    public  List<String> findByCa(String categorysId){
+    public List<String> findByCa(String categorysId) {
 
-        Categorys resultList= new Categorys();
+        Categorys resultList = new Categorys();
 
-        resultList=getCategoryById(categorysId);
+        resultList = getCategoryById(categorysId);
 
         return resultList.getDataItem();
     }
 
 
     //用户创建分类数据条目id入到分类库
-    public Integer addCateId(CategoryAddDTO categoryAddDTO){
+    public Integer addCateId(CategoryAddDTO categoryAddDTO) {
 
-        String id=categoryAddDTO.getId();
-        List<String> cate=categoryAddDTO.getCate();
+        String id = categoryAddDTO.getId();
+        List<String> cate = categoryAddDTO.getCate();
 
         Categorys ca;
         List<String> cateData;
 
-        for (int i = 0; i <cate.size() ; i++) {
-          ca=new Categorys();
+        for (int i = 0; i < cate.size(); i++) {
+            ca = new Categorys();
 
-          addAll(id,cate.get(i));
+            addAll(id, cate.get(i));
 
-          ca= getCategoryById(cate.get(i));
+            ca = getCategoryById(cate.get(i));
 
-          cateData=new ArrayList<String>();
-          cateData=ca.getDataItem();
+            cateData = new ArrayList<String>();
+            cateData = ca.getDataItem();
 
-          cateData.add(id);
+            cateData.add(id);
 
-          ca.setDataItem(cateData);
+            ca.setDataItem(cateData);
 
-          categoryDao.save(ca);
+            categoryDao.save(ca);
 
         }
 
         return 1;
     }
-    public void addAll(String dataitemId,String cateId){
-        List<Categorys> par=new ArrayList<>();
-        par=categoryDao.findAllByCategory("...All");
 
-        Categorys p=new Categorys();
-        p=getCategoryById(cateId);
+    public void addAll(String dataitemId, String cateId) {
+        List<Categorys> par = new ArrayList<>();
+        par = categoryDao.findAllByCategory("...All");
 
-        String pid=p.getParentCategory();
+        Categorys p = new Categorys();
+        p = getCategoryById(cateId);
+
+        String pid = p.getParentCategory();
 
         List<String> dataitem;
 
-        for (int i = 0; i <par.size() ; i++) {
-            if(par.get(i).getParentCategory().equals(pid)){
-                dataitem=new ArrayList<>();
-                dataitem=par.get(i).getDataItem();
+        for (int i = 0; i < par.size(); i++) {
+            if (par.get(i).getParentCategory().equals(pid)) {
+                dataitem = new ArrayList<>();
+                dataitem = par.get(i).getDataItem();
                 dataitem.add(dataitemId);
                 par.get(i).setDataItem(dataitem);
 
@@ -796,14 +784,14 @@ public class DataItemService {
     }
 
     //拿到Hubs
-    public List<Hubs> getHubs(Integer num){
-        List<Hubs> hubs=new ArrayList<>();
-        List<Hubs> result=new ArrayList<>();
+    public List<Hubs> getHubs(Integer num) {
+        List<Hubs> hubs = new ArrayList<>();
+        List<Hubs> result = new ArrayList<>();
 
-        hubs=hubsDao.findAll();
+        hubs = hubsDao.findAll();
 
-        for (int i = 0; i <num ; i++) {
-            if(hubs.size()==i){
+        for (int i = 0; i < num; i++) {
+            if (hubs.size() == i) {
                 break;
             }
             result.add(hubs.get(i));
@@ -811,70 +799,69 @@ public class DataItemService {
 
         return result;
     }
-    //动态构建树
-    public Map<String,List<Map<String,String >>> createTree(){
 
-        List<Categorys> allTree=new ArrayList<>();
+    //动态构建树
+    public Map<String, List<Map<String, String>>> createTree() {
+
+        List<Categorys> allTree = new ArrayList<>();
         Categorys parentCate;
 
-        List<Map<String,String >> sonCate;
-        List<Map<String,String >> sonCate2;
+        List<Map<String, String>> sonCate;
+        List<Map<String, String>> sonCate2;
 
 
-
-
-        String parentCaId,category;
+        String parentCaId, category;
         Categorys itor;
 
-        allTree=categoryDao.findAll();
+        allTree = categoryDao.findAll();
 
 
-        Map<String,List<Map<String,String >>> reslut=new HashMap<>();
+        Map<String, List<Map<String, String>>> reslut = new HashMap<>();
 
-        Map<String,String> ele;
+        Map<String, String> ele;
 
 
-        for (int i = 0; i <allTree.size() ; i++) {
+        for (int i = 0; i < allTree.size(); i++) {
 
-            itor=allTree.get(i);
-            String p=itor.getParentCategory();
+            itor = allTree.get(i);
+            String p = itor.getParentCategory();
 
             //对于子类
-            if(!p.equals("null")){
+            if (!p.equals("null")) {
 
-                parentCate=new Categorys();
-                parentCate=getCategoryById(itor.getParentCategory());
+                parentCate = new Categorys();
+                parentCate = getCategoryById(itor.getParentCategory());
 
                 //如果Map中有父类key
-                if(mapHasKey(reslut,parentCate.getCategory())){
+                if (mapHasKey(reslut, parentCate.getCategory())) {
 
-                    ele=new HashMap<>();
-                    sonCate=new ArrayList<>();
+                    ele = new HashMap<>();
+                    sonCate = new ArrayList<>();
                     //拿到父类，取得父类包含的子类数组
-                    sonCate=reslut.get(parentCate.getCategory());
-                    ele.put("category",itor.getCategory());
-                    ele.put("id",itor.getId());
+                    sonCate = reslut.get(parentCate.getCategory());
+                    ele.put("category", itor.getCategory());
+                    ele.put("id", itor.getId());
                     sonCate.add(ele);
                     //修改父类包含的子类，其实质是添加此次遍历的子类
-                    reslut.put(parentCate.getCategory(),sonCate);
+                    reslut.put(parentCate.getCategory(), sonCate);
 
 
-                //如果Map中没有父类的key
-                }else {
+                    //如果Map中没有父类的key
+                } else {
 
-                    ele=new HashMap<>();
-                    sonCate2=new ArrayList<>();
+                    ele = new HashMap<>();
+                    sonCate2 = new ArrayList<>();
 
-                    ele.put("category",itor.getCategory());
-                    ele.put("id",itor.getId());
+                    ele.put("category", itor.getCategory());
+                    ele.put("id", itor.getId());
                     sonCate2.add(ele);
-                    String s=parentCate.getCategory();
-                    reslut.put(parentCate.getCategory(),sonCate2);
+                    String s = parentCate.getCategory();
+                    reslut.put(parentCate.getCategory(), sonCate2);
                 }
 
-            }else {
-                sonCate2=new ArrayList<>();
-                reslut.put(itor.getParentCategory(),sonCate2);
+            } else {
+                sonCate2 = new ArrayList<>();
+                reslut.put(itor.getParentCategory(), sonCate2);
             }
 
         }
@@ -885,11 +872,11 @@ public class DataItemService {
     }
 
 
-    public boolean mapHasKey(Map<String,List<Map<String,String >>> map,String key){
-        Iterator<String> it=map.keySet().iterator();
+    public boolean mapHasKey(Map<String, List<Map<String, String>>> map, String key) {
+        Iterator<String> it = map.keySet().iterator();
 
-        while(it.hasNext()){
-            if(it.next().equals(key)){
+        while (it.hasNext()) {
+            if (it.next().equals(key)) {
                 return true;
             }
         }
@@ -911,26 +898,26 @@ public class DataItemService {
 
 
     //data_item_info页面中的category
-    public List<Map<String,String>> getCategory(String id){
-        DataItem data=new DataItem();
+    public List<Map<String, String>> getCategory(String id) {
+        DataItem data = new DataItem();
         Categorys ca;
-        List<String> li=new ArrayList<>();
+        List<String> li = new ArrayList<>();
 
-        Map<String,String> infoCategory;
+        Map<String, String> infoCategory;
 
-        List<Map<String,String>> re=new ArrayList<>();
+        List<Map<String, String>> re = new ArrayList<>();
 
 
-        data=getById(id);
+        data = getById(id);
 
-        li=data.getClassifications();
+        li = data.getClassifications();
 
         for (int i = 0; i < li.size(); i++) {
-            ca=new Categorys();
-            ca=getCategoryById(li.get(i));
-            infoCategory=new HashMap<>();
-            infoCategory.put("id",li.get(i));
-            infoCategory.put("cateContent",ca.getCategory());
+            ca = new Categorys();
+            ca = getCategoryById(li.get(i));
+            infoCategory = new HashMap<>();
+            infoCategory.put("id", li.get(i));
+            infoCategory.put("cateContent", ca.getCategory());
 
             re.add(infoCategory);
 
@@ -941,21 +928,18 @@ public class DataItemService {
     }
 
 
-    public Page<DataItem> searchDataByUserId(String userOid,Integer page,Integer pageSize,boolean asc,String searchText){
-
+    public Page<DataItem> searchDataByUserId(String userOid, int page, int pageSize, int asc, String searchText) {
 
 
         //todo 超出堆内存解决办法
 
-        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
 //        searchText= '%' + searchText + '%';
 
-        return dataItemDao.findByAuthorAndNameContaining(pageable,userOid,searchText);
-
-
-
+        Page<DataItem> dataItems= dataItemDao.findByAuthorAndNameContains(pageable, userOid, searchText);
+        return dataItems;
 
 //        for (int k = 0; k <allDList.size() ; k++) {
 //            if(allDList.get(k).getName().indexOf(searchText)>-1||allDList.get(k).getDescription().indexOf(searchText)>-1){
@@ -992,134 +976,153 @@ public class DataItemService {
 //        }
 
 
-
-
-
     }
 
 
+    public JSONObject getDataItemByDataId(String dataId){
 
+        DataItem dataItem =  dataItemDao.findFirstById(dataId);
 
-    //get related models
-    public List<Map<String,String>> getRelatedModels(String id){
-
-
-//            DataItem dataItem=getById(id);
-           DataItem dataItem=getById(id);
-
-           List<String> relatedModels=dataItem.getRelatedModels();
-
-
-           if(relatedModels==null){
-               List<Map<String,String>> list=new ArrayList<>();
-               return list;
-
-           }
-            List<Map<String,String>> data=new ArrayList<>();
-
-            ModelItem modelItem;
-
-            Map<String,String> modelsInfo;
-
-            for (int i = 0; i < relatedModels.size(); i++) {
-                 //只取三个
-                if(i==3){
-                     break;
-                 }
-
-                modelItem=new ModelItem();
-
-                modelItem=getModelById(relatedModels.get(i));
-
-                modelsInfo=new HashMap<>();
-                modelsInfo.put("name",modelItem.getName());
-                modelsInfo.put("oid",modelItem.getOid());
-                modelsInfo.put("description",modelItem.getDescription());
-
-                data.add(modelsInfo);
-
+        JSONObject jsonObject = new JSONObject();
+        if(dataItem == null)
+            jsonObject.put("noResult",1);
+        else{
+            List<String> cates = new ArrayList<>();
+            cates = dataItem.getClassifications();
+            List<String> categorys = new ArrayList<>();
+            for(String cate : cates){
+                Categorys category = getCategoryById(cate);
+                categorys.add(category.getCategory());
             }
 
+            JSONObject obj =(JSONObject) JSON.toJSON(dataItem);
+            obj.put("categories",categorys);
+            jsonObject.put("result",obj);
+        }
 
+        return jsonObject;
 
-
-        return  data;
 
     }
-//getAllRelatedModels
-public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
+
+    //get related models
+    public List<Map<String, String>> getRelatedModels(String id) {
 
 
 //            DataItem dataItem=getById(id);
-    DataItem dataItem=getById(id);
-    List<Map<String,String>> data=new ArrayList<>();
-    List<String> relatedModels=dataItem.getRelatedModels();
-    ModelItem modelItem;
-    Map<String,String> modelsInfo;
-    if(relatedModels==null){
-        modelsInfo=new HashMap<>();
-        modelsInfo.put("all","all");
-        data.add(modelsInfo);
-        return data;
-    }
+        DataItem dataItem = getById(id);
 
-    if(more-5 >relatedModels.size()||more-5 == relatedModels.size()){
-        modelsInfo=new HashMap<>();
-        modelsInfo.put("all","all");
-        data.add(modelsInfo);
-        return data;
-    }
-
-    for (int i = more-5; i <more&&i<relatedModels.size(); i++) {
-        //只取三个
-
-        modelItem=new ModelItem();
-
-        modelItem=getModelById(relatedModels.get(i));
-
-        modelsInfo=new HashMap<>();
-        modelsInfo.put("name",modelItem.getName());
-        modelsInfo.put("oid",modelItem.getOid());
-        modelsInfo.put("description",modelItem.getDescription());
-
-        data.add(modelsInfo);
-
-    }
-    return  data;
-
-}
-
-    public boolean addRelatedModels(String id,List<String> relatedModels){
+        List<String> relatedModels = dataItem.getRelatedModels();
 
 
-        DataItem dataItem=getById(id);
+        if (relatedModels == null) {
+            List<Map<String, String>> list = new ArrayList<>();
+            return list;
+
+        }
+        List<Map<String, String>> data = new ArrayList<>();
+
         ModelItem modelItem;
 
-        List<String> models=new ArrayList<>();
+        Map<String, String> modelsInfo;
 
         for (int i = 0; i < relatedModels.size(); i++) {
-            modelItem=new ModelItem();
-            modelItem=modelItemDao.findFirstByOid(relatedModels.get(i));
+            //只取三个
+            if (i == 3) {
+                break;
+            }
+
+            modelItem = new ModelItem();
+
+            modelItem = getModelById(relatedModels.get(i));
+
+            modelsInfo = new HashMap<>();
+            modelsInfo.put("name", modelItem.getName());
+            modelsInfo.put("oid", modelItem.getOid());
+            modelsInfo.put("description", modelItem.getDescription());
+
+            data.add(modelsInfo);
+
+        }
+
+
+        return data;
+
+    }
+
+    //getAllRelatedModels
+    public List<Map<String, String>> getAllRelatedModels(String id, Integer more) {
+
+
+//            DataItem dataItem=getById(id);
+        DataItem dataItem = getById(id);
+        List<Map<String, String>> data = new ArrayList<>();
+        List<String> relatedModels = dataItem.getRelatedModels();
+        ModelItem modelItem;
+        Map<String, String> modelsInfo;
+        if (relatedModels == null) {
+            modelsInfo = new HashMap<>();
+            modelsInfo.put("all", "all");
+            data.add(modelsInfo);
+            return data;
+        }
+
+        if (more - 5 > relatedModels.size() || more - 5 == relatedModels.size()) {
+            modelsInfo = new HashMap<>();
+            modelsInfo.put("all", "all");
+            data.add(modelsInfo);
+            return data;
+        }
+
+        for (int i = more - 5; i < more && i < relatedModels.size(); i++) {
+            //只取三个
+
+            modelItem = new ModelItem();
+
+            modelItem = getModelById(relatedModels.get(i));
+
+            modelsInfo = new HashMap<>();
+            modelsInfo.put("name", modelItem.getName());
+            modelsInfo.put("oid", modelItem.getOid());
+            modelsInfo.put("description", modelItem.getDescription());
+
+            data.add(modelsInfo);
+
+        }
+        return data;
+
+    }
+
+    public boolean addRelatedModels(String id, List<String> relatedModels) {
+
+
+        DataItem dataItem = getById(id);
+        ModelItem modelItem;
+
+        List<String> models = new ArrayList<>();
+
+        for (int i = 0; i < relatedModels.size(); i++) {
+            modelItem = new ModelItem();
+            modelItem = modelItemDao.findFirstByOid(relatedModels.get(i));
             models.add(modelItem.getId());
         }
 
-        List<String> re=new ArrayList<>();
-        re=dataItem.getRelatedModels();
+        List<String> re = new ArrayList<>();
+        re = dataItem.getRelatedModels();
 
-        if(re==null){
-            List<String> li=new ArrayList<>();
-            for (int m = 0; m <models.size() ; m++) {
+        if (re == null) {
+            List<String> li = new ArrayList<>();
+            for (int m = 0; m < models.size(); m++) {
                 li.add(models.get(m));
             }
 
             dataItem.setRelatedModels(li);
 
-        }else{
-            for (int j = 0; j <models.size() ; j++) {
+        } else {
+            for (int j = 0; j < models.size(); j++) {
                 re.add(models.get(j));
             }
         }
-
 
 
         dataItemDao.save(dataItem);
@@ -1129,133 +1132,129 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
 
     //todo related data to models 3 apis getRelatedData
 
-    public List<Map<String,String>> getRelatedData(String id){
+    public List<Map<String, String>> getRelatedData(String id) {
 
-        ModelItem modelItem=modelItemDao.findFirstByOid(id);
+        ModelItem modelItem = modelItemDao.findFirstByOid(id);
 
-        List<String> relatedData=modelItem.getRelatedData();
+        List<String> relatedData = modelItem.getRelatedData();
 
-        if(relatedData==null){
-            List<Map<String,String>> list=new ArrayList<>();
+        if (relatedData == null) {
+            List<Map<String, String>> list = new ArrayList<>();
             return list;
 
         }
 
-        List<Map<String,String>> data=new ArrayList<>();
-        Map<String,String> dataInfo;
+        List<Map<String, String>> data = new ArrayList<>();
+        Map<String, String> dataInfo;
         DataItem dataItem;
-
 
 
         for (int i = 0; i < relatedData.size(); i++) {
             //只取三个
-            if(i==3){
+            if (i == 3) {
                 break;
             }
 
-            modelItem=new ModelItem();
+            modelItem = new ModelItem();
 
-            dataItem=getById(relatedData.get(i));
+            dataItem = getById(relatedData.get(i));
 
-            dataInfo=new HashMap<>();
-            dataInfo.put("name",dataItem.getName());
-            dataInfo.put("oid",dataItem.getId());
-            dataInfo.put("description",dataItem.getDescription());
+            dataInfo = new HashMap<>();
+            dataInfo.put("name", dataItem.getName());
+            dataInfo.put("oid", dataItem.getId());
+            dataInfo.put("description", dataItem.getDescription());
 
             data.add(dataInfo);
 
         }
 
 
-        return  data;
-
+        return data;
 
 
     }
 
     //getAllRelatedData
-    public List<Map<String,String>> getAllRelatedData(String id,Integer more){
+    public List<Map<String, String>> getAllRelatedData(String id, Integer more) {
 
 
+        ModelItem modelItem = modelItemDao.findFirstByOid(id);
 
-        ModelItem modelItem=modelItemDao.findFirstByOid(id);
-
-        List<String> relatedData=modelItem.getRelatedData();
+        List<String> relatedData = modelItem.getRelatedData();
 
 
-        List<Map<String,String>> data=new ArrayList<>();
+        List<Map<String, String>> data = new ArrayList<>();
 
         DataItem dataItem;
 
-        Map<String,String> dataInfo;
-        if(relatedData==null){
-            dataInfo=new HashMap<>();
-            dataInfo.put("all","all");
+        Map<String, String> dataInfo;
+        if (relatedData == null) {
+            dataInfo = new HashMap<>();
+            dataInfo.put("all", "all");
             data.add(dataInfo);
             return data;
         }
 
 
-        if(more-5 >relatedData.size()||more-5 == relatedData.size()){
+        if (more - 5 > relatedData.size() || more - 5 == relatedData.size()) {
 
-            dataInfo=new HashMap<>();
-            dataInfo.put("all","all");
+            dataInfo = new HashMap<>();
+            dataInfo.put("all", "all");
             data.add(dataInfo);
 
             return data;
         }
 
-        for (int i = more-5; i <more&&i<relatedData.size(); i++) {
+        for (int i = more - 5; i < more && i < relatedData.size(); i++) {
             //只取三个
 
-            dataItem=new DataItem();
+            dataItem = new DataItem();
 
-            dataItem=getById(relatedData.get(i));
+            dataItem = getById(relatedData.get(i));
 
-            dataInfo=new HashMap<>();
-            dataInfo.put("name",dataItem.getName());
-            dataInfo.put("oid",dataItem.getId());
-            dataInfo.put("description",dataItem.getDescription());
+            dataInfo = new HashMap<>();
+            dataInfo.put("name", dataItem.getName());
+            dataInfo.put("oid", dataItem.getId());
+            dataInfo.put("description", dataItem.getDescription());
 
             data.add(dataInfo);
 
         }
-        return  data;
+        return data;
 
     }
 
-    public boolean addRelatedData(String id,List<String> relatedData){
+    public boolean addRelatedData(String id, List<String> relatedData) {
 
 
-        ModelItem modelItem=modelItemDao.findFirstByOid(id);
+        ModelItem modelItem = modelItemDao.findFirstByOid(id);
         DataItem dataItem;
 
-        List<String> data=new ArrayList<>();
+        List<String> data = new ArrayList<>();
 
         for (int i = 0; i < relatedData.size(); i++) {
-            dataItem=new DataItem();
-            dataItem=getById(relatedData.get(i));
+            dataItem = new DataItem();
+            dataItem = getById(relatedData.get(i));
             data.add(dataItem.getId());
         }
 
-        List<String> re=new ArrayList<>();
-        re=modelItem.getRelatedData();
+        List<String> re = new ArrayList<>();
+        re = modelItem.getRelatedData();
 
 
-        if(re==null){
-            List<String> li=new ArrayList<>();
-            for (int m = 0; m <data.size() ; m++) {
+        if (re == null) {
+            List<String> li = new ArrayList<>();
+            for (int m = 0; m < data.size(); m++) {
                 li.add(data.get(m));
             }
 
             modelItem.setRelatedData(li);
 
-        }else{
-            for (int j = 0; j <data.size() ; j++) {
+        } else {
+            for (int j = 0; j < data.size(); j++) {
                 re.add(data.get(j));
             }
         }
-
 
 
         modelItemDao.save(modelItem);
@@ -1264,68 +1263,67 @@ public List<Map<String,String>> getAllRelatedModels(String id,Integer more){
     }
 
 
-    public JSONArray getRelation(String id){
+    public JSONArray getRelation(String id) {
 
-        JSONArray result=new JSONArray();
-        DataItem dataItem=dataItemDao.findFirstById(id);
-        List<String> relatedModels=dataItem.getRelatedModels();
+        JSONArray result = new JSONArray();
+        DataItem dataItem = dataItemDao.findFirstById(id);
+        List<String> relatedModels = dataItem.getRelatedModels();
 
-        for(String oid:relatedModels){
-            ModelItem modelItem=modelItemDao.findFirstByOid(oid);
-            JSONObject object=new JSONObject();
-            object.put("oid",modelItem.getOid());
-            object.put("name",modelItem.getName());
-            User user=userDao.findFirstByUserName(modelItem.getAuthor());
-            object.put("author",user.getName());
+        for (String oid : relatedModels) {
+            ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+            JSONObject object = new JSONObject();
+            object.put("oid", modelItem.getOid());
+            object.put("name", modelItem.getName());
+            User user = userDao.findFirstByUserName(modelItem.getAuthor());
+            object.put("author", user.getName());
             result.add(object);
         }
 
         return result;
     }
 
-    public String setRelation(String id, List<String> relations){
+    public String setRelation(String id, List<String> relations) {
 
-        DataItem dataItem=dataItemDao.findFirstById(id);
+        DataItem dataItem = dataItemDao.findFirstById(id);
 
-        List<String> relationDelete=new ArrayList<>();
-        for(int i=0;i<dataItem.getRelatedModels().size();i++){
+        List<String> relationDelete = new ArrayList<>();
+        for (int i = 0; i < dataItem.getRelatedModels().size(); i++) {
             relationDelete.add(dataItem.getRelatedModels().get(i));
         }
-        List<String> relationAdd=new ArrayList<>();
-        for(int i=0;i<relations.size();i++){
+        List<String> relationAdd = new ArrayList<>();
+        for (int i = 0; i < relations.size(); i++) {
             relationAdd.add(relations.get(i));
         }
 
-        for(int i=0;i<relationDelete.size();i++){
-            for(int j=0;j<relationAdd.size();j++){
-                if(relationDelete.get(i).equals(relationAdd.get(j))){
-                    relationDelete.set(i,"");
-                    relationAdd.set(j,"");
+        for (int i = 0; i < relationDelete.size(); i++) {
+            for (int j = 0; j < relationAdd.size(); j++) {
+                if (relationDelete.get(i).equals(relationAdd.get(j))) {
+                    relationDelete.set(i, "");
+                    relationAdd.set(j, "");
                     break;
                 }
             }
         }
 
-        for(int i=0;i<relationDelete.size();i++){
-            String oid=relationDelete.get(i);
-            if(!oid.equals("")) {
-                ModelItem modelItem=modelItemDao.findFirstByOid(oid);
-                if(modelItem.getRelatedData()!=null) {
+        for (int i = 0; i < relationDelete.size(); i++) {
+            String oid = relationDelete.get(i);
+            if (!oid.equals("")) {
+                ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+                if (modelItem.getRelatedData() != null) {
                     modelItem.getRelatedData().remove(id);
                     modelItemDao.save(modelItem);
                 }
             }
         }
 
-        for(int i=0;i<relationAdd.size();i++){
-            String oid=relationAdd.get(i);
-            if(!oid.equals("")) {
-                ModelItem modelItem=modelItemDao.findFirstByOid(oid);
-                if(modelItem.getRelatedData()!=null) {
+        for (int i = 0; i < relationAdd.size(); i++) {
+            String oid = relationAdd.get(i);
+            if (!oid.equals("")) {
+                ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+                if (modelItem.getRelatedData() != null) {
                     modelItem.getRelatedData().add(id);
-                }
-                else{
-                    List<String> relatedData=new ArrayList<>();
+                } else {
+                    List<String> relatedData = new ArrayList<>();
                     relatedData.add(id);
                     modelItem.setRelatedData(relatedData);
                 }

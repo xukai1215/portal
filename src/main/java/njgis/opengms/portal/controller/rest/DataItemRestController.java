@@ -188,6 +188,18 @@ public class DataItemRestController {
     }
 
 
+    @RequestMapping(value="/getDataItemByDataId",method = RequestMethod.GET)
+    JsonResult getDataItemByDataId(@RequestParam(value="dataId") String dataId,
+                                   HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else
+            return ResultUtils.success(dataItemService.getDataItemByDataId(dataId));
+    }
+
+
 
 //data item end
 
@@ -483,9 +495,9 @@ public class DataItemRestController {
     @RequestMapping(value="/searchDataByUserId",method = RequestMethod.GET)
     JsonResult searchDataByUserId(
             @RequestParam(value="userOid") String userOid,
-            @RequestParam(value="page") Integer page,
-            @RequestParam(value="pageSize") Integer pagesize,
-            @RequestParam(value="asc") boolean asc,
+            @RequestParam(value="page") int page,
+            @RequestParam(value="pageSize") int pagesize,
+            @RequestParam(value="asc") int asc,
             @RequestParam(value="searchText") String searchText
 
     ){

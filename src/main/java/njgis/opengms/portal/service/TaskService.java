@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import static njgis.opengms.portal.utils.Utils.*;
 
@@ -939,6 +940,112 @@ public class TaskService {
 
         return taskObject;
 
+    }
+
+    public JSONObject getTasksByUserIdByStatus(String userName, String status,int page, String sortType, int sortAsc){
+
+        AsyncTask asyncTask = new AsyncTask();
+        List<Future> futures = new ArrayList<>();
+
+        Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
+        Pageable pageable = PageRequest.of(page, 10, sort);
+        Page<Task> tasks = new Page<Task>() {
+            @Override
+            public int getTotalPages() {
+                return 0;
+            }
+
+            @Override
+            public long getTotalElements() {
+                return 0;
+            }
+
+            @Override
+            public <U> Page<U> map(Function<? super Task, ? extends U> function) {
+                return null;
+            }
+
+            @Override
+            public int getNumber() {
+                return 0;
+            }
+
+            @Override
+            public int getSize() {
+                return 0;
+            }
+
+            @Override
+            public int getNumberOfElements() {
+                return 0;
+            }
+
+            @Override
+            public List<Task> getContent() {
+                return null;
+            }
+
+            @Override
+            public boolean hasContent() {
+                return false;
+            }
+
+            @Override
+            public Sort getSort() {
+                return null;
+            }
+
+            @Override
+            public boolean isFirst() {
+                return false;
+            }
+
+            @Override
+            public boolean isLast() {
+                return false;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public Pageable nextPageable() {
+                return null;
+            }
+
+            @Override
+            public Pageable previousPageable() {
+                return null;
+            }
+
+            @Override
+            public Iterator<Task> iterator() {
+                return null;
+            }
+        };
+        if(status.equals("calculating") )
+        {
+            tasks = taskDao.findByUserIdAndStatusBetween(userName,-1,2, pageable);
+        }else if(status.equals("successful") ){
+            tasks = taskDao.findByUserIdAndStatusBetween(userName,1, 3,pageable);
+        }else if(status.equals("failed"))
+            tasks = taskDao.findByUserIdAndStatusBetween(userName,-2, 0,pageable);
+        else
+            tasks = taskDao.findByUserId(userName,pageable);
+        List<Task> ts = tasks.getContent();
+
+        JSONObject taskObject = new JSONObject();
+        taskObject.put("count", tasks.getTotalElements());
+        taskObject.put("tasks", ts);
+
+        return taskObject;
     }
 
     public JSONObject getTasksByModelByUser(String modelId,int page,String userName){

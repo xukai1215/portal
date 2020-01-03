@@ -208,7 +208,7 @@ public class RepositoryRestController {
         return ResultUtils.success(concept);
     }
 
-    @RequestMapping(value = "/createConcept", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createConcept","/newUserSpace/model/createConcept","/newUserSpace/model/manageConcept"}, method = RequestMethod.GET)
     public ModelAndView createConcept() {
 
         System.out.println("create-concept");
@@ -379,7 +379,7 @@ public class RepositoryRestController {
         return ResultUtils.success(spatial);
     }
 
-    @RequestMapping(value = "/createSpatialReference", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createSpatialReference","/newUserSpace/model/createSpatialReference","/newUserSpace/model/manageSpatialReference"}, method = RequestMethod.GET)
     public ModelAndView createSpatialReference() {
 
         System.out.println("create-spatial reference");
@@ -543,7 +543,7 @@ public class RepositoryRestController {
         return ResultUtils.success(template);
     }
 
-    @RequestMapping(value = "/createTemplate",method = RequestMethod.GET)
+    @RequestMapping(value = {"/createTemplate","/newUserSpace/model/createTemplate","/newUserSpace/model/manageTemplate"},method = RequestMethod.GET)
     public ModelAndView createTemplate(){
         System.out.println("create Data Template");
 
@@ -695,7 +695,7 @@ public class RepositoryRestController {
         return ResultUtils.success(unit);
     }
 
-    @RequestMapping(value = "/createUnit",method = RequestMethod.GET)
+    @RequestMapping(value = {"/createUnit","/newUserSpace/model/createUnit","/newUserSpace/model/manageUnit"},method = RequestMethod.GET)
     public ModelAndView createUnit(){
         System.out.println("Create Unit & Metric");
 

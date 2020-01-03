@@ -333,10 +333,48 @@ var vue = new Vue({
         selectFolderVisible:false,
         uploadFileList:[],
 
+        taskStatus:"all",
+
+        options:[
+            {
+                value: 'all',
+                label: 'all',
+
+            },
+            {
+                value: 'successful',
+                label: 'successful',
+
+            },
+
+            {
+                value: 'calculating',
+                label: 'calculating',
+
+            },
+
+            {
+                value: 'failed',
+                label: 'failed',
+
+            },
+        ],
         //server
         modelContainerList:[],
 
 
+    },
+
+    watch:{
+        taskStatus:{
+            handler(newName,oldName){
+                console.log(this.taskStatus)
+                if(this.taskStatus === 'successful')
+                    $('.wzhSelectContainer input').css('background','#63b75d')
+            },
+            immediate: true,
+            deep: true
+        }
     },
 
     methods: {
@@ -438,9 +476,9 @@ var vue = new Vue({
         },
 
         getAllPackageTasks(){
-            // for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
-            //     this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
-            // }
+            for (let i=0;i<this.userTaskFullInfo.tasks.length;i++){
+                this.getOneOfUserTasksToList(this.userTaskFullInfo.tasks[i],i)
+            }
             console.log(this.packageContentList)
         },
 
@@ -962,6 +1000,60 @@ var vue = new Vue({
             }
 
 
+        },
+
+        changeTaskStatus(status){
+            this.taskStatus = status;
+            this.showTasksByStatus(this.taskStatus)
+        },
+
+        showTasksByStatus(status){
+            let name= 'tasks'
+            this.taskStatus = status
+            if(this.taskStatus === 'successful')
+                $('.wzhSelectContainer input').css('background','#63b75d')
+            else  if(this.taskStatus === 'all')
+                $('.wzhSelectContainer input').css('background','#00ABFF')
+            else if(this.taskStatus === 'failed')
+                $('.wzhSelectContainer input').css('background','#d74948')
+            else
+                $('.wzhSelectContainer input').css('background','#1caf9a')
+            axios.get("/task/getTasksByUserIdByStatus",{
+                params:{
+                    status:status ,
+                    page: this.page - 1,
+                    sortType: this.sortType,
+                    asc: -1,
+                }
+                }
+
+
+            ,).then(
+                res=>{
+                    if (res.data.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        const data = res.data.data;
+                        this.resourceLoad = false;
+                        this.totalNum = data.count;
+                        for (var i = 0; i < data[name].length; i++) {
+                            // this.searchResult.push(data[name][i]);
+                            this.searchResult=data[name];
+                            console.log(data[name][i]);
+                        }
+                        //this.modelItemResult = data[name];
+                        if (this.page == 1) {
+                            this.pageInit();
+                        }
+                    }
+                }
+            )
+
+            this.activeIndex = '6'
+            this.curIndex = '6'
+            this.defaultActive = '6';
+            this.pageControlIndex = '6';
         },
 
         addOutputToMyData(output){
@@ -1549,6 +1641,7 @@ var vue = new Vue({
             console.log(index)
             this.resourceLoad = true;
             this.curIndex = index;
+            this.defaultActive = index;
             switch (index) {
                 case '1':
                     this.searchText = '';
@@ -1557,7 +1650,7 @@ var vue = new Vue({
                     this.researchIndex = 1;
                     this.getTasksInfo();
                     this.pageControlIndex = 'research';
-                    this.getArticleResult();
+                    // this.getArticleResult();
 
                     break;
                 case '2-1':
@@ -1602,6 +1695,7 @@ var vue = new Vue({
                     this.searchResult = [];
                     this.page = 1;
                     this.getConcepts();
+
                     this.pageControlIndex = this.curIndex;
                     break;
                 case '4-2':
@@ -1631,6 +1725,7 @@ var vue = new Vue({
                     this.page = 1;
                     this.getTheme();
                     this.pageControlIndex = this.curIndex;
+                    console.log(this.defaultActive)
                     break;
                 // case '5-1':
                 // case '5-2':
@@ -2766,11 +2861,11 @@ var vue = new Vue({
             var da = {
                 userOid: this.userId,
                 page: this.page,
-                pagesize: this.pageSize,
+                pageSize: this.pageSize,
                 asc: false,
                 searchText: this.searchText
             }
-            axios.get("/dataItem/searchDataByUserId/", {
+            axios.get("/dataItem/searchDataByUserId", {
                 params: da
             })
                 .then((res) => {
@@ -3138,7 +3233,9 @@ var vue = new Vue({
             } else if (this.curIndex == '6') {
                 url = "/task/getTasksByUserId";
                 name = "tasks";
+                this.taskStatus = 'all'
                 this.sortAsc = -1;
+                $('.wzhSelectContainer input').css('background','#63b75d')
             }
             // else if(this.deploys_show){
             //     url = "http://geomodeling.njnu.edu.cn/GeoModeling/ComputableModelsForDeployServlet";
@@ -3957,8 +4054,13 @@ var vue = new Vue({
 
                     case '6':
 
-                        if (this.isInSearch == 0)
-                            this.getModels();
+                        if (this.isInSearch == 0){
+                            if(this.taskStatus!=10)
+                                this.showTasksByStatus(this.taskStatus)
+                            else
+                                this.getModels();
+                        }
+
                         else this.searchModels();
                         break;
 
@@ -4025,7 +4127,7 @@ var vue = new Vue({
 
         //add data item
         createdataitem() {
-
+            this.curIndex = "3-1"
             this.dataItemAddDTO.name = $("#dataname").val();
 
             this.dataItemAddDTO.type = $("input[name='imgradio']:checked").val();
@@ -4595,8 +4697,13 @@ var vue = new Vue({
             this.uploadInPath=index;
             this.uploadSource=[];
             this.selectedPath=[];
+            this.uploadFileList=[];
+            setTimeout(()=>{
+                this.uploadDialogVisible=true;
+            },100
 
-            this.uploadDialogVisible=true;
+            )
+
 
         },
 
@@ -4795,7 +4902,8 @@ var vue = new Vue({
                                     console.log(this.myFile)
                                 }
                             } else {
-                                this.refreshPackage(0);
+                                setTimeout(()=>{
+                                this.refreshPackage(0)},300);
                                 //要写一个前台按路径查找的函数
                             }
                         }else{
@@ -4811,6 +4919,10 @@ var vue = new Vue({
                         //this.selectedPath=[];
 
                     }
+
+                    setTimeout(()=>{
+                        this.uploadDialogVisible=false
+                    },500)
 
                 }
             });
@@ -5536,7 +5648,7 @@ var vue = new Vue({
     },
 
     created() {
-        this.getArticleResult();
+        // this.getArticleResult();
         this.getTasks();
     },
     mounted() {

@@ -219,13 +219,24 @@ public class UserRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/userSpace", method = RequestMethod.GET)
-    public ModelAndView getUserSpace() {
+//    @RequestMapping(value = "/userSpace", method = RequestMethod.GET)
+//    public ModelAndView getUserSpace() {
+//
+//        System.out.println("user_space");
+//
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("user_space");
+//
+//        return modelAndView;
+//    }
 
-        System.out.println("user_space");
+    @RequestMapping(value = "/userSpace", method = RequestMethod.GET)
+    public ModelAndView getUserSpace1() {
+
+        System.out.println("userSpace1");
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user_space");
+        modelAndView.setViewName("userSpace1");
 
         return modelAndView;
     }
@@ -293,6 +304,24 @@ public class UserRestController {
         }
     }
 
+    @RequestMapping(value = "/getLoginUser", method = RequestMethod.GET)
+    public JsonResult getUser(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        JSONObject jsonObject = new JSONObject();
+        String sessionOid=session.getAttribute("oid").toString();
+        if(session.getAttribute("uid")==null){
+            jsonObject.put("result","error");
+            jsonObject.put("message","please login");
+
+            return ResultUtils.error(-1,"no login");
+
+        }else{
+
+            String userId = session.getAttribute("uid").toString();
+            return ResultUtils.success(userService.getUser(userId));
+        }
+    }
+
     @RequestMapping(value="/getUserByName",method = RequestMethod.GET)
     public JsonResult getUserByName(@RequestParam String userId) {
         return ResultUtils.success(userService.getUser(userId));
@@ -331,7 +360,7 @@ public class UserRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/createModelItem", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createModelItem","/userSpace/model/createModelItem","/userSpace/model/manageModelItem"}, method = RequestMethod.GET)
     public ModelAndView createModelItem() {
 
         System.out.println("create-modelitem");
@@ -342,7 +371,7 @@ public class UserRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/createTheme", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createTheme","/userSpace/theme/createTheme","/userSpace/theme/manageTheme"}, method = RequestMethod.GET)
     public ModelAndView createTheme(){
         System.out.println("create-theme");
 
@@ -352,7 +381,7 @@ public class UserRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/createConceptualModel", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createConceptualModel","/userSpace/model/createConceptualModel","/userSpace/model/manageConceptualModel"}, method = RequestMethod.GET)
     public ModelAndView createConceptualModel() {
 
         System.out.println("create-conceptual-model");
@@ -363,7 +392,7 @@ public class UserRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/createLogicalModel", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createLogicalModel","/userSpace/model/createLogicalModel","/userSpace/model/manageLogicalModel"}, method = RequestMethod.GET)
     public ModelAndView createLogicalModel() {
 
         System.out.println("create-logical-model");
@@ -374,7 +403,7 @@ public class UserRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/createComputableModel", method = RequestMethod.GET)
+    @RequestMapping(value = {"/createComputableModel","/userSpace/model/createComputableModel","/userSpace/model/manageComputableModel"}, method = RequestMethod.GET)
     public ModelAndView createComputableModel() {
 
         System.out.println("create-computable-model");
@@ -385,6 +414,16 @@ public class UserRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value = {"/createDataItem","/userSpace/data/createDataItem","/userSpace/data/manageDataItem"}, method = RequestMethod.GET)
+    public ModelAndView createDataItem() {
+
+        System.out.println("create-dataItem");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("create-dataItem");
+
+        return modelAndView;
+    }
 
     //get data items table
     @RequestMapping(value = "/getDataItems",method = RequestMethod.GET)
@@ -702,5 +741,291 @@ public class UserRestController {
 
         return ResultUtils.success();
 
+    }
+
+    @RequestMapping(value="/userSpace/model",method = RequestMethod.GET)
+    ModelAndView getUserModelItemInUserSpace(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+//            User user=userService.getByOid(session.getAttribute("oid").toString());
+////            Object object = ResultUtils.success(userService.getByOid(id)).getData();
+//            JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
+//            String loginId= session.getAttribute("oid").toString();
+//            userInfo.put("loginId",loginId);
+            modelAndView.setViewName("userModel");
+//            modelAndView.addObject("userInfo", userInfo);
+//            System.out.println(userInfo);
+//            modelAndView.addObject("loadPath",htmlLoadPath);
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/model/",method = RequestMethod.GET)
+    ModelAndView getModelItemsPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userModels");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/data",method = RequestMethod.GET)
+    ModelAndView getDataItemPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userData");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/data/dataitem",method = RequestMethod.GET)
+    ModelAndView getUserDataItems(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userDataItems");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/data/myDataSpace",method = RequestMethod.GET)
+    ModelAndView getUserDataSpace(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userDataSpace");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/community",method = RequestMethod.GET)
+    ModelAndView getCommunityPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userCommunity");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/createUnit","/userSpace/community/createUnit","/userSpace/community/manageUnit"},method = RequestMethod.GET)
+    public ModelAndView createUnit(){
+        System.out.println("Create Unit & Metric");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("create-unit");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/createTemplate","/userSpace/community/createTemplate","/userSpace/community/manageTemplate"},method = RequestMethod.GET)
+    public ModelAndView createTemplate(){
+        System.out.println("create Data Template");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("create-template");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/createSpatialReference","/userSpace/community/createSpatialReference","/userSpace/community/manageSpatialReference"}, method = RequestMethod.GET)
+    public ModelAndView createSpatialReference() {
+
+        System.out.println("create-spatial reference");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("create-spatialReference");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/createConcept","/userSpace/community/createConcept","/userSpace/community/manageConcept"}, method = RequestMethod.GET)
+    public ModelAndView createConcept() {
+
+        System.out.println("create-concept");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("create-concept");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/community/",method = RequestMethod.GET)
+    ModelAndView getCommunitiesPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userCommunities");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/server",method = RequestMethod.GET)
+    ModelAndView getServerPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userServer");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+
+
+    @RequestMapping(value="/userSpace/tasks",method = RequestMethod.GET)
+    ModelAndView getTasksPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userTasks");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value="/userSpace/theme",method = RequestMethod.GET)
+    ModelAndView getThemePage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userTheme");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/task",method = RequestMethod.GET)
+    ModelAndView getTaskPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userTask");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/account",method = RequestMethod.GET)
+    ModelAndView getAccountPage(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("userAccount");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/userSpace/feedback",method = RequestMethod.GET)
+    ModelAndView getContact(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            modelAndView.setViewName("login");
+            modelAndView.addObject("notice","You need to log in first to view another user's page.");
+            modelAndView.addObject("unlogged", "1");
+        }else {
+            modelAndView.setViewName("feedBack");
+
+
+            modelAndView.addObject("logged", "1");
+        }
+
+        return modelAndView;
     }
 }

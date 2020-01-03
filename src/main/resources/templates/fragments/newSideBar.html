@@ -1,0 +1,275 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <title>Title</title>
+</head>
+
+<body class="ms-Fabric">
+<template id="headSideBar"  th:fragment="headSideBar">
+    <div class="ms-Fabric">
+        <div style="width: 100%">
+            <div id="headBar" style="">
+                <div class="logo" style="float:none;margin:0 0 0 39px; width:200px;height: 50px;cursor:pointer;background-color: #1b1e24" onclick="window.location.href='/home'"> </div>
+                <div class="flexCol flexCenter titleContainer" style="flex: 1;margin-right: 150px">
+                    <div id="title" class="flexCol"  style="display:inline-block;color: rgb(248, 249, 250);font-size:24px;text-align: center;"></div>
+                </div>
+                <div class="flexRow flexCenter iconContainer" style="margin-right: 20px">
+                    <img class="round_icon" :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
+                    <p id="userName" style="color: rgb(248, 249, 250);">{{userInfo.name}}</p>
+                </div>
+
+
+
+                <li class="navbar-right dropdown" style="display: none;float: right;height: 50px">
+                    <a style="padding:5px 25px 0;cursor:pointer" class="fa fa-bars fa-2x" id="dLabel" type="button" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu" style="margin-top:-8px;" aria-labelledby="dLabel">
+                        <li><a href="/modelItem/repository">Model Repository</a></li>
+                        <li><a href="/dataItem/repository">Data Repository</a></li>
+                        <li><a>Community</a></li>
+                        <li><a href="/repository/concept" style="padding-left: 30px;">Concept & Semantic</a></li>
+                        <li><a href="/repository/spatialReference" style="padding-left: 30px;">Spatial Reference</a></li>
+                        <li><a href="/repository/template" style="padding-left: 30px;">Data Template</a></li>
+                        <li><a href="/repository/unit" style="padding-left: 30px;">Unit & Metric</a></li>
+                        <li><a href="/repository/thematic" style="padding-left: 30px;">Thematic Center</a></li>
+                        <li><a href="/user/out" >Log Out</a></li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+        <div class="innerShadowTop" style="">
+        </div>
+        <div>
+            <div class="backImg">
+                <div class="sideContainer " style="margin-top:30px;position: fixed; ">
+                    <ul class="flexCol sideUl " >
+                        <!--                <li class="filter" style="height: 0;display: none" ></li>-->
+                        <li class="flexCol mainCenter" :class="curIndex == 1?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 1?'showLeftBorder':''" @click="changeRter(1)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="el-icon-location" style="font-size: 18px;color: #05c4ff;margin: 4px;" ></i><p>Home</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 2?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 2?'showLeftBorder':''" @click="changeRter(2)">
+                                <div class="flexRow flexColCenter">
+                                    <img class="squareMini" src="/static/img/model/model.png"><p>Model</p>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 3?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 3?'showLeftBorder':''" @click="changeRter(3)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="fa fa-database" style="font-size: 18px;color: #05c4ff;margin: 4px;" ></i><p>Data</p>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 4?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 4?'showLeftBorder':''" @click="changeRter(4)">
+                                <div class="flexRow flexColCenter">
+                                    <img class="squareMini" src="/static/img/model/server.png"><p>Server</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 5?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 5?'showLeftBorder':''" @click="changeRter(5)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="el-icon-s-tools" style="font-size: 18px;color: #05c4ff;margin: 4px;" ></i><p>Task</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 6?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 6?'showLeftBorder':''" @click="changeRter(6)">
+                                <div class="flexRow flexColCenter">
+                                    <i data-icon-name="HomeGroup" aria-hidden="true" class="ms-Icon root-43" style="font-size: 18px;font-weight: 600; color: #05c4ff;margin: 4px;"></i>
+                                    <p>Community</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 7?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 7?'showLeftBorder':''" @click="changeRter(7)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="el-icon-s-order" style="font-size: 18px;color: #05c4ff;margin: 4px;" ></i><p>Theme Center</p>
+                                </div>
+                            </div>
+                        </li>
+                        <div class="innerBorderGrey60" style="margin:3px"></div>
+                        <li class="flexCol mainCenter" :class="curIndex == 8?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 8?'showLeftBorder':''" @click="changeRter(8)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="fa fa-user-circle-o" style="font-size: 18px;color: #d48634;margin: 4px;" ></i><p>My Account</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 9?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 9?'showLeftBorder':''" @click="changeRter(9)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="fa fa-paper-plane" style="font-size: 18px;color: #d48634;margin: 4px;" ></i><p>Feedback</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="topContainer" >
+                    <ul class="flexRow rowUl flexJCSA flexAIStart" >
+                        <li class="flexCol mainCenter" :class="curIndex == 1?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 1?'showBottomBorder':''" @click="changeRter(1)">
+                                <p>Home</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 2?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 2?'showBottomBorder':''" @click="changeRter(2)">
+                                <p>Model</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 3?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 3?'showBottomBorder':''" @click="changeRter(3)">
+                                <p>Data</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 4?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 4?'showBottomBorder':''" @click="changeRter(4)">
+                                <p>Server</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 5?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 5?'showBottomBorder':''" @click="changeRter(5)">
+                                <p>Task</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 6?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 6?'showBottomBorder':''" @click="changeRter(6)">
+                                <p>Community</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 7?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 7?'showBottomBorder':''" @click="changeRter(7)">
+                                <p>Theme Center</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 8?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 8?'showBottomBorder':''" @click="changeRter(8)">
+                                <p>My Account</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 9?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 9?'showBottomBorder':''" @click="changeRter(9)">
+                                <p>Feedback</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+</body>
+<script th:fragment="sideBarComponent" th:inline="javascript">
+    Vue.component('head-side-bar', {
+        template: '#headSideBar',
+        props: ['userInfoinParent','curIndexParent'],
+
+        data() {
+            return {
+                curIndex:1,
+                itemIndex: 1,
+
+                //
+                userInfo:{
+
+                },
+            }
+        },
+
+        watch: {
+            curIndexParent: {
+                handler() {
+                    this.curIndex = this.curIndexParent
+                    console.log('parent change')
+                },
+                immediate: true
+            }
+        },
+
+        methods:{
+            changeRter(index){
+                this.curIndex = index;
+                var urls={
+                    1:'/user/userSpace',
+                    2:'/user/userSpace/model',
+                    3:'/user/userSpace/data',
+                    4:'/user/userSpace/server',
+                    5:'/user/userSpace/task',
+                    6:'/user/userSpace/community',
+                    7:'/user/userSpace/theme',
+                    8:'/user/userSpace/account',
+                    9:'/user/userSpace/feedback',
+                }
+
+                this.setSession('curIndex',index)
+                window.location.href=urls[index]
+
+            },
+
+            setSession(name, value) {
+                window.sessionStorage.setItem(name, value);
+                // this.editOid = sessionStorage.getItem('editItemOid');
+            },
+
+            getUserInfo() {
+                axios.get('/user/getLoginUser').then(
+                    res => {
+                        if(res.data.code==0){
+                            this.userInfo = res.data.data
+                            let orgs = this.userInfo.organizations;
+
+                            if (orgs.length != 0) {
+                                this.userInfo.orgStr = orgs[0];
+                                for (i = 1; i < orgs.length; i++) {
+                                    this.userInfo.orgStr += ", " + orgs[i];
+                                }
+                            }
+
+                            let sas = this.userInfo.subjectAreas;
+                            if (sas != null && sas.length != 0) {
+                                this.userInfo.saStr = sas[0];
+                                for (i = 1; i < sas.length; i++) {
+                                    this.userInfo.saStr += ", " + sas[i];
+                                }
+                            }
+
+
+                            this.load = false;
+                        }
+
+                    }
+                )
+            },
+        },
+
+        created(){
+            this.getUserInfo()
+        },
+
+        mounted(){
+            var index = window.sessionStorage.getItem("curIndex");
+            if (index != null && index != undefined && index != "" && index != NaN) {
+                this.defaultActive = index;
+                window.sessionStorage.removeItem("index");
+                this.curIndex=index
+
+            }else
+                this.curIndex=1
+        },
+
+    })
+</script>
+</html>

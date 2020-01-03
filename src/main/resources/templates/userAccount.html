@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Space | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container" style="height: 2000px;" v-cloak>
+        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <div class="innerShadowCol">
+            <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                 style="margin-left: 240px;"
+                 :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                 id="pageContent">
+                <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                <div class="flexColContainer mainContent" style="">
+                    <section role="description" class="flexCol flexCenter contentSection">
+                        <div class="profile-pic text-center">
+                            <img :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image">
+                        </div>
+                        <h4 >Welcome,<a :href="'/user/'+userInfo.oid">{{userInfo.name}}</a></h4>
+
+                    </section>
+                    <section class="flexRowContainer flexWrap contentSection">
+                        <div class="contentCard flexCol flexColCenter" style="height: 450px">
+                            <div v-cloak class="col-md-12">
+
+                                <div class="panel-body">
+                                    <h4 style="margin-left: -5px">Personal Infomation</h4>
+                                        <ul class="p-info">
+                                            <li>
+                                                <div class="title"><h5>Name</h5></div>
+                                                <div class="desk"><h5>{{userInfo.name}}</h5></div>
+                                            </li>
+                                            <li>
+                                                <div class="title"><h5>Email</h5></div>
+                                                <div class="desk"><h5>{{userInfo.email}}</h5></div>
+                                            </li>
+                                            <li v-if="userInfo.phone!=''">
+                                                <div class="title"><h5>Phone</h5></div>
+                                                <div class="desk"><h5>{{userInfo.phone}}</h5></div>
+                                            </li>
+                                            <li v-if="userInfo.wiki!=''">
+                                                <div class="title"><h5>Home Page</h5></div>
+                                                <div class="desk"><h5>{{userInfo.wiki}}</h5></div>
+                                            </li>
+                                            <li v-if="userInfo.orgStr!=''">
+                                                <div class="title"><h5>Organizations</h5></div>
+                                                <div class="desk"><h5>{{userInfo.orgStr}}</h5></div>
+                                            </li>
+                                            <li v-if="userInfo.saStr!=''">
+                                            <div class="title"><h5>Subject Areas</h5> </div>
+                                                <div class="desk"><h5>{{userInfo.saStr}}</h5></div>
+                                            </li>
+                                            <li v-if="userInfo.description!=''">
+                                                <div class="title"><h5>Description</h5></div>
+                                                <div class="desk"><h5>{{userInfo.description}}</h5></div>
+                                            </li>
+                                        </ul>
+                                </div>
+
+                            </div>
+                            <div class="innerBorderGrey89"></div>
+
+                            <div class="col-md-12">
+                                    <div class="panel-body">
+                                        <button id="edit" class="btn btn-noShadow btn-info btn-round btn-block btn-lg" style="text-transform: capitalize;font-size: 16px" @click="editUserInfo">Edit Infomation</button>
+                                        <br/>
+                                        <button id="changePass" class="btn btn-noShadow btn-default btn-round btn-block btn-lg"  @click="changePassword" style="color: #fff;text-transform: capitalize">Change Password
+                                        </button>
+                                    </div>
+                            </div>
+                            <!--Edit Information modal-->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header " style="color:white;margin-top: 110px;border: 0">
+                                            <button id="modal-close" type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <img id="photo" src="/static/img/icon/default.png" width="120px"
+                                                 height="120px"
+                                                 style="display: block;cursor:pointer;position: absolute;border:2px solid #fff; border-radius: 50%;top: -55px;margin-left: calc(50% - 76px)"
+                                                 @click="imgFile()"/>
+                                            <input type="file" name="imgOne" id="imgOne" @change="preImg()"
+                                                   style="display: none" accept="image/*"/>
+                                        </div>
+                                        <div class="modal-body text-center" >
+                                            <form class="form-horizontal" role="form" style="margin-top: 40px">
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="form-control" id="inputName" placeholder="Name" v-model="userInfo.name">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputPhone" class="col-lg-3 col-sm-3 control-label">Phone</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="form-control" id="inputPhone" placeholder="Phone" v-model="userInfo.phone">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputHomePage" class="col-lg-3 col-sm-3 control-label">Home
+                                                        Page</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="form-control" id="inputHomePage" v-model="userInfo.wiki"
+                                                               placeholder="Home Page">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputOrganizations" class="col-lg-3 col-sm-3 control-label">Organizations</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="form-control" id="inputOrganizations"
+                                                               placeholder="Organizations">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputSubjectAreas" class="col-lg-3 col-sm-3 control-label">Subject
+                                                        Areas</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="form-control" id="inputSubjectAreas"
+                                                               placeholder="Subject Areas">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputDescription"
+                                                           class="col-lg-3 col-sm-3 control-label">Description</label>
+                                                    <div class="col-lg-9">
+                                        <textarea type="text" class="form-control" id="inputDescription" v-model="userInfo.description"
+                                                  placeholder="Description"></textarea>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button id="saveUser" type="button" class="btn btn-round btn-primary " style="text-transform: capitalize;font-size: 15px" @click="saveEditInfo">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Change Password modal-->
+                            <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="margin-top: 16vh;color:white;border: 0">
+                                            <button id="modal-close1" type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" style="font-weight: bold;">User Information</h4>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <form class="form-horizontal" role="form">
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputName" class="col-sm-4 control-label">Old Password</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="password" class="form-control" id="inputOldPass"
+                                                               placeholder="Old password">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputPhone" class="col-sm-4 control-label">New Password</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="password" class="form-control" id="inputPassword"
+                                                               placeholder="New password">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group wzhModalForm">
+                                                    <label for="inputHomePage" class="col-sm-4 control-label">Confirm
+                                                        Password</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="password" class="form-control" id="inputPassAgain"
+                                                               placeholder="New password again">
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button id="submitPass" type="button" class="btn btn-round btn-primary" style="text-transform: capitalize;font-size: 15px">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end modal-->
+
+                        </div>
+                        <div class="contentCard flexCol flexColCenter" style="height: 450px">
+                            <div class="content_h32 flexRow noPadding">
+                                <div class="content_w68 flexCol flexJustAround">
+                                    <h4>Foot print</h4>
+                                    <p>You can manage Data provided by yourself or create a new one</p>
+                                </div>
+                                <div class="flexCenter content_w32" style="">
+                                    <img class="square_80" style="" src="../../static/img/carousels/foot_print.jpg">
+                                </div>
+                            </div>
+                            <div class="innerBorderGrey89"></div>
+                            <div style="flex: 1;"></div>
+                            <div class="content_h16 flexCol noPadding" style="width: 100%;
+                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
+                                <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                                    <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
+                                        <div class="lineButton flexCol" @click="manageItem(2)">
+                                            <p style="margin-block-end: 0">manage data</p>
+                                            <div class="hoverLine"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </section>
+                </div>
+
+
+            </div>
+        </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/jquery.rotate.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/mdb.min.js"></script>
+<script src="/static/js/common/piexif.min.js"></script>
+<script src="/static/js/common/fileinput.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+
+
+<!--<script src="/static/js/common/echarts.min.js"></script>-->
+<!--<script src="/static/js/common/world.js"></script>-->
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<!--<script src="/static/js/page/user_space.js"></script>-->
+<!--<script src="/static/js/page/userSpace1.js"></script>-->
+<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+<script src="/static/js/page/userAccount.js"></script>
+</html>

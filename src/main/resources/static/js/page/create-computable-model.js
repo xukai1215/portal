@@ -2,7 +2,7 @@ var vue = new Vue({
     el: "#app",
     data: {
         defaultActive:'2-4',
-        curIndex:'2-4',
+        curIndex:'2',
 
         computableModel:{
             bindModelItem:"",
@@ -20,7 +20,7 @@ var vue = new Vue({
 
         },
 
-
+        userInfo:{},
 
         //文件框选择
         resources:[],
@@ -40,6 +40,25 @@ var vue = new Vue({
         loginFlag: false,
     },
     methods: {
+        changeRter(index){
+            this.curIndex = index;
+            var urls={
+                1:'/user/userSpace',
+                2:'/user/userSpace/model',
+                3:'/user/userSpace/data',
+                4:'/user/userSpace/server',
+                5:'/user/userSpace/task',
+                6:'/user/userSpace/community',
+                7:'/user/userSpace/theme',
+                8:'/user/userSpace/account',
+                9:'/user/userSpace/feedback',
+            }
+
+            this.setSession('curIndex',index)
+            window.location.href=urls[index]
+
+        },
+
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -125,6 +144,77 @@ var vue = new Vue({
         }
     },
     mounted() {
+        $(() => {
+            let height = document.documentElement.clientHeight;
+            this.ScreenMinHeight = (height) + "px";
+            this.ScreenMaxHeight = (height) + "px";
+
+            window.onresize = () => {
+                console.log('come on ..');
+                height = document.documentElement.clientHeight;
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+            };
+
+
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    data = JSON.parse(data);
+
+                    console.log(data);
+
+                    if (data.oid == "") {
+                        alert("Please login");
+                        window.location.href = "/user/login";
+                    } else {
+                        this.userId = data.oid;
+                        this.userName = data.name;
+                        console.log(this.userId)
+                        // this.addAllData()
+
+                        // axios.get("/dataItem/amountofuserdata",{
+                        //     params:{
+                        //         userOid:this.userId
+                        //     }
+                        // }).then(res=>{
+                        //     that.dcount=res.data
+                        // });
+
+                        $("#author").val(this.userName);
+
+                        var index = window.sessionStorage.getItem("index");
+                        this.itemIndex=index
+                        if (index != null && index != undefined && index != "" && index != NaN) {
+                            this.defaultActive = index;
+                            this.handleSelect(index, null);
+                            window.sessionStorage.removeItem("index");
+                            this.curIndex=index
+
+                        } else {
+                            // this.changeRter(1);
+                        }
+
+                        window.sessionStorage.removeItem("tap");
+                        //this.getTasksInfo();
+                        this.load = false;
+                    }
+                }
+            })
+
+
+            //this.getModels();
+        });
+
+
         $("#file").change(()=> {
             this.resources=[];
             let files=$("#file")[0].files;
@@ -196,14 +286,14 @@ var vue = new Vue({
             }
         })
 
-        var oid = window.sessionStorage.getItem("editComputableModel_id");
+        var oid = window.sessionStorage.getItem("editOid");
 
         var user_num = 0;
 
 
         if ((oid === "0") || (oid === "") || (oid === null)) {
 
-            $("#title").text("Create Computable Model")
+            $("#subRteTitle").text("/Create Computable Model")
 
             tinymce.init({
                 selector: "textarea#myText",
@@ -240,7 +330,7 @@ var vue = new Vue({
             });
         }
         else {
-            $("#title").text("Modify Computable Model")
+            $("#subRteTitle").text("/Modify Computable Model")
             document.title="Modify Computable Model | OpenGMS"
             $.ajax({
                 url: "/computableModel/getInfo/" + oid,
@@ -481,6 +571,7 @@ var vue = new Vue({
                     type: 'text/plain',
                 });
                 this.formData.append("computableModel", file)
+
 
                 // $("#step").css("display", "none");
                 // $(".uploading").css("display", "block");

@@ -5,6 +5,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Multicolore-Regular';
+    src: url("../fonts/Multicolore-Regular.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 [v-cloak] {
     display: none;
 }

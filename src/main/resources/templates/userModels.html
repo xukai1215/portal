@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>userModel</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
+
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container" style="height: 2000px;" v-cloak>
+        <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                     style="margin-left: 240px;padding-bottom: 100px"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                    <div class="flexColContainer mainContent" style="padding:20px 10px;max-width: 1120px">
+                        <section role="description" class="flexJustBetween flexColCenter contentSection"
+                                 style="max-width: 1050px">
+                            <div class="flexRowContainer flexColCenter">
+                                <img class="square_40" style="margin-top: 10px"
+                                     :src="getIcon()">
+                                <div class="dropdown flexRow flexColCenter">
+
+<!--                                    小标题-->
+                                <h3 style="margin-left: 10px" >{{itemTitle}}</h3>
+
+                                    <button class="fakeButton dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-caret-down" style="font-size: 20px;margin-top: 12px;"></i>
+                                </button>
+<!--                                    <div class="fdbtn dropdown-toggle">-->
+<!--                                        <i class="fa fa-caret-down" style="font-size: 21px;"></i>-->
+<!--                                    </div>-->
+                                    <div class="dropdown-menu flexDrop" aria-labelledby="dropdownMenu4" style="width: 215px; ">
+                                        <a class="dropdown-item" :class="itemTitle == 'Model Item'?'active':''" @click="manageItem(1)">
+                                            <h4>Model Item</h4></a>
+                                        <a class="dropdown-item" :class="itemTitle == 'Conceptual Model'?'active':''" @click="manageItem(2)">
+                                            <h4>Conceptual Model</h4></a>
+                                        <a class="dropdown-item" :class="itemTitle == 'Logical Model'?'active':''" @click="manageItem(3)">
+                                            <h4>Logical Model</h4></a>
+                                        <a class="dropdown-item" :class="itemTitle == 'Computable Model'?'active':''" @click="manageItem(4)">
+                                            <h4>Computable Model</h4></a>
+                                        <div class="dropdown-divider"></div>
+                                    </div>
+                                </div>
+                                <div class="flexRow flexColCenter" style="margin-top: 12px;margin-left: 10px;">
+
+                                    <div class="searchContainer flexRow flexColCenter">
+                                        <input class="noBorderInput" placeholder="Search for ..." v-model="searchText" @keyup.enter="searchItems">
+                                    </div>
+                                    <i class="fa fa-search" style="font-size: 18px;" @click="searchItems"></i>
+                                </div>
+                            </div>
+                            <!--                        <h5>You can manager your model and data here</h5>-->
+                            <div class="btn btn-info btn-round btn-noShadow" style="margin-top: 18px"
+                                 @click="creatItem(1)">
+                                create new <span><i class="fa fa-arrow-right"></i></span>
+                            </div>
+                        </section>
+                        <section class="flexRowContainer flexWrap " style="max-width: 1050px">
+                            <router-view :search-result-raw="searchResult" @com-edit="editItem" @com-delete="deleteItem" @com-format="formatDate" >
+                                <!--                        model item-->
+                            </router-view>
+                            <!--                        <model-item :searchResultRaw="searchResult"></model-item>-->
+
+                            <!--                        页码-->
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination pagination-circle pg-blue wzhPageControl">
+                                    <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
+                                            class="page-link"
+                                            style="border-radius: 10%;background-color: inherit">First</a></li>
+                                    <li class="page-item " :class="curPage!=1?'':'disabled'"
+                                        @click="changePage(curPage-1)">
+                                        <a class="page-link" aria-label="Previous">
+                                            <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">
+                                        <a class="page-link btn-round"
+                                           @click="changePage(page)">{{page}}</a></li>
+                                    <li class="page-item" :class="curPage!=totalPage?'':'disable'"
+                                        @click="changePage(curPage+1)">
+                                        <a class="page-link" aria-label="Next">
+                                            <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" :class="curPage!=totalPage?'':'disabled'"
+                                        @click="changePage(totalPage)">
+                                        <a class="page-link">Last</a></li>
+
+                                </ul>
+                            </nav>
+                        </section>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!--        </div>-->
+
+
+        </div>
+    </div>
+</div>
+<template id="modelItemShow">
+    <div class="" style="width: 100%;">
+        <div v-for="(modelItem,index) in searchResultRaw" :key="index"
+             class="contentCard_w100 flexCol flexColCenter">
+            <div class="content_h32 flexRow noPadding">
+                <div class="content_w68 flexJustStart">
+                    <div>
+                        <a :href="'/modelItem/'+modelItem.oid"
+                           @click="setSession('modelItemInfo_id',modelItem.model_oid)">
+                            <h4 class="itemTitle">{{modelItem.name}}</h4></a>
+                    </div>
+
+                </div>
+                <div class="content_w32 flexJustAround flexColCenter buttonZone">
+                    <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,modelItem.oid)">
+                        <i class="fa fa-edit" style="margin-right: 5px"></i>
+                        <div class="lineButton flexCol">
+                            <p style="margin-block-end: 0">Edit</p>
+                            <div class="hoverLine"></div>
+                        </div>
+                    </div>
+                    <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
+                         @click="comDeleteItem(1,modelItem.oid)">
+                        <i class="fa fa-trash-o"></i>
+                        <p>Delete</p>
+                    </div>
+
+                </div>
+            </div>
+            <!--                            <div class="innerBorderGrey89"></div>-->
+            <div class="content_h68 flexCol noPadding" style="width: 100%;
+                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
+                <div class=" acrylicBack flexRow"
+                     style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                    <div class="flexRow " style="width: 100%;">
+                        <div class="content_w100" style="padding-top: 23px">
+                            <p style="word-break: break-all;">
+                                <b style="margin-right: 25px">Overview:</b>{{modelItem.description}}</p>
+                            <p>
+                                <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(modelItem.createTime)}}</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>
+</body>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/jquery.rotate.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/mdb.min.js"></script>
+<script src="/static/js/common/piexif.min.js"></script>
+<script src="/static/js/common/fileinput.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+
+
+<!--<script src="/static/js/common/echarts.min.js"></script>-->
+<!--<script src="/static/js/common/world.js"></script>-->
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-router.js"></script>
+
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<!--<script src="/static/js/page/user_space.js"></script>-->
+<!--<script src="/static/js/page/userSpace1.js"></script>-->
+<script th:replace="fragments/newSideBar :: headSideBar"></script>
+<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+<script src="/static/js/page/userModels.js"></script>
+</html>
