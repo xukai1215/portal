@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -53,7 +54,7 @@
         <!--        <div class="innerShadowTop" style="height: 10px">-->
         <!--        </div>-->
         <!--        <div th:replace="fragments/newSideBar :: sidebarNew"></div>-->
-
+        <template id="userCommunity" th:fragment="userCommunity">
         <div class="innerShadowCol">
 
             <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
@@ -181,6 +182,7 @@
 
             </div>
         </div>
+        </template>
 
 
     </div>

@@ -1,7 +1,6 @@
-ELEMENT.locale(ELEMENT.lang.en)
-//组件
-var modelItem = Vue.extend({
-    template: '#modelItemShow',
+
+var communityItem = Vue.extend({
+    template: '#communityShow',
     props: ['searchResultRaw'],
     created(){
         console.log(this.searchResultRaw);
@@ -45,6 +44,7 @@ var modelItem = Vue.extend({
     },
 
     created(){
+        console.log('aaa')
         // this.$parent.reloadPage()
         // this.$parent.getCommunity(1);
     }
@@ -52,40 +52,9 @@ var modelItem = Vue.extend({
 })
 // Vue.component('myComponent',modelItem)
 
-//路由
-var router = new VueRouter({
-        routes:[
-            {
-                path:'/',
-                redirect:'/concept&semantic',
-            },
-            {
-                path:'/concept&semantic',
-                component:modelItem,
-            },
-
-            {
-                path:'/spatialReference',
-                component:modelItem,
-            },
-
-            {
-                path:'/dataTemplate',
-                component:modelItem,
-            },
-
-            {
-                path:'/unit&metric',
-                component:modelItem,
-            }
-        ]
-    }
-
-)
-
-var vue = new Vue(
+var userCommunities = Vue.extend(
     {
-        el: "#app",
+        template: "#userCommunities",
         data(){
             return{
                 //页面样式控制
@@ -127,7 +96,15 @@ var vue = new Vue(
             }
         },
 
+        props:['itemindexRaw'],
+
         components: {
+        },
+
+        watch: {
+            $route() {
+                this.getCommunity()
+            },
         },
 
         methods:{
@@ -163,25 +140,6 @@ var vue = new Vue(
                     callback(t);
             },
 
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
-
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
                 // this.editOid = sessionStorage.getItem('editItemOid');
@@ -192,15 +150,16 @@ var vue = new Vue(
                 this.itemIndex=index;
                 this.searchText = ''
                 var urls={
-                    1:'/user/userSpace/community/#/concept&semantic',
-                    2:'/user/userSpace/community/#/spatialReference',
-                    3:'/user/userSpace/community/#/dataTemplate',
-                    4:'/user/userSpace/community/#/unit&metric',
+                    1:'/user/userSpace#/communities/concept&semantic',
+                    2:'/user/userSpace#/communities/spatialReference',
+                    3:'/user/userSpace#/communities/dataTemplate',
+                    4:'/user/userSpace#/communities/unit&metric',
                 }
                 window.sessionStorage.setItem('itemIndex',index)
                 this.reloadPage();
-                this.getCommunity(index);
                 window.location.href=urls[index]
+                this.getCommunity();
+
 
             },
 
@@ -384,30 +343,33 @@ var vue = new Vue(
             getCommunity(index) {
                 this.pageSize = 10;
                 this.isInSearch = 0;
-                if(index!=null&&index!=undefined)
-                    this.itemIndex = index;
+                let a=this.$route.params.communityKind
+
+                // if(index!=null&&index!=undefined)
+                //     this.itemIndex = index;
+
 
                 let titles={
-                    1:'Concept & Semantic',
-                    2:'Spatial Reference',
-                    3:'Data Template',
-                    4:'Unit & Metric'
+                    'concept&semantic':'Concept & Semantic',
+                    'spatialReference':'Spatial Reference',
+                    'dataTemplate':'Data Template',
+                    'unit&metric':'Unit & Metric'
                 }
-                this.itemTitle=titles[this.itemIndex]
+                this.itemTitle=titles[a]
 
                 var url = "";
                 var name = "";
                 console.log(this.searchResult);
-                if (this.itemIndex == 1) {
+                if (a === 'concept&semantic') {
                     url = "/repository/getConceptsByUserId";
                     name = "concepts";
-                } else if (this.itemIndex == 2) {
+                } else if (a === 'spatialReference') {
                     url = "/repository/getSpatialsByUserId";
                     name = "spatials";
-                } else if (this.itemIndex == 3) {
+                } else if (a === 'dataTemplate') {
                    url = "/repository/getTemplatesByUserId";
                    name = "templates";
-                } else if (this.itemIndex == 4) {
+                } else if (a === 'unit&metric') {
                    url = "/repository/getUnitsByUserId";
                    name = "units";
                 }
@@ -561,7 +523,7 @@ var vue = new Vue(
                             if (this.searchText.trim() != "") {
                                 this.searchModels();
                             } else {
-                                this.getCommunity(index);
+                                this.getCommunity();
                             }
 
                         }
@@ -569,143 +531,10 @@ var vue = new Vue(
                 }
             },
 
-            //create chart map
-            createChartMap(chartInfo) {
-                var myChart = echarts.init(document.getElementById('echartMap'));
-                myChart.showLoading();
-                var chartdata = [];
-                for (var i = 0; i < chartInfo.cityCount.length; i++) {
-                    let cityObj = {
-                        name: '',
-                        value: 0
-                    };
-                    let city = chartInfo.cityCount[i];
-                    let geoCoord = chartInfo.geoCoord[city.name];
-                    geoCoord.push(city.value);
-                    cityObj.name = city.name;
-                    cityObj.value = geoCoord;
-                    chartdata.push(cityObj);
-                }
-                myChart.hideLoading();
-                var MapOptions = {
-                    backgroundColor: "transparent",
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: '{b}'
-                    },
-                    geo: {
-                        show: true,
-                        map: 'world',
-                        label: {
-                            normal: {
-                                show: false,
-                                textStyle: {
-                                    color: 'rgba(0,0,0,0.4)'
-                                }
-                            },
-                            emphasis: {
-                                show: true,
-                                backgroundColor: '#2c3037',
-                                color: '#fff',
-                                padding: 5,
-                                fontSize: 14,
-                                borderRadius: 5
-                            }
-
-                        },
-                        roam: false,
-                        itemStyle: {
-                            normal: {
-                                areaColor: '#b6d2c8',
-                                borderColor: '#404a59',
-                                borderWidth: 0.5
-                            },
-                            emphasis: {
-                                areaColor: '#b6d2c8'
-                            }
-
-                        },
-
-                    },
-                    series: [
-                        {
-                            name: '点',
-                            type: 'scatter',
-                            coordinateSystem: 'geo',
-                            symbol: 'pin', //气泡
-                            symbolSize: 40
-                            ,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    textStyle: {
-                                        color: '#fff',
-                                        fontSize: 9,
-                                    }
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#00c0ff', //标志颜色
-                                }
-                            },
-                            zlevel: 6,
-                            data: chartdata
-                        },
-                        {
-                            name: 'Top 5',
-                            type: 'effectScatter',
-                            coordinateSystem: 'geo',
-                            data: chartdata,
-                            symbolSize: 20,
-                            showEffectOn: 'render',
-                            rippleEffect: {
-                                brushType: 'stroke'
-                            },
-                            hoverAnimation: true,
-                            label: {
-                                normal: {
-                                    formatter: '{b}',
-                                    position: 'right',
-                                    show: false
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#3daadb',
-                                    shadowBlur: 0,
-                                    shadowColor: '#3daadb'
-                                }
-                            },
-                            zlevel: 1
-                        },
-                    ]
-                };
-                this.computerNodesMapOptions = MapOptions;
-                myChart.setOption(MapOptions);
-                console.log('wait to load');
-
-                window.onresize = () => {
-                    height = document.documentElement.clientHeight;
-                    this.ScreenMinHeight = (height) + "px";
-                    myChart.resize();
-                };
-
-                //添加地图点击事件
-                myChart.on('click', function (params) {
-                    if (params.componentType == "series") {
-                        {
-                            $("#pageContent").stop(true);
-                            $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
-                        }
-                    }
-                })
-
-            },
-
+            sendcurIndexToParent(){
+                this.$emit('com-sendcurindex',this.curIndex)
+            }
         },
-
-        router:router,
 
         created() {
 
@@ -765,8 +594,8 @@ var vue = new Vue(
                             var index = window.sessionStorage.getItem("index");
                             //判断显示哪一个item
                             var itemIndex = window.sessionStorage.getItem("itemIndex");
-                            this.itemIndex=itemIndex
-                            this.getCommunity(this.itemIndex);
+
+                            this.getCommunity();
 
                             if (index != null && index != undefined && index != "" && index != NaN) {
                                 this.defaultActive = index;
@@ -789,6 +618,9 @@ var vue = new Vue(
 
                 //this.getModels();
             });
+
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
 
 
         },

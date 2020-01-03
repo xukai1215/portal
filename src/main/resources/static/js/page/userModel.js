@@ -1,7 +1,6 @@
-ELEMENT.locale(ELEMENT.lang.en)
-var vue = new Vue(
+var userModel = Vue.extend(
     {
-        el: "#app",
+        template: "#userModel",
         data(){
             return{
                 //页面样式控制
@@ -22,26 +21,10 @@ var vue = new Vue(
             }
         },
 
+        props:['itemindexRaw'],
+
         methods:{
             //公共功能
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
 
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
@@ -62,15 +45,23 @@ var vue = new Vue(
             manageItem(index){
                 //此处跳转至统一页面，vue路由管理显示
                 var urls={
-                    1:'/user/userSpace/model/#/modelitem',
-                    2:'/user/userSpace/model/#/conceptualmodel',
-                    3:'/user/userSpace/model/#/logicalmodel',
-                    4:'/user/userSpace/model/#/computablemodel',
+                    1:'/user/userSpace#/models/modelitem',
+                    2:'/user/userSpace#/models/conceptualmodel',
+                    3:'/user/userSpace#/models/logicalmodel',
+                    4:'/user/userSpace#/models/computablemodel',
                 }
-                window.sessionStorage.setItem('itemIndex',index)
 
+                this.senditemIndexToParent(index)
                 window.location.href=urls[index]
 
+            },
+
+            sendcurIndexToParent(){
+                this.$emit('com-sendcurindex',this.curIndex)
+            },
+
+            senditemIndexToParent(index){
+                this.$emit('com-senditemindex',index)
             },
 
 
@@ -149,6 +140,9 @@ var vue = new Vue(
 
                 //this.getModels();
             });
+
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
         },
 
     }

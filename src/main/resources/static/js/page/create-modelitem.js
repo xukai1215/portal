@@ -2,7 +2,7 @@ var vue = new Vue({
     el: "#app",
     data: {
         defaultActive:'2-1',
-        curIndex:'2',
+        curIndex:2,
 
         ScreenMaxHeight: "0px",
         IframeHeight: "0px",

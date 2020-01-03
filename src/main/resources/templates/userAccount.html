@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
@@ -50,7 +50,8 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-        <div class="innerShadowCol">
+        <template id="userAccount" th:fragment="userAccount">
+            <div class="innerShadowCol">
             <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                  style="margin-left: 240px;"
                  :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
@@ -264,7 +265,8 @@
 
             </div>
         </div>
-        </div>
+        </template>
+    </div>
 
 
     </div>

@@ -1,7 +1,7 @@
-ELEMENT.locale(ELEMENT.lang.en)
-var vue = new Vue(
+
+var feedback = Vue.extend(
     {
-        el: "#app",
+        template: "#feedback",
         data(){
             return{
                 //页面样式控制
@@ -24,25 +24,6 @@ var vue = new Vue(
 
         methods:{
             //公共功能
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
-
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
                 // this.editOid = sessionStorage.getItem('editItemOid');
@@ -136,8 +117,8 @@ var vue = new Vue(
                 $('#myModal').modal('show');
             },
 
-            send(){
-
+            sendcurIndexToParent(){
+                this.$emit('com-sendcurindex',this.curIndex)
             }
 
         },
@@ -164,6 +145,9 @@ var vue = new Vue(
 
 
             });
+
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
 
         },
 

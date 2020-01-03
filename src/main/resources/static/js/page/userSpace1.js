@@ -1,6 +1,125 @@
 ELEMENT.locale(ELEMENT.lang.en)
 
+//此页面为根文件，控制路由切换
+var router = new VueRouter({
+        routes:[
+            // {
+            //     path:'/',
+            //     redirect:'/home',
+            // },
+            {
+                path:'/',
+                component:userSpaceHome,
+            },
+            //
+            {
+                path:'/model',
+                component:userModel,
+                children:[
+                    {
+                        path:'/',
+                        redirect:'modelitem',
+                    },
+                    {
+                        path:':modelitemKind',
+                        component:modelItem,
+                    },
 
+                ]
+            },
+            {
+                path:'/models',
+                name:'userModels',
+                component:userModels,
+                children:[
+                    {
+                        path:'/',
+                        redirect:'modelitem',
+                    },
+                    {
+                        path:':modelitemKind',
+                        component:modelItem,
+                    },
+
+                ]
+            },
+            {
+                path:'/data',
+                component:userData,
+            },
+            {
+                path:'/server',
+                component:userServer,
+            },
+            {
+                path:'/task',
+                component:userTask,
+            },
+            {
+                path:'/community',
+                component:userCommunity,
+            },
+            {
+                path:'/communities',
+                name:'userCommunities',
+                component:userCommunities,
+                children:[
+                    {
+                        path:'/',
+                        redirect:'concept&semantic',
+                    },
+                    {
+                        path:':communityKind',
+                        component:communityItem,
+                    },
+                    // {
+                    //     path:'concept&semantic',
+                    //     component:communityItem,
+                    // },
+                    //
+                    // {
+                    //     path:'spatialreference',
+                    //     component:communityItem,
+                    // },
+                    //
+                    // {
+                    //     path:'dataTemplate',
+                    //     component:communityItem,
+                    // },
+                    //
+                    // {
+                    //     path:'unit&metric',
+                    //     component:communityItem,
+                    // }
+                ]
+            },
+            {
+                path:'/data/dataitem',
+                component:userDataItems,
+            },
+            {
+                path:'/userTheme',
+                component:userTheme,
+            },
+            {
+                path:'/account',
+                component:userAccount,
+            },
+            {
+                path:'/feedback',
+                component:feedback,
+            },
+            //
+            // {
+            //     path:'/logicalmodel',
+            //     component:modelItem,
+            // },
+
+
+        ]
+    }
+
+)
 var vue = new Vue(
     {
         el: "#app",
@@ -14,6 +133,7 @@ var vue = new Vue(
 
                 //显示控制
                 curIndex:1,
+                itemIndex:1,//父组件的控制变量
 
                 //
                 userInfo:{
@@ -24,201 +144,32 @@ var vue = new Vue(
             }
         },
 
+        router:router,
+
         methods:{
             //公共功能
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
-
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
                 // this.editOid = sessionStorage.getItem('editItemOid');
             },
 
-            getDataItems() {
-                this.pageSize = 10;
-                this.isInSearch = 0;
-                var da = {
-                    userOid: this.userId,
-                    page: this.page,
-                    pagesize: this.pageSize,
-                    asc: -1
+            // creatItem(index){
+            //     window.sessionStorage.removeItem('editOid');
+            //     if(index == 1) window.location.href='../user/userSpace/model/createModelItem'
+            // },
+
+            // 修改index值，改变显示
+            changecurIndex(index){
+                if(index != null&&index != undefined){
+                    this.curIndex = index
                 }
-
-                this.loading = true
-                var that = this;
-                //todo 从后台拿到用户创建的data—item
-                axios.get("/user/getDataItems", {
-                    params: da
-                }).then(res => {
-
-                    this.searchResult = res.data.data.content
-                    this.resourceLoad = false;
-                    this.totalNum = res.data.data.totalElements;
-                    if (this.page == 1) {
-                        this.pageInit();
-                    }
-                    this.data_show = true
-                    this.loading = false
-
-                })
-
-
             },
 
-            creatItem(index){
-                window.sessionStorage.removeItem('editOid');
-                if(index == 1) window.location.href='../user/userSpace/model/createModelItem'
-            },
-
-            //create chart map
-            createChartMap(chartInfo) {
-                var myChart = echarts.init(document.getElementById('echartMap'));
-                myChart.showLoading();
-                var chartdata = [];
-                for (var i = 0; i < chartInfo.cityCount.length; i++) {
-                    let cityObj = {
-                        name: '',
-                        value: 0
-                    };
-                    let city = chartInfo.cityCount[i];
-                    let geoCoord = chartInfo.geoCoord[city.name];
-                    geoCoord.push(city.value);
-                    cityObj.name = city.name;
-                    cityObj.value = geoCoord;
-                    chartdata.push(cityObj);
+            changeitemIndex(index){
+                if(index != null&&index != undefined){
+                    this.itemIndex = index
                 }
-                myChart.hideLoading();
-                var MapOptions = {
-                    backgroundColor: "transparent",
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: '{b}'
-                    },
-                    geo: {
-                        show: true,
-                        map: 'world',
-                        label: {
-                            normal: {
-                                show: false,
-                                textStyle: {
-                                    color: 'rgba(0,0,0,0.4)'
-                                }
-                            },
-                            emphasis: {
-                                show: true,
-                                backgroundColor: '#2c3037',
-                                color: '#fff',
-                                padding: 5,
-                                fontSize: 14,
-                                borderRadius: 5
-                            }
-
-                        },
-                        roam: false,
-                        itemStyle: {
-                            normal: {
-                                areaColor: '#b6d2c8',
-                                borderColor: '#404a59',
-                                borderWidth: 0.5
-                            },
-                            emphasis: {
-                                areaColor: '#b6d2c8'
-                            }
-
-                        },
-
-                    },
-                    series: [
-                        {
-                            name: '点',
-                            type: 'scatter',
-                            coordinateSystem: 'geo',
-                            symbol: 'pin', //气泡
-                            symbolSize: 40
-                            ,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    textStyle: {
-                                        color: '#fff',
-                                        fontSize: 9,
-                                    }
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#00c0ff', //标志颜色
-                                }
-                            },
-                            zlevel: 6,
-                            data: chartdata
-                        },
-                        {
-                            name: 'Top 5',
-                            type: 'effectScatter',
-                            coordinateSystem: 'geo',
-                            data: chartdata,
-                            symbolSize: 20,
-                            showEffectOn: 'render',
-                            rippleEffect: {
-                                brushType: 'stroke'
-                            },
-                            hoverAnimation: true,
-                            label: {
-                                normal: {
-                                    formatter: '{b}',
-                                    position: 'right',
-                                    show: false
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#3daadb',
-                                    shadowBlur: 0,
-                                    shadowColor: '#3daadb'
-                                }
-                            },
-                            zlevel: 1
-                        },
-                    ]
-                };
-                this.computerNodesMapOptions = MapOptions;
-                myChart.setOption(MapOptions);
-                console.log('wait to load');
-
-                window.onresize = () => {
-                    height = document.documentElement.clientHeight;
-                    this.ScreenMinHeight = (height) + "px";
-                    myChart.resize();
-                };
-
-                //添加地图点击事件
-                myChart.on('click', function (params) {
-                    if (params.componentType == "series") {
-                        {
-                            $("#pageContent").stop(true);
-                            $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
-                        }
-                    }
-                })
-
-            },
+            }
 
         },
 

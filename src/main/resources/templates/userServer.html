@@ -60,7 +60,7 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-
+        <template id="userServer" th:fragment="userServer">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;padding-bottom: 100px"
@@ -77,10 +77,10 @@
 
                             </div>
                             <!--                        <h5>You can manager your model and data here</h5>-->
-<!--                            <div class="btn btn-info btn-round btn-noShadow" style="margin-top: 20px"-->
-<!--                                 @click="creatItem(1)">-->
-<!--                                create new <span><i class="fa fa-arrow-right"></i></span>-->
-<!--                            </div>-->
+                            <!--                            <div class="btn btn-info btn-round btn-noShadow" style="margin-top: 20px"-->
+                            <!--                                 @click="creatItem(1)">-->
+                            <!--                                create new <span><i class="fa fa-arrow-right"></i></span>-->
+                            <!--                            </div>-->
                         </section>
                         <section class="flexRowContainer flexWrap " style="max-width: 1050px">
                             <div class="page-content-wrap container-fluid">
@@ -189,34 +189,34 @@
 
                                 </div>
                             </div>
-<!--                            <nav aria-label="Page navigation example">-->
-<!--                                <ul class="pagination pagination-circle pg-blue wzhPageControl">-->
-<!--                                    <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a-->
-<!--                                            class="page-link"-->
-<!--                                            style="border-radius: 10%;background-color: inherit">First</a></li>-->
-<!--                                    <li class="page-item " :class="curPage!=1?'':'disabled'"-->
-<!--                                        @click="changePage(curPage-1)">-->
-<!--                                        <a class="page-link" aria-label="Previous">-->
-<!--                                            <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>-->
-<!--                                            <span class="sr-only">Previous</span>-->
-<!--                                        </a>-->
-<!--                                    </li>-->
-<!--                                    <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">-->
-<!--                                        <a class="page-link btn-round"-->
-<!--                                           @click="changePage(page)">{{page}}</a></li>-->
-<!--                                    <li class="page-item" :class="curPage!=totalPage?'':'disable'"-->
-<!--                                        @click="changePage(curPage+1)">-->
-<!--                                        <a class="page-link" aria-label="Next">-->
-<!--                                            <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>-->
-<!--                                            <span class="sr-only">Next</span>-->
-<!--                                        </a>-->
-<!--                                    </li>-->
-<!--                                    <li class="page-item" :class="curPage!=totalPage?'':'disabled'"-->
-<!--                                        @click="changePage(totalPage)">-->
-<!--                                        <a class="page-link">Last</a></li>-->
+                            <!--                            <nav aria-label="Page navigation example">-->
+                            <!--                                <ul class="pagination pagination-circle pg-blue wzhPageControl">-->
+                            <!--                                    <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a-->
+                            <!--                                            class="page-link"-->
+                            <!--                                            style="border-radius: 10%;background-color: inherit">First</a></li>-->
+                            <!--                                    <li class="page-item " :class="curPage!=1?'':'disabled'"-->
+                            <!--                                        @click="changePage(curPage-1)">-->
+                            <!--                                        <a class="page-link" aria-label="Previous">-->
+                            <!--                                            <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>-->
+                            <!--                                            <span class="sr-only">Previous</span>-->
+                            <!--                                        </a>-->
+                            <!--                                    </li>-->
+                            <!--                                    <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">-->
+                            <!--                                        <a class="page-link btn-round"-->
+                            <!--                                           @click="changePage(page)">{{page}}</a></li>-->
+                            <!--                                    <li class="page-item" :class="curPage!=totalPage?'':'disable'"-->
+                            <!--                                        @click="changePage(curPage+1)">-->
+                            <!--                                        <a class="page-link" aria-label="Next">-->
+                            <!--                                            <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>-->
+                            <!--                                            <span class="sr-only">Next</span>-->
+                            <!--                                        </a>-->
+                            <!--                                    </li>-->
+                            <!--                                    <li class="page-item" :class="curPage!=totalPage?'':'disabled'"-->
+                            <!--                                        @click="changePage(totalPage)">-->
+                            <!--                                        <a class="page-link">Last</a></li>-->
 
-<!--                                </ul>-->
-<!--                            </nav>-->
+                            <!--                                </ul>-->
+                            <!--                            </nav>-->
                         </section>
                     </div>
                     <el-dialog id="registerModelContainer" top="20px" width="70%" title="Register Model Server Container"
@@ -273,6 +273,8 @@
 
                 </div>
             </div>
+        </template>
+
 
             <!--        </div>-->
 

@@ -1,6 +1,6 @@
-var userData = Vue.extend(
+var userSpaceHome = Vue.extend(
     {
-        template:'#userData',
+        template:'#userSpaceHome',
         data(){
             return{
                 //页面样式控制
@@ -10,14 +10,12 @@ var userData = Vue.extend(
                 ScreenMaxHeight: "0px",
 
                 //显示控制
-                curIndex:3,
+                curIndex:1,
 
                 //
                 userInfo:{
 
                 },
-
-                categoryTree:[],
 
 
             }
@@ -32,16 +30,19 @@ var userData = Vue.extend(
 
             creatItem(index){
                 window.sessionStorage.removeItem('editOid');
-                if(index == 1) window.location.href='../userSpace/data/createDataItem'
+                if(index == 1) window.location.href='../user/userSpace/model/createModelItem'
             },
 
             manageItem(index){
+                this.curIndex = index;
                 var urls={
-                    1:'/user/userSpace#/data/dataitem',
-                    2:'/user/userSpace#/data/myDataSpace',
+                    1:'/user/userSpace#/model',
+                    2:'/user/userSpace#/data',
+                    3:'/user/userSpace#/task',
+                    4:'/user/userSpace#/community',
                 }
-                window.sessionStorage.setItem('itemIndex',index)
 
+                this.setSession('curIndex',index)
                 window.location.href=urls[index]
 
             },
@@ -49,32 +50,12 @@ var userData = Vue.extend(
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
             }
-
-
         },
 
         created() {
         },
 
         mounted() {
-
-            var tha = this
-            axios.get("/dataItem/createTree")
-                .then(res => {
-                    tha.tObj = res.data;
-                    for (var e in tha.tObj) {
-                        var a = {
-                            key: e,
-                            value: tha.tObj[e]
-                        }
-                        if (e != 'Data Resouces Hubs') {
-                            tha.categoryTree.push(a);
-                        }
-
-
-                    }
-
-                })
 
             $(() => {
                 let height = document.documentElement.clientHeight;

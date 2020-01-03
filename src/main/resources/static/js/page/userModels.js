@@ -1,4 +1,3 @@
-ELEMENT.locale(ELEMENT.lang.en)
 //组件
 var modelItem = Vue.extend({
     template: '#modelItemShow',
@@ -27,7 +26,6 @@ var modelItem = Vue.extend({
             let res
             this.$emit('com-format',val,a => { res = a })
             return res
-
         },
 
         setSession(name, value) {
@@ -54,40 +52,10 @@ var modelItem = Vue.extend({
 
 // Vue.component('myComponent',modelItem)
 
-//路由
-var router = new VueRouter({
-        routes:[
-            {
-                path:'/',
-                redirect:'/modelitem',
-            },
-            {
-                path:'/modelitem',
-                component:modelItem,
-            },
 
-            {
-                path:'/conceptualmodel',
-                component:modelItem,
-            },
-
-            {
-                path:'/logicalmodel',
-                component:modelItem,
-            },
-
-            {
-                path:'/computablemodel',
-                component:modelItem,
-            }
-        ]
-}
-
-)
-
-var vue = new Vue(
+var userModels = Vue.extend(
     {
-        el: "#app",
+        template: "#userModels",
         data(){
             return{
                 //页面样式控制
@@ -129,8 +97,18 @@ var vue = new Vue(
             }
         },
 
+        props:['itemindexRaw'],
+
         components: {
         },
+
+        watch: {
+            $route() {
+                this.getModels()
+            },
+        },
+
+        // router:modelRouter,
 
         methods:{
             //公共功能
@@ -165,25 +143,6 @@ var vue = new Vue(
                     callback(t);
             },
 
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
-
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
                 // this.editOid = sessionStorage.getItem('editItemOid');
@@ -194,15 +153,14 @@ var vue = new Vue(
                 this.itemIndex=index;
                 this.searchText = ''
                 var urls={
-                    1:'/user/userSpace/model/#/modelitem',
-                    2:'/user/userSpace/model/#/conceptualmodel',
-                    3:'/user/userSpace/model/#/logicalmodel',
-                    4:'/user/userSpace/model/#/computablemodel',
+                    1:'/user/userSpace#/models/modelitem',
+                    2:'/user/userSpace#/models/conceptualmodel',
+                    3:'/user/userSpace#/models/logicalmodel',
+                    4:'/user/userSpace#/models/computablemodel',
                 };
-                window.sessionStorage.setItem('itemIndex',index);
-                this.reloadPage();
-                this.getModels(index);
                 window.location.href=urls[index]
+                this.getModels();
+
 
             },
 
@@ -322,30 +280,29 @@ var vue = new Vue(
             getModels(index) {
                 this.pageSize = 10;
                 this.isInSearch = 0;
-                if(index!=null&&index!=undefined)
-                this.itemIndex = index;
+                let a=this.$route.params.modelitemKind
                 //副标题切换
                 let titles={
-                    1:'Model Item',
-                    2:'Conceptual Model',
-                    3:'Logical Model',
-                    4:'Computable Model'
+                    'modelitem':'Model Item',
+                    'conceptualmodel':'Conceptual Model',
+                    'logicalmodel':'Logical Model',
+                    'computablemodel':'Computable Model'
                 }
-                this.itemTitle=titles[this.itemIndex]
+                this.itemTitle=titles[a]
 
                 var url = "";
                 var name = "";
                 console.log(this.searchResult);
-                if (this.itemIndex == 1) {
+                if (a === 'modelitem') {
                     url = "/modelItem/getModelItemsByUserId";
                     name = "modelItems";
-                } else if (this.itemIndex == 2) {
+                } else if (a === 'conceptualmodel') {
                     url = "/conceptualModel/getConceptualModelsByUserId"
                     name = "conceptualModels";
-                } else if (this.itemIndex == 3) {
+                } else if (a === 'logicalmodel') {
                     url = "/logicalModel/getLogicalModelsByUserId"
                     name = "logicalModels";
-                } else if (this.itemIndex == 4) {
+                } else if (a === 'computablemodel') {
                     url = "/computableModel/getComputableModelsByUserId";
                     name = "computableModels";
                 }
@@ -520,11 +477,14 @@ var vue = new Vue(
                 }
                 return srcs[this.itemIndex]
 
+            },
+
+            sendcurIndexToParent(){
+                this.$emit('com-sendcurindex',this.curIndex)
             }
 
         },
 
-        router:router,
 
         created() {
 
@@ -584,8 +544,8 @@ var vue = new Vue(
                             var index = window.sessionStorage.getItem("index");
                             //判断显示哪一个item
                             var itemIndex = window.sessionStorage.getItem("itemIndex");
-                            this.itemIndex=itemIndex
-                            this.getModels(this.itemIndex);
+
+                            this.getModels();
 
                             if (index != null && index != undefined && index != "" && index != NaN) {
                                 this.defaultActive = index;
@@ -609,7 +569,8 @@ var vue = new Vue(
                 //this.getModels();
             });
 
-
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
         },
 
     }
