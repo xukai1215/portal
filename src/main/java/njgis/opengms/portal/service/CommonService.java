@@ -1,5 +1,9 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.DataItem;
@@ -9,6 +13,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CommonService {
 
@@ -52,25 +60,58 @@ public class CommonService {
 
     @Autowired
     private JavaMailSender mailSender;
+
     public Boolean sendEmail(String to,String subject,String content) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             //true表示需要创建一个multipart message
             MimeMessageHelper helper=new MimeMessageHelper(message,true);
-            helper.setFrom("nj_gis@163.com");
+            InternetAddress internetAddress=new InternetAddress("nj_gis@163.com","OpenGMS Team","UTF-8");
+            helper.setFrom(internetAddress);
             helper.setTo(to);
             helper.setCc("nj_gis@163.com");
             helper.setSubject(subject);
             helper.setText(content,true);
             mailSender.send(message);
-            System.out.println("html格式邮件发送成功");
+            log.info("html格式邮件发送成功");
             return true;
         }catch (Exception e){
-            System.out.println("html格式邮件发送失败");
+            log.error("html格式邮件发送失败");
             return false;
         }
 
     }
+
+    public void sendEmailWithImg(String name,String to, String subject, String content, JSONArray imageList){
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            InternetAddress internetAddress=new InternetAddress("nj_gis@163.com",name,"UTF-8");
+            helper.setFrom(internetAddress);
+            helper.setTo(to);
+            helper.setCc("nj_gis@163.com");
+            helper.setSubject(subject);
+            helper.setText(content, true);
+
+            // 注意addInline()中资源名称 hello 必须与 text正文中cid:hello对应起来
+            for(int i=0;i<imageList.size();i++) {
+                JSONObject imgObj=imageList.getJSONObject(i);
+                FileSystemResource file = new FileSystemResource(new File(imgObj.getString("path")));
+                helper.addInline(imgObj.getString("name"), file);
+            }
+
+            mailSender.send(mimeMessage);
+            log.info("嵌入静态资源的邮件已发送。");
+
+        } catch (Exception e) {
+
+            log.error("发送嵌入静态资源的邮件时发生异常了！", e);
+
+        }
+
+    }
+
 
     public String updateAll(){
 

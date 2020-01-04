@@ -19,6 +19,8 @@ public interface ThemeDao extends MongoRepository<Theme,String> {
 
     Page<ThemeResultDTO> findByAuthor(String author, Pageable pageable);
 
+    List<Theme> findByAuthor(String author);
+
     List<Theme> findAll();
 
 //    Page<Theme> findByClassarr(String classarr, Pageable pageable);

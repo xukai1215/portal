@@ -8,6 +8,7 @@
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" href="/static/css/common/navbar.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
@@ -39,7 +40,7 @@
                                 <div class="logoPanel">
                                 </div>
                                 <div slot="header" class="clearfix text-center">
-                                    <img th:src="'/static/upload'+${info.image}" id="header_image">
+                                    <img th:src="'/static'+${info.image}" id="header_image">
                                     <div th:utext="${info.themename}" style="font-size: 24px;color:#444"></div>
                                     <!--<a th:href="'/user/'+${info.creator_oid}"> <span th:utext="'Created by '+${info.creator_name}"></span></a>-->
                                 </div>
@@ -185,7 +186,7 @@
                                         <el-col :span="4" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
                                             <a th:href="${item.link}">
                                                 <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
-                                                    <img th:src="'/static/upload'+${item.image}" class="image" id="application_image">
+                                                    <img th:src="'/static'+${item.image}" class="image" id="application_image">
                                                     <div style="padding: 14px;">
                                                         <span th:text="${item.name}"></span>
                                                     </div>

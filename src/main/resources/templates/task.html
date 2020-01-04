@@ -58,6 +58,11 @@
             word-break: break-word;
         }
 
+        .flexColCenter {
+            display: grid;
+            flex-direction: unset;
+        }
+
 
     </style>
 </head>
@@ -957,6 +962,7 @@
                         </el-dialog>
                         <!--                                 dialog end                       -->
                         <el-dialog
+
                                 title="Upload Data"
                                 :visible.sync="uploadDialogVisible"
                                 width="30%"
@@ -970,7 +976,30 @@
                             <!--</div>-->
 
 
-                            <div class="uploaded">
+                            <div class="uploaded" v-loading="uploadLoading">
+                                <div class="form-group flexColCenter">
+                                    <label style="margin-right:5px;">Name :</label>
+                                    <el-input v-model="uploadName" placeholder="Dataset name"></el-input>
+                                </div>
+
+                                <div class="form-group flexColCenter">
+                                    <label style="margin-right:5px;">Data template :</label>
+                                    <el-select
+                                            v-model="selectValue"
+                                            filterable
+                                            remote
+                                            reserve-keyword
+                                            placeholder="Enter data template name to search"
+                                            :remote-method="remoteMethod"
+                                            :loading="selectLoading">
+                                        <el-option
+                                                v-for="item in options"
+                                                :key="item.oid"
+                                                :label="item.name"
+                                                :value="item.oid">
+                                        </el-option>
+                                    </el-select>
+                                </div>
 
                                 <div class="form-group flexColCenter">
                                     <label style="margin-right:5px;">Storage path :</label>
@@ -999,10 +1028,12 @@
                                         class="upload-demo"
                                         multiple="true"
                                         ref="upload"
-                                        action="http://111.229.14.128:8082/file/upload/store_dataResource_files"
+                                        :on-change="uploadChange"
+                                        :on-remove="uploadRemove"
+
                                         :on-success="handleSuccess"
                                         :file-list="uploadFileList"
-                                        :auto-upload="true">
+                                        :auto-upload="false">
                                     <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
                                                type="primary">选取文件
                                     </el-button>
@@ -1011,19 +1042,15 @@
 
                             </div>
 
-                            <!--<span slot="footer" class="dialog-footer">-->
-                            <!--<div class="modal-footer">-->
-                            <!--<button type="button" class="btn btn-primary"-->
-                            <!--@click="upload_data_dataManager">-->
-                            <!--Confirm-->
-                            <!--</button>-->
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="uploadClose">
+                                    Cancel
+                                </el-button>
 
-                            <!--<button type="button" class="btn btn-default" data-dismiss="modal"-->
-                            <!--@click="close()">-->
-                            <!--Cancel-->
-                            <!--</button>-->
-                            <!--</div>-->
-                            <!--</span>-->
+                                <el-button type="primary" @click="submitUpload">
+                                    Confirm
+                                </el-button>
+                            </span>
                         </el-dialog>
                         <el-dialog
                                 title="Select Folder"

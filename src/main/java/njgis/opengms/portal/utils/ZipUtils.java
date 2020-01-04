@@ -46,6 +46,8 @@ public class ZipUtils {
         }
 
         destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+        File dir=new File(destDir);
+        dir.mkdirs();
         ZipArchiveInputStream is = null;
         List<String> fileNames = new ArrayList<String>();
 

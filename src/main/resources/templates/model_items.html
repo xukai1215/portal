@@ -27,11 +27,9 @@
             padding: 15px 10px;
         }
 
-        .el-switch{
-            display: inline-block !important;
-            margin-top: -5px;
+        .el-radio-button--small .el-radio-button__inner{
+            font-size: 14px;
         }
-
     </style>
 </head>
 <body>
@@ -199,7 +197,7 @@
                                 <a :class="modelItem.viewCount>500?'hot':''" :href="'/modelItem/'+ modelItem.oid"
                                    target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
                             </div>
-                            <div :style="{'display':statistic[key]?'none':'block'}">
+                            <div :style="{'display':statistic[key]!='Overview'?'none':'block'}">
 
                                 <div class="detail_overview">
                                     <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
@@ -218,7 +216,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div :style="{'height':statistic[key]?'200px':'0','visibility':statistic[key]?'visible':'hidden'}">
+                            <div :style="{'height':statistic[key]!='Overview'?'200px':'0','visibility':statistic[key]!='Overview'?'visible':'hidden'}">
                                 <div :id="'chart'+key" style="height: 200px"></div>
                             </div>
                             <hr>
@@ -236,16 +234,13 @@
                                     <h4 style="display: inline-block;margin-left: 20px">contributed at
                                         {{modelItem.createTime.substring(0,10)}} </h4>
                                 </div>
-                                <div class="detail_option">
-                                    <el-switch
-                                            v-model="statistic[key]"
-                                            active-color="#13ce66"
-                                            inactive-color="#409eff"
-                                            active-text="Statistics"
-                                            inactive-text="Overview"
-
-                                            @change="switchChange(key)">
-                                    </el-switch>
+                                <div class="detail_option" style="margin-top: -7px">
+                                    <div style="display: inline-block">
+                                        <el-radio-group v-model="statistic[key]" size="small" @change="switchChange(key)">
+                                            <el-radio-button label="Overview"></el-radio-button>
+                                            <el-radio-button label="Statistics"></el-radio-button>
+                                        </el-radio-group>
+                                    </div>
                                     <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
                                     <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
                                 </div>
@@ -273,10 +268,11 @@
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-<script src="/static/js/common/echarts.min.js"></script>
+
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
 <script src="/static/js/page/model_items.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>

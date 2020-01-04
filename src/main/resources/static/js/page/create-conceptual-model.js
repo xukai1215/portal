@@ -532,6 +532,7 @@ var vue = new Vue({
         });
 
         $(".finish").click(()=>{
+            this.formData=new FormData();
             let loading = this.$loading({
                 lock: true,
                 text: "Uploading...",
