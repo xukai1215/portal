@@ -71,6 +71,7 @@ new Vue({
             this.$refs[formName].resetFields();
         },
         login() {
+            this.ruleForm.password=hex_md5(this.ruleForm.password);
             $.ajax({
                 url: '/user/in',
                 type: 'post',

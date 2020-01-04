@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
@@ -77,6 +78,18 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void password2MD5(){
+        List<User> userList=userDao.findAll();
+        for(User user:userList){
+            String password=user.getPassword();
+            user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+            userDao.save(user);
+        }
+//        User user=userDao.findFirstByUserName("xukai");
+//        System.out.println(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+    }
 
     @Test
     public void sendEmail(){
