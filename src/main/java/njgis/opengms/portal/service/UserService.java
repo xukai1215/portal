@@ -324,7 +324,7 @@ public class UserService {
         return 1;
     }
 
-    public JSONObject validPassword(String account, String password) {
+    public JSONObject validPassword(String account, String password, String ip) {
 
         User user = userDao.findFirstByEmail(account);
         if (user == null) {
@@ -332,6 +332,7 @@ public class UserService {
         }
         if (user != null) {
             if (user.getPassword().equals(password)) {
+                SetLastLoginIp(user,ip);
                 JSONObject result=new JSONObject();
                 result.put("name",user.getName());
                 result.put("oid",user.getOid());
@@ -340,6 +341,11 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    public void SetLastLoginIp(User user,String ip){
+        user.setLastLoginIp(ip);
+        userDao.save(user);
     }
 
     public String getImage(String oid){

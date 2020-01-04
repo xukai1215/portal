@@ -33,6 +33,10 @@ public class User {
     String personPage;
     String institution;
 
+    String lastLoginIp;
+
+    boolean subscribe=true;
+
     Introduction introduction;
 
     List<String> organizations;
@@ -72,5 +76,6 @@ public class User {
     Date createTime;
     Date updateTime;
     Date lastSendEmailTime;
+
 
 }

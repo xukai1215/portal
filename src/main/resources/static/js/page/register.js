@@ -134,6 +134,7 @@ new Vue({
         register(){
 
             this.ruleForm2.userName=this.ruleForm2.email;
+            this.ruleForm2.password=hex_md5(this.ruleForm2.password)
 
             $.ajax({
                 url : '/user/add',

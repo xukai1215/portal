@@ -20,6 +20,7 @@ import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.TaskService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -367,8 +368,10 @@ public class TaskRestController {
 
     @RequestMapping(value = "/invoke", method = RequestMethod.POST)
     JsonResult invoke(@RequestBody JSONObject lists, HttpServletRequest request) {
+        ComputableModel computableModel=computableModelService.getByOid(lists.getString("oid"));
         HttpSession session = request.getSession();
-
+        JSONObject mdlJson=Utils.convertMdl(computableModel.getMdl());
+        System.out.println(mdlJson);
         if (session.getAttribute("uid") != null) {
             String username = session.getAttribute("uid").toString();
 //            JSONObject jsonObject = JSONObject.parseObject(lists);
@@ -380,7 +383,7 @@ public class TaskRestController {
                 Task task = new Task();
                 task.setOid(UUID.randomUUID().toString());
                 task.setComputableId(lists.getString("oid"));
-                ComputableModel computableModel=computableModelService.getByOid(lists.getString("oid"));
+
                 task.setComputableName(computableModel.getName());
                 task.setTaskId(result);
                 task.setUserId(username);

@@ -10,6 +10,7 @@ import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.service.UserService;
+import njgis.opengms.portal.utils.IpUtil;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,9 @@ public class UserRestController {
                         HttpServletRequest request) {
 
         System.out.println("in");
-        JSONObject result=userService.validPassword(account,password);
+        String ip=IpUtil.getIpAddr(request);
+        System.out.println(ip);
+        JSONObject result=userService.validPassword(account,password,ip);
         if(result!=null){
             // 密码验证成功，将用户数据放入到Session中
             HttpSession session=request.getSession();
