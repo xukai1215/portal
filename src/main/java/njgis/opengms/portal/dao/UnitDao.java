@@ -1,6 +1,7 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.Unit.UnitResultDTO;
+import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.Unit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,8 @@ public interface UnitDao extends MongoRepository<Unit,String> {
     Page<Unit> findByParentIdIn(List<String> parentIds, Pageable pageable);
 
     Page<UnitResultDTO> findByAuthor(String author, Pageable pageable);
+
+    List<Item> findByAuthor(String author);
 
     Page<UnitResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 }

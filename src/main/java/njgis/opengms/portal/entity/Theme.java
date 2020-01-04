@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Document
-public class Theme {
+public class Theme{
     @Id
     String id;
     String oid;

@@ -62,14 +62,15 @@ public class User {
     int spatials;
     int templates;
     int units;
+    int themes;
+
     int articlesCount;
     int projectsCount;
     int conferencesCount;
-    int themes;
-
 
     Affiliation affiliation;
     Date createTime;
     Date updateTime;
+    Date lastSendEmailTime;
 
 }

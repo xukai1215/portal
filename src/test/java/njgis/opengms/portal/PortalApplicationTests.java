@@ -6,6 +6,8 @@ import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.service.CommonService;
+import njgis.opengms.portal.utils.ChartUtils;
+import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.io.FileUtils;
@@ -65,6 +67,9 @@ public class PortalApplicationTests {
     UnitDao unitDao;
 
     @Autowired
+    ThemeDao themeDao;
+
+    @Autowired
     TaskDao taskDao;
 
     @Value("${resourcePath}")
@@ -72,6 +77,160 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void sendEmail(){
+        User user = userDao.findFirstByOid("24");
+        String message = "<p style='font-family: sans-serif;'>Dear ";
+        message+=user.getName()+":<br/><br/>";
+        Date now = new Date();
+        Date registerTime = user.getCreateTime();
+        int rangeDay = (int)((now.getTime()-registerTime.getTime())/(1000*3600*24));
+        int total=0;
+        message+="It has been " + rangeDay + " days since you register as a member of <a href='http://geomodeling.njnu.edu.cn'><b>OpenGMS</b></a>. ";
+        if(user.getModelItems()>0||user.getDataItems()>0||user.getConceptualModels()>0||user.getLogicalModels()>0||
+                user.getComputableModels()>0||user.getConcepts()>0||user.getSpatials()>0||user.getTemplates()>0||
+                user.getUnits()>0||user.getThemes()>0){
+            message+="You have shared some resources about geographic models in the platform, including ";
+            List<String> stringList = new ArrayList<>();
+            JSONArray items=new JSONArray();
+            addItem(user.getModelItems(), "model item",user.getUserName(),stringList, items);
+            addItem(user.getConceptualModels(), "conceptual model",user.getUserName(),stringList, items);
+            addItem(user.getLogicalModels(), "logical model",user.getUserName(),stringList, items);
+            addItem(user.getComputableModels(), "computable model",user.getUserName(),stringList, items);
+            addItem(user.getDataItems(), "data item",user.getOid(),stringList, items);
+            addItem(user.getConcepts(), "concept",user.getUserName(),stringList, items);
+            addItem(user.getSpatials(), "spatial reference",user.getUserName(),stringList, items);
+            addItem(user.getTemplates(), "data template",user.getUserName(),stringList, items);
+            addItem(user.getUnits(), "unit & metric",user.getUserName(),stringList, items);
+            addItem(user.getThemes(), "theme",user.getUserName(),stringList, items);
+            for(int i=0;i<stringList.size();i++){
+                message+=stringList.get(i);
+                if(i< stringList.size()-2){
+                    message+=", ";
+                }else if(i==stringList.size()-2){
+                    message+=" and ";
+                }else{
+                    message+=". ";
+                }
+            }
+            message+="Thank you for your contribution to geographic modeling and simulation!<br/><br/>";
+
+
+            for(int i=0;i<items.size();i++){
+                for(int j=0;j<items.size()-1-i;j++){
+                    JSONObject item=new JSONObject();
+                    JSONObject item1=new JSONObject();
+
+                    item.put("name",items.getJSONObject(j).getString("name"));
+                    item.put("view count",items.getJSONObject(j).getString("view count"));
+                    item.put("type",items.getJSONObject(j).getString("type"));
+
+                    item1.put("name",items.getJSONObject(j+1).getString("name"));
+                    item1.put("view count",items.getJSONObject(j+1).getString("view count"));
+                    item1.put("type",items.getJSONObject(j+1).getString("type"));
+
+
+                    if(item1.getInteger("view count")>item.getInteger("view count")){
+                        items.set(j,item1);
+                        items.set(j+1,item);
+                    }
+                }
+
+                total+=items.getJSONObject(items.size()-1-i).getInteger("view count");
+            }
+            message+="Many people have noticed what you done in OpenGMS, your contributions have been viewed and invoked "+total+" times. " +
+                    "The most influential item that you contributed is "+items.getJSONObject(0).getString("name")+", it has been viewed "+items.getJSONObject(0).getInteger("view count")+" times. "+
+                    "The page view of your contributions are shown in the figure below:<br/><br/>";
+            ChartOption chartOption=new ChartOption();
+            chartOption.setTitle("Page View Statistics");
+            chartOption.setSubTitle("Go to OpenGMS to check daily page view of your contributions");
+            chartOption.setTitlePosition("center");
+            int size=0;
+            if(items.size()>=5){
+                size=5;
+            }else{
+                size=items.size();
+            }
+            String[] types=new String[size];
+            int[][] data=new int[1][size];
+            for(int i=0;i<types.length;i++){
+                types[i]=items.getJSONObject(i).getString("name");
+                data[0][i]=items.getJSONObject(i).getInteger("view count");
+            }
+            chartOption.setTypes(types);
+            chartOption.setData(data);
+            chartOption.setValXis(types);
+            String chartPath=ChartUtils.generateBar(chartOption);
+            JSONObject imageInfo = new JSONObject();
+            imageInfo.put("name","chart1");
+            imageInfo.put("path",chartPath);
+            JSONArray imageList=new JSONArray();
+            imageList.add(imageInfo);
+
+            message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+            message+="If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
+            message+="Sincerely,<br/>";
+            message+="OpenGMS Team<br/>";
+            message+="http://geomodeling.njnu.edu.cn</p>";
+
+            commonService.sendEmailWithImg("OpenGMS Team","921485453@qq.com","Geographic Modeling and Simulation Review", message,imageList);
+
+
+        }
+    }
+
+    private void addItem(int count, String type,String author, List<String> StringList,JSONArray items){
+
+        if(count>0) {
+            String str = count + " " + type;
+            if (count > 1) {
+                str += "s";
+            }
+            StringList.add(str);
+
+            List<Item> itemList=new ArrayList<>();
+            switch (type){
+                case "model item":
+                    itemList=modelItemDao.findByAuthor(author);
+                    break;
+                case "conceptual model":
+                    itemList=conceptualModelDao.findByAuthor(author);
+                    break;
+                case "logical model":
+                    itemList=logicalModelDao.findByAuthor(author);
+                    break;
+                case "computable model":
+                    itemList=computableModelDao.findByAuthor(author);
+                    break;
+                case "data item":
+                    itemList=dataItemDao.findByAuthor(author);
+                    break;
+                case "concept":
+                    itemList=conceptDao.findByAuthor(author);
+                    break;
+                case "spatial reference":
+                    itemList=spatialReferenceDao.findByAuthor(author);
+                    break;
+                case "data template":
+                    itemList=templateDao.findByAuthor(author);
+                    break;
+                case "unit & metric":
+                    itemList=unitDao.findByAuthor(author);
+                    break;
+
+
+            }
+            for(Item item:itemList){
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("name",item.getName());
+                jsonObject.put("view count",item.getViewCount());
+                jsonObject.put("type",type);
+
+                items.add(jsonObject);
+            }
+        }
+    }
 
     @Test
     public void printUser(){

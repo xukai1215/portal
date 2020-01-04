@@ -6,9 +6,11 @@ import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
+import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.DailyViewCount;
+import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +46,9 @@ public class ModelItemRestController {
 
     @Autowired
     ModelItemService modelItemService;
+
+    @Autowired
+    ComputableModelService computableModelService;
 
     @Autowired
     UserService userService;
@@ -268,20 +274,35 @@ public class ModelItemRestController {
     @RequestMapping (value="/getDailyViewCount",method = RequestMethod.GET)
     public JsonResult getDailyViewCount(@RequestParam(value="oid") String oid){
         ModelItem modelItem=modelItemService.getByOid(oid);
+        List<String> computableModelIds = modelItem.getRelate().getComputableModels();
+        List<ComputableModel> computableModelList=new ArrayList<>();
+        for(int i=0;i<computableModelIds.size();i++){
+            ComputableModel computableModel = computableModelService.getByOid(computableModelIds.get(i));
+            computableModelList.add(computableModel);
+        }
         List<DailyViewCount> dailyViewCountList=modelItem.getDailyViewCount();
         JSONArray dateList = new JSONArray();
-        JSONArray valueList = new JSONArray();
+        dateList.add("Timeline");
+        JSONArray viewArray=new JSONArray();
+        viewArray.add("View Times");
+        JSONArray invokeArray = new JSONArray();
+        invokeArray.add("Invoke Times");
+        JSONArray resultList = new JSONArray();
         Date now = new Date();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();//动态时间
         c.setTime(now);
+        String startTime;//chart起始时间
         int max=0;
         if(dailyViewCountList==null||dailyViewCountList.size()==0){
 
-            c.add(Calendar.DATE,-7);
-            for(int i=0;i<7;i++){
+
+            c.add(Calendar.DATE,-6);
+            startTime=sdf.format(c.getTime());
+            for(int i=0;i<6;i++){
                 dateList.add(sdf.format(c.getTime()));
-                valueList.add(0);
+                viewArray.add(0);
+                invokeArray.add(0);
                 c.add(Calendar.DATE,1);
             }
 
@@ -292,7 +313,7 @@ public class ModelItemRestController {
 
             if(dailyViewCountList.get(dailyViewCountList.size()-1).getDate().before(c.getTime())){
                 c.setTime(now);
-                c.add(Calendar.DATE,-7);
+                c.add(Calendar.DATE,-6);
             }
 
             int index=0;
@@ -305,6 +326,7 @@ public class ModelItemRestController {
                 }
             }
 
+            startTime=sdf.format(c.getTime());
 
             Calendar nowCalendar = Calendar.getInstance();
             nowCalendar.setTime(now);
@@ -320,23 +342,70 @@ public class ModelItemRestController {
                         if(count>max){
                             max=count;
                         }
-                        valueList.add(count);
+                        viewArray.add(count);
                         index++;
                     } else {
-                        valueList.add(0);
+                        viewArray.add(0);
                     }
                 }
                 else{
-                    valueList.add(0);
+                    viewArray.add(0);
                 }
 
                 c.add(Calendar.DATE,1);
+                invokeArray.add(0);
             }
+
         }
+
+
+
+        for(int i=0;i<computableModelList.size();i++){
+            Calendar calendar=Calendar.getInstance();
+            try {
+                Date date=sdf.parse(startTime);
+                calendar.setTime(date);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            ComputableModel computableModel = computableModelList.get(i);
+            List<DailyViewCount> dailyInvokeCounts = computableModel.getDailyInvokeCount();
+
+            int index=0;
+            while (index<dailyInvokeCounts.size()&&calendar.getTime().after(dailyInvokeCounts.get(index).getDate())){
+                index++;
+            }
+
+            Calendar nowCalendar = Calendar.getInstance();
+            nowCalendar.setTime(now);
+            nowCalendar.add(Calendar.DATE, 1);
+
+            int count=1;
+            while (!isSameDay(calendar.getTime(),nowCalendar.getTime())){
+                if(index<dailyInvokeCounts.size()) {
+                    DailyViewCount dailyInvokeCount = dailyInvokeCounts.get(index);
+                    if (isSameDay(calendar.getTime(), dailyInvokeCount.getDate())) {
+                        int times=invokeArray.getInteger(count);
+                        times+=dailyInvokeCount.getCount();
+                        invokeArray.set(count,times);
+                        index++;
+                    }
+                }
+
+                calendar.add(Calendar.DATE,1);
+                count++;
+            }
+
+        }
+
+        resultList.add(dateList);
+        resultList.add(viewArray);
+        resultList.add(invokeArray);
+
         JSONObject result=new JSONObject();
-        result.put("dateList",dateList);
-        result.put("valueList",valueList);
-        result.put("max",max);
+
+        result.put("valueList",resultList);
+
         return ResultUtils.success(result);
     }
 

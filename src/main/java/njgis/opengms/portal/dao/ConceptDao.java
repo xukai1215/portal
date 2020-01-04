@@ -2,6 +2,7 @@ package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.Concept.ConceptResultDTO;
 import njgis.opengms.portal.entity.Concept;
+import njgis.opengms.portal.entity.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -29,6 +30,8 @@ public interface ConceptDao extends MongoRepository<Concept,String> {
     Page<Concept> findByParentIdIn(List<String> parentIds,Pageable pageable);
 
     Page<ConceptResultDTO> findByAuthor(String author, Pageable pageable);
+
+    List<Item> findByAuthor(String author);
 
     Page<ConceptResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 }

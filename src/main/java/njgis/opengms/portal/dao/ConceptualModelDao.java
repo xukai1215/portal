@@ -2,6 +2,7 @@ package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.ConceptualModel.ConceptualModelResultDTO;
 import njgis.opengms.portal.entity.ConceptualModel;
+import njgis.opengms.portal.entity.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -30,6 +31,8 @@ public interface ConceptualModelDao extends MongoRepository<ConceptualModel,Stri
     Page<ConceptualModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
 
     Page<ConceptualModel> findByAuthor(String author,Pageable pageable);
+
+    List<Item> findByAuthor(String author);
 
     Page<ConceptualModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 

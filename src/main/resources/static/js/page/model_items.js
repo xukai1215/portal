@@ -6,7 +6,7 @@ new Vue({
     },
     data: function () {
         return {
-            statistic:[false,false,false,false,false,false,false,false,false,false],
+            statistic:['Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview'],
 
             activeIndex: '2',
             queryType: 'normal',
@@ -313,47 +313,123 @@ new Vue({
         }
     },
     methods: {
+
+        switchInit(){
+            this.statistic=['Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview'];
+        },
+
         switchChange(key){
-            if(this.statistic[key]){
+            if(this.statistic[key]!='Overview'){
+                // var dom = document.getElementById("chart"+key);
+                // var myChart = echarts.init(dom);
+                // var app = {};
+                //
+                //     option = {
+                //         legend: {},
+                //         tooltip: {
+                //             trigger: 'axis',
+                //             showContent: false
+                //         },
+                //         dataset: {
+                //             source: [
+                //                 ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                //                 ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+                //                 ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+                //                 ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+                //                 ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+                //             ]
+                //         },
+                //         xAxis: {type: 'category'},
+                //         yAxis: {gridIndex: 0},
+                //         grid: {top: '5%'},
+                //         series: [
+                //             {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                //             {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                //             {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                //             {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                //
+                //         ]
+                //     };
+                //
+                //
+                //
+                //     myChart.setOption(option);
+
                 let chart=echarts.init(document.getElementById('chart'+key));
                 chart.showLoading();
                 $.get("/modelItem/getDailyViewCount",{oid:this.pageOption.searchResult[key].oid},(result)=> {
-                    let dateList = result.data.dateList;//["2000-06-05", "2000-06-06", "2000-06-07", "2000-06-08", "2000-06-09"];
                     let valueList = result.data.valueList;//[0, 0, 0, 0, 0];
                     console.log(result)
                     chart.hideLoading();
-                    let option = {
-
-                        // Make gradient line here
-                        visualMap: [{
-                            show: false,
-                            type: 'continuous',
-                            seriesIndex: 0,
-                            min: 0,
-                            max: result.data.max
-                        }],
-                        title: [{
-                            left: 'center',
-                            text: 'Daily View Count'
-                        }],
+                    // let option = {
+                    //
+                    //     // Make gradient line here
+                    //     visualMap: [{
+                    //         show: false,
+                    //         type: 'continuous',
+                    //         seriesIndex: 0,
+                    //         min: 0,
+                    //         max: result.data.max
+                    //     }],
+                    //     title: [{
+                    //         left: 'center',
+                    //         text: 'Daily View Count'
+                    //     }],
+                    //     tooltip: {
+                    //         trigger: 'axis'
+                    //     },
+                    //     xAxis: [{
+                    //         data: dateList
+                    //     }],
+                    //     yAxis: [{
+                    //         splitLine: {show: false}
+                    //     }],
+                    //     grid: [{
+                    //         top: '10%',
+                    //         bottom: '15%'
+                    //     }],
+                    //     series: [{
+                    //         type: 'line',
+                    //         showSymbol: false,
+                    //         data: valueList
+                    //     }]
+                    // };
+                    let series = [];
+                    for(i=1;i<valueList.length;i++){
+                        series.push({type: 'line', smooth: true, seriesLayoutBy: 'row'});
+                    }
+                    option = {
+                        legend: {},
                         tooltip: {
-                            trigger: 'axis'
+                            trigger: 'axis',
+                            showContent: true
                         },
-                        xAxis: [{
-                            data: dateList
-                        }],
-                        yAxis: [{
-                            splitLine: {show: false}
-                        }],
-                        grid: [{
-                            top: '10%',
-                            bottom: '15%'
-                        }],
-                        series: [{
-                            type: 'line',
-                            showSymbol: false,
-                            data: valueList
-                        }]
+                        dataset: {
+                            source:valueList
+                            //     [
+                            //     ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                            //     ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+                            //     ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+                            //     ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+                            //     ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+                            // ]
+                        },
+                        xAxis: {
+                            type: 'category',
+                            axisTick:{
+                                show:false,
+                            }
+                        },
+                        yAxis: {gridIndex: 0},
+                        grid: {top: '15%',bottom:'15%'},
+                        series:series
+                        //     [
+                        //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        //
+                        // ]
                     };
 
                     chart.setOption(option)
@@ -381,6 +457,7 @@ new Vue({
             });
         },
         search() {
+            this.switchInit();
             this.setUrl("/modelItem/repository")
             this.pageOption.currentPage = 1;
             this.classifications1=["all"];
@@ -390,9 +467,7 @@ new Vue({
         },
         //页码change
         handlePageChange(val) {
-            for(i=0;i<this.statistic.length;i++){
-                this.statistic[i]=false;
-            }
+            this.switchInit();
             let data=this.$refs.tree1.getCurrentNode();
             if(data!=null) {
                 this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
@@ -403,6 +478,7 @@ new Vue({
             this.getModels();
         },
         handleCurrentChange(data, checked, indeterminate) {
+            this.switchInit();
             this.setUrl("/modelItem/repository?category="+data.oid);
             this.pageOption.searchResult=[];
             this.pageOption.total=0;
@@ -426,6 +502,7 @@ new Vue({
             }
         },
         handleCheckChange(data, checked, indeterminate) {
+            this.switchInit();
             this.pageOption.searchResult=[];
             this.pageOption.paginationShow=false;
             let checkedNodes = this.$refs.tree2.getCheckedNodes()

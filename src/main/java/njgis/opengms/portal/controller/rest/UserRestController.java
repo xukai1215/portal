@@ -14,6 +14,7 @@ import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,7 +43,11 @@ public class UserRestController {
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
-    @ResponseBody
+    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
+    private void sendEmail(){
+
+    }
+
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public JsonResult addUser(UserAddDTO user) throws Exception {
         int code=userService.addUser(user);

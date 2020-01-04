@@ -58,7 +58,7 @@
                     <el-tab-pane label="Server Nodes" name="server">
                         <div id="echartMap" style="height: 700px"></div>
                     </el-tab-pane>
-                    <el-tab-pane label="User" name="user" >
+                    <el-tab-pane label="User Map" name="user" >
                         <div id="userMap" style="height: 700px"></div>
                     </el-tab-pane>
                 </el-tabs>
@@ -76,8 +76,7 @@
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-
-<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/echarts_oldversion.min.js"></script>
 <script src="/static/js/common/world.js"></script>
 
 <script>
@@ -396,7 +395,7 @@
                 };
                 // this.computerNodesMapOptions = MapOptions;
                 myChart.setOption(MapOptions);
-                console.log('wait to load');
+                console.log(chartdata);
 
                 // window.onresize = () => {
                 //     height = document.documentElement.clientHeight;
@@ -404,15 +403,15 @@
                 //     myChart.resize();
                 // };
 
-                //添加地图点击事件
-                myChart.on('click', function (params) {
-                    if (params.componentType == "series") {
-                        {
-                            $("#pageContent").stop(true);
-                            $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
-                        }
-                    }
-                })
+                // //添加地图点击事件
+                // myChart.on('click', function (params) {
+                //     if (params.componentType == "series") {
+                //         {
+                //             $("#pageContent").stop(true);
+                //             $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
+                //         }
+                //     }
+                // })
 
             },
 

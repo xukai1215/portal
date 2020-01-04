@@ -1,8 +1,8 @@
 var vue = new Vue({
     el: "#app",
     data: {
-        radioStyle:"Classic",
-        semanticsActiveStates:[0,1,2,3,4,5,6,7,8,9,10],
+        radioStyle: "Classic",
+        semanticsActiveStates: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
         tableLoading: true,
         first: true,
@@ -39,34 +39,34 @@ var vue = new Vue({
             }
         ],
 
-        relatedDataList:{},
+        relatedDataList: {},
 
-        exampleDataListOfUser:{
+        exampleDataListOfUser: {
             content: [
                 {
-                    userName:'',
-                    runTime:'',
-                    description:'',
-                    public:[],
-                    status:'',
-                    currentPage:1,
+                    userName: '',
+                    runTime: '',
+                    description: '',
+                    public: [],
+                    status: '',
+                    currentPage: 1,
                 }
             ],
-            total:0,
+            total: 0,
         },
 
-        exampleDataList:{
+        exampleDataList: {
             content: [
                 {
-                    userName:'',
-                    runTime:'',
-                    description:'',
-                    public:[],
-                    status:'',
-                    currentPage:1,
+                    userName: '',
+                    runTime: '',
+                    description: '',
+                    public: [],
+                    status: '',
+                    currentPage: 1,
                 }
-                ],
-            total:0,
+            ],
+            total: 0,
         },
 
         inEvent: [],
@@ -124,7 +124,7 @@ var vue = new Vue({
             total: 0,
         },
 
-        relatePageOption:{
+        relatePageOption: {
             page: 0,
             pageSize: 5,
             asc: false,
@@ -156,43 +156,144 @@ var vue = new Vue({
 
         rotatevalue: 0,
 
-        fileSearchResult:[],
+        fileSearchResult: [],
 
-        loadjson:'',
+        loadjson: '',
         paramDialogVisible: false,
         paramType: "",
         externalUrl: "",
         currentEventId: "",
 
-        loadDataIndex:1,
+        loadDataIndex: 1,
 
-        uploadDialogVisible:false,
-        selectFolderVisible:false,
-        uploadFileList:[],
-        selectedPath:[],
-        uploadInPath:"",
-        folderTree:[],
+        uploadDialogVisible: false,
+        selectFolderVisible: false,
+        uploadFileList: [],
+        selectedPath: [],
+        uploadInPath: "",
+        folderTree: [],
 
+        uploadName: "",
+        selectLoading: false,
+        options: [],
+        selectValue: "",
+        uploadFiles: [],
+        uploadLoading: false,
     },
     computed: {},
-    watch:{
-      // currentFile:function (file) {
-      //     this.uploadToDataContainer(file);
-      // }
+    watch: {
+        // currentFile:function (file) {
+        //     this.uploadToDataContainer(file);
+        // }
     },
     methods: {
+        uploadRemove(file, fileList) {
 
-        selectFile(){
-            if(this.selectedPath.length==0) {
+            this.uploadFiles = fileList;
+        },
+        uploadChange(file, fileList) {
+            console.log(fileList)
+            this.uploadFiles = fileList;
+        },
+
+        uploadClose() {
+            this.$refs.upload.abort();
+            this.uploadDialogVisible = false;
+        },
+        submitUpload() {
+            this.uploadLoading=true;
+            let files=[];
+            let configContent = "<UDXZip><Name>";
+            for(let index in this.uploadFiles){
+                configContent+="<add value='"+this.uploadFiles[index].name+"' />";
+                files.push(this.uploadFiles[index].raw);
+            }
+            configContent += "</Name>";
+            if(this.selectValue!=0){
+                configContent+="<DataTemplateId>";
+                configContent+=this.selectValue;
+                configContent+="</DataTemplateId>"
+            }
+            configContent+="</UDXZip>";
+            console.log(configContent)
+            let file = new File([configContent], 'config.udxcfg', {
+                type: 'text/plain',
+            });
+            files.push(file);
+
+            let formData = new FormData();
+            for(let index in files){
+                formData.append("ogmsdata", files[index]);
+            }
+            formData.append("name", this.uploadName);
+            formData.append("userId", this.uid);
+            formData.append("serverNode", "china");
+            formData.append("origination", "portal");
+
+            $.get("/dataManager/dataContainerIpAndPort", (result) => {
+                let ipAndPort = result.data;
+
+                $.ajax({
+                    url: 'http://111.229.14.128:8899/source/tep',
+                    type: 'post',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: true
+                }).done((res)=> {
+                    this.uploadLoading=false;
+                    console.log(res);
+                }).fail((res)=> {
+                    this.uploadLoading=false;
+                });
+            });
+
+        },
+        remoteMethod(searchText) {
+
+            this.selectLoading = true;
+            let query = {
+                page: 0,
+                pageSize: 999,
+                asc: 1,
+                searchText: searchText
+            };
+            $.ajax({
+                type: "POST",
+                url: "/repository/searchTemplate",
+                data: JSON.stringify(query),
+                async: true,
+                contentType: "application/json",
+                success: (result) => {
+
+                    this.options = [];
+                    this.options.push({"name": "None", "oid": "0"})
+                    for (let index in result.data.list) {
+                        this.options.push(result.data.list[index]);
+                    }
+
+
+                    this.selectLoading = false;
+                }
+            });
+            // $.post("/repository/searchTemplate",JSON.stringify(query),(result)=>{
+            //     this.selectLoading=false;
+            //     this.option=result.list;
+            // },"json")
+
+        },
+        selectFile() {
+            if (this.selectedPath.length == 0) {
                 alert('Please select a folder first!')
                 return;
             }
             $("#uploadFile").click()
         },
 
-        handleSuccess(result,file,fileList){
+        handleSuccess(result, file, fileList) {
             console.log(result)
-            let uploadSource=[];
+            let uploadSource = [];
             uploadSource.push(result.data);
             this.upload_data_dataManager(uploadSource);
         },
@@ -205,12 +306,12 @@ var vue = new Vue({
             if (uploadSource.length == 0) {
                 alert("Please upload the file into the template first")
             } else {
-                for(let i=0;i<uploadSource.length;i++){
-                    let dataName=uploadSource[i].file_name;
-                    let dataname7suffix=dataName.split('.')
-                    let fileName=dataname7suffix[0]
-                    let suffix=dataname7suffix[1]
-                    let dataId=uploadSource[i].source_store_id;
+                for (let i = 0; i < uploadSource.length; i++) {
+                    let dataName = uploadSource[i].file_name;
+                    let dataname7suffix = dataName.split('.')
+                    let fileName = dataname7suffix[0]
+                    let suffix = dataname7suffix[1]
+                    let dataId = uploadSource[i].source_store_id;
                     var data = {
                         author: this.userId,
                         fileName: fileName,
@@ -230,7 +331,7 @@ var vue = new Vue({
 
                                 that.addAllData()
                                 that.close()
-                                sucUpload=res.status
+                                sucUpload = res.status
                             }
                         });
                 }
@@ -241,42 +342,42 @@ var vue = new Vue({
 
         },
 
-        addDataToPortalBack(item){//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
+        addDataToPortalBack(item) {//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
 
-            var addItem=[]
-            if(item instanceof Array) {
-                addItem=item;
+            var addItem = []
+            if (item instanceof Array) {
+                addItem = item;
                 // for(let i=0;i<addItem.length;i++)
                 //     addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
             }
-            else{
-                let obj={
-                    file_name:item.label+'.'+item.suffix,
-                    source_store_id:item.url.split('=')[1]
+            else {
+                let obj = {
+                    file_name: item.label + '.' + item.suffix,
+                    source_store_id: item.url.split('=')[1]
                 }
-                addItem[0]=obj
+                addItem[0] = obj
             }
-            let paths=[]
-            if(this.uploadInPath==1){
-                let i=this.pathShown.length-1;
-                while (i>=0) {
+            let paths = []
+            if (this.uploadInPath == 1) {
+                let i = this.pathShown.length - 1;
+                while (i >= 0) {
                     paths.push(this.pathShown[i].id);
                     i--;
                 }
-                if(paths.length==0)paths=['0']
+                if (paths.length == 0) paths = ['0']
 
-            }else{
-                if(this.selectedPath.length==0) {
+            } else {
+                if (this.selectedPath.length == 0) {
                     alert('Please select a folder')
                     return
                 }
 
-                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
-                while (i>=1) {
+                let i = this.selectedPath.length - 1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i >= 1) {
                     paths.push(this.selectedPath[i].key);
                     i--;
                 }
-                if(paths.length==0)paths=['0']
+                if (paths.length == 0) paths = ['0']
             }
             let that = this;
             $.ajax({
@@ -288,7 +389,7 @@ var vue = new Vue({
                 }),
 
                 async: true,
-                traditional:true,
+                traditional: true,
                 contentType: "application/json",
                 success: (json) => {
                     if (json.code == -1) {
@@ -296,9 +397,9 @@ var vue = new Vue({
                         window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
-                        let idList=json.data
+                        let idList = json.data
                         console.log(idList)
-                        if (item instanceof Array){
+                        if (item instanceof Array) {
                             if (this.uploadInPath == 1) {
                                 for (let i = 0; i < item.length; i++) {
                                     console.log(item[i].file_name)
@@ -324,10 +425,10 @@ var vue = new Vue({
                                 this.refreshPackage(0);
                                 //要写一个前台按路径查找的函数
                             }
-                        }else{
-                            let obj=item
-                            obj.id=idList[0].id
-                            obj.url=idList[0].url
+                        } else {
+                            let obj = item
+                            obj.id = idList[0].id
+                            obj.url = idList[0].url
                             if (this.myFileShown.length === 0)
                                 this.addChild(this.myFile, paths[0], item)
                             this.myFileShown.push(item);
@@ -346,46 +447,52 @@ var vue = new Vue({
 
         },
 
-        uploadBeforeClose(){
-            this.uploadDialogVisible=false;
+        uploadBeforeClose() {
+            this.$confirm('Confirm close？')
+                .then(_ => {
+                    this.uploadDialogVisible = false;
+                })
+                .catch(_ => {
+                });
+
             this.$refs.upload.clearFiles();
         },
 
-        addFolderInTree(pageIndex,index){
-            var node,data
-            if(pageIndex=='myData'){
-                data=this.$refs.folderTree.getCurrentNode();
-                if(data==undefined) alert('Please select a file directory')
-                node=this.$refs.folderTree.getNode(data);
+        addFolderInTree(pageIndex, index) {
+            var node, data
+            if (pageIndex == 'myData') {
+                data = this.$refs.folderTree.getCurrentNode();
+                if (data == undefined) alert('Please select a file directory')
+                node = this.$refs.folderTree.getNode(data);
             }
-            else{
-                data=this.$refs.folderTree2[index].getCurrentNode();
-                if(data==undefined) alert('Please select a file directory')
-                node=this.$refs.folderTree2[index].getNode(data);
+            else {
+                data = this.$refs.folderTree2[index].getCurrentNode();
+                if (data == undefined) alert('Please select a file directory')
+                node = this.$refs.folderTree2[index].getNode(data);
             }
 
-            let folderExited=data.children
+            let folderExited = data.children
 
             console.log(node);
-            let paths=[];
-            while(node.key!=undefined&&node.key!=0){
+            let paths = [];
+            while (node.key != undefined && node.key != 0) {
                 paths.push(node.key);
-                node=node.parent;
+                node = node.parent;
             }
-            if(paths.length==0) paths.push('0')
+            if (paths.length == 0) paths.push('0')
             console.log(paths)
 
-            var newChild={id:""}
+            var newChild = {id: ""}
 
             this.$prompt(null, 'Enter Folder Name', {
                 confirmButtonText: 'OK',
                 cancelButtonText: 'Cancel',
                 // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
                 // inputErrorMessage: '邮箱格式不正确'
-            }).then(({ value }) => {
-                if(folderExited.some((item)=>{
-                    return  item.label===value;
-                })==true){
+            }).then(({value}) => {
+                if (folderExited.some((item) => {
+                    return item.label === value;
+                }) == true) {
                     alert('this name is existing in this path, please input a new one');
                     return
                 }
@@ -403,19 +510,28 @@ var vue = new Vue({
                             window.location.href = "/user/login"
                         }
                         else {
-                            newChild = {id: json.data, label: value, children: [], father: data.id ,package:true,suffix:'',upload:false, url:'',};
+                            newChild = {
+                                id: json.data,
+                                label: value,
+                                children: [],
+                                father: data.id,
+                                package: true,
+                                suffix: '',
+                                upload: false,
+                                url: '',
+                            };
                             if (!data.children) {
                                 this.$set(data, 'children', []);
                             }
                             data.children.push(newChild);
 
-                            if(this.myFileShown.length===0)
-                                this.addChild(this.myFile,paths[0],newChild)
+                            if (this.myFileShown.length === 0)
+                                this.addChild(this.myFile, paths[0], newChild)
                             this.myFileShown.push(newChild);
 
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 this.$refs.folderTree.setCurrentKey(newChild.id)
-                            },100)
+                            }, 100)
                         }
 
                     }
@@ -423,7 +539,7 @@ var vue = new Vue({
                 });
 
 
-            }).then(()=>{
+            }).then(() => {
 
             }).catch(() => {
                 this.$message({
@@ -435,43 +551,43 @@ var vue = new Vue({
 
         },
 
-        selectFolder(){
+        selectFolder() {
 
-            this.selectedPath=[];
+            this.selectedPath = [];
 
-            axios.get("/user/getFolder",{})
-                .then(res=> {
-                    let json=res.data;
-                    if(json.code==-1){
+            axios.get("/user/getFolder", {})
+                .then(res => {
+                    let json = res.data;
+                    if (json.code == -1) {
                         alert("Please login first!")
                         window.sessionStorage.setItem("history", window.location.href);
-                        window.location.href="/user/login"
+                        window.location.href = "/user/login"
                     }
                     else {
-                        this.folderTree=res.data.data;
-                        this.selectFolderVisible=true;
+                        this.folderTree = res.data.data;
+                        this.selectFolderVisible = true;
 
                     }
 
                 });
         },
 
-        confirmFolder(){
-            let data=this.$refs.folderTree.getCurrentNode();
-            let node=this.$refs.folderTree.getNode(data);
+        confirmFolder() {
+            let data = this.$refs.folderTree.getCurrentNode();
+            let node = this.$refs.folderTree.getNode(data);
 
-            while(node.key!=undefined&&node.key!=0){
+            while (node.key != undefined && node.key != 0) {
                 this.selectedPath.unshift(node);
-                node=node.parent;
+                node = node.parent;
             }
-            let allFder={
-                key:'0',
-                label:'All Folder'
+            let allFder = {
+                key: '0',
+                label: 'All Folder'
             }
             this.selectedPath.unshift(allFder)
-            console.log(this.selectedPath)
-            this.selectPathDialog=false;
-            this.selectFolderVisible=false;
+            // console.log(this.selectedPath)
+            this.selectPathDialog = false;
+            this.selectFolderVisible = false;
 
         },
 
@@ -493,52 +609,52 @@ var vue = new Vue({
             this.paramDialogVisible = true;
         },
 
-        uploadToDataContainer(file,event){
+        uploadToDataContainer(file, event) {
 
-            $.get("/dataManager/dataContainerIpAndPort",(result)=>{
-                let ipAndPort=result.data;
+            $.get("/dataManager/dataContainerIpAndPort", (result) => {
+                let ipAndPort = result.data;
                 let formData = new FormData();
-                formData.append("file",file);
+                formData.append("file", file);
                 $.ajax({
-                    type:"post",
-                    url: "http://"+ipAndPort+"/file/upload/store_dataResource_files",
+                    type: "post",
+                    url: "http://" + ipAndPort + "/file/upload/store_dataResource_files",
                     data: formData,
-                    async:true,
+                    async: true,
                     processData: false,
                     contentType: false,
-                    success: (result)=>{
-                        if (result.code == 0){
+                    success: (result) => {
+                        if (result.code == 0) {
                             let data = result.data;
                             let dataName = data.file_name.match(/.+(?=\.)/)[0];
                             let dataSuffix = data.file_name.match(/(?=\.).+/)[0].substring(1);
                             let dataId = data.source_store_id;
-                            let dataUrl = "http://"+ipAndPort+"/dataResource";
+                            let dataUrl = "http://" + ipAndPort + "/dataResource";
                             let form = {
-                                "author":"njgis",
-                                "fileName":dataName,
-                                "sourceStoreId":dataId,
-                                "suffix":dataSuffix,
-                                "type":"OTHER",
-                                "fromWhere":"PORTAL"
+                                "author": "njgis",
+                                "fileName": dataName,
+                                "sourceStoreId": dataId,
+                                "suffix": dataSuffix,
+                                "type": "OTHER",
+                                "fromWhere": "PORTAL"
                             };
 
                             $.ajax({
-                                type:"post",
+                                type: "post",
                                 url: dataUrl,
                                 data: JSON.stringify(form),
 
-                                async:true,
+                                async: true,
 
-                                contentType:'application/json',
-                                success:(res) => {
-                                    this.$delete(event,"uploading");
-                                    if(res.code == 0){
-                                        if(event==null) {
+                                contentType: 'application/json',
+                                success: (res) => {
+                                    this.$delete(event, "uploading");
+                                    if (res.code == 0) {
+                                        if (event == null) {
                                             this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/dataResource/getResource?sourceStoreId=" + res.data.sourceStoreId);
                                             this.$set(this.eventChoosing, 'tag', res.data.fileName)
                                             this.$set(this.eventChoosing, 'suffix', res.data.suffix)
 
-                                            let uploadEle=$("#upload_" + this.eventChoosing.eventId);
+                                            let uploadEle = $("#upload_" + this.eventChoosing.eventId);
                                             uploadEle.removeAttr("disabled");
                                             uploadEle.children().children().removeClass("el-icon-loading");
                                             uploadEle.children().children().addClass("fa");
@@ -546,13 +662,13 @@ var vue = new Vue({
                                             $("#eventInp_" + this.eventChoosing.eventId).val(res.data.fileName + res.data.suffix);
                                             $("#download_" + this.eventChoosing.eventId).css("display", "block");
                                         }
-                                        else{
+                                        else {
 
                                             this.$set(event, 'url', "http://" + ipAndPort + "/dataResource/getResource?sourceStoreId=" + res.data.sourceStoreId);
                                             this.$set(event, 'tag', res.data.fileName)
                                             this.$set(event, 'suffix', res.data.suffix)
 
-                                            let uploadEle=$("#upload_" + event.eventId);
+                                            let uploadEle = $("#upload_" + event.eventId);
                                             uploadEle.removeAttr("disabled");
                                             uploadEle.children().children().removeClass("el-icon-loading");
                                             uploadEle.children().children().addClass("fa");
@@ -564,11 +680,9 @@ var vue = new Vue({
                                         $("#uploadInputData").val("");
 
 
-
                                     }
                                 }
                             })
-
 
 
                         }
@@ -584,23 +698,23 @@ var vue = new Vue({
                 let find = false;
                 for (j = 0; j < events.length; j++) {
                     let event = events[j];
-                    if (event.eventType=="response"&&event.children != undefined) {
+                    if (event.eventType == "response" && event.children != undefined) {
                         //拼接文件内容
                         let content = "";
                         let children = event.children;
                         for (k = 0; k < children.length; k++) {
                             let child = children[k];
-                            if(child.value===undefined||child.value.trim()===''){
+                            if (child.value === undefined || child.value.trim() === '') {
                                 continue;
                             }
                             else {
                                 content += "<XDO name=\"" + child.eventName + "\" kernelType=\"" + child.eventType.toLowerCase() + "\" value=\"" + child.value + "\" /> ";
                             }
                         }
-                        if(content===""){
+                        if (content === "") {
                             continue;
                         }
-                        else{
+                        else {
                             content = "<Dataset> " + content + " </Dataset>";
                         }
 
@@ -610,7 +724,7 @@ var vue = new Vue({
                             type: 'text/plain',
                         });
                         //上传文件
-                        this.uploadToDataContainer(file,event);
+                        this.uploadToDataContainer(file, event);
 
                     }
                 }
@@ -664,26 +778,26 @@ var vue = new Vue({
         },
 
         relatedDataItem() {
-            let paths=window.location.href.split("/");
-            this.relatePageOption.oid=paths[paths.length-1];
+            let paths = window.location.href.split("/");
+            this.relatePageOption.oid = paths[paths.length - 1];
             axios.get("/computableModel/getRelatedDataByPage", {
-                params:this.relatePageOption
+                params: this.relatePageOption
             }).then((res) => {
-                    console.log(res)
-                    this.relatePageOption.searchResult = res.data.data.list;
-                    this.relatePageOption.total = res.data.data.total;
-                });
+                console.log(res)
+                this.relatePageOption.searchResult = res.data.data.list;
+                this.relatePageOption.total = res.data.data.total;
+            });
         },
 
-        chooseCate(item,e){
-            if(this.classifications[0]!=item.id){
-                $(".taskDataCate").children().css("color","black")
-                e.target.style.color='deepskyblue';
+        chooseCate(item, e) {
+            if (this.classifications[0] != item.id) {
+                $(".taskDataCate").children().css("color", "black")
+                e.target.style.color = 'deepskyblue';
                 this.classifications.pop();
                 this.classifications.push(item.id);
             }
-            else{
-                e.target.style.color='black';
+            else {
+                e.target.style.color = 'black';
                 this.classifications.pop();
             }
 
@@ -691,10 +805,10 @@ var vue = new Vue({
 
         },
 
-        confirmData(){
-            if(this.currentDataUrl!="") {
-                this.dataItemVisible=false;
-                console.log(this.eventChoosing,this.currentData)
+        confirmData() {
+            if (this.currentDataUrl != "") {
+                this.dataItemVisible = false;
+                console.log(this.eventChoosing, this.currentData)
                 this.eventChoosing.tag = this.currentData.name;
                 this.eventChoosing.url = this.currentData.url;
             }
@@ -872,105 +986,103 @@ var vue = new Vue({
             return row.fromWhere === value;
         },
 
-        testDataClick(index){
-            this.loadDataIndex=index
+        testDataClick(index) {
+            this.loadDataIndex = index
         },
 
-        myCalcDataClick(index){
-            this.loadDataIndex=index
+        myCalcDataClick(index) {
+            this.loadDataIndex = index
         },
 
-        publishedExampClick(index){
-            this.loadDataIndex=index
+        publishedExampClick(index) {
+            this.loadDataIndex = index
         },
 
-        loadUserTask(val){
-            let href=window.location.href.split('/')
-            let modelId=href[href.length-1]
+        loadUserTask(val) {
+            let href = window.location.href.split('/')
+            let modelId = href[href.length - 1]
 
-            axios.get("/task/getTasksByModelByUser",{
+            axios.get("/task/getTasksByModelByUser", {
                     params:
                         {
-                            modelId:modelId,
-                            page:val-1
+                            modelId: modelId,
+                            page: val - 1
                         }
                 }
-            ).then((res)=>{
+            ).then((res) => {
 
-                this.exampleDataListOfUser.content=res.data.data.content
-                this.exampleDataListOfUser.total=res.data.data.total
-                for(let i=0;i<this.exampleDataListOfUser.content.length;i++){
-                    this.exampleDataListOfUser.content[i].runTime=this.dateFormat(this.exampleDataListOfUser.content[i].runTime)
+                this.exampleDataListOfUser.content = res.data.data.content
+                this.exampleDataListOfUser.total = res.data.data.total
+                for (let i = 0; i < this.exampleDataListOfUser.content.length; i++) {
+                    this.exampleDataListOfUser.content[i].runTime = this.dateFormat(this.exampleDataListOfUser.content[i].runTime)
                     // this.exampleDataListOfUser.content[i].status=this.exampleDataListOfUser.content[i].public[0]==='public'?'public':'private'
                 }
             })
         },
 
-        loadPublishedData(val){
-            let href=window.location.href.split('/')
-            let modelId=href[href.length-1]
+        loadPublishedData(val) {
+            let href = window.location.href.split('/')
+            let modelId = href[href.length - 1]
 
-            axios.get("/task/getPublishedTasksByModel",{
+            axios.get("/task/getPublishedTasksByModel", {
                     params:
                         {
-                            modelId:modelId,
-                            page:val-1
+                            modelId: modelId,
+                            page: val - 1
                         }
                 }
-            ).then((res)=>{
+            ).then((res) => {
 
-                this.exampleDataList.content=res.data.data.content
-                this.exampleDataList.total=res.data.data.total
-                for(let i=0;i<this.exampleDataList.content.length;i++){
-                    this.exampleDataList.content[i].runTime=this.dateFormat(this.exampleDataList.content[i].runTime)
+                this.exampleDataList.content = res.data.data.content
+                this.exampleDataList.total = res.data.data.total
+                for (let i = 0; i < this.exampleDataList.content.length; i++) {
+                    this.exampleDataList.content[i].runTime = this.dateFormat(this.exampleDataList.content[i].runTime)
                     // this.exampleDataList.content[i].status=this.exampleDataList.content[i].public[0]==='public'?'public':'private'
                 }
             })
         },
 
 
-        loadData(val){
-            this.loadDataVisible=true
+        loadData(val) {
+            this.loadDataVisible = true
 
             this.loadUserTask(1)
             this.loadPublishedData(1)
 
         },
 
-        expandMyCalcData(el){
+        expandMyCalcData(el) {
             console.log(el)
-            let arrow=el.currentTarget
-            if(arrow.className.indexOf('transform180')==-1)
-            {
-                arrow.setAttribute("class","fa fa-caret-square-o-down transform180")
+            let arrow = el.currentTarget
+            if (arrow.className.indexOf('transform180') == -1) {
+                arrow.setAttribute("class", "fa fa-caret-square-o-down transform180")
                 $('.myCalcData').collapse('show')
-            }else{
-                arrow.setAttribute("class","fa fa-caret-square-o-down")
+            } else {
+                arrow.setAttribute("class", "fa fa-caret-square-o-down")
                 $('.myCalcData').collapse('hide')
             }
         },
 
-        expandPublishedData(el){
-            let arrow=el.currentTarget
-            if(arrow.className.indexOf('transform180')==-1)
-            {
-                arrow.setAttribute("class","fa fa-caret-square-o-down transform180")
+        expandPublishedData(el) {
+            let arrow = el.currentTarget
+            if (arrow.className.indexOf('transform180') == -1) {
+                arrow.setAttribute("class", "fa fa-caret-square-o-down transform180")
                 $('.publishedData').collapse('show')
-            }else{
-                arrow.setAttribute("class","fa fa-caret-square-o-down")
+            } else {
+                arrow.setAttribute("class", "fa fa-caret-square-o-down")
                 $('.publishedData').collapse('hide')
             }
         },
 
-        filterPublic(value,row){
-            return  row.public[0] === 'public'
+        filterPublic(value, row) {
+            return row.public[0] === 'public'
         },
 
-        handleSelectionChange(){
+        handleSelectionChange() {
 
         },
 
-        showDescription(item){
+        showDescription(item) {
             console.log(item)
             if (item.description != '') {
                 this.showDescriptionVisible = true;
@@ -988,46 +1100,46 @@ var vue = new Vue({
                 background: "rgba(0, 0, 0, 0.7)"
             });
 
-            let{data,code,msg}=await (await fetch("/task/loadPublishedData",{
-                method:"post",
-                body:id
+            let {data, code, msg} = await (await fetch("/task/loadPublishedData", {
+                    method: "post",
+                    body: id
                 }
             )).json()
 
-            if (code == -1 || code==null || code==undefined) {
+            if (code == -1 || code == null || code == undefined) {
                 loading.close();
                 this.$message.error(msg);
                 return;
             }
 
-            data.forEach(el=>{ //填入前端变量
-                let state = this.info.modelInfo.states.find(state => {
-                    return state.name == el.state;
-                });
+            data.forEach(el => { //填入前端变量
+                    let state = this.info.modelInfo.states.find(state => {
+                        return state.name == el.state;
+                    });
 
-                let event = state.event.find(event => {
-                    return event.eventName == el.event;
-                });
-                if (event == undefined) return;
-                this.$set(event, "tag", el.tag);
-                this.$set(event, "suffix", el.suffix);
-                this.$set(event, "url", el.url);
-                if(el.children!=undefined){
-                    if(el.children.length==1){
-                        event.children[0].value=el.children[0].value;
-                    }
-                    else {
-                        for (i = 0; i < el.children.length; i++) {
-                            let name=el.children[i].eventName
-                            let eventChild = event.children.find(child => {
-                                return child.eventName == name;
-                            })
-                            if(eventChild!=null) {
-                                eventChild.value = el.children[i].value;
+                    let event = state.event.find(event => {
+                        return event.eventName == el.event;
+                    });
+                    if (event == undefined) return;
+                    this.$set(event, "tag", el.tag);
+                    this.$set(event, "suffix", el.suffix);
+                    this.$set(event, "url", el.url);
+                    if (el.children != undefined) {
+                        if (el.children.length == 1) {
+                            event.children[0].value = el.children[0].value;
+                        }
+                        else {
+                            for (i = 0; i < el.children.length; i++) {
+                                let name = el.children[i].eventName
+                                let eventChild = event.children.find(child => {
+                                    return child.eventName == name;
+                                })
+                                if (eventChild != null) {
+                                    eventChild.value = el.children[i].value;
+                                }
                             }
                         }
                     }
-                }
 
                 }
             )
@@ -1078,17 +1190,17 @@ var vue = new Vue({
                 this.$set(event, "tag", el.tag);
                 this.$set(event, "suffix", el.suffix);
                 this.$set(event, "url", el.url);
-                if(el.children.length>0){
-                    if(el.children.length==1){
-                        event.children[0].value=el.children[0].value;
+                if (el.children.length > 0) {
+                    if (el.children.length == 1) {
+                        event.children[0].value = el.children[0].value;
                     }
                     else {
                         for (i = 0; i < el.children.length; i++) {
-                            let name=el.children[i].eventName
+                            let name = el.children[i].eventName
                             let eventChild = event.children.find(child => {
                                 return child.eventName == name;
                             })
-                            if(eventChild!=null) {
+                            if (eventChild != null) {
                                 eventChild.value = el.children[i].value;
                             }
                         }
@@ -1166,7 +1278,7 @@ var vue = new Vue({
                 this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
                 this.eventChoosing.url = this.downloadDataSetName[0].url;
 
-                $("#eventInp_" + this.eventChoosing.eventId).val( this.eventChoosing.tag + this.eventChoosing.suffix);
+                $("#eventInp_" + this.eventChoosing.eventId).val(this.eventChoosing.tag + this.eventChoosing.suffix);
                 $("#download_" + this.eventChoosing.eventId).css("display", "block");
             }
             else {
@@ -1295,7 +1407,7 @@ var vue = new Vue({
 
             this.rotatevalue += 180;
             console.log($('.fa-refresh'))
-            $('.fa-refresh').css('transform','rotate('+this.rotatevalue+'deg)')
+            $('.fa-refresh').css('transform', 'rotate(' + this.rotatevalue + 'deg)')
 
             $.ajax({
                 type: "GET",
@@ -1323,36 +1435,36 @@ var vue = new Vue({
 
         },
 
-        refreshChild(file){
+        refreshChild(file) {
             console.log(this.fatherIndex)
-            for(let i=0;i<file.length;i++){
-                if(file[i].id===this.fatherIndex){
-                    file[i].children=this.myFileShown
+            for (let i = 0; i < file.length; i++) {
+                if (file[i].id === this.fatherIndex) {
+                    file[i].children = this.myFileShown
                     console.log(this.myFile)
                     return;
-                }else{
+                } else {
                     this.refreshChild(file[i].children)
                 }
             }
         },
 
         singleClick($event, eval) {
-            if(eval.package==true){
+            if (eval.package == true) {
                 return;
             }
-            if(this.rightMenuShow==true){
-                this.rightMenuShow=false;
+            if (this.rightMenuShow == true) {
+                this.rightMenuShow = false;
                 return
             }
             clearTimeout(this.clickTimeout)
-            var target=$event.currentTarget;
-            var eval=eval;
-            var that=this
-            this.clickTimeout = setTimeout(function (){
+            var target = $event.currentTarget;
+            var eval = eval;
+            var that = this
+            this.clickTimeout = setTimeout(function () {
                 that.getid(target, eval)
-            },1)
+            }, 1)
 
-            this.renameIndex='';
+            this.renameIndex = '';
 
         },
 
@@ -1360,20 +1472,20 @@ var vue = new Vue({
             if (this.searchcontent === "") {
                 this.getFilePackage()
             } else {
-                axios.get('/user/keywordsSearch',{
-                    params:{
-                        keyword:this.searchcontent
+                axios.get('/user/keywordsSearch', {
+                    params: {
+                        keyword: this.searchcontent
                     }
-                }).then((res)=>{
-                    let json=res.data;
-                    if(json.code==-1){
+                }).then((res) => {
+                    let json = res.data;
+                    if (json.code == -1) {
                         alert("Please login first!")
                         window.sessionStorage.setItem("history", window.location.href);
-                        window.location.href="/user/login"
+                        window.location.href = "/user/login"
                     }
                     else {
-                        this.fileSearchResult=json.data.data;
-                        this.myFileShown=this.fileSearchResult
+                        this.fileSearchResult = json.data.data;
+                        this.myFileShown = this.fileSearchResult
                     }
                 })
 
@@ -1393,11 +1505,11 @@ var vue = new Vue({
             for (i = 0; i < states.length; i++) {
                 let events = states[i].event;
                 for (j = 0; j < events.length; j++) {
-                    let event=events[j];
-                    if(event.eventType=="response"&&event.optional==false&&event.children!=undefined){
-                        for(k=0;k<event.children.length;k++){
-                            let child=event.children[k];
-                            if(child.value==undefined||child.value.trim()==""){
+                    let event = events[j];
+                    if (event.eventType == "response" && event.optional == false && event.children != undefined) {
+                        for (k = 0; k < event.children.length; k++) {
+                            let child = event.children[k];
+                            if (child.value == undefined || child.value.trim() == "") {
                                 loading.close();
                                 this.$message.error("Some input parameters are not set");
                                 throw new Error("Some input parameters are not set");
@@ -1416,7 +1528,7 @@ var vue = new Vue({
                     let events = states[i].event;
                     for (j = 0; j < events.length; j++) {
                         //判断参数文件是否已经上传
-                        if (events[j].eventType=="response") {
+                        if (events[j].eventType == "response") {
 
                             let children = events[j].children;
                             if (children === undefined) {
@@ -1430,8 +1542,8 @@ var vue = new Vue({
                                         break;
                                     }
                                 }
-                                if(hasFile){
-                                    if(events[j].url==undefined){
+                                if (hasFile) {
+                                    if (events[j].url == undefined) {
                                         prepared = false;
                                         break;
                                     }
@@ -1464,7 +1576,7 @@ var vue = new Vue({
                                 let tag = el.tag;
                                 let url = el.url;
                                 let suffix = el.suffix;
-                                let children=el.children;
+                                let children = el.children;
                                 if (el.eventType == "response") {
                                     if (el.optional) {
                                         if (url === null || url === undefined) {
@@ -1508,7 +1620,7 @@ var vue = new Vue({
 
                         contentType: "application/json",
                         data: JSON.stringify(json),
-                        success: ({data, code, msg})=> {
+                        success: ({data, code, msg}) => {
                             tid = data;
 
                             if (code == -1) {
@@ -1523,8 +1635,6 @@ var vue = new Vue({
                             }
                         }
                     })
-
-
 
 
                     let interval = setInterval(async () => {
@@ -2163,6 +2273,7 @@ var vue = new Vue({
 
         this.relatedDataItem();
 
+        this.remoteMethod("");
 
         this.introHeight = $('.introContent').attr('height');
 
@@ -2178,14 +2289,14 @@ var vue = new Vue({
         for (i = 0; i < states.length; i++) {
             let state = states[i];
             for (j = 0; j < state.event.length; j++) {
-                if(state.event[j].data!=undefined&&state.event[j].eventType=="response") {
+                if (state.event[j].data != undefined && state.event[j].eventType == "response") {
                     let nodes = state.event[j].data[0].nodes;
-                    let refName=state.event[j].data[0].text.toLowerCase();
+                    let refName = state.event[j].data[0].text.toLowerCase();
                     if (state.event[j].data[0].externalId != undefined) {
                         state.event[j].externalId = state.event[j].data[0].externalId;
                     }
 
-                    if (nodes != undefined&&refName!="grid"&&refName!="table"&&refName!="shapes") {
+                    if (nodes != undefined && refName != "grid" && refName != "table" && refName != "shapes") {
                         let children = [];
                         for (k = 0; k < nodes.length; k++) {
                             let node = nodes[k];
@@ -2200,8 +2311,8 @@ var vue = new Vue({
                         }
                         data.modelInfo.states[i].event[j].children = children;
                     }
-                    else{
-                        data.modelInfo.states[i].event[j].data[0].nodes=undefined;
+                    else {
+                        data.modelInfo.states[i].event[j].data[0].nodes = undefined;
                     }
 
                 }
@@ -2216,36 +2327,37 @@ var vue = new Vue({
 
 
         //get login user info
-        let that=this
+        let that = this
         axios.get("/user/load")
-            .then((res)=>{
-                if(res.status==200){
-                    that.useroid=res.data.oid
+            .then((res) => {
+                if (res.status == 200) {
+                    that.useroid = res.data.oid;
+                    that.uid=res.data.uid;
                 }
 
             })
 
-        window.addEventListener('scroll',this.initSize);
-        window.addEventListener('resize',this.initSize);
+        window.addEventListener('scroll', this.initSize);
+        window.addEventListener('resize', this.initSize);
 
-        $("#uploadInputData").change(()=> {
-            this.$delete(this.eventChoosing,"tag");
-            this.$delete(this.eventChoosing,"suffix");
-            this.$delete(this.eventChoosing,"url");
-            this.$set(this.eventChoosing,"uploading",true);
+        $("#uploadInputData").change(() => {
+            this.$delete(this.eventChoosing, "tag");
+            this.$delete(this.eventChoosing, "suffix");
+            this.$delete(this.eventChoosing, "url");
+            this.$set(this.eventChoosing, "uploading", true);
 
-            let uploadEle=$("#upload_" + this.eventChoosing.eventId);
-            uploadEle.attr("disabled",true);
+            let uploadEle = $("#upload_" + this.eventChoosing.eventId);
+            uploadEle.attr("disabled", true);
             uploadEle.children().children().removeClass("fa");
             uploadEle.children().children().removeClass("fa-cloud-upload");
             uploadEle.children().children().addClass("el-icon-loading");
-            uploadEle.children().children().css("font-size","12px")
+            uploadEle.children().children().css("font-size", "12px")
 
             $("#eventInp_" + this.eventChoosing.eventId).val("");
             $("#download_" + this.eventChoosing.eventId).css("display", "none");
 
             let file = $('#uploadInputData')[0].files[0];
-            this.uploadToDataContainer(file,this.eventChoosing);
+            this.uploadToDataContainer(file, this.eventChoosing);
 
         })
 
@@ -2381,18 +2493,18 @@ var vue = new Vue({
                     for (var j = 0; j < state.event.length; j++) {
                         var event = state.event[j];
                         if (eventId == event.eventId) {
-                            if(event.eventType == "response"&&event.children!=undefined){
-                                for(k=0;k<event.children.length;k++){
-                                    let child=event.children[k];
-                                    $("#eventInp_"+child.eventName).val(child.value);
+                            if (event.eventType == "response" && event.children != undefined) {
+                                for (k = 0; k < event.children.length; k++) {
+                                    let child = event.children[k];
+                                    $("#eventInp_" + child.eventName).val(child.value);
                                 }
                             }
                             else if (event.eventType == "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag +"."+ event.suffix);
+                                $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
                             } else if (event.eventType == "response") {
                                 $("#download_" + eventId).css("display", "none");
                             } else if (event.eventType != "response" && event.tag != undefined) {
-                                $("#eventInp_" + eventId).val(event.tag +"."+ event.suffix);
+                                $("#eventInp_" + eventId).val(event.tag + "." + event.suffix);
                                 $("#eventInp_" + eventId).css("width", "90%");
                                 $("#select_" + eventId).css("display", "none");
                                 $("#upload_" + eventId).css("display", "none");
@@ -2415,17 +2527,17 @@ var vue = new Vue({
             }.bind(this)
         );
 
-        $(document).on('keyup','.StateWindowEvent',(e)=>{
-            let states=this.info.modelInfo.states;
-            for(i=0;i<states.length;i++){
-                let events=states[i].event;
-                for(j=0;j<events.length;j++){
-                    let event=events[j];
-                    if(event.eventId==e.target.dataset.parent){
-                        for(k=0;k<event.children.length;k++){
-                            let child=event.children[k];
-                            if(child.eventName==e.target.name){
-                                this.info.modelInfo.states[i].event[j].children[k].value=e.target.value;
+        $(document).on('keyup', '.StateWindowEvent', (e) => {
+            let states = this.info.modelInfo.states;
+            for (i = 0; i < states.length; i++) {
+                let events = states[i].event;
+                for (j = 0; j < events.length; j++) {
+                    let event = events[j];
+                    if (event.eventId == e.target.dataset.parent) {
+                        for (k = 0; k < event.children.length; k++) {
+                            let child = event.children[k];
+                            if (child.eventName == e.target.name) {
+                                this.info.modelInfo.states[i].event[j].children[k].value = e.target.value;
                                 break;
                             }
                         }
@@ -2435,9 +2547,9 @@ var vue = new Vue({
         })
     },
 
-    destory(){
-        window.removeEventListener('scroll',this.initSize);
-        window.removeEventListener('resize',this.initSize);
+    destory() {
+        window.removeEventListener('scroll', this.initSize);
+        window.removeEventListener('resize', this.initSize);
     }
 
 

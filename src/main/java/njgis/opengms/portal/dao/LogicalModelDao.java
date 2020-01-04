@@ -1,6 +1,7 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.LogicalModel.LogicalModelResultDTO;
+import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.LogicalModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,8 @@ public interface LogicalModelDao extends MongoRepository<LogicalModel,String> {
     Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
 
     Page<LogicalModel> findByAuthor(String author,Pageable pageable);
+
+    List<Item> findByAuthor(String author);
 
     Page<LogicalModel> findByNameContainsIgnoreCaseAndAuthor(String name, String author,Pageable pageable);
 
