@@ -36,7 +36,8 @@
     margin: -15px;
     position: absolute;
     z-index:-1;
-    background-image: url('/static/img/carousels/mountain_press.jpg');
+    background-image: url('/static/img/carousels/mountain_press_cut.jpg');
+    /*background-size: contain;*/
     /*background-position: center;*/
     /*background-position-x: 1400px;*/
     background-position-y: -80px;
@@ -190,7 +191,7 @@
 
 .showLeftBorder{
     border-left: 4px solid #409eff;
-    padding-left: 41px !important;
+    padding-left: 39px !important;
 }
 
 .showBottomBorder{
@@ -200,7 +201,7 @@
 .liContent {
     cursor: pointer;
     height: 100%;
-    padding-left: 45px;
+    padding-left: 40px;
     transition: all .3s;
     /*backdrop-filter: blur(20px);*/
 }
@@ -242,6 +243,7 @@
 
 .iconContainer{
     color: #fbfcfd;
+    margin-right: 20px;
 }
 
 
@@ -279,6 +281,10 @@
 
     #userName{
         display: none;
+    }
+
+    .iconContainer{
+        margin-right: 0;
     }
 
     .logo{

@@ -324,14 +324,15 @@ var userCommunities = Vue.extend(
             },
 
             creatItem(index){
+                let a=this.$route.params.communityKind
                 var urls={
-                    1:'./createConcept',
-                    2:'./createSpatialReference',
-                    3:'./createTemplate',
-                    4:'./createUnit',
+                    'concept&semantic':'/user/userSpace#/community/createConcept',
+                    'spatialReference':'/user/userSpace#/community/createSpatialReference',
+                    'dataTemplate':    '/user/userSpace#/community/createTemplate',
+                    'unit&metric':     '/user/userSpace#/community/createUnit',
                 }
                 window.sessionStorage.removeItem('editOid');
-                window.location.href=urls[this.itemIndex]
+                window.location.href=urls[a]
             },
 
             reloadPage(){//重新装订分页诸元
@@ -423,17 +424,18 @@ var userCommunities = Vue.extend(
                 this.resourceLoad = true;
                 this.pageSize = 10;
                 this.isInSearch = 1;
+                let a=this.$route.params.communityKind
                 let urls={
-                    1:'/repository/searchConceptsByUserId',
-                    2:'/repository/searchSpatialsByUserId',
-                    3:'/repository/searchTemplatesByUserId',
-                    4:'/repository/searchUnitsByUserId',
+                    'concept&semantic':'/repository/searchConceptsByUserId',
+                    'spatialReference':'/repository/searchSpatialsByUserId',
+                    'dataTemplate':    '/repository/searchTemplatesByUserId',
+                    'unit&metric':     '/repository/searchUnitsByUserId',
                 }
-                let names={
-                    1:'concepts',
-                    2:'spatials',
-                    3:'templates',
-                    4:'units',
+                let names = {
+                    'concept&semantic': 'concepts',
+                    'spatialReference': 'spatials',
+                    'dataTemplate': 'templates',
+                    'unit&metric': 'units',
                 }
                 let url=urls[this.itemIndex];
                 let name=names[this.itemIndex];
@@ -478,14 +480,15 @@ var userCommunities = Vue.extend(
             },
 
             editItem(index,oid){
+                let a=this.$route.params.communityKind
                 var urls={
-                    1:'./createConcept',
-                    2:'./createSpatialReference',
-                    3:'./createTemplate',
-                    4:'./createUnit',
+                     'concept&semantic':'/user/userSpace#/community/manageConcept/'+oid,
+                     'spatialReference':'/user/userSpace#/community/manageSpatialReference/'+oid,
+                     'dataTemplate':    '/user/userSpace#/community/manageTemplate/'+oid,
+                     'unit&metric':     '/user/userSpace#/community/manageUnit/'+oid,
                 }
                 this.setSession('editOid', oid)
-                window.location.href=urls[this.itemIndex]
+                window.location.href=urls[a]
             },
 
             deleteItem(index,oid) {

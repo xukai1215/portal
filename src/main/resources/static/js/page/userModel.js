@@ -33,10 +33,10 @@ var userModel = Vue.extend(
 
             creatItem(index){
                 var urls={
-                    1:'./model/createModelItem',
-                    2:'./model/createConceptualModel',
-                    3:'./model/createLogicalModel',
-                    4:'./model/createComputableModel',
+                    1:'/user/userSpace#/model/createModelItem',
+                    2:'/user/userSpace#/model/createConceptualModel',
+                    3:'/user/userSpace#/model/createLogicalModel',
+                    4:'/user/userSpace#/model/createComputableModel',
                 }
                 window.sessionStorage.removeItem('editOid');
                 window.location.href=urls[index]

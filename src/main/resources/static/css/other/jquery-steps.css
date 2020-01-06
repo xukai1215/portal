@@ -24,6 +24,8 @@
   background-color: #f5f5f5;
   text-decoration: none;
   border-right: 1px solid #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 .step-app > .step-steps > li > a > .number {
   background: #fff;
@@ -40,7 +42,7 @@
 }
 .step-app > .step-steps > li.active a {
   /* background-color: #32c5d2; */
-  color: #333;
+  color: #44d5de;
 }
 .step-app > .step-steps > li.error a {
   /* background-color: #e7505a; */

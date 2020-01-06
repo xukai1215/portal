@@ -65,6 +65,7 @@
     <div class="page-container" style="height: 2000px">
 
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <template id="createDataItem" th:fragment="createDataItem">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;overflow-x: hidden"
@@ -74,7 +75,7 @@
                              style="max-width: 1050px;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../data">Data </a>
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/data">Data </a>
                                 <span id="subRteTitle"></span></h3>
                         </div>
                     </section>
@@ -85,7 +86,7 @@
                             <div class="panel panel-success" style="border: none;height: 680px;">
 
                                 <div class="panel-body">
-<!--                                    以下使用step步骤插件-->
+                                    <!--                                    以下使用step步骤插件-->
                                     <div class="step2">
                                         <div class="step-app">
                                             <ul class="step-steps text-center">
@@ -314,60 +315,60 @@
                                                                             <div class="panel-body providers"
                                                                                  style="border-top: #424f63; padding:0px">
                                                                                 <div class='panel panel-primary newAuthorHeader'>
-<!--                                                                                    <div class='panel-heading info-head'  style="">-->
-<!--                                                                                        <h4 class='panel-title'>-->
-<!--                                                                                            <a class='accordion-toggle collapsed'-->
-<!--                                                                                               style="color:white"-->
-<!--                                                                                               data-toggle='collapse'-->
-<!--                                                                                               data-target='#user1'-->
-<!--                                                                                               href="javascript:;">-->
-<!--                                                                                                NEW-->
-<!--                                                                                            </a>-->
-<!--                                                                                        </h4>-->
-<!--                                                                                        <a href="javascript:;"-->
-<!--                                                                                           class="fa fa-times author_close"-->
-<!--                                                                                           style="float:right;margin-top:8px;color:white"></a>-->
-<!--                                                                                    </div>-->
-<!--                                                                                    <div id='user1'-->
-<!--                                                                                         class='panel-collapse collapse in'>-->
-<!--                                                                                        <div class='panel-body user-contents'>-->
-<!--                                                                                            <div class='user-attr'>-->
-<!--                                                                                                <div>-->
-<!--                                                                                                    <lable class='control-label col-sm-2 text-center'-->
-<!--                                                                                                           style='font-weight: bold;'>-->
-<!--                                                                                                        Name:-->
-<!--                                                                                                    </lable>-->
-<!--                                                                                                    <div class='input-group col-sm-10'>-->
-<!--                                                                                                        <input type='text'-->
-<!--                                                                                                               name="name"-->
-<!--                                                                                                               class='form-control'>-->
-<!--                                                                                                    </div>-->
-<!--                                                                                                </div>-->
-<!--                                                                                                <div style="margin-top:10px">-->
-<!--                                                                                                    <lable class='control-label col-sm-2 text-center'-->
-<!--                                                                                                           style='font-weight: bold;'>-->
-<!--                                                                                                        Email:-->
-<!--                                                                                                    </lable>-->
-<!--                                                                                                    <div class='input-group col-sm-10'>-->
-<!--                                                                                                        <input type='text'-->
-<!--                                                                                                               name="email"-->
-<!--                                                                                                               class='form-control'>-->
-<!--                                                                                                    </div>-->
-<!--                                                                                                </div>-->
-<!--                                                                                                <div style="margin-top:10px">-->
-<!--                                                                                                    <lable class='control-label col-sm-2 text-center'-->
-<!--                                                                                                           style='font-weight: bold;'>-->
-<!--                                                                                                        Homepage:-->
-<!--                                                                                                    </lable>-->
-<!--                                                                                                    <div class='input-group col-sm-10'>-->
-<!--                                                                                                        <input type='text'-->
-<!--                                                                                                               name="homepage"-->
-<!--                                                                                                               class='form-control'>-->
-<!--                                                                                                    </div>-->
-<!--                                                                                                </div>-->
-<!--                                                                                            </div>-->
-<!--                                                                                        </div>-->
-<!--                                                                                    </div>-->
+                                                                                    <!--                                                                                    <div class='panel-heading info-head'  style="">-->
+                                                                                    <!--                                                                                        <h4 class='panel-title'>-->
+                                                                                    <!--                                                                                            <a class='accordion-toggle collapsed'-->
+                                                                                    <!--                                                                                               style="color:white"-->
+                                                                                    <!--                                                                                               data-toggle='collapse'-->
+                                                                                    <!--                                                                                               data-target='#user1'-->
+                                                                                    <!--                                                                                               href="javascript:;">-->
+                                                                                    <!--                                                                                                NEW-->
+                                                                                    <!--                                                                                            </a>-->
+                                                                                    <!--                                                                                        </h4>-->
+                                                                                    <!--                                                                                        <a href="javascript:;"-->
+                                                                                    <!--                                                                                           class="fa fa-times author_close"-->
+                                                                                    <!--                                                                                           style="float:right;margin-top:8px;color:white"></a>-->
+                                                                                    <!--                                                                                    </div>-->
+                                                                                    <!--                                                                                    <div id='user1'-->
+                                                                                    <!--                                                                                         class='panel-collapse collapse in'>-->
+                                                                                    <!--                                                                                        <div class='panel-body user-contents'>-->
+                                                                                    <!--                                                                                            <div class='user-attr'>-->
+                                                                                    <!--                                                                                                <div>-->
+                                                                                    <!--                                                                                                    <lable class='control-label col-sm-2 text-center'-->
+                                                                                    <!--                                                                                                           style='font-weight: bold;'>-->
+                                                                                    <!--                                                                                                        Name:-->
+                                                                                    <!--                                                                                                    </lable>-->
+                                                                                    <!--                                                                                                    <div class='input-group col-sm-10'>-->
+                                                                                    <!--                                                                                                        <input type='text'-->
+                                                                                    <!--                                                                                                               name="name"-->
+                                                                                    <!--                                                                                                               class='form-control'>-->
+                                                                                    <!--                                                                                                    </div>-->
+                                                                                    <!--                                                                                                </div>-->
+                                                                                    <!--                                                                                                <div style="margin-top:10px">-->
+                                                                                    <!--                                                                                                    <lable class='control-label col-sm-2 text-center'-->
+                                                                                    <!--                                                                                                           style='font-weight: bold;'>-->
+                                                                                    <!--                                                                                                        Email:-->
+                                                                                    <!--                                                                                                    </lable>-->
+                                                                                    <!--                                                                                                    <div class='input-group col-sm-10'>-->
+                                                                                    <!--                                                                                                        <input type='text'-->
+                                                                                    <!--                                                                                                               name="email"-->
+                                                                                    <!--                                                                                                               class='form-control'>-->
+                                                                                    <!--                                                                                                    </div>-->
+                                                                                    <!--                                                                                                </div>-->
+                                                                                    <!--                                                                                                <div style="margin-top:10px">-->
+                                                                                    <!--                                                                                                    <lable class='control-label col-sm-2 text-center'-->
+                                                                                    <!--                                                                                                           style='font-weight: bold;'>-->
+                                                                                    <!--                                                                                                        Homepage:-->
+                                                                                    <!--                                                                                                    </lable>-->
+                                                                                    <!--                                                                                                    <div class='input-group col-sm-10'>-->
+                                                                                    <!--                                                                                                        <input type='text'-->
+                                                                                    <!--                                                                                                               name="homepage"-->
+                                                                                    <!--                                                                                                               class='form-control'>-->
+                                                                                    <!--                                                                                                    </div>-->
+                                                                                    <!--                                                                                                </div>-->
+                                                                                    <!--                                                                                            </div>-->
+                                                                                    <!--                                                                                        </div>-->
+                                                                                    <!--                                                                                    </div>-->
                                                                                 </div>
                                                                             </div>
                                                                             <button type="button"
@@ -418,6 +419,8 @@
 
 
             </div>
+        </template>
+
         </div>
     </div>
 </div>

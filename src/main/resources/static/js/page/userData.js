@@ -32,7 +32,7 @@ var userData = Vue.extend(
 
             creatItem(index){
                 window.sessionStorage.removeItem('editOid');
-                if(index == 1) window.location.href='../userSpace/data/createDataItem'
+                if(index == 1) window.location.href='/user/userSpace#/data/createDataItem'
             },
 
             manageItem(index){

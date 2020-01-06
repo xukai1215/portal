@@ -101,6 +101,7 @@
                             </div>
                         </section>
                         <section class="flexRowContainer flexWrap " style="max-width: 1050px">
+                            <h4 style="margin: auto;color: #666666" v-if="searchResult.length==0&&!await ">No Results Found ...</h4>
                             <router-view :search-result-raw="searchResult" @com-edit="editItem" @com-delete="deleteItem" @com-format="formatDate" >
                                 <!--                        model item-->
                             </router-view>

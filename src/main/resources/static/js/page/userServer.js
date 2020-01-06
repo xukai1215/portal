@@ -372,16 +372,16 @@ var userServer = Vue.extend(
 
                             $("#author").val(this.userName);
 
-                            if (index != null && index != undefined && index != "" && index != NaN) {
-                                this.defaultActive = index;
-                                this.handleSelect(index, null);
-                                window.sessionStorage.removeItem("index");
-                                this.curIndex=index
-
-
-                            } else {
-                                // this.changeRter(1);
-                            }
+                            // if (index != null && index != undefined && index != "" && index != NaN) {
+                            //     this.defaultActive = index;
+                            //     this.handleSelect(index, null);
+                            //     window.sessionStorage.removeItem("index");
+                            //     this.curIndex=index
+                            //
+                            //
+                            // } else {
+                            //     // this.changeRter(1);
+                            // }
 
                             window.sessionStorage.removeItem("tap");
                             //this.getTasksInfo();
