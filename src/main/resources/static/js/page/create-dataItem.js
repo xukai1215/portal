@@ -1,82 +1,84 @@
-var vue = new Vue({
-    el: "#app",
-    data: {
-        defaultActive:'2-1',
-        curIndex:3,
+var createDataItem = Vue.extend({
+    template: "#createDataItem",
+    data() {
+        return {
+            defaultActive: '2-1',
+            curIndex: 3,
 
-        ScreenMaxHeight: "0px",
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            ScreenMaxHeight: "0px",
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
 
-        ScreenMinHeight: "0px",
+            ScreenMinHeight: "0px",
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-        activeIndex: 2,
+            userId: "",
+            userName: "",
+            loginFlag: false,
+            activeIndex: 2,
 
-        userInfo:{
-            //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
-        },
+            userInfo: {
+                //username:"",
+                name: "",
+                email: "",
+                phone: "",
+                insName: ""
+            },
 
-        classif: [],
-        active: 0,
-        categoryTree: [],
-        ctegorys: [],
+            classif: [],
+            active: 0,
+            categoryTree: [],
+            ctegorys: [],
 
-        data_img: [],
+            data_img: [],
 
-        dataItemAddDTO: {
-            name: '',
-            description: '',
-            detail: '',
-            author: '',
-            type: '',
-            reference: '',
-            keywords: [],
-            classifications: [],
-            displays: [],
-            contributers: [],
-            authorship: [],
-            meta: {
-                coordinateSystem: '',
-                geographicProjection: '',
-                coordinateUnits: '',
-                boundingRectangle: []
-            }
+            dataItemAddDTO: {
+                name: '',
+                description: '',
+                detail: '',
+                author: '',
+                type: '',
+                reference: '',
+                keywords: [],
+                classifications: [],
+                displays: [],
+                contributers: [],
+                authorship: [],
+                meta: {
+                    coordinateSystem: '',
+                    geographicProjection: '',
+                    coordinateUnits: '',
+                    boundingRectangle: []
+                }
 
-        },
+            },
 
-        treeData: [{
-            id: 1,
-            label: 'All Folder',
-            children: [{
-                id: 4,
-                label: '二级 1-1',
+            treeData: [{
+                id: 1,
+                label: 'All Folder',
                 children: [{
-                    id: 9,
-                    label: '三级 1-1-1'
-                }, {
-                    id: 10,
-                    label: '三级 1-1-2'
+                    id: 4,
+                    label: '二级 1-1',
+                    children: [{
+                        id: 9,
+                        label: '三级 1-1-1'
+                    }, {
+                        id: 10,
+                        label: '三级 1-1-2'
+                    }]
                 }]
-            }]
-        }],
+            }],
 
-        defaultProps: {
-            children: 'children',
-            label: 'label'
-        },
-        cls:[],//分类的id队列
-        clsStr:'',//分类的label队列
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            },
+            cls: [],//分类的id队列
+            clsStr: '',//分类的label队列
 
 
+        }
     },
     methods: {
         changeRter(index){
@@ -204,7 +206,7 @@ var vue = new Vue({
             this.dataItemAddDTO.detail = detail;
             //todo 获取作者信息
             // this.dataItemAddDTO.author=$("#author").val();
-            this.dataItemAddDTO.keywords = $("#keywords").tagEditor('items');
+            this.dataItemAddDTO.keywords = $("#keywords").tagEditor('getTags')[0].tags;
 
             this.dataItemAddDTO.classifications = this.cls;
             // this.dataItemAddDTO.displays.push($("#displays").val())
@@ -216,7 +218,7 @@ var vue = new Vue({
             //用户名
             // this.dataItemAddDTO.author=this.userId;
             this.dataItemAddDTO.author = this.userId;
-            this.dataItemAddDTO.contributers = $("#contributers").tagEditor('items');
+            this.dataItemAddDTO.contributers = $("#contributers").tagEditor('getTags')[0].tags;
 
             this.dataItemAddDTO.comments = new Array();
 
@@ -330,8 +332,17 @@ var vue = new Vue({
         change(currentIndex, newIndex, stepDirection) {
             console.log(currentIndex, newIndex, stepDirection)
         },
+
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
+        }
+
+
     },
     mounted() {
+        //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+        this.sendcurIndexToParent()
+
         var tha = this
 
         this.classif = [];
@@ -367,39 +378,39 @@ var vue = new Vue({
             })
         var that = this
 
-        tinymce.init({
-            selector: "textarea#detail",
-            height: 205,
-            theme: 'modern',
-            plugins: ['link', 'table', 'image', 'media'],
-            image_title: true,
-            // enable automatic uploads of images represented by blob or data URIs
-            automatic_uploads: true,
-            // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-            // images_upload_url: 'postAcceptor.php',
-            // here we add custom filepicker only to Image dialog
-            file_picker_types: 'image',
-
-            file_picker_callback: function (cb, value, meta) {
-                var input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
-                input.onchange = function () {
-                    var file = input.files[0];
-
-                    var reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function () {
-                        var img = reader.result.toString();
-                        cb(img, {title: file.name});
-                    }
-                };
-                input.click();
-            },
-            images_dataimg_filter: function (img) {
-                return img.hasAttribute('internal-blob');
-            }
-        });
+        // tinymce.init({
+        //     selector: "textarea#detail",
+        //     height: 205,
+        //     theme: 'modern',
+        //     plugins: ['link', 'table', 'image', 'media'],
+        //     image_title: true,
+        //     // enable automatic uploads of images represented by blob or data URIs
+        //     automatic_uploads: true,
+        //     // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+        //     // images_upload_url: 'postAcceptor.php',
+        //     // here we add custom filepicker only to Image dialog
+        //     file_picker_types: 'image',
+        //
+        //     file_picker_callback: function (cb, value, meta) {
+        //         var input = document.createElement('input');
+        //         input.setAttribute('type', 'file');
+        //         input.setAttribute('accept', 'image/*');
+        //         input.onchange = function () {
+        //             var file = input.files[0];
+        //
+        //             var reader = new FileReader();
+        //             reader.readAsDataURL(file);
+        //             reader.onload = function () {
+        //                 var img = reader.result.toString();
+        //                 cb(img, {title: file.name});
+        //             }
+        //         };
+        //         input.click();
+        //     },
+        //     images_dataimg_filter: function (img) {
+        //         return img.hasAttribute('internal-blob');
+        //     }
+        // });
 
         $(".step2").steps({
 
@@ -437,6 +448,8 @@ var vue = new Vue({
                             alert('Attention:Please complete data information!');
                             return false;
                         } else {
+
+
                             return true;
                         }
 
@@ -550,15 +563,59 @@ var vue = new Vue({
             }
         })
 
-        var oid = window.sessionStorage.getItem("editOid");
+
+        var oid = this.$route.params.editId;//取得所要edit的id
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Data Item")
+            $("#keywords").tagEditor('destory');
+            $("#keywords").tagEditor({
+                forceLowercase: false,
+            });
 
+            $("#contributers").tagEditor('destory');
+            $("#contributers").tagEditor({
+                forceLowercase: false,
+            });
+
+            tinymce.remove("textarea#detail");//先销毁已有tinyMCE实例
+            tinymce.init({
+                selector: "textarea#detail",
+                height: 205,
+                theme: 'modern',
+                plugins: ['link', 'table', 'image', 'media'],
+                image_title: true,
+                // enable automatic uploads of images represented by blob or data URIs
+                automatic_uploads: true,
+                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                // images_upload_url: 'postAcceptor.php',
+                // here we add custom filepicker only to Image dialog
+                file_picker_types: 'image',
+
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.onchange = function () {
+                        var file = input.files[0];
+
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = function () {
+                            var img = reader.result.toString();
+                            cb(img, {title: file.name});
+                        }
+                    };
+                    input.click();
+                },
+                images_dataimg_filter: function (img) {
+                    return img.hasAttribute('internal-blob');
+                }
+            });
         }
         else {
             // $("#title").text("Modify Model Item")
@@ -606,6 +663,43 @@ var vue = new Vue({
                     $("#coordinateSystem").val(data.meta.coordinateSystem);
                     $("#geographicProjection").val(data.meta.geographicProjection)
                     $("#coordinateUnits").val(data.meta.coordinateUnits)
+
+
+                    tinymce.remove("textarea#detail");//先销毁已有tinyMCE实例
+                    $("#modelItemText").html(data.detail);
+                    tinymce.init({
+                        selector: "textarea#detail",
+                        height: 205,
+                        theme: 'modern',
+                        plugins: ['link', 'table', 'image', 'media'],
+                        image_title: true,
+                        // enable automatic uploads of images represented by blob or data URIs
+                        automatic_uploads: true,
+                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                        // images_upload_url: 'postAcceptor.php',
+                        // here we add custom filepicker only to Image dialog
+                        file_picker_types: 'image',
+
+                        file_picker_callback: function (cb, value, meta) {
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = function () {
+                                var file = input.files[0];
+
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    var img = reader.result.toString();
+                                    cb(img, {title: file.name});
+                                }
+                            };
+                            input.click();
+                        },
+                        images_dataimg_filter: function (img) {
+                            return img.hasAttribute('internal-blob');
+                        }
+                    });
 
                     let authorship = data.authorship;
                     if(authorship!=null) {
@@ -1002,7 +1096,7 @@ var vue = new Vue({
         $(".user-add").click(function () {
             user_num++;
             var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+            var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
             str += user_num;
             str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
             str += user_num;

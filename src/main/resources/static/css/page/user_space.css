@@ -5,6 +5,7 @@ html, body {
 
 body {
     padding-right: 0 !important;
+    /*font-family: 'Segoe UI Web (West European)','Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',sans-serif;*/
 }
 
 span:focus {
@@ -2150,6 +2151,12 @@ body {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
+.innerBorder{
+    align-self: center;
+    width: 95.5%;
+    border-bottom: 1px solid #d1d1d1;
+}
+
 overviewContainer {
     width: 55%;
 }
@@ -2731,7 +2738,7 @@ ul.flexLi {
 
 }
 
-.newAuthorHeader>.panel-heading{
+.newAuthorHeader{
     background-color: #e4b066 !important;
 }
 
@@ -2857,6 +2864,72 @@ ul.flexLi {
     color: #adadad;
     font-style: italic;
 }
+
+#userPhoto{
+    display: block;
+    cursor:pointer;
+    position: absolute;
+    border:2px solid #fff;
+    border-radius: 50%;
+    top: -55px;
+    margin-left: calc(50% - 76px);
+    z-index: 1;
+}
+
+.selectImg{
+    cursor:pointer;
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border:2px solid #fff;
+    border-radius: 50%;
+    top: -55px;
+    margin-left: calc(50% - 76px);
+    z-index: 1;
+    transition: .4s ease-out;
+    -moz-transition: .4s ease-out; /* Firefox 4 */
+    -webkit-transition:  .4s ease-out; /* Safari 和 Chrome */
+    -o-transition: .4s ease-out; /* Opera */
+}
+
+.selectImg:hover{
+    background-color: rgba(5, 192, 255, 0.55);
+    box-shadow: 1px 2px 5px  rgba(0, 0, 0, 0.3) !important;
+    cursor:pointer;
+}
+
+.step-content label{
+    font-size: 1.4rem;
+}
+
+#dynamic-table th,#dynamic-table td{
+    font-size: 1.35rem;
+}
+
+.quickToolsCard{
+    transition: all .3s ease-out;
+}
+
+.quickToolsCard:hover{
+    box-shadow: 0 6px 14px 0 rgba(0,0,0,.130), 0 1.2px 3.5px 0 rgba(0,0,0,.108);
+}
+
+.cell{
+    font-size: 1.366rem;
+}
+
+#imgChange {
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 150px;
+    vertical-align: middle;
+    color: #ccc;
+    float: left;
+}
+
+
 
 
 /*scrollbar样式*/
@@ -3028,7 +3101,7 @@ input[type=file] {
     }
 
     .mainContent{
-        margin-bottom: 45px;
+        margin-bottom: 66px;
     }
 
     .innerShadowCol{

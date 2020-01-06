@@ -31,119 +31,119 @@
     <link rel="stylesheet" href="/static/css/common/newSideBar.css">
 
     <style>
-        .btn-block {
-            padding: 6px 12px;
-        }
+    .btn-block {
+        padding: 6px 12px;
+    }
 
-        tbody tr td {
-            word-wrap: break-word;
-            word-break: break-all;
-            overflow: hidden;
-        }
+    tbody tr td {
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow: hidden;
+    }
 
-        .searcherPanel {
-            margin-top: 30px;
-        }
+    .searcherPanel {
+        margin-top: 30px;
+    }
 
-        .searcherPanel .searcherInputPanel {
-            display: inline-flex;
-            width: 100%;
-        }
+    .searcherPanel .searcherInputPanel {
+        display: inline-flex;
+        width: 100%;
+    }
 
-        .searcherPanel .searcherInputPanel input {
-            font-size: 14px;
-            line-height: 28px;
-            display: block;
-            box-sizing: border-box;
-            width: 100%;
-            height: 40px;
-            padding: 5px 10px;
-            color: #999;
-            border: 1px solid #2277da;
-        }
+    .searcherPanel .searcherInputPanel input {
+        font-size: 14px;
+        line-height: 28px;
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 40px;
+        padding: 5px 10px;
+        color: #999;
+        border: 1px solid #2277da;
+    }
 
-        .searcherPanel .searcherInputPanel button {
-            background: #008af1;
-            border: none;
-            height: 40px;
-            color: #fff;
-            text-align: center;
-            width: 92px;
-            font-size: 14px;
-            cursor: pointer;
-            vertical-align: middle;
-        }
+    .searcherPanel .searcherInputPanel button {
+        background: #008af1;
+        border: none;
+        height: 40px;
+        color: #fff;
+        text-align: center;
+        width: 92px;
+        font-size: 14px;
+        cursor: pointer;
+        vertical-align: middle;
+    }
 
-        .searcherPanel {
-            margin-top: 0px;
-        }
+    .searcherPanel {
+        margin-top: 0px;
+    }
 
-        .content-body .list-item {
-            border: solid #d8d8d8 1px;
-            border-width: 1px 1px;
-            padding: 15px 20px;
-            padding-bottom: 13px;
-        }
+    .content-body .list-item {
+        border: solid #d8d8d8 1px;
+        border-width: 1px 1px;
+        padding: 15px 20px;
+        padding-bottom: 13px;
+    }
 
-        .detail_title a {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            position: relative;
-            padding-right: 25px;
-            font-size: 20px;
-            color: #333;
-            margin-left: 0px;
-        }
+    .detail_title a {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: relative;
+        padding-right: 25px;
+        font-size: 20px;
+        color: #333;
+        margin-left: 0px;
+    }
 
-        .detail_title {
-            margin-left: 10px;
-        }
+    .detail_title {
+        margin-left: 10px;
+    }
 
-        .detail_overview {
-            min-height: 90px;
-            margin: 10px 0px 15px 8px;
-        }
+    .detail_overview {
+        min-height: 90px;
+        margin: 10px 0px 15px 8px;
+    }
 
-        .detail_option {
-            float: right;
-            margin-top: 5px;
-        }
+    .detail_option {
+        float: right;
+        margin-top: 5px;
+    }
 
-        .info {
-            margin-top: 10px;
-            margin-left: 105px;
-            display: block;
-            padding-top: 5px;
-        }
+    .info {
+        margin-top: 10px;
+        margin-left: 105px;
+        display: block;
+        padding-top: 5px;
+    }
 
-        .el-col-6 {
-            width: 25%;
-        }
+    .el-col-6 {
+        width: 25%;
+    }
 
-        .el-col-18 {
-            width: 75%;
-        }
+    .el-col-18 {
+        width: 75%;
+    }
 
-        .detail_option {
-            float: right;
-        }
+    .detail_option {
+        float: right;
+    }
 
-        .img {
-            float: left;
-        }
+    .img {
+        float: left;
+    }
 
-        hr {
-            border-color: #d8d8d8;
-            margin: 0px;
-        }
+    hr {
+        border-color: #d8d8d8;
+        margin: 0px;
+    }
 
-        .el-col-20 {
-            width: 98%;
-        }
+    .el-col-20 {
+        width: 98%;
+    }
 
-        .table .thMain {
-            border-top: none;
-        }
-    </style>
+    .table .thMain {
+        border-top: none;
+    }
+</style>
 </head>
 
 <body class="scrollbar">
@@ -158,6 +158,7 @@
 
     <div class="page-container" style="height: 2000px">
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <template id="createConcept" th:fragment="createConcept">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;overflow-x: hidden"
@@ -167,7 +168,7 @@
                              style="max-width: 1050px;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../community">Community </a><span
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/community">Community </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
                     </section>
@@ -418,7 +419,7 @@
                                                             </div>
 
                                                             <div class="step-tab-panel" id="step3">
-                                                        <textarea id="myText">
+                                                        <textarea id="conceptText">
                                                             <div>
                                                                  <table class="table table-bordered"
                                                                         style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;"
@@ -501,6 +502,8 @@
 
                 </div>
             </div>
+        </template>
+
         </div>
 </body>
 

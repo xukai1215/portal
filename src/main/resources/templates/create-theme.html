@@ -64,145 +64,308 @@
 
     <div class="page-container">
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-            <div class="innerShadowCol">
-                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
-                     style="margin-left: 240px;overflow-x: hidden"
-                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
-                     id="pageContent">
-                    <section role="description" class="flexJustBetween flexColCenter contentSection"
-                             style="max-width: 1050px;margin: 15px 10px;">
-                        <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
-                            <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../theme">Theme </a>
-                                <span id="subRteTitle"></span></h3>
-                        </div>
-                    </section>
+        <template id="createTheme" th:fragment="createTheme">
+            <div>
+                <div class="innerShadowCol">
+                    <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                         style="margin-left: 240px;overflow-x: hidden"
+                         :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                         id="pageContent">
+                        <section role="description" class="flexJustBetween flexColCenter contentSection"
+                                 style="max-width: 1050px;margin: 15px 10px;">
+                            <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
+                                <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
+                                <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/userTheme">Theme </a>
+                                    <span id="subRteTitle"></span></h3>
+                            </div>
+                        </section>
 
-                    <div class="page-content-wrap container-fluid">
-                        <!-- START WIDGETS -->
-                        <div class="row">
+                        <div class="page-content-wrap container-fluid">
+                            <!-- START WIDGETS -->
+                            <div class="row">
 
-                        </div>
+                            </div>
 
-                        <!-- END WIDGETS -->
-                        <div class="row">
-                            <div class="container-fluid" id="mainInfo">
-                                <div class="row">
-                                    <div class="col-md-12 nopadding">
-                                        <div class="panel panel-success" style="border: none">
-                                            <div class="panel-body">
-                                                <div class="step" id="step">
-                                                    <div class="step-app">
-                                                        <ul class="step-steps text-center">
+                            <!-- END WIDGETS -->
+                            <div class="row">
+                                <div class="container-fluid" id="mainInfo">
+                                    <div class="row">
+                                        <div class="col-md-12 nopadding">
+                                            <div class="panel panel-success" style="border: none">
+                                                <div class="panel-body">
+                                                    <div class="step" id="step">
+                                                        <div class="step-app">
+                                                            <ul class="step-steps text-center">
 
-                                                            <li>
-                                                                <a href="#step1">Theme Info</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#step2">Models</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#step3">Data</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#step4">Applications</a>
-                                                            </li>
+                                                                <li>
+                                                                    <a href="#step1">Theme Info</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#step2">Models</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#step3">Data</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#step4">Applications</a>
+                                                                </li>
 
-                                                        </ul>
-                                                        <div class="step-content">
-                                                            <div class="step-tab-panel" id="step1">
-                                                                <div id="RepositoryParentsPanel">
-                                                                    <div class="form-horizontal">
-                                                                        <div class="form-group">
-                                                                            <label for="nameInput"
-                                                                                   class="col-sm-2 control-label"
-                                                                                   style="width: 110px;font-weight: bold">Theme
-                                                                                Name:</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input type="text" class="form-control"
-                                                                                       id="nameInput"/>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-horizontal">
-                                                                        <div class="form-group">
-                                                                            <label for="nameInput"
-                                                                                   class="col-sm-2 control-label"
-                                                                                   style="width: 110px;font-weight: bold">Theme
-                                                                                Image:</label>
-                                                                            <div class="col-sm-10">
-                                                                                <img id="imgShow" src=""/>
-                                                                                <div id="imgChange">
-                                                                                    <i class="fa fa-plus fa-5x"></i>
+                                                            </ul>
+                                                            <div class="step-content">
+                                                                <div class="step-tab-panel" id="step1">
+                                                                    <div id="RepositoryParentsPanel">
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="nameInput"
+                                                                                       class="col-sm-2 control-label"
+                                                                                       style="width: 110px;font-weight: bold">Theme
+                                                                                    Name:</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control"
+                                                                                           id="nameInput"/>
                                                                                 </div>
-                                                                                <input id="imgFile" type="file"
-                                                                                       style="display: none"
-                                                                                       accept="image/*"/>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="nameInput"
+                                                                                       class="col-sm-2 control-label"
+                                                                                       style="width: 110px;font-weight: bold">Theme
+                                                                                    Image:</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <img id="imgShow" src=""/>
+                                                                                    <div id="imgChange" class="cursorPointer" style="width: 72px">
+                                                                                        <i class="fa fa-plus fa-5x"></i>
+                                                                                    </div>
+                                                                                    <input id="imgFile" type="file"
+                                                                                           style="display: none"
+                                                                                           accept="image/*"/>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div style="height: 22px">
+                                                                        <label for="nameInput"
+                                                                               class="col-sm-2 control-label"
+                                                                               style="width: 110px;font-weight: bold">Description:</label>
+                                                                    </div>
+                                                                    <textarea id="themeText"></textarea>
+                                                                    <div class="step-footer text-right">
+                                                                        <button class="btn btn-primary next"
+                                                                                data-direction="next" id="step1_next">Next
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <label for="nameInput"
-                                                                           class="col-sm-2 control-label"
-                                                                           style="width: 110px;font-weight: bold">Description:</label>
-                                                                </div>
-                                                                <textarea id="myText"></textarea>
-                                                                <div class="step-footer text-right">
-                                                                    <button class="btn btn-primary next"
-                                                                            data-direction="next" id="step1_next">Next
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="step-tab-panel" id="step2">
+                                                                <div class="step-tab-panel" id="step2">
 
-                                                                <div class="panel-body">
-                                                                    <!--实验tabs-->
-                                                                    <el-card>
-                                                                        <el-button type="success"
-                                                                                   style="position: absolute;right: 35px;z-index: 999"
-                                                                                   @click="modelClass_add()">Add New
-                                                                            Category
-                                                                        </el-button>
-                                                                        <el-tabs v-model="editableTabsValue_model"
-                                                                                 type="card" editable
-                                                                                 @edit="handleTabsEdit_model">
-                                                                            <el-tab-pane
-                                                                                    :key="item.name"
-                                                                                    v-for="(item, index) in editableTabs_model"
-                                                                                    :label="item.title"
-                                                                                    :name="item.name"
-                                                                                    id="el_model"
-                                                                            >
-                                                                                <div class='model-attr'>
-                                                                                    <div>
-                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                               style='font-weight: bold;'>
-                                                                                            Category Name:
-                                                                                        </lable>
-                                                                                        <div class='input-group col-sm-10'>
-                                                                                            <input type='text'
-                                                                                                   :id="'categoryname'+index"
-                                                                                                   name="name"
-                                                                                                   class='form-control category_name'>
+                                                                    <div class="panel-body">
+                                                                        <!--实验tabs-->
+                                                                        <el-card>
+                                                                            <el-button type="success"
+                                                                                       style="position: absolute;right: 35px;z-index: 999"
+                                                                                       @click="modelClass_add()">Add New
+                                                                                Category
+                                                                            </el-button>
+                                                                            <el-tabs v-model="editableTabsValue_model"
+                                                                                     type="card" editable
+                                                                                     @edit="handleTabsEdit_model">
+                                                                                <el-tab-pane
+                                                                                        :key="item.name"
+                                                                                        v-for="(item, index) in editableTabs_model"
+                                                                                        :label="item.title"
+                                                                                        :name="item.name"
+                                                                                        id="el_model"
+                                                                                >
+                                                                                    <div class='model-attr'>
+                                                                                        <div>
+                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                   style='font-weight: bold;'>
+                                                                                                Category Name:
+                                                                                            </lable>
+                                                                                            <div class='input-group col-sm-10'>
+                                                                                                <input type='text'
+                                                                                                       :id="'categoryname'+index"
+                                                                                                       name="name"
+                                                                                                       class='form-control category_name'>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <el-card class="box-card"
+                                                                                                 style="width:40%;margin-right: 1%;float: left;"
+                                                                                                 id="step1_left">
+                                                                                            <div slot="header"
+                                                                                                 class="clearfix">
+                                                                                                <span>Selected Items</span>
+                                                                                            </div>
+                                                                                            <!--<li v-for="site in tableDataarr"></li>-->
+                                                                                            <el-table
+                                                                                                    :data="item.tabledata"
+                                                                                                    ref="leftTable"
+                                                                                                    :max-height="tableMaxHeight">
+                                                                                                <el-table-column
+                                                                                                        type="expand">
+                                                                                                    <template
+                                                                                                            slot-scope="props">
+                                                                                                        <el-form
+                                                                                                                label-position="left"
+                                                                                                                inline
+                                                                                                                class="demo-table-expand">
+                                                                                                            <el-form-item
+                                                                                                                    label="Contributor">
+                                                                                                                <span>{{ props.row.author }}</span>
+                                                                                                            </el-form-item>
+
+                                                                                                        </el-form>
+                                                                                                    </template>
+                                                                                                </el-table-column>
+                                                                                                <el-table-column
+                                                                                                        label="Name">
+                                                                                                    <template
+                                                                                                            slot-scope="props">
+                                                                                                        <a :href="'/'+relateType+'/'+props.row.oid"
+                                                                                                           target="_blank">{{props.row.name}}</a>
+                                                                                                    </template>
+                                                                                                </el-table-column>
+
+                                                                                                <el-table-column
+                                                                                                        fixed="right"
+                                                                                                        label="Operation"
+                                                                                                        width="100">
+                                                                                                    <template
+                                                                                                            slot-scope="scope">
+
+                                                                                                        <el-button
+                                                                                                                size="mini"
+                                                                                                                type="danger"
+                                                                                                                @click="handleDelete1(scope.$index, scope.row)">
+                                                                                                            Delete
+                                                                                                        </el-button>
+                                                                                                    </template>
+                                                                                                </el-table-column>
+                                                                                            </el-table>
+                                                                                        </el-card>
+                                                                                        <el-card class="box-card"
+                                                                                                 style="width:59%;"
+                                                                                                 id="step1_right">
+                                                                                            <el-input
+                                                                                                    placeholder="Please enter name..."
+                                                                                                    v-model="relateSearch"
+                                                                                                    class="input-with-select">
+                                                                                                <el-button slot="append"
+                                                                                                           icon="el-icon-search"
+                                                                                                           @click="search1()"></el-button>
+                                                                                            </el-input>
+                                                                                            <el-table
+                                                                                                    :data="pageOption1.searchResult"
+                                                                                                    style="margin-top:17px;"
+                                                                                                    :max-height="tableMaxHeight">
+                                                                                                <el-table-column
+                                                                                                        type="expand">
+                                                                                                    <template
+                                                                                                            slot-scope="props">
+                                                                                                        <el-form
+                                                                                                                label-position="left"
+                                                                                                                inline
+                                                                                                                class="demo-table-expand">
+                                                                                                            <el-form-item
+                                                                                                                    label="Detail">
+                                                                                                                <span>{{ props.row.description }}</span>
+                                                                                                            </el-form-item>
+
+                                                                                                        </el-form>
+                                                                                                    </template>
+                                                                                                </el-table-column>
+                                                                                                <el-table-column
+                                                                                                        label="Name">
+                                                                                                    <template
+                                                                                                            slot-scope="props">
+                                                                                                        <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                                                                                           target="_blank">{{props.row.name}}</a>
+                                                                                                    </template>
+                                                                                                </el-table-column>
+                                                                                                <el-table-column
+                                                                                                        label="Contributor"
+                                                                                                        prop="author">
+                                                                                                </el-table-column>
+                                                                                                <el-table-column
+                                                                                                        fixed="right"
+                                                                                                        label="Operation"
+                                                                                                        width="100">
+                                                                                                    <template
+                                                                                                            slot-scope="scope">
+                                                                                                        <el-button
+                                                                                                                size="mini"
+                                                                                                                @click="handleEdit(scope.$index, scope.row)">
+                                                                                                            Add
+                                                                                                        </el-button>
+                                                                                                    </template>
+                                                                                                </el-table-column>
+                                                                                            </el-table>
+                                                                                            <el-pagination
+                                                                                                    style="text-align: center;margin-top:20px"
+                                                                                                    @current-change="handlePageChange1"
+                                                                                                    :current-page="pageOption1.currentPage"
+                                                                                                    layout="total, prev, pager, next, jumper"
+                                                                                                    :page-size="5"
+                                                                                                    :total="pageOption1.total">
+                                                                                            </el-pagination>
+                                                                                        </el-card>
+                                                                                    </div>
+                                                                                </el-tab-pane>
+                                                                            </el-tabs>
+
+                                                                        </el-card>
+                                                                    </div>
+                                                                    <div class="step-footer text-right">
+                                                                        <button class="btn btn-primary next"
+                                                                                data-direction="next" id="step2_next">Next
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="step-tab-panel" id="step3">
+
+                                                                    <div class="panel-body">
+                                                                        <el-card>
+                                                                            <el-button type="success"
+                                                                                       style="position: absolute;right: 35px;z-index: 999"
+                                                                                       @click="dataClass_add()">Add New
+                                                                                Category
+                                                                            </el-button>
+                                                                            <el-tabs v-model="editableTabsValue_data"
+                                                                                     type="card" editable
+                                                                                     @edit="handleTabsEdit_data">
+                                                                                <el-tab-pane
+                                                                                        :key="item.name"
+                                                                                        v-for="(item, index) in editableTabs_data"
+                                                                                        :label="item.title"
+                                                                                        :name="item.name"
+                                                                                >
+                                                                                    <div class='data-attr'>
+                                                                                        <div>
+                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                   style='font-weight: bold;'>
+                                                                                                Category Name:
+                                                                                            </lable>
+                                                                                            <div class='input-group col-sm-10'>
+                                                                                                <input type='text'
+                                                                                                       :id="'categoryname2'+index"
+                                                                                                       name="name"
+                                                                                                       class='form-control category_name2'>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-
                                                                                     <el-card class="box-card"
                                                                                              style="width:40%;margin-right: 1%;float: left;"
-                                                                                             id="step1_left">
-                                                                                        <div slot="header"
-                                                                                             class="clearfix">
+                                                                                             id="step2_left">
+                                                                                        <div slot="header" class="clearfix">
                                                                                             <span>Selected Items</span>
                                                                                         </div>
-                                                                                        <!--<li v-for="site in tableDataarr"></li>-->
                                                                                         <el-table
                                                                                                 :data="item.tabledata"
                                                                                                 ref="leftTable"
                                                                                                 :max-height="tableMaxHeight">
-                                                                                            <el-table-column
-                                                                                                    type="expand">
+                                                                                            <el-table-column type="expand">
                                                                                                 <template
                                                                                                         slot-scope="props">
                                                                                                     <el-form
@@ -226,17 +389,16 @@
                                                                                                 </template>
                                                                                             </el-table-column>
 
-                                                                                            <el-table-column
-                                                                                                    fixed="right"
-                                                                                                    label="Operation"
-                                                                                                    width="100">
+                                                                                            <el-table-column fixed="right"
+                                                                                                             label="Operation"
+                                                                                                             width="100">
                                                                                                 <template
                                                                                                         slot-scope="scope">
 
                                                                                                     <el-button
                                                                                                             size="mini"
                                                                                                             type="danger"
-                                                                                                            @click="handleDelete1(scope.$index, scope.row)">
+                                                                                                            @click="handleDelete2(scope.$index, scope.row)">
                                                                                                         Delete
                                                                                                     </el-button>
                                                                                                 </template>
@@ -245,21 +407,20 @@
                                                                                     </el-card>
                                                                                     <el-card class="box-card"
                                                                                              style="width:59%;"
-                                                                                             id="step1_right">
+                                                                                             id="step2_right">
                                                                                         <el-input
                                                                                                 placeholder="Please enter name..."
                                                                                                 v-model="relateSearch"
                                                                                                 class="input-with-select">
                                                                                             <el-button slot="append"
                                                                                                        icon="el-icon-search"
-                                                                                                       @click="search1()"></el-button>
+                                                                                                       @click="search2()"></el-button>
                                                                                         </el-input>
                                                                                         <el-table
-                                                                                                :data="pageOption1.searchResult"
+                                                                                                :data="pageOption2.searchResult"
                                                                                                 style="margin-top:17px;"
                                                                                                 :max-height="tableMaxHeight">
-                                                                                            <el-table-column
-                                                                                                    type="expand">
+                                                                                            <el-table-column type="expand">
                                                                                                 <template
                                                                                                         slot-scope="props">
                                                                                                     <el-form
@@ -286,15 +447,14 @@
                                                                                                     label="Contributor"
                                                                                                     prop="author">
                                                                                             </el-table-column>
-                                                                                            <el-table-column
-                                                                                                    fixed="right"
-                                                                                                    label="Operation"
-                                                                                                    width="100">
+                                                                                            <el-table-column fixed="right"
+                                                                                                             label="Operation"
+                                                                                                             width="100">
                                                                                                 <template
                                                                                                         slot-scope="scope">
                                                                                                     <el-button
                                                                                                             size="mini"
-                                                                                                            @click="handleEdit(scope.$index, scope.row)">
+                                                                                                            @click="handleEdit1(scope.$index, scope.row)">
                                                                                                         Add
                                                                                                     </el-button>
                                                                                                 </template>
@@ -302,237 +462,79 @@
                                                                                         </el-table>
                                                                                         <el-pagination
                                                                                                 style="text-align: center;margin-top:20px"
-                                                                                                @current-change="handlePageChange1"
-                                                                                                :current-page="pageOption1.currentPage"
+                                                                                                @current-change="handlePageChange2"
+                                                                                                :current-page="pageOption2.currentPage"
                                                                                                 layout="total, prev, pager, next, jumper"
                                                                                                 :page-size="5"
-                                                                                                :total="pageOption1.total">
+                                                                                                :total="pageOption2.total">
                                                                                         </el-pagination>
                                                                                     </el-card>
-                                                                                </div>
-                                                                            </el-tab-pane>
-                                                                        </el-tabs>
+                                                                                </el-tab-pane>
+                                                                            </el-tabs>
+                                                                        </el-card>
+                                                                    </div>
 
-                                                                    </el-card>
+                                                                    <div class="step-footer text-right">
+                                                                        <button class="btn btn-primary next"
+                                                                                data-direction="next" id="step3_next">Next
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="step-footer text-right">
-                                                                    <button class="btn btn-primary next"
-                                                                            data-direction="next" id="step2_next">Next
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="step-tab-panel" id="step3">
 
-                                                                <div class="panel-body">
-                                                                    <el-card>
-                                                                        <el-button type="success"
-                                                                                   style="position: absolute;right: 35px;z-index: 999"
-                                                                                   @click="dataClass_add()">Add New
-                                                                            Category
-                                                                        </el-button>
-                                                                        <el-tabs v-model="editableTabsValue_data"
-                                                                                 type="card" editable
-                                                                                 @edit="handleTabsEdit_data">
-                                                                            <el-tab-pane
-                                                                                    :key="item.name"
-                                                                                    v-for="(item, index) in editableTabs_data"
-                                                                                    :label="item.title"
-                                                                                    :name="item.name"
-                                                                            >
-                                                                                <div class='data-attr'>
-                                                                                    <div>
-                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                               style='font-weight: bold;'>
-                                                                                            Category Name:
-                                                                                        </lable>
-                                                                                        <div class='input-group col-sm-10'>
-                                                                                            <input type='text'
-                                                                                                   :id="'categoryname2'+index"
-                                                                                                   name="name"
-                                                                                                   class='form-control category_name2'>
+                                                                <div class="step-tab-panel" id="step4">
+
+                                                                    <div class="panel-body">
+                                                                        <el-card>
+                                                                            <el-button type="success"
+                                                                                       style="position: absolute;right: 35px;z-index: 999"
+                                                                                       @click="Application_add()">Add New
+                                                                                Application
+                                                                            </el-button>
+                                                                            <el-tabs
+                                                                                    v-model="editableTabsValue_applications"
+                                                                                    type="card" editable
+                                                                                    @edit="handleTabsEdit_applications">
+                                                                                <el-tab-pane
+                                                                                        :key="item.name"
+                                                                                        v-for="(item, index) in editableTabs_applications"
+                                                                                        :label="item.title"
+                                                                                        :name="item.name"
+                                                                                        id="add_tabs"
+                                                                                >
+                                                                                    <div class='user-attr3'>
+                                                                                        <div>
+                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                   style='font-weight: bold;'>
+                                                                                                Name:
+                                                                                            </lable>
+                                                                                            <div class='input-group col-sm-10'>
+                                                                                                <input type='text'
+                                                                                                       :id="'applicationname'+index"
+                                                                                                       name="name"
+                                                                                                       class='form-control application_name'>
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <el-card class="box-card"
-                                                                                         style="width:40%;margin-right: 1%;float: left;"
-                                                                                         id="step2_left">
-                                                                                    <div slot="header" class="clearfix">
-                                                                                        <span>Selected Items</span>
-                                                                                    </div>
-                                                                                    <el-table
-                                                                                            :data="item.tabledata"
-                                                                                            ref="leftTable"
-                                                                                            :max-height="tableMaxHeight">
-                                                                                        <el-table-column type="expand">
-                                                                                            <template
-                                                                                                    slot-scope="props">
-                                                                                                <el-form
-                                                                                                        label-position="left"
-                                                                                                        inline
-                                                                                                        class="demo-table-expand">
-                                                                                                    <el-form-item
-                                                                                                            label="Contributor">
-                                                                                                        <span>{{ props.row.author }}</span>
-                                                                                                    </el-form-item>
-
-                                                                                                </el-form>
-                                                                                            </template>
-                                                                                        </el-table-column>
-                                                                                        <el-table-column
-                                                                                                label="Name">
-                                                                                            <template
-                                                                                                    slot-scope="props">
-                                                                                                <a :href="'/'+relateType+'/'+props.row.oid"
-                                                                                                   target="_blank">{{props.row.name}}</a>
-                                                                                            </template>
-                                                                                        </el-table-column>
-
-                                                                                        <el-table-column fixed="right"
-                                                                                                         label="Operation"
-                                                                                                         width="100">
-                                                                                            <template
-                                                                                                    slot-scope="scope">
-
-                                                                                                <el-button
-                                                                                                        size="mini"
-                                                                                                        type="danger"
-                                                                                                        @click="handleDelete2(scope.$index, scope.row)">
-                                                                                                    Delete
-                                                                                                </el-button>
-                                                                                            </template>
-                                                                                        </el-table-column>
-                                                                                    </el-table>
-                                                                                </el-card>
-                                                                                <el-card class="box-card"
-                                                                                         style="width:59%;"
-                                                                                         id="step2_right">
-                                                                                    <el-input
-                                                                                            placeholder="Please enter name..."
-                                                                                            v-model="relateSearch"
-                                                                                            class="input-with-select">
-                                                                                        <el-button slot="append"
-                                                                                                   icon="el-icon-search"
-                                                                                                   @click="search2()"></el-button>
-                                                                                    </el-input>
-                                                                                    <el-table
-                                                                                            :data="pageOption2.searchResult"
-                                                                                            style="margin-top:17px;"
-                                                                                            :max-height="tableMaxHeight">
-                                                                                        <el-table-column type="expand">
-                                                                                            <template
-                                                                                                    slot-scope="props">
-                                                                                                <el-form
-                                                                                                        label-position="left"
-                                                                                                        inline
-                                                                                                        class="demo-table-expand">
-                                                                                                    <el-form-item
-                                                                                                            label="Detail">
-                                                                                                        <span>{{ props.row.description }}</span>
-                                                                                                    </el-form-item>
-
-                                                                                                </el-form>
-                                                                                            </template>
-                                                                                        </el-table-column>
-                                                                                        <el-table-column
-                                                                                                label="Name">
-                                                                                            <template
-                                                                                                    slot-scope="props">
-                                                                                                <a :href="'/repository/'+relateType+'/'+props.row.oid"
-                                                                                                   target="_blank">{{props.row.name}}</a>
-                                                                                            </template>
-                                                                                        </el-table-column>
-                                                                                        <el-table-column
-                                                                                                label="Contributor"
-                                                                                                prop="author">
-                                                                                        </el-table-column>
-                                                                                        <el-table-column fixed="right"
-                                                                                                         label="Operation"
-                                                                                                         width="100">
-                                                                                            <template
-                                                                                                    slot-scope="scope">
-                                                                                                <el-button
-                                                                                                        size="mini"
-                                                                                                        @click="handleEdit1(scope.$index, scope.row)">
-                                                                                                    Add
-                                                                                                </el-button>
-                                                                                            </template>
-                                                                                        </el-table-column>
-                                                                                    </el-table>
-                                                                                    <el-pagination
-                                                                                            style="text-align: center;margin-top:20px"
-                                                                                            @current-change="handlePageChange2"
-                                                                                            :current-page="pageOption2.currentPage"
-                                                                                            layout="total, prev, pager, next, jumper"
-                                                                                            :page-size="5"
-                                                                                            :total="pageOption2.total">
-                                                                                    </el-pagination>
-                                                                                </el-card>
-                                                                            </el-tab-pane>
-                                                                        </el-tabs>
-                                                                    </el-card>
-                                                                </div>
-
-                                                                <div class="step-footer text-right">
-                                                                    <button class="btn btn-primary next"
-                                                                            data-direction="next" id="step3_next">Next
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="step-tab-panel" id="step4">
-
-                                                                <div class="panel-body">
-                                                                    <el-card>
-                                                                        <el-button type="success"
-                                                                                   style="position: absolute;right: 35px;z-index: 999"
-                                                                                   @click="Application_add()">Add New
-                                                                            Application
-                                                                        </el-button>
-                                                                        <el-tabs
-                                                                                v-model="editableTabsValue_applications"
-                                                                                type="card" editable
-                                                                                @edit="handleTabsEdit_applications">
-                                                                            <el-tab-pane
-                                                                                    :key="item.name"
-                                                                                    v-for="(item, index) in editableTabs_applications"
-                                                                                    :label="item.title"
-                                                                                    :name="item.name"
-                                                                                    id="add_tabs"
-                                                                            >
-                                                                                <div class='user-attr3'>
-                                                                                    <div>
-                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                               style='font-weight: bold;'>
-                                                                                            Name:
-                                                                                        </lable>
-                                                                                        <div class='input-group col-sm-10'>
-                                                                                            <input type='text'
-                                                                                                   :id="'applicationname'+index"
-                                                                                                   name="name"
-                                                                                                   class='form-control application_name'>
+                                                                                        <div style="margin-top:10px">
+                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                   style='font-weight: bold;'>
+                                                                                                Link:
+                                                                                            </lable>
+                                                                                            <div class='input-group col-sm-10'>
+                                                                                                <input type='text'
+                                                                                                       :id="'applicationlink'+index"
+                                                                                                       name="name"
+                                                                                                       class='form-control application_link'>
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                    <div style="margin-top:10px">
-                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                               style='font-weight: bold;'>
-                                                                                            Link:
-                                                                                        </lable>
-                                                                                        <div class='input-group col-sm-10'>
-                                                                                            <input type='text'
-                                                                                                   :id="'applicationlink'+index"
-                                                                                                   name="name"
-                                                                                                   class='form-control application_link'>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div style="margin-top:10px">
-                                                                                        <lable class='control-label col-sm-2 text-center'
-                                                                                               style='font-weight: bold;'>
-                                                                                            Image:
-                                                                                        </lable>
-                                                                                        <div class="col-sm-10">
-                                                                                            <img :id="'imgShow'+index"
-                                                                                                 class="img_Show1"
-                                                                                                 style="
+                                                                                        <div style="margin-top:10px">
+                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                   style='font-weight: bold;'>
+                                                                                                Image:
+                                                                                            </lable>
+                                                                                            <div class="col-sm-10">
+                                                                                                <img :id="'imgShow'+index"
+                                                                                                     class="img_Show1"
+                                                                                                     style="
                                                                                             border: 1px solid #ccc;
                                                                                             width: 100px;
                                                                                             height: 100px;
@@ -540,10 +542,10 @@
                                                                                             display: none;
                                                                                             float: left;
                                                                                             margin-right: 10px;"
-                                                                                                 src=""/>
-                                                                                            <div id="'imgChange'+index"
-                                                                                                 class="imgChange"
-                                                                                                 style=" border: 1px solid #ccc;
+                                                                                                     src=""/>
+                                                                                                <div id="'imgChange'+index"
+                                                                                                     class="imgChange"
+                                                                                                     style=" border: 1px solid #ccc;
                                                                                             width: 100px;
                                                                                             height: 100px;
                                                                                             text-align: center;
@@ -551,31 +553,32 @@
                                                                                             vertical-align: middle;
                                                                                             color: #ccc;
                                                                                             float: left;">
-                                                                                                <i class="fa fa-plus fa-5x"></i>
+                                                                                                    <i class="fa fa-plus fa-5x"></i>
+                                                                                                </div>
+                                                                                                <input :id="'imgFile'+index"
+                                                                                                       class="img_file"
+                                                                                                       type="file"
+                                                                                                       style="display: none"
+                                                                                                       accept="image/*"/>
                                                                                             </div>
-                                                                                            <input :id="'imgFile'+index"
-                                                                                                   class="img_file"
-                                                                                                   type="file"
-                                                                                                   style="display: none"
-                                                                                                   accept="image/*"/>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            </el-tab-pane>
-                                                                        </el-tabs>
-                                                                    </el-card>
-                                                                </div>
+                                                                                </el-tab-pane>
+                                                                            </el-tabs>
+                                                                        </el-card>
+                                                                    </div>
 
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="step-footer text-right">
-                                                            <button class="btn btn-warning prev" data-direction="prev">
-                                                                Previous
-                                                            </button>
-                                                            <button class="btn btn-success finish"
-                                                                    data-direction="finish">
-                                                                Finish
-                                                            </button>
+                                                            <div class="step-footer text-right">
+                                                                <button class="btn btn-warning prev" data-direction="prev">
+                                                                    Previous
+                                                                </button>
+                                                                <button class="btn btn-success finish"
+                                                                        data-direction="finish">
+                                                                    Finish
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -587,11 +590,108 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%"
-                       top="40px">
-                <el-card>
+                <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%"
+                           top="40px">
+                    <el-card>
+
+                        <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
+                            <div slot="header" class="clearfix">
+                                <span>Selected Items</span>
+                            </div>
+                            <el-table
+                                    :data="tableData"
+                                    ref="leftTable"
+                                    :max-height="tableMaxHeight">
+                                <el-table-column type="expand">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" inline class="demo-table-expand">
+                                            <el-form-item label="Contributor">
+                                                <span>{{ props.row.author }}</span>
+                                            </el-form-item>
+
+                                        </el-form>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="Name">
+                                    <template slot-scope="props">
+                                        <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column fixed="right" label="Operation" width="100">
+                                    <template slot-scope="scope">
+
+                                        <el-button
+                                                size="mini"
+                                                type="danger"
+                                                @click="handleDelete(scope.$index, scope.row)">Delete
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-card>
+                        <el-card class="box-card" style="width:59%;">
+                            <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
+                                <el-button slot="append" icon="el-icon-search" @click="search1()"></el-button>
+                            </el-input>
+                            <el-table
+                                    :data="pageOption1.searchResult"
+                                    style="margin-top:17px;"
+                                    :max-height="tableMaxHeight">
+                                <el-table-column type="expand">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" inline class="demo-table-expand">
+                                            <el-form-item label="Detail">
+                                                <span>{{ props.row.description }}</span>
+                                            </el-form-item>
+
+                                        </el-form>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="Name">
+                                    <template slot-scope="props">
+                                        <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="Contributor"
+                                        prop="author">
+                                </el-table-column>
+                                <el-table-column fixed="right" label="Operation" width="100">
+                                    <template slot-scope="scope">
+                                        <el-button
+                                                size="mini"
+                                                @click="handleEdit(scope.$index, scope.row)">Add
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-pagination style="text-align: center;margin-top:20px"
+                                           @current-change="handlePageChange1"
+                                           :current-page="pageOption1.currentPage"
+                                           layout="total, prev, pager, next, jumper"
+                                           :page-size="5"
+                                           :total="pageOption1.total">
+                            </el-pagination>
+                        </el-card>
+                        <!--<div slot="footer" class="dialog-footer">-->
+                        <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+                        <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
+                        <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+                        <!--</div>-->
+                    </el-card>
+                    <div slot="footer" class="dialog-footer">
+                        <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+                        <el-button @click="dialogTableVisible = false;">Cancel</el-button>
+                        <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+                    </div>
+                </el-dialog>
+
+                <el-dialog :visible.sync="dialogTableVisible1" :title="relateTitle" :before-close="handleClose" width="70%"
+                           top="40px">
 
                     <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
                         <div slot="header" class="clearfix">
@@ -632,10 +732,10 @@
                     </el-card>
                     <el-card class="box-card" style="width:59%;">
                         <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
-                            <el-button slot="append" icon="el-icon-search" @click="search1()"></el-button>
+                            <el-button slot="append" icon="el-icon-search" @click="search2()"></el-button>
                         </el-input>
                         <el-table
-                                :data="pageOption1.searchResult"
+                                :data="pageOption2.searchResult"
                                 style="margin-top:17px;"
                                 :max-height="tableMaxHeight">
                             <el-table-column type="expand">
@@ -662,225 +762,130 @@
                                 <template slot-scope="scope">
                                     <el-button
                                             size="mini"
-                                            @click="handleEdit(scope.$index, scope.row)">Add
+                                            @click="handleEdit1(scope.$index, scope.row)">Add
                                     </el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
                         <el-pagination style="text-align: center;margin-top:20px"
-                                       @current-change="handlePageChange1"
-                                       :current-page="pageOption1.currentPage"
+                                       @current-change="handlePageChange2"
+                                       :current-page="pageOption2.currentPage"
                                        layout="total, prev, pager, next, jumper"
                                        :page-size="5"
-                                       :total="pageOption1.total">
+                                       :total="pageOption2.total">
                         </el-pagination>
                     </el-card>
+                    <div slot="footer" class="dialog-footer">
+                        <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+                        <el-button @click="dialogTableVisible1 = false;">Cancel</el-button>
+                        <el-button type="primary" id="selectok1">OK</el-button>
+                    </div>
                     <!--<div slot="footer" class="dialog-footer">-->
                     <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
-                    <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
-                    <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+                    <!--<el-button @click="dialogTableVisible1 = false;">Cancel</el-button>-->
+                    <!--<el-button type="primary" id="selectok1">OK</el-button>-->
                     <!--</div>-->
-                </el-card>
-                <div slot="footer" class="dialog-footer">
-                    <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
-                    <el-button @click="dialogTableVisible = false;">Cancel</el-button>
-                    <!--<el-button type="primary"  id="selectok">OK</el-button>-->
-                </div>
-            </el-dialog>
+                </el-dialog>
+            </div>
+        </template>
 
-            <!--<el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">-->
+        <!--<el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">-->
 
-            <!--<el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">-->
-            <!--<div slot="header" class="clearfix">-->
-            <!--<span>Selected Items</span>-->
-            <!--</div>-->
-            <!--<el-table-->
-            <!--:data="tableData"-->
-            <!--ref="leftTable"-->
-            <!--:max-height="tableMaxHeight">-->
-            <!--<el-table-column type="expand">-->
-            <!--<template slot-scope="props">-->
-            <!--<el-form label-position="left" inline class="demo-table-expand">-->
-            <!--<el-form-item label="Contributor">-->
-            <!--<span>{{ props.row.author }}</span>-->
-            <!--</el-form-item>-->
+        <!--<el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">-->
+        <!--<div slot="header" class="clearfix">-->
+        <!--<span>Selected Items</span>-->
+        <!--</div>-->
+        <!--<el-table-->
+        <!--:data="tableData"-->
+        <!--ref="leftTable"-->
+        <!--:max-height="tableMaxHeight">-->
+        <!--<el-table-column type="expand">-->
+        <!--<template slot-scope="props">-->
+        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+        <!--<el-form-item label="Contributor">-->
+        <!--<span>{{ props.row.author }}</span>-->
+        <!--</el-form-item>-->
 
-            <!--</el-form>-->
-            <!--</template>-->
-            <!--</el-table-column>-->
-            <!--<el-table-column-->
-            <!--label="Name">-->
-            <!--<template slot-scope="props">-->
-            <!--<a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
-            <!--</template>-->
-            <!--</el-table-column>-->
+        <!--</el-form>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+        <!--label="Name">-->
+        <!--<template slot-scope="props">-->
+        <!--<a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
 
-            <!--<el-table-column fixed="right" label="Operation" width="100">-->
-            <!--<template slot-scope="scope">-->
+        <!--<el-table-column fixed="right" label="Operation" width="100">-->
+        <!--<template slot-scope="scope">-->
 
-            <!--<el-button-->
-            <!--size="mini"-->
-            <!--type="danger"-->
-            <!--@click="handleDelete(scope.$index, scope.row)">Delete-->
-            <!--</el-button>-->
-            <!--</template>-->
-            <!--</el-table-column>-->
-            <!--</el-table>-->
-            <!--</el-card>-->
+        <!--<el-button-->
+        <!--size="mini"-->
+        <!--type="danger"-->
+        <!--@click="handleDelete(scope.$index, scope.row)">Delete-->
+        <!--</el-button>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--</el-table>-->
+        <!--</el-card>-->
 
 
-            <!--<el-card class="box-card" style="width:59%;">-->
-            <!--<el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">-->
-            <!--<el-button slot="append" icon="el-icon-search" @click="search()"></el-button>-->
-            <!--</el-input>-->
-            <!--<el-table-->
-            <!--:data="pageOption.searchResult"-->
-            <!--:data="pageOption.searchResult"-->
-            <!--style="margin-top:17px;"-->
-            <!--:max-height="tableMaxHeight">-->
-            <!--<el-table-column type="expand">-->
-            <!--<template slot-scope="props">-->
-            <!--<el-form label-position="left" inline class="demo-table-expand">-->
-            <!--<el-form-item label="Detail">-->
-            <!--<span>{{ props.row.description }}</span>-->
-            <!--</el-form-item>-->
+        <!--<el-card class="box-card" style="width:59%;">-->
+        <!--<el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">-->
+        <!--<el-button slot="append" icon="el-icon-search" @click="search()"></el-button>-->
+        <!--</el-input>-->
+        <!--<el-table-->
+        <!--:data="pageOption.searchResult"-->
+        <!--:data="pageOption.searchResult"-->
+        <!--style="margin-top:17px;"-->
+        <!--:max-height="tableMaxHeight">-->
+        <!--<el-table-column type="expand">-->
+        <!--<template slot-scope="props">-->
+        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+        <!--<el-form-item label="Detail">-->
+        <!--<span>{{ props.row.description }}</span>-->
+        <!--</el-form-item>-->
 
-            <!--</el-form>-->
-            <!--</template>-->
-            <!--</el-table-column>-->
-            <!--<el-table-column-->
-            <!--label="Name">-->
-            <!--<template slot-scope="props">-->
-            <!--<a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
-            <!--</template>-->
-            <!--</el-table-column>-->
-            <!--<el-table-column-->
-            <!--label="Contributor"-->
-            <!--prop="author">-->
-            <!--</el-table-column>-->
-            <!--<el-table-column fixed="right" label="Operation" width="100">-->
-            <!--<template slot-scope="scope">-->
-            <!--<el-button-->
-            <!--size="mini"-->
-            <!--@click="handleEdit(scope.$index, scope.row)">Add-->
-            <!--</el-button>-->
+        <!--</el-form>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+        <!--label="Name">-->
+        <!--<template slot-scope="props">-->
+        <!--<a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+        <!--label="Contributor"-->
+        <!--prop="author">-->
+        <!--</el-table-column>-->
+        <!--<el-table-column fixed="right" label="Operation" width="100">-->
+        <!--<template slot-scope="scope">-->
+        <!--<el-button-->
+        <!--size="mini"-->
+        <!--@click="handleEdit(scope.$index, scope.row)">Add-->
+        <!--</el-button>-->
 
-            <!--</template>-->
-            <!--</el-table-column>-->
-            <!--</el-table>-->
-            <!--<el-pagination style="text-align: center;margin-top:20px"-->
-            <!--@current-change="handlePageChange"-->
-            <!--:current-page="pageOption.currentPage"-->
-            <!--layout="total, prev, pager, next, jumper"-->
-            <!--:page-size="5"-->
-            <!--:total="pageOption.total">-->
-            <!--</el-pagination>-->
-            <!--</el-card>-->
-            <!--<div slot="footer" class="dialog-footer">-->
-            <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
-            <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
-            <!--<el-button type="primary"  id="selectok">OK</el-button>-->
-            <!--</div>-->
-            <!--</el-dialog>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--</el-table>-->
+        <!--<el-pagination style="text-align: center;margin-top:20px"-->
+        <!--@current-change="handlePageChange"-->
+        <!--:current-page="pageOption.currentPage"-->
+        <!--layout="total, prev, pager, next, jumper"-->
+        <!--:page-size="5"-->
+        <!--:total="pageOption.total">-->
+        <!--</el-pagination>-->
+        <!--</el-card>-->
+        <!--<div slot="footer" class="dialog-footer">-->
+        <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+        <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
+        <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+        <!--</div>-->
+        <!--</el-dialog>-->
+    </div>
 
-
-            <el-dialog :visible.sync="dialogTableVisible1" :title="relateTitle" :before-close="handleClose" width="70%"
-                       top="40px">
-
-                <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
-                    <div slot="header" class="clearfix">
-                        <span>Selected Items</span>
-                    </div>
-                    <el-table
-                            :data="tableData"
-                            ref="leftTable"
-                            :max-height="tableMaxHeight">
-                        <el-table-column type="expand">
-                            <template slot-scope="props">
-                                <el-form label-position="left" inline class="demo-table-expand">
-                                    <el-form-item label="Contributor">
-                                        <span>{{ props.row.author }}</span>
-                                    </el-form-item>
-
-                                </el-form>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Name">
-                            <template slot-scope="props">
-                                <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column fixed="right" label="Operation" width="100">
-                            <template slot-scope="scope">
-
-                                <el-button
-                                        size="mini"
-                                        type="danger"
-                                        @click="handleDelete(scope.$index, scope.row)">Delete
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-card>
-                <el-card class="box-card" style="width:59%;">
-                    <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search" @click="search2()"></el-button>
-                    </el-input>
-                    <el-table
-                            :data="pageOption2.searchResult"
-                            style="margin-top:17px;"
-                            :max-height="tableMaxHeight">
-                        <el-table-column type="expand">
-                            <template slot-scope="props">
-                                <el-form label-position="left" inline class="demo-table-expand">
-                                    <el-form-item label="Detail">
-                                        <span>{{ props.row.description }}</span>
-                                    </el-form-item>
-
-                                </el-form>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Name">
-                            <template slot-scope="props">
-                                <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Contributor"
-                                prop="author">
-                        </el-table-column>
-                        <el-table-column fixed="right" label="Operation" width="100">
-                            <template slot-scope="scope">
-                                <el-button
-                                        size="mini"
-                                        @click="handleEdit1(scope.$index, scope.row)">Add
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <el-pagination style="text-align: center;margin-top:20px"
-                                   @current-change="handlePageChange2"
-                                   :current-page="pageOption2.currentPage"
-                                   layout="total, prev, pager, next, jumper"
-                                   :page-size="5"
-                                   :total="pageOption2.total">
-                    </el-pagination>
-                </el-card>
-                <div slot="footer" class="dialog-footer">
-                    <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
-                    <el-button @click="dialogTableVisible1 = false;">Cancel</el-button>
-                    <el-button type="primary" id="selectok1">OK</el-button>
-                </div>
-                <!--<div slot="footer" class="dialog-footer">-->
-                <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
-                <!--<el-button @click="dialogTableVisible1 = false;">Cancel</el-button>-->
-                <!--<el-button type="primary" id="selectok1">OK</el-button>-->
-                <!--</div>-->
-            </el-dialog>
-        </div>
+</div>
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>

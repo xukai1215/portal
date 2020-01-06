@@ -1,117 +1,100 @@
-var vue = new Vue({
-    el:"#app",
-    data:{
-        defaultActive:'4-3',
-        curIndex:'6',
+var createTemplate = Vue.extend({
+    template:"#createTemplate",
+    data() {
+        return {
+            defaultActive: '4-3',
+            curIndex: '6',
 
-        ScreenMaxHeight: "0px",
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            ScreenMaxHeight: "0px",
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
-        ScreenMinHeight: "0px",
+            ScreenMinHeight: "0px",
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-        activeIndex: 2,
+            userId: "",
+            userName: "",
+            loginFlag: false,
+            activeIndex: 2,
 
-        userInfo:{
-            //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
-        },
+            userInfo: {
+                //username:"",
+                name: "",
+                email: "",
+                phone: "",
+                insName: ""
+            },
 
-        treeData: [{
-            id: 1,
-            label: 'Description Templates',
-            oid: 'TRJJMYDAUJTDDU5J9GPRUWAG7QJ6PHUU',
-            children: [
-                {
-                    id: 2,
-                    "oid": "f7fbecf6-9d28-405e-b7d2-07ef9d924ca6",
-                    "label": "Vector Data Format"
-                },
-                {
-                    id: 3,
-                    "oid": "9b104fd6-7949-4c3b-b277-138cd979d053",
-                    "label": "Raster Data Format",
-                },
-                {
-                    id: 4,
-                    "oid": "316d4df0-436e-4600-a183-80abf7472a72",
-                    "label": "Mesh Data Format",
-                },
-                {
-                    id: 5,
-                    "oid": "bc437c65-2cfe-4bde-ac31-04830f18885a",
-                    "label": "Image Data Format",
-                },
-                {
-                    id: 6,
-                    "oid": "39c0824e-8b1a-44e5-8716-c7893afe05e8",
-                    "label": "Voideo Data Format",
-                },
-                {
-                    id: 7,
-                    "oid": "82b1c2b4-4c12-441d-9d9c-09365c3c8a24",
-                    "label": "Audio Data Format",
-                },
-                {
-                    id: 8,
-                    "nameCn": "",
-                    "oid": "df6d36e3-8f16-4b96-8d3f-cff24f7c0fd9",
-                    "label": "Unstructural Data Format",
-                },
-                {
-                    id: 9,
-                    "oid": "26bb993b-453c-481a-a1ea-674db3e888e2",
-                    "label": "Model Related Data Format",
-                },
-                {
-                    id: 10,
-                    "oid": "1d573467-f1f3-440a-a827-110ac1e820bd",
-                    "label": "3D Model Data Format",
-                },
-                {
-                    id: 11,
-                    "oid": "8a189836-d563-440c-b5ea-c04778ac05f9",
-                    "label": "Tabular Data Format",
-                }]
-        }],
+            treeData: [{
+                id: 1,
+                label: 'Description Templates',
+                oid: 'TRJJMYDAUJTDDU5J9GPRUWAG7QJ6PHUU',
+                children: [
+                    {
+                        id: 2,
+                        "oid": "f7fbecf6-9d28-405e-b7d2-07ef9d924ca6",
+                        "label": "Vector Data Format"
+                    },
+                    {
+                        id: 3,
+                        "oid": "9b104fd6-7949-4c3b-b277-138cd979d053",
+                        "label": "Raster Data Format",
+                    },
+                    {
+                        id: 4,
+                        "oid": "316d4df0-436e-4600-a183-80abf7472a72",
+                        "label": "Mesh Data Format",
+                    },
+                    {
+                        id: 5,
+                        "oid": "bc437c65-2cfe-4bde-ac31-04830f18885a",
+                        "label": "Image Data Format",
+                    },
+                    {
+                        id: 6,
+                        "oid": "39c0824e-8b1a-44e5-8716-c7893afe05e8",
+                        "label": "Voideo Data Format",
+                    },
+                    {
+                        id: 7,
+                        "oid": "82b1c2b4-4c12-441d-9d9c-09365c3c8a24",
+                        "label": "Audio Data Format",
+                    },
+                    {
+                        id: 8,
+                        "nameCn": "",
+                        "oid": "df6d36e3-8f16-4b96-8d3f-cff24f7c0fd9",
+                        "label": "Unstructural Data Format",
+                    },
+                    {
+                        id: 9,
+                        "oid": "26bb993b-453c-481a-a1ea-674db3e888e2",
+                        "label": "Model Related Data Format",
+                    },
+                    {
+                        id: 10,
+                        "oid": "1d573467-f1f3-440a-a827-110ac1e820bd",
+                        "label": "3D Model Data Format",
+                    },
+                    {
+                        id: 11,
+                        "oid": "8a189836-d563-440c-b5ea-c04778ac05f9",
+                        "label": "Tabular Data Format",
+                    }]
+            }],
 
-        defaultProps: {
-            children: 'children',
-            label: 'label'
-        },
-        cls:[],
-        clsStr:'',
-        parId:"",
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            },
+            cls: [],
+            clsStr: '',
+            parId: "",
 
-        templateInfo:{}
+            templateInfo: {}
+        }
     },
     methods:{
-        changeRter(index){
-            this.curIndex = index;
-            var urls={
-                1:'/user/userSpace',
-                2:'/user/userSpace/model',
-                3:'/user/userSpace/data',
-                4:'/user/userSpace/server',
-                5:'/user/userSpace/task',
-                6:'/user/userSpace/community',
-                7:'/user/userSpace/theme',
-                8:'/user/userSpace/account',
-                9:'/user/userSpace/feedback',
-            }
-
-            this.setSession('curIndex',index)
-            window.location.href=urls[index]
-
-        },
-
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -174,8 +157,16 @@ var vue = new Vue({
 
             }
         },
+
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
+        }
+
+
     },
-    mounted(){
+    mounted() {
+        //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+        this.sendcurIndexToParent()
 
         $(() => {
             let height = document.documentElement.clientHeight;
@@ -190,18 +181,20 @@ var vue = new Vue({
             };
         })
 
-        var oid = window.sessionStorage.getItem("editOid");
+        var oid = this.$route.params.editId;//取得所要edit的id
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Data Template")
             $("#subRteTitle").text("/Create Data Template")
 
-            $("#myText").html("");
+            $("#templateText").html("");
+
+            tinymce.remove('textarea#templateText')
             tinymce.init({
-                selector: "textarea#myText",
+                selector: "textarea#templateText",
                 height: 350,
                 theme: 'modern',
                 plugins: ['link', 'table', 'image', 'media'],
@@ -236,7 +229,7 @@ var vue = new Vue({
         }
         else {
 
-            $("#title").text("Modify Data Template")
+            // $("#title").text("Modify Data Template")
             $("#subRteTitle").text("/Modify Data Template")
             document.title="Modify Data Template | OpenGMS"
 
@@ -286,12 +279,14 @@ var vue = new Vue({
                     }
 
                     //detail
-                    //tinymce.remove("textarea#myText");
+                    //tinymce.remove("textarea#templateText");
                     if(basicInfo.detail != null){
-                        $("#myText").html(basicInfo.detail);
+                        $("#templateText").html(basicInfo.detail);
                     }
+
+                    tinymce.remove('textarea#templateText')
                     tinymce.init({
-                        selector: "textarea#myText",
+                        selector: "textarea#templateText",
                         height: 300,
                         theme: 'modern',
                         plugins: ['link', 'table', 'image', 'media'],
@@ -328,6 +323,12 @@ var vue = new Vue({
             })
             window.sessionStorage.setItem("editTemplate_id", "");
         }
+
+        $("#step").steps({
+            onFinish: function () {
+                alert('Wizard Completed');
+            }
+        });
 
         //判断是否登录
         $.ajax({

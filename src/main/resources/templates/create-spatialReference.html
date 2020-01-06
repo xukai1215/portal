@@ -52,6 +52,7 @@
 
     <div class="page-container" style="height: 2000px">
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <template id="createSpatialReference" th:fragment="createSpatialReference">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;overflow-x: hidden"
@@ -61,136 +62,136 @@
                              style="max-width: 1050px;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../community">Community </a><span
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/community">Community </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
                     </section>
 
-            <div class="page-content-wrap container-fluid">
-                <!-- START WIDGETS -->
-                <div class="row">
-
-                </div>
-                <!-- END WIDGETS -->
-
-                <div class="row">
-                    <div class="container-fluid" id="mainInfo">
+                    <div class="page-content-wrap container-fluid">
+                        <!-- START WIDGETS -->
                         <div class="row">
-                            <div class="col-md-12 nopadding">
-                                <div class="panel panel-success" style="border: none">
-                                    <div class="panel-body">
-                                        <div id="step">
-                                            <div class="step-app">
-                                                <ul class="step-steps text-center">
-                                                    <li>
-                                                        <a href="#step1">Basic Info</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#step2">Content</a>
-                                                    </li>
 
-                                                </ul>
+                        </div>
+                        <!-- END WIDGETS -->
 
-                                                <div class="step-content">
-                                                    <div class="step-tab-panel" id="step1">
-                                                        <div class="col-sm-4 tree" style="margin-top:10px">
-                                                            <el-card>
-                                                                <div slot="header" class="clearfix text-center">
-                                                                    <span style="font-size: 20px;color:#444">Spatial Reference Classifications</span>
+                        <div class="row">
+                            <div class="container-fluid" id="mainInfo">
+                                <div class="row">
+                                    <div class="col-md-12 nopadding">
+                                        <div class="panel panel-success" style="border: none">
+                                            <div class="panel-body">
+                                                <div id="step">
+                                                    <div class="step-app">
+                                                        <ul class="step-steps text-center">
+                                                            <li>
+                                                                <a href="#step1">Basic Info</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#step2">Content</a>
+                                                            </li>
+
+                                                        </ul>
+
+                                                        <div class="step-content">
+                                                            <div class="step-tab-panel" id="step1">
+                                                                <div class="col-sm-4 tree" style="margin-top:10px">
+                                                                    <el-card>
+                                                                        <div slot="header" class="clearfix text-center">
+                                                                            <span style="font-size: 20px;color:#444">Spatial Reference Classifications</span>
+                                                                        </div>
+                                                                        <el-tree style="height: 320px;overflow: auto"
+                                                                                 id="tree2"
+                                                                                 ref="tree2"
+                                                                                 :data="treeData"
+                                                                                 show-checkbox
+                                                                                 node-key="id"
+                                                                                 :default-expanded-keys="[]"
+                                                                                 :current-node-key="100"
+                                                                                 @check-change="handleCheckChange"
+                                                                                 :props="defaultProps">
+                                                                        </el-tree>
+                                                                    </el-card>
                                                                 </div>
-                                                                <el-tree style="height: 320px;overflow: auto"
-                                                                         id="tree2"
-                                                                         ref="tree2"
-                                                                         :data="treeData"
-                                                                         show-checkbox
-                                                                         node-key="id"
-                                                                         :default-expanded-keys="[]"
-                                                                         :current-node-key="100"
-                                                                         @check-change="handleCheckChange"
-                                                                         :props="defaultProps">
-                                                                </el-tree>
-                                                            </el-card>
-                                                        </div>
-                                                        <div class="col-sm-8">
-                                                            <div id="RepositoryParentsPanel">
-                                                                <div class="form-horizontal">
-                                                                    <div class="form-group" >
-                                                                        <label for="parentNode"
-                                                                               class="col-sm-2 control-label">Classifications</label>
-                                                                        <div class="col-sm-10">
+                                                                <div class="col-sm-8">
+                                                                    <div id="RepositoryParentsPanel">
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group" >
+                                                                                <label for="parentNode"
+                                                                                       class="col-sm-2 control-label">Classifications</label>
+                                                                                <div class="col-sm-10">
                                                                             <textarea class="form-control"
                                                                                       id="parentNode"
                                                                                       v-model="clsStr"
                                                                                       readonly></textarea>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="nameInput"
-                                                                               class="col-sm-2 control-label">Name</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="nameInput"/>
+                                                                        <div class="form-horizontal" >
+                                                                            <div class="form-group">
+                                                                                <label for="nameInput"
+                                                                                       class="col-sm-2 control-label">Name</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control"
+                                                                                           id="nameInput"/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="wknameInput"
-                                                                               class="col-sm-2 control-label">wkname</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="wknameInput"/>
+                                                                        <div class="form-horizontal" >
+                                                                            <div class="form-group">
+                                                                                <label for="wknameInput"
+                                                                                       class="col-sm-2 control-label">wkname</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control"
+                                                                                           id="wknameInput"/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="wktInput"
-                                                                               class="col-sm-2 control-label">wkt</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="wktInput"/>
+                                                                        <div class="form-horizontal" >
+                                                                            <div class="form-group">
+                                                                                <label for="wktInput"
+                                                                                       class="col-sm-2 control-label">wkt</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control"
+                                                                                           id="wktInput"/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="descInput"
-                                                                               class="col-sm-2 control-label">Overview</label>
-                                                                        <div class="col-sm-10">
+                                                                        <div class="form-horizontal" >
+                                                                            <div class="form-group">
+                                                                                <label for="descInput"
+                                                                                       class="col-sm-2 control-label">Overview</label>
+                                                                                <div class="col-sm-10">
                                                                             <textarea rows="4" class="form-control"
                                                                                       id="descInput"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-horizontal" >
-                                                                    <div class="form-group">
-                                                                        <label for="nameInput"
-                                                                               class="col-sm-2 control-label">Image</label>
-                                                                        <div class="col-sm-10">
-                                                                            <img id="imgShow" src=""/>
-                                                                            <div id="imgChange">
-                                                                                <i class="fa fa-plus fa-5x"></i>
+                                                                                </div>
                                                                             </div>
-                                                                            <input id="imgFile" type="file"
-                                                                                   style="display: none"
-                                                                                   accept="image/*"/>
+                                                                        </div>
+
+                                                                        <div class="form-horizontal" >
+                                                                            <div class="form-group">
+                                                                                <label for="nameInput"
+                                                                                       class="col-sm-2 control-label">Image</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <img id="imgShow" src=""/>
+                                                                                    <div id="imgChange">
+                                                                                        <i class="fa fa-plus fa-5x"></i>
+                                                                                    </div>
+                                                                                    <input id="imgFile" type="file"
+                                                                                           style="display: none"
+                                                                                           accept="image/*"/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="step-tab-panel" id="step2">
-                                                        <textarea id="myText">
+                                                            <div class="step-tab-panel" id="step2">
+                                                        <textarea id="spatialText">
                                                             <div>
                                                                  <table class="table table-bordered"style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;">
                                                                     <thead>
@@ -216,33 +217,36 @@
                                                             </div>
 
                                                         </textarea>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="step-footer text-right">
+                                                            <button class="btn btn-warning prev" data-direction="prev">
+                                                                Previous
+                                                            </button>
+                                                            <button class="btn btn-primary next" data-direction="next">Next
+                                                            </button>
+                                                            <button class="btn btn-success finish" data-direction="finish">
+                                                                Finish
+                                                            </button>
+                                                        </div>
                                                     </div>
-
-                                                </div>
-
-                                                <div class="step-footer text-right">
-                                                    <button class="btn btn-warning prev" data-direction="prev">
-                                                        Previous
-                                                    </button>
-                                                    <button class="btn btn-primary next" data-direction="next">Next
-                                                    </button>
-                                                    <button class="btn btn-success finish" data-direction="finish">
-                                                        Finish
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- /.panel -->
                                     </div>
                                 </div>
-                                <!-- /.panel -->
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+        </template>
 
-        </div>
-    </div>
+</div>
 </div>
 </body>
 

@@ -20,6 +20,11 @@
         .el-button+.el-button{
             margin:0px;
         }
+        .loginCard{
+            max-width: 500px;
+            min-width: 350px;
+            margin: auto;
+        }
     </style>
 
 </head>
@@ -34,12 +39,12 @@
             <strong style="font-size: 16px;font-weight: normal" th:text="${notice}">Warning!</strong>
         </div>
         <div class="el-row" style="margin-top:30px;margin-bottom: 30px;">
-            <el-col :span="8" :offset="8">
-                <el-card>
-                    <div slot="header" class="clearfix" style="text-align: center;">
+            <el-col class="" style="width: 100%">
+                <div class="loginCard el-card is-always-shadow">
+                    <div slot="header" class="clearfix el-card__header" style="text-align: center;">
                         <span style="font-weight: bold;font-size: 20px">Log In</span>
                     </div>
-                    <div style="margin-top: 10px">
+                    <div  style="margin-top: 30px">
                         <el-col :span="20" :offset="1">
                             <el-form label-position="right" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm" size="medium">
                                 <el-form-item label="Email" prop="account">
@@ -55,13 +60,13 @@
                                 </el-form-item>
 
                                 <el-form-item>
-                                    <el-button type="primary" @click="submitForm('ruleForm')">Log In</el-button>
-                                    <el-button @click="window.location.href='/user/register'">Sign Up</el-button>
+                                    <el-button type="primary" @click="submitForm('ruleForm')" style="width: 90px">Log In</el-button>
+                                    <el-button @click="window.location.href='/user/register'" style="width: 90px">Sign Up</el-button>
                                 </el-form-item>
                             </el-form>
                         </el-col>
                     </div>
-                </el-card>
+                </div>
             </el-col>
         </div>
         <div th:replace="fragments/footer :: footer"></div>

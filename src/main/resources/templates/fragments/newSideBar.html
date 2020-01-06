@@ -16,9 +16,20 @@
                 <div class="flexCol flexCenter titleContainer" style="flex: 1;margin-right: 150px">
                     <div id="title" class="flexCol"  style="display:inline-block;color: rgb(248, 249, 250);font-size:24px;text-align: center;"></div>
                 </div>
-                <div class="flexRow flexCenter iconContainer" style="margin-right: 20px">
+                <div class="flexRow flexCenter iconContainer" style="" @click="getThemeMessage">
+                    <el-badage :value="12" class="item">
+                        <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 2px ">
+                            <i class="fa fa-bell"></i>
+                        </div>
+                    </el-badage>
+
+                    <div class="innerBorderCol"></div>
+                    <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 17px;margin-right: 7px ">
+                        <i class="ms-Icon ms-Icon--MoreVertical"></i>
+                    </div>
+
                     <img class="round_icon" :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
-                    <p id="userName" style="color: rgb(248, 249, 250);">{{userInfo.name}}</p>
+                    <p id="userName" style="color: rgb(248, 249, 250);margin: 0">{{userInfo.name}}</p>
                 </div>
 
 
@@ -172,104 +183,4 @@
 </template>
 
 </body>
-<script th:fragment="sideBarComponent" th:inline="javascript">
-    Vue.component('headSideBar', {
-        template: '#headSideBar',
-        props: ['userInfoinParent','curindexParent'],
-
-        data() {
-            return {
-                curIndex:1,
-                itemIndex: 1,
-
-                //
-                userInfo:{
-
-                },
-            }
-        },
-
-        watch: {
-            curindexParent: {
-                handler() {
-                    this.curIndex = this.curindexParent
-                    console.log('parent change')
-                },
-                immediate: true
-            }
-        },
-
-        methods:{
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace#/model',
-                    3:'/user/userSpace#/data',
-                    4:'/user/userSpace#/server',
-                    5:'/user/userSpace#/task',
-                    6:'/user/userSpace#/community',
-                    7:'/user/userSpace#/userTheme',
-                    8:'/user/userSpace#/account',
-                    9:'/user/userSpace#/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
-
-            setSession(name, value) {
-                window.sessionStorage.setItem(name, value);
-                // this.editOid = sessionStorage.getItem('editItemOid');
-            },
-
-            getUserInfo() {
-                axios.get('/user/getLoginUser').then(
-                    res => {
-                        if(res.data.code==0){
-                            this.userInfo = res.data.data
-                            let orgs = this.userInfo.organizations;
-
-                            if (orgs.length != 0) {
-                                this.userInfo.orgStr = orgs[0];
-                                for (i = 1; i < orgs.length; i++) {
-                                    this.userInfo.orgStr += ", " + orgs[i];
-                                }
-                            }
-
-                            let sas = this.userInfo.subjectAreas;
-                            if (sas != null && sas.length != 0) {
-                                this.userInfo.saStr = sas[0];
-                                for (i = 1; i < sas.length; i++) {
-                                    this.userInfo.saStr += ", " + sas[i];
-                                }
-                            }
-
-
-                            this.load = false;
-                        }
-
-                    }
-                )
-            },
-        },
-
-        created(){
-            this.getUserInfo()
-        },
-
-        mounted(){
-            var index = window.sessionStorage.getItem("curIndex");
-            if (index != null && index != undefined && index != "" && index != NaN) {
-                this.defaultActive = index;
-                window.sessionStorage.removeItem("index");
-                this.curIndex=index
-
-            }else
-                this.curIndex=1
-        },
-
-    })
-</script>
 </html>

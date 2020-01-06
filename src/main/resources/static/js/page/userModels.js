@@ -52,7 +52,7 @@ var modelItem = Vue.extend({
 
 // Vue.component('myComponent',modelItem)
 
-
+//该组件的子组件通过router控制，每次重拿this.$route.params.modelitemKind避免回退出现混乱
 var userModels = Vue.extend(
     {
         template: "#userModels",
@@ -72,6 +72,8 @@ var userModels = Vue.extend(
                 userInfo:{
 
                 },
+
+                await: false,
 
                 //分页控制
                 page: 1,
@@ -261,14 +263,15 @@ var userModels = Vue.extend(
             },
 
             creatItem(index){
+                let a=this.$route.params.modelitemKind
                 var urls={
-                    1:'./createModelItem',
-                    2:'./createConceptualModel',
-                    3:'./createLogicalModel',
-                    4:'./createComputableModel',
+                    'modelitem':      '/user/userSpace#/model/createModelItem',
+                    'conceptualmodel':'/user/userSpace#/model/createConceptualModel',
+                    'logicalmodel':   '/user/userSpace#/model/createLogicalModel',
+                    'computablemodel':'/user/userSpace#/model/createComputableModel',
                 }
                 window.sessionStorage.removeItem('editOid');
-                window.location.href=urls[this.itemIndex]
+                window.location.href=urls[a]
             },
 
             reloadPage(){//重新装订分页诸元
@@ -357,17 +360,19 @@ var userModels = Vue.extend(
                 this.resourceLoad = true;
                 this.pageSize = 10;
                 this.isInSearch = 1;
+                let a=this.$route.params.modelitemKind
+
                 let urls={
-                    1:'/modelItem/searchModelItemsByUserId',
-                    2:'/conceptualModel/searchConceptualModelsByUserId',
-                    3:'/logicalModel/searchLogicalModelsByUserId',
-                    4:'/computableModel/searchComputableModelsByUserId',
+                    'modelitem':      '/modelItem/searchModelItemsByUserId',
+                    'conceptualmodel':'/conceptualModel/searchConceptualModelsByUserId',
+                    'logicalmodel':   '/logicalModel/searchLogicalModelsByUserId',
+                    'computablemodel':'/computableModel/searchComputableModelsByUserId',
                 }
                 let names={
-                    1:'modelItems',
-                    2:'conceptualModels',
-                    3:'logicalModels',
-                    4:'computableModels',
+                    'modelitem':      'modelItems',
+                    'conceptualmodel':'conceptualModels',
+                    'logicalmodel':   'logicalModels',
+                    'computablemodel':'computableModels',
                 }
                 let url=urls[this.itemIndex];
                 let name=names[this.itemIndex];
@@ -415,14 +420,15 @@ var userModels = Vue.extend(
             },
 
             editItem(index,oid){
+                let a=this.$route.params.modelitemKind
                 var urls={
-                    1:'/user/userSpace/model/manageModelItem',
-                    2:'/user/userSpace/model/manageConceptualModel',
-                    3:'/user/userSpace/model/manageLogicalModel',
-                    4:'/user/userSpace/model/manageComputableModel',
+                    'modelitem':      '/user/userSpace#/model/manageModelItem/'+oid,
+                    'conceptualmodel':'/user/userSpace#/model/manageConceptualModel/'+oid,
+                    'logicalmodel':   '/user/userSpace#/model/manageLogicalModel/'+oid,
+                    'computablemodel':'/user/userSpace#/model/manageComputableModel/'+oid,
                 }
                 this.setSession('editOid', oid)
-                window.location.href=urls[this.itemIndex]
+                window.location.href=urls[a]
             },
 
             deleteItem(index,oid) {

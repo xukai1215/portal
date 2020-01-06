@@ -321,12 +321,7 @@
                                     filter-multiple="false"
                                     show-overflow-tooltip
                             >
-                                <template slot-scope="scope">
-                                    <el-tag
-                                            :type="scope.row.type === 'Input' ? 'primary' : 'success'"
-                                            disable-transitions>{{scope.row.type}}
-                                    </el-tag>
-                                </template>
+
                             </el-table-column>
                             <el-table-column
                                     label="Name"

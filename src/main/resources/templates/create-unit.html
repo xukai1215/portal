@@ -53,7 +53,7 @@
 
     <div class="page-container" style="height: 2000px">
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
-
+        <template id="createUnit" th:fragment="createUnit">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;overflow-x: hidden"
@@ -63,7 +63,7 @@
                              style="max-width: 1050px;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../community">Community </a><span
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/community">Community </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
                     </section>
@@ -171,7 +171,7 @@
                                                             </div>
 
                                                             <div class="step-tab-panel" id="step2">
-                                                        <textarea id="myText">
+                                                        <textarea id="unitText">
                                                             <div>
                                                                  <table class="table table-bordered"
                                                                         style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;"
@@ -254,6 +254,8 @@
 
                 </div>
             </div>
+        </template>
+
         </div>
 </body>
 

@@ -35,6 +35,11 @@
             vertical-align: bottom;
         }
 
+        .registerCard{
+            min-width: 350px;
+            max-width: 630px;
+            margin: auto;
+        }
 
         .el-button+.el-button{
             margin:0px;
@@ -46,12 +51,12 @@
     <div id="app">
         <div th:replace="fragments/navbar :: unlog"></div>
         <el-row style="margin-top:30px;margin-bottom: 30px;">
-            <el-col :span="10" :offset="7">
-                <el-card>
-                    <div slot="header" class="clearfix" style="text-align: center;">
+            <el-col class="" style="width: 100%">
+                <div class="registerCard el-card is-always-shadow">
+                    <div slot="header" class="clearfix el-card__header" style="text-align: center;">
                         <span style="font-weight: bold;font-size: 20px">Sign Up</span>
                     </div>
-                    <div style="margin-top: 10px">
+                    <div style="margin-top: 30px">
                         <el-col :span="20" :offset="1">
                             <el-form label-position="right" :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="150px" class="demo-ruleForm" size="medium">
                                 <el-form-item label="Email" prop="email">
@@ -72,15 +77,17 @@
                                 <el-form-item label="Affiliation" prop="org">
                                     <el-input type="text" v-model="ruleForm2.org" autocomplete="off" placeholder="Please enter your affiliation"></el-input>
                                 </el-form-item>
-                                <el-form-item>
+                                <div class="flexRowCenter" style="margin: 10px;width: 100%">
+                                    <el-button type="plain" style="margin-right: 10px;" @click="window.location.href='/user/login'"><i class="fa fa-arrow-left"></i> Log In</el-button>
+                                    <el-button class="pull-left" style="margin-right: 2px;"  @click="resetForm('ruleForm2')">Reset</el-button>
                                     <el-button type="primary" @click="submitForm('ruleForm2')">Join OpenGMS</el-button>
-                                    <el-button class="pull-left" style="margin-right: 10px;" @click="resetForm('ruleForm2')">Reset</el-button>
 
-                                </el-form-item>
+
+                                </div>
                             </el-form>
                         </el-col>
                     </div>
-                </el-card>
+                </div>
             </el-col>
         </el-row>
         <div th:replace="fragments/footer :: footer"></div>

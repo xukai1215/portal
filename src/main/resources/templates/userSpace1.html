@@ -27,9 +27,14 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
     <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/iCheck/skins/flat/green.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
 
     <link  rel="stylesheet" href="/static/css/common/newSideBar.css">
+    <link  rel="stylesheet" href="/static/css/page/createCommunity.css">
 
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
@@ -64,19 +69,20 @@
 
 <script src="/static/js/common/jquery-3.3.1.js"></script>
 <script src="/static/js/common/jquery.rotate.min.js"></script>
+<script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/mdb.min.js"></script>
 <script src="/static/js/common/piexif.min.js"></script>
 <script src="/static/js/common/fileinput.js"></script>
 <script src="/static/js/common/bootstrap-treeview.js"></script>
 
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
-
-
 <!--<script src="/static/js/common/echarts.min.js"></script>-->
 <!--<script src="/static/js/common/world.js"></script>-->
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/js/common/vue-router.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
 <!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script src="/static/element-ui/index.js"></script>
@@ -84,28 +90,47 @@
 
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <!--<script src="/static/js/page/user_space.js"></script>-->
 
 <!--sideBar组件-->
 <template th:replace="fragments/newSideBar :: headSideBar"></template>
-<script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+<script src="/static/js/page/newSideBar.js"></script>
 <!--主页面组件-->
 <template th:replace="userSpaceHome :: userSpaceHome"></template>
 <script src="/static/js/page/userSpaceHome.js"></script>
 <!--userModel组件-->
 <template th:replace="userModel :: userModel"></template>
 <script src="/static/js/page/userModel.js"></script>
-<!--userModelItems展示组件-->
+<!--userModelItems展示组件及子组件-->
 <template th:replace="userModels :: userModels"></template>
 <template th:replace="userModels :: modelItemShow"></template>
 <script src="/static/js/page/userModels.js"></script>
+<!--userModel create/edit组件-->
+<template th:replace="create-modelitem :: createModelItem"></template>
+<script src="/static/js/page/create-modelitem.js"></script>
+
+<template th:replace="create-logical-model :: createLogicalModel"></template>
+<script src="/static/js/page/create-logical-model.js"></script>
+
+<template th:replace="create-conceptual-model :: createConceptualModel"></template>
+<script src="/static/js/page/create-conceptual-model.js"></script>
+
+<template th:replace="create-computable-model :: createComputableModel"></template>
+<script src="/static/js/page/create-computable-model.js"></script>
 <!--userData组件-->
 <template th:replace="userData :: userData"></template>
 <script src="/static/js/page/userData.js"></script>
 <!--userDataItems展示组件-->
 <template th:replace="userDataItems :: userDataItems"></template>
 <script src="/static/js/page/userDataItems.js"></script>
+<!--userData create/edit组件-->
+<template th:replace="create-dataItem :: createDataItem"></template>
+<script src="/static/js/page/create-dataItem.js"></script>
+<!--userDataSpace展示组件-->
+<template th:replace="userDataSpace :: userDataSpace"></template>
+<script src="/static/js/page/userDataSpace.js"></script>
 <!--userServer组件-->
 <template th:replace="userServer :: userServer"></template>
 <script src="/static/js/page/userServer.js"></script>
@@ -115,20 +140,35 @@
 <!--userCommunity组件-->
 <template th:replace="userCommunity :: userCommunity"></template>
 <script src="/static/js/page/userCommunity.js"></script>
-<!--userCommunities展示组件-->
+<!--userCommunities展示组件及子组件-->
 <template th:replace="userCommunities :: userCommunities"></template>
 <template th:replace="userCommunities :: communityItems"></template>
 <script src="/static/js/page/userCommunities.js"></script>
+<!--userCommunity create/edit组件-->
+<template th:replace="create-concept :: createConcept"></template>
+<script src="/static/js/page/create-concept.js"></script>
+
+<template th:replace="create-spatialReference :: createSpatialReference"></template>
+<script src="/static/js/page/create-spatialReference.js"></script>
+
+<template th:replace="create-template :: createTemplate"></template>
+<script src="/static/js/page/create-template.js"></script>
+
+<template th:replace="create-unit :: createUnit"></template>
+<script src="/static/js/page/create-unit.js"></script>
 <!--userTheme组件-->
 <template th:replace="userTheme :: userTheme"></template>
 <script src="/static/js/page/userTheme.js"></script>
+<!--userCommunity create组件-->
+<template th:replace="create-theme :: createTheme"></template>
+<script src="/static/js/page/create-theme.js"></script>
 <!--userAccount组件-->
 <template th:replace="userAccount :: userAccount"></template>
 <script src="/static/js/page/userAccount.js"></script>
 <!--feedback组件-->
 <template th:replace="feedback :: feedback"></template>
 <script src="/static/js/page/feedBack.js"></script>
-
+<!--根组件-->
 <script src="/static/js/page/userSpace1.js"></script>
 
 </html>

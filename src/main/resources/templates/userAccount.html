@@ -124,12 +124,15 @@
                                                     aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            <img id="photo" src="/static/img/icon/default.png" width="120px"
-                                                 height="120px"
-                                                 style="display: block;cursor:pointer;position: absolute;border:2px solid #fff; border-radius: 50%;top: -55px;margin-left: calc(50% - 76px)"
+                                            <img id="userPhoto" onerror=src="/static/img/icon/default.png" width="120px"
+                                                 height="120px" :src=userInfo.image
+                                                 style=""
                                                  @click="imgFile()"/>
                                             <input type="file" name="imgOne" id="imgOne" @change="preImg()"
                                                    style="display: none" accept="image/*"/>
+                                            <div class=" selectImg flexCenter "  style="" @click="selectUserImg">
+                                                <i class="fa fa-camera hoverIcon" style=" color: #ebebeb;font-size: 28px"></i>
+                                            </div>
                                         </div>
                                         <div class="modal-body text-center" >
                                             <form class="form-horizontal" role="form" style="margin-top: 40px">
@@ -225,7 +228,7 @@
 
                                         </div>
                                         <div class="modal-footer">
-                                            <button id="submitPass" type="button" class="btn btn-round btn-primary" style="text-transform: capitalize;font-size: 15px">Submit</button>
+                                            <button @click="submitPass" type="button" class="btn btn-round btn-primary" style="text-transform: capitalize;font-size: 15px">Submit</button>
                                         </div>
                                     </div>
                                 </div>

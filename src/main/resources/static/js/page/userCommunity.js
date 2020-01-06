@@ -23,25 +23,6 @@ var userCommunity = Vue.extend(
 
         methods:{
             //公共功能
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
-
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
                 // this.editOid = sessionStorage.getItem('editItemOid');
@@ -49,10 +30,10 @@ var userCommunity = Vue.extend(
 
             creatItem(index){
                 var urls={
-                    1:'./community/createConcept',
-                    2:'./community/createSpatialReference',
-                    3:'./community/createTemplate',
-                    4:'./community/createUnit',
+                    1:'/user/userSpace#/community/createConcept',
+                    2:'/user/userSpace#/community/createSpatialReference',
+                    3:'/user/userSpace#/community/createTemplate',
+                    4:'/user/userSpace#/community/createUnit',
                 }
                 window.sessionStorage.removeItem('editOid');
                 window.location.href=urls[index]

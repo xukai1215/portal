@@ -83,6 +83,7 @@
     </div>
     <div class="page-container">
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <template id="createConceptualModel" th:fragment="createConceptualModel">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;overflow-x: hidden"
@@ -92,7 +93,7 @@
                              style="max-width: 1050px;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../model">Model </a><span
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/model">Model </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
                     </section>
@@ -245,7 +246,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="step-tab-panel" id="step3">
-                                                        <textarea id="myText"></textarea>
+                                                        <textarea id="conceptualModelText"></textarea>
                                                     </div>
                                                     <div class="step-tab-panel" id="step4">
                                                         <div class="panel panel-success" style="border:none">
@@ -272,7 +273,7 @@
                                                                                 <div class="panel-body providers"
                                                                                      style="border-top: #424f63; padding:0px">
                                                                                     <div class='panel panel-primary'>
-                                                                                        <div class='panel-heading info-head'>
+                                                                                        <div class='panel-heading info-head newAuthorHeader'>
                                                                                             <h4 class='panel-title'>
                                                                                                 <a class='accordion-toggle collapsed'
                                                                                                    style="color:white"
@@ -373,6 +374,8 @@
                     </div>
                 </div>
             </div>
+        </template>
+
         </div>
     </div>
 </body>

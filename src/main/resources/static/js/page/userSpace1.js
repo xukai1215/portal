@@ -15,17 +15,39 @@ var router = new VueRouter({
             {
                 path:'/model',
                 component:userModel,
-                children:[
-                    {
-                        path:'/',
-                        redirect:'modelitem',
-                    },
-                    {
-                        path:':modelitemKind',
-                        component:modelItem,
-                    },
+            },
+            {
+                path:'/model/createModelItem',
+                component:createModelItem,
 
-                ]
+            },
+            {
+                path:'/model/manageModelItem/:editId',
+                component:createModelItem,
+            },
+            {
+                path:'/model/createConceptualModel',
+                component:createConceptualModel,
+            },
+            {
+                path:'/model/manageConceptualModel/:editId',
+                component:createConceptualModel,
+            },
+            {
+                path:'/model/createLogicalModel',
+                component:createLogicalModel,
+            },
+            {
+                path:'/model/manageLogicalModel/:editId',
+                component:createLogicalModel,
+            },
+            {
+                path:'/model/createComputableModel',
+                component:createComputableModel,
+            },
+            {
+                path:'/model/manageComputableModel/:editId',
+                component:createComputableModel,
             },
             {
                 path:'/models',
@@ -48,6 +70,22 @@ var router = new VueRouter({
                 component:userData,
             },
             {
+                path:'/data/createDataItem',
+                component:createDataItem,
+            },
+            {
+                path:'/data/manageDataItem/:editId',
+                component:createDataItem,
+            },
+            {
+                path:'/data/dataitem',
+                component:userDataItems,
+            },
+            {
+                path:'/data/myDataSpace',
+                component:userDataSpace,
+            },
+            {
                 path:'/server',
                 component:userServer,
             },
@@ -58,6 +96,38 @@ var router = new VueRouter({
             {
                 path:'/community',
                 component:userCommunity,
+            },
+            {
+                path:'/community/createConcept',
+                component:createConcept,
+            },
+            {
+                path:'/community/manageConcept/:editId',
+                component:createConcept,
+            },
+            {
+                path:'/community/createSpatialReference',
+                component:createSpatialReference,
+            },
+            {
+                path:'/community/manageSpatialReference/:editId',
+                component:createSpatialReference,
+            },
+            {
+                path:'/community/createTemplate',
+                component:createTemplate,
+            },
+            {
+                path:'/community/manageTemplate/:editId',
+                component:createTemplate,
+            },
+            {
+                path:'/community/createUnit',
+                component:createUnit,
+            },
+            {
+                path:'/community/manageUnit/:editId',
+                component:createUnit,
             },
             {
                 path:'/communities',
@@ -72,34 +142,15 @@ var router = new VueRouter({
                         path:':communityKind',
                         component:communityItem,
                     },
-                    // {
-                    //     path:'concept&semantic',
-                    //     component:communityItem,
-                    // },
-                    //
-                    // {
-                    //     path:'spatialreference',
-                    //     component:communityItem,
-                    // },
-                    //
-                    // {
-                    //     path:'dataTemplate',
-                    //     component:communityItem,
-                    // },
-                    //
-                    // {
-                    //     path:'unit&metric',
-                    //     component:communityItem,
-                    // }
                 ]
-            },
-            {
-                path:'/data/dataitem',
-                component:userDataItems,
             },
             {
                 path:'/userTheme',
                 component:userTheme,
+            },
+            {
+                path:'/userTheme/createTheme',
+                component:createTheme,
             },
             {
                 path:'/account',
