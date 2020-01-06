@@ -1,66 +1,49 @@
-var vue = new Vue({
-    el: "#app",
-    data: {
-        defaultActive:'2-3',
-        curIndex:'2',
+var createLogicalModel = Vue.extend({
+    template: "#createLogicalModel",
+    data() {
+        return {
+            defaultActive: '2-3',
+            curIndex: '2',
 
-        logicalModel:{
-            bindModelItem:"",
-            bindOid:"",
-            name:"",
-            description:"",
-            contentType:"MxGraph",
-            cXml:"",
-            svg:"",
-            isAuthor:true,
-            author:{
-                name:"",
-                ins:"",
-                email:""
+            logicalModel: {
+                bindModelItem: "",
+                bindOid: "",
+                name: "",
+                description: "",
+                contentType: "MxGraph",
+                cXml: "",
+                svg: "",
+                isAuthor: true,
+                author: {
+                    name: "",
+                    ins: "",
+                    email: ""
+                },
+                resources: [],
+
             },
-            resources:[],
 
-        },
+            userInfo: {},
+            //文件框
+            resources: [],
+            fileSelect: '',
+            fileArray: new Array(),
+            formData: new FormData(),
 
-        userInfo:{},
-        //文件框
-        resources:[],
-        fileSelect:'',
-        fileArray:new Array(),
-        formData:new FormData(),
+            ScreenMaxHeight: "0px",
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
-        ScreenMaxHeight: "0px",
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            ScreenMinHeight: "0px",
 
-        ScreenMinHeight: "0px",
+            userId: "",
+            userName: "",
+            loginFlag: false,
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-
+        }
     },
     methods: {
-        changeRter(index){
-            this.curIndex = index;
-            var urls={
-                1:'/user/userSpace',
-                2:'/user/userSpace/model',
-                3:'/user/userSpace/data',
-                4:'/user/userSpace/server',
-                5:'/user/userSpace/task',
-                6:'/user/userSpace/community',
-                7:'/user/userSpace/theme',
-                8:'/user/userSpace/account',
-                9:'/user/userSpace/feedback',
-            }
-
-            this.setSession('curIndex',index)
-            window.location.href=urls[index]
-
-        },
-
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -143,9 +126,17 @@ var vue = new Vue({
                     break;
                 }
             }
+        },
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
         }
+
+
     },
     mounted() {
+        //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+        this.sendcurIndexToParent()
+
         $(() => {
             let height = document.documentElement.clientHeight;
             this.ScreenMinHeight = (height) + "px";
@@ -287,18 +278,21 @@ var vue = new Vue({
         })
 
 
-        var oid = window.sessionStorage.getItem("editOid");
+        var oid = this.$route.params.editId;//取得所要edit的id
 
         var user_num = 0;
 
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Logical Model")
             $("#subRteTitle").text("/Create Logical Model")
 
+            $("#logicalModelText").html("");
+
+            tinymce.remove('textarea#logicalModelText')
             tinymce.init({
-                selector: "textarea#myText",
+                selector: "textarea#logicalModelText",
                 height: 400,
                 theme: 'modern',
                 plugins: ['link', 'table', 'image', 'media'],
@@ -370,12 +364,50 @@ var vue = new Vue({
 
                     $(".providers").children(".panel").remove();
 
+                    //detail
+                    //tinymce.remove("textarea#logicalModelText");
+                    $("#logicalModelText").html(basicInfo.detail);
+                    tinymce.remove('textarea#logicalModelText')
+                    tinymce.init({
+                        selector: "textarea#logicalModelText",
+                        height: 300,
+                        theme: 'modern',
+                        plugins: ['link', 'table', 'image', 'media'],
+                        image_title: true,
+                        // enable automatic uploads of images represented by blob or data URIs
+                        automatic_uploads: true,
+                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                        // images_upload_url: 'postAcceptor.php',
+                        // here we add custom filepicker only to Image dialog
+                        file_picker_types: 'image',
+
+                        file_picker_callback: function (cb, value, meta) {
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = function () {
+                                var file = input.files[0];
+
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    var img = reader.result.toString();
+                                    cb(img, {title: file.name});
+                                }
+                            };
+                            input.click();
+                        },
+                        images_dataimg_filter: function (img) {
+                            return img.hasAttribute('internal-blob');
+                        }
+                    });
+
                     let authorship = basicInfo.authorship;
                     if(authorship!=null) {
                         for (i = 0; i < authorship.length; i++) {
                             user_num++;
                             var content_box = $(".providers");
-                            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                            var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
                             str += user_num;
                             str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
                             str += user_num;
@@ -443,42 +475,7 @@ var vue = new Vue({
                     // $("#nameInput").val(basicInfo.name);
                     // $("#descInput").val(basicInfo.description)
 
-                    //detail
-                    //tinymce.remove("textarea#myText");
-                    $("#myText").html(basicInfo.detail);
-                    tinymce.init({
-                        selector: "textarea#myText",
-                        height: 300,
-                        theme: 'modern',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
 
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
 
 
 
@@ -751,7 +748,7 @@ var vue = new Vue({
         $(".user-add").click(function () {
             user_num++;
             var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+            var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
             str += user_num;
             str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
             str += user_num;

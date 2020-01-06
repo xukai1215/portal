@@ -1,130 +1,131 @@
-var vue = new Vue({
-    el: "#app",
-    data: {
-        // remove_flag:0,
-        // idflag:"",
-        //mnum用来模型计数
-        model_num:0,
-        data_num:0,
-        mnum:0,
-        mcnum:0,
-        dnum:0,
-        dcnum:0,
-        editableTabsValue_model: '1',
-        editableTabsValue_data: '1',
-        editableTabsValue_applications: '1',
-        editableTabs_model: [{
-            id:"1",
-            tabledata:[],
-            //tabledata:[],
-            title: 'Tab 1',
-            name: '1',
-            content: '1'
-        }],
-        tabledataflag:0,
-        tabledataflag1:0,
-        //用作改变title时的计数
-        tableflag1:0,
-        tableflag2:0,
-        tableflag3:0,
-
-        editableTabs_data: [{
-            id:"1",
-            tabledata:[],
-            title: 'Tab 1',
-            name: '1',
-            content: 'Tab 1 content'
-        }],
-        editableTabs_applications: [{
-            id:"1",
-            title: 'Tab 1',
-            name: '1',
-            content: 'Tab 1 content'
-        }],
-        tabIndex_model: 1,
-        tabIndex_data: 1,
-        tabIndex_application: 1,
-        //定义存储从前端获取的数据，用于与后台进行传输
-        themeObj:{
-            classinfo:[{
-                id:"1",
-                mcname:"",
-                modelsoid:[] ,
+var createTheme = Vue.extend({
+    template: "#createTheme",
+    data() {
+        return {
+            // remove_flag:0,
+            // idflag:"",
+            //mnum用来模型计数
+            model_num: 0,
+            data_num: 0,
+            mnum: 0,
+            mcnum: 0,
+            dnum: 0,
+            dcnum: 0,
+            editableTabsValue_model: '1',
+            editableTabsValue_data: '1',
+            editableTabsValue_applications: '1',
+            editableTabs_model: [{
+                id: "1",
+                tabledata: [],
+                //tabledata:[],
+                title: 'Tab 1',
+                name: '1',
+                content: '1'
             }],
-            dataClassInfo:[{
-                id:"1",
-                dcname:'',
-                datasoid:[],
+            tabledataflag: 0,
+            tabledataflag1: 0,
+            //用作改变title时的计数
+            tableflag1: 0,
+            tableflag2: 0,
+            tableflag3: 0,
+
+            editableTabs_data: [{
+                id: "1",
+                tabledata: [],
+                title: 'Tab 1',
+                name: '1',
+                content: 'Tab 1 content'
             }],
-            application:[{
-                id:"1",
-                applicationname:'',
-                applicationlink:'',
-                upload_application_image:'',
-            }]
-        },
+            editableTabs_applications: [{
+                id: "1",
+                title: 'Tab 1',
+                name: '1',
+                content: 'Tab 1 content'
+            }],
+            tabIndex_model: 1,
+            tabIndex_data: 1,
+            tabIndex_application: 1,
+            //定义存储从前端获取的数据，用于与后台进行传输
+            themeObj: {
+                classinfo: [{
+                    id: "1",
+                    mcname: "",
+                    modelsoid: [],
+                }],
+                dataClassInfo: [{
+                    id: "1",
+                    dcname: '',
+                    datasoid: [],
+                }],
+                application: [{
+                    id: "1",
+                    applicationname: '',
+                    applicationlink: '',
+                    upload_application_image: '',
+                }]
+            },
 
-        oidnumber:0,
-        numOfModelPerRow:5,
-        classarr: [],
-        dialogTableVisible: false,
-        dialogTableVisible1: false,
-        relateTitle: "",
+            oidnumber: 0,
+            numOfModelPerRow: 5,
+            classarr: [],
+            dialogTableVisible: false,
+            dialogTableVisible1: false,
+            relateTitle: "",
 
-        tableData: [],
-        tableMaxHeight: 400,
-        relateSearch: "",
-        pageOption1: {
-            paginationShow: false,
-            progressBar: true,
-            sortAsc: false,
-            currentPage: 1,
-            pageSize: 5,
+            tableData: [],
+            tableMaxHeight: 400,
+            relateSearch: "",
+            pageOption1: {
+                paginationShow: false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
 
-            total: 264,
-            searchResult: [],
-        },
+                total: 264,
+                searchResult: [],
+            },
 
-        pageOption2: {
-            paginationShow: false,
-            progressBar: true,
-            sortAsc: false,
-            currentPage: 1,
-            pageSize: 5,
+            pageOption2: {
+                paginationShow: false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
 
-            total: 264,
-            searchResult: [],
-        },
+                total: 264,
+                searchResult: [],
+            },
 
-        defaultActive:'5',
-        curIndex:7,
+            defaultActive: '5',
+            curIndex: 7,
 
-        ScreenMaxHeight: "0px",
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            ScreenMaxHeight: "0px",
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
 
-        ScreenMinHeight: "0px",
+            ScreenMinHeight: "0px",
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-        activeIndex: 5,
+            userId: "",
+            userName: "",
+            loginFlag: false,
+            activeIndex: 5,
 
-        userInfo:{
-            //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
-        },
-        defaultProps: {
-        },
-        cls:[],
-        clsStr:'',
-        model_num1:1,
+            userInfo: {
+                //username:"",
+                name: "",
+                email: "",
+                phone: "",
+                insName: ""
+            },
+            defaultProps: {},
+            cls: [],
+            clsStr: '',
+            model_num1: 1,
 
+        }
     },
     methods: {
         changeRter(index){
@@ -1019,20 +1020,21 @@ var vue = new Vue({
             }
         })
 
-        var oid = window.sessionStorage.getItem("editOid");
+        var oid = this.$route.params.editId;//取得所要edit的id
 
         //var model_num = 1;
         //var data_num = 1;
         var m_attr = 0;
         var d_attr = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Theme");
             $("#subRteTitle").text("/Create Theme");
 
+            tinymce.remove('textarea#themeText')
             tinymce.init({
-                selector: "textarea#myText",
+                selector: "textarea#themeText",
                 height: 350,
                 theme: 'modern',
                 plugins: ['link', 'table', 'image', 'media'],
@@ -1108,8 +1110,10 @@ var vue = new Vue({
                     //detail
                     //tinymce.remove("textarea#myText");
                     $("#myText").html(basicInfo.detail);
+
+                    tinymce.remove('textarea#themeText')
                     tinymce.init({
-                        selector: "textarea#myText",
+                        selector: "textarea#themeText",
                         height: 300,
                         theme: 'modern',
                         plugins: ['link', 'table', 'image', 'media'],

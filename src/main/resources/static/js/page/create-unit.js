@@ -1,93 +1,75 @@
-var vue = new Vue({
-    el:"#app",
-    data:{
-        defaultActive:'4-4',
-        curIndex:'6',
+var createUnit =Vue.extend({
+    template:"#createUnit",
+    data() {
+        return {
+            defaultActive: '4-4',
+            curIndex: '6',
 
-        ScreenMaxHeight: "0px",
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            ScreenMaxHeight: "0px",
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
-        ScreenMinHeight: "0px",
+            ScreenMinHeight: "0px",
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-        activeIndex: 2,
+            userId: "",
+            userName: "",
+            loginFlag: false,
+            activeIndex: 2,
 
-        userInfo:{
-            //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
-        },
+            userInfo: {
+                //username:"",
+                name: "",
+                email: "",
+                phone: "",
+                insName: ""
+            },
 
-        treeData: [{
-            id: 1,
-            label: 'Unit Resource Library',
-            oid: '9F3DT5JNHCMYC3REE6G5PE7P9J3QKKJW',
-            children: [{
-                id: 2,
-                label: 'Basic Unit',
-                oid: 'YMFP5H5N6LEPZS7VT99PBD4JYSK87BA4'
+            treeData: [{
+                id: 1,
+                label: 'Unit Resource Library',
+                oid: '9F3DT5JNHCMYC3REE6G5PE7P9J3QKKJW',
+                children: [{
+                    id: 2,
+                    label: 'Basic Unit',
+                    oid: 'YMFP5H5N6LEPZS7VT99PBD4JYSK87BA4'
+                }, {
+                    id: 3,
+                    label: 'Derivative Unit',
+                    oid: 'THTE2JXKCMD5Y7UZJH3Y84WLJWQCYWHV'
+                }, {
+                    id: 4,
+                    label: 'Combinatorial Unit',
+                    oid: 'CBVHYTVBBQDQZZLTYLQQACVQM8V5TMMF'
+                }]
             }, {
-                id: 3,
-                label: 'Derivative Unit',
-                oid: 'THTE2JXKCMD5Y7UZJH3Y84WLJWQCYWHV'
-            }, {
-                id: 4,
-                label: 'Combinatorial Unit',
-                oid: 'CBVHYTVBBQDQZZLTYLQQACVQM8V5TMMF'
-            }]
-        }, {
-            id: 5,
-            label: 'Dimensional Resource Library',
-            oid: '6H9YJU4Y58V9CAXDAXM7ULFAJ54R8SEA',
-            children: [{
-                id: 6,
-                label: 'Base Dimension',
-                oid: 'HPWH63NTXKA8V8YNJKHJCW5EPF3XPVB9'
-            }, {
-                id: 7,
-                label: 'Composite Dimension',
-                oid: 'G4HFPHPEPP3B2MNK46VQS3JLLHTQZQ64'
-            }]
+                id: 5,
+                label: 'Dimensional Resource Library',
+                oid: '6H9YJU4Y58V9CAXDAXM7ULFAJ54R8SEA',
+                children: [{
+                    id: 6,
+                    label: 'Base Dimension',
+                    oid: 'HPWH63NTXKA8V8YNJKHJCW5EPF3XPVB9'
+                }, {
+                    id: 7,
+                    label: 'Composite Dimension',
+                    oid: 'G4HFPHPEPP3B2MNK46VQS3JLLHTQZQ64'
+                }]
+            }
+            ],
+
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            },
+            cls: [],
+            clsStr: '',
+            parId: "",
+
+            unitInfo: {}
         }
-        ],
-
-        defaultProps: {
-            children: 'children',
-            label: 'label'
-        },
-        cls:[],
-        clsStr:'',
-        parId:"",
-
-        unitInfo:{}
     },
     methods:{
-        changeRter(index){
-            this.curIndex = index;
-            var urls={
-                1:'/user/userSpace',
-                2:'/user/userSpace/model',
-                3:'/user/userSpace/data',
-                4:'/user/userSpace/server',
-                5:'/user/userSpace/task',
-                6:'/user/userSpace/community',
-                7:'/user/userSpace/theme',
-                8:'/user/userSpace/account',
-                9:'/user/userSpace/feedback',
-            }
-
-            this.setSession('curIndex',index)
-            window.location.href=urls[index]
-
-        },
-
-
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -150,8 +132,16 @@ var vue = new Vue({
 
             }
         },
+
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
+        }
+
+
     },
     mounted() {
+        //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+        this.sendcurIndexToParent()
 
         $(() => {
             let height = document.documentElement.clientHeight;
@@ -166,18 +156,20 @@ var vue = new Vue({
             };
         })
 
-        var oid = window.sessionStorage.getItem("editOid");
+        var oid = this.$route.params.editId;//取得所要edit的id
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Unit & Metric")
             $("#subRteTitle").text("/Create Unit & Metric")
 
-            $("#myText").html("");
+            $("#unitText").html("");
+
+            tinymce.remove('textarea#unitText')
             tinymce.init({
-                selector: "textarea#myText",
+                selector: "textarea#unitText",
                 height: 350,
                 theme: 'modern',
                 plugins: ['link', 'table', 'image', 'media'],
@@ -215,6 +207,41 @@ var vue = new Vue({
             // $("#title").text("Modify Unit & Metric")
             $("#subRteTitle").text("/Modify Unit & Metric")
             document.title="Modify Unit & Metric | OpenGMS"
+
+            tinymce.remove('textarea#unitText')
+            tinymce.init({
+                selector: "textarea#unitText",
+                height: 350,
+                theme: 'modern',
+                plugins: ['link', 'table', 'image', 'media'],
+                image_title: true,
+                // enable automatic uploads of images represented by blob or data URIs
+                automatic_uploads: true,
+                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                // images_upload_url: 'postAcceptor.php',
+                // here we add custom filepicker only to Image dialog
+                file_picker_types: 'image',
+
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.onchange = function () {
+                        var file = input.files[0];
+
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = function () {
+                            var img = reader.result.toString();
+                            cb(img, {title: file.name});
+                        }
+                    };
+                    input.click();
+                },
+                images_dataimg_filter: function (img) {
+                    return img.hasAttribute('internal-blob');
+                }
+            });
 
             $.ajax({
                 url: "/repository/getUnitInfo/" + oid,
@@ -268,12 +295,12 @@ var vue = new Vue({
                     }
 
                     //detail
-                    //tinymce.remove("textarea#myText");
+                    //tinymce.remove("textarea#unitText");
                     if(basicInfo.detail != null){
-                        $("#myText").html(basicInfo.detail);
+                        $("#unitText").html(basicInfo.detail);
                     }
                     tinymce.init({
-                        selector: "textarea#myText",
+                        selector: "textarea#unitText",
                         height: 300,
                         theme: 'modern',
                         plugins: ['link', 'table', 'image', 'media'],
@@ -310,6 +337,12 @@ var vue = new Vue({
             })
             window.sessionStorage.setItem("editUnit_id", "");
         }
+
+        $("#step").steps({
+            onFinish: function () {
+                alert('Wizard Completed');
+            }
+        });
 
         //判断是否登录
         $.ajax({

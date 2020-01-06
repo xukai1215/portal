@@ -234,8 +234,8 @@ var userTheme = Vue.extend(
             },
 
             creatItem(index){
-                window.sessionStorage.removeItem('editOid');
-                if(index == 1) window.location.href='./theme/createTheme'
+                // window.sessionStorage.removeItem('editOid');
+                if(index == 1) window.location.href='/user/userSpace#/userTheme/createTheme'
             },
 
             reloadPage(){//重新装订分页诸元
@@ -283,13 +283,13 @@ var userTheme = Vue.extend(
                 })
             },
 
-            // editItem(index,oid){
-            //     var urls={
-            //         1:'/user/userSpace/model/manageModelItem',
-            //     }
-            //     this.setSession('editOid', oid)
-            //     window.location.href=urls[this.itemIndex]
-            // },
+            editItem(index,oid){
+                var urls={
+                    1:'/repository/theme/'+oid,
+                }
+                window.location.href=urls[index]
+            },
+
             //
             // deleteItem(id) {
             //     //todo 删除category中的 id

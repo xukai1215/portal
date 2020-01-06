@@ -1,69 +1,71 @@
-var vue = new Vue({
-    el: "#app",
-    data: {
-        defaultActive: '4-2',
-        curIndex: '6',
+var createSpatialReference = Vue.extend({
+    template: "#createSpatialReference",
+    data() {
+        return {
+            defaultActive: '4-2',
+            curIndex: '6',
 
-        ScreenMaxHeight: "0px",
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            ScreenMaxHeight: "0px",
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
-        ScreenMinHeight: "0px",
+            ScreenMinHeight: "0px",
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-        activeIndex: 2,
+            userId: "",
+            userName: "",
+            loginFlag: false,
+            activeIndex: 2,
 
-        userInfo: {
-            //username:"",
-            name: "",
-            email: "",
-            phone: "",
-            insName: ""
-        },
+            userInfo: {
+                //username:"",
+                name: "",
+                email: "",
+                phone: "",
+                insName: ""
+            },
 
-        treeData: [{
-            id: 1,
-            label: "SpatialReferenceRepository",
-            oid: '58340c92-d74f-4d81-8a80-e4fcff286008',
-            children: [{
-                id: 2,
-                "oid": "da70ad83-de57-4fc3-a85d-c1dcf4961433",
-                "label": "Basic"
+            treeData: [{
+                id: 1,
+                label: "SpatialReferenceRepository",
+                oid: '58340c92-d74f-4d81-8a80-e4fcff286008',
+                children: [{
+                    id: 2,
+                    "oid": "da70ad83-de57-4fc3-a85d-c1dcf4961433",
+                    "label": "Basic"
                 },
-                {
-                    id: 3,
-                    "oid": "c4642926-e797-4f61-92d6-7933df2413d2",
-                    "label": "Epsg"
-                },
-                {
-                    id: 4,
-                    "oid": "e8562394-b55f-46d7-870e-ef5ad3aaf110",
-                    "label": "Esri"
-                },
-                {
-                    id: 5,
-                    "oid": "ee830613-1603-4f38-a196-5028e4e10d39",
-                    "label": "IAU"
-                },
-                {
-                    id: 6,
-                    "oid": "b2f2fbfd-f21a-47ac-9e1f-a96ac0218bf1",
-                    "label": "CustomizedWKT"
-                }]
-        }],
+                    {
+                        id: 3,
+                        "oid": "c4642926-e797-4f61-92d6-7933df2413d2",
+                        "label": "Epsg"
+                    },
+                    {
+                        id: 4,
+                        "oid": "e8562394-b55f-46d7-870e-ef5ad3aaf110",
+                        "label": "Esri"
+                    },
+                    {
+                        id: 5,
+                        "oid": "ee830613-1603-4f38-a196-5028e4e10d39",
+                        "label": "IAU"
+                    },
+                    {
+                        id: 6,
+                        "oid": "b2f2fbfd-f21a-47ac-9e1f-a96ac0218bf1",
+                        "label": "CustomizedWKT"
+                    }]
+            }],
 
-        defaultProps: {
-            children: 'children',
-            label: 'label'
-        },
-        cls: [],
-        clsStr: '',
-        parId: "",
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            },
+            cls: [],
+            clsStr: '',
+            parId: "",
 
-        referenceInfo:{}
+            referenceInfo: {}
+        }
     },
     methods: {
         changeRter(index){
@@ -147,8 +149,17 @@ var vue = new Vue({
 
             }
         },
+
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
+        }
+
+
     },
     mounted() {
+        //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+        this.sendcurIndexToParent()
+
         $(() => {
             let height = document.documentElement.clientHeight;
             this.ScreenMinHeight = (height) + "px";
@@ -162,19 +173,21 @@ var vue = new Vue({
             };
         })
 
-        var oid = window.sessionStorage.getItem("editOid");
+        var oid = this.$route.params.editId;//取得所要edit的id
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Spatial Reference")
             $("#subRteTitle").text("/Create Spatial Reference")
 
 
-            $("#myText").html("");
+            $("#spatialText").html("");
+
+            tinymce.remove('textarea#spatialText')
             tinymce.init({
-                selector: "textarea#myText",
+                selector: "textarea#spatialText",
                 height: 350,
                 theme: 'modern',
                 plugins: ['link', 'table', 'image', 'media'],
@@ -260,12 +273,14 @@ var vue = new Vue({
                     }
 
                     //detail
-                    //tinymce.remove("textarea#myText");
+                    //tinymce.remove("textarea#spatialText");
                     if(basicInfo.detail != null){
-                        $("#myText").html(basicInfo.detail);
+                        $("#spatialText").html(basicInfo.detail);
                     }
+
+                    tinymce.remove('textarea#spatialText')
                     tinymce.init({
-                        selector: "textarea#myText",
+                        selector: "textarea#spatialText",
                         height: 300,
                         theme: 'modern',
                         plugins: ['link', 'table', 'image', 'media'],
@@ -302,6 +317,12 @@ var vue = new Vue({
             })
             window.sessionStorage.setItem("editSpatial_id", "");
         }
+
+        $("#step").steps({
+            onFinish: function () {
+                alert('Wizard Completed');
+            }
+        });
 
         //判断是否登录
         $.ajax({

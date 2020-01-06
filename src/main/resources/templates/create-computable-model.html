@@ -50,6 +50,7 @@
     </div>
     <div class="page-container" style="height: 2000px">
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+        <template id="createComputableModel" th:fragment="createComputableModel">
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
                      style="margin-left: 240px;overflow-x: hidden"
@@ -59,7 +60,7 @@
                              style="max-width: 1050px;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="../model">Model </a><span
+                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/model">Model </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
                     </section>
@@ -234,7 +235,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="step-tab-panel" id="step3">
-                                                        <textarea id="myText"></textarea>
+                                                        <textarea id="computableModelText"></textarea>
                                                     </div>
                                                     <div class="step-tab-panel" id="step4">
                                                         <div class="panel panel-success" style="border:none">
@@ -373,6 +374,8 @@
                     </div>
                 </div>
             </div>
+        </template>
+
         </div>
     </div>
 </div>

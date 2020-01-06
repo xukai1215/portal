@@ -1,7 +1,6 @@
-ELEMENT.locale(ELEMENT.lang.en)
-var vue = new Vue(
+var userDataSpace = Vue.extend(
     {
-        el: "#app",
+        template: "#userDataSpace",
         data(){
             return{
                 //页面样式控制
@@ -245,7 +244,7 @@ var vue = new Vue(
                     console.log(this.userInfo);
                     setTimeout(() => {
                         $('.el-loading-mask').css('display', 'none');
-                    }, 355)
+                    }, 120)
 
                 });
 
@@ -2098,7 +2097,8 @@ var vue = new Vue(
 
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
-            }
+            },
+
 
         },
 
@@ -2107,6 +2107,8 @@ var vue = new Vue(
         },
 
         mounted() {
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
 
             $(() => {
                 let height = document.documentElement.clientHeight;
@@ -2194,9 +2196,7 @@ var vue = new Vue(
 
                 //this.getModels();
             });
-
-            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
-            this.sendcurIndexToParent()
+            
 
             $(function () {
 
@@ -2402,6 +2402,9 @@ var vue = new Vue(
                     "                                                                                                </div></div> </div> </div>"
                 content_box.append(str)
             })
+
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+            this.sendcurIndexToParent()
         },
 
     }

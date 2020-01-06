@@ -338,7 +338,7 @@
 .innerBorder{
     align-self: center;
     width: 95.5%;
-    border-bottom: 1px solid #e1e1e1;
+    border-bottom: 1px solid #cccccc;
 }
 
 
@@ -534,4 +534,25 @@
 .clickBlue>a{
     color: rgb(0, 188, 255) !important;
     transition:none;
+}
+
+.flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flexRowSpaceBetween {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flexRowCenter {
+    display: flex;
+    justify-content: center;
+}
+
+.flexColCenter {
+    display: flex;
+    align-items: center;
 }

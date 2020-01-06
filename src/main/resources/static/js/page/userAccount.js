@@ -115,6 +115,16 @@ var userAccount = Vue.extend(
                 }
                 $('#myModal').modal('show');
             },
+            //
+            // imgFile() {
+            //     $("#imgOne").click();
+            // },
+
+            selectUserImg(){
+                $('#editUserImg').modal('show');
+                console.log($("#imgChange"))
+
+            },
 
             changePassword(){
                 $('#myModal1').modal('show');
@@ -263,7 +273,12 @@ var userAccount = Vue.extend(
 
                             window.sessionStorage.removeItem("tap");
                             //this.getTasksInfo();
-                            this.load = false;
+                            setTimeout(
+                                ()=>{
+                                    this.load = false;
+                                },300
+                            )
+
                         }
                     }
                 })

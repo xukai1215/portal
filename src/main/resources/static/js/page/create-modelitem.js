@@ -1,28 +1,29 @@
-var vue = new Vue({
-    el: "#app",
-    data: {
-        defaultActive:'2-1',
-        curIndex:2,
+var createModelItem = Vue.extend({
+    template:'#createModelItem',
+    data() {
+    return {
+        defaultActive: '2-1',
+        curIndex: 2,
 
         ScreenMaxHeight: "0px",
+        ScreenMinHeight: "0px",
+
         IframeHeight: "0px",
         editorUrl: "",
         load: false,
 
-
-        ScreenMinHeight: "0px",
 
         userId: "",
         userName: "",
         loginFlag: false,
         activeIndex: 2,
 
-        userInfo:{
+        userInfo: {
             //username:"",
-            name:"",
-            email:"",
-            phone:"",
-            insName:""
+            name: "",
+            email: "",
+            phone: "",
+            insName: ""
         },
 
         treeData: [{
@@ -55,7 +56,7 @@ var vue = new Vue({
                 label: 'Global',
                 oid: '1a59f012-0659-479d-a183-b74921c67a08'
             }]
-        },{
+        }, {
             id: 64,
             label: 'Geography Subject',
             oid: 'd7824a16-0f3a-4186-8cb7-41eb10028177',
@@ -260,11 +261,11 @@ var vue = new Vue({
                         id: 55,
                         "label": "3D Analyst",
                         "oid": "340c275a-1ed4-495b-8415-a6a4bfe4eb18",
-                    },{
+                    }, {
                         id: 56,
                         "label": "Network Analysis",
                         "oid": "fa7d7d50-098e-4cd7-92c7-31755b3ca371",
-                    },{
+                    }, {
                         id: 57,
                         "label": "Geographic Simulation",
                         "oid": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
@@ -273,11 +274,11 @@ var vue = new Vue({
                         id: 58,
                         "label": "Climate Tools",
                         "oid": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
-                    },{
+                    }, {
                         id: 59,
                         "label": "Generic Tools",
                         "oid": "77567bff-52b9-4833-885d-417bd3a6c0e9"
-                    },{
+                    }, {
                         id: 60,
                         label: 'Cartography',
                         oid: '854189a4-3811-441d-a9d1-7de58e57a37f'
@@ -295,7 +296,8 @@ var vue = new Vue({
                         label: 'Others',/////
                         oid: '10bef187-00bf-4cea-b192-bf1465a265b1'
                     }]
-            }]}
+            }]
+        }
             // , {
             //     id: 3,
             //     label: 'Others',
@@ -308,31 +310,13 @@ var vue = new Vue({
             children: 'children',
             label: 'label'
         },
-        cls:[],
-        clsStr:'',
+        cls: [],
+        clsStr: '',
 
 
+    }
     },
     methods: {
-        changeRter(index){
-            this.curIndex = index;
-            var urls={
-                1:'/user/userSpace',
-                2:'/user/userSpace/model',
-                3:'/user/userSpace/data',
-                4:'/user/userSpace/server',
-                5:'/user/userSpace/task',
-                6:'/user/userSpace/community',
-                7:'/user/userSpace/theme',
-                8:'/user/userSpace/account',
-                9:'/user/userSpace/feedback',
-            }
-
-            this.setSession('curIndex',index)
-            window.location.href=urls[index]
-
-        },
-
         // handleSelect(index,indexPath){
         //     this.setSession("index",index);
         //     window.location.href="/user/userSpace"
@@ -396,8 +380,15 @@ var vue = new Vue({
 
             }
         },
+
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
+        }
     },
     mounted() {
+
+        //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
+        this.sendcurIndexToParent()
 
         $(() => {
             let height = document.documentElement.clientHeight;
@@ -503,17 +494,18 @@ var vue = new Vue({
             }
         })
 
-        var oid = window.sessionStorage.getItem("editOid");
+        var oid = this.$route.params.editId;
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)) {
+        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item")
 
+            tinymce.remove('textarea#modelItemText')
             tinymce.init({
-                selector: "textarea#myText",
+                selector: "textarea#modelItemText",
                 height: 350,
                 theme: 'modern',
                 plugins: ['link', 'table', 'image', 'media'],
@@ -711,10 +703,11 @@ var vue = new Vue({
 
 
                     //detail
-                    //tinymce.remove("textarea#myText");
-                    $("#myText").html(basicInfo.detail);
+                    //tinymce.remove("textarea#modelItemText");
+                    $("#modelItemText").html(basicInfo.detail);
+                    tinymce.remove('textarea#modelItemText')
                     tinymce.init({
-                        selector: "textarea#myText",
+                        selector: "textarea#modelItemText",
                         height: 300,
                         theme: 'modern',
                         plugins: ['link', 'table', 'image', 'media'],
@@ -1079,7 +1072,7 @@ var vue = new Vue({
         $(".user-add").click(function () {
             user_num++;
             var content_box = $(this).parent().children('div');
-            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+            var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
             str += user_num;
             str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
             str += user_num;
