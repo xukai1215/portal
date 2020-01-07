@@ -78,9 +78,9 @@ var userAccount = Vue.extend(
             editUserInfo(){
                 this.getUserInfo();
                 if (this.userInfo.image != "" && this.userInfo.image != null) {
-                    $("#photo").attr("src", this.userInfo.image);
+                    $("#userPhoto").attr("src", this.userInfo.image);
                 } else {
-                    $("#photo").attr("src", "../static/img/icon/default.png");
+                    $("#userPhoto").attr("src", "../static/img/icon/default.png");
                 }
 
                 if (this.userInfo.organizations != null && this.userInfo.organizations.length != 0) {
@@ -122,12 +122,30 @@ var userAccount = Vue.extend(
 
             selectUserImg(){
                 $('#editUserImg').modal('show');
-                console.log($("#imgChange"))
+                $('#imgOne').click();
 
             },
 
             changePassword(){
                 $('#myModal1').modal('show');
+
+            },
+
+            preImg() {
+
+                var file = $('#imgOne').get(0).files[0];
+                //创建用来读取此文件的对象
+                var reader = new FileReader();
+                //使用该对象读取file文件
+                reader.readAsDataURL(file);
+                //读取文件成功后执行的方法函数
+                reader.onload = function (e) {
+                    //读取成功后返回的一个参数e，整个的一个进度事件
+                    //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                    //的base64编码格式的地址
+                    $('#userPhoto').get(0).src = e.target.result;
+                }
+
 
             },
 
@@ -141,7 +159,7 @@ var userAccount = Vue.extend(
                 userUpdate.description = $("#inputDescription").val().trim();
                 userUpdate.organizations = $("#inputOrganizations").val().split(",");
                 userUpdate.subjectAreas = $("#inputSubjectAreas").val().split(",");
-                userUpdate.uploadImage = $("#photo").get(0).src;
+                userUpdate.uploadImage = $("#userPhoto").get(0).src;
 
                 let that = this
                 $.ajax({
@@ -289,6 +307,32 @@ var userAccount = Vue.extend(
 
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()
+
+            //头像更换
+            $("#imgChange").click(function () {
+                $("#imgFile").click();
+            });
+            $("#imgFile").change(function () {
+                //获取input file的files文件数组;
+                //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+                //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+                var file = $('#imgFile').get(0).files[0];
+                //创建用来读取此文件的对象
+                var reader = new FileReader();
+                //使用该对象读取file文件
+                reader.readAsDataURL(file);
+                //读取文件成功后执行的方法函数
+                reader.onload = function (e) {
+                    //读取成功后返回的一个参数e，整个的一个进度事件
+                    //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                    //的base64编码格式的地址
+                    $('#imgShow').get(0).src = e.target.result;
+                    $('#imgShow').show();
+
+                    that.data_img.push(e.target.result)
+
+                }
+            });
 
             $('#inputOrganizations').tagEditor({
                 forceLowercase: false

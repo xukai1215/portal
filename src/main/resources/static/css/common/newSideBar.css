@@ -27,7 +27,7 @@
 }
 
 .backImg::before {
-    filter: blur(15px);
+    /*filter: blur(15px);*/
     content: '';
     top: 0;
     left: 0;
@@ -36,11 +36,19 @@
     margin: -15px;
     position: absolute;
     z-index:-1;
-    background-image: url('/static/img/carousels/mountain_press_cut.jpg');
+    background-color: #e0e0e0;
+    background-image: url(/static/img/logo.png);
+    /* background-size: contain; */
+    /* background-position: center; */
+    background-position-x: 48%;
+    background-repeat: no-repeat;
+    background-position-y: 200px;
+
     /*background-size: contain;*/
     /*background-position: center;*/
     /*background-position-x: 1400px;*/
-    background-position-y: -80px;
+    /*background-repeat: no-repeat;*/
+    /*background-position-y: -80px;*/
 
 }
 
@@ -111,7 +119,7 @@
 }
 
 .acrylicBack {
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(5px);
 }
 
 .topContainer{

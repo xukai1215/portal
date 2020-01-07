@@ -88,6 +88,33 @@ Vue.component('headSideBar', {
                 }
             })
             window.location.href = "/theme/getmessagepage/" + this.oid;
+        },
+
+        subMenuDropDpwn(target,timerDrop,timerFold){
+            let childrenCount=target.children('ul').children('li').length;
+            // console.log(childrenCount);
+            let timeLength=childrenCount*60;
+            let height=childrenCount*45+5;
+            // target.animate({height:height},timeLength,'swing');
+            target.children('ul').animate({height:height},timeLength,'swing');
+            // target.children('ul').animate({width:180},timeLength,'swing');
+            // target.children('ul').children().css('display','block')
+            let li=target.children('ul').children('li');
+            clearTimeout(timerFold);
+
+        },
+
+        subMenuFoldUp(target,timerDrop,timerFold){
+            let childrenCount=target.children('ul').children('li').length;
+            let timeLength=childrenCount*40;
+
+            // target.animate({height:0},timeLength,'linear');
+            target.children('ul').animate({height:0},timeLength,'linear');
+            // target.children('ul').animate({width:0},timeLength,'swing');
+            let li=target.children('ul').children('li');
+            // target.children('ul').children().css('display','none')
+            clearTimeout(timerDrop);
+            target.children('ul').children('#phoneLogin').css('height','0')
         }
     },
 
@@ -177,6 +204,31 @@ Vue.component('headSideBar', {
             })
         })
 
+        $('#dropmu').click((e)=>{
+            // clearTimeout(tFoldLmu);
+            let target=$('#submenu');
+            let height=target.children('ul').css('height');
+            if (height=='0px'){
+                target.css('display','block')
+                this.subMenuDropDpwn(target);
+            }
+
+            else
+                this.subMenuFoldUp(target);
+            if(e.stopPropagation){
+                e.stopPropagation();
+            }else{
+                e.cancelBubble = true;
+            }
+        })
+
+        $('html').click((e)=>{
+            if($(e.target).closest("#leftUl").length == 0){
+                // clearTimeout(tFoldLmu);
+                let target=$('#submenu');
+                this.subMenuFoldUp(target);
+            }
+        })
     },
 
 })

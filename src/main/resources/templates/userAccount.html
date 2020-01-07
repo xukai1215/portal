@@ -51,223 +51,302 @@
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
         <template id="userAccount" th:fragment="userAccount">
-            <div class="innerShadowCol">
-            <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
-                 style="margin-left: 240px;"
-                 :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
-                 id="pageContent">
-                <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
-                <div class="flexColContainer mainContent" style="">
-                    <section role="description" class="flexCol flexCenter contentSection">
-                        <div class="profile-pic text-center">
-                            <img :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image">
-                        </div>
-                        <h4 >Welcome,<a :href="'/user/'+userInfo.oid">{{userInfo.name}}</a></h4>
-
-                    </section>
-                    <section class="flexRowContainer flexWrap contentSection">
-                        <div class="contentCard flexCol flexColCenter" style="height: 450px">
-                            <div v-cloak class="col-md-12">
-
-                                <div class="panel-body">
-                                    <h4 style="margin-left: -5px">Personal Infomation</h4>
-                                        <ul class="p-info">
-                                            <li>
-                                                <div class="title"><h5>Name</h5></div>
-                                                <div class="desk"><h5>{{userInfo.name}}</h5></div>
-                                            </li>
-                                            <li>
-                                                <div class="title"><h5>Email</h5></div>
-                                                <div class="desk"><h5>{{userInfo.email}}</h5></div>
-                                            </li>
-                                            <li v-if="userInfo.phone!=''">
-                                                <div class="title"><h5>Phone</h5></div>
-                                                <div class="desk"><h5>{{userInfo.phone}}</h5></div>
-                                            </li>
-                                            <li v-if="userInfo.wiki!=''">
-                                                <div class="title"><h5>Home Page</h5></div>
-                                                <div class="desk"><h5>{{userInfo.wiki}}</h5></div>
-                                            </li>
-                                            <li v-if="userInfo.orgStr!=''">
-                                                <div class="title"><h5>Organizations</h5></div>
-                                                <div class="desk"><h5>{{userInfo.orgStr}}</h5></div>
-                                            </li>
-                                            <li v-if="userInfo.saStr!=''">
-                                            <div class="title"><h5>Subject Areas</h5> </div>
-                                                <div class="desk"><h5>{{userInfo.saStr}}</h5></div>
-                                            </li>
-                                            <li v-if="userInfo.description!=''">
-                                                <div class="title"><h5>Description</h5></div>
-                                                <div class="desk"><h5>{{userInfo.description}}</h5></div>
-                                            </li>
-                                        </ul>
+            <div>
+                <div class="innerShadowCol">
+                    <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent"
+                         style="margin-left: 240px;"
+                         :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                         id="pageContent">
+                        <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                        <div class="flexColContainer mainContent" style="">
+                            <section role="description" class="flexCol flexCenter contentSection">
+                                <div class="profile-pic text-center">
+                                    <img :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image">
                                 </div>
+                                <h4>Welcome,<a :href="'/user/'+userInfo.oid">{{userInfo.name}}</a></h4>
 
-                            </div>
-                            <div class="innerBorderGrey89"></div>
+                            </section>
+                            <section class="flexRowContainer flexWrap contentSection">
+                                <div class="contentCard flexCol flexColCenter" style="height: 450px">
+                                    <div v-cloak class="col-md-12">
 
-                            <div class="col-md-12">
-                                    <div class="panel-body">
-                                        <button id="edit" class="btn btn-noShadow btn-info btn-round btn-block btn-lg" style="text-transform: capitalize;font-size: 16px" @click="editUserInfo">Edit Infomation</button>
-                                        <br/>
-                                        <button id="changePass" class="btn btn-noShadow btn-default btn-round btn-block btn-lg"  @click="changePassword" style="color: #fff;text-transform: capitalize">Change Password
-                                        </button>
+                                        <div class="panel-body">
+                                            <h4 style="margin-left: -5px">Personal Infomation</h4>
+                                            <ul class="p-info">
+                                                <li>
+                                                    <div class="title"><h5>Name</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.name}}</h5></div>
+                                                </li>
+                                                <li>
+                                                    <div class="title"><h5>Email</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.email}}</h5></div>
+                                                </li>
+                                                <li v-if="userInfo.phone!=''">
+                                                    <div class="title"><h5>Phone</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.phone}}</h5></div>
+                                                </li>
+                                                <li v-if="userInfo.wiki!=''">
+                                                    <div class="title"><h5>Home Page</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.wiki}}</h5></div>
+                                                </li>
+                                                <li v-if="userInfo.orgStr!=''">
+                                                    <div class="title"><h5>Organizations</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.orgStr}}</h5></div>
+                                                </li>
+                                                <li v-if="userInfo.saStr!=''">
+                                                    <div class="title"><h5>Subject Areas</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.saStr}}</h5></div>
+                                                </li>
+                                                <li v-if="userInfo.description!=''">
+                                                    <div class="title"><h5>Description</h5></div>
+                                                    <div class="desk"><h5>{{userInfo.description}}</h5></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+
                                     </div>
-                            </div>
-                            <!--Edit Information modal-->
-                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header " style="color:white;margin-top: 110px;border: 0">
-                                            <button id="modal-close" type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                <span aria-hidden="true">×</span>
+                                    <div class="innerBorderGrey89"></div>
+
+                                    <div class="col-md-12">
+                                        <div class="panel-body">
+                                            <button id="edit" class="btn btn-noShadow btn-info btn-round btn-block btn-lg"
+                                                    style="text-transform: capitalize;font-size: 16px"
+                                                    @click="editUserInfo">Edit Infomation
                                             </button>
-                                            <img id="userPhoto" onerror=src="/static/img/icon/default.png" width="120px"
-                                                 height="120px" :src=userInfo.image
-                                                 style=""
-                                                 @click="imgFile()"/>
-                                            <input type="file" name="imgOne" id="imgOne" @change="preImg()"
-                                                   style="display: none" accept="image/*"/>
-                                            <div class=" selectImg flexCenter "  style="" @click="selectUserImg">
-                                                <i class="fa fa-camera hoverIcon" style=" color: #ebebeb;font-size: 28px"></i>
+                                            <br/>
+                                            <button id="changePass"
+                                                    class="btn btn-noShadow btn-default btn-round btn-block btn-lg"
+                                                    @click="changePassword" style="color: #fff;text-transform: capitalize">
+                                                Change Password
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!--Edit Information modal-->
+                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="myModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header " style="color:white;margin-top: 110px;border: 0">
+                                                    <button id="modal-close" type="button" class="close"
+                                                            data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <img id="userPhoto" onerror=src="/static/img/icon/default.png"
+                                                         width="120px"
+                                                         height="120px"
+                                                         style=""
+                                                         @click="imgFile()"/>
+                                                    <input type="file" name="imgOne" id="imgOne" @change="preImg()"
+                                                           style="display: none" accept="image/*"/>
+                                                    <div class=" selectImg flexCenter " style="" @click="selectUserImg">
+                                                        <i class="fa fa-camera hoverIcon"
+                                                           style=" color: #ebebeb;font-size: 28px"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <form class="form-horizontal" role="form" style="margin-top: 40px">
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
+                                                            <div class="col-lg-9">
+                                                                <input type="text" class="form-control" id="inputName"
+                                                                       placeholder="Name" v-model="userInfo.name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputPhone" class="col-lg-3 col-sm-3 control-label">Phone</label>
+                                                            <div class="col-lg-9">
+                                                                <input type="text" class="form-control" id="inputPhone"
+                                                                       placeholder="Phone" v-model="userInfo.phone">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputHomePage"
+                                                                   class="col-lg-3 col-sm-3 control-label">Home
+                                                                Page</label>
+                                                            <div class="col-lg-9">
+                                                                <input type="text" class="form-control" id="inputHomePage"
+                                                                       v-model="userInfo.wiki"
+                                                                       placeholder="Home Page">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputOrganizations"
+                                                                   class="col-lg-3 col-sm-3 control-label">Organizations</label>
+                                                            <div class="col-lg-9">
+                                                                <input type="text" class="form-control"
+                                                                       id="inputOrganizations"
+                                                                       placeholder="Organizations">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputSubjectAreas"
+                                                                   class="col-lg-3 col-sm-3 control-label">Subject
+                                                                Areas</label>
+                                                            <div class="col-lg-9">
+                                                                <input type="text" class="form-control"
+                                                                       id="inputSubjectAreas"
+                                                                       placeholder="Subject Areas">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputDescription"
+                                                                   class="col-lg-3 col-sm-3 control-label">Description</label>
+                                                            <div class="col-lg-9">
+                                        <textarea type="text" class="form-control" id="inputDescription"
+                                                  v-model="userInfo.description"
+                                                  placeholder="Description"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button id="saveUser" type="button" class="btn btn-round btn-primary "
+                                                            style="text-transform: capitalize;font-size: 15px"
+                                                            @click="saveEditInfo">Save
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="modal-body text-center" >
-                                            <form class="form-horizontal" role="form" style="margin-top: 40px">
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control" id="inputName" placeholder="Name" v-model="userInfo.name">
-                                                    </div>
+                                    </div>
+                                    <!--Change Password modal-->
+                                    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+                                         aria-labelledby="myModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="margin-top: 16vh;color:white;border: 0">
+                                                    <button id="modal-close1" type="button" class="close"
+                                                            data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" style="font-weight: bold;">User Information</h4>
                                                 </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputPhone" class="col-lg-3 col-sm-3 control-label">Phone</label>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control" id="inputPhone" placeholder="Phone" v-model="userInfo.phone">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputHomePage" class="col-lg-3 col-sm-3 control-label">Home
-                                                        Page</label>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control" id="inputHomePage" v-model="userInfo.wiki"
-                                                               placeholder="Home Page">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputOrganizations" class="col-lg-3 col-sm-3 control-label">Organizations</label>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control" id="inputOrganizations"
-                                                               placeholder="Organizations">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputSubjectAreas" class="col-lg-3 col-sm-3 control-label">Subject
-                                                        Areas</label>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control" id="inputSubjectAreas"
-                                                               placeholder="Subject Areas">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputDescription"
-                                                           class="col-lg-3 col-sm-3 control-label">Description</label>
-                                                    <div class="col-lg-9">
-                                        <textarea type="text" class="form-control" id="inputDescription" v-model="userInfo.description"
-                                                  placeholder="Description"></textarea>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                                <div class="modal-body text-center">
+                                                    <form class="form-horizontal" role="form">
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputName" class="col-sm-4 control-label">Old
+                                                                Password</label>
+                                                            <div class="col-lg-8">
+                                                                <input type="password" class="form-control"
+                                                                       id="inputOldPass"
+                                                                       placeholder="Old password">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputPhone" class="col-sm-4 control-label">New
+                                                                Password</label>
+                                                            <div class="col-lg-8">
+                                                                <input type="password" class="form-control"
+                                                                       id="inputPassword"
+                                                                       placeholder="New password">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group wzhModalForm">
+                                                            <label for="inputHomePage" class="col-sm-4 control-label">Confirm
+                                                                Password</label>
+                                                            <div class="col-lg-8">
+                                                                <input type="password" class="form-control"
+                                                                       id="inputPassAgain"
+                                                                       placeholder="New password again">
+                                                            </div>
+                                                        </div>
+                                                    </form>
 
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button id="saveUser" type="button" class="btn btn-round btn-primary " style="text-transform: capitalize;font-size: 15px" @click="saveEditInfo">Save</button>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button @click="submitPass" type="button"
+                                                            class="btn btn-round btn-primary"
+                                                            style="text-transform: capitalize;font-size: 15px">Submit
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <!--Change Password modal-->
-                            <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="margin-top: 16vh;color:white;border: 0">
-                                            <button id="modal-close1" type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                            <h4 class="modal-title" style="font-weight: bold;">User Information</h4>
-                                        </div>
-                                        <div class="modal-body text-center">
-                                            <form class="form-horizontal" role="form">
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputName" class="col-sm-4 control-label">Old Password</label>
-                                                    <div class="col-lg-8">
-                                                        <input type="password" class="form-control" id="inputOldPass"
-                                                               placeholder="Old password">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputPhone" class="col-sm-4 control-label">New Password</label>
-                                                    <div class="col-lg-8">
-                                                        <input type="password" class="form-control" id="inputPassword"
-                                                               placeholder="New password">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group wzhModalForm">
-                                                    <label for="inputHomePage" class="col-sm-4 control-label">Confirm
-                                                        Password</label>
-                                                    <div class="col-lg-8">
-                                                        <input type="password" class="form-control" id="inputPassAgain"
-                                                               placeholder="New password again">
-                                                    </div>
-                                                </div>
-                                            </form>
+                                    <!--end modal-->
 
+                                </div>
+                                <div class="contentCard flexCol flexColCenter" style="height: 450px">
+                                    <div class="content_h32 flexRow noPadding">
+                                        <div class="content_w68 flexCol flexJustAround">
+                                            <h4>Foot print</h4>
+                                            <p>You can manage Data provided by yourself or create a new one</p>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button @click="submitPass" type="button" class="btn btn-round btn-primary" style="text-transform: capitalize;font-size: 15px">Submit</button>
+                                        <div class="flexCenter content_w32" style="">
+                                            <img class="square_80" style="" src="../../static/img/carousels/foot_print.jpg">
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <!--end modal-->
-
-                        </div>
-                        <div class="contentCard flexCol flexColCenter" style="height: 450px">
-                            <div class="content_h32 flexRow noPadding">
-                                <div class="content_w68 flexCol flexJustAround">
-                                    <h4>Foot print</h4>
-                                    <p>You can manage Data provided by yourself or create a new one</p>
-                                </div>
-                                <div class="flexCenter content_w32" style="">
-                                    <img class="square_80" style="" src="../../static/img/carousels/foot_print.jpg">
-                                </div>
-                            </div>
-                            <div class="innerBorderGrey89"></div>
-                            <div style="flex: 1;"></div>
-                            <div class="content_h16 flexCol noPadding" style="width: 100%;
+                                    <div class="innerBorderGrey89"></div>
+                                    <div style="flex: 1;"></div>
+                                    <div class="content_h16 flexCol noPadding" style="width: 100%;
                             background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);">
-                                <div class=" acrylicBack flexColCenter" style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
-                                    <div class="flexRow flexCenter flexJustAround " style="width: 100%;margin-left: 5%">
-                                        <div class="lineButton flexCol" @click="manageItem(2)">
-                                            <p style="margin-block-end: 0">manage data</p>
-                                            <div class="hoverLine"></div>
+                                        <div class=" acrylicBack flexColCenter"
+                                             style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
+                                            <div class="flexRow flexCenter flexJustAround "
+                                                 style="width: 100%;margin-left: 5%">
+                                                <div class="lineButton flexCol" @click="manageItem(2)">
+                                                    <p style="margin-block-end: 0">manage data</p>
+                                                    <div class="hoverLine"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
+                                </div>
+
+                            </section>
                         </div>
 
-                    </section>
+
+                    </div>
                 </div>
 
-
+<!--                <div class="modal fade" id="editUserImg" aria-hidden="true" aria-labelledby="myModalLabel" style="margin-top: 45px">-->
+<!--                    <div class="modal-dialog">-->
+<!--                        <div class="modal-content" id="modalContent">-->
+<!--                            <div class="modal-header" style="background: deepskyblue;border-bottom: 0">-->
+<!--                                <h3 class="modal-title" style="color:aliceblue;text-align: center">-->
+<!--                                    Select a picture-->
+<!--                                </h3>-->
+<!--                            </div>-->
+<!--                            <div class="flexAround" style="height: 280px;border: 1px solid #cccccc;padding: 0 5%">-->
+<!--                                <div class="containerWithDashed">-->
+<!--                                    <div id="imgChange" @click="imgChange()">-->
+<!--                                        <i class="fa fa-plus fa-5x"></i>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <input id="imgFile" type="file"-->
+<!--                                       style="display: none"-->
+<!--                                       accept="image/*"/>-->
+<!--                                <div class="innerBorderCol"></div>-->
+<!--                                <div class="overviewContainer" style="width: 40%">-->
+<!--                                    <p style="text-align: center;color: #595959;font-size: 15px">overview</p>-->
+<!--                                    <div class="flexAround" style="background-color: inherit;margin-top: 20px">-->
+<!--                                        <div class="circlePhotoFrame flexCenter">-->
+<!--                                            <canvas></canvas>-->
+<!--                                        </div>-->
+<!--                                        &lt;!&ndash;                                    <div class="circlePhotoFrameShade">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    <img id="imgShowBig" style="width: 145px;height: 145px"&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                         src="../static/img/icon/default.png">&ndash;&gt;-->
+<!--                                        <div class="dragBar" style="margin-top:15px ">-->
+<!--                                            <div class="dragBlock" ></div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">-->
+<!--                                <el-button id="saveUserImgButton" type="success">Save</el-button>-->
+<!--                                <el-button id="closeSaveUserImg">Cancel</el-button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
-        </div>
+
         </template>
     </div>
 
