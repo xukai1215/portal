@@ -351,7 +351,7 @@ span:focus {
     min-height: 100%;
     /*margin-left: 220px;*/
     padding-bottom: 80px;
-    background: rgba(252, 251, 251, 0.79);
+    background: rgba(252, 251, 251, 0.88);
     position: relative;
     zoom: 1;
     overflow-y: auto;
