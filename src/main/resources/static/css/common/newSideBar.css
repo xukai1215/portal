@@ -36,16 +36,16 @@
     margin: -15px;
     position: absolute;
     z-index:-1;
-    /*background-color: #e8e8e8;*/
+    background-color: #f0f0f0;
     /*background-image: url(/static/img/carousels/laptop.jpg);*/
     background-image: url(/static/img/logo.png);
     /* background-size: contain; */
     /* background-position: center; */
-    background-position-x: 49%;
+    background-position-x: 53%;
     background-repeat: no-repeat;
     background-position-y: 200px;
 
-    /*background-size: contain;*/
+    background-size: 68%;
     /*background-position: center;*/
     /*background-position-x: 1400px;*/
     /*background-repeat: no-repeat;*/
