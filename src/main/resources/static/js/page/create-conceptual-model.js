@@ -156,16 +156,24 @@ var createConceptualModel = Vue.extend({
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
         this.sendcurIndexToParent()
 
+
         $(() => {
             let height = document.documentElement.clientHeight;
             this.ScreenMinHeight = (height) + "px";
             this.ScreenMaxHeight = (height) + "px";
+            this.IframeHeight = (height - 330) + "px";
 
+            let resizeTimer = null;
+            let that = this
             window.onresize = () => {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function(){
                 console.log('come on ..');
                 height = document.documentElement.clientHeight;
-                this.ScreenMinHeight = (height) + "px";
-                this.ScreenMaxHeight = (height) + "px";
+                that.ScreenMinHeight = (height) + "px";
+                that.ScreenMaxHeight = (height) + "px";
+                that.IframeHeight = (height - 330) + "px";
+                } , 100);
             };
 
 
@@ -827,17 +835,6 @@ var createConceptualModel = Vue.extend({
         })
 
 
-
-        let height = document.documentElement.clientHeight;
-        this.ScreenMaxHeight = (height) + "px";
-        this.IframeHeight = (height - 160) + "px";
-
-        window.onresize = () => {
-            console.log('come on ..');
-            height = document.documentElement.clientHeight;
-            this.ScreenMaxHeight = (height) + "px";
-            this.IframeHeight = (height - 160) + "px";
-        }
 
         var mid = window.sessionStorage.getItem("editConceptualModel_id");
         // if (mid === undefined || mid == null) {

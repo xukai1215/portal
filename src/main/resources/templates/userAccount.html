@@ -121,152 +121,6 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <!--Edit Information modal-->
-                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-                                         aria-labelledby="myModalLabel"
-                                         aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header " style="color:white;margin-top: 110px;border: 0">
-                                                    <button id="modal-close" type="button" class="close"
-                                                            data-dismiss="modal"
-                                                            aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                    <img id="userPhoto" onerror=src="/static/img/icon/default.png"
-                                                         width="120px"
-                                                         height="120px"
-                                                         style=""
-                                                         @click="imgFile()"/>
-                                                    <input type="file" name="imgOne" id="imgOne" @change="preImg()"
-                                                           style="display: none" accept="image/*"/>
-                                                    <div class=" selectImg flexCenter " style="" @click="selectUserImg">
-                                                        <i class="fa fa-camera hoverIcon"
-                                                           style=" color: #ebebeb;font-size: 28px"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-body text-center">
-                                                    <form class="form-horizontal" role="form" style="margin-top: 40px">
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
-                                                            <div class="col-lg-9">
-                                                                <input type="text" class="form-control" id="inputName"
-                                                                       placeholder="Name" v-model="userInfo.name">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputPhone" class="col-lg-3 col-sm-3 control-label">Phone</label>
-                                                            <div class="col-lg-9">
-                                                                <input type="text" class="form-control" id="inputPhone"
-                                                                       placeholder="Phone" v-model="userInfo.phone">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputHomePage"
-                                                                   class="col-lg-3 col-sm-3 control-label">Home
-                                                                Page</label>
-                                                            <div class="col-lg-9">
-                                                                <input type="text" class="form-control" id="inputHomePage"
-                                                                       v-model="userInfo.wiki"
-                                                                       placeholder="Home Page">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputOrganizations"
-                                                                   class="col-lg-3 col-sm-3 control-label">Organizations</label>
-                                                            <div class="col-lg-9">
-                                                                <input type="text" class="form-control"
-                                                                       id="inputOrganizations"
-                                                                       placeholder="Organizations">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputSubjectAreas"
-                                                                   class="col-lg-3 col-sm-3 control-label">Subject
-                                                                Areas</label>
-                                                            <div class="col-lg-9">
-                                                                <input type="text" class="form-control"
-                                                                       id="inputSubjectAreas"
-                                                                       placeholder="Subject Areas">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputDescription"
-                                                                   class="col-lg-3 col-sm-3 control-label">Description</label>
-                                                            <div class="col-lg-9">
-                                        <textarea type="text" class="form-control" id="inputDescription"
-                                                  v-model="userInfo.description"
-                                                  placeholder="Description"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button id="saveUser" type="button" class="btn btn-round btn-primary "
-                                                            style="text-transform: capitalize;font-size: 15px"
-                                                            @click="saveEditInfo">Save
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--Change Password modal-->
-                                    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
-                                         aria-labelledby="myModalLabel"
-                                         aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header" style="margin-top: 16vh;color:white;border: 0">
-                                                    <button id="modal-close1" type="button" class="close"
-                                                            data-dismiss="modal"
-                                                            aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                    <h4 class="modal-title" style="font-weight: bold;">User Information</h4>
-                                                </div>
-                                                <div class="modal-body text-center">
-                                                    <form class="form-horizontal" role="form">
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputName" class="col-sm-4 control-label">Old
-                                                                Password</label>
-                                                            <div class="col-lg-8">
-                                                                <input type="password" class="form-control"
-                                                                       id="inputOldPass"
-                                                                       placeholder="Old password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputPhone" class="col-sm-4 control-label">New
-                                                                Password</label>
-                                                            <div class="col-lg-8">
-                                                                <input type="password" class="form-control"
-                                                                       id="inputPassword"
-                                                                       placeholder="New password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group wzhModalForm">
-                                                            <label for="inputHomePage" class="col-sm-4 control-label">Confirm
-                                                                Password</label>
-                                                            <div class="col-lg-8">
-                                                                <input type="password" class="form-control"
-                                                                       id="inputPassAgain"
-                                                                       placeholder="New password again">
-                                                            </div>
-                                                        </div>
-                                                    </form>
-
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button @click="submitPass" type="button"
-                                                            class="btn btn-round btn-primary"
-                                                            style="text-transform: capitalize;font-size: 15px">Submit
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--end modal-->
 
                                 </div>
                                 <div class="contentCard flexCol flexColCenter" style="height: 450px">
@@ -287,8 +141,8 @@
                                              style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
                                             <div class="flexRow flexCenter flexJustAround "
                                                  style="width: 100%;margin-left: 5%">
-                                                <div class="lineButton flexCol" @click="manageItem(2)">
-                                                    <p style="margin-block-end: 0">manage data</p>
+                                                <div class="lineButton flexCol" @click="">
+                                                    <p style="margin-block-end: 0">view</p>
                                                     <div class="hoverLine"></div>
                                                 </div>
                                             </div>
@@ -302,6 +156,153 @@
 
 
                     </div>
+
+                    <!--Edit Information modal-->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header " style="color:white;margin-top: 110px;border: 0">
+                                    <button id="modal-close" type="button" class="close"
+                                            data-dismiss="modal"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <img id="userPhoto" onerror=src="/static/img/icon/default.png"
+                                         width="120px"
+                                         height="120px"
+                                         style=""
+                                         @click="imgFile()"/>
+                                    <input type="file" name="imgOne" id="imgOne" @change="preImg()"
+                                           style="display: none" accept="image/*"/>
+                                    <div class=" selectImg flexCenter " style="" @click="selectUserImg">
+                                        <i class="fa fa-camera hoverIcon"
+                                           style=" color: #ebebeb;font-size: 28px"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <form class="form-horizontal" role="form" style="margin-top: 40px">
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
+                                            <div class="col-lg-9">
+                                                <input type="text" class="form-control" id="inputName"
+                                                       placeholder="Name" v-model="userInfo.name">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputPhone" class="col-lg-3 col-sm-3 control-label">Phone</label>
+                                            <div class="col-lg-9">
+                                                <input type="text" class="form-control" id="inputPhone"
+                                                       placeholder="Phone" v-model="userInfo.phone">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputHomePage"
+                                                   class="col-lg-3 col-sm-3 control-label">Home
+                                                Page</label>
+                                            <div class="col-lg-9">
+                                                <input type="text" class="form-control" id="inputHomePage"
+                                                       v-model="userInfo.wiki"
+                                                       placeholder="Home Page">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputOrganizations"
+                                                   class="col-lg-3 col-sm-3 control-label">Organizations</label>
+                                            <div class="col-lg-9">
+                                                <input type="text" class="form-control"
+                                                       id="inputOrganizations"
+                                                       placeholder="Organizations">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputSubjectAreas"
+                                                   class="col-lg-3 col-sm-3 control-label">Subject
+                                                Areas</label>
+                                            <div class="col-lg-9">
+                                                <input type="text" class="form-control"
+                                                       id="inputSubjectAreas"
+                                                       placeholder="Subject Areas">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputDescription"
+                                                   class="col-lg-3 col-sm-3 control-label">Description</label>
+                                            <div class="col-lg-9">
+                                        <textarea type="text" class="form-control" id="inputDescription"
+                                                  v-model="userInfo.description"
+                                                  placeholder="Description"></textarea>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="saveUser" type="button" class="btn btn-round btn-primary "
+                                            style="text-transform: capitalize;font-size: 15px"
+                                            @click="saveEditInfo">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Change Password modal-->
+                    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" style="margin-top: 16vh;color:white;border: 0">
+                                    <button id="modal-close1" type="button" class="close"
+                                            data-dismiss="modal"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" style="color: #737373;text-align: center;">Change Password</h4>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputName" class="col-sm-4 control-label">Old
+                                                Password</label>
+                                            <div class="col-lg-8">
+                                                <input type="password" class="form-control"
+                                                       id="inputOldPass"
+                                                       placeholder="Old password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputPhone" class="col-sm-4 control-label">New
+                                                Password</label>
+                                            <div class="col-lg-8">
+                                                <input type="password" class="form-control"
+                                                       id="inputPassword"
+                                                       placeholder="New password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group wzhModalForm">
+                                            <label for="inputHomePage" class="col-sm-4 control-label">Confirm
+                                                Password</label>
+                                            <div class="col-lg-8">
+                                                <input type="password" class="form-control"
+                                                       id="inputPassAgain"
+                                                       placeholder="New password again">
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button @click="submitPass" type="button"
+                                            class="btn btn-round btn-primary"
+                                            style="text-transform: capitalize;font-size: 15px">Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end modal-->
                 </div>
 
 <!--                <div class="modal fade" id="editUserImg" aria-hidden="true" aria-labelledby="myModalLabel" style="margin-top: 45px">-->
