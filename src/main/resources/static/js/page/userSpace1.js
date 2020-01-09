@@ -230,16 +230,16 @@ var vue = new Vue(
         mounted() {
 
             $(() => {
-                let height = document.documentElement.clientHeight;
-                this.ScreenMinHeight = (height) + "px";
-                this.ScreenMaxHeight = (height) + "px";
-
-                window.onresize = () => {
-                    console.log('come on ..');
-                    height = document.documentElement.clientHeight;
-                    this.ScreenMinHeight = (height) + "px";
-                    this.ScreenMaxHeight = (height) + "px";
-                };
+                // let height = document.documentElement.clientHeight;
+                // this.ScreenMinHeight = (height) + "px";
+                // this.ScreenMaxHeight = (height) + "px";
+                //
+                // window.onresize = () => {
+                //     console.log('come on ..');
+                //     height = document.documentElement.clientHeight;
+                //     this.ScreenMinHeight = (height) + "px";
+                //     this.ScreenMaxHeight = (height) + "px";
+                // };
 
 
                 $.ajax({
@@ -255,7 +255,7 @@ var vue = new Vue(
                     success: (data) => {
                         data = JSON.parse(data);
 
-                        console.log(data);
+                        // console.log(data);
 
                         if (data.oid == "") {
                             alert("Please login");

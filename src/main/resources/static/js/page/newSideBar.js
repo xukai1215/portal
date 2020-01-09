@@ -4,7 +4,7 @@ Vue.component('headSideBar', {
 
     data() {
         return {
-            curIndex:1,
+            curIndex:1,//用于控制选中条目高亮显示
             itemIndex: 1,
 
             //
@@ -18,9 +18,35 @@ Vue.component('headSideBar', {
         curindexParent: {
             handler() {
                 this.curIndex = this.curindexParent
-                console.log('parent change')
             },
             immediate: true
+        },
+
+        $route:{
+            handler(to, from) {//通过路由判断条目高亮显示,
+                console.log(to.path)
+                let path = to.path
+                if(path === '/')
+                    this.curIndex = 1
+                else if(path.indexOf('model') != -1)
+                    this.curIndex = 2
+                else if(path.indexOf('data') != -1)
+                    this.curIndex = 3
+                else if(path.indexOf('server') != -1)
+                    this.curIndex = 4
+                else if(path.indexOf('task') != -1)
+                    this.curIndex = 5
+                else if(path.indexOf('community') != -1)
+                    this.curIndex = 6
+                else if(path.indexOf('Theme') != -1)
+                    this.curIndex = 7
+                else if(path.indexOf('account') != -1)
+                    this.curIndex = 8
+                else if(path.indexOf('feedback') != -1)
+                    this.curIndex = 9
+
+            },
+            immediate:true
         }
     },
 
@@ -41,6 +67,8 @@ Vue.component('headSideBar', {
 
             this.setSession('curIndex',index)
             window.location.href=urls[index]
+
+            //此处改完还要修改监听中的$route以保证回退时能够正确高亮显示所在条目
 
         },
 
@@ -124,7 +152,7 @@ Vue.component('headSideBar', {
 
     mounted(){
         let that= this;
-        //用于消息判断
+        //用于判断用户是否收到消息
         $(document).ready(function () {
             $.ajax({
                 url:"/theme/getedit",

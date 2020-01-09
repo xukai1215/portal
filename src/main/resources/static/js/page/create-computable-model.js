@@ -155,15 +155,23 @@ var createComputableModel = Vue.extend({
         this.sendcurIndexToParent()
 
         $(() => {
+            //修改页面元素尺寸
             let height = document.documentElement.clientHeight;
             this.ScreenMinHeight = (height) + "px";
             this.ScreenMaxHeight = (height) + "px";
+            this.IframeHeight = (height - 330) + "px";
 
+            let resizeTimer = null;
+            let that = this
             window.onresize = () => {
-                console.log('come on ..');
-                height = document.documentElement.clientHeight;
-                this.ScreenMinHeight = (height) + "px";
-                this.ScreenMaxHeight = (height) + "px";
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function(){
+                    console.log('come on ..');
+                    height = document.documentElement.clientHeight;
+                    that.ScreenMinHeight = (height) + "px";
+                    that.ScreenMaxHeight = (height) + "px";
+                    that.IframeHeight = (height - 330) + "px";
+                } , 100);
             };
 
 
@@ -840,17 +848,6 @@ var createComputableModel = Vue.extend({
                 "                                                                                                </div></div> </div> </div>"
             content_box.append(str)
         })
-
-        let height = document.documentElement.clientHeight;
-        this.ScreenMaxHeight = (height) + "px";
-        this.IframeHeight = (height - 20) + "px";
-
-        window.onresize = () => {
-            console.log('come on ..');
-            height = document.documentElement.clientHeight;
-            this.ScreenMaxHeight = (height) + "px";
-            this.IframeHeight = (height - 20) + "px";
-        }
 
         var mid = window.sessionStorage.getItem("editConceptualModel_id");
         // if (mid === undefined || mid == null) {

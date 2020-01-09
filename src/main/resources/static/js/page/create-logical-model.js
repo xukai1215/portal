@@ -141,12 +141,19 @@ var createLogicalModel = Vue.extend({
             let height = document.documentElement.clientHeight;
             this.ScreenMinHeight = (height) + "px";
             this.ScreenMaxHeight = (height) + "px";
+            this.IframeHeight = (height - 330) + "px";
 
+            let resizeTimer = null;
+            let that = this
             window.onresize = () => {
-                console.log('come on ..');
-                height = document.documentElement.clientHeight;
-                this.ScreenMinHeight = (height) + "px";
-                this.ScreenMaxHeight = (height) + "px";
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function(){
+                    console.log('come on ..');
+                    height = document.documentElement.clientHeight;
+                    that.ScreenMinHeight = (height) + "px";
+                    that.ScreenMaxHeight = (height) + "px";
+                    that.IframeHeight = (height - 330) + "px";
+                } , 100);
             };
 
 
@@ -801,17 +808,6 @@ var createLogicalModel = Vue.extend({
             content_box.append(str)
         })
 
-
-        let height = document.documentElement.clientHeight;
-        this.ScreenMaxHeight = (height) + "px";
-        this.IframeHeight = (height - 160) + "px";
-
-        window.onresize = () => {
-            console.log('come on ..');
-            height = document.documentElement.clientHeight;
-            this.ScreenMaxHeight = (height) + "px";
-            this.IframeHeight = (height - 160) + "px";
-        }
 
 
         // if (mid === undefined || mid == null) {
