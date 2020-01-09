@@ -82,6 +82,10 @@ var userSpaceHome = Vue.extend(
                 window.open("/task/"+hrefs[hrefs.length-1]);
             },
 
+            intergrateModel(){
+                window.open('/computableModel/integrating')
+            },
+
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
             }
@@ -118,7 +122,7 @@ var userSpaceHome = Vue.extend(
                     success: (data) => {
                         data = JSON.parse(data);
 
-                        console.log(data);
+                        // console.log(data);
 
                         if (data.oid == "") {
                             alert("Please login");
@@ -162,7 +166,7 @@ var userSpaceHome = Vue.extend(
             });
 
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
-            this.sendcurIndexToParent()
+            // this.sendcurIndexToParent()
         },
 
     }

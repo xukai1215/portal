@@ -219,59 +219,58 @@
                             <!--                            </nav>-->
                         </section>
                     </div>
-                    <el-dialog id="registerModelContainer" top="20px" width="70%" title="Register Model Server Container"
-                               :visible.sync="registerModelContainerVisible">
-                        <el-steps style="margin-bottom: 15px;" align-center :active="registerModelContainerActive"
-                                  finish-status="success">
-                            <el-step class="registerModelContainerStep" title="Download"></el-step>
-                            <el-step class="registerModelContainerStep" title="Register"></el-step>
-
-                        </el-steps>
-                        <el-card :style="{display:(registerModelContainerActive==0?'block':'none')}" shadow="never">
-                            <center style="font-size:18px;line-height: 2.5em;padding:20px">
-                                <p><b>Step1:</b> Download <a href="/static/ContainerPacking.rar">ContainerPacking.rar</a></p>
-                                <p><b>Step2:</b> Extract all the files in the package to any folder.</p>
-                                <p><b>Step3:</b> Run <i>ComputerResourceConsole.exe</i> and <b>Do Not close the terminal
-                                    window!</b></p>
-                                <p>After finishing these steps, please click <b>Next</b>.</p>
-                            </center>
-                        </el-card>
-                        <el-card :style="{display:(registerModelContainerActive==1?'block':'none')}" shadow="never">
-                            <center style="font-size:18px;line-height: 2.5em;padding:20px">
-                                <p><b>Step4:</b> Open web browser, enter localhost:8060/setting</a></p>
-                                <p><b>Step5:</b> Click "Register" Button, enter OpenGMS portal's account and password.</p>
-
-                                <p>After finishing these steps, please <b>refresh</b> this page.</p>
-                            </center>
-                            <!--<el-col :offset="6" :span="12" style="padding:20px">-->
-                            <!--<el-form label-position="top" :model="taskDataForm" style="font-size: 20px">-->
-
-                            <!--<el-form-item label="Please enter container IP:" required>-->
-                            <!--<el-input v-model="modelContainerInfo.ip"></el-input>-->
-                            <!--</el-form-item>-->
-
-                            <!--<center>-->
-                            <!--<el-button type="success" @click="modelContainerRegister">Register</el-button>-->
-                            <!--</center>-->
-                            <!--</el-form>-->
-                            <!--</el-col>-->
-                        </el-card>
-
-
-                        <el-button :style="{visibility:(registerModelContainerActive>0?'visible':'hidden')}"
-                                   class="el-button--primary"
-                                   style="margin-top: 12px;position: absolute;left:4%;top:55px;"
-                                   @click="registerModelContainerActive--">Previous
-                        </el-button>
-                        <el-button v-if="registerModelContainerActive<1" class="el-button--primary"
-                                   style="margin-top: 12px;position: absolute;right:4%;top:55px;"
-                                   @click="registerModelContainerActive++">Next
-                        </el-button>
-
-                    </el-dialog>
-
 
                 </div>
+                <el-dialog id="registerModelContainer" top="20px" width="70%" title="Register Model Server Container"
+                           :visible.sync="registerModelContainerVisible">
+                    <el-steps style="margin-bottom: 15px;" align-center :active="registerModelContainerActive"
+                              finish-status="success">
+                        <el-step class="registerModelContainerStep" title="Download"></el-step>
+                        <el-step class="registerModelContainerStep" title="Register"></el-step>
+
+                    </el-steps>
+                    <el-card :style="{display:(registerModelContainerActive==0?'block':'none')}" shadow="never">
+                        <center style="font-size:18px;line-height: 2.5em;padding:20px">
+                            <p><b>Step1:</b> Download <a href="/static/ContainerPacking.rar">ContainerPacking.rar</a></p>
+                            <p><b>Step2:</b> Extract all the files in the package to any folder.</p>
+                            <p><b>Step3:</b> Run <i>ComputerResourceConsole.exe</i> and <b>Do Not close the terminal
+                                window!</b></p>
+                            <p>After finishing these steps, please click <b>Next</b>.</p>
+                        </center>
+                    </el-card>
+                    <el-card :style="{display:(registerModelContainerActive==1?'block':'none')}" shadow="never">
+                        <center style="font-size:18px;line-height: 2.5em;padding:20px">
+                            <p><b>Step4:</b> Open web browser, enter localhost:8060/setting</a></p>
+                            <p><b>Step5:</b> Click "Register" Button, enter OpenGMS portal's account and password.</p>
+
+                            <p>After finishing these steps, please <b>refresh</b> this page.</p>
+                        </center>
+                        <!--<el-col :offset="6" :span="12" style="padding:20px">-->
+                        <!--<el-form label-position="top" :model="taskDataForm" style="font-size: 20px">-->
+
+                        <!--<el-form-item label="Please enter container IP:" required>-->
+                        <!--<el-input v-model="modelContainerInfo.ip"></el-input>-->
+                        <!--</el-form-item>-->
+
+                        <!--<center>-->
+                        <!--<el-button type="success" @click="modelContainerRegister">Register</el-button>-->
+                        <!--</center>-->
+                        <!--</el-form>-->
+                        <!--</el-col>-->
+                    </el-card>
+
+
+                    <el-button :style="{visibility:(registerModelContainerActive>0?'visible':'hidden')}"
+                               class="el-button--primary"
+                               style="margin-top: 12px;position: absolute;left:4%;top:55px;"
+                               @click="registerModelContainerActive--">Previous
+                    </el-button>
+                    <el-button v-if="registerModelContainerActive<1" class="el-button--primary"
+                               style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                               @click="registerModelContainerActive++">Next
+                    </el-button>
+
+                </el-dialog>
             </div>
         </template>
 
