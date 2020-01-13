@@ -36,28 +36,29 @@ new Vue({
                         let href=window.location.href;
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
-                        $.ajax({
-                            type: "GET",
-                            url: "/conceptualModel/getUserOidByOid",
-                            data: {
-                                oid:oid
-                            },
-                            cache: false,
-                            async: false,
-                            xhrFields: {
-                                withCredentials: true
-                            },
-                            crossDomain: true,
-                            success: (json) => {
-                                // if(json.data==data.oid){
-                                window.sessionStorage.setItem("editConceptualModel_id",oid)
-                                window.location.href="/user/createConceptualModel";
-                                // }
-                                // else{
-                                //     alert("You are not the model item's author, please contact to the author to modify the model item.")
-                                // }
-                            }
-                        });
+                        window.location.href = "/user/userSpace#/model/manageConceptualModel/"+oid;
+                        // $.ajax({
+                        //     type: "GET",
+                        //     url: "/conceptualModel/getUserOidByOid",
+                        //     data: {
+                        //         oid:oid
+                        //     },
+                        //     cache: false,
+                        //     async: false,
+                        //     xhrFields: {
+                        //         withCredentials: true
+                        //     },
+                        //     crossDomain: true,
+                        //     success: (json) => {
+                        //         // if(json.data==data.oid){
+                        //         window.sessionStorage.setItem("editConceptualModel_id",oid)
+                        //         window.location.href="/user/createConceptualModel";
+                        //         // }
+                        //         // else{
+                        //         //     alert("You are not the model item's author, please contact to the author to modify the model item.")
+                        //         // }
+                        //     }
+                        // });
                     }
                 }
             })

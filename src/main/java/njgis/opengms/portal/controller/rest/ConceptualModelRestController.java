@@ -59,8 +59,8 @@ public class ConceptualModelRestController {
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id){
-        return conceptualModelService.getPage(id);
+    ModelAndView get(@PathVariable ("id") String id,HttpServletRequest request){
+        return conceptualModelService.getPage(id,request);
     }
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)

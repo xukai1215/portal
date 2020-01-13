@@ -75,14 +75,14 @@
                                     <!--                                        <i class="fa fa-caret-down" style="font-size: 21px;"></i>-->
                                     <!--                                    </div>-->
                                     <div class="dropdown-menu flexDrop" aria-labelledby="dropdownMenu4" style="width: 215px; ">
-                                        <a class="dropdown-item" :class="itemTitle == 'Model Item'?'active':''" @click="manageItem(1)">
-                                            <h4>Model Item</h4></a>
-                                        <a class="dropdown-item" :class="itemTitle == 'Conceptual Model'?'active':''" @click="manageItem(2)">
-                                            <h4>Conceptual Model</h4></a>
-                                        <a class="dropdown-item" :class="itemTitle == 'Logical Model'?'active':''" @click="manageItem(3)">
-                                            <h4>Logical Model</h4></a>
-                                        <a class="dropdown-item" :class="itemTitle == 'Computable Model'?'active':''" @click="manageItem(4)">
-                                            <h4>Computable Model</h4></a>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Model Item'?'active':''" @click="manageItem(1)">
+                                            <h4>Model Item</h4></div>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Conceptual Model'?'active':''" @click="manageItem(2)">
+                                            <h4>Conceptual Model</h4></div>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Logical Model'?'active':''" @click="manageItem(3)">
+                                            <h4>Logical Model</h4></div>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Computable Model'?'active':''" @click="manageItem(4)">
+                                            <h4>Computable Model</h4></div>
                                         <div class="dropdown-divider"></div>
                                     </div>
                                 </div>
@@ -159,9 +159,8 @@
             <div class="content_h32 flexRow noPadding">
                 <div class="content_w68 flexJustStart">
                     <div>
-                        <a :href="'/modelItem/'+modelItem.oid"
-                           @click="setSession('modelItemInfo_id',modelItem.model_oid)">
-                            <h4 class="itemTitle">{{modelItem.name}}</h4></a>
+                        <a @click="seeDetailPage(modelItem.oid)">
+                            <h4 style="color: inherit" class="itemTitle">{{modelItem.name}}</h4></a>
                     </div>
 
                 </div>

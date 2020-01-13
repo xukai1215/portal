@@ -54,28 +54,36 @@ new Vue({
                                 location="/repository/createUnit";
                                 break;
                         }
-                        $.ajax({
-                            type: "GET",
-                            url: url,
-                            data: {
-                                oid:oid
-                            },
-                            cache: false,
-                            async: false,
-                            xhrFields: {
-                                withCredentials: true
-                            },
-                            crossDomain: true,
-                            success: (json) => {
-                                // if(json.data==data.oid){
-                                window.sessionStorage.setItem(sessionName,oid)
-                                window.location.href=location;
-                                // }
-                                // else{
-                                //     alert("You are not the model item's author, please contact to the author to modify the model item.")
-                                // }
-                            }
-                        });
+                        var urls={
+                            'concept':         '/user/userSpace#/community/manageConcept/'+oid,
+                            'spatialReference':'/user/userSpace#/community/manageSpatialReference/'+oid,
+                            'template':        '/user/userSpace#/community/manageTemplate/'+oid,
+                            'unit':            '/user/userSpace#/community/manageUnit/'+oid,
+                        }
+
+                        window.location.href = urls[type];
+                        // $.ajax({
+                        //     type: "GET",
+                        //     url: url,
+                        //     data: {
+                        //         oid:oid
+                        //     },
+                        //     cache: false,
+                        //     async: false,
+                        //     xhrFields: {
+                        //         withCredentials: true
+                        //     },
+                        //     crossDomain: true,
+                        //     success: (json) => {
+                        //         // if(json.data==data.oid){
+                        //         window.sessionStorage.setItem(sessionName,oid)
+                        //         window.location.href=location;
+                        //         // }
+                        //         // else{
+                        //         //     alert("You are not the model item's author, please contact to the author to modify the model item.")
+                        //         // }
+                        //     }
+                        // });
                     }
                 }
             })

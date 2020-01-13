@@ -227,16 +227,16 @@ public class UserRestController {
         return modelAndView;
     }
 
-//    @RequestMapping(value = "/userSpace", method = RequestMethod.GET)
-//    public ModelAndView getUserSpace() {
-//
-//        System.out.println("user_space");
-//
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("user_space");
-//
-//        return modelAndView;
-//    }
+    @RequestMapping(value = "/userSpace_old", method = RequestMethod.GET)
+    public ModelAndView getUserSpace() {
+
+        System.out.println("user_space");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user_space");
+
+        return modelAndView;
+    }
 
     @RequestMapping(value = "/userSpace", method = RequestMethod.GET)
     public ModelAndView getUserSpace1() {

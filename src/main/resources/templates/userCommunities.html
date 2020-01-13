@@ -73,14 +73,14 @@
                                     <!--                                        <i class="fa fa-caret-down" style="font-size: 21px;"></i>-->
                                     <!--                                    </div>-->
                                     <div class="dropdown-menu flexDrop" aria-labelledby="dropdownMenu4" style="width: 215px; ">
-                                        <a class="dropdown-item" :class="itemTitle == 'Concept & Semantic'?'active':''" @click="manageItem(1)">
-                                            <h4>Concept & Semantic</h4></a>
-                                        <a class="dropdown-item" :class="itemTitle == 'Spatial Reference'?'active':''" @click="manageItem(2)">
-                                            <h4>Spatial Reference</h4></a>
-                                        <a class="dropdown-item" :class="itemTitle == 'Data Template'?'active':''" @click="manageItem(3)">
-                                            <h4>Data Template</h4></a>
-                                        <a class="dropdown-item" :class="itemTitle == 'Unit & Metric'?'active':''" @click="manageItem(4)">
-                                            <h4>Unit & Metric</h4></a>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Concept & Semantic'?'active':''" @click="manageItem(1)">
+                                            <h4>Concept & Semantic</h4></div>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Spatial Reference'?'active':''" @click="manageItem(2)">
+                                            <h4>Spatial Reference</h4></div>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Data Template'?'active':''" @click="manageItem(3)">
+                                            <h4>Data Template</h4></div>
+                                        <div class="dropdown-item cursorPointer" :class="itemTitle == 'Unit & Metric'?'active':''" @click="manageItem(4)">
+                                            <h4>Unit & Metric</h4></div>
                                         <div class="dropdown-divider"></div>
                                     </div>
                                 </div>
@@ -152,19 +152,18 @@
 </div>
 <template id="communityShow" th:fragment="communityItems">
     <div class="" style="width: 100%;">
-        <div v-for="(modelItem,index) in searchResultRaw" :key="index"
+        <div v-for="(community,index) in searchResultRaw" :key="index"
              class="contentCard_w100 flexCol flexColCenter">
             <div class="content_h32 flexRow noPadding">
                 <div class="content_w68 flexJustStart">
                     <div>
-                        <a :href="'/modelItem/'+modelItem.oid"
-                           @click="setSession('modelItemInfo_id',modelItem.model_oid)">
-                            <h4 class="itemTitle">{{modelItem.name}}</h4></a>
+                        <a @click="seeDetailPage(community.oid)">
+                            <h4 class="itemTitle">{{community.name}}</h4></a>
                     </div>
 
                 </div>
                 <div class="content_w32 flexJustAround flexColCenter buttonZone">
-                    <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,modelItem.oid)">
+                    <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,community.oid)">
                         <i class="fa fa-edit" style="margin-right: 5px"></i>
                         <div class="lineButton flexCol">
                             <p style="margin-block-end: 0">Edit</p>
@@ -172,7 +171,7 @@
                         </div>
                     </div>
                     <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
-                         @click="comDeleteItem(1,modelItem.oid)">
+                         @click="comDeleteItem(1,community.oid)">
                         <i class="fa fa-trash-o"></i>
                         <p>Delete</p>
                     </div>
@@ -187,9 +186,9 @@
                     <div class="flexRow " style="width: 100%;">
                         <div class="content_w100" style="padding-top: 23px">
                             <p style="word-break: break-all;">
-                                <b style="margin-right: 25px">Overview:</b>{{modelItem.description}}</p>
+                                <b style="margin-right: 25px">Overview:</b>{{community.description}}</p>
                             <p>
-                                <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(modelItem.createTime)}}</p>
+                                <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(community.createTime)}}</p>
                         </div>
 
                     </div>

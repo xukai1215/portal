@@ -1,6 +1,9 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+
+
+
 <body>
 <div th:fragment="unlog">
     <style>
@@ -76,9 +79,10 @@
                 <div th:if="${unlogged}" class="login2">
                     <li id="dropls"><a style="cursor:pointer"><p style="font-size: 13px">Log in</p><div class="innerBorder"></div><p style="font-size: 13px">Sign up</p></a></li>
                 </div>
+                <!--/*@thymesVar id="logged" type=""*/-->
                 <div th:if="${logged}" class="loged" >
                     <li id="userLoged" style="float: right">
-                        <a class="" style="cursor:default">
+                        <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
                             <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
                             <div id="userName" style="display: inline-block">Hello!!!!!!!!!</div>
                         </a>

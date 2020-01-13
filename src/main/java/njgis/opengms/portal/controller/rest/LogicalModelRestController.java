@@ -67,8 +67,8 @@ public class LogicalModelRestController {
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id){
-        return logicalModelService.getPage(id);
+    ModelAndView get(@PathVariable ("id") String id ,HttpServletRequest request){
+        return logicalModelService.getPage(id,request);
     }
 
     @RequestMapping (value="/getInfo/{id}",method = RequestMethod.GET)
