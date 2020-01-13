@@ -33,6 +33,17 @@ var modelItem = Vue.extend({
             // this.editOid = sessionStorage.getItem('editItemOid');
         },
 
+        seeDetailPage(oid){
+            let a=this.$route.params.modelitemKind
+            let urls={
+                'modelitem':'modelItem',
+                'conceptualmodel':'conceptualModel',
+                'logicalmodel':'logicalModel',
+                'computablemodel':'computableModel'
+            }
+            window.location.href='/'+urls[a]+'/'+oid
+        },
+
         comEditItem(index,oid){
             this.$emit('com-edit',index,oid)
         },
