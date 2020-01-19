@@ -32,28 +32,29 @@ new Vue({
                         let href=window.location.href;
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
-                        $.ajax({
-                            type: "GET",
-                            url: "/logicalModel/getUserOidByOid",
-                            data: {
-                                oid:oid
-                            },
-                            cache: false,
-                            async: false,
-                            xhrFields: {
-                                withCredentials: true
-                            },
-                            crossDomain: true,
-                            success: (json) => {
-                                // if(json.data==data.oid){
-                                window.sessionStorage.setItem("editLogicalModel_id",oid)
-                                window.location.href="/user/createLogicalModel";
-                                // }
-                                // else{
-                                //     alert("You are not the model item's author, please contact to the author to modify the model item.")
-                                // }
-                            }
-                        });
+                        window.location.href = "/user/userSpace#/model/manageLogicalModel/"+oid;
+                        // $.ajax({
+                        //     type: "GET",
+                        //     url: "/logicalModel/getUserOidByOid",
+                        //     data: {
+                        //         oid:oid
+                        //     },
+                        //     cache: false,
+                        //     async: false,
+                        //     xhrFields: {
+                        //         withCredentials: true
+                        //     },
+                        //     crossDomain: true,
+                        //     success: (json) => {
+                        //         // if(json.data==data.oid){
+                        //         window.sessionStorage.setItem("editLogicalModel_id",oid)
+                        //         window.location.href="/user/createLogicalModel";
+                        //         // }
+                        //         // else{
+                        //         //     alert("You are not the model item's author, please contact to the author to modify the model item.")
+                        //         // }
+                        //     }
+                        // });
                     }
                 }
             })

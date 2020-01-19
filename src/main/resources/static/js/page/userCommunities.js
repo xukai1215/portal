@@ -34,6 +34,17 @@ var communityItem = Vue.extend({
             // this.editOid = sessionStorage.getItem('editItemOid');
         },
 
+        seeDetailPage(oid){
+            let a=this.$route.params.communityKind
+            let urls={
+                'concept&semantic':'repository/concept',
+                'spatialReference':'repository/spatialReference',
+                'dataTemplate':'repository/template',
+                'unit&metric':'repository/unit'
+            }
+            window.location.href='/'+urls[a]+'/'+oid
+        },
+
         comEditItem(index,oid){
             this.$emit('com-edit',index,oid)
         },

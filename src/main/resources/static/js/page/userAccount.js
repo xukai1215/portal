@@ -174,6 +174,7 @@ var userAccount = Vue.extend(
                         // window.location.reload();
                         $('#myModal').modal('hide');
                         that.getUserInfo();
+                        that.$parent.getUserInfo();//调用父组件的getuser,修改headBar的userInfo
                     }
                 });
             },
@@ -197,8 +198,8 @@ var userAccount = Vue.extend(
                     }
 
                     let data = {};
-                    data.oldPass = oldPass;
-                    data.newPass = newPass;
+                    data.oldPass = hex_md5(oldPass);
+                    data.newPass = hex_md5(newPass);
 
                     $.ajax({
                         url: "/user/changePassword",
@@ -225,6 +226,9 @@ var userAccount = Vue.extend(
 
                         }
                     });
+                $("#inputOldPass").val('') ;
+                $("#inputPassword").val('');
+                $("#inputPassAgain").val('');
 
             },
 

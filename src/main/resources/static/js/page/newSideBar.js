@@ -22,6 +22,13 @@ Vue.component('headSideBar', {
             immediate: true
         },
 
+        userInfoinParent: {
+            handler() {
+                this.userInfo = this.userInfoinParent
+            },
+            immediate: true
+        },
+
         $route:{
             handler(to, from) {//通过路由判断条目高亮显示,
                 console.log(to.path)

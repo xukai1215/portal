@@ -220,7 +220,37 @@ var vue = new Vue(
                 if(index != null&&index != undefined){
                     this.itemIndex = index
                 }
-            }
+            },
+
+            getUserInfo() {
+                axios.get('/user/getLoginUser').then(
+                    res => {
+                        if(res.data.code==0){
+                            this.userInfo = res.data.data
+                            let orgs = this.userInfo.organizations;
+
+                            if (orgs.length != 0) {
+                                this.userInfo.orgStr = orgs[0];
+                                for (i = 1; i < orgs.length; i++) {
+                                    this.userInfo.orgStr += ", " + orgs[i];
+                                }
+                            }
+
+                            let sas = this.userInfo.subjectAreas;
+                            if (sas != null && sas.length != 0) {
+                                this.userInfo.saStr = sas[0];
+                                for (i = 1; i < sas.length; i++) {
+                                    this.userInfo.saStr += ", " + sas[i];
+                                }
+                            }
+
+
+                            this.load = false;
+                        }
+
+                    }
+                )
+            },
 
         },
 

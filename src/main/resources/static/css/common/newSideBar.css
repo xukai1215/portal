@@ -225,10 +225,11 @@
 
 #headBar {
     width: 100%;
-    background-color: #1b1e24;
+    background-color: rgba(27, 30, 36, 0.91);
     height: 50px;
     display: flex;
     justify-content: flex-start;
+
 }
 
 .innerShadowTop{
@@ -271,6 +272,9 @@
         padding: 0 8px;
     }
 
+    #rightShade{
+        display: none;
+    }
 
 }
 
@@ -279,8 +283,22 @@
         display: none;
     }
 
+    .sideContainer{
+        margin-top: 80px !important;
+    }
+
+    [role=description]{
+        margin-top: 58px !important;
+    }
+
+    #headBar{
+        position: absolute;
+        z-index: 1;
+    }
+
     .liContent p{
         margin-left: 10px;
+
     }
 }
 
