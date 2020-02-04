@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,6 +79,274 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void GenerateSitemap() {
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+            File file=new File("D:/sitemap_community.xml");
+            file.createNewFile();
+            Writer writer = new FileWriter(file);
+
+            int count=0;
+
+            String content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            content+="\t<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.9\">\n";
+
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>1.0</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/modelItem/repository</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/dataItem/repository</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/concept</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/spatialReference</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/template</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/unit</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/hydro-model-integration/main</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/FGM-theme/</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/TrafficNoiseTheme/</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/app/geodetector.html</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/app/B-SHADE_Sampling.html</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+//
+//
+//
+//            content+="\t\t<url>\n";
+//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html</loc>\n";
+//            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+//            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+//            content+="\t\t\t<priority>0.9</priority>\n";
+//            content+="\t\t</url>\n";
+
+
+//            List<ModelItem> modelItemList=modelItemDao.findAll();
+//            for(ModelItem modelItem:modelItemList){
+//
+//                content+="\t\t<url>\n";
+//                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/modelItem/"+modelItem.getOid()+"</loc>\n";
+//                content+="\t\t\t<lastmod>"+sdf.format(modelItem.getLastModifyTime())+"</lastmod>\n";
+//                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+//                content+="\t\t\t<priority>0.8</priority>\n";
+//                content+="\t\t</url>\n";
+//
+//                count++;
+//                writer.write(content);
+//                content="";
+//                System.out.println("model item:"+count);
+//            }
+//
+//            List<DataItem> dataItemList=dataItemDao.findAll();
+//            for(DataItem dataItem:dataItemList){
+//
+//                content+="\t\t<url>\n";
+//                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/dataItem/"+dataItem.getId()+"</loc>\n";
+//                content+="\t\t\t<lastmod>"+sdf.format(dataItem.getLastModifyTime())+"</lastmod>\n";
+//                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+//                content+="\t\t\t<priority>0.8</priority>\n";
+//                content+="\t\t</url>\n";
+//
+//                count++;
+//                writer.write(content);
+//                content="";
+//                System.out.println("data item:"+count);
+//            }
+
+
+
+            List<Concept> conceptList=conceptDao.findAll();
+            for(Concept concept:conceptList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/concept/"+concept.getOid()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(concept.getLastModifyTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>0.8</priority>\n";
+                content+="\t\t</url>\n";
+
+                writer.write(content);
+                content="";
+
+                count++;
+                System.out.println("concept item:"+count);
+            }
+
+            writer.flush();
+
+            List<SpatialReference> spatialReferenceList=spatialReferenceDao.findAll();
+            for(SpatialReference spatialReference:spatialReferenceList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/spatialReference/"+spatialReference.getOid()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(spatialReference.getLastModifyTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>0.8</priority>\n";
+                content+="\t\t</url>\n";
+
+                writer.write(content);
+                content="";
+
+                count++;
+                System.out.println("spatial item:"+count);
+            }
+
+            writer.flush();
+
+            List<Template> templateList=templateDao.findAll();
+            for(Template template:templateList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/template/"+template.getOid()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(template.getLastModifyTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>0.8</priority>\n";
+                content+="\t\t</url>\n";
+
+                writer.write(content);
+                content="";
+
+                count++;
+                System.out.println("template item:"+count);
+            }
+
+            writer.flush();
+
+            List<Unit> unitList=unitDao.findAll();
+            for(Unit unit:unitList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/unit/"+unit.getOid()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(unit.getLastModifyTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>0.8</priority>\n";
+                content+="\t\t</url>\n";
+
+                writer.write(content);
+                content="";
+
+                count++;
+                System.out.println("unit item:"+count);
+            }
+
+            writer.flush();
+
+            content+="\t</urlset>\n";
+            writer.write(content);
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+
+        }
+
+    }
 
     @Test
     public void password2MD5(){

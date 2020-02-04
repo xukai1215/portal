@@ -5,6 +5,7 @@ import njgis.opengms.portal.dao.TemplateDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.Template.TemplateFindDTO;
 import njgis.opengms.portal.dto.Template.TemplateResultDTO;
+import njgis.opengms.portal.entity.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,16 @@ public class TemplateService {
         result.put("total",templateResultDTOPage.getTotalElements());
 
         return result;
+
+    }
+
+    public String searchByOid(String oid){
+        oid=oid.toLowerCase();
+        Template template=templateDao.findByOid(oid);
+        if(template==null){
+            return null;
+        }
+        return template.getXml();
 
     }
 }

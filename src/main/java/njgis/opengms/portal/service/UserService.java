@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +75,7 @@ public class UserService {
 
             User user=userDao.findFirstByEmail(email);
             if(user!=null){
-                user.setPassword(password);
+                user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
                 userDao.save(user);
                 String subject="OpenGMS Portal Password Reset";
                 String content="Hello " + user.getName() + ":<br/>"+
@@ -682,7 +683,7 @@ public class UserService {
         for (int i = 0; i < files.size(); i++) {
 
             String fileName = files.get(i).get("file_name").toString();
-            String url = "http://" + dataContainerIpAndPort + "/dataResource/getResource?sourceStoreId=" + files.get(i).get("source_store_id").toString();
+            String url = "http://" + dataContainerIpAndPort + "/data?uid=" + files.get(i).get("source_store_id").toString();
             String[] a = fileName.split("\\.");
             String name = a[0];
             String suffix = a[1];
@@ -696,7 +697,7 @@ public class UserService {
             idList.add(obj);
         }
 
-            userDao.save(user);
+        userDao.save(user);
         return idList;
     }
 
