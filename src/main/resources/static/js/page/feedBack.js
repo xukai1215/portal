@@ -14,6 +14,7 @@ var feedback = Vue.extend(
                 curIndex:9,
 
                 //
+                content:'',
                 userInfo:{
 
                 },
@@ -30,7 +31,27 @@ var feedback = Vue.extend(
             },
 
             send(){
-                alert('send suggestion successfully!')
+                if(this.content===''){
+                    alert('please input at lease one word')
+                    return
+                }
+
+                $.ajax({
+                    url: "/user/userSpace/sendFeedback",
+                    type: "POST",
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    data:{
+                        content: this.content,
+                    },
+
+                    success: function (result) {
+                        alert('send suggestion successfully!')
+                        this.content = '';
+                    }
+                    }
+                )
+
             },
 
             sendcurIndexToParent(){

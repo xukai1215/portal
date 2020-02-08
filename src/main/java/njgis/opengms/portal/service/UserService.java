@@ -3,10 +3,12 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.DataItemDao;
+import njgis.opengms.portal.dao.FeedbackDao;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.DataItem;
+import njgis.opengms.portal.entity.Feedback;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -36,6 +38,9 @@ public class UserService {
 
     @Autowired
     DataItemDao dataItemDao;
+
+    @Autowired
+    FeedbackDao feedbackDao;
 
     @Autowired
     CommonService commonService;
@@ -1019,6 +1024,18 @@ public class UserService {
             }
         }
         return fileMetaList;
+    }
+
+    public String sendFeedback (String content, String userName){
+        Feedback feedback = new Feedback();
+        feedback.setContent(content);
+        feedback.setUserName(userName);
+        Date now=new Date();
+        feedback.setTime(now);
+
+        feedbackDao.save(feedback);
+
+        return "success";
     }
 
 }

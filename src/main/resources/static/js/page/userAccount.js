@@ -14,11 +14,16 @@ var userAccount = Vue.extend(
 
                 //
                 userInfo:{
-
+                    oid:'',
+                    name:'',
                 },
 
 
             }
+        },
+
+        components: {
+            'avatar': VueAvatar.Avatar
         },
 
         methods:{
