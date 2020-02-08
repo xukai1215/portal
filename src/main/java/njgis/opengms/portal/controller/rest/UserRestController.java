@@ -1036,4 +1036,20 @@ public class UserRestController {
 
         return modelAndView;
     }
+
+    @RequestMapping(value="/userSpace/sendFeedback",method = RequestMethod.POST)
+    JsonResult sendFeedback(@RequestParam("content") String content,  HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }else {
+
+
+            String userName = session.getAttribute("uid").toString();
+            String result = userService.sendFeedback(content,userName);
+            return ResultUtils.success(result);
+        }
+
+    }
 }

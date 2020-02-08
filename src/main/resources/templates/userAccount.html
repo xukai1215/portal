@@ -63,8 +63,7 @@
                                 <div class="profile-pic text-center">
                                     <img :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image">
                                 </div>
-                                <h4>Welcome,<a :href="'/user/'+userInfo.oid">{{userInfo.name}}</a></h4>
-
+                                <h4>Welcome, <a :href="'/user/'+userInfo.oid">{{userInfo.name}}</a></h4>
                             </section>
                             <section class="flexRowContainer flexWrap contentSection">
                                 <div class="contentCard flexCol flexColCenter" style="height: 450px">
@@ -116,7 +115,7 @@
                                             <br/>
                                             <button id="changePass"
                                                     class="btn btn-noShadow btn-default btn-round btn-block btn-lg"
-                                                    @click="changePassword" style="color: #fff;text-transform: capitalize">
+                                                    @click="changePassword" style="color: #fff;text-transform: capitalize;font-size: 16px">
                                                 Change Password
                                             </button>
                                         </div>

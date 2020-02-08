@@ -55,7 +55,7 @@
         <!--        <div th:replace="fragments/newSideBar :: sidebarNew"></div>-->
         <template id="userDataSpace" th:fragment="userDataSpace">
             <div class="innerShadowCol">
-
+              <!--el-dialog放在这一层-->
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
                      style="margin-left: 240px;"
                      :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
@@ -84,30 +84,30 @@
                                                     <el-col :span="18" shadow="never">
                                                         <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
                                                         <!--//todo upload-->
-                                                        <button id="uploadButton" class="dwload btn btn-primary btn-md"
+                                                        <button id="uploadButton" class="dwload btn btn-info btn-round"
                                                                 v-if="myFileShown.length==0||myFileShown[0].label!='All Folder'"
                                                                 @click="uploadClick(0)">
                                                             <i class="glyphicon glyphicon-upload"></i><span style="font-size: 15px">Upload</span>
                                                         </button>
-                                                        <button class="dwload btn btn-primary btn-md" @click="addFolderInPath">
+                                                        <button class="dwload btn btn-info btn-round" @click="addFolderInPath">
                                                             <i class="glyphicon glyphicon-plus-sign"></i><span
                                                                 style="font-size: 15px">Add folder</span>
                                                         </button>
-                                                        <button class="dwload btn btn-primary btn-md"
+                                                        <button class="dwload btn btn-info btn-round"
                                                                 v-if="downloadDataSet.length>0" @click="userDownload">
                                                             <i class="glyphicon glyphicon-download"></i><span
                                                                 style="font-size: 15px">Download</span>
                                                         </button>
-                                                        <button class="dwload btn btn-primary btn-md" v-if="pasteTargetItem.id"
+                                                        <button class="dwload btn btn-primary btn-round" v-if="pasteTargetItem.id"
                                                                 @click="pasteFile">
                                                             <i class="glyphicon glyphicon-download"></i><span
                                                                 style="font-size: 15px">Paste</span>
                                                         </button>
-                                                        <button class="dwload btn btn-primary btn-md"
+                                                        <button class="dwload btn btn-secondary btn-round"
                                                                 @click="allFileShareAsDataItem()">
                                                             <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Share as Data Item</span>
                                                         </button>
-                                                        <button class="dwload btn btn-primary btn-md" v-if="downloadDataSet.length>0"
+                                                        <button class="dwload btn btn-danger btn-round" v-if="downloadDataSet.length>0"
                                                                 @click="deleteAll()">
                                                             <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
                                                         </button>
@@ -265,25 +265,6 @@
                                                         <!--</div>-->
                                                         <!--</div>-->
                                                     </el-card>
-                                                    <el-dialog :visible.sync="addFolderIndex" title="Add New Folder">
-                                                        <div class="showPathContainer" style="margin-left: 10px;">
-                                                            <div class="containerWithBorder">path</div>
-                                                            :
-                                                            <div v-for="(path,index) in pathShown"
-                                                                 :style="{color:index==pathShown.length-1?'#222222':'#666666'}">
-                                                                /{{path.label}}
-                                                            </div>
-                                                            /..
-                                                        </div>
-                                                        <el-input placeholder="Please input the name of the new folder"
-                                                                  v-model="newFolderName"
-                                                                  style="width: calc(100% - 30px);margin:0 15px"></el-input>
-                                                        <span slot="footer" class="dialog-footer">
-                                                    <el-button class="pull-left" type="primary"
-                                                               icon="el-icon-folder-add" @click="addFolder()">Add new folder</el-button>
-                                                    <el-button @click="addFolderIndex = false">Cancel</el-button>
-                                                </span>
-                                                    </el-dialog>
 
                                                     <el-card style="height: 100%;overflow-y:auto;width:100%" id="browsercont"
                                                              v-loading="managerloading"
@@ -342,109 +323,10 @@
                                         </div>
 
 
-                                        <el-dialog
-                                                title="Upload Data"
-                                                :visible.sync="uploadDialogVisible"
-                                                width="30%"
-                                                :before-close="uploadBeforeClose"
-                                        >
 
-
-                                            <!--<div class="file-loading">-->
-
-                                            <!--<input id="file-1"   type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-theme="fas">-->
-                                            <!--</div>-->
-
-
-                                            <div class="uploaded">
-
-                                                <div class="form-group flexColCenter">
-                                                    <label style="margin-right:5px;">Storage path :</label>
-                                                    <el-button type="primary" plain size="mini" @click="selectFolder"
-                                                               v-if="selectedPath.length==0&&uploadInPath==0">Select Folder
-                                                    </el-button>
-                                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
-                                                         v-if="uploadInPath==0">
-                                                        <div v-for="(path,index) in selectedPath" @click="selectFolder"
-                                                             style="text-decoration:underline;cursor: pointer"> /{{path.label}}
-                                                        </div>
-                                                    </div>
-                                                    <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
-                                                         v-if="uploadInPath==1">
-                                                        <div v-for="(path,index) in pathShown"> /{{path.label}}</div>
-                                                    </div>
-                                                    <!--                                                    <el-button style="margin-left: calc(50% - 180px)" type="primary"-->
-                                                    <!--                                                               @click="selectPathClick">Select-->
-                                                    <!--                                                    </el-button>-->
-                                                </div>
-                                                <div class="form-group flexColCenter">
-                                                    <label style="margin-right:5px;">Upload files :</label>
-                                                    <el-button size="mini" @click="selectFile()">Select File</el-button>
-                                                </div>
-                                                <el-upload
-                                                        class="upload-demo"
-                                                        multiple="true"
-                                                        ref="upload"
-                                                        action="http://111.229.14.128:8082/file/upload/store_dataResource_files"
-                                                        :on-success="handleSuccess"
-                                                        :file-list="uploadFileList"
-                                                        :auto-upload="true">
-                                                    <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
-                                                               type="primary">选取文件
-                                                    </el-button>
-
-                                                </el-upload>
-
-                                            </div>
-
-                                            <!--<span slot="footer" class="dialog-footer">-->
-                                            <!--<div class="modal-footer">-->
-                                            <!--<button type="button" class="btn btn-primary"-->
-                                            <!--@click="upload_data_dataManager">-->
-                                            <!--Confirm-->
-                                            <!--</button>-->
-
-                                            <!--<button type="button" class="btn btn-default" data-dismiss="modal"-->
-                                            <!--@click="close()">-->
-                                            <!--Cancel-->
-                                            <!--</button>-->
-                                            <!--</div>-->
-                                            <!--</span>-->
-                                        </el-dialog>
-                                        <el-dialog
-                                                title="Select Folder"
-                                                :visible.sync="selectFolderVisible"
-                                                width="550px"
-                                        >
-
-                                            <div class=""
-                                                 style="min-height: 305px;padding: 10px 15px;font-size: 16px;font-family: sans-serif">
-                                                <!--                                            <el-card style="min-height: 300px;width: 95%">-->
-                                                <el-tree
-                                                        :data="folderTree"
-                                                        ref="folderTree"
-                                                        node-key="id"
-                                                        highlight-current
-                                                        default-expand-all
-                                                        :expand-on-click-node="false"
-                                                >
-                                                <span class="custom-tree-node" slot-scope="{ node, data }">
-                                                    <span>{{ node.label }}</span>
-                                                </span>
-                                                </el-tree>
-                                                <!--                                            </el-card>-->
-                                            </div>
-                                            <div class="modal-footer">
-                                             <span>
-                                                 <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
-                                                            @click="addFolderinTree('myData')">Add new folder</el-button>
-                                                 <el-button @click="closeSelectFolder">Cancel</el-button>
-                                                 <el-button type="primary" @click="confirmFolder()">OK</el-button>
-                                             </span>
-                                            </div>
-                                        </el-dialog>
                                     </div>
                                 </div>
+
 
                                 <!--                    待改-->
                                 <!--                    <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==2}">-->
@@ -616,336 +498,458 @@
 
                     <textarea id="detail" style="display: none"
                               placeholder="Input detail about the data here."></textarea>
-                    <el-dialog id="allFileShareDialog" top="40px" width="80%" title="Sharing as Data Item"
-                               :visible.sync="allFileTaskSharingVisible" center="true" :before-close="handleCloseandInit"
-                               @close="closeAndClear">
+                </div>
+                <el-dialog
+                        title="Upload Data"
+                        :visible.sync="uploadDialogVisible"
+                        width="30%"
+                        :before-close="uploadBeforeClose"
+                >
 
-                        <el-steps style="margin-bottom: 15px;" align-center :active="taskSharingActive"
-                                  finish-status="success">
-                            <el-step class="taskSharingStep" title="Select Data"></el-step>
-                            <el-step class="taskSharingStep" title="Basic Info"></el-step>
-                            <el-step class="taskSharingStep" title="Detailed Description"></el-step>
-                            <el-step class="taskSharingStep" title="Authorship"></el-step>
-                        </el-steps>
-                        <h5 style="font-style: italic;color: #999999;margin-top: 0px">
-                            You have select &nbsp<span style="text-decoration: underline;font-style: normal;cursor: pointer"
-                                                       @click="checkSelectedFile()">{{multipleSelection.length+multipleSelectionMyData.length}} data</span>
-                            .</h5>
+
+                    <!--<div class="file-loading">-->
+
+                    <!--<input id="file-1"   type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-theme="fas">-->
+                    <!--</div>-->
+
+
+                    <div class="uploaded">
+
+                        <div class="form-group flexColCenter">
+                            <label style="margin-right:5px;">Storage path :</label>
+                            <el-button type="primary" plain size="mini" @click="selectFolder"
+                                       v-if="selectedPath.length==0&&uploadInPath==0">Select Folder
+                            </el-button>
+                            <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
+                                 v-if="uploadInPath==0">
+                                <div v-for="(path,index) in selectedPath" @click="selectFolder"
+                                     style="text-decoration:underline;cursor: pointer"> /{{path.label}}
+                                </div>
+                            </div>
+                            <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
+                                 v-if="uploadInPath==1">
+                                <div v-for="(path,index) in pathShown"> /{{path.label}}</div>
+                            </div>
+                            <!--                                                    <el-button style="margin-left: calc(50% - 180px)" type="primary"-->
+                            <!--                                                               @click="selectPathClick">Select-->
+                            <!--                                                    </el-button>-->
+                        </div>
+                        <div class="form-group flexColCenter">
+                            <label style="margin-right:5px;">Upload files :</label>
+                            <el-button size="mini" @click="selectFile()">Select File</el-button>
+                        </div>
+                        <el-upload
+                                class="upload-demo"
+                                multiple="true"
+                                ref="upload"
+                                action="http://111.229.14.128:8082/file/upload/store_dataResource_files"
+                                :on-success="handleSuccess"
+                                :file-list="uploadFileList"
+                                :auto-upload="true">
+                            <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
+                                       type="primary">选取文件
+                            </el-button>
+
+                        </el-upload>
+
+                    </div>
+
+                    <!--<span slot="footer" class="dialog-footer">-->
+                    <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-primary"-->
+                    <!--@click="upload_data_dataManager">-->
+                    <!--Confirm-->
+                    <!--</button>-->
+
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal"-->
+                    <!--@click="close()">-->
+                    <!--Cancel-->
+                    <!--</button>-->
+                    <!--</div>-->
+                    <!--</span>-->
+                </el-dialog>
+
+                <el-dialog :visible.sync="addFolderIndex" title="Add New Folder">
+                    <div class="showPathContainer">
+                        <div class="containerWithBorder">path</div>
+                        :
+                        <div v-for="(path,index) in pathShown"
+                             :style="{color:index==pathShown.length-1?'#222222':'#666666'}">
+                            /{{path.label}}
+                        </div>
+                        /..
+                    </div>
+                    <el-input placeholder="Please input the name of the new folder"
+                              v-model="newFolderName"
+                              style="width: calc(100% - 30px);margin:0 15px"></el-input>
+                    <span slot="footer" class="dialog-footer">
+                                                    <el-button class="pull-left" type="primary"
+                                                               icon="el-icon-folder-add" @click="addFolder()">Add new folder</el-button>
+                                                    <el-button @click="addFolderIndex = false">Cancel</el-button>
+                                                </span>
+                </el-dialog>
+
+                <el-dialog
+                        title="Select Folder"
+                        :visible.sync="selectFolderVisible"
+                        width="550px"
+                >
+
+                    <div class=""
+                         style="min-height: 305px;padding: 10px 15px;font-size: 16px;font-family: sans-serif">
+                        <!--                                            <el-card style="min-height: 300px;width: 95%">-->
+                        <el-tree
+                                :data="folderTree"
+                                ref="folderTree"
+                                node-key="id"
+                                highlight-current
+                                default-expand-all
+                                :expand-on-click-node="false"
+                        >
+                                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                    <span>{{ node.label }}</span>
+                                                </span>
                         </el-tree>
-                        <div class="containerWithDottedLine"
-                             style=" border-color: #289ec2;max-height: 500px;min-height:150px;">
-                            <ul class="ulTree dataItemShare" :style="{display:(taskSharingActive==0?'block':'none')}">
-                                <li style="cursor: pointer" @click="dataTreeClick(1)"><span
-                                        class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
-                                    <span style="font-size: 16px;margin-left: 5px">My Uploaded Data</span></li>
-                                <li class="flexLi">
-                                    <el-card shadow="never" style="width: 99%;margin-left: 1%">
-                                        <el-table
-                                                ref="multipleTableMyData"
-                                                :data="databrowser"
-                                                tooltip-effect="dark"
-                                                stripe
-                                                style="width: 100%"
-                                                @select="handleSelectionChangeMyData">
-                                            <el-table-column
-                                                    type="selection"
-                                                    width="55">
-                                            </el-table-column>
-                                            <el-table-column
-                                                    label="Name"
-                                                    prop="fileName"
+                        <!--                                            </el-card>-->
+                    </div>
+                    <div class="modal-footer">
+                                             <span>
+                                                 <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
+                                                            @click="addFolderinTree('myData')">Add new folder</el-button>
+                                                 <el-button @click="closeSelectFolder">Cancel</el-button>
+                                                 <el-button type="primary" @click="confirmFolder()">OK</el-button>
+                                             </span>
+                    </div>
+                </el-dialog>
 
-                                            >
-                                            </el-table-column>
-                                            <el-table-column
-                                                    label="Type"
-                                                    prop="suffix"
-                                            >
-                                            </el-table-column>
-                                            <el-table-column
-                                                    label="Upload Time"
-                                                    prop="createDate"
-                                            >
-                                            </el-table-column>
-                                        </el-table>
-                                    </el-card>
-                                </li>
-                                <li style="cursor: pointer" @click="dataTreeClick(2)"><span
-                                        class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
-                                    <span style="font-size: 16px;margin-left: 5px">Output Data</span></li>
-                                <ul class="flexLi" style="margin-left: 18px">
-                                    <div class="filePackageList">
-                                        <li v-for="(item,index) in userTaskFullInfo.tasks"
-                                            @click="dropPackageContent(item,index)">
-                                            <span class="el-tree-node__expand-icon el-icon-caret-right treeChildLi"></span>
-                                            <span style="font-size: 16px;margin-left: 8px">{{item.computableName}}@{{formatDate(item.runTime)}}</span>
-                                            <div class="packageContent">
-                                                <el-card shadow="never">
-                                                    <el-table
-                                                            ref="multipleTableDataSharing"
-                                                            :data="taskDataList"
-                                                            tooltip-effect="dark"
+                <el-dialog id="allFileShareDialog" top="40px" width="80%" title="Sharing as Data Item"
+                           :visible.sync="allFileTaskSharingVisible" center="true" :before-close="handleCloseandInit"
+                           @close="closeAndClear">
 
-                                                            style="width: 100%"
-                                                            @select="handleSelectionChange">
-                                                        <el-table-column
-                                                                type="selection"
-                                                                width="55">
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                                prop="type"
-                                                                label="Type"
-                                                                width="120"
-                                                                :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"
-                                                                :filter-method="filterType"
-                                                                filter-placement="bottom-start"
-                                                                filter-multiple="false"
-                                                                show-overflow-tooltip>
-                                                            <template slot-scope="scope">
-                                                                <el-tag
-                                                                        :type="scope.row.type === 'Input' ? 'primary' : 'success'"
-                                                                        disable-transitions>{{scope.row.type}}
-                                                                </el-tag>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                                label="Name"
-                                                        >
-                                                            <template slot-scope="scope">{{ scope.row.tag }}</template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                                prop="event"
-                                                                label="Event"
-                                                        >
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                                prop="statename"
-                                                                label="State"
-                                                                :filters="stateFilters"
-                                                                :filter-method="filterState"
-                                                                filter-placement="bottom-start"
-                                                                show-overflow-tooltip>
-                                                        </el-table-column>
+                    <el-steps style="margin-bottom: 15px;" align-center :active="taskSharingActive"
+                              finish-status="success">
+                        <el-step class="taskSharingStep" title="Select Data"></el-step>
+                        <el-step class="taskSharingStep" title="Basic Info"></el-step>
+                        <el-step class="taskSharingStep" title="Detailed Description"></el-step>
+                        <el-step class="taskSharingStep" title="Authorship"></el-step>
+                    </el-steps>
+                    <h5 style="font-style: italic;color: #999999;margin-top: 0px">
+                        You have select &nbsp<span style="text-decoration: underline;font-style: normal;cursor: pointer"
+                                                   @click="checkSelectedFile()">{{multipleSelection.length+multipleSelectionMyData.length}} data</span>
+                        .</h5>
+                    </el-tree>
+                    <div class="containerWithDottedLine"
+                         style=" border-color: #289ec2;max-height: 500px;min-height:150px;">
+                        <ul class="ulTree dataItemShare" :style="{display:(taskSharingActive==0?'block':'none')}">
+                            <li style="cursor: pointer" @click="dataTreeClick(1)"><span
+                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
+                                <span style="font-size: 16px;margin-left: 5px">My Uploaded Data</span></li>
+                            <li class="flexLi">
+                                <el-card shadow="never" style="width: 99%;margin-left: 1%">
+                                    <el-table
+                                            ref="multipleTableMyData"
+                                            :data="databrowser"
+                                            tooltip-effect="dark"
+                                            stripe
+                                            style="width: 100%"
+                                            @select="handleSelectionChangeMyData">
+                                        <el-table-column
+                                                type="selection"
+                                                width="55">
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Name"
+                                                prop="fileName"
+
+                                        >
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Type"
+                                                prop="suffix"
+                                        >
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Upload Time"
+                                                prop="createDate"
+                                        >
+                                        </el-table-column>
+                                    </el-table>
+                                </el-card>
+                            </li>
+                            <li style="cursor: pointer" @click="dataTreeClick(2)"><span
+                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
+                                <span style="font-size: 16px;margin-left: 5px">Output Data</span></li>
+                            <ul class="flexLi" style="margin-left: 18px">
+                                <div class="filePackageList">
+                                    <li v-for="(item,index) in userTaskFullInfo.tasks"
+                                        @click="dropPackageContent(item,index)">
+                                        <span class="el-tree-node__expand-icon el-icon-caret-right treeChildLi"></span>
+                                        <span style="font-size: 16px;margin-left: 8px">{{item.computableName}}@{{formatDate(item.runTime)}}</span>
+                                        <div class="packageContent">
+                                            <el-card shadow="never">
+                                                <el-table
+                                                        ref="multipleTableDataSharing"
+                                                        :data="taskDataList"
+                                                        tooltip-effect="dark"
+
+                                                        style="width: 100%"
+                                                        @select="handleSelectionChange">
+                                                    <el-table-column
+                                                            type="selection"
+                                                            width="55">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="type"
+                                                            label="Type"
+                                                            width="120"
+                                                            :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"
+                                                            :filter-method="filterType"
+                                                            filter-placement="bottom-start"
+                                                            filter-multiple="false"
+                                                            show-overflow-tooltip>
+                                                        <template slot-scope="scope">
+                                                            <el-tag
+                                                                    :type="scope.row.type === 'Input' ? 'primary' : 'success'"
+                                                                    disable-transitions>{{scope.row.type}}
+                                                            </el-tag>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            label="Name"
+                                                    >
+                                                        <template slot-scope="scope">{{ scope.row.tag }}</template>
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="event"
+                                                            label="Event"
+                                                    >
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="statename"
+                                                            label="State"
+                                                            :filters="stateFilters"
+                                                            :filter-method="filterState"
+                                                            filter-placement="bottom-start"
+                                                            show-overflow-tooltip>
+                                                    </el-table-column>
 
 
-                                                        <el-table-column
-                                                                label="Download"
-                                                                width="120">
-                                                            <template slot-scope="scope">
-                                                                <el-button
-                                                                        size="mini"
-                                                                        type="default"
-                                                                        @click="downloadSingle(scope.row.url)">
-                                                                    Download
-                                                                </el-button>
-                                                            </template>
-                                                        </el-table-column>
-                                                    </el-table>
-                                                </el-card>
-                                            </div>
-                                        </li>
-                                    </div>
-                                </ul>
-                                <li style="cursor: pointer" @click="dataTreeClick(3)"><span
-                                        class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
-                                    <span style="font-size: 16px;margin-left: 5px">Fork Data</span></li>
-                                <li class="flexLi">
-                                    <el-card shadow="never" style="width: 99%;margin-left: 1%">
-                                        <el-table>
-
-                                        </el-table>
-                                    </el-card>
-
-                                </li>
+                                                    <el-table-column
+                                                            label="Download"
+                                                            width="120">
+                                                        <template slot-scope="scope">
+                                                            <el-button
+                                                                    size="mini"
+                                                                    type="default"
+                                                                    @click="downloadSingle(scope.row.url)">
+                                                                Download
+                                                            </el-button>
+                                                        </template>
+                                                    </el-table-column>
+                                                </el-table>
+                                            </el-card>
+                                        </div>
+                                    </li>
+                                </div>
                             </ul>
-                            <el-card class="dataItemShare" :style="{display:(taskSharingActive==1?'block':'none')}"
-                                     shadow="never">
-                                <el-col :span="6" style="overflow-y: scroll;height: 550px;">
-                                    <el-collapse>
+                            <li style="cursor: pointer" @click="dataTreeClick(3)"><span
+                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
+                                <span style="font-size: 16px;margin-left: 5px">Fork Data</span></li>
+                            <li class="flexLi">
+                                <el-card shadow="never" style="width: 99%;margin-left: 1%">
+                                    <el-table>
 
-                                        <el-collapse-item v-for="(item,index) in categoryTree"
-                                                          :title=item.key :name=index :key="index">
+                                    </el-table>
+                                </el-card>
 
-                                            <el-button v-for="it in item.value" type="text"
-                                                       @click="chooseTaskDataCate(it,$event)">{{it.category}}
-                                            </el-button>
+                            </li>
+                        </ul>
+                        <el-card class="dataItemShare" :style="{display:(taskSharingActive==1?'block':'none')}"
+                                 shadow="never">
+                            <el-col :span="6" style="overflow-y: scroll;height: 550px;">
+                                <el-collapse>
 
-                                        </el-collapse-item>
-                                    </el-collapse>
-                                </el-col>
-                                <el-col :span="18" class="col-md-9 col-sm-8">
-                                    <el-form label-position="right" label-width="90px" :model="taskDataForm">
-                                        <el-form-item label="Categories" required>
-                                            <el-input v-model="taskDataForm.categoryText" type="textarea" rows="2"
-                                                      :disabled="true"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="Name" required>
-                                            <el-input v-model="taskDataForm.name"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="Keywords" required>
-                                            <el-input v-model="taskDataForm.keywords"
-                                                      id="taskDataKeywordsAll"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="Overview" required>
-                                            <el-input v-model="taskDataForm.description" type="textarea"
-                                                      rows="5"></el-input>
-                                        </el-form-item>
-                                    </el-form>
-                                </el-col>
-                            </el-card>
-                            <el-card class="dataItemShare" :style="{display:(taskSharingActive==2?'block':'none')}"
-                                     shadow="never">
+                                    <el-collapse-item v-for="(item,index) in categoryTree"
+                                                      :title=item.key :name=index :key="index">
+
+                                        <el-button v-for="it in item.value" type="text"
+                                                   @click="chooseTaskDataCate(it,$event)">{{it.category}}
+                                        </el-button>
+
+                                    </el-collapse-item>
+                                </el-collapse>
+                            </el-col>
+                            <el-col :span="18" class="col-md-9 col-sm-8">
+                                <el-form label-position="right" label-width="90px" :model="taskDataForm">
+                                    <el-form-item label="Categories" required>
+                                        <el-input v-model="taskDataForm.categoryText" type="textarea" rows="2"
+                                                  :disabled="true"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Name" required>
+                                        <el-input v-model="taskDataForm.name"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Keywords" required>
+                                        <el-input v-model="taskDataForm.keywords"
+                                                  id="taskDataKeywordsAll"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Overview" required>
+                                        <el-input v-model="taskDataForm.description" type="textarea"
+                                                  rows="5"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+                        </el-card>
+                        <el-card class="dataItemShare" :style="{display:(taskSharingActive==2?'block':'none')}"
+                                 shadow="never">
                                     <textarea id="taskDataDetailAll"
                                               placeholder="Input detail about the data here."></textarea>
 
-                            </el-card>
-                            <el-card class="dataItemShare" :style="{display:(taskSharingActive>=3?'block':'none')}"
-                                     shadow="never">
-                                <div class="panel" style="border:none">
+                        </el-card>
+                        <el-card class="dataItemShare" :style="{display:(taskSharingActive>=3?'block':'none')}"
+                                 shadow="never">
+                            <div class="panel" style="border:none">
 
-                                    <div class="panel-body">
-                                        <div class="col-md-10 col-md-offset-1">
+                                <div class="panel-body">
+                                    <div class="col-md-10 col-md-offset-1">
 
-                                            <div class="panel-group " id="accordion2All">
-                                                <div id="providersPanelAll" class="panel">
+                                        <div class="panel-group " id="accordion2All">
+                                            <div id="providersPanelAll" class="panel">
 
-                                                    <div id="provider_bodyAll"
-                                                         class="panel-collapse collapse in"
-                                                         style="height: auto;">
-                                                        <div class="panel-body providers"
-                                                             style="padding:0px">
-                                                            <div class='panel panel-primary taskDataAuthorship'>
-                                                                <div class='panel-heading info-head'>
-                                                                    <h4 class='panel-title'>
-                                                                        <a class='accordion-toggle collapsed'
-                                                                           style="color:white"
-                                                                           data-toggle='collapse'
-                                                                           data-target='#user1'
-                                                                           href="javascript:;">
-                                                                            NEW
-                                                                        </a>
-                                                                    </h4>
-                                                                    <a href="javascript:;"
-                                                                       class="fa fa-times author_close"
-                                                                       style="float:right;margin-top:8px;color:white"></a>
-                                                                </div>
-                                                                <div id='user1All'
-                                                                     class='panel-collapse collapse in'>
-                                                                    <div class='panel-body user-contents'>
-                                                                        <div class='user-attr'>
-                                                                            <div>
-                                                                                <lable class='control-label col-sm-2 text-center'
-                                                                                       style='font-weight: bold;'>
-                                                                                    Name:
-                                                                                </lable>
-                                                                                <div class='input-group col-sm-10'>
-                                                                                    <input type='text'
-                                                                                           name="name"
-                                                                                           class='form-control'>
-                                                                                </div>
+                                                <div id="provider_bodyAll"
+                                                     class="panel-collapse collapse in"
+                                                     style="height: auto;">
+                                                    <div class="panel-body providers"
+                                                         style="padding:0px">
+                                                        <div class='panel panel-primary taskDataAuthorship'>
+                                                            <div class='panel-heading info-head'>
+                                                                <h4 class='panel-title'>
+                                                                    <a class='accordion-toggle collapsed'
+                                                                       style="color:white"
+                                                                       data-toggle='collapse'
+                                                                       data-target='#user1'
+                                                                       href="javascript:;">
+                                                                        NEW
+                                                                    </a>
+                                                                </h4>
+                                                                <a href="javascript:;"
+                                                                   class="fa fa-times author_close"
+                                                                   style="float:right;margin-top:8px;color:white"></a>
+                                                            </div>
+                                                            <div id='user1All'
+                                                                 class='panel-collapse collapse in'>
+                                                                <div class='panel-body user-contents'>
+                                                                    <div class='user-attr'>
+                                                                        <div>
+                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                   style='font-weight: bold;'>
+                                                                                Name:
+                                                                            </lable>
+                                                                            <div class='input-group col-sm-10'>
+                                                                                <input type='text'
+                                                                                       name="name"
+                                                                                       class='form-control'>
                                                                             </div>
-                                                                            <div style="margin-top:10px">
-                                                                                <lable class='control-label col-sm-2 text-center'
-                                                                                       style='font-weight: bold;'>
-                                                                                    Affiliation:
-                                                                                </lable>
-                                                                                <div class='input-group col-sm-10'>
-                                                                                    <input type='text'
-                                                                                           name="ins"
-                                                                                           class='form-control'>
-                                                                                </div>
+                                                                        </div>
+                                                                        <div style="margin-top:10px">
+                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                   style='font-weight: bold;'>
+                                                                                Affiliation:
+                                                                            </lable>
+                                                                            <div class='input-group col-sm-10'>
+                                                                                <input type='text'
+                                                                                       name="ins"
+                                                                                       class='form-control'>
                                                                             </div>
-                                                                            <div style="margin-top:10px">
-                                                                                <lable class='control-label col-sm-2 text-center'
-                                                                                       style='font-weight: bold;'>
-                                                                                    Email:
-                                                                                </lable>
-                                                                                <div class='input-group col-sm-10'>
-                                                                                    <input type='text'
-                                                                                           name="email"
-                                                                                           class='form-control'>
-                                                                                </div>
+                                                                        </div>
+                                                                        <div style="margin-top:10px">
+                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                   style='font-weight: bold;'>
+                                                                                Email:
+                                                                            </lable>
+                                                                            <div class='input-group col-sm-10'>
+                                                                                <input type='text'
+                                                                                       name="email"
+                                                                                       class='form-control'>
                                                                             </div>
-                                                                            <div style="margin-top:10px">
-                                                                                <lable class='control-label col-sm-2 text-center'
-                                                                                       style='font-weight: bold;'>
-                                                                                    Homepage:
-                                                                                </lable>
-                                                                                <div class='input-group col-sm-10'>
-                                                                                    <input type='text'
-                                                                                           name="homepage"
-                                                                                           class='form-control'>
-                                                                                </div>
+                                                                        </div>
+                                                                        <div style="margin-top:10px">
+                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                   style='font-weight: bold;'>
+                                                                                Homepage:
+                                                                            </lable>
+                                                                            <div class='input-group col-sm-10'>
+                                                                                <input type='text'
+                                                                                       name="homepage"
+                                                                                       class='form-control'>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <button type="button"
-                                                                class="btn btn-success btn-lg btn-block user-add"
-                                                                style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
-                                                            Add
-                                                        </button>
                                                     </div>
+                                                    <button type="button"
+                                                            class="btn btn-success btn-lg btn-block user-add"
+                                                            style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
+                                                        Add
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </el-card>
-                        </div>
-
-
-                        <div class="btn-list">
-                            <el-button type="primary" :style="{visibility:(taskSharingActive>0?'visible':'hidden')}"
-                                       style="min-width: 90px" @click="taskSharingPre()">
-                                previous
-                            </el-button>
-
-
-                            <el-button type="primary" v-if="taskSharingActive<3" style="min-width: 88px"
-                                       @click="taskSharingNext()">
-                                next
-                            </el-button>
-                            <el-button type="success" v-if="taskSharingActive>=3" style="min-width: 90px"
-                                       @click="taskSharingFinish()">
-                                conform
-                            </el-button>
-
-                        </div>
-
-                    </el-dialog>
-
-                    <el-dialog title="Selected data" center="true">
-                        <el-card shadow="never" style="width: 99%;margin-left: 1%">
-                            <el-table
-                                    ref="multipleTable"
-                                    :data="multipleSelection"
-                                    tooltip-effect="dark"
-                                    stripe
-                                    style="width: 100%"
-                                    @selection-change="handleSelectionChange">
-                                <el-table-column
-                                        type="selection"
-                                        width="55">
-                                </el-table-column>
-                                <el-table-column
-                                        label="Name"
-                                        prop="fileName"
-
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                        label="Upload Time"
-                                        prop="createDate"
-                                >
-                                </el-table-column>
-                            </el-table>
+                            </div>
                         </el-card>
-                    </el-dialog>
-                </div>
+                    </div>
 
+
+                    <div class="btn-list">
+                        <el-button type="primary" :style="{visibility:(taskSharingActive>0?'visible':'hidden')}"
+                                   style="min-width: 90px" @click="taskSharingPre()">
+                            previous
+                        </el-button>
+
+
+                        <el-button type="primary" v-if="taskSharingActive<3" style="min-width: 88px"
+                                   @click="taskSharingNext()">
+                            next
+                        </el-button>
+                        <el-button type="success" v-if="taskSharingActive>=3" style="min-width: 90px"
+                                   @click="taskSharingFinish()">
+                            conform
+                        </el-button>
+
+                    </div>
+
+                </el-dialog>
+
+                <el-dialog title="Selected data" center="true">
+                    <el-card shadow="never" style="width: 99%;margin-left: 1%">
+                        <el-table
+                                ref="multipleTable"
+                                :data="multipleSelection"
+                                tooltip-effect="dark"
+                                stripe
+                                style="width: 100%"
+                                @selection-change="handleSelectionChange">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    label="Name"
+                                    prop="fileName"
+
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    label="Upload Time"
+                                    prop="createDate"
+                            >
+                            </el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-dialog>
 
             </div>
 

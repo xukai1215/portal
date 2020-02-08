@@ -46,7 +46,7 @@
                             <div class="user_img" style="position: relative;margin-left: 22px;">
 
                                 <img class="round_icon user_img" :src="userPersonalInfo.image==''?'/static/img/icon/default.png':userPersonalInfo.image">
-                                <div class="shade flexCenter"  style="position: absolute;top:0;" @click="selectUserImg">
+                                <div th:if="${userInfo.oid==userInfo.loginId}" class="shade flexCenter"  style="position: absolute;top:0;" @click="selectUserImg">
                                     <i class="fa fa-camera hoverIcon"></i>
                                 </div>
                             </div>
