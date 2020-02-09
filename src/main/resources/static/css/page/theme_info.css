@@ -600,8 +600,8 @@ zhtml,body{
 #subcard{
     overflow-y: auto;
     /*&::-webkit-scrollbar {*/
-     /*display: none;*/
- /*}*/
+    /*display: none;*/
+    /*}*/
 }
 ::-webkit-scrollbar {
     display: none;
@@ -648,4 +648,25 @@ zhtml,body{
     display: -webkit-box;
     -webkit-box-orient: vertical;
     /*-webkit-line-clamp:2;*/
+}
+.el-badge__content{
+    margin-right: 10px;
+    background-color: #f50657!important;
+}
+.fa-2x {
+    font-size: 1em;
+}
+#myText{
+    width: 100%;
+}
+.edit_info_button, .edit_data_button, .edit_model_button, .edit_application_button{
+    float: right;
+    margin: 10px;
+}
+.share-button{
+    font-size: 30px;
+    color: #e8eef3
+}
+.edit_themename{
+    width: 75%;
 }

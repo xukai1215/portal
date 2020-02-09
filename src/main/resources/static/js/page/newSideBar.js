@@ -4,7 +4,14 @@ Vue.component('headSideBar', {
 
     data() {
         return {
-            curIndex:1,//用于控制选中条目高亮显示
+            tableData: [{
+                info:[],
+                model:[],
+                data:[],
+                application:[]
+            }],
+            message_num:0,
+            curIndex:1,
             itemIndex: 1,
 
             //
@@ -70,6 +77,7 @@ Vue.component('headSideBar', {
                 7:'/user/userSpace#/userTheme',
                 8:'/user/userSpace#/account',
                 9:'/user/userSpace#/feedback',
+                10:'/user/userSpace#/notice',
             }
 
             this.setSession('curIndex',index)
@@ -122,7 +130,7 @@ Vue.component('headSideBar', {
                     this.oid = data;
                 }
             })
-            window.location.href = "/theme/getmessagepage/" + this.oid;
+            this.changeRter(10);
         },
 
         subMenuDropDpwn(target,timerDrop,timerFold){
@@ -158,16 +166,18 @@ Vue.component('headSideBar', {
     },
 
     mounted(){
-        let that= this;
+        let that = this;
+        //let that= this;
         //用于判断用户是否收到消息
         $(document).ready(function () {
+            // console.log(window.name);
+            // that.message_num = window.name;
             $.ajax({
                 url:"/theme/getedit",
                 async:false,
                 type:"GET",
                 success:(json)=>{
                     console.log(json);
-
                     for (let i=0;i<json.length;i++) {
                         for (let k = 0; k < 4; k++) {
                             let type;
@@ -187,54 +197,62 @@ Vue.component('headSideBar', {
 
                             }
                             if (type != null && type.length > 0) {
-                                //需要往数组中放时先push好数组
-                                that.tableData.push({
-                                    info: [],
-                                    model: [],
-                                    data: [],
-                                    application: []
-                                });
                                 for (let j = 0; j < type.length; j++) {
                                     if (k == 0) {
-                                        that.tableData[1].info.push({
-                                            uid: type[j].uid,
-                                            time: type[j].time,
-                                            theme: json[i].themename
-                                        })
+                                        switch (type[j].status) {
+                                            case "0":
+                                                that.message_num++;
+                                        }
                                     }else if (k == 1){
-                                        that.tableData[1].model.push({
-                                            uid: type[j].uid,
-                                            time: type[j].time,
-                                            theme: json[i].themename
-                                        })
+                                        switch (type[j].status) {
+                                            case "0":
+                                                that.message_num++;
+                                        }
+
                                     }else if (k == 2){
-                                        that.tableData[1].data.push({
-                                            uid: type[j].uid,
-                                            time: type[j].time,
-                                            theme: json[i].themename
-                                        })
+                                        switch (type[j].status) {
+                                            case "0":
+                                                that.message_num++;
+                                        }
+
                                     } else if (k == 3){
-                                        that.tableData[1].application.push({
-                                            uid: type[j].uid,
-                                            time: type[j].time,
-                                            theme: json[i].themename
-                                        })
+                                        switch (type[j].status) {
+                                            case "0":
+                                                that.message_num++;
+                                        }
+
                                     }
                                 }
                             }
                         }
                     }
-
-                    //此处判断最终tableData内是否有值，有值则显示消息红点，无值则不显示红点
-                    if (that.tableData.length==1){
-                        $(".is-dot").hide();
-                    } else {
-                        if (that.tableData[1].info.length != 0 || that.tableData[1].model.length != 0 || that.tableData[1].data.length != 0 || that.tableData[1].application.length != 0) {
-                            $(".is-dot").show();
-                        } else {
-                            $(".is-dot").hide();
+                    $.ajax({
+                        type: "GET",
+                        url: "/version/getVersions",
+                        data: {},
+                        async: false,
+                        success: (json) => {
+                            //下面将type分到model、community中
+                            //model：modelItem、conceptualModel、logicalModel、computableModel
+                            // community：concept、spatialReference	、unit、template
+                            for (let i=0;i<json.data.uncheck.length;i++){
+                                if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
+                                    // this.model_tableData1.push(json.data.uncheck[i]);
+                                    that.message_num++;
+                                }else {
+                                    // this.community_tableData1.push(json.data.uncheck[i]);
+                                    that.message_num++;
+                                }
+                            }
+                            if (that.message_num==0){
+                                $(".el-badge__content").hide();
+                            } else {
+                                $(".el-badge__content").show();
+                            }
                         }
-                    }
+                    })
+
+
                 }
             })
         })

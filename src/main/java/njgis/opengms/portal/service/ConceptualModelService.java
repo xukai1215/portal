@@ -341,6 +341,7 @@ public class ConceptualModelService {
                     conceptualModelVersion.setVerNumber(now.getTime());
                     conceptualModelVersion.setVerStatus(0);
                     conceptualModelVersion.setModifyTime(now);
+                    conceptualModelVersion.setCreator(author0);
 
                     conceptualModelVersionDao.save(conceptualModelVersion);
 

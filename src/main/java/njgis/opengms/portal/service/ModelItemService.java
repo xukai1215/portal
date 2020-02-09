@@ -589,6 +589,7 @@ public class ModelItemService {
                 modelItemVersion.setVerNumber(curDate.getTime());
                 modelItemVersion.setStatus(0);
                 modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+                modelItemVersion.setCreator(author);
                 modelItemVersionDao.insert(modelItemVersion);
 
                 modelItem.setLock(true);

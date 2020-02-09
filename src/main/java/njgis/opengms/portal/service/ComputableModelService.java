@@ -667,6 +667,7 @@ public class ComputableModelService {
     public JSONObject update(List<MultipartFile> files, JSONObject jsonObject, String uid) {
         JSONObject result = new JSONObject();
         ComputableModel computableModel_ori = computableModelDao.findFirstByOid(jsonObject.getString("oid"));
+        String author0 = computableModel_ori.getAuthor();
         ComputableModel computableModel = new ComputableModel();
         BeanUtils.copyProperties(computableModel_ori, computableModel);
 
@@ -829,6 +830,7 @@ public class ComputableModelService {
                 computableModelVersion.setVerNumber(now.getTime());
                 computableModelVersion.setVerStatus(0);
                 computableModelVersion.setModifyTime(now);
+                computableModelVersion.setCreator(author0);
 
                 computableModelVersionDao.save(computableModelVersion);
 

@@ -157,6 +157,10 @@ var router = new VueRouter({
                 component:userAccount,
             },
             {
+                path:'/notice',
+                component:notice,
+            },
+            {
                 path:'/feedback',
                 component:feedback,
             },
@@ -176,6 +180,16 @@ var vue = new Vue(
         el: "#app",
         data(){
             return{
+
+                message_num:0,
+                tableData: [{
+                    info:[],
+                    model:[],
+                    data:[],
+                    application:[]
+                }],
+
+                useroid:"",
                 //页面样式控制
                 loading: 'false',
                 load: true,
@@ -198,6 +212,8 @@ var vue = new Vue(
         router:router,
 
         methods:{
+
+
             //公共功能
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
@@ -258,6 +274,20 @@ var vue = new Vue(
         },
 
         mounted() {
+            let that= this;
+            //用于消息判断
+
+
+            $(document).on('click','.share-button',function ($event) {
+                $.ajax({
+                    url: "/theme/getoid",
+                    async: false,
+                    success:(data)=>{
+                        that.useroid = data;
+                    }
+                })
+                window.location.href = "/theme/getmessagepage/" + that.useroid;
+            })
 
             $(() => {
                 // let height = document.documentElement.clientHeight;

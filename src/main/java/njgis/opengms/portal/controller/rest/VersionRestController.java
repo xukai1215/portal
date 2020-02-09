@@ -9,11 +9,15 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.service.VersionService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jws.soap.SOAPBinding;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +80,9 @@ public class VersionRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserDao userDao;
 
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public ModelAndView getRegister() {
@@ -797,14 +804,26 @@ public class VersionRestController {
     }
 
     @RequestMapping(value = "/getVersions", method = RequestMethod.GET)
-    public JsonResult getUnchecked() {
+    public JsonResult getUnchecked(HttpServletRequest request) {
         JSONObject result = new JSONObject();
         JSONArray uncheck = new JSONArray();
         JSONArray accept = new JSONArray();
         JSONArray reject = new JSONArray();
+        JSONArray edit = new JSONArray();
+        //下面是匹配当前的项目的创建者与当前登陆者
+        HttpSession session = request.getSession();
+        String uid = session.getAttribute("uid").toString();
 
         List<ModelItemVersion> modelItemVersions = modelItemVersionDao.findAll();
-        for (ModelItemVersion modelItemVersion : modelItemVersions) {
+        List<ModelItemVersion> modelItemVersions1 = new ArrayList<>();
+        for (int i=0;i<modelItemVersions.size();i++){
+            if (uid.equals(modelItemVersions.get(i).getCreator())){
+                modelItemVersions1.add(modelItemVersions.get(i));
+            }
+        }
+
+
+        for (ModelItemVersion modelItemVersion : modelItemVersions1) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", modelItemVersion.getName());
@@ -813,20 +832,39 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(modelItemVersion.getModifyTime()));
             jsonObject.put("modifier", modelItemVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (modelItemVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "modelItem");
 
             int status = modelItemVersion.getStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
             }
         }
 
         List<ConceptualModelVersion> conceptualModelVersionList = conceptualModelVersionDao.findAll();
-        for (ConceptualModelVersion conceptualModelVersion : conceptualModelVersionList) {
+        List<ConceptualModelVersion> conceptualModelVersions = new ArrayList<>();
+        for (int i=0;i<conceptualModelVersionList.size();i++){
+            if (uid.equals(conceptualModelVersionList.get(i).getCreator())){
+                conceptualModelVersions.add(conceptualModelVersionList.get(i));
+            }
+        }
+        for (ConceptualModelVersion conceptualModelVersion : conceptualModelVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", conceptualModelVersion.getName());
@@ -835,20 +873,42 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(conceptualModelVersion.getModifyTime()));
             jsonObject.put("modifier", conceptualModelVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (conceptualModelVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "conceptualModel");
 
             int status = conceptualModelVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
             }
         }
 
         List<LogicalModelVersion> logicalModelVersionList = logicalModelVersionDao.findAll();
-        for (LogicalModelVersion logicalModelVersion : logicalModelVersionList) {
+        List<LogicalModelVersion> logicalModelVersions = new ArrayList<>();
+        for (int i=0;i<logicalModelVersionList.size();i++){
+            if (uid.equals(logicalModelVersionList.get(i).getCreator())){
+                logicalModelVersions.add(logicalModelVersionList.get(i));
+            }
+        }
+        for (LogicalModelVersion logicalModelVersion : logicalModelVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", logicalModelVersion.getName());
@@ -857,20 +917,43 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(logicalModelVersion.getModifyTime()));
             jsonObject.put("modifier", logicalModelVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (logicalModelVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "logicalModel");
 
             int status = logicalModelVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
             }
         }
 
         List<ComputableModelVersion> computableModelVersionList = computableModelVersionDao.findAll();
-        for (ComputableModelVersion computableModelVersion : computableModelVersionList) {
+        List<ComputableModelVersion> computableModelVersions = new ArrayList<>();
+        for (int i=0;i<computableModelVersionList.size();i++){
+            if (uid.equals(computableModelVersionList.get(i).getCreator())){
+                computableModelVersions.add(computableModelVersionList.get(i));
+            }
+        }
+
+        for (ComputableModelVersion computableModelVersion : computableModelVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", computableModelVersion.getName());
@@ -879,20 +962,43 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(computableModelVersion.getModifyTime()));
             jsonObject.put("modifier", computableModelVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (computableModelVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "computableModel");
 
             int status = computableModelVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
+            }
+        }
+//写到这了
+        List<ConceptVersion> conceptVersionList = conceptVersionDao.findAll();
+        List<ConceptVersion> conceptVersions = new ArrayList<>();
+        for (int i=0;i<conceptVersionList.size();i++){
+            if (uid.equals(conceptVersionList.get(i).getCreator())){
+                conceptVersions.add(conceptVersionList.get(i));
             }
         }
 
-        List<ConceptVersion> conceptVersionList = conceptVersionDao.findAll();
-        for (ConceptVersion conceptVersion : conceptVersionList) {
+        for (ConceptVersion conceptVersion : conceptVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", conceptVersion.getName());
@@ -901,20 +1007,43 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(conceptVersion.getModifyTime()));
             jsonObject.put("modifier", conceptVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (conceptVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "concept");
 
             int status = conceptVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
             }
         }
 
         List<TemplateVersion> templateVersionList = templateVersionDao.findAll();
-        for (TemplateVersion templateVersion : templateVersionList) {
+        List<TemplateVersion> templateVersions = new ArrayList<>();
+        for (int i=0;i<templateVersionList.size();i++){
+            if (uid.equals(templateVersionList.get(i).getCreator())){
+                templateVersions.add(templateVersionList.get(i));
+            }
+        }
+
+        for (TemplateVersion templateVersion : templateVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", templateVersion.getName());
@@ -923,20 +1052,43 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(templateVersion.getModifyTime()));
             jsonObject.put("modifier", templateVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (templateVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "template");
 
             int status = templateVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
             }
         }
 
         List<SpatialReferenceVersion> spatialReferenceVersionList = spatialReferenceVersionDao.findAll();
-        for (SpatialReferenceVersion spatialReferenceVersion : spatialReferenceVersionList) {
+        List<SpatialReferenceVersion> spatialReferenceVersions = new ArrayList<>();
+        for (int i=0;i<spatialReferenceVersionList.size();i++){
+            if (uid.equals(spatialReferenceVersionList.get(i).getCreator())){
+                spatialReferenceVersions.add(spatialReferenceVersionList.get(i));
+            }
+        }
+
+        for (SpatialReferenceVersion spatialReferenceVersion : spatialReferenceVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", spatialReferenceVersion.getName());
@@ -945,20 +1097,43 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(spatialReferenceVersion.getModifyTime()));
             jsonObject.put("modifier", spatialReferenceVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (spatialReferenceVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "spatialReference");
 
             int status = spatialReferenceVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
             }
         }
 
         List<UnitVersion> unitVersionList = unitVersionDao.findAll();
-        for (UnitVersion unitVersion : unitVersionList) {
+        List<UnitVersion> unitVersions = new ArrayList<>();
+        for (int i=0;i<unitVersionList.size();i++){
+            if (uid.equals(unitVersionList.get(i).getCreator())){
+                unitVersions.add(unitVersionList.get(i));
+            }
+        }
+
+        for (UnitVersion unitVersion : unitVersions) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", unitVersion.getName());
@@ -967,15 +1142,31 @@ public class VersionRestController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(unitVersion.getModifyTime()));
             jsonObject.put("modifier", unitVersion.getModifier());
+            //前台展示需要用户的name，所以通过uid获取用户的name
+            String name = new String();
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (unitVersion.getModifier().equals(users.get(i).getUserName())){
+                    name = users.get(i).getName();
+                    break;
+                }
+            }
+            jsonObject.put("modifierName", name);
             jsonObject.put("type", "unit");
 
             int status = unitVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == 1) {
                 accept.add(jsonObject);
+                edit.add(jsonObject);
+
             } else if (status == -1) {
                 reject.add(jsonObject);
+                edit.add(jsonObject);
+
             }
         }
 
@@ -984,6 +1175,7 @@ public class VersionRestController {
         result.put("uncheck", uncheck);
         result.put("accept", accept);
         result.put("reject", reject);
+        result.put("edit",edit);
 
         return ResultUtils.success(result);
     }

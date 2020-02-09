@@ -27,6 +27,7 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.Application;
 import njgis.opengms.portal.entity.support.ClassInfo;
 import njgis.opengms.portal.entity.support.DataClassInfo;
+import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -348,8 +349,6 @@ public class RepositoryService {
 
         List<Application> applications = theme.getApplication();
         JSONArray applications_result = new JSONArray();
-        JSONObject applicationObj = new JSONObject();
-        JSONArray apps=new JSONArray();
 
         for(int i=0;i<applications.size();i++){
             JSONObject app = new JSONObject();
@@ -358,6 +357,16 @@ public class RepositoryService {
             app.put("link",application.getApplicationlink());
             app.put("image",application.getApplication_image());
             applications_result.add(app);
+        }
+
+        List<Maintainer> maintainers = theme.getMaintainer();
+        JSONArray maintainer_result = new JSONArray();
+        for (int i=0;i<maintainers.size();i++){
+            JSONObject ma = new JSONObject();
+            Maintainer maintainer = maintainers.get(i);
+            ma.put("name",maintainer.getName());
+            ma.put("id",maintainer.getId());
+            maintainer_result.add(ma);
         }
 
 
@@ -369,6 +378,7 @@ public class RepositoryService {
         modelAndView.addObject("modelClassInfos",classInfos_result);
         modelAndView.addObject("dataClassInfos",dataClassInfos_result);
         modelAndView.addObject("applications",applications_result);
+        modelAndView.addObject("maintainer",maintainer_result);
 //        modelAndView.addObject("oid",theme.get)
         /*判断登陆*/
         HttpSession session=req.getSession();
@@ -584,6 +594,7 @@ public class RepositoryService {
                 conceptVersion.setVerNumber(now.getTime());
                 conceptVersion.setVerStatus(0);
                 conceptVersion.setModifyTime(now);
+                conceptVersion.setCreator(author);
 
                 conceptVersionDao.save(conceptVersion);
 
@@ -899,6 +910,7 @@ public class RepositoryService {
                 spatialReferenceVersion.setVerNumber(now.getTime());
                 spatialReferenceVersion.setVerStatus(0);
                 spatialReferenceVersion.setModifyTime(now);
+                spatialReferenceVersion.setCreator(author);
 
                 spatialReferenceVersionDao.save(spatialReferenceVersion);
 
@@ -1187,6 +1199,7 @@ public class RepositoryService {
                 templateVersion.setVerNumber(now.getTime());
                 templateVersion.setVerStatus(0);
                 templateVersion.setModifyTime(now);
+                templateVersion.setCreator(author);
 
                 templateVersionDao.save(templateVersion);
 
@@ -1505,6 +1518,7 @@ public class RepositoryService {
                 unitVersion.setVerNumber(now.getTime());
                 unitVersion.setVerStatus(0);
                 unitVersion.setModifyTime(now);
+                unitVersion.setCreator(author);
 
                 unitVersionDao.save(unitVersion);
 
@@ -1594,7 +1608,6 @@ public class RepositoryService {
                 application.setApplication_image("");
             }
         }
-
         return themeDao.insert(theme);
     }
 

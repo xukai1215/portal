@@ -19,6 +19,8 @@ import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.Application;
+import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.RepositoryService;
 import njgis.opengms.portal.service.UserService;
@@ -34,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -891,6 +894,13 @@ public class RepositoryRestController {
         ThemeAddDTO themeAddDTO = JSONObject.toJavaObject(jsonObject, ThemeAddDTO.class);
         themeAddDTO.setCreator_name(session.getAttribute("name").toString());
         themeAddDTO.setCreator_oid(session.getAttribute("oid").toString());
+
+        List<Maintainer> maintainers = new ArrayList<>();
+        Maintainer maintainer = new Maintainer();
+        maintainer.setName(session.getAttribute("name").toString());
+        maintainer.setId(session.getAttribute("oid").toString());
+        maintainers.add(maintainer);
+        themeAddDTO.setMaintainer(maintainers);
 
         String uid = session.getAttribute("uid").toString();
 
