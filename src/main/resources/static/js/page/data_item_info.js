@@ -1423,7 +1423,7 @@ $(function () {
 
     $(".ab").click(
         function () {
-            if($('#authorship0').height()!=0)
+            if(this.className.indexOf('transform180')==-1)
                 $(this).addClass('transform180')
             else
                 $(this).removeClass('transform180')

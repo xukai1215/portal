@@ -35,7 +35,7 @@ var feedback = Vue.extend(
                     alert('please input at lease one word')
                     return
                 }
-
+                let that=this;
                 $.ajax({
                     url: "/user/userSpace/sendFeedback",
                     type: "POST",
@@ -45,9 +45,10 @@ var feedback = Vue.extend(
                         content: this.content,
                     },
 
+
                     success: function (result) {
                         alert('send suggestion successfully!')
-                        this.content = '';
+                        that.content = '';
                     }
                     }
                 )
