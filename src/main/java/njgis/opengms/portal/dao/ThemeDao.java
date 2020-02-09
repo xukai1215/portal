@@ -23,6 +23,8 @@ public interface ThemeDao extends MongoRepository<Theme,String> {
 
     List<Theme> findAll();
 
+    Theme findByThemename(String themename);
+
 //    Page<Theme> findByClassarr(String classarr, Pageable pageable);
 //
 //    Page<Theme> findByApplication(String application, Pageable pageable);

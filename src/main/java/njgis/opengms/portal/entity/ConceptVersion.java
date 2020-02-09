@@ -21,6 +21,7 @@ public class ConceptVersion {
     Date modifyTime;
     List<String> related;
     int loadCount;
+    String creator;
 
     String alias;
     String parentId;

@@ -20,6 +20,7 @@ public class ConceptualModelVersion {
     String cXml;
     String svg;
     String detail;
+    String creator;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;

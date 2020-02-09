@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>User Space | OpenGMS</title>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
-
+    <!--<link rel="stylesheet" href="/static/css/page/theme_info.css">-->
 
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
@@ -169,7 +169,10 @@
 <!--feedback组件-->
 <template th:replace="feedback :: feedback"></template>
 <script src="/static/js/page/feedBack.js"></script>
-<!--根组件 放在最后-->
+<!--notice组件-->
+<template th:replace="message_confirm :: notice"></template>
+<script src="/static/js/page/message_confirm.js"></script>
+<!--根组件-->
 <script src="/static/js/page/userSpace1.js"></script>
 
 </html>

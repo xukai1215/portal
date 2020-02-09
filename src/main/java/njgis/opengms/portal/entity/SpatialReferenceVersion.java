@@ -22,6 +22,7 @@ public class SpatialReferenceVersion {
     String detail;
     Date modifyTime;
     int loadCount;
+    String creator;
 
     String type;
     String parentId;
