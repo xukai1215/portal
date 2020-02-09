@@ -21,6 +21,7 @@ public class ModelItemVersion {
     String description;//
     String detail;//
     String modifier;
+    String creator;
 
     Long verNumber;//版本号
     int status;//版本状态

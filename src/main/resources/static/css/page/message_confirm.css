@@ -1,0 +1,47 @@
+.time {
+    font-size: 13px;
+    color: #999;
+}
+
+.bottom {
+    margin-top: 13px;
+    line-height: 12px;
+}
+
+.button {
+    padding: 0;
+    float: right;
+}
+
+
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+.user_info{
+    top: 10%;
+    left: 20%;
+}
+
+.user_head{
+    display: block;
+    top: 10%;
+    left: 20%;
+}
+.user_info{
+    float: left;
+    margin-right: 3%;
+    margin-top: 3%;
+    margin-left: 3%;
+}
+.message{
+    margin-top: 3%;
+    margin-right: 2%;
+
+}

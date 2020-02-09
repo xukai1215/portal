@@ -1197,7 +1197,7 @@ var createTheme = Vue.extend({
                 }
             }
             $('#imgFile'+index).click();
-        })
+        });
         $(document).on('change','.img_file',function ($event) {
         // $(".img_file").change(function () {
             //匹配id，增加image
@@ -1442,14 +1442,6 @@ var createTheme = Vue.extend({
                 that.themeObj.application.splice(0,1);
             }
 
-
-            // var theme_name = $("#nameInput").val();
-            // if (theme_name==""){
-            //     alert("Please input theme name!");
-            //     window.location.href = "/user/createTheme";
-            //     return false;
-            // }
-            //step1
             that.themeObj.themename = $("#nameInput").val();
             that.themeObj.image = $('#imgShow').get(0).src;
 
@@ -1458,16 +1450,10 @@ var createTheme = Vue.extend({
             console.log(that.themeObj);
 
             that.themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
-            // themeObj.application_image = $('#imgShow1').get(0).src;
-            // themeObj.upload_application_image = $('#imgShow1').get(0).currentSrc;
-            let formData=new FormData();
 
-            //第二份追加，因为输入最后一次后，不需要再点击add，只需要点击finish
-            // var app = {};
-            // app.applicationname = $("#applicationname").val();
-            // app.applicationlink = $("#applicationlink").val();
-            // app.upload_application_image = $("#imgShow1").get(0).currentSrc;
-            // that.themeObj.application.push(app);
+            that.themeObj.tabledata = that.editableTabs_model;
+
+            let formData=new FormData();
 
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
@@ -1524,8 +1510,6 @@ var createTheme = Vue.extend({
                                 alert("Success! Changes have been submitted, please wait for the webmaster to review.");
                                 window.location.href = "/user/userSpace";
                             }
-                            // window.location.href = "/theme/" + result.data;
-                            //window.location.reload();
                         }
                         else if(result.code==-2){
                             alert("Please login first!");

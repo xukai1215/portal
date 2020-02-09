@@ -273,6 +273,7 @@ public class LogicalModelService {
         JSONObject result = new JSONObject();
 
         LogicalModel logicalModel_ori = logicalModelDao.findFirstByOid(jsonObject.getString("oid"));
+        String author0 = logicalModel_ori.getAuthor();
         LogicalModel logicalModel = new LogicalModel();
         BeanUtils.copyProperties(logicalModel_ori, logicalModel);
 
@@ -366,6 +367,7 @@ public class LogicalModelService {
                     logicalModelVersion.setVerNumber(now.getTime());
                     logicalModelVersion.setVerStatus(0);
                     logicalModelVersion.setModifyTime(now);
+                    logicalModelVersion.setCreator(author0);
 
                     logicalModelVersionDao.save(logicalModelVersion);
 

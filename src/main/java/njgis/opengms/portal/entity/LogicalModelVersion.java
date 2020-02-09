@@ -29,6 +29,7 @@ public class LogicalModelVersion {
     String description;
     String cXml;
     String svg;
+    String creator;
 
     String detail;
 

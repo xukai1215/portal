@@ -19,6 +19,7 @@ public class TemplateVersion {
     String detail;
     String image;
     Date modifyTime;
+    String creator;
 
     int loadCount;
 
