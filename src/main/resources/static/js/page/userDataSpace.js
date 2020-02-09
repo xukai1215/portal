@@ -2347,61 +2347,6 @@ var userDataSpace = Vue.extend(
             });
 
             var user_num = 0;
-            $(document).on("click", ".user-add", function () {
-                user_num++;
-                var content_box = $(this).parent().children('div');
-                var str = "<div class='panel panel-primary taskDataAuthorship'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-                str += user_num;
-                str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-                str += user_num;
-                str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                    "                                                                                                    <div>\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Name:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"name\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Affiliation:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"ins\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Email:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"email\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Homepage:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"homepage\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                </div></div> </div> </div>"
-                content_box.append(str)
-            })
 
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()

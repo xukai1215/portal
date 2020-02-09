@@ -124,18 +124,22 @@
                                                 <el-tag v-if="task.integrate" style="margin-left:10px">Integrated Model</el-tag>
                                             </a>
 
-                                            <div class="">
-                                                <el-button v-if="task.status==2&&!task.integrate" type="warning" size="mini"
+                                            <div class="" style="display: flex;align-items: center;">
+                                                <el-button v-if="task.status==2&&!task.integrate" type="warning"
+                                                           size="mini"
                                                            @click="publishTask(task)">
-                                            <span v-if="task.permission=='public'"><span><i
-                                                    class="fa fa-unlock"></i></span>Public</span>
-                                                    <span v-else><span style="margin-right: 2px"><i class="fa fa-lock wzhI"></i></span>Private</span>
+                                                    <span v-if="task.permission=='public'">
+                                                        <span><i class="fa fa-unlock"></i></span>
+                                                        Public</span>
+                                                    <span v-else><span style="margin-right: 2px"><i
+                                                            class="fa fa-lock wzhI"></i></span>Private</span>
                                                 </el-button>
-                                                <button v-if="task.status==2&&!task.integrate" class="btn btn-sm wzhButton"
-                                                        @click="sharingTaskData(task)"
-                                                        style="margin-right: 5px;border-radius: 3px;"><i
-                                                        class="fa fa-share-square-o" aria-hidden="true"></i>Share as Data Item
-                                                </button>
+                                                <el-button v-if="task.status==2&&!task.integrate"
+                                                        @click="sharingTaskData(task)" plain type="info" size="mini"
+                                                        style="margin: 0 5px;"><i
+                                                        class="fa fa-share-square-o" aria-hidden="true"></i>Share as
+                                                    Data Item
+                                                </el-button>
                                                 <el-button type="primary" size="mini"
                                                            style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
                                                            @click="checkOutput(task.computableId,task.taskId,task.integrate)">
@@ -175,11 +179,11 @@
                                                 <span style="margin-top: 5px; display: inline-block;">
                                                     {{input.event}}
                                                 </span>
-                                                    <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                                    <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                             style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
                                                             @click="downloadSingle(input.url)">Download File
                                                     </button>
-                                                    <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                                    <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                             style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
                                                             @click="addOutputToMyData(input)">Add to My Data
                                                     </button>
@@ -195,11 +199,11 @@
                                                 <span style="margin-top: 5px; displaay: inline-block;">
                                                     {{output.event}}
                                                 </span>
-                                                    <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                                    <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                             style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
                                                             @click="downloadSingle(output.url)">Download File
                                                     </button>
-                                                    <button class="pull-right clearfix btn btn-primary downloadAFile"
+                                                    <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
                                                             style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
                                                             @click="addOutputToMyData(output)">Add to My Data
                                                     </button>
