@@ -52,6 +52,7 @@
                                                     v-for = "(item,index) in sum_tableData"
                                                     :key="index"
                                                     :timestamp="item.modifyTime"
+                                                    :color="item.color"
                                                     placement="top"
                                             >
                                                     <el-card v-if="item.status== 'unchecked'">
