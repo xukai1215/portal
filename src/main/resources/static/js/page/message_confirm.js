@@ -178,6 +178,16 @@ var notice = Vue.extend({
                             }
                         }
                     }
+                    //为时间线涂色
+                    for (let i=0;i<this.sum_tableData.length;i++){
+                        if (this.sum_tableData[i].status == "confirmed") {
+                            this.sum_tableData[i].color = '#0bbd87';
+                        }else if (this.sum_tableData[i].status == "reject") {
+                            this.sum_tableData[i].color = '#CF2018';
+                        }else {
+                            this.sum_tableData[i].color = '#20D1D4';
+                        }
+                    }
                     console.log(this.sum_tableData);
                 }
             })
