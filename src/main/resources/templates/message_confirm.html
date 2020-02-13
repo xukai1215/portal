@@ -39,75 +39,34 @@
                             <el-tab-pane label="OverView" name="first">
                                 <el-card>
                                     <div class="block">
+                                        <div class="radio">
+                                            Sort：
+                                            <el-radio-group v-model="reverse">
+                                                <el-radio :label="true">Reverse order</el-radio>
+                                                <el-radio :label="false">Positive order</el-radio>
+                                            </el-radio-group>
+                                        </div>
+
                                         <el-timeline :reverse="reverse">
-                                        <!--<div >-->
                                             <el-timeline-item
-                                                    v-for = "(item,index) in edit_model_tableData"
+                                                    v-for = "(item,index) in sum_tableData"
+                                                    :key="index"
                                                     :timestamp="item.modifyTime"
                                                     placement="top"
                                             >
-                                                <el-card>
-                                                    <h4>{{item.modifierName}} edit model's {{item.name}}</h4>
-                                                    <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
-                                                </el-card>
+                                                    <el-card v-if="item.status== 'unchecked'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/modelItem/'+item.originOid">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else>
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
                                             </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in model_tableData2"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} confirm {{item.modifierName}}'s edit of model's {{item.name}}</h4>
-                                                    <p>{{username}} confirm in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in model_tableData3"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} reject {{item.modifierName}}'s edit of model's {{item.name}}</h4>
-                                                    <p>{{username}} reject in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in edit_community_tableData"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{item.modifierName}} edit community's {{item.name}}</h4>
-                                                    <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in community_tableData2"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} confirm {{item.modifierName}}'s edit of community's {{item.name}}</h4>
-                                                    <p>{{username}} confirm in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in community_tableData3"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} reject {{item.modifierName}}'s edit of community's {{item.name}}</h4>
-                                                    <p>{{username}} reject in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
                                     </el-timeline>
                                     </div>
                                 </el-card>

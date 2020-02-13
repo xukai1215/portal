@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -341,7 +342,7 @@ public class VersionRestController {
 
     @RequestMapping(value = "/accept", method = RequestMethod.POST)
     public JsonResult accept(@RequestBody VersionDTO versionDTO) {
-
+        Date curDate = new Date();
         if (versionDTO.getType().equals("modelItem")) {
             ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
             if (modelItem.getVersions() == null || modelItem.getVersions().size() == 0) {
@@ -388,7 +389,8 @@ public class VersionRestController {
             modelItem.setLastModifyTime(modelItemVersion.getModifyTime());
             modelItemDao.save(modelItem);
 
-            modelItemVersion.setStatus(1);
+            modelItemVersion.setStatus(1);//
+            modelItemVersion.setAcceptTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
         } else if (versionDTO.getType().equals("conceptualModel")) {
             ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(versionDTO.getOriginOid());
@@ -437,6 +439,7 @@ public class VersionRestController {
             conceptualModelDao.save(conceptualModel);
 
             conceptualModelVersion.setVerStatus(1);
+            conceptualModelVersion.setAcceptTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
         } else if (versionDTO.getType().equals("logicalModel")) {
             LogicalModel logicalModel = logicalModelDao.findFirstByOid(versionDTO.getOriginOid());
@@ -485,6 +488,7 @@ public class VersionRestController {
             logicalModelDao.save(logicalModel);
 
             logicalModelVersion.setVerStatus(1);
+            logicalModelVersion.setAcceptTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
         } else if (versionDTO.getType().equals("computableModel")) {
             ComputableModel computableModel = computableModelDao.findFirstByOid(versionDTO.getOriginOid());
@@ -533,6 +537,7 @@ public class VersionRestController {
             computableModelDao.save(computableModel);
 
             computableModelVersion.setVerStatus(1);
+            computableModelVersion.setAcceptTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
         } else if (versionDTO.getType().equals("concept")) {
             Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
@@ -581,6 +586,7 @@ public class VersionRestController {
             conceptDao.save(concept);
 
             conceptVersion.setVerStatus(1);
+            conceptVersion.setAcceptTime(curDate);
             conceptVersionDao.save(conceptVersion);
         } else if (versionDTO.getType().equals("template")) {
             Template template = templateDao.findByOid(versionDTO.getOriginOid());
@@ -629,6 +635,7 @@ public class VersionRestController {
             templateDao.save(template);
 
             templateVersion.setVerStatus(1);
+            templateVersion.setAcceptTime(curDate);
             templateVersionDao.save(templateVersion);
         } else if (versionDTO.getType().equals("spatialReference")) {
             SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
@@ -677,6 +684,7 @@ public class VersionRestController {
             spatialReferenceDao.save(spatialReference);
 
             spatialReferenceVersion.setVerStatus(1);
+            spatialReferenceVersion.setAcceptTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
         } else if (versionDTO.getType().equals("unit")) {
             Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
@@ -725,6 +733,7 @@ public class VersionRestController {
             unitDao.save(unit);
 
             unitVersion.setVerStatus(1);
+            unitVersion.setAcceptTime(curDate);
             unitVersionDao.save(unitVersion);
         }
 
@@ -733,9 +742,12 @@ public class VersionRestController {
 
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
     public JsonResult reject(@RequestBody VersionDTO versionDTO) {
+        Date curDate = new Date();
+
         if (versionDTO.getType().equals("modelItem")) {
             ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(versionDTO.getOid());
             modelItemVersion.setStatus(-1);
+            modelItemVersion.setRejectTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
 
             ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
@@ -744,6 +756,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("conceptualModel")) {
             ConceptualModelVersion conceptualModelVersion = conceptualModelVersionDao.findFirstByOid(versionDTO.getOid());
             conceptualModelVersion.setVerStatus(-1);
+            conceptualModelVersion.setRejectTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
 
             ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(versionDTO.getOriginOid());
@@ -752,6 +765,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("logicalModel")) {
             LogicalModelVersion logicalModelVersion = logicalModelVersionDao.findFirstByOid(versionDTO.getOid());
             logicalModelVersion.setVerStatus(-1);
+            logicalModelVersion.setRejectTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
 
             LogicalModel logicalModel = logicalModelDao.findFirstByOid(versionDTO.getOriginOid());
@@ -760,6 +774,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("computableModel")) {
             ComputableModelVersion computableModelVersion = computableModelVersionDao.findFirstByOid(versionDTO.getOid());
             computableModelVersion.setVerStatus(-1);
+            computableModelVersion.setRejectTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
 
             ComputableModel computableModel = computableModelDao.findFirstByOid(versionDTO.getOriginOid());
@@ -768,6 +783,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("concept")) {
             ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(versionDTO.getOid());
             conceptVersion.setVerStatus(-1);
+            conceptVersion.setRejectTime(curDate);
             conceptVersionDao.save(conceptVersion);
 
             Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
@@ -776,6 +792,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("template")) {
             TemplateVersion templateVersion = templateVersionDao.findFirstByOid(versionDTO.getOid());
             templateVersion.setVerStatus(-1);
+            templateVersion.setRejectTime(curDate);
             templateVersionDao.save(templateVersion);
 
             Template template = templateDao.findByOid(versionDTO.getOriginOid());
@@ -784,6 +801,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("spatialReference")) {
             SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(versionDTO.getOid());
             spatialReferenceVersion.setVerStatus(-1);
+            spatialReferenceVersion.setRejectTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
 
             SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
@@ -792,6 +810,7 @@ public class VersionRestController {
         } else if (versionDTO.getType().equals("unit")) {
             UnitVersion unitVersion = unitVersionDao.findFirstByOid(versionDTO.getOid());
             unitVersion.setVerStatus(-1);
+            unitVersion.setRejectTime(curDate);
             unitVersionDao.save(unitVersion);
 
             Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
@@ -831,7 +850,27 @@ public class VersionRestController {
             jsonObject.put("originOid", modelItemVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(modelItemVersion.getModifyTime()));
+            if (modelItemVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(modelItemVersion.getAcceptTime()));
+            }
+            if (modelItemVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(modelItemVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", modelItemVersion.getModifier());
+            String statuss = new String();
+            if (modelItemVersion.getStatus() == 0){
+                statuss = "unchecked";
+            }else if (modelItemVersion.getStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","model");
+
+
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -872,7 +911,25 @@ public class VersionRestController {
             jsonObject.put("originOid", conceptualModelVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(conceptualModelVersion.getModifyTime()));
+            if (conceptualModelVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(conceptualModelVersion.getAcceptTime()));
+            }
+            if (conceptualModelVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(conceptualModelVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", conceptualModelVersion.getModifier());
+            String statuss = new String();
+            if (conceptualModelVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (conceptualModelVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","model");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -916,7 +973,25 @@ public class VersionRestController {
             jsonObject.put("originOid", logicalModelVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(logicalModelVersion.getModifyTime()));
+            if (logicalModelVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(logicalModelVersion.getAcceptTime()));
+            }
+            if (logicalModelVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(logicalModelVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", logicalModelVersion.getModifier());
+            String statuss = new String();
+            if (logicalModelVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (logicalModelVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","model");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -961,7 +1036,25 @@ public class VersionRestController {
             jsonObject.put("originOid", computableModelVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(computableModelVersion.getModifyTime()));
+            if (computableModelVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(computableModelVersion.getAcceptTime()));
+            }
+            if (computableModelVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(computableModelVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", computableModelVersion.getModifier());
+            String statuss = new String();
+            if (computableModelVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (computableModelVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","model");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -1006,7 +1099,25 @@ public class VersionRestController {
             jsonObject.put("originOid", conceptVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(conceptVersion.getModifyTime()));
+            if (conceptVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(conceptVersion.getAcceptTime()));
+            }
+            if (conceptVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(conceptVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", conceptVersion.getModifier());
+            String statuss = new String();
+            if (conceptVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (conceptVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -1051,7 +1162,25 @@ public class VersionRestController {
             jsonObject.put("originOid", templateVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(templateVersion.getModifyTime()));
+            if (templateVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(templateVersion.getAcceptTime()));
+            }
+            if (templateVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(templateVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", templateVersion.getModifier());
+            String statuss = new String();
+            if (templateVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (templateVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -1096,7 +1225,25 @@ public class VersionRestController {
             jsonObject.put("originOid", spatialReferenceVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(spatialReferenceVersion.getModifyTime()));
+            if (spatialReferenceVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(spatialReferenceVersion.getAcceptTime()));
+            }
+            if (spatialReferenceVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(spatialReferenceVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", spatialReferenceVersion.getModifier());
+            String statuss = new String();
+            if (spatialReferenceVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (spatialReferenceVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
@@ -1141,7 +1288,25 @@ public class VersionRestController {
             jsonObject.put("originOid", unitVersion.getOriginOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(unitVersion.getModifyTime()));
+            if (unitVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(unitVersion.getAcceptTime()));
+            }
+            if (unitVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(unitVersion.getRejectTime()));
+            }
             jsonObject.put("modifier", unitVersion.getModifier());
+            String statuss = new String();
+            if (unitVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (unitVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
             String name = new String();
             List<User> users = userDao.findAll();
