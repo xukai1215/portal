@@ -21,6 +21,8 @@ public class SpatialReferenceVersion {
     String description;
     String detail;
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
     int loadCount;
     String creator;
 

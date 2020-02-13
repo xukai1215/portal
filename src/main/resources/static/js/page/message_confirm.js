@@ -68,6 +68,8 @@ var notice = Vue.extend({
             theme_tableData2:[],
             theme_tableData3:[],
 
+
+            sum_tableData:[],//为了解决时间线多个v-for无法将多个表格数据时间正序排列的问题，将所有表格数据放到一个表格中
             //存放Info临时点击数据
             info_past_dialog:"",
             info_edited_dialog:"",
@@ -121,15 +123,19 @@ var notice = Vue.extend({
                     for (let i=0;i<json.data.accept.length;i++){
                         if (json.data.accept[i].type == "modelItem" || json.data.accept[i].type == "conceptualModel"||json.data.accept[i].type == "logicalModel"||json.data.accept[i].type == "computableModel"){
                             this.model_tableData2.push(json.data.accept[i]);
+                            this.sum_tableData.push(json.data.accept[i]);
                         }else {
                             this.community_tableData2.push(json.data.accept[i]);
+                            this.sum_tableData.push(json.data.accept[i]);
                         }
                     }
                     for (let i=0;i<json.data.reject.length;i++){
                         if (json.data.reject[i].type == "modelItem" || json.data.reject[i].type == "conceptualModel"||json.data.reject[i].type == "logicalModel"||json.data.reject[i].type == "computableModel"){
                             this.model_tableData3.push(json.data.reject[i]);
+                            this.sum_tableData.push(json.data.reject[i]);
                         }else {
                             this.community_tableData3.push(json.data.reject[i]);
+                            this.sum_tableData.push(json.data.reject[i]);
                         }
                     }
                     for (let i=0;i<json.data.uncheck.length;i++){
@@ -143,12 +149,36 @@ var notice = Vue.extend({
                     }
                     for (let i=0;i<json.data.edit.length;i++){
                         if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"||json.data.edit[i].type == "computableModel"){
+                            json.data.edit[i].status = "unchecked";
                             this.edit_model_tableData.push(json.data.edit[i]);
+                            this.sum_tableData.push(json.data.edit[i]);
                         }else {
+                            json.data.edit[i].status = "unchecked";
                             this.edit_community_tableData.push(json.data.edit[i]);
+                            this.sum_tableData.push(json.data.edit[i]);
                         }
                     }
 
+
+
+                    for (let i = 0;i<this.sum_tableData.length;i++) {
+                        if (this.sum_tableData[i].status!="unchecked"){
+                            if (this.sum_tableData[i].acceptTime!=null) {
+                                this.sum_tableData[i].modifyTime = this.sum_tableData[i].acceptTime;
+                            }
+                        }
+                    }
+                    //将sum_tableData的数据按照时间排序(冒泡排序)
+                    for (let i=0;i<this.sum_tableData.length;i++){
+                        for (let j=this.sum_tableData.length-1;j>i;j--){
+                            if (this.sum_tableData[j].modifyTime<this.sum_tableData[j-1].modifyTime){
+                                let temp = this.sum_tableData[j];
+                                this.sum_tableData[j] = this.sum_tableData[j-1];
+                                this.sum_tableData[j-1] = temp;
+                            }
+                        }
+                    }
+                    console.log(this.sum_tableData);
                 }
             })
         },
