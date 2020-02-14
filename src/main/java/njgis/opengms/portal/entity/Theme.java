@@ -32,6 +32,7 @@ public class Theme{
     String Info_edit;
     List<Edit> edits;
 
+
     //其余部分
     List<ClassInfo> classinfo;
     List<SubClassInfo> subClassInfos;
@@ -47,4 +48,5 @@ public class Theme{
 
     Date createTime;
     Date lastModifyTime;
+
 }

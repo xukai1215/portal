@@ -58,16 +58,24 @@ var notice = Vue.extend({
             model_tableData1:[],
             model_tableData2: [],
             model_tableData3:[],
+            model_tableData1_length:0,
+            model_tableData2_length:0,
+            model_tableData3_length:0,
             edit_model_tableData:[],//用于获取model的version数据，用于显示谁编辑了什么
             community_tableData1:[],
             community_tableData2:[],
             community_tableData3:[],
+            community_tableData1_length:0,
+            community_tableData2_length:0,
+            community_tableData3_length:0,
             edit_community_tableData:[],//用于获取community的version数据，用于显示谁编辑了什么
 
             theme_tableData1:[],
             theme_tableData2:[],
             theme_tableData3:[],
-
+            theme_tableData1_length:0,
+            theme_tableData2_length:0,
+            theme_tableData3_length:0,
 
             sum_tableData:[],//为了解决时间线多个v-for无法将多个表格数据时间正序排列的问题，将所有表格数据放到一个表格中
             //存放Info临时点击数据
@@ -188,6 +196,13 @@ var notice = Vue.extend({
                             this.sum_tableData[i].color = '#20D1D4';
                         }
                     }
+                    this.model_tableData1_length = this.model_tableData1.length;
+                    this.model_tableData2_length = this.model_tableData2.length;
+                    this.model_tableData3_length = this.model_tableData3.length;
+                    this.community_tableData1_length = this.community_tableData1.length;
+                    this.community_tableData2_length = this.community_tableData2.length;
+                    this.community_tableData3_length = this.community_tableData3.length;
+
                     console.log(this.sum_tableData);
                 }
             })
@@ -908,7 +923,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -923,7 +938,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -937,7 +952,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -954,7 +969,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -969,7 +984,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -983,7 +998,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -1000,7 +1015,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -1015,7 +1030,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -1029,7 +1044,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -1046,7 +1061,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1061,7 +1076,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1075,7 +1090,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1092,6 +1107,9 @@ var notice = Vue.extend({
                                 }
                         }
                     }
+                    that.theme_tableData1_length = that.theme_tableData1.length;
+                    that.theme_tableData2_length = that.theme_tableData2.length;
+                    that.theme_tableData3_length = that.theme_tableData3.length;
                }
            })
 
