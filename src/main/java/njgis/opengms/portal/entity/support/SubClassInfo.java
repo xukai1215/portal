@@ -19,4 +19,5 @@ public class SubClassInfo {
     Date time;
     String status;
     List<ClassInfo> sub_classInfo;
+    String formatTime;
 }

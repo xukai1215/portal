@@ -18,4 +18,5 @@ public class SubDetail {
     String detail;
     Date time;
     String status;
+    String formatTime;
 }
