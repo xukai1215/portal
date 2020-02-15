@@ -570,80 +570,120 @@
 
                     <el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold" >Past:</label>
-                            </div><br>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
+                                <el-card v-if="info_seen">
+                                    <!--Info的渲染，加v-if控制-->
+                                    <div class="title text-center" style="margin-bottom:40px;">
+                                        <h3>
+                                            <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                        </h3>
+                                    </div>
+                                        <div id="detailinfo" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                                </el-card>
+                                    <!--model的渲染，加v-if控制-->
+                                <el-card v-if="model_seen">
+                                    <div class="title text-center" style="margin-bottom:40px;">
+                                        <h3>
+                                            <span style="border-bottom:2px solid #1890ff">Model</span>
+                                        </h3>
+                                    </div>
+                                    <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
 
+                                        <div class="x_content model_item">
+                                            <div>
+                                                <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+                                            </div>
+                                            <el-row :gutter="20" type="center" class="row-bg" id="content">
+                                                <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
+                                                    <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
+                                                        <a :href="'http://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
+                                                            <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
+                                                        </a>
+                                                        <div style="padding: 14px;">
+                                                            <span v-text="item2.name"></span>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </el-card>
+                                    <!--data的渲染，加v-if控制-->
+                                <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                                    <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
+                                        <div class="x_content data_item">
+                                            <div>
+                                                <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+                                            </div>
+                                            <el-row :gutter="20" type="center" class="row-bg" id="content">
+                                                <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
+                                                    <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
+                                                        <a :href="'http://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
+                                                            <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
+                                                        </a>
+                                                        <div style="padding: 14px;">
+                                                            <span class="data_name" v-text="item2.name"></span>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                            </el-card>
+                                    <!--application的渲染，加v-if控制-->
+                                <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                                    <div id="sub_applications">
+                                        <div class="x_content application_item" id="sub_application">
+                                            <el-row :gutter="20" type="center" class="row-bg" id="content2">
+                                                <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
+                                                    <a :href="item.applicationlink">
+                                                        <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
+                                                            <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">
+                                                            <div style="padding: 14px">
+                                                                <span class="application_name" v-text="item.applicationname"></span>
+                                                            </div>
+                                                        </el-card>
+                                                    </a>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                            </el-card>
+                         </el-card>
+                    </el-card>
+                    <el-card>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="detailinfo" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <!--Info的渲染，加v-if控制-->
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="myText1" v-html="info_edited_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
-
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'http://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.dcname"></label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'http://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications">
-                                <div class="x_content application_item" id="sub_application">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
 
-                        </el-card>
-                        <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold">Edited:</label>
-                            </div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="myText1" v-html="info_edited_dialog"></div>
-                            <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
-                                <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -658,10 +698,18 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold"  v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -676,8 +724,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications1">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications1">
                                 <div class="x_content application_item" id="sub_application1">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -693,6 +748,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                         </el-card>
                     </el-card>
 
@@ -711,18 +767,27 @@
 
                     <el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold" >Past:</label>
-                            </div><br>
-
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="detailinfo_appro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="detailinfo_appro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
 
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -737,10 +802,17 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -755,6 +827,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
                             <div v-if="application_seen" id="sub_applications_appro">
                                 <div class="x_content application_item" id="sub_application_appro">
@@ -775,16 +848,26 @@
 
                         </el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold">Edited:</label>
-                            </div><br>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="myText1_appro" v-html="info_edited_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="myText1_appro" v-html="info_edited_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                                <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -799,10 +882,17 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold"  v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -817,8 +907,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications1_appro">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications1_appro">
                                 <div class="x_content application_item" id="sub_application1_appro">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -834,6 +931,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                         </el-card>
                     </el-card>
 
@@ -852,18 +950,28 @@
 
                     <el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold" >Past:</label>
-                            </div><br>
-
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="detailinfo_unappro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="detailinfo_unappro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
 
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -878,10 +986,18 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -896,8 +1012,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications_unappro">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications_unappro">
                                 <div class="x_content application_item" id="sub_application_unappro">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -913,19 +1036,32 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
 
                         </el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold">Edited:</label>
-                            </div><br>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="myText1_unappro" v-html="info_edited_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="myText1_unappro" v-html="info_edited_dialog"></div>
+                            </el-card>
+
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -940,10 +1076,18 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold"  v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -958,8 +1102,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications1_unappro">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications1_unappro">
                                 <div class="x_content application_item" id="sub_application1_unappro">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -975,6 +1126,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                         </el-card>
                     </el-card>
 
@@ -985,7 +1137,7 @@
                 </el-dialog>
             </div>
         </div>
-    </div>
+        </div>
     </template>
 </div>
 </body>
