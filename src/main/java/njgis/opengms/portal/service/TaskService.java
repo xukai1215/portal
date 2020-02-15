@@ -18,9 +18,11 @@ import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.ParamInfo;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
+import njgis.opengms.portal.entity.support.ZipStreamEntity;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.ZipUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -339,10 +341,13 @@ public class TaskService {
     }
 
     //根据post请求的信息得到数据存储的路径
-    public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO) {
+    public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO, JSONObject mdlJson) {
+        JSONArray states = mdlJson.getJSONObject("mdl").getJSONArray("states");
+
+
         String oid = testDataUploadDTO.getOid();
         String parentDirectory = resourcePath + "/computableModel/testify/" + oid;
-        String configPath = parentDirectory + File.separator + "config.xml";
+        String configPath = parentDirectory + "/" + "config.xml";
         JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory, oid);
         if (configInfoArray == null) {
             return null;
@@ -356,6 +361,34 @@ public class TaskService {
             uploadDataDTO.setState(temp.getString("state"));
             uploadDataDTO.setFilePath(temp.getString("file"));
             uploadDataDTO.setChildren(temp.getJSONArray("children").toJavaList(ParamInfo.class));
+
+            for(int j=0;j<states.size();j++){
+                JSONObject state = states.getJSONObject(j);
+                if(state.getString("name").equals(uploadDataDTO.getState())){
+                    JSONArray events=state.getJSONArray("event");
+                    for(int k=0;k<events.size();k++){
+                        JSONObject event=events.getJSONObject(k);
+                        if(event.getString("eventName").equals(uploadDataDTO.getEvent())){
+                            JSONObject data=event.getJSONArray("data").getJSONObject(0);
+                            if(data.getString("dataType").equals("external")){
+                                uploadDataDTO.setType("id");
+                                uploadDataDTO.setTemplate(data.getString("externalId"));
+                            }else{
+                                uploadDataDTO.setType("schema");
+                                uploadDataDTO.setTemplate(data.getString("schema"));
+                            }
+
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if(uploadDataDTO.getType()==null){
+                uploadDataDTO.setType("none");
+                uploadDataDTO.setTemplate("");
+            }
+
             dataUploadList.add(uploadDataDTO);
         }
         return dataUploadList;
@@ -389,7 +422,7 @@ public class TaskService {
             String fileName = item.attributeValue("File");
             String state = item.attributeValue("State");
             String event = item.attributeValue("Event");
-            String filePath = parentDirectory + File.separator + fileName;
+            String filePath = parentDirectory + "/" + fileName;
 
             JSONArray children = new JSONArray();
             Boolean find = false;
@@ -482,14 +515,19 @@ public class TaskService {
         params.put("origination", "portal");
 
         //拼凑file表单
-
+//
         String configParentPath = resourcePath + "/configFile/" + UUID.randomUUID().toString() + "/";
         File path = new File(configParentPath);
         path.mkdirs();
         String configPath = configParentPath + "config.udxcfg";
         File configFile = new File(configPath);
+
+        ZipStreamEntity zipStreamEntity = null;
+
         try {
+
             configFile.createNewFile();
+//            File configFile=File.createTempFile("config",".udxcfg");
 
             Writer out = new FileWriter(configFile);
             String content = "<UDXZip>\n";
@@ -497,21 +535,40 @@ public class TaskService {
             String[] paths = testDataPath.split("/");
             content += "\t\t<add value=\"" + paths[paths.length - 1] + "\" />\n";
             content += "\t</Name>\n";
-            content += "\t<DataTemplate type=\"" + "" + "\">\n";
+            content += "\t<DataTemplate type=\"" + uploadDataDTO.getType() + "\">\n";
+            content += "\t\t"+uploadDataDTO.getTemplate()+"\n";
             content += "\t</DataTemplate>\n";
             content += "</UDXZip>";
+
+            out.write(content);
+            out.flush();
+            out.close();
+
+            File dataFile=new File(testDataPath);
+            InputStream dataStream = new FileInputStream(dataFile);
+            ZipStreamEntity zipStreamEntity1=new ZipStreamEntity(dataFile.getName(),dataStream);
+
+            InputStream configStream = new FileInputStream(configFile);
+            ZipStreamEntity zipStreamEntity2=new ZipStreamEntity(configFile.getName(),configStream);
+
+            List<ZipStreamEntity> zipStreamEntityList=new ArrayList<>();
+            zipStreamEntityList.add(zipStreamEntity1);
+            zipStreamEntityList.add(zipStreamEntity2);
+
+            String dataName=dataFile.getName().substring(0,dataFile.getName().lastIndexOf("."));
+            InputStream zipInputStream = ZipUtils.listStreamToZipStream(zipStreamEntityList,dataName);
+            zipStreamEntity=new ZipStreamEntity(dataName,zipInputStream);
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        Map<String, String> fileMap = new HashMap<>();
-        fileMap.put("ogmsdata", testDataPath);
-        fileMap.put("ogmsdata", configPath);
         String result;
         try {
-            result = MyHttpUtils.POSTFile(url, "UTF-8", params, fileMap);
+            result = MyHttpUtils.POSTZipStream(url, "UTF-8", params, zipStreamEntity);
         } catch (Exception e) {
             result = null;
         }

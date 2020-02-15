@@ -532,6 +532,10 @@ public class TaskRestController {
     @ApiOperation(value = "加载默认测试数据，返回数据成功上传之后的url")
     public JsonResult loadTestData(@RequestBody TestDataUploadDTO testDataUploadDTO, HttpServletRequest request){
 
+        String oid = testDataUploadDTO.getOid();
+        ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+        JSONObject mdlJSON=Utils.convertMdl(computableModel.getMdl());
+
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-2,"no login");
@@ -543,7 +547,7 @@ public class TaskRestController {
             testDataUploadDTO.setPort(Integer.parseInt(dataIpAndPort[1]));
 
             //处理得到进行数据上传的List数组
-            List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArray(testDataUploadDTO);
+            List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArray(testDataUploadDTO, mdlJSON);
             if (uploadDataDTOs == null) {
                 return ResultUtils.error(-1, "No Test Data");
             }

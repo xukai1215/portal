@@ -19,4 +19,7 @@ public class UploadDataDTO {
     String state;
     String event;
     List<ParamInfo> children;
+
+    String type;
+    String template;
 }

@@ -1,0 +1,35 @@
+package njgis.opengms.portal.enums;
+
+import lombok.AllArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@AllArgsConstructor
+@Document
+public enum ItemTypeEnum {
+
+    DataItem(0),
+
+    ModelItem(1),
+    ConceptualModel(2),
+    LogicalModel(3),
+    ComputableModel(4),
+
+    Concept(5),
+    SpatialReference(6),
+    DataTemplate(7),
+    Unit(8),
+
+    Theme(9);
+
+    private int number;
+
+    public static ItemTypeEnum getItemType(int number){
+        for(ItemTypeEnum itemTypeEnum:ItemTypeEnum.values()){
+            if(itemTypeEnum.number==number){
+                return itemTypeEnum;
+            }
+        }
+        return null;
+    }
+
+}

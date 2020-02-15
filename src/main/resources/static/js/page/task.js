@@ -1228,7 +1228,7 @@ var vue = new Vue({
                 body: JSON.stringify(body)
             })).json();
 
-            if (code == -1 || code == null || code == undefined) {
+            if (code != 0 || code == null || code == undefined) {
                 loading.close();
                 this.$message.error(msg);
                 return;

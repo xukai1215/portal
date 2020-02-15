@@ -469,113 +469,125 @@
 
 
             <!--comment-->
-            <!--<div id="comment" class="detail_block">-->
-            <!--<div class="block_head">-->
-            <!--<div class="head_text">-->
-            <!--<h4>Comments</h4>-->
-            <!--</div>-->
-            <!--</div>-->
+            <div id="comment" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Comments</h4>
+                    </div>
+                </div>
 
-            <!--<div class="block_content">-->
-            <!--{{allcomments.length==0?"Give the frst comment":''}}-->
-            <!--&lt;!&ndash;comment  v-for card&ndash;&gt;-->
-            <!--<el-card v-for="(item,key) in allcomments" :key="key" shadow="hover"  >-->
-            <!--<div class="el-col el-col-4" >-->
-            <!--<el-badge :value="thumbs===''? item.thumbsUpNumber:(thisthumbs===key?thumbs:item.thumbsUpNumber)"  type="primary">-->
-            <!--<el-button round @click="thumbsup(key)">❤</el-button>-->
-            <!--</el-badge>-->
+                <div class="block_content">
+                    {{allcomments.length==0?"Give the frst comment":''}}
+                    <!--comment  v-for card-->
+                    <el-card v-for="(item,key) in allcomments" :key="key" shadow="hover">
+                        <div class="el-col el-col-4">
+                            <el-badge
+                                    :value="thumbs===''? item.thumbsUpNumber:(thisthumbs===key?thumbs:item.thumbsUpNumber)"
+                                    type="primary">
+                                <el-button round @click="thumbsup(key)">❤</el-button>
+                            </el-badge>
 
-            <!--</div>-->
+                        </div>
 
-            <!--<div class="el-col el-col-20"  >-->
-            <!--<el-row><span>{{item.comment}}</span></el-row>-->
-            <!--<hr>-->
-            <!--<el-row >-->
-            <!--<div class="el-col el-col-10"   >-->
-            <!--<div style="white-space:nowrap;">-->
-            <!--<el-button icon="el-icon-edit"   @click="showmycomment(key)" size="mini">Add Comments</el-button>-->
-            <!--<el-button icon="el-icon-news"   @click="showcomment(key)" size="mini">Comments(<strong>{{getcommentlength(item.commentsForComment)}}</strong>)</el-button>-->
+                        <div class="el-col el-col-20">
+                            <el-row><span>{{item.comment}}</span></el-row>
+                            <hr>
+                            <el-row>
+                                <div class="el-col el-col-10">
+                                    <div style="white-space:nowrap;">
+                                        <el-button icon="el-icon-edit" @click="showmycomment(key)" size="mini">Add
+                                            Comments
+                                        </el-button>
+                                        <el-button icon="el-icon-news" @click="showcomment(key)" size="mini">
+                                            Comments(<strong>{{getcommentlength(item.commentsForComment)}}</strong>)
+                                        </el-button>
 
-            <!--</div>-->
+                                    </div>
 
-            <!--&lt;!&ndash;<el-button icon="el-icon-setting" type="text" >donate </el-button>&ndash;&gt;-->
-            <!--</div>-->
-            <!--<div class="el-col el-col-10"     >-->
-
-
-            <!--<div  class="el-col el-col-10 el-col-offset-4"  >-->
-
-            <!--<img th:src="@{../static/img/icon/jeff.jpg}" class="round_icon" style="width:45px;height: 50px;float:left;">-->
-
-
-            <!--<div  style="margin-left: 55px;display: block;" th:object="${datainfo}">-->
-
-            <!--&lt;!&ndash;//todo 每项数据绑定作者，这里每个评论绑定作者&ndash;&gt;-->
-            <!--&lt;!&ndash;<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>&ndash;&gt;-->
-            <!--<a href="javascript:void(0)"><h5>{{item.author}}</h5></a>-->
-
-            <!--&lt;!&ndash;<h5 th:text="${datainfo.data.lastModifyTime}"></h5>&ndash;&gt;-->
-            <!--<span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>-->
-
-            <!--</div>-->
+                                    <!--<el-button icon="el-icon-setting" type="text" >donate </el-button>-->
+                                </div>
+                                <div class="el-col el-col-10">
 
 
-            <!--</div>-->
-            <!--</div>-->
-            <!--</el-row>-->
-            <!--</div>-->
-            <!--<el-card  v-show="comforcom===key" style="background-color: #f5f5f5" ref="key">-->
+                                    <div class="el-col el-col-10 el-col-offset-4">
 
-            <!--<div  class="el-col el-col-20"  >-->
-            <!--<el-input-->
-            <!--type="textarea"-->
-            <!--:rows="4"-->
-            <!--placeholder="please input content.."-->
-            <!--v-model="comforcomtextarea">-->
-            <!--</el-input><br/><br/>-->
-            <!--</div>-->
-            <!--<div class="el-col el-col-4"  >-->
-            <!--<el-button @click="reply(item.id)">reply</el-button>-->
-            <!--</div>-->
-            <!--</el-card>-->
-
-            <!--<el-card  v-show="comments=== key" style="background-color: #f5f5f5;overflow-y: scroll;height: 400px"   ref="key">-->
-            <!--&lt;!&ndash;v-for 多个&ndash;&gt;-->
-            <!--<el-card  v-for="(item1,key1) in item.commentsForComment" :key="key1" shadow="hover">-->
-            <!--<el-row>-->
-            <!--<div class="el-col el-col-18"  ><span>{{item1.comment}}</span></div>-->
-            <!--<div class="el-col el-col-6"  >-->
-            <!--<el-row><strong>by:</strong> <span>{{item1.author}}</span> </el-row>-->
-            <!--<el-row><strong>at:</strong> <span >{{formatDate(item1.date)}}</span> </el-row>-->
-
-            <!--</div>-->
-            <!--</el-row>-->
-            <!--</el-card>-->
-
-            <!--</el-card>-->
-
-            <!--</el-card><br/>-->
-
-            <!--<hr> <h4><strong>Submit My Comments:</strong></h4><br/>-->
-            <!--<el-card>-->
-            <!--<div class="el-col el-col-20"  >-->
-            <!--<el-input-->
-            <!--type="textarea"-->
-            <!--:rows="4"-->
-            <!--placeholder="please input content.."-->
-            <!--v-model="mycommentforthedata">-->
-            <!--</el-input><br/><br/>-->
-            <!--</div>-->
-            <!--<div  class="el-col el-col-4" >-->
-            <!--<el-button @click="putcomment()">submit</el-button>-->
-            <!--</div>-->
-            <!--</el-card>-->
+                                        <img th:src="@{../static/img/icon/jeff.jpg}" class="round_icon"
+                                             style="width:45px;height: 50px;float:left;">
 
 
-            <!--</div>-->
+                                        <div style="margin-left: 55px;display: block;" th:object="${datainfo}">
+
+                                            <!--//todo 每项数据绑定作者，这里每个评论绑定作者-->
+                                            <!--<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>-->
+                                            <a href="javascript:void(0)"><h5>{{item.author}}</h5></a>
+
+                                            <!--<h5 th:text="${datainfo.data.lastModifyTime}"></h5>-->
+                                            <span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>
+
+                                        </div>
 
 
-            <!--</div>-->
+                                    </div>
+                                </div>
+                            </el-row>
+                        </div>
+                        <el-card v-show="comforcom===key" style="background-color: #f5f5f5" ref="key">
+
+                            <div class="el-col el-col-20">
+                                <el-input
+                                        type="textarea"
+                                        :rows="4"
+                                        placeholder="please input content.."
+                                        v-model="comforcomtextarea">
+                                </el-input>
+                                <br/><br/>
+                            </div>
+                            <div class="el-col el-col-4">
+                                <el-button @click="reply(item.id)">reply</el-button>
+                            </div>
+                        </el-card>
+
+                        <el-card v-show="comments=== key"
+                                 style="background-color: #f5f5f5;overflow-y: scroll;height: 400px" ref="key">
+                            <!--v-for 多个-->
+                            <el-card v-for="(item1,key1) in item.commentsForComment" :key="key1" shadow="hover">
+                                <el-row>
+                                    <div class="el-col el-col-18"><span>{{item1.comment}}</span></div>
+                                    <div class="el-col el-col-6">
+                                        <el-row><strong>by:</strong> <span>{{item1.author}}</span></el-row>
+                                        <el-row><strong>at:</strong> <span>{{formatDate(item1.date)}}</span></el-row>
+
+                                    </div>
+                                </el-row>
+                            </el-card>
+
+                        </el-card>
+
+                    </el-card>
+                    <br/>
+
+                    <hr>
+                    <h4><strong>Submit My Comments:</strong></h4><br/>
+                    <el-card>
+                        <div class="el-col el-col-20">
+                            <el-input
+                                    type="textarea"
+                                    :rows="4"
+                                    placeholder="please input content.."
+                                    v-model="mycommentforthedata">
+                            </el-input>
+                            <br/><br/>
+                        </div>
+                        <div class="el-col el-col-4">
+                            <el-button @click="putcomment()">submit</el-button>
+                        </div>
+                    </el-card>
+
+
+                </div>
+
+
+            </div>
 
 
         </div>

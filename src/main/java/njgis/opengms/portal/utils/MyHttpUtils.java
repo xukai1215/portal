@@ -1,5 +1,6 @@
 package njgis.opengms.portal.utils;
 
+import njgis.opengms.portal.entity.support.ZipStreamEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -159,6 +160,48 @@ public class MyHttpUtils {
                 builder.addBinaryBody(entry.getKey(), MyFileUtils.getInputStream(file), ContentType.MULTIPART_FORM_DATA, file.getName());
             }
         }
+
+        //构建参数部分，解决中文乱码
+        ContentType contentType = ContentType.create("text/plain", Charset.forName(encode));
+        if(params != null && params.size() > 0){
+            for(Map.Entry<String, String> key: params.entrySet()){
+                builder.addTextBody(key.getKey(), key.getValue(), contentType);
+            }
+        }
+
+        HttpEntity entityIn = builder.build();
+        //设置参数到请求参数中
+        httpPost.setEntity(entityIn);
+
+        CloseableHttpResponse response = client.execute(httpPost);
+        HttpEntity entityOut = response.getEntity();
+        if (entityOut != null) {
+            //按指定编码转换结果实体为String类型
+            body = EntityUtils.toString(entityOut, encode);
+        }
+        EntityUtils.consume(entityOut);
+        //释放链接
+        response.close();
+        client.close();
+        return body;
+    }
+
+    public static String POSTZipStream(String url, String encode, Map<String,String> params, ZipStreamEntity zipStream) throws IOException {
+        String body = "";
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+
+        //设置header
+        httpPost.setHeader("Connection", "Keep-Alive");
+        httpPost.setHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.6)");
+
+        //构建body
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .setCharset(Charset.forName(encode));
+
+
+        builder.addBinaryBody("ogmsdata",zipStream.getInputstream(),ContentType.MULTIPART_FORM_DATA, zipStream.getName());
 
         //构建参数部分，解决中文乱码
         ContentType contentType = ContentType.create("text/plain", Charset.forName(encode));
