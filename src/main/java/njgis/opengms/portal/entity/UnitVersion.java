@@ -19,6 +19,8 @@ public class UnitVersion {
     String detail;
     String image;
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
     String creator;
 
     int loadCount;

@@ -39,75 +39,35 @@
                             <el-tab-pane label="OverView" name="first">
                                 <el-card>
                                     <div class="block">
+                                        <div class="radio">
+                                            Sort：
+                                            <el-radio-group v-model="reverse">
+                                                <el-radio :label="true">Reverse order</el-radio>
+                                                <el-radio :label="false">Positive order</el-radio>
+                                            </el-radio-group>
+                                        </div>
+
                                         <el-timeline :reverse="reverse">
-                                        <!--<div >-->
                                             <el-timeline-item
-                                                    v-for = "(item,index) in edit_model_tableData"
+                                                    v-for = "(item,index) in sum_tableData"
+                                                    :key="index"
                                                     :timestamp="item.modifyTime"
+                                                    :color="item.color"
                                                     placement="top"
                                             >
-                                                <el-card>
-                                                    <h4>{{item.modifierName}} edit model's {{item.name}}</h4>
-                                                    <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
-                                                </el-card>
+                                                    <el-card v-if="item.status== 'unchecked'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/modelItem/'+item.originOid">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else>
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
                                             </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in model_tableData2"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} confirm {{item.modifierName}}'s edit of model's {{item.name}}</h4>
-                                                    <p>{{username}} confirm in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in model_tableData3"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} reject {{item.modifierName}}'s edit of model's {{item.name}}</h4>
-                                                    <p>{{username}} reject in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in edit_community_tableData"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{item.modifierName}} edit community's {{item.name}}</h4>
-                                                    <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in community_tableData2"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} confirm {{item.modifierName}}'s edit of community's {{item.name}}</h4>
-                                                    <p>{{username}} confirm in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in community_tableData3"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} reject {{item.modifierName}}'s edit of community's {{item.name}}</h4>
-                                                    <p>{{username}} reject in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
                                     </el-timeline>
                                     </div>
                                 </el-card>
@@ -116,6 +76,13 @@
                                 <el-card>
                                     <el-tabs type="border-card">
                                         <el-tab-pane label="Unapproved version">
+                                            <div slot="label">
+                                                Unapproved version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData1_length}}
+                                                </span>
+
+                                            </div>
                                             <el-table
                                                     :data="model_tableData1"
                                                     style="width: 100%">
@@ -128,22 +95,23 @@
                                                 <el-table-column
                                                         prop="name"
                                                         label="Name"
+                                                        width="200"
                                                 >
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="type"
                                                         label="Type"
-                                                        width="200">
+                                                        width="150">
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="modifier"
                                                         label="Modifier"
-                                                        width="200">
+                                                        width="120">
                                                 </el-table-column>
 
                                                 <el-table-column
                                                         label="View"
-                                                        width="100">
+                                                        width="150">
                                                     <template slot-scope="scope">
                                                         <el-button
                                                                 class="viewBtn"
@@ -156,7 +124,7 @@
 
                                                 <el-table-column
                                                         label="Operations"
-                                                        width="300">
+                                                        width="200">
                                                     <template slot-scope="scope">
                                                         <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
                                                         <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
@@ -165,6 +133,13 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Accepted version">
+                                            <div slot="label">
+                                                Accepted version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData2_length}}
+                                                </span>
+
+                                            </div>
                                             <el-table
                                                     :data="model_tableData2"
                                                     style="width: 100%">
@@ -206,6 +181,13 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Rejected version">
+                                            <div slot="label">
+                                                Rejected version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData3_length}}
+                                                </span>
+
+                                            </div>
                                             <el-table
                                                     :data="model_tableData3"
                                                     style="width: 100%">
@@ -266,6 +248,12 @@
                                 <el-card>
                                     <el-tabs type="border-card">
                                         <el-tab-pane label="Unapproved version">
+                                            <div slot="label">
+                                                Unapproved version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData1_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="community_tableData1"
                                                     style="width: 100%">
@@ -278,22 +266,23 @@
                                                 <el-table-column
                                                         prop="name"
                                                         label="Name"
+                                                        width="200"
                                                 >
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="type"
                                                         label="Type"
-                                                        width="200">
+                                                        width="150">
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="modifier"
                                                         label="Modifier"
-                                                        width="200">
+                                                        width="120">
                                                 </el-table-column>
 
                                                 <el-table-column
                                                         label="View"
-                                                        width="100">
+                                                        width="150">
                                                     <template slot-scope="scope">
                                                         <el-button
                                                                 class="viewBtn1"
@@ -306,7 +295,7 @@
 
                                                 <el-table-column
                                                         label="Operations"
-                                                        width="300">
+                                                        width="200">
                                                     <template slot-scope="scope">
                                                         <el-button class="accept1" type="success" size="middle" @click="accept1($event)">Accept</el-button>
                                                         <el-button class="reject1" type="danger" size="middle" @click="reject1($event)">Reject</el-button>
@@ -315,6 +304,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Accepted version">
+                                            <div slot="label">
+                                                Accepted version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData2_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="community_tableData2"
                                                     style="width: 100%">
@@ -356,6 +351,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Rejected version">
+                                            <div slot="label">
+                                                Rejected version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData3_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="community_tableData3"
                                                     style="width: 100%">
@@ -403,6 +404,12 @@
                                 <el-card>
                                     <el-tabs type="border-card">
                                         <el-tab-pane label="Unapproved version">
+                                            <div slot="label">
+                                                Unapproved version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData1_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="theme_tableData1"
                                                     style="width: 100%">
@@ -415,22 +422,23 @@
                                                 <el-table-column
                                                         prop="theme"
                                                         label="Name"
+                                                        width="200"
                                                 >
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="type"
                                                         label="Block"
-                                                        width="200">
+                                                        width="150">
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="uid"
                                                         label="Modifier"
-                                                        width="200">
+                                                        width="120">
                                                 </el-table-column>
 
                                                 <el-table-column
                                                         label="View"
-                                                        width="100">
+                                                        width="150">
                                                     <template slot-scope="scope">
                                                         <el-button
                                                                 class="viewBtn_theme"
@@ -443,7 +451,7 @@
 
                                                 <el-table-column
                                                         label="Operations"
-                                                        width="300">
+                                                        width="200">
                                                     <template slot-scope="scope">
                                                         <el-button class="accept_theme" type="success" size="middle" @click="accept_theme($event)">Accept</el-button>
                                                         <el-button class="reject_theme" type="danger" size="middle" @click="reject_theme($event)">Reject</el-button>
@@ -452,6 +460,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Accepted version">
+                                            <div slot="label">
+                                                Accepted version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData2_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="theme_tableData2"
                                                     style="width: 100%">
@@ -493,6 +507,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Rejected version">
+                                            <div slot="label">
+                                                Rejected version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData3_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="theme_tableData3"
                                                     style="width: 100%">

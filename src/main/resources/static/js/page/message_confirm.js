@@ -58,16 +58,26 @@ var notice = Vue.extend({
             model_tableData1:[],
             model_tableData2: [],
             model_tableData3:[],
+            model_tableData1_length:0,
+            model_tableData2_length:0,
+            model_tableData3_length:0,
             edit_model_tableData:[],//用于获取model的version数据，用于显示谁编辑了什么
             community_tableData1:[],
             community_tableData2:[],
             community_tableData3:[],
+            community_tableData1_length:0,
+            community_tableData2_length:0,
+            community_tableData3_length:0,
             edit_community_tableData:[],//用于获取community的version数据，用于显示谁编辑了什么
 
             theme_tableData1:[],
             theme_tableData2:[],
             theme_tableData3:[],
+            theme_tableData1_length:0,
+            theme_tableData2_length:0,
+            theme_tableData3_length:0,
 
+            sum_tableData:[],//为了解决时间线多个v-for无法将多个表格数据时间正序排列的问题，将所有表格数据放到一个表格中
             //存放Info临时点击数据
             info_past_dialog:"",
             info_edited_dialog:"",
@@ -121,15 +131,19 @@ var notice = Vue.extend({
                     for (let i=0;i<json.data.accept.length;i++){
                         if (json.data.accept[i].type == "modelItem" || json.data.accept[i].type == "conceptualModel"||json.data.accept[i].type == "logicalModel"||json.data.accept[i].type == "computableModel"){
                             this.model_tableData2.push(json.data.accept[i]);
+                            this.sum_tableData.push(json.data.accept[i]);
                         }else {
                             this.community_tableData2.push(json.data.accept[i]);
+                            this.sum_tableData.push(json.data.accept[i]);
                         }
                     }
                     for (let i=0;i<json.data.reject.length;i++){
                         if (json.data.reject[i].type == "modelItem" || json.data.reject[i].type == "conceptualModel"||json.data.reject[i].type == "logicalModel"||json.data.reject[i].type == "computableModel"){
                             this.model_tableData3.push(json.data.reject[i]);
+                            this.sum_tableData.push(json.data.reject[i]);
                         }else {
                             this.community_tableData3.push(json.data.reject[i]);
+                            this.sum_tableData.push(json.data.reject[i]);
                         }
                     }
                     for (let i=0;i<json.data.uncheck.length;i++){
@@ -143,12 +157,53 @@ var notice = Vue.extend({
                     }
                     for (let i=0;i<json.data.edit.length;i++){
                         if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"||json.data.edit[i].type == "computableModel"){
+                            json.data.edit[i].status = "unchecked";
                             this.edit_model_tableData.push(json.data.edit[i]);
+                            this.sum_tableData.push(json.data.edit[i]);
                         }else {
+                            json.data.edit[i].status = "unchecked";
                             this.edit_community_tableData.push(json.data.edit[i]);
+                            this.sum_tableData.push(json.data.edit[i]);
                         }
                     }
 
+
+
+                    for (let i = 0;i<this.sum_tableData.length;i++) {
+                        if (this.sum_tableData[i].status!="unchecked"){
+                            if (this.sum_tableData[i].acceptTime!=null) {
+                                this.sum_tableData[i].modifyTime = this.sum_tableData[i].acceptTime;
+                            }
+                        }
+                    }
+                    //将sum_tableData的数据按照时间排序(冒泡排序)
+                    for (let i=0;i<this.sum_tableData.length;i++){
+                        for (let j=this.sum_tableData.length-1;j>i;j--){
+                            if (this.sum_tableData[j].modifyTime<this.sum_tableData[j-1].modifyTime){
+                                let temp = this.sum_tableData[j];
+                                this.sum_tableData[j] = this.sum_tableData[j-1];
+                                this.sum_tableData[j-1] = temp;
+                            }
+                        }
+                    }
+                    //为时间线涂色
+                    for (let i=0;i<this.sum_tableData.length;i++){
+                        if (this.sum_tableData[i].status == "confirmed") {
+                            this.sum_tableData[i].color = '#0bbd87';
+                        }else if (this.sum_tableData[i].status == "reject") {
+                            this.sum_tableData[i].color = '#CF2018';
+                        }else {
+                            this.sum_tableData[i].color = '#20D1D4';
+                        }
+                    }
+                    this.model_tableData1_length = this.model_tableData1.length;
+                    this.model_tableData2_length = this.model_tableData2.length;
+                    this.model_tableData3_length = this.model_tableData3.length;
+                    this.community_tableData1_length = this.community_tableData1.length;
+                    this.community_tableData2_length = this.community_tableData2.length;
+                    this.community_tableData3_length = this.community_tableData3.length;
+
+                    console.log(this.sum_tableData);
                 }
             })
         },
@@ -868,7 +923,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -883,7 +938,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -897,7 +952,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -914,7 +969,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -929,7 +984,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -943,7 +998,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -960,7 +1015,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -975,7 +1030,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -989,7 +1044,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -1006,7 +1061,7 @@ var notice = Vue.extend({
                                                     case "0":
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1021,7 +1076,7 @@ var notice = Vue.extend({
                                                     case "1":
                                                         that.theme_tableData2.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1035,7 +1090,7 @@ var notice = Vue.extend({
                                                     case "-1":
                                                         that.theme_tableData3.push({
                                                             uid: type[j].uid,
-                                                            time: type[j].time,
+                                                            time: type[j].formatTime,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1052,6 +1107,9 @@ var notice = Vue.extend({
                                 }
                         }
                     }
+                    that.theme_tableData1_length = that.theme_tableData1.length;
+                    that.theme_tableData2_length = that.theme_tableData2.length;
+                    that.theme_tableData3_length = that.theme_tableData3.length;
                }
            })
 

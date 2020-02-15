@@ -52,6 +52,8 @@ public class ComputableModelVersion {
 //    ComputableModelRelate relate;
 
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
 
     String mdl;
     String testDataPath;

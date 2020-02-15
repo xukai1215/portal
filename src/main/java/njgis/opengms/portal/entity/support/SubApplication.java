@@ -19,4 +19,6 @@ public class SubApplication {
     Date time;
     String status;
     List<Application> sub_applications;
+    String formatTime;
+
 }

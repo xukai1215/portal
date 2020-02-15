@@ -32,6 +32,8 @@ public class ConceptualModelVersion {
     List<AuthorInfo> authorship;
 
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
 
     //版本相关
     String modifier;
