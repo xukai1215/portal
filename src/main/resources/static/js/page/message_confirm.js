@@ -173,9 +173,12 @@ var notice = Vue.extend({
                         if (this.sum_tableData[i].status!="unchecked"){
                             if (this.sum_tableData[i].acceptTime!=null) {
                                 this.sum_tableData[i].modifyTime = this.sum_tableData[i].acceptTime;
+                            }else if (this.sum_tableData[i].rejectTime!=null) {
+                                this.sum_tableData[i].modifyTime = this.sum_tableData[i].rejectTime;
                             }
                         }
                     }
+
                     //将sum_tableData的数据按照时间排序(冒泡排序)
                     for (let i=0;i<this.sum_tableData.length;i++){
                         for (let j=this.sum_tableData.length-1;j>i;j--){
