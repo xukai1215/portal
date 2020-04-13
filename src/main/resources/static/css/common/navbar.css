@@ -560,3 +560,7 @@
      top: 30%!important;
      right: 30%!important;
  }
+
+sup.el-badge__content.is-fixed {
+    width: 20px;
+}
