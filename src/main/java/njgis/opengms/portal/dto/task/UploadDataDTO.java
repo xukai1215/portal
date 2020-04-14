@@ -22,4 +22,6 @@ public class UploadDataDTO {
 
     String type;
     String template;
+
+    Boolean visual;
 }

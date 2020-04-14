@@ -159,10 +159,6 @@ var vue = new Vue({
         fileSearchResult: [],
 
         loadjson: '',
-        paramDialogVisible: false,
-        paramType: "",
-        externalUrl: "",
-        currentEventId: "",
 
         loadDataIndex: 1,
 
@@ -180,6 +176,9 @@ var vue = new Vue({
         selectValue: "",
         uploadFiles: [],
         uploadLoading: false,
+
+        visualVisible:false,
+        visualSrc:"",
     },
     computed: {},
     watch: {
@@ -267,17 +266,25 @@ var vue = new Vue({
                             data.suffix=this.uploadFiles[0].name.split(".")[1];
                         }
                         else{
-
                             data.suffix="zip";
                         }
                         data.label=data.file_name;
                         data.file_name+="."+data.suffix;
                         data.upload=true;
-                        this.addDataToPortalBack(data);
+                        data.templateId=this.selectValue;
+                        this.addDataToPortalBack(data,this.selectValue);
+
+                        //reset
+                        this.uploadName="";
+                        this.selectValue="";
+                        this.selectedPath=[];
+                        this.uploadFiles=[];
+                        this.remoteMethod("");
+                        this.$refs.upload.clearFiles();
 
 
                     }else{
-                        this.$message.error('Upload error!');
+                        this.$message.error('Upload failed!');
                     }
 
 
@@ -286,7 +293,7 @@ var vue = new Vue({
 
                     this.uploadLoading=false;
                     this.uploadDialogVisible=false;
-                    this.$message.error('Upload error!');
+                    this.$message.error('Upload failed!');
                 });
             });
 
@@ -382,7 +389,7 @@ var vue = new Vue({
 
         },
 
-        addDataToPortalBack(item) {//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
+        addDataToPortalBack(item,templateId) {//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
 
             var addItem = []
             if (item instanceof Array) {
@@ -444,6 +451,11 @@ var vue = new Vue({
                                 for (let i = 0; i < item.length; i++) {
                                     console.log(item[i].file_name)
                                     let dataName7Suffix = item[i].file_name.split('.')
+                                    let flag=false;
+                                    for(let id in this.info.visualIds){
+                                        if(id==templateId) flag=true;
+                                    }
+
                                     const newChild = {
                                         id: idList[i].id,
                                         label: dataName7Suffix[0],
@@ -451,6 +463,7 @@ var vue = new Vue({
                                         children: [],
                                         package: false,
                                         upload: true,
+                                        visual: flag,
                                         father: paths[0],
                                         url: idList[i].url,
                                     };
@@ -648,18 +661,7 @@ var vue = new Vue({
                 return [1, 3];
             }
         },
-        editParam(row) {
-            this.currentEventId = row.eventId;
-            let data = row.data[0];
-            this.paramType = data.dataType;
-            if (this.paramType == "internal") {
-                this.paramTable = data.nodes;
-            }
-            else {
-                this.externalUrl = "/repository/template/" + data.externalId.toLowerCase();
-            }
-            this.paramDialogVisible = true;
-        },
+
 
         uploadToDataContainer(file, event) {
             let configContent = "<UDXZip><Name>";
@@ -1248,6 +1250,7 @@ var vue = new Vue({
                 this.$set(event, "tag", el.tag);
                 this.$set(event, "suffix", el.suffix);
                 this.$set(event, "url", el.url);
+                this.$set(event, "visual", el.visual);
                 if (el.children.length > 0) {
                     if (el.children.length == 1) {
                         event.children[0].value = el.children[0].value;
@@ -1273,6 +1276,11 @@ var vue = new Vue({
 
         goPersonCenter(oid) {
             window.open("/user/" + oid);
+        },
+
+        visualize(event){
+            this.visualSrc = event.url.replace("data","visual");
+            this.visualVisible=true;
         },
 
         download(event) {
@@ -1335,6 +1343,7 @@ var vue = new Vue({
                 this.eventChoosing.tag = this.downloadDataSetName[0].name;
                 this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
                 this.eventChoosing.url = this.downloadDataSetName[0].url;
+                this.eventChoosing.visual = this.downloadDataSetName[0].visual;
 
                 $("#eventInp_" + this.eventChoosing.eventId).val(this.eventChoosing.tag + this.eventChoosing.suffix);
                 $("#download_" + this.eventChoosing.eventId).css("display", "block");
@@ -1634,6 +1643,8 @@ var vue = new Vue({
                                 let tag = el.tag;
                                 let url = el.url;
                                 let suffix = el.suffix;
+                                let templateId = el.externalId;
+                                if(templateId!=null) templateId=templateId.toLowerCase();
                                 let children = el.children;
                                 if (el.eventType == "response") {
                                     if (el.optional) {
@@ -1646,6 +1657,7 @@ var vue = new Vue({
                                                 url,
                                                 tag,
                                                 suffix,
+                                                templateId,
                                                 children
                                             });
                                         }
@@ -1660,6 +1672,7 @@ var vue = new Vue({
                                             url,
                                             tag,
                                             suffix,
+                                            templateId,
                                             children
                                         });
                                     }
@@ -2153,7 +2166,8 @@ var vue = new Vue({
                     name: eval.label,
                     suffix: eval.suffix,
                     package: eval.package,
-                    url: eval.url
+                    url: eval.url,
+                    visual: eval.visual
                 }
                 this.downloadDataSetName.push(obj)
             }

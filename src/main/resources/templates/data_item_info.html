@@ -20,6 +20,7 @@
 
     <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{../../static/css/base/style.css}">
     <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{../../static/css/base/universal.css}">
+    <link rel="stylesheet" href="/static/css/base/itemInfo.css">
     <link rel="stylesheet" href="../static/css/page/data_item_info.css"
           th:href="@{../../static/css/page/data_item_info.css}">
     <link rel="stylesheet" href="../static/css/components/file-manager.css"
@@ -54,7 +55,7 @@
 
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #adadad solid 1px">
+        <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title" th:object="${datainfo}">
                     <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>
@@ -90,6 +91,84 @@
 
                 </div>
 
+            </div>
+
+            <div id="Owner0" class="detail_block minScreen">
+
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Contributor</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row" style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
+                        <div class="el-col">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row">
+                        <div class="text-center">
+                            <h5 th:text="'contributed at '+${#dates.format(datainfo.data.createTime,'yyyy-MM-dd')}">
+                                contributed at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Authorship0" class="detail_block minScreen"
+                 th:if="${datainfo.data.authorship!=null&&#lists.size(datainfo.data.authorship)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;" th:each="author,key:${datainfo.data.authorship}">
+                        <span role="button" tabindex="0" class="ab" style="float: right;"><a
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true" ><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
+                             style="">
+                            <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt th:if="${author.ins!=''&&author.ins!=null}">Affiliation：</dt>
+                                    <dd th:if="${author.ins!=''&&author.ins!=null}" th:text="${author.ins}"></dd>
+                                    <div th:if="${author.email!='unknow'&&author.email!=''}">
+                                        <dt>Email：</dt>
+                                        <dd th:text="${author.email}">njgis@163.com</dd>
+                                    </div>
+                                    <dt>Home Page：</dt>
+                                    <dd><a th:href="${author.homepage}">View</a></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="classification0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Category Tags</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-bottom:10px;">
+
+                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
+
+                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
+                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+
+                </div>
             </div>
 
             <!--data resource url-->
@@ -178,7 +257,7 @@
                          style="height: 300px; overflow-y: auto;"><!---->
                         <el-card th:each="item,key:${datainfo.data.dataList}"
                                  th:title="${item.name}" class="dataitemisol" shadow="never" th:id="${item.url}"
-                                 th:key="${key}">
+                                 th:key="${key}" style="width: 150px;">
 
                             <el-row>
                                 <el-col :span="6">&nbsp</el-col>
@@ -266,7 +345,7 @@
                 </div>
                 <div class="block_content flex">
 
-                    <div th:if="${#lists.size(relatedModels)}!=0">
+                    <div th:if="${#lists.size(relatedModels)}!=0" style="width:100%">
                         <div class="list_panel clearfix" th:each="model:${relatedModels}">
                             <a th:href="'/modelItem/'+${model.oid}" class="img">
                                 <img src="/static/img/model/model.png">
@@ -286,7 +365,7 @@
                             Edit Related Model Item
                         </el-button>
                     </div>
-                    <div class="text-center" th:if="${#lists.size(relatedModels)}==0">
+                    <div class="text-center" style="width:100%" th:if="${#lists.size(relatedModels)}==0">
                         <h5 style="margin-bottom: 10px;display: inline-block;">
                             There is no related model item. You can bind one.
                         </h5>
@@ -439,7 +518,6 @@
 
             </div>
 
-
             <!--how to cite-->
             <div id="cite" class="detail_block">
                 <div class="block_head">
@@ -467,133 +545,26 @@
                 </div>
             </div>
 
-
-            <!--comment-->
-            <div id="comment" class="detail_block">
+            <div id="QR0" class="detail_block minScreen">
                 <div class="block_head">
-                    <div class="head_text">
-                        <h4>Comments</h4>
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
                     </div>
                 </div>
-
                 <div class="block_content">
-                    {{allcomments.length==0?"Give the frst comment":''}}
-                    <!--comment  v-for card-->
-                    <el-card v-for="(item,key) in allcomments" :key="key" shadow="hover">
-                        <div class="el-col el-col-4">
-                            <el-badge
-                                    :value="thumbs===''? item.thumbsUpNumber:(thisthumbs===key?thumbs:item.thumbsUpNumber)"
-                                    type="primary">
-                                <el-button round @click="thumbsup(key)">❤</el-button>
-                            </el-badge>
 
-                        </div>
-
-                        <div class="el-col el-col-20">
-                            <el-row><span>{{item.comment}}</span></el-row>
-                            <hr>
-                            <el-row>
-                                <div class="el-col el-col-10">
-                                    <div style="white-space:nowrap;">
-                                        <el-button icon="el-icon-edit" @click="showmycomment(key)" size="mini">Add
-                                            Comments
-                                        </el-button>
-                                        <el-button icon="el-icon-news" @click="showcomment(key)" size="mini">
-                                            Comments(<strong>{{getcommentlength(item.commentsForComment)}}</strong>)
-                                        </el-button>
-
-                                    </div>
-
-                                    <!--<el-button icon="el-icon-setting" type="text" >donate </el-button>-->
-                                </div>
-                                <div class="el-col el-col-10">
-
-
-                                    <div class="el-col el-col-10 el-col-offset-4">
-
-                                        <img th:src="@{../static/img/icon/jeff.jpg}" class="round_icon"
-                                             style="width:45px;height: 50px;float:left;">
-
-
-                                        <div style="margin-left: 55px;display: block;" th:object="${datainfo}">
-
-                                            <!--//todo 每项数据绑定作者，这里每个评论绑定作者-->
-                                            <!--<a href="javascript:void(0)"><h5 th:text="${datainfo.data.author}"></h5></a>-->
-                                            <a href="javascript:void(0)"><h5>{{item.author}}</h5></a>
-
-                                            <!--<h5 th:text="${datainfo.data.lastModifyTime}"></h5>-->
-                                            <span style="white-space: nowrap">{{formatDate(item.commentDate)}}</span>
-
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </el-row>
-                        </div>
-                        <el-card v-show="comforcom===key" style="background-color: #f5f5f5" ref="key">
-
-                            <div class="el-col el-col-20">
-                                <el-input
-                                        type="textarea"
-                                        :rows="4"
-                                        placeholder="please input content.."
-                                        v-model="comforcomtextarea">
-                                </el-input>
-                                <br/><br/>
-                            </div>
-                            <div class="el-col el-col-4">
-                                <el-button @click="reply(item.id)">reply</el-button>
-                            </div>
-                        </el-card>
-
-                        <el-card v-show="comments=== key"
-                                 style="background-color: #f5f5f5;overflow-y: scroll;height: 400px" ref="key">
-                            <!--v-for 多个-->
-                            <el-card v-for="(item1,key1) in item.commentsForComment" :key="key1" shadow="hover">
-                                <el-row>
-                                    <div class="el-col el-col-18"><span>{{item1.comment}}</span></div>
-                                    <div class="el-col el-col-6">
-                                        <el-row><strong>by:</strong> <span>{{item1.author}}</span></el-row>
-                                        <el-row><strong>at:</strong> <span>{{formatDate(item1.date)}}</span></el-row>
-
-                                    </div>
-                                </el-row>
-                            </el-card>
-
-                        </el-card>
-
-                    </el-card>
-                    <br/>
-
-                    <hr>
-                    <h4><strong>Submit My Comments:</strong></h4><br/>
-                    <el-card>
-                        <div class="el-col el-col-20">
-                            <el-input
-                                    type="textarea"
-                                    :rows="4"
-                                    placeholder="please input content.."
-                                    v-model="mycommentforthedata">
-                            </el-input>
-                            <br/><br/>
-                        </div>
-                        <div class="el-col el-col-4">
-                            <el-button @click="putcomment()">submit</el-button>
-                        </div>
-                    </el-card>
-
+                    <div class="qrcode" style="width:200px;height:200px;margin: 0px auto;"></div>
 
                 </div>
-
-
             </div>
 
+            <div id="comments">
+                <template th:replace="fragments/comments :: comments"></template>
+            </div>
 
         </div>
 
-
-        <div class="right-panel el-col el-col-5">
+        <div class="right-panel el-col">
             <!--categorys-->
             <div id="classification" class="detail_block">
                 <div class="block_head">
@@ -611,7 +582,7 @@
                 </div>
             </div>
 
-            <div id="Owner" class="detail_block" style="margin-bottom: 55px">
+            <div id="Owner" class="detail_block">
 
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -619,19 +590,19 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div class="el-row" style="height: 40px;display: flex;justify-content: center;align-items: Center;">
-                        <div class="el-col el-col-4 el-col-offset-3">
+                    <div class="el-row" style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
+                        <div class="el-col">
                             <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
 
-                        <div class="el-col el-col-20">
-                            <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
-                    <div class="el-row el-col-offset-3">
+                    <div class="el-row">
                         <div class="text-center">
                             <h5 th:text="'contributed at '+${#dates.format(datainfo.data.createTime,'yyyy-MM-dd')}">
                                 contributed at 2018-7-13 14:32:18 </h5>
@@ -639,7 +610,6 @@
                     </div>
                 </div>
             </div>
-
 
             <div id="Authorship" class="detail_block"
                  th:if="${datainfo.data.authorship!=null&&#lists.size(datainfo.data.authorship)!=0}">
@@ -682,7 +652,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div id="qrcode" class="el-col-offset-3" style="width:200px;height:200px;"></div>
+                    <div class="qrcode" style="width:200px;height:200px;margin: 0px auto;"></div>
 
                 </div>
             </div>

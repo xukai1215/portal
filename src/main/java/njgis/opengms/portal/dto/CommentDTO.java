@@ -10,9 +10,10 @@ public class CommentDTO {
 
     String parentId;
     String content;
-    String authorId;
+
+    String replyToUserId;
 
     String relateItemId;
-    int relateItemTypeNum;
+    String relateItemTypeName;
 
 }

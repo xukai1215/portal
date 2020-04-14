@@ -20,10 +20,11 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Utils {
 
     static int count=0;
+
+//    static String[] visualTemplateIds={"4996e027-209b-4121-907b-1ed36a417d22","f73f31ff-2f23-4c7a-a57d-39d0c7a6c4e6","d3605b83-af8d-491c-91b3-a0e0bf3fe714"};
 
     public static class Method {
         public static String POST = "POST";
@@ -315,11 +316,11 @@ public class Utils {
                         String external = "";
                         if (DatasetDeclaration.attribute("externalId") != null) {
                             external = DatasetDeclaration.attributeValue("externalId");
-                            root.put("externalId", external);
                         } else if (DatasetDeclaration.attribute("external") != null) {
                             external = DatasetDeclaration.attributeValue("external");
-                            root.put("externalId", external);
                         }
+                        root.put("externalId", external.toLowerCase());
+
                         root.put("parentId", "null");
                         dataset.add(root);
                     } else {
@@ -474,7 +475,7 @@ public class Utils {
                 node.put("dataType", dataType_result);
                 node.put("desc", udxNode.attributeValue("description"));
                 if (udxNode.attributeValue("type").equals("external")) {
-                    node.put("externalId", udxNode.attributeValue("externalId"));
+                    node.put("externalId", udxNode.attributeValue("externalId").toLowerCase());
                 }
                 List<Element> nodeChildren = udxNode.elements();
                 if (nodeChildren.size() > 0) {

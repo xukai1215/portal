@@ -16,14 +16,14 @@ public enum ItemTypeEnum {
 
     Concept(5),
     SpatialReference(6),
-    DataTemplate(7),
+    Template(7),
     Unit(8),
 
     Theme(9);
 
     private int number;
 
-    public static ItemTypeEnum getItemType(int number){
+    public static ItemTypeEnum getItemTypeByNum(int number){
         for(ItemTypeEnum itemTypeEnum:ItemTypeEnum.values()){
             if(itemTypeEnum.number==number){
                 return itemTypeEnum;
@@ -32,4 +32,12 @@ public enum ItemTypeEnum {
         return null;
     }
 
+    public static ItemTypeEnum getItemTypeByName(String name){
+        for(ItemTypeEnum itemTypeEnum:ItemTypeEnum.values()){
+            if(itemTypeEnum.name().toUpperCase().equals(name.toUpperCase())){
+                return itemTypeEnum;
+            }
+        }
+        return null;
+    }
 }

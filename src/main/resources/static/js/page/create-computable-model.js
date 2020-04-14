@@ -78,23 +78,24 @@ var createComputableModel = Vue.extend({
             window.sessionStorage.clear();
         },
         getUserData(UsersInfo, prop) {
-            let index=0;
-            for(i=0;i<UsersInfo.length;i+=4){
-                let value1 = UsersInfo.eq(i)[0].value.trim();
-                let value2 = UsersInfo.eq(i)[0].value.trim();
-                let value3 = UsersInfo.eq(i)[0].value.trim();
-                let value4 = UsersInfo.eq(i)[0].value.trim();
-                if(value1==''&&value2==''&&value3==''&&value4==''){
-                    index=i+4;
-                }
 
-            }
             for (i = prop.length; i > 0; i--) {
                 prop.pop();
             }
             var result = "{";
-            for (; index < UsersInfo.length; index++) {
+            for (index=0 ; index < UsersInfo.length; index++) {
                 //
+                if(index%4==0){
+                    let value1 = UsersInfo.eq(index)[0].value.trim();
+                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
+                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
+                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
+                    if(value1==''&&value2==''&&value3==''&&value4==''){
+                        index+=4;
+                        continue;
+                    }
+                }
+
                 var Info = UsersInfo.eq(index)[0];
                 if (index % 4 == 3) {
                     if (result) {
@@ -654,20 +655,29 @@ var createComputableModel = Vue.extend({
                     // $(".uploading").css("display", "none");
                     if(res.code===0) {
                         switch (res.data.code) {
+                            case 0:
+                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                window.location.href="/user/userspace"
                             case 1:
                                 alert("update computable model successfully!");
                                 window.location.href = "/computableModel/" + res.data.id;
                                 break;
                             case -1:
                                 alert("save files error");
+                                $("#step").css("display", "block");
+                                $(".uploading").css("display", "none");
                                 break;
                             case -2:
                                 alert("create fail");
+                                $("#step").css("display", "block");
+                                $(".uploading").css("display", "none");
                                 break;
                         }
                     }
                     else{
                         alert(res.msg);
+                        $("#step").css("display", "block");
+                        $(".uploading").css("display", "none");
                     }
                 }).fail((res) => {
 

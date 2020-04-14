@@ -56,6 +56,10 @@ public class UserService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    //可以可视化的数据模板
+    @Value("#{'${visualTemplateIds}'.split(',')}")
+    private String[] visualTemplateIds;
+
 
     public String resetPassword(String email){
         try {
@@ -662,7 +666,7 @@ public class UserService {
 
         String[] a={"0"};
         if(paths.size()==0||paths.get(0).equals("0")){
-            fileMetaList.add(new FileMeta(true,false,id,father,name,"","",new ArrayList<>()));
+            fileMetaList.add(new FileMeta(true,false,id,father,name,"","",null,new ArrayList<>()));
         }
         else {
             // pop
@@ -693,9 +697,10 @@ public class UserService {
             String name = a[0];
             String suffix = a[1];
             String id = UUID.randomUUID().toString();
+            String templateId = files.get(i).get("templateId").toString();
 
             pathsCopy.addAll(paths);
-            user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url));
+            user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url, templateId));
             JSONObject obj=new JSONObject();
             obj.put("id",id);
             obj.put("url",url);
@@ -706,10 +711,10 @@ public class UserService {
         return idList;
     }
 
-    private List<FileMeta> aFile(List<String> paths,List<FileMeta> fileMetaList,String name,String suffix,String id,String father,String url){
+    private List<FileMeta> aFile(List<String> paths,List<FileMeta> fileMetaList,String name,String suffix,String id,String father,String url,String templateId){
 
         if(paths.size()==0||paths.get(0).equals("0")){
-            fileMetaList.add(new FileMeta(false,true,id,father,name,suffix,url,new ArrayList<>()));
+            fileMetaList.add(new FileMeta(false,true,id,father,name,suffix,url,templateId,new ArrayList<>()));
         }
         else {
             // pop
@@ -718,7 +723,7 @@ public class UserService {
                 FileMeta fileMeta = fileMetaList.get(i);
                 if (fileMeta.getId().equals(path)) {
 
-                    fileMeta.setContent(aFile(paths, fileMeta.getContent(),name,suffix,id,path,url));
+                    fileMeta.setContent(aFile(paths, fileMeta.getContent(),name,suffix,id,path,url,templateId));
                     fileMetaList.set(i,fileMeta);
                     break;
                 }
@@ -792,7 +797,7 @@ public class UserService {
 
         if(fileMetaList==null||fileMetaList.size()==0) {
 
-            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
+            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",null,new ArrayList<>());
             fileMetaList=new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -826,6 +831,15 @@ public class UserService {
                     jsonObject.put("label", fileMeta.getName());
                     jsonObject.put("package",fileMeta.getIsFolder());
                     jsonObject.put("father",fileMeta.getFather());
+                    for(String id:visualTemplateIds){
+                        if(id.equals(fileMeta.getTemplateId())){
+                            jsonObject.put("visual",true);
+                            break;
+                        }
+                    }
+                    if(!jsonObject.containsKey("visual")){
+                        jsonObject.put("visual",false);
+                    }
                     jsonObject.put("children", gFolder(fileMeta.getContent()));
                     System.out.println(fileMeta.getContent());
                     parent.add(jsonObject);
@@ -841,7 +855,7 @@ public class UserService {
 
         if(fileMetaList==null||fileMetaList.size()==0) {
 
-            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
+            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",null,new ArrayList<>());
             fileMetaList=new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -878,6 +892,15 @@ public class UserService {
                     jsonObject.put("father",fileMeta.getFather());
                     jsonObject.put("suffix",fileMeta.getSuffix());
                     jsonObject.put("url",fileMeta.getUrl());
+                    for(String id:visualTemplateIds){
+                        if(id.equals(fileMeta.getTemplateId())){
+                            jsonObject.put("visual",true);
+                            break;
+                        }
+                    }
+                    if(!jsonObject.containsKey("visual")){
+                        jsonObject.put("visual",false);
+                    }
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
 
                     parent.add(jsonObject);
@@ -1007,7 +1030,7 @@ public class UserService {
                             }
                         }
                         if(!exist) {
-                            FileMeta fileMeta = new FileMeta(false,false, id,father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), null);
+                            FileMeta fileMeta = new FileMeta(false,false, id,father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(),"", null);
                             fileMetaList.add(fileMeta);
                         }
                         break;

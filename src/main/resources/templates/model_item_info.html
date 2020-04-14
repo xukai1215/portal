@@ -2,10 +2,12 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title th:text="${modelInfo.name}+' | Model Item | OpenGMS'">Model Item Info | OpenGMS</title>
     <meta name="keywords" th:attr="content=${modelInfo.name}+${metaKeywords}+', OpenGMS, geographic model'"/>
-    <meta name="description" th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
+    <meta name="description"
+          th:attr="content=${modelInfo.description}+' | OpenGMS supports to share your resources in geographic modeling and simulation.'"/>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
@@ -15,8 +17,8 @@
     <link rel="stylesheet" href="/static/css/base/itemInfo.css">
     <link rel="stylesheet" href="/static/css/base/relate_item.css">
     <link rel="stylesheet" href="/static/css/page/model_item_info.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
     <style>
         #description h1 {
@@ -48,27 +50,25 @@
             box-shadow: none;
             -webkit-box-shadow: none;
         }
-        [class*=el-col-]{
-            float:left;
+
+        [class*=el-col-] {
+            float: left;
         }
 
-        .el-badge__content{
+        .el-badge__content {
             margin-left: 5px;
             background-color: #bbbbbb;
         }
 
-        /*.el-button.is-circle{*/
-            /*margin-left*/
-            /*padding:7px;*/
-        /*}*/
     </style>
+
 </head>
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
+        <div class="left-panel el-col" >
             <div class="detail">
                 <div class="detail_title">
                     <h2 th:utext="${modelInfo.name}"
@@ -104,6 +104,67 @@
 
             </div>
 
+            <div id="Contributor0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Contributor</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
+                        <div class="el-col ">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row">
+                        <div class="text-center">
+                            <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Authorship0" class="detail_block minScreen"
+                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                        <span role="button" tabindex="0" class="ab" style="float: right;"
+                              th:class="${key.index==0?'ab':'ab transform180'}"><a
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse" name="authorshipContent"
+                             th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
+                             style="">
+                            <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
+                                    <dd th:if="${author.ins!=''}" th:text="${author.ins}"></dd>
+                                    <dt th:if="${author.email!=''}">Email: &nbsp</dt>
+                                    <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
+                                    <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="classification" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -123,7 +184,6 @@
                 </div>
             </div>
 
-
             <div id="description" th:if="${detail!=''}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -140,8 +200,6 @@
                                                                                               aria-hidden="true"></i></a>
                 </div>
             </div>
-
-
 
             <div id="related_models" class="detail_block">
                 <div class="block_head">
@@ -265,7 +323,8 @@
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related logical model. You can bind logical models.
                             </h5>
-                            <button class="btn btn-default" type="button" style="display: inline-block;" @click="addRelation(3)">
+                            <button class="btn btn-default" type="button" style="display: inline-block;"
+                                    @click="addRelation(3)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
@@ -385,7 +444,9 @@
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/repository/concept/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">ANN-CA uses the artificial
+                                    <p style="margin-top: 0px"
+                                       th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">
+                                        ANN-CA uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
                                         subsequent
@@ -422,7 +483,9 @@
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/repository/spatialReference/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses the artificial
+                                    <p style="margin-top: 0px"
+                                       th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
+                                        the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
                                         subsequent
@@ -459,7 +522,8 @@
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/repository/template/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.type}+' | '+${model.description}">ANN-CA uses the artificial
+                                    <p style="margin-top: 0px" th:text="${model.type}+' | '+${model.description}">ANN-CA
+                                        uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
                                         subsequent
@@ -496,7 +560,9 @@
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/repository/unit/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.description_EN!=''?model.description_EN:model.description_ZH}">ANN-CA uses the artificial
+                                    <p style="margin-top: 0px"
+                                       th:text="${model.description_EN!=''?model.description_EN:model.description_ZH}">
+                                        ANN-CA uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
                                         subsequent
@@ -586,11 +652,14 @@
                 </div>
                 <div class="block_content flex">
                     <div id="cite-text">
-                        <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '"></span>
-                        <span th:if="${authorship==''}" th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '">
+                        <span th:if="${authorship!=''}"
+                              th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '"></span>
+                        <span th:if="${authorship==''}"
+                              th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                         </span>
-                        <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/modelItem/'+${modelInfo.oid}"
+                        <a style="word-break:break-all;"
+                           th:href="'http://geomodeling.njnu.edu.cn/modelItem/'+${modelInfo.oid}"
                            th:text="'http://geomodeling.njnu.edu.cn/modelItem/'+${modelInfo.oid}">
                             http://geomodeling.njnu.edu.cn/modelitem/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
@@ -601,21 +670,70 @@
                 </div>
             </div>
 
-            <div id="comments" class="detail_block">
+            <div id="Knowledge_Graph0" class="detail_block minScreen" th:if="${modelInfo.knowledgeGraph!=null}">
                 <div class="block_head">
-                    <div class="head_text">
-                        <h4>Comments</h4>
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Knowledge Graph</h4>
                     </div>
                 </div>
-                <div class="block_content flex">
+                <div class="block_content text-center">
+
+                    <a th:href="'/knowledgeGraph/'+${modelInfo.knowledgeGraph}">
+                        <img src="/static/img/logo/knowledgeGraph.jpg" style="text-align: center;width:50%;">
+                    </a>
+                </div>
+            </div>
+
+            <div id="Modifier0" class="detail_block minScreen"
+                 th:if="${modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/modelItem/'+${modelInfo.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="QR0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
 
                 </div>
             </div>
 
+            <div id="comments" class="detail_block">
+                <template th:replace="fragments/comments :: comments"></template>
+            </div>
 
         </div>
-        <div class="right-panel el-col el-col-5">
-            <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
+        <div class="right-panel el-col">
+            <div id="Contributor" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Contributor</h4>
@@ -623,24 +741,23 @@
                 </div>
                 <div class="block_content">
                     <div class="el-row"
-                         style="height: 40px; display: flex; justify-content: center; align-items: center;">
-                        <div class="el-col el-col-4 el-col-offset-3">
+                         style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
+                        <div class="el-col ">
                             <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
-                        <div class="el-col el-col-20">
-                            <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
-                    <div class="el-row el-col-offset-3">
+                    <div class="el-row">
                         <div class="text-center">
                             <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div id="Authorship" class="detail_block"
@@ -653,11 +770,13 @@
                 <div class="block_content text-center" style="padding-left:10px">
 
                     <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
-                        <span role="button" tabindex="0" class="ab" style="float: right;" th:class="${key.index==0?'ab':'ab transform180'}"><a
+                        <span role="button" tabindex="0" class="ab" style="float: right;"
+                              th:class="${key.index==0?'ab':'ab transform180'}"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
                                 aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse" name="authorshipContent" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse" name="authorshipContent"
+                             th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
                              style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
@@ -725,7 +844,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
 
 
                 </div>
@@ -737,7 +856,8 @@
 
 
     <!--Relation 弹出框-->
-    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">
+    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%"
+               top="40px">
 
         <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
             <div slot="header" class="clearfix">
@@ -827,9 +947,9 @@
         </el-card>
         <div slot="footer" class="dialog-footer">
             <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
-    <el-button @click="dialogTableVisible = false;">Cancel</el-button>
-    <el-button type="primary" @click="confirm()">OK</el-button>
-  </div>
+            <el-button @click="dialogTableVisible = false;">Cancel</el-button>
+            <el-button type="primary" @click="confirm()">OK</el-button>
+        </div>
     </el-dialog>
 
     <div th:replace="fragments/footer :: footer"></div>
@@ -845,6 +965,7 @@
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
 <script src="/static/js/common/qrcode.min.js"></script>
+
 <script src="/static/js/page/model_item_info.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/copy.js"></script>

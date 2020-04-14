@@ -1,8 +1,6 @@
-package njgis.opengms.portal.entity;
+package njgis.opengms.portal.dto;
 
 import lombok.Data;
-import njgis.opengms.portal.enums.ItemTypeEnum;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -12,19 +10,13 @@ import java.util.List;
 @Document
 @Data
 
-public class Comment {
-
-    @Id
-    String id;
+public class CommentResultDTO {
 
     String oid;
     String parentId;
     String content;
     String authorId;
     String replyToUserId;
-
-    String relateItemId;
-    ItemTypeEnum relateItemType;
 
     int thumbsUpNumber=0;
     Date date;

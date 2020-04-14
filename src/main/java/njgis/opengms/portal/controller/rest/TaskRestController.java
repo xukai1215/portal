@@ -398,7 +398,7 @@ public class TaskRestController {
                             String externalId = data.getString("externalId");
 
                             template.put("type", "id");
-                            template.put("value", externalId);
+                            template.put("value", externalId.toLowerCase());
                             output.put("template", template);
 
                         } else if (dataType.equals("internal")) {
@@ -410,9 +410,15 @@ public class TaskRestController {
 //                                    schema += "<UdxNode name=\"" + node.getString("text") + "\" type=\"" + node.getString("dataType") + "\" description=\"" + node.getString("desc") + "\" />";
 //                                }
 //                                schema += "</UdxNode></UdxDeclaration>";
-                                template.put("type", "schema");
-                                template.put("value", data.getString("schema"));
-                                output.put("template", template);
+                                if(data.getString("schema")!=null) {
+                                    template.put("type", "schema");
+                                    template.put("value", data.getString("schema"));
+                                    output.put("template", template);
+                                }else{
+                                    template.put("type", "none");
+                                    template.put("value", "");
+                                    output.put("template", template);
+                                }
                             } else {
                                 template.put("type", "none");
                                 template.put("value", "");
@@ -526,6 +532,11 @@ public class TaskRestController {
         String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(taskService.delete(oid,userName));
 
+    }
+
+    @RequestMapping(value="/visualTemplateIds", method = RequestMethod.GET)
+    public JsonResult getVisualTemplateIds(){
+        return ResultUtils.success(taskService.getVisualTemplateIds());
     }
 
     @RequestMapping(value = "/loadTestData", method = RequestMethod.POST)

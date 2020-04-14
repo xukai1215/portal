@@ -22,7 +22,6 @@ import njgis.opengms.portal.entity.support.ZipStreamEntity;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
-import njgis.opengms.portal.utils.ZipUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -72,6 +71,14 @@ public class TaskService {
 
     @Value("${dataContainerIpAndPort}")
     private String dataContainerIpAndPort;
+
+    //可以可视化的数据模板
+    @Value("#{'${visualTemplateIds}'.split(',')}")
+    private String[] visualTemplateIds;
+
+    public String[] getVisualTemplateIds(){
+        return visualTemplateIds;
+    }
 
     public ModelAndView getPage(String id, String username) {
         //条目信息
@@ -229,10 +236,24 @@ public class TaskService {
         taskInfo.put("creater", task.getUserId());
         taskInfo.put("description", task.getDescription());
         taskInfo.put("permission", task.getPermission());
-        taskInfo.put("outputs", task.getOutputs());
-        taskInfo.put("inputs", task.getInputs());
         taskInfo.put("createTime", task.getRunTime());
         taskInfo.put("status", task.getStatus());
+        taskInfo.put("outputs", task.getOutputs());
+//
+        List<TaskData> inputs = task.getInputs();
+        for(int i=0;i<inputs.size();i++){
+            TaskData input=inputs.get(i);
+            for(String id:visualTemplateIds){
+                String templateId = input.getTemplateId();
+                if(templateId!=null) {
+                    if (templateId.toLowerCase().equals(id)) {
+                        inputs.get(i).setVisual(true);
+                        break;
+                    }
+                }
+            }
+        }
+        taskInfo.put("inputs", inputs);
 
         boolean hasTest;
         if (modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")) {
@@ -314,12 +335,32 @@ public class TaskService {
             for (int j = 0; j < events.size(); j++) {
                 JSONObject event = events.getJSONObject(j);
                 if (event.getString("eventType").equals("response")) {
+                    //判断是否能够可视化
+//                    JSONObject eventData = (JSONObject)event.getJSONArray("data").get(0);
+//                    if(eventData.containsKey("externalId")){
+//                        for(String id:visualTemplateIds){
+//                            if(eventData.getString("externalId").toLowerCase().equals(id)){
+//                                event.put("visual",true);
+//                                break;
+//                            }
+//                        }
+//                    }
                     eventsSort.add(event);
                 }
             }
             for (int j = 0; j < events.size(); j++) {
                 JSONObject event = events.getJSONObject(j);
                 if (!event.getString("eventType").equals("response")) {
+                    //判断是否能够可视化
+//                    JSONObject eventData = (JSONObject)event.getJSONArray("data").get(0);
+//                    if(eventData.containsKey("externalId")){
+//                        for(String id:visualTemplateIds){
+//                            if(eventData.getString("externalId").toLowerCase().equals(id)){
+//                                event.put("visual",true);
+//                                break;
+//                            }
+//                        }
+//                    }
                     eventsSort.add(event);
                 }
             }
@@ -336,6 +377,7 @@ public class TaskService {
         result.put("modelInfo", model_Info);
         result.put("taskInfo", taskInfo);
         result.put("dxInfo", dxInfo);
+        result.put("visualIds",visualTemplateIds);
 
         return result;
     }
@@ -364,7 +406,7 @@ public class TaskService {
 
             for(int j=0;j<states.size();j++){
                 JSONObject state = states.getJSONObject(j);
-                if(state.getString("name").equals(uploadDataDTO.getState())){
+                if(state.getString("Id").equals(uploadDataDTO.getState())){
                     JSONArray events=state.getJSONArray("event");
                     for(int k=0;k<events.size();k++){
                         JSONObject event=events.getJSONObject(k);
@@ -372,10 +414,23 @@ public class TaskService {
                             JSONObject data=event.getJSONArray("data").getJSONObject(0);
                             if(data.getString("dataType").equals("external")){
                                 uploadDataDTO.setType("id");
-                                uploadDataDTO.setTemplate(data.getString("externalId"));
+                                uploadDataDTO.setTemplate(data.getString("externalId").toLowerCase());
+                                for(String id:visualTemplateIds){
+                                    if(uploadDataDTO.getTemplate().equals(id)){
+                                        uploadDataDTO.setVisual(true);
+                                        break;
+                                    }
+                                }
                             }else{
-                                uploadDataDTO.setType("schema");
-                                uploadDataDTO.setTemplate(data.getString("schema"));
+                                if(data.getString("schema")!=null) {
+                                    uploadDataDTO.setType("schema");
+                                    uploadDataDTO.setTemplate(data.getString("schema"));
+                                    uploadDataDTO.setVisual(false);
+                                }else{
+                                    uploadDataDTO.setType("none");
+                                    uploadDataDTO.setTemplate("");
+                                    uploadDataDTO.setVisual(false);
+                                }
                             }
 
                             break;
@@ -387,6 +442,7 @@ public class TaskService {
             if(uploadDataDTO.getType()==null){
                 uploadDataDTO.setType("none");
                 uploadDataDTO.setTemplate("");
+                uploadDataDTO.setVisual(false);
             }
 
             dataUploadList.add(uploadDataDTO);
@@ -508,13 +564,14 @@ public class TaskService {
         String testDataPath = uploadDataDTO.getFilePath();
         String url = "http://" + dataContainerIpAndPort + "/data";
         //拼凑form表单
-        Map<String, String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("name", uploadDataDTO.getEvent());
         params.put("userId", userName);
         params.put("serverNode", "china");
         params.put("origination", "portal");
 
         //拼凑file表单
+        List<String> filePaths=new ArrayList<>();
 //
         String configParentPath = resourcePath + "/configFile/" + UUID.randomUUID().toString() + "/";
         File path = new File(configParentPath);
@@ -544,20 +601,24 @@ public class TaskService {
             out.flush();
             out.close();
 
-            File dataFile=new File(testDataPath);
-            InputStream dataStream = new FileInputStream(dataFile);
-            ZipStreamEntity zipStreamEntity1=new ZipStreamEntity(dataFile.getName(),dataStream);
 
-            InputStream configStream = new FileInputStream(configFile);
-            ZipStreamEntity zipStreamEntity2=new ZipStreamEntity(configFile.getName(),configStream);
+            filePaths.add(testDataPath);
+            filePaths.add(configPath);
 
-            List<ZipStreamEntity> zipStreamEntityList=new ArrayList<>();
-            zipStreamEntityList.add(zipStreamEntity1);
-            zipStreamEntityList.add(zipStreamEntity2);
-
-            String dataName=dataFile.getName().substring(0,dataFile.getName().lastIndexOf("."));
-            InputStream zipInputStream = ZipUtils.listStreamToZipStream(zipStreamEntityList,dataName);
-            zipStreamEntity=new ZipStreamEntity(dataName,zipInputStream);
+//            File dataFile=new File(testDataPath);
+//            InputStream dataStream = new FileInputStream(dataFile);
+//            ZipStreamEntity zipStreamEntity1=new ZipStreamEntity(dataFile.getName(),dataStream);
+//
+//            InputStream configStream = new FileInputStream(configFile);
+//            ZipStreamEntity zipStreamEntity2=new ZipStreamEntity(configFile.getName(),configStream);
+//
+//            List<ZipStreamEntity> zipStreamEntityList=new ArrayList<>();
+//            zipStreamEntityList.add(zipStreamEntity1);
+//            zipStreamEntityList.add(zipStreamEntity2);
+//
+//            String dataName=dataFile.getName().substring(0,dataFile.getName().lastIndexOf("."));
+//            InputStream zipInputStream = ZipUtils.listStreamToZipStream(zipStreamEntityList,dataName);
+//            zipStreamEntity=new ZipStreamEntity(dataName,zipInputStream);
 
 
 
@@ -568,7 +629,7 @@ public class TaskService {
 
         String result;
         try {
-            result = MyHttpUtils.POSTZipStream(url, "UTF-8", params, zipStreamEntity);
+            result = MyHttpUtils.upload(url, filePaths, params);
         } catch (Exception e) {
             result = null;
         }
@@ -577,18 +638,20 @@ public class TaskService {
             resultDataDTO.setTag("");
         } else {
             JSONObject res = JSON.parseObject(result);
-            if (res.getIntValue("code") != 1) {
+            if (res.getIntValue("code") != 0) {
                 resultDataDTO.setUrl("");
                 resultDataDTO.setTag("");
                 resultDataDTO.setSuffix("");
             } else {
                 JSONObject data = res.getJSONObject("data");
-                String data_url = data.getString("url");
-                String tag = data.getString("tag");
-                String suffix = data.getString("suffix");
+                String data_url = "http://"+dataContainerIpAndPort+"/data?uid="+data.getString("source_store_id");
+                String tag = data.getString("file_name");
+                String[] paths=testDataPath.split("\\.");
+                String suffix = paths[paths.length-1];
                 resultDataDTO.setTag(tag);
                 resultDataDTO.setUrl(data_url);
                 resultDataDTO.setSuffix(suffix);
+                resultDataDTO.setVisual(uploadDataDTO.getVisual());
             }
         }
         return new AsyncResult<>(resultDataDTO);

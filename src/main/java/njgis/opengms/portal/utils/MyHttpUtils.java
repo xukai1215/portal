@@ -2,19 +2,29 @@ package njgis.opengms.portal.utils;
 
 import njgis.opengms.portal.entity.support.ZipStreamEntity;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +34,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -184,6 +196,38 @@ public class MyHttpUtils {
         response.close();
         client.close();
         return body;
+    }
+
+    public static String upload(String url, List<String> filepaths, HashMap<String, String> params) {
+        HttpClient client = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(url);
+        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,HttpVersion.HTTP_1_1);
+        client.getParams().setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET, "utf-8");
+        try {
+            MultipartEntity entity = new MultipartEntity();//多个表单对象
+            for(String filepath:filepaths){
+                ContentBody fileBody = new FileBody(new File(filepath)); //表单文件域
+                entity.addPart("ogmsdata", fileBody);
+            }
+            if(params != null && params.size() > 0){
+                for(Map.Entry<String, String> key: params.entrySet()){
+                    entity.addPart(key.getKey(), new StringBody(key.getValue()));  // 字符参数部分
+                }
+            }
+
+            httpPost.setEntity(entity);
+            HttpResponse response = client.execute(httpPost);//执行post操作，并返回response
+            if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+                String jsonData = EntityUtils.toString(response.getEntity(), "UTF-8");
+                return jsonData;
+            }else{
+                System.out.println("no response");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String POSTZipStream(String url, String encode, Map<String,String> params, ZipStreamEntity zipStream) throws IOException {

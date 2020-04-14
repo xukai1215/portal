@@ -27,14 +27,26 @@
         [v-cloak] {
             display: none;
         }
+
+        .mainContent{
+            width: 83.33333%;
+            margin-left: 8.33333%;
+        }
+
+        @media only screen and (max-width: 1400px){
+            .mainContent {
+                width: 91.66667%;
+                margin-left: 4.16667%;
+            }
+        }
     </style>
 </head>
-<body>
+<body style="min-width: 1200px">
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="el-col el-col-20 el-col-offset-2">
+        <div class="mainContent">
 
             <div class="el-row">
                 <h2 class="main-title">Concept & Semantic Repository</h2>
