@@ -15,5 +15,8 @@ public class TaskData {
     String url;
     String tag;
     String suffix;
+    String templateId;
     List<ParamInfo> children;
+
+    Boolean visual;
 }

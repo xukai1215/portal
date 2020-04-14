@@ -1,3 +1,12 @@
+/*body {*/
+    /*-webkit-filter: grayscale(100%); !* webkit *!*/
+    /*-moz-filter: grayscale(100%); !*firefox*!*/
+    /*-ms-filter: grayscale(100%); !*ie9*!*/
+    /*-o-filter: grayscale(100%); !*opera*!*/
+    /*filter: grayscale(100%);*/
+    /*filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);*/
+    /*filter:gray; !*ie9- *!*/
+/*}*/
 @font-face {
     font-family: 'aktiv-grotesk';
     src: url("../fonts/aktivgroteskbold-webfont.woff2.ttf") format('truetype');
@@ -14,6 +23,24 @@
 
 [v-cloak] {
     display: none;
+}
+
+.flex{
+    display: flex;
+}
+
+.hover{
+    color: #b0b0b0;
+}
+
+.hover:hover{
+    cursor:pointer;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    color: #8c8c8c;
 }
 
 body{
@@ -156,6 +183,7 @@ dt{
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    border: 1px solid #eee;
 }
 
 #cite #cite-text{

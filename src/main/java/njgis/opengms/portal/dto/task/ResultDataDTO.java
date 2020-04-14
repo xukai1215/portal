@@ -20,5 +20,6 @@ public class ResultDataDTO {
     String url;
     String tag;
     String suffix;
+    Boolean visual;
     List<ParamInfo> children;
 }

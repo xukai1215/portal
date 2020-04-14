@@ -7,6 +7,49 @@ h4{
     font-size: 20px;
 }
 
+.left-panel {
+    float: left;
+    width: 62.5%;
+    margin-left: 8.33333%;
+    border-right: 1px solid rgb(173, 173, 173);
+}
+
+.right-panel {
+    float: left;
+    width: 20.83333%;
+}
+
+.minScreen {
+    display: none;
+}
+
+@media only screen and (max-width: 1400px) {
+    .left-panel {
+        width: 66.66667%;
+        margin-left: 4.16667%;
+    }
+
+    .right-panel {
+        width: 25%;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .left-panel {
+        width: 91.66667%;
+        margin-left: 4.16667%;
+        border-right: none;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .minScreen {
+        display: block;
+    }
+}
+
 .detail_block{
     margin:8px 15px;
 }

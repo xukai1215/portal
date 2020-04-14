@@ -75,6 +75,10 @@ var vue = new Vue({
         addDescriptionVisible:false,
 
         taskDescription:'',
+
+        //数据可视化
+        visualVisible:false,
+        visualSrc:'',
     },
     computed: {},
     methods: {
@@ -246,6 +250,11 @@ var vue = new Vue({
             this.shareIndex=true;
             this.downloadUrl='http://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
 
+        },
+
+        visualize(event){
+            this.visualSrc = event.url.replace("data","visual");
+            this.visualVisible=true;
         },
 
         renameClick(tag){
@@ -617,6 +626,37 @@ var vue = new Vue({
 
         this.info = info;
         console.log(this.info);
+
+        axios.get("/task/visualTemplateIds")
+            .then((res)=>{
+                if(res.status==200){
+                    let ids = res.data.data;
+                    console.log(ids);
+                    let states = this.info.modelInfo.states;
+                    for(i=0;i<states.length;i++){
+                        let state = states[i];
+                        let events = state.event;
+                        for(j=0;j<events.length;j++){
+                            let event = events[j];
+                            if(event.eventType=="noresponse"){
+                                for(k=0;k<ids.length;k++) {
+                                    if (event.data[0].externalId == ids[k]){
+                                        for(x=0;x< this.info.taskInfo.outputs.length;x++){
+                                            let output = this.info.taskInfo.outputs[x];
+                                            if(output.event==event.eventName && output.statename==state.name){
+                                                this.$set(this.info.taskInfo.outputs[x],"visual",true);
+                                            }
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            })
 
         this.introHeight=$('.introContent').attr('height');
 
