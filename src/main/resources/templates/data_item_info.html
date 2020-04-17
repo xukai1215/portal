@@ -525,7 +525,7 @@
                         <h4>How to cite</h4>
                     </div>
                 </div>
-                <div class="block_content flex" th:object="${datainfo}">
+                <div class="block_content" th:object="${datainfo}">
                     <div id="cite-text" class="">
                         <span th:if="${authorship!=''}"
                               th:text="${authorship}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS, '"></span>
