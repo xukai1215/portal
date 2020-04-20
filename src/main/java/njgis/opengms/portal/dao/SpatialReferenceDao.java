@@ -31,4 +31,6 @@ public interface SpatialReferenceDao extends MongoRepository<SpatialReference,St
     List<Item> findByAuthor(String author);
 
     Page<SpatialResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

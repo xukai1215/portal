@@ -37,4 +37,6 @@ public interface ConceptualModelDao extends MongoRepository<ConceptualModel,Stri
     Page<ConceptualModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 
     Page<ConceptualModelResultDTO> findConModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

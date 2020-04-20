@@ -49,4 +49,6 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
     Page<ComputableModel> findByContentType(String contentType, Pageable pageable);
 
     List<ComputableModel> findByContentType(String contentType);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

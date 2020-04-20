@@ -38,4 +38,6 @@ public interface LogicalModelDao extends MongoRepository<LogicalModel,String> {
 
     Page<LogicalModelResultDTO> findLoModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 
+    List<Item> findAllByAuthorshipIsNotNull();
+
 }

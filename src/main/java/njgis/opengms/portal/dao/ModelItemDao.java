@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
+    List<Item> findAllByAuthorshipIsNotNull();
+
     ModelItem findFirstById(String id);
 
     ModelItem findFirstByOid(String id);

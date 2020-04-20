@@ -82,7 +82,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/in", method = RequestMethod.POST)
     public String login(@RequestParam(value="account") String account,
-                        @RequestParam(value="password") String password,
+                        @RequestParam(value="password_md5") String password,
                         HttpServletRequest request) {
 
         System.out.println("in");

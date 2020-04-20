@@ -32,7 +32,15 @@
             margin-top: -7px;
         }
 
-        @media only screen and (max-width: 950px){
+        .minScreen_hide {
+            display: inline-block;
+        }
+
+        @media only screen and (max-width: 700px){
+
+            .detail_option{
+                margin-top: 0;
+            }
 
             .minScreen_hide {
                 display: none;
@@ -248,7 +256,7 @@
                                         {{modelItem.createTime.substring(0,10)}} </h4>
                                 </div>
                                 <div class="detail_option">
-                                    <div class="visible-lg-inline-block minScreen_hide" style="display: inline-block">
+                                    <div class="minScreen_hide">
                                         <el-radio-group v-model="statistic[key]" size="small" @change="switchChange(key)">
                                             <el-radio-button label="Overview"></el-radio-button>
                                             <el-radio-button label="Statistics"></el-radio-button>

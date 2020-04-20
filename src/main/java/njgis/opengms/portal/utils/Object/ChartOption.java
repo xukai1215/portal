@@ -14,6 +14,6 @@ public class ChartOption {
     String[] valXis;
     String title;
     String subTitle;
-    String titlePosition;
+    String titlePosition="center";//center left
 
 }

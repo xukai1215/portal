@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,14 @@ public class Utils {
     public static class Method {
         public static String POST = "POST";
         public static String GET = "GET";
+    }
+
+    public static boolean isSameDay(Date day1,Date day2){
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String d1=simpleDateFormat.format(day1);
+        String d2=simpleDateFormat.format(day2);
+        return d1.equals(d2);
+
     }
 
     public static String checkLoginStatus(HttpSession httpSession){

@@ -3,12 +3,14 @@ package njgis.opengms.portal.utils;
 import com.github.abel533.echarts.axis.CategoryAxis;
 import com.github.abel533.echarts.axis.ValueAxis;
 import com.github.abel533.echarts.code.Magic;
+import com.github.abel533.echarts.code.Orient;
 import com.github.abel533.echarts.code.Tool;
 import com.github.abel533.echarts.code.Trigger;
 import com.github.abel533.echarts.feature.MagicType;
 import com.github.abel533.echarts.json.GsonOption;
 import com.github.abel533.echarts.series.Bar;
 import com.github.abel533.echarts.series.Line;
+import com.github.abel533.echarts.series.Pie;
 import com.github.abel533.echarts.style.ItemStyle;
 import com.github.abel533.echarts.style.itemstyle.Normal;
 import com.google.gson.Gson;
@@ -120,6 +122,8 @@ public class ChartUtils {
         bar.barWidth(100);
         CategoryAxis category = new CategoryAxis();// 轴分类
         category.data(chartOption.getValXis());// 轴数据类别
+        category.setBoundaryGap(true);
+        category.axisLabel().setInterval(0);
         // 循环数据
         for (int i = 0; i < types.length; i++) {
             int data = datas[0][i];
@@ -141,6 +145,9 @@ public class ChartUtils {
         return generateEChart(new Gson().toJson(option));
     }
 
+    /**
+     *  折线图
+     */
     public static String generateLine(ChartOption chartOption) {
         String[] types = chartOption.getTypes();//{ "邮件营销"};
         int[][] datas = chartOption.getData();//{ { 120, 132, 101, 134, 90, 230, 210 } };
@@ -160,14 +167,14 @@ public class ChartUtils {
 
         CategoryAxis category = new CategoryAxis();// 轴分类
         category.data(chartOption.getValXis());
-        category.boundaryGap(false);// 起始和结束两端空白策略
+        category.boundaryGap(true);// 起始和结束两端空白策略
 
         // 循环数据
-        for (int i = 0; i < types.length; i++) {
+        for (int i = 0; i < 1; i++) {
             Line line = new Line();// 三条线，三个对象
             String type = types[i];
             line.name(type).stack("总量");
-            for (int j = 0; j < datas[i].length; j++)
+            for (int j = 0; j < datas[0].length; j++)
                 line.data(datas[i][j]);
             option.series(line);
         }
@@ -187,6 +194,48 @@ public class ChartUtils {
 
     }
 
+    /**
+     *  饼图
+     */
+    public static String generatePie(ChartOption chartOption) {
+        String[] types = chartOption.getTypes();//{ "邮件营销", "联盟广告", "视频广告" };
+        int[] datas = chartOption.getData()[0];//{ 120, 132, 101 };
+        String title = chartOption.getTitle();//"广告数据";
+        GsonOption option = new GsonOption();
 
+        option.title().text(title).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition());// 大标题、小标题、标题位置
+
+        // 提示工具 鼠标在每一个数据项上，触发显示提示数据
+        option.tooltip().trigger(Trigger.item).formatter("{a} <br/>{b} : {c} ({d}%)");
+
+        // 工具栏
+//        option.toolbox().show(true).feature(new Mark().show(true),// 辅助线
+//                new DataView().show(true).readOnly(false),// 数据视图
+//                new MagicType().show(true).type(new Magic[] { Magic.pie, Magic.funnel }), //饼图、漏斗图切换
+//                new Option().series(new Funnel().x("25%").width("50%").funnelAlign(X.left).max(1548)),// 漏斗图设置
+//                Tool.restore,// 还原
+//                Tool.saveAsImage);// 保存为图片
+
+        option.legend().orient(Orient.horizontal).x("left").data(types);// 图例及位置
+
+        option.calculable(true);// 拖动进行计算
+
+        Pie pie = new Pie();
+
+        // 标题、半径、位置
+        pie.name(title).radius("55%").center("50%", "60%");
+
+        // 循环数据
+        for (int i = 0; i < types.length; i++) {
+            Map<String, Object> map = new HashMap<String, Object>(2);
+            map.put("value", datas[i]);
+            map.put("name", types[i]);
+            pie.data(map);
+        }
+
+        option.series(pie);
+
+        return generateEChart(new Gson().toJson(option));
+    }
 
 }

@@ -672,6 +672,39 @@
                                     </el-tabs>
                                 </el-card>
                             </el-tab-pane>
+                            <el-tab-pane label="Comment" name="Sixth">
+                                <el-card>
+                                    <el-timeline>
+                                        <el-timeline-item v-for="(comment, index) in comments"
+                                                          :timestamp="comment.date" placement="top">
+                                            <el-card>
+                                                <div class="com-author-name" style="font-weight: bold">
+
+                                                    <span v-if="comment.replier!=null">
+                                                        <a :href="'/user/'+comment.replier.oid" target="_blank" style="font-size: 18px;">{{comment.replier.name}}</a>
+                                                    </span>
+                                                    <span v-if="comment.replier!=null" style="font-size: 18px;margin:0 5px;">reply you</span>
+
+                                                </div>
+                                                <div style="font-size: 20px">{{comment.content}}</div>
+
+                                                <div style="float:right;display: inline-flex;padding: 5px;">
+                                                    <div style="margin-right:5px;">
+                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank">
+                                                            <avatar :username="comment.itemInfo.name" :size="20" :rounded="false"></avatar>
+                                                            <!--<img v-if="modelItem.image!=''" :src="modelItem.image" style="width:90px;height: 90px;">-->
+                                                         </a>
+                                                    </div>
+                                                    <div>
+                                                        <a :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank">{{comment.itemInfo.name}}</a>
+                                                    </div>
+                                                </div>
+
+                                            </el-card>
+                                        </el-timeline-item>
+                                    </el-timeline>
+                                </el-card>
+                            </el-tab-pane>
                         </el-tabs>
                     </el-card>
                 </div>
