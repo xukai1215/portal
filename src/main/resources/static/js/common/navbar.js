@@ -742,3 +742,86 @@ function watchWidth() {
 // });
 
 // ELEMENT.locale(ELEMENT.lang.en);
+var message_num=0;//定义全局变量
+$(document).ready(function () {
+    // alert("hello")
+    $.ajax({
+        url:"/theme/getedit",
+        async:false,
+        type:"GET",
+        success:(json)=>{
+            console.log(json);
+            for (let i=0;i<json.length;i++) {
+                for (let k = 0; k < 4; k++) {
+                    let type;
+                    switch (k) {
+                        case 0:
+                            type = json[i].subDetails;
+                            break;
+                        case 1:
+                            type = json[i].subClassInfos;
+                            break;
+                        case 2:
+                            type = json[i].subDataInfos;
+                            break;
+                        case 3:
+                            type = json[i].subApplications;
+                            break;
+
+                    }
+                    if (type != null && type.length > 0) {
+                        for (let j = 0; j < type.length; j++) {
+                            if (k == 0) {
+                                switch (type[j].status) {
+                                    case "0":
+                                        message_num++;
+                                }
+                            }else if (k == 1){
+                                switch (type[j].status) {
+                                    case "0":
+                                        message_num++;
+                                }
+
+                            }else if (k == 2){
+                                switch (type[j].status) {
+                                    case "0":
+                                        message_num++;
+                                }
+
+                            } else if (k == 3){
+                                switch (type[j].status) {
+                                    case "0":
+                                        message_num++;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            $.ajax({
+                type: "GET",
+                url: "/version/getVersions",
+                data: {},
+                async: false,
+                success: (json) => {
+                    //下面将type分到model、community中
+                    //model：modelItem、conceptualModel、logicalModel、computableModel
+                    // community：concept、spatialReference	、unit、template
+                    for (let i=0;i<json.data.uncheck.length;i++){
+                        if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
+                            // this.model_tableData1.push(json.data.uncheck[i]);
+                            message_num++;
+                        }else {
+                            // this.community_tableData1.push(json.data.uncheck[i]);
+                            message_num++;
+                        }
+                    }
+
+                }
+            })
+            $("#notice_num").text(message_num);
+
+        }
+    })
+})
