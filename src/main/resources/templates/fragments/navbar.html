@@ -136,9 +136,13 @@
                 <li><a id="userSpaceDir" href="/user/userSpace">My Space</a></li>
                 <li><a id="userPageDir" href="">My Page</a></li>
                 <li>
-                    <el-badge :value="2" class="item">
+                    <!--<el-badge :value="2" class="item">-->
+                        <!--<a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>-->
+                    <!--</el-badge>-->
+                    <div class="el-badge item">
                         <a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>
-                    </el-badge>
+                        <sup class="el-badge__content is-fixed" id="notice_num"></sup>
+                    </div>
                 </li>
                 <li><a href="/user/out">Log Out</a></li>
                 <!--                        <li><a href="">Thematic Center</a></li>-->
