@@ -158,7 +158,7 @@ public class ThemeRestController {
         String oid = session.getAttribute("oid").toString();
         List<Theme> themes = themeDao.findAll();
         for (int i=0;i<themes.size();i++){
-            if (themes.get(i).getCreator_oid().equals(oid)){
+            if (themes.get(i).getCreator_oid().equals(oid)&&themes.get(i).getSubDetails()!=null){
                 //对获取的数组中的编辑时间进行format
                 for (int j=0;j<themes.get(i).getSubDetails().size();j++){
                     themes.get(i).getSubDetails().get(j).setFormatTime(sdf.format(themes.get(i).getSubDetails().get(j).getTime()));
