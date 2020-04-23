@@ -37,20 +37,21 @@ Vue.component('headSideBar', {
         },
 
         $route:{
-            handler(to, from) {//通过路由判断条目高亮显示,
+            handler(to, from) {
+                //通过路由判断条目高亮显示,
                 console.log(to.path)
                 let path = to.path
                 if(path === '/')
                     this.curIndex = 1
                 else if(path.indexOf('model') != -1)
                     this.curIndex = 2
-                else if(path.indexOf('data') != -1)
+                else if(path.indexOf('data') != -1&&path.indexOf('dataTemplate') == -1)
                     this.curIndex = 3
                 else if(path.indexOf('server') != -1)
                     this.curIndex = 4
                 else if(path.indexOf('task') != -1)
                     this.curIndex = 5
-                else if(path.indexOf('community') != -1)
+                else if(path.indexOf('community') != -1||path.indexOf('communities') != -1)
                     this.curIndex = 6
                 else if(path.indexOf('Theme') != -1)
                     this.curIndex = 7
