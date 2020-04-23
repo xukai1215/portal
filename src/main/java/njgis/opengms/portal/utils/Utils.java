@@ -6,6 +6,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
@@ -22,6 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     static int count=0;
 
@@ -171,7 +175,7 @@ public class Utils {
             if (file.isEmpty()) {
                 continue;
             } else {
-                File dest = new File(path + "/" + fileName);
+                File dest = new File(path + fileName);
                 if (!dest.getParentFile().exists()) { // 判断文件父目录是否存在
                     dest.getParentFile().mkdir();
                 }

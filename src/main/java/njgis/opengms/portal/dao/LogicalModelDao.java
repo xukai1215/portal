@@ -28,7 +28,11 @@ public interface LogicalModelDao extends MongoRepository<LogicalModel,String> {
 
     Page<LogicalModel> findByClassificationsIn(List<String> classes, Pageable pageable);
 
+    Page<LogicalModel> findByClassificationsInAndAuthor(List<String> classes, String author, Pageable pageable);
+
     Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
+
+    Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name, List<String> classes,String author, Pageable pageable);
 
     Page<LogicalModel> findByAuthor(String author,Pageable pageable);
 

@@ -552,7 +552,7 @@ public class PortalApplicationTests {
             //柱状图
             ChartOption chartOption=new ChartOption();
             chartOption.setTitle("Page View Statistics");
-            chartOption.setSubTitle("Go to OpenGMS to check daily page view of your contributions");
+            chartOption.setSubTitle("Go to OpenGMS to check more daily page view of your contributions");
             chartOption.setTitlePosition("center");
             int size=0;
             if(items.size()>=5){
@@ -616,7 +616,9 @@ public class PortalApplicationTests {
             message+="If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
             message+="Sincerely,<br/>";
             message+="OpenGMS Team<br/>";
-            message+="http://geomodeling.njnu.edu.cn</p>";
+            message+="http://geomodeling.njnu.edu.cn</p><br/>";
+
+            message+="<p>To unsubscribe from this community discussion, go to <a href=\"http://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
 
             commonService.sendEmailWithImg("OpenGMS Team","921485453@qq.com","Open Geographic Modeling and Simulation Review", message,imageList);
 

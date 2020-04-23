@@ -49,6 +49,27 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value="/unsubscribe",method = RequestMethod.GET)
+    public ModelAndView unsubscribe(@RequestParam("id") String id){
+        User user = userService.getById(id);
+        userService.setSubscribe(user.getOid(),false);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("unsubscribe");
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/setSubscribe",method = RequestMethod.POST)
+    public JsonResult setSubscribe(@RequestParam("subscribe") Boolean subs, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            userService.setSubscribe(session.getAttribute("oid").toString(),subs);
+            return ResultUtils.success();
+
+        }
+    }
+
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public JsonResult addUser(UserAddDTO user) throws Exception {
         int code=userService.addUser(user);

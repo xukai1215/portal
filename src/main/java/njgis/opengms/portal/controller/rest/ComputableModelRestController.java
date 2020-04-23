@@ -19,6 +19,7 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.TaskService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,6 +220,20 @@ public class ComputableModelRestController {
     @RequestMapping (value="/list",method = RequestMethod.POST)
     JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
         return ResultUtils.success(computableModelService.list(modelItemFindDTO,classes));
+    }
+
+    @RequestMapping (value="/listByAuthor",method = RequestMethod.POST)
+    JsonResult listByAuthor(ModelItemFindDTO modelItemFindDTO,
+                            @RequestParam(value="classifications[]") List<String> classes,
+                            HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(computableModelService.listByAuthor(modelItemFindDTO,userName,classes));
+        }
+
     }
 
     /**

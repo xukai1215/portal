@@ -736,6 +736,7 @@ public class VersionService {
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(spatialReference.getModifyTime()));
         modelAndView.addObject("user", userJson);
+        modelAndView.addObject("history", true);
 
 
         return modelAndView;
@@ -826,6 +827,7 @@ public class VersionService {
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(template.getModifyTime()));
         modelAndView.addObject("user", userJson);
+        modelAndView.addObject("history", true);
 
         return modelAndView;
     }
@@ -917,6 +919,7 @@ public class VersionService {
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("date", sdf.format(unit.getModifyTime()));
         modelAndView.addObject("user", userJson);
+        modelAndView.addObject("history", true);
 
         return modelAndView;
 

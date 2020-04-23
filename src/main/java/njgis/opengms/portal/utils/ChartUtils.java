@@ -216,14 +216,14 @@ public class ChartUtils {
 //                Tool.restore,// 还原
 //                Tool.saveAsImage);// 保存为图片
 
-        option.legend().orient(Orient.horizontal).x("left").data(types);// 图例及位置
+        option.legend().orient(Orient.vertical).x("left").data(types);// 图例及位置
 
         option.calculable(true);// 拖动进行计算
 
         Pie pie = new Pie();
 
         // 标题、半径、位置
-        pie.name(title).radius("55%").center("50%", "60%");
+        pie.name(title).radius("55%").center("50%", "50%");
 
         // 循环数据
         for (int i = 0; i < types.length; i++) {

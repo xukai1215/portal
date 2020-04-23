@@ -35,7 +35,7 @@ public class User {
 
     String lastLoginIp;
 
-    boolean subscribe=true;
+    Boolean subscribe=true;
 
     Introduction introduction;
 

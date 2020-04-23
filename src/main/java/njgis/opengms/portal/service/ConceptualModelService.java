@@ -450,6 +450,38 @@ public class ConceptualModelService {
         return obj;
     }
 
+    public JSONObject listByAuthor(ModelItemFindDTO modelItemFindDTO, String userName, List<String> classes) {
+
+        JSONObject obj = new JSONObject();
+        //TODO Sort是可以设置排序字段的
+        int page = modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String searchText = modelItemFindDTO.getSearchText();
+        //List<String> classifications=modelItemFindDTO.getClassifications();
+        //默认以viewCount排序
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<ConceptualModel> conceptualPage = null;
+
+        if (searchText.equals("") && classes.get(0).equals("all")) {
+            conceptualPage = conceptualModelDao.findByAuthor(userName, pageable);
+        } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userName, pageable);
+        } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+            conceptualPage = conceptualModelDao.findByClassificationsInAndAuthor(classes, userName, pageable);
+        } else {
+            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(searchText, classes, userName, pageable);
+        }
+
+
+        obj.put("list", conceptualPage.getContent());
+        obj.put("total", conceptualPage.getTotalElements());
+        obj.put("pages", conceptualPage.getTotalPages());
+
+        return obj;
+    }
+
     public String query(ModelItemFindDTO modelItemFindDTO, List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {
 
         ModelDao modelDao = new ModelDao();

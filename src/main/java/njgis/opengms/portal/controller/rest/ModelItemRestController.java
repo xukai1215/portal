@@ -150,7 +150,21 @@ public class ModelItemRestController {
 
     @RequestMapping (value="/list",method = RequestMethod.POST)
     JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
-        return ResultUtils.success(modelItemService.list(modelItemFindDTO,classes));
+        return ResultUtils.success(modelItemService.list(modelItemFindDTO,null,classes));
+    }
+
+    @RequestMapping (value="/listByAuthor",method = RequestMethod.POST)
+    JsonResult listByAuthor(ModelItemFindDTO modelItemFindDTO,
+                            @RequestParam(value="classifications[]") List<String> classes,
+                            HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(modelItemService.list(modelItemFindDTO,userName,classes));
+        }
+
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
