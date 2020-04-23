@@ -370,12 +370,82 @@ public class TaskRestController {
     JsonResult invoke(@RequestBody JSONObject lists, HttpServletRequest request) {
         ComputableModel computableModel=computableModelService.getByOid(lists.getString("oid"));
         HttpSession session = request.getSession();
-        JSONObject mdlJson=Utils.convertMdl(computableModel.getMdl());
+        String mdlStr=computableModel.getMdl();
+        JSONObject mdlJson=Utils.convertMdl(mdlStr);
         System.out.println(mdlJson);
+        JSONObject mdl=mdlJson.getJSONObject("mdl");
+        JSONArray states=mdl.getJSONArray("states");
+        //截取RelatedDatasets字符串
+
+        JSONArray outputs=new JSONArray();
+        for(int i=0;i<states.size();i++){
+            JSONObject state=states.getJSONObject(i);
+            JSONArray events=state.getJSONArray("event");
+            for(int j=0;j<events.size();j++){
+                JSONObject event=events.getJSONObject(j);
+                String eventType=event.getString("eventType");
+                if(eventType.equals("noresponse")){
+                    JSONObject output=new JSONObject();
+                    output.put("statename",state.getString("name"));
+                    output.put("event",event.getString("eventName"));
+                    JSONObject template=new JSONObject();
+
+                    JSONArray dataArr=event.getJSONArray("data");
+                    if(dataArr!=null) {
+                        JSONObject data = dataArr.getJSONObject(0);
+                        String dataType = data.getString("dataType");
+                        if (dataType.equals("external")) {
+                            String externalId = data.getString("externalId");
+
+                            template.put("type", "id");
+                            template.put("value", externalId.toLowerCase());
+                            output.put("template", template);
+
+                        } else if (dataType.equals("internal")) {
+                            JSONArray nodes = data.getJSONArray("nodes");
+                            if (nodes != null) {
+//                                String schema = "<UdxDeclaration><UdxNode>";
+//                                for (int k = 0; k < nodes.size(); k++) {
+//                                    JSONObject node = nodes.getJSONObject(k);
+//                                    schema += "<UdxNode name=\"" + node.getString("text") + "\" type=\"" + node.getString("dataType") + "\" description=\"" + node.getString("desc") + "\" />";
+//                                }
+//                                schema += "</UdxNode></UdxDeclaration>";
+                                if(data.getString("schema")!=null) {
+                                    template.put("type", "schema");
+                                    template.put("value", data.getString("schema"));
+                                    output.put("template", template);
+                                }else{
+                                    template.put("type", "none");
+                                    template.put("value", "");
+                                    output.put("template", template);
+                                }
+                            } else {
+                                template.put("type", "none");
+                                template.put("value", "");
+                                output.put("template", template);
+                            }
+                        } else {
+                            template.put("type", "none");
+                            template.put("value", "");
+                            output.put("template", template);
+                        }
+                    }else {
+                        template.put("type", "none");
+                        template.put("value", "");
+                        output.put("template", template);
+                    }
+                    outputs.add(output);
+                }
+            }
+        }
+        lists.put("outputs",outputs);
+
         if (session.getAttribute("uid") != null) {
             String username = session.getAttribute("uid").toString();
 //            JSONObject jsonObject = JSONObject.parseObject(lists);
             lists.put("username", username);
+            System.out.println(lists);
+
             String result = taskService.invoke(lists);
             if (result == null) {
                 return ResultUtils.error(-2, "invoke failed!");
@@ -464,33 +534,47 @@ public class TaskRestController {
 
     }
 
+    @RequestMapping(value="/visualTemplateIds", method = RequestMethod.GET)
+    public JsonResult getVisualTemplateIds(){
+        return ResultUtils.success(taskService.getVisualTemplateIds());
+    }
+
     @RequestMapping(value = "/loadTestData", method = RequestMethod.POST)
     @ApiOperation(value = "加载默认测试数据，返回数据成功上传之后的url")
     public JsonResult loadTestData(@RequestBody TestDataUploadDTO testDataUploadDTO, HttpServletRequest request){
 
+        String oid = testDataUploadDTO.getOid();
+        ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+        JSONObject mdlJSON=Utils.convertMdl(computableModel.getMdl());
+
         HttpSession session = request.getSession();
-        String[] dataIpAndPort=dataContainerIpAndPort.split(":");
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-2,"no login");
+        }
+        else {
+            String userName = session.getAttribute("uid").toString();
+            String[] dataIpAndPort = dataContainerIpAndPort.split(":");
             testDataUploadDTO.setHost(dataIpAndPort[0]);
             testDataUploadDTO.setPort(Integer.parseInt(dataIpAndPort[1]));
 
             //处理得到进行数据上传的List数组
-            List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArray(testDataUploadDTO);
-            if(uploadDataDTOs == null){
-                return ResultUtils.error(-1,"No Test Data");
+            List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArray(testDataUploadDTO, mdlJSON);
+            if (uploadDataDTOs == null) {
+                return ResultUtils.error(-1, "No Test Data");
             }
             List<Future<ResultDataDTO>> futures = new ArrayList<>();
             //开启异步任务
-            uploadDataDTOs.forEach((UploadDataDTO obj) ->{
-                Future<ResultDataDTO> future =taskService.uploadDataToServer(obj, testDataUploadDTO);
+            uploadDataDTOs.forEach((UploadDataDTO obj) -> {
+                Future<ResultDataDTO> future = taskService.uploadDataToServer(obj, testDataUploadDTO, userName);
                 futures.add(future);
             });
             List<ResultDataDTO> resultDataDTOs = new ArrayList<>();
 
-            futures.forEach((future) ->{
-                try{
-                    ResultDataDTO resultDatadto = (ResultDataDTO)future.get();
+            futures.forEach((future) -> {
+                try {
+                    ResultDataDTO resultDatadto = (ResultDataDTO) future.get();
                     resultDataDTOs.add(resultDatadto);
-                }catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -498,6 +582,7 @@ public class TaskRestController {
 
             });
             return ResultUtils.success(resultDataDTOs);
+        }
 
 
     }

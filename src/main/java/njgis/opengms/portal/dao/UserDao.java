@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface UserDao extends MongoRepository<User,String> {
 
+    User findFirstById(String id);
+
     User findFirstByOid(String id);
 
     User findFirstByName(String name);

@@ -23,6 +23,7 @@ new Vue({
             ruleForm: {
                 account: '',
                 password: '',
+                password_md5: "",
                 remember: false
             },
             rules: {
@@ -71,7 +72,7 @@ new Vue({
             this.$refs[formName].resetFields();
         },
         login() {
-            this.ruleForm.password=hex_md5(this.ruleForm.password);
+            this.ruleForm.password_md5=hex_md5(this.ruleForm.password);
             $.ajax({
                 url: '/user/in',
                 type: 'post',

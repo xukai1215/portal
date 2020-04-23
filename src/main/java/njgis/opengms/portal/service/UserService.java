@@ -2,27 +2,26 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import njgis.opengms.portal.dao.DataItemDao;
-import njgis.opengms.portal.dao.FeedbackDao;
-import njgis.opengms.portal.dao.TaskDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.*;
-import njgis.opengms.portal.entity.DataItem;
-import njgis.opengms.portal.entity.Feedback;
-import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
+import njgis.opengms.portal.utils.ChartUtils;
+import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,10 +33,40 @@ public class UserService {
     UserDao userDao;
 
     @Autowired
+    AuthorshipDao authorshipDao;
+
+    @Autowired
     TaskDao taskDao;
 
     @Autowired
+    ModelItemDao modelItemDao;
+
+    @Autowired
     DataItemDao dataItemDao;
+
+    @Autowired
+    ConceptualModelDao conceptualModelDao;
+
+    @Autowired
+    LogicalModelDao logicalModelDao;
+
+    @Autowired
+    ComputableModelDao computableModelDao;
+
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    ThemeDao themeDao;
 
     @Autowired
     FeedbackDao feedbackDao;
@@ -54,6 +83,283 @@ public class UserService {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    //可以可视化的数据模板
+    @Value("#{'${visualTemplateIds}'.split(',')}")
+    private String[] visualTemplateIds;
+
+    public void setSubscribe(String oid, Boolean subscribe){
+        User user = getByOid(oid);
+        user.setSubscribe(subscribe);
+        userDao.save(user);
+    }
+
+    public void sendEmail(){
+        List<Authorship> authorshipList = authorshipDao.findAll();
+        for(int a=0;a<authorshipList.size();a++){
+
+        }
+
+        List<User> userList = userDao.findAll();
+        for(int u=0;u<userList.size();u++) {
+
+            User user = userList.get(u);//userDao.findFirstByOid("24");
+            String message = "<p style='font-family: sans-serif;'>Dear ";
+            message += user.getName() + ":<br/><br/>";
+            Date now = new Date();
+            Date registerTime = user.getCreateTime();
+            int rangeDay = (int) Math.ceil((now.getTime() - registerTime.getTime()) / (1000 * 3600 * 24));
+            int total = 0;
+            JSONArray imageList = new JSONArray();
+            message += "It has been " + rangeDay + " days since you register as a member of <a href='http://geomodeling.njnu.edu.cn'><b>OpenGMS</b></a>. ";
+            if (user.getModelItems() > 0 || user.getDataItems() > 0 || user.getConceptualModels() > 0 || user.getLogicalModels() > 0 ||
+                    user.getComputableModels() > 0 || user.getConcepts() > 0 || user.getSpatials() > 0 || user.getTemplates() > 0 ||
+                    user.getUnits() > 0 || user.getThemes() > 0) {
+                message += "You have shared some resources about geographic model in the platform, including ";
+                List<String> stringList = new ArrayList<>();
+                JSONArray items = new JSONArray();
+
+                List<DailyViewCount> sevenDayViewCountList = new ArrayList<>();
+                Calendar calendar = Calendar.getInstance();
+                for (int i = -6; i <= 0; i++) {
+                    calendar.setTime(now);
+                    calendar.add(Calendar.DATE, i);
+                    DailyViewCount dailyViewCount = new DailyViewCount(calendar.getTime(), 0);
+                    sevenDayViewCountList.add(dailyViewCount);
+                }
+
+
+                List<Integer> countList = new ArrayList<>();
+                List<String> nameList = new ArrayList<>();
+
+                addItem(countList, nameList, sevenDayViewCountList, user.getModelItems(), "model item", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getConceptualModels(), "conceptual model", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getLogicalModels(), "logical model", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getComputableModels(), "computable model", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getDataItems(), "data item", user.getOid(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getConcepts(), "concept", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getSpatials(), "spatial reference", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getTemplates(), "data template", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getUnits(), "unit & metric", user.getUserName(), stringList, items);
+                addItem(countList, nameList, sevenDayViewCountList, user.getThemes(), "theme", user.getUserName(), stringList, items);
+                for (int i = 0; i < stringList.size(); i++) {
+                    message += stringList.get(i);
+                    if (i < stringList.size() - 2) {
+                        message += ", ";
+                    } else if (i == stringList.size() - 2) {
+                        message += " and ";
+                    } else {
+                        message += ". ";
+                    }
+                }
+                message += "Thank you for your contribution to geographic modeling and simulation!<br/><br/>";
+
+
+                for (int i = 0; i < items.size(); i++) {
+                    for (int j = 0; j < items.size() - 1 - i; j++) {
+                        JSONObject item = new JSONObject();
+                        JSONObject item1 = new JSONObject();
+
+                        item.put("name", items.getJSONObject(j).getString("name"));
+                        item.put("view count", items.getJSONObject(j).getString("view count"));
+                        item.put("type", items.getJSONObject(j).getString("type"));
+
+                        item1.put("name", items.getJSONObject(j + 1).getString("name"));
+                        item1.put("view count", items.getJSONObject(j + 1).getString("view count"));
+                        item1.put("type", items.getJSONObject(j + 1).getString("type"));
+
+
+                        if (item1.getInteger("view count") > item.getInteger("view count")) {
+                            items.set(j, item1);
+                            items.set(j + 1, item);
+                        }
+                    }
+
+                    total += items.getJSONObject(items.size() - 1 - i).getInteger("view count");
+                }
+
+                //饼图
+                ChartOption pieOption = new ChartOption();
+                String[] pieTypes = new String[countList.size()];
+                int[][] ints = new int[1][countList.size()];
+                for (int i = 0; i < countList.size(); i++) {
+                    pieTypes[i] = nameList.get(i);
+                    ints[0][i] = countList.get(i);
+                }
+                pieOption.setTitle("Type Statistics");
+                pieOption.setSubTitle("");
+                pieOption.setData(ints);
+                pieOption.setTypes(pieTypes);
+                pieOption.setValXis(pieTypes);
+                pieOption.setTitlePosition("center");
+
+                String piePath = ChartUtils.generatePie(pieOption);
+
+                message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
+                message += "Many people have noticed what you done in OpenGMS, your contributions have been viewed and invoked " + total + " times. " +
+                        "The most influential item that you contributed is " + items.getJSONObject(0).getString("name") + ", it has been viewed " + items.getJSONObject(0).getInteger("view count") + " times. " +
+                        "The page view of your contributions are shown in the figure below:<br/><br/>";
+
+
+                //柱状图
+                ChartOption chartOption = new ChartOption();
+                chartOption.setTitle("Page View Statistics");
+                chartOption.setSubTitle("Go to OpenGMS to check more daily page view of your contributions");
+                chartOption.setTitlePosition("center");
+                int size = 0;
+                if (items.size() >= 5) {
+                    size = 5;
+                } else {
+                    size = items.size();
+                }
+                String[] types = new String[size];
+                int[][] data = new int[1][size];
+                for (int i = 0; i < types.length; i++) {
+                    String itemName = items.getJSONObject(i).getString("name");
+                    types[i] = itemName.length() > 16 ? (itemName.substring(0, 14) + "...") : itemName;
+                    data[0][i] = items.getJSONObject(i).getInteger("view count");
+                }
+                chartOption.setTypes(types);
+                chartOption.setData(data);
+                chartOption.setValXis(types);
+                String chartPath = ChartUtils.generateBar(chartOption);
+
+                //折线图
+                ChartOption lineChart = new ChartOption();
+                lineChart.setTitle("Daily page views in the last 7 days");
+                lineChart.setSubTitle("");
+                lineChart.setTitlePosition("left");
+                String[] dates = new String[7];
+                int[][] viewCounts = new int[1][7];
+
+                for (int i = 0; i < sevenDayViewCountList.size(); i++) {
+                    DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    dates[i] = sdf.format(dailyViewCount.getDate());
+                    viewCounts[0][i] = dailyViewCount.getCount();
+                }
+
+                lineChart.setTypes(new String[]{"Daily page view"});
+                lineChart.setData(viewCounts);
+                lineChart.setValXis(dates);
+                String lineChartPath = ChartUtils.generateLine(lineChart);
+
+                //
+                JSONObject pieChartInfo = new JSONObject();
+                pieChartInfo.put("name", "pieChart");
+                pieChartInfo.put("path", piePath);
+
+                JSONObject imageInfo = new JSONObject();
+                imageInfo.put("name", "chart1");
+                imageInfo.put("path", chartPath);
+
+                JSONObject lineChartInfo = new JSONObject();
+                lineChartInfo.put("name", "lineChart");
+                lineChartInfo.put("path", lineChartPath);
+
+                imageList = new JSONArray();
+                imageList.add(pieChartInfo);
+                imageList.add(imageInfo);
+                imageList.add(lineChartInfo);
+
+                message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+                message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
+
+
+            }
+
+            message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
+            message += "Sincerely,<br/>";
+            message += "OpenGMS Team<br/>";
+            message += "http://geomodeling.njnu.edu.cn</p>";
+
+            commonService.sendEmailWithImg("OpenGMS Team", user.getEmail(), "Open Geographic Modeling and Simulation Review", message, imageList);
+
+        }
+    }
+
+    private void addItem(List<Integer> countList,List<String> nameList,List<DailyViewCount> sevenDayViewCountList, int count, String type,String author, List<String> StringList,JSONArray items){
+
+        if(count>0) {
+
+            countList.add(count);
+            nameList.add(type);
+
+            String str = count + " " + type;
+            if (count > 1) {
+                str += "s";
+            }
+            StringList.add(str);
+
+            List<Item> itemList=new ArrayList<>();
+            switch (type){
+                case "model item":
+                    itemList=modelItemDao.findByAuthor(author);
+                    break;
+                case "conceptual model":
+                    itemList=conceptualModelDao.findByAuthor(author);
+                    break;
+                case "logical model":
+                    itemList=logicalModelDao.findByAuthor(author);
+                    break;
+                case "computable model":
+                    itemList=computableModelDao.findByAuthor(author);
+                    break;
+                case "data item":
+                    itemList=dataItemDao.findByAuthor(author);
+                    break;
+                case "concept":
+                    itemList=conceptDao.findByAuthor(author);
+                    break;
+                case "spatial reference":
+                    itemList=spatialReferenceDao.findByAuthor(author);
+                    break;
+                case "data template":
+                    itemList=templateDao.findByAuthor(author);
+                    break;
+                case "unit & metric":
+                    itemList=unitDao.findByAuthor(author);
+                    break;
+
+
+            }
+            for(Item item:itemList){
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("name",item.getName());
+                jsonObject.put("view count",item.getViewCount());
+                jsonObject.put("type",type);
+                items.add(jsonObject);
+
+                List<DailyViewCount> dailyViewCountList = item.getDailyViewCount();
+                if(dailyViewCountList!=null&&dailyViewCountList.size()!=0) {
+                    Date now = new Date();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(now);
+                    calendar.add(Calendar.DATE, -6);
+                    int i = 0;
+                    for (; i < dailyViewCountList.size(); i++) {
+                        if (calendar.getTime().before(dailyViewCountList.get(i).getDate())) {
+                            break;
+                        }
+                    }
+
+                    int j=0;
+
+                    while (i != dailyViewCountList.size() && j < 7) {
+
+                        DailyViewCount sd = sevenDayViewCountList.get(j);
+                        DailyViewCount d = dailyViewCountList.get(i);
+                        if (Utils.isSameDay(sd.getDate(), d.getDate())) {
+                            sd.setCount(sd.getCount() + d.getCount());
+                            sevenDayViewCountList.set(j, sd);
+                            i++;
+                        }
+                        j++;
+                    }
+                }
+            }
+        }
+    }
 
 
     public String resetPassword(String email){
@@ -79,7 +385,7 @@ public class UserService {
 
             User user=userDao.findFirstByEmail(email);
             if(user!=null){
-                user.setPassword(password);
+                user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
                 userDao.save(user);
                 String subject="OpenGMS Portal Password Reset";
                 String content="Hello " + user.getName() + ":<br/>"+
@@ -251,6 +557,15 @@ public class UserService {
         }
     }
 
+    public User getById(String id) {
+        try {
+            return userDao.findFirstById(id);
+        } catch (Exception e) {
+            System.out.println("有人乱查数据库！！该OID不存在User对象");
+            throw new MyException(ResultEnum.NO_OBJECT);
+        }
+    }
+
     public User getByOid(String id) {
         try {
             return userDao.findFirstByOid(id);
@@ -406,7 +721,7 @@ public class UserService {
         userInfo.put("awdHonors",user.getAwardsHonors());
         userInfo.put("runTask",user.getRunTask());
         userInfo.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
-
+        userInfo.put("subscribe",user.getSubscribe());
         return userInfo;
     }
 
@@ -661,7 +976,7 @@ public class UserService {
 
         String[] a={"0"};
         if(paths.size()==0||paths.get(0).equals("0")){
-            fileMetaList.add(new FileMeta(true,false,id,father,name,"","",new ArrayList<>()));
+            fileMetaList.add(new FileMeta(true,false,id,father,name,"","",null,new ArrayList<>()));
         }
         else {
             // pop
@@ -687,28 +1002,29 @@ public class UserService {
         for (int i = 0; i < files.size(); i++) {
 
             String fileName = files.get(i).get("file_name").toString();
-            String url = "http://" + dataContainerIpAndPort + "/dataResource/getResource?sourceStoreId=" + files.get(i).get("source_store_id").toString();
+            String url = "http://" + dataContainerIpAndPort + "/data?uid=" + files.get(i).get("source_store_id").toString();
             String[] a = fileName.split("\\.");
             String name = a[0];
             String suffix = a[1];
             String id = UUID.randomUUID().toString();
+            String templateId = files.get(i).get("templateId").toString();
 
             pathsCopy.addAll(paths);
-            user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url));
+            user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url, templateId));
             JSONObject obj=new JSONObject();
             obj.put("id",id);
             obj.put("url",url);
             idList.add(obj);
         }
 
-            userDao.save(user);
+        userDao.save(user);
         return idList;
     }
 
-    private List<FileMeta> aFile(List<String> paths,List<FileMeta> fileMetaList,String name,String suffix,String id,String father,String url){
+    private List<FileMeta> aFile(List<String> paths,List<FileMeta> fileMetaList,String name,String suffix,String id,String father,String url,String templateId){
 
         if(paths.size()==0||paths.get(0).equals("0")){
-            fileMetaList.add(new FileMeta(false,true,id,father,name,suffix,url,new ArrayList<>()));
+            fileMetaList.add(new FileMeta(false,true,id,father,name,suffix,url,templateId,new ArrayList<>()));
         }
         else {
             // pop
@@ -717,7 +1033,7 @@ public class UserService {
                 FileMeta fileMeta = fileMetaList.get(i);
                 if (fileMeta.getId().equals(path)) {
 
-                    fileMeta.setContent(aFile(paths, fileMeta.getContent(),name,suffix,id,path,url));
+                    fileMeta.setContent(aFile(paths, fileMeta.getContent(),name,suffix,id,path,url,templateId));
                     fileMetaList.set(i,fileMeta);
                     break;
                 }
@@ -791,7 +1107,7 @@ public class UserService {
 
         if(fileMetaList==null||fileMetaList.size()==0) {
 
-            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
+            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",null,new ArrayList<>());
             fileMetaList=new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -825,6 +1141,15 @@ public class UserService {
                     jsonObject.put("label", fileMeta.getName());
                     jsonObject.put("package",fileMeta.getIsFolder());
                     jsonObject.put("father",fileMeta.getFather());
+                    for(String id:visualTemplateIds){
+                        if(id.equals(fileMeta.getTemplateId())){
+                            jsonObject.put("visual",true);
+                            break;
+                        }
+                    }
+                    if(!jsonObject.containsKey("visual")){
+                        jsonObject.put("visual",false);
+                    }
                     jsonObject.put("children", gFolder(fileMeta.getContent()));
                     System.out.println(fileMeta.getContent());
                     parent.add(jsonObject);
@@ -840,7 +1165,7 @@ public class UserService {
 
         if(fileMetaList==null||fileMetaList.size()==0) {
 
-            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",new ArrayList<>());
+            FileMeta fileMeta=new FileMeta(true,false,UUID.randomUUID().toString(),"0","My Data","","",null,new ArrayList<>());
             fileMetaList=new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -877,6 +1202,15 @@ public class UserService {
                     jsonObject.put("father",fileMeta.getFather());
                     jsonObject.put("suffix",fileMeta.getSuffix());
                     jsonObject.put("url",fileMeta.getUrl());
+                    for(String id:visualTemplateIds){
+                        if(id.equals(fileMeta.getTemplateId())){
+                            jsonObject.put("visual",true);
+                            break;
+                        }
+                    }
+                    if(!jsonObject.containsKey("visual")){
+                        jsonObject.put("visual",false);
+                    }
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
 
                     parent.add(jsonObject);
@@ -1006,7 +1340,7 @@ public class UserService {
                             }
                         }
                         if(!exist) {
-                            FileMeta fileMeta = new FileMeta(false,false, id,father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), null);
+                            FileMeta fileMeta = new FileMeta(false,false, id,father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(),"", null);
                             fileMetaList.add(fileMeta);
                         }
                         break;

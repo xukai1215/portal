@@ -18,6 +18,7 @@ import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.ParamInfo;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
+import njgis.opengms.portal.entity.support.ZipStreamEntity;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
@@ -37,9 +38,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -69,6 +68,17 @@ public class TaskService {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Value("${dataContainerIpAndPort}")
+    private String dataContainerIpAndPort;
+
+    //可以可视化的数据模板
+    @Value("#{'${visualTemplateIds}'.split(',')}")
+    private String[] visualTemplateIds;
+
+    public String[] getVisualTemplateIds(){
+        return visualTemplateIds;
+    }
 
     public ModelAndView getPage(String id, String username) {
         //条目信息
@@ -168,7 +178,7 @@ public class TaskService {
         userJson.put("compute_model_user_name", user.getUserName());
         userJson.put("compute_model_user_oid", user.getOid());
 
-        user=userDao.findFirstByUserName(userName);
+        user = userDao.findFirstByUserName(userName);
 
         userJson.put("userName", user.getName());
         userJson.put("userOid", user.getOid());
@@ -180,11 +190,10 @@ public class TaskService {
         //判断权限信息
         boolean hasPermission = false;
 
-        if(task.getPermission().equals("private")&&!task.getUserId().equals(userName)){
+        if (task.getPermission().equals("private") && !task.getUserId().equals(userName)) {
             result.put("permission", "forbid");
             return result;
-        }
-        else {
+        } else {
             result.put("permission", "allow");
         }
 
@@ -227,10 +236,24 @@ public class TaskService {
         taskInfo.put("creater", task.getUserId());
         taskInfo.put("description", task.getDescription());
         taskInfo.put("permission", task.getPermission());
-        taskInfo.put("outputs", task.getOutputs());
-        taskInfo.put("inputs", task.getInputs());
         taskInfo.put("createTime", task.getRunTime());
-        taskInfo.put("status",task.getStatus());
+        taskInfo.put("status", task.getStatus());
+        taskInfo.put("outputs", task.getOutputs());
+//
+        List<TaskData> inputs = task.getInputs();
+        for(int i=0;i<inputs.size();i++){
+            TaskData input=inputs.get(i);
+            for(String id:visualTemplateIds){
+                String templateId = input.getTemplateId();
+                if(templateId!=null) {
+                    if (templateId.toLowerCase().equals(id)) {
+                        inputs.get(i).setVisual(true);
+                        break;
+                    }
+                }
+            }
+        }
+        taskInfo.put("inputs", inputs);
 
         boolean hasTest;
         if (modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")) {
@@ -295,10 +318,10 @@ public class TaskService {
 
         JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
         JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
-        JSONArray dataItems=mdlObj.getJSONArray("DataItems");
-        JSONArray dataRefs=new JSONArray();
-        for(int i=0;i<dataItems.size();i++){
-            JSONObject dataRef=dataItems.getJSONArray(i).getJSONObject(0);
+        JSONArray dataItems = mdlObj.getJSONArray("DataItems");
+        JSONArray dataRefs = new JSONArray();
+        for (int i = 0; i < dataItems.size(); i++) {
+            JSONObject dataRef = dataItems.getJSONArray(i).getJSONObject(0);
             dataRefs.add(dataRef);
         }
 
@@ -312,12 +335,32 @@ public class TaskService {
             for (int j = 0; j < events.size(); j++) {
                 JSONObject event = events.getJSONObject(j);
                 if (event.getString("eventType").equals("response")) {
+                    //判断是否能够可视化
+//                    JSONObject eventData = (JSONObject)event.getJSONArray("data").get(0);
+//                    if(eventData.containsKey("externalId")){
+//                        for(String id:visualTemplateIds){
+//                            if(eventData.getString("externalId").toLowerCase().equals(id)){
+//                                event.put("visual",true);
+//                                break;
+//                            }
+//                        }
+//                    }
                     eventsSort.add(event);
                 }
             }
             for (int j = 0; j < events.size(); j++) {
                 JSONObject event = events.getJSONObject(j);
                 if (!event.getString("eventType").equals("response")) {
+                    //判断是否能够可视化
+//                    JSONObject eventData = (JSONObject)event.getJSONArray("data").get(0);
+//                    if(eventData.containsKey("externalId")){
+//                        for(String id:visualTemplateIds){
+//                            if(eventData.getString("externalId").toLowerCase().equals(id)){
+//                                event.put("visual",true);
+//                                break;
+//                            }
+//                        }
+//                    }
                     eventsSort.add(event);
                 }
             }
@@ -327,23 +370,27 @@ public class TaskService {
 
 
         model_Info.put("states", states);
-        model_Info.put("dataRefs",dataRefs);
+        model_Info.put("dataRefs", dataRefs);
         //拼接
         JSONObject result = new JSONObject();
         result.put("userInfo", userJson);
         result.put("modelInfo", model_Info);
         result.put("taskInfo", taskInfo);
         result.put("dxInfo", dxInfo);
+        result.put("visualIds",visualTemplateIds);
 
         return result;
     }
 
     //根据post请求的信息得到数据存储的路径
-    public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO) {
+    public List<UploadDataDTO> getTestDataUploadArray(TestDataUploadDTO testDataUploadDTO, JSONObject mdlJson) {
+        JSONArray states = mdlJson.getJSONObject("mdl").getJSONArray("states");
+
+
         String oid = testDataUploadDTO.getOid();
         String parentDirectory = resourcePath + "/computableModel/testify/" + oid;
-        String configPath = parentDirectory + File.separator + "config.xml";
-        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory,oid);
+        String configPath = parentDirectory + "/" + "config.xml";
+        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory, oid);
         if (configInfoArray == null) {
             return null;
         }
@@ -356,13 +403,55 @@ public class TaskService {
             uploadDataDTO.setState(temp.getString("state"));
             uploadDataDTO.setFilePath(temp.getString("file"));
             uploadDataDTO.setChildren(temp.getJSONArray("children").toJavaList(ParamInfo.class));
+
+            for(int j=0;j<states.size();j++){
+                JSONObject state = states.getJSONObject(j);
+                if(state.getString("Id").equals(uploadDataDTO.getState())){
+                    JSONArray events=state.getJSONArray("event");
+                    for(int k=0;k<events.size();k++){
+                        JSONObject event=events.getJSONObject(k);
+                        if(event.getString("eventName").equals(uploadDataDTO.getEvent())){
+                            JSONObject data=event.getJSONArray("data").getJSONObject(0);
+                            if(data.getString("dataType").equals("external")){
+                                uploadDataDTO.setType("id");
+                                uploadDataDTO.setTemplate(data.getString("externalId").toLowerCase());
+                                for(String id:visualTemplateIds){
+                                    if(uploadDataDTO.getTemplate().equals(id)){
+                                        uploadDataDTO.setVisual(true);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                if(data.getString("schema")!=null) {
+                                    uploadDataDTO.setType("schema");
+                                    uploadDataDTO.setTemplate(data.getString("schema"));
+                                    uploadDataDTO.setVisual(false);
+                                }else{
+                                    uploadDataDTO.setType("none");
+                                    uploadDataDTO.setTemplate("");
+                                    uploadDataDTO.setVisual(false);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if(uploadDataDTO.getType()==null){
+                uploadDataDTO.setType("none");
+                uploadDataDTO.setTemplate("");
+                uploadDataDTO.setVisual(false);
+            }
+
             dataUploadList.add(uploadDataDTO);
         }
         return dataUploadList;
     }
 
     //读取xml信息，返回数据的State,Event和数据路径
-    private JSONArray getConfigInfo(String configPath, String parentDirectory,String oid) {
+    private JSONArray getConfigInfo(String configPath, String parentDirectory, String oid) {
         JSONArray resultArray = new JSONArray();
         Document result = null;
         SAXReader reader = new SAXReader();
@@ -372,13 +461,13 @@ public class TaskService {
             e.printStackTrace();
             return null;
         }
-        ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+        ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
         JSONObject mdlInfo = convertMdl(computableModel.getMdl());
         JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
-        JSONArray dataItems=mdlObj.getJSONArray("DataItems");
-        JSONArray dataRefs=new JSONArray();
-        for(int i=0;i<dataItems.size();i++){
-            JSONObject dataRef=dataItems.getJSONArray(i).getJSONObject(0);
+        JSONArray dataItems = mdlObj.getJSONArray("DataItems");
+        JSONArray dataRefs = new JSONArray();
+        for (int i = 0; i < dataItems.size(); i++) {
+            JSONObject dataRef = dataItems.getJSONArray(i).getJSONObject(0);
             dataRefs.add(dataRef);
         }
         JSONArray states = mdlObj.getJSONArray("states");
@@ -389,28 +478,28 @@ public class TaskService {
             String fileName = item.attributeValue("File");
             String state = item.attributeValue("State");
             String event = item.attributeValue("Event");
-            String filePath = parentDirectory + File.separator + fileName;
+            String filePath = parentDirectory + "/" + fileName;
 
-            JSONArray children=new JSONArray();
-            Boolean find=false;
-            for(int i=0;i<states.size();i++){
-                JSONArray events=states.getJSONObject(i).getJSONArray("event");
-                for(int j=0;j<events.size();j++){
-                    JSONObject _event=events.getJSONObject(j);
-                    Boolean quit=false;
-                    if(_event.getString("eventName").equals(event)) {
-                        find=true;
+            JSONArray children = new JSONArray();
+            Boolean find = false;
+            for (int i = 0; i < states.size(); i++) {
+                JSONArray events = states.getJSONObject(i).getJSONArray("event");
+                for (int j = 0; j < events.size(); j++) {
+                    JSONObject _event = events.getJSONObject(j);
+                    Boolean quit = false;
+                    if (_event.getString("eventName").equals(event)) {
+                        find = true;
                         String type = _event.getString("eventType");
-                        if(type.equals("response")){
-                            JSONObject data=_event.getJSONArray("data").getJSONObject(0);
-                            if(data.getString("dataType").equals("internal")){
-                                String dataRefText=data.getString("text");
-                                for(int k=0;k<dataRefs.size();k++){
-                                    JSONObject dataRef=dataRefs.getJSONObject(k);
-                                    if(dataRef.getString("text").equals(dataRefText)) {
-                                        quit=true;
+                        if (type.equals("response")) {
+                            JSONObject data = _event.getJSONArray("data").getJSONObject(0);
+                            if (data.getString("dataType").equals("internal")) {
+                                String dataRefText = data.getString("text");
+                                for (int k = 0; k < dataRefs.size(); k++) {
+                                    JSONObject dataRef = dataRefs.getJSONObject(k);
+                                    if (dataRef.getString("text").equals(dataRefText)) {
+                                        quit = true;
                                         JSONArray nodes = dataRef.getJSONArray("nodes");
-                                        if(nodes!=null) {
+                                        if (nodes != null) {
                                             if (nodes.size() > 0) {
                                                 try {
 
@@ -446,15 +535,14 @@ public class TaskService {
                         }
 
                     }
-                    if(quit){
+                    if (quit) {
                         break;
                     }
                 }
-                if(find){
+                if (find) {
                     break;
                 }
             }
-
 
 
             JSONObject tempObject = new JSONObject();
@@ -468,26 +556,80 @@ public class TaskService {
     }
 
     @Async
-    public Future<ResultDataDTO> uploadDataToServer(UploadDataDTO uploadDataDTO, TestDataUploadDTO testDataUploadDTO) {
+    public Future<ResultDataDTO> uploadDataToServer(UploadDataDTO uploadDataDTO, TestDataUploadDTO testDataUploadDTO, String userName) {
         ResultDataDTO resultDataDTO = new ResultDataDTO();
         resultDataDTO.setEvent(uploadDataDTO.getEvent());
         resultDataDTO.setStateId(uploadDataDTO.getState());
         resultDataDTO.setChildren(uploadDataDTO.getChildren());
         String testDataPath = uploadDataDTO.getFilePath();
-        String url = "http://" + managerServer + "/GeoModeling/computableModel/uploadData";
+        String url = "http://" + dataContainerIpAndPort + "/data";
         //拼凑form表单
-        Map<String, String> params = new HashMap<>();
-        params.put("host", testDataUploadDTO.getHost());
-        params.put("port", String.valueOf(testDataUploadDTO.getPort()));
-        params.put("type", String.valueOf(testDataUploadDTO.getType()));
-        params.put("userName", testDataUploadDTO.getUserName());
+        HashMap<String, String> params = new HashMap<>();
+        params.put("name", uploadDataDTO.getEvent());
+        params.put("userId", userName);
+        params.put("serverNode", "china");
+        params.put("origination", "portal");
 
         //拼凑file表单
-        Map<String, String> fileMap = new HashMap<>();
-        fileMap.put("file", testDataPath);
+        List<String> filePaths=new ArrayList<>();
+//
+        String configParentPath = resourcePath + "/configFile/" + UUID.randomUUID().toString() + "/";
+        File path = new File(configParentPath);
+        path.mkdirs();
+        String configPath = configParentPath + "config.udxcfg";
+        File configFile = new File(configPath);
+
+        ZipStreamEntity zipStreamEntity = null;
+
+        try {
+
+            configFile.createNewFile();
+//            File configFile=File.createTempFile("config",".udxcfg");
+
+            Writer out = new FileWriter(configFile);
+            String content = "<UDXZip>\n";
+            content += "\t<Name>\n";
+            String[] paths = testDataPath.split("/");
+            content += "\t\t<add value=\"" + paths[paths.length - 1] + "\" />\n";
+            content += "\t</Name>\n";
+            content += "\t<DataTemplate type=\"" + uploadDataDTO.getType() + "\">\n";
+            content += "\t\t"+uploadDataDTO.getTemplate()+"\n";
+            content += "\t</DataTemplate>\n";
+            content += "</UDXZip>";
+
+            out.write(content);
+            out.flush();
+            out.close();
+
+
+            filePaths.add(testDataPath);
+            filePaths.add(configPath);
+
+//            File dataFile=new File(testDataPath);
+//            InputStream dataStream = new FileInputStream(dataFile);
+//            ZipStreamEntity zipStreamEntity1=new ZipStreamEntity(dataFile.getName(),dataStream);
+//
+//            InputStream configStream = new FileInputStream(configFile);
+//            ZipStreamEntity zipStreamEntity2=new ZipStreamEntity(configFile.getName(),configStream);
+//
+//            List<ZipStreamEntity> zipStreamEntityList=new ArrayList<>();
+//            zipStreamEntityList.add(zipStreamEntity1);
+//            zipStreamEntityList.add(zipStreamEntity2);
+//
+//            String dataName=dataFile.getName().substring(0,dataFile.getName().lastIndexOf("."));
+//            InputStream zipInputStream = ZipUtils.listStreamToZipStream(zipStreamEntityList,dataName);
+//            zipStreamEntity=new ZipStreamEntity(dataName,zipInputStream);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         String result;
         try {
-            result = MyHttpUtils.POSTFile(url, "UTF-8", params, fileMap);
+            result = MyHttpUtils.upload(url, filePaths, params);
         } catch (Exception e) {
             result = null;
         }
@@ -496,18 +638,20 @@ public class TaskService {
             resultDataDTO.setTag("");
         } else {
             JSONObject res = JSON.parseObject(result);
-            if (res.getIntValue("code") != 1) {
+            if (res.getIntValue("code") != 0) {
                 resultDataDTO.setUrl("");
                 resultDataDTO.setTag("");
                 resultDataDTO.setSuffix("");
             } else {
                 JSONObject data = res.getJSONObject("data");
-                String data_url = data.getString("url");
-                String tag = data.getString("tag");
-                String suffix = data.getString("suffix");
+                String data_url = "http://"+dataContainerIpAndPort+"/data?uid="+data.getString("source_store_id");
+                String tag = data.getString("file_name");
+                String[] paths=testDataPath.split("\\.");
+                String suffix = paths[paths.length-1];
                 resultDataDTO.setTag(tag);
                 resultDataDTO.setUrl(data_url);
                 resultDataDTO.setSuffix(suffix);
+                resultDataDTO.setVisual(uploadDataDTO.getVisual());
             }
         }
         return new AsyncResult<>(resultDataDTO);
@@ -515,36 +659,37 @@ public class TaskService {
 
     }
 
+
 //    public UploadDataDTO getPublishedTask(String taskId){
 //
 //    }
 
-    public List<ResultDataDTO> getPublishedData(String taskId){
-        Task task=taskDao.findFirstByTaskId(taskId);
+    public List<ResultDataDTO> getPublishedData(String taskId) {
+        Task task = taskDao.findFirstByTaskId(taskId);
 
-        List<ResultDataDTO> resultDataDTOList=new ArrayList<>();
+        List<ResultDataDTO> resultDataDTOList = new ArrayList<>();
 
 //        if(task.getStatus()==1){
-            for(int i=0; i<task.getInputs().size();i++ ){
-                ResultDataDTO resultDataDTO=new ResultDataDTO();
-                resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
-                resultDataDTO.setState(task.getInputs().get(i).getStatename());
-                resultDataDTO.setEvent(task.getInputs().get(i).getEvent());
-                resultDataDTO.setTag(task.getInputs().get(i).getTag());
-                resultDataDTO.setSuffix(task.getInputs().get(i).getSuffix());
-                resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
-                resultDataDTOList.add(resultDataDTO);
-            }
-            for(int i=0; i<task.getOutputs().size();i++ ){
-                ResultDataDTO resultDataDTO=new ResultDataDTO();
-                resultDataDTO.setUrl(task.getOutputs().get(i).getUrl());
-                resultDataDTO.setState(task.getOutputs().get(i).getStatename());
-                resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
-                resultDataDTO.setTag(task.getOutputs().get(i).getTag());
-                resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
-                resultDataDTO.setChildren(task.getOutputs().get(i).getChildren());
-                resultDataDTOList.add(resultDataDTO);
-            }
+        for (int i = 0; i < task.getInputs().size(); i++) {
+            ResultDataDTO resultDataDTO = new ResultDataDTO();
+            resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
+            resultDataDTO.setState(task.getInputs().get(i).getStatename());
+            resultDataDTO.setEvent(task.getInputs().get(i).getEvent());
+            resultDataDTO.setTag(task.getInputs().get(i).getTag());
+            resultDataDTO.setSuffix(task.getInputs().get(i).getSuffix());
+            resultDataDTO.setChildren(task.getInputs().get(i).getChildren());
+            resultDataDTOList.add(resultDataDTO);
+        }
+        for (int i = 0; i < task.getOutputs().size(); i++) {
+            ResultDataDTO resultDataDTO = new ResultDataDTO();
+            resultDataDTO.setUrl(task.getOutputs().get(i).getUrl());
+            resultDataDTO.setState(task.getOutputs().get(i).getStatename());
+            resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
+            resultDataDTO.setTag(task.getOutputs().get(i).getTag());
+            resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
+            resultDataDTO.setChildren(task.getOutputs().get(i).getChildren());
+            resultDataDTOList.add(resultDataDTO);
+        }
 //        }
         return resultDataDTOList;
     }
@@ -606,7 +751,7 @@ public class TaskService {
 
         JSONObject result = postJSON("http://" + managerServerIpAndPort + "/GeoModeling/computableModel/invoke", lists);
 
-        if(result!=null) {
+        if (result != null) {
             if (result.getInteger("code") == 1) {
 
                 return result.getJSONObject("data").getString("tid");
@@ -664,7 +809,7 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
-                    param.put("integrate",task.getIntegrate());
+                    param.put("integrate", task.getIntegrate());
 
                     futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
@@ -679,8 +824,8 @@ public class TaskService {
                         int remoteStatus = jsonResult.getInteger("status");
 
                         Task task = taskDao.findFirstByTaskId(tid);
-                        if(jsonResult.getBoolean("integrate")){
-                            List<Model> models=jsonResult.getJSONArray("models").toJavaList(Model.class);
+                        if (jsonResult.getBoolean("integrate")) {
+                            List<Model> models = jsonResult.getJSONArray("models").toJavaList(Model.class);
 
                             if (task.getStatus() != remoteStatus) {
                                 task.setStatus(remoteStatus);
@@ -695,8 +840,7 @@ public class TaskService {
                                     }
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
 
                             if (task.getStatus() != remoteStatus) {
@@ -725,7 +869,6 @@ public class TaskService {
         }
 
 
-
         JSONObject taskObject = new JSONObject();
         taskObject.put("count", tasks.getTotalElements());
         taskObject.put("tasks", tasks.getContent());
@@ -739,7 +882,7 @@ public class TaskService {
         List<Future> futures = new ArrayList<>();
 
         Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortType);
-        List<Task> ts = taskDao.findByUserId(userName,sort);
+        List<Task> ts = taskDao.findByUserId(userName, sort);
         try {
             for (int i = 0; i < ts.size(); i++) {
                 Task task = ts.get(i);
@@ -801,7 +944,7 @@ public class TaskService {
 
         Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 10, sort);
-        Page<Task> tasks = taskDao.findByUserIdAndIntegrate(userName,true, pageable);
+        Page<Task> tasks = taskDao.findByUserIdAndIntegrate(userName, true, pageable);
         List<Task> ts = tasks.getContent();
         try {
             for (int i = 0; i < ts.size(); i++) {
@@ -811,7 +954,7 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
-                    param.put("integrate",task.getIntegrate());
+                    param.put("integrate", task.getIntegrate());
 
                     futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
@@ -826,8 +969,8 @@ public class TaskService {
                         int remoteStatus = jsonResult.getInteger("status");
 
                         Task task = taskDao.findFirstByTaskId(tid);
-                        if(jsonResult.getBoolean("integrate")){
-                            List<Model> models=jsonResult.getJSONArray("models").toJavaList(Model.class);
+                        if (jsonResult.getBoolean("integrate")) {
+                            List<Model> models = jsonResult.getJSONArray("models").toJavaList(Model.class);
 
                             if (task.getStatus() != remoteStatus) {
                                 task.setStatus(remoteStatus);
@@ -842,8 +985,7 @@ public class TaskService {
                                     }
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
 
                             if (task.getStatus() != remoteStatus) {
@@ -872,7 +1014,6 @@ public class TaskService {
         }
 
 
-
         JSONObject taskObject = new JSONObject();
         taskObject.put("count", tasks.getTotalElements());
         taskObject.put("tasks", tasks.getContent());
@@ -886,7 +1027,7 @@ public class TaskService {
         List<Future> futures = new ArrayList<>();
 
         Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortType);
-        List<Task> ts = taskDao.findByUserIdAndIntegrate(userName,true, sort);
+        List<Task> ts = taskDao.findByUserIdAndIntegrate(userName, true, sort);
         try {
             for (int i = 0; i < ts.size(); i++) {
                 Task task = ts.get(i);
@@ -942,7 +1083,7 @@ public class TaskService {
 
     }
 
-    public JSONObject getTasksByUserIdByStatus(String userName, String status,int page, String sortType, int sortAsc){
+    public JSONObject getTasksByUserIdByStatus(String userName, String status, int page, String sortType, int sortAsc) {
 
         AsyncTask asyncTask = new AsyncTask();
         List<Future> futures = new ArrayList<>();
@@ -1030,15 +1171,14 @@ public class TaskService {
                 return null;
             }
         };
-        if(status.equals("calculating") )
-        {
-            tasks = taskDao.findByUserIdAndStatusBetween(userName,-1,2, pageable);
-        }else if(status.equals("successful") ){
-            tasks = taskDao.findByUserIdAndStatusBetween(userName,1, 3,pageable);
-        }else if(status.equals("failed"))
-            tasks = taskDao.findByUserIdAndStatusBetween(userName,-2, 0,pageable);
+        if (status.equals("calculating")) {
+            tasks = taskDao.findByUserIdAndStatusBetween(userName, -1, 2, pageable);
+        } else if (status.equals("successful")) {
+            tasks = taskDao.findByUserIdAndStatusBetween(userName, 1, 3, pageable);
+        } else if (status.equals("failed"))
+            tasks = taskDao.findByUserIdAndStatusBetween(userName, -2, 0, pageable);
         else
-            tasks = taskDao.findByUserId(userName,pageable);
+            tasks = taskDao.findByUserId(userName, pageable);
         List<Task> ts = tasks.getContent();
 
         JSONObject taskObject = new JSONObject();
@@ -1048,70 +1188,70 @@ public class TaskService {
         return taskObject;
     }
 
-    public JSONObject getTasksByModelByUser(String modelId,int page,String userName){
+    public JSONObject getTasksByModelByUser(String modelId, int page, String userName) {
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 4, sort);
         //获取该用户所有关于task
-        Page<Task> tasksOfUser = taskDao.findByComputableIdAndUserIdAndStatus(modelId,userName,2,pageable);
-        JSONArray taskArray=new JSONArray();
+        Page<Task> tasksOfUser = taskDao.findByComputableIdAndUserIdAndStatus(modelId, userName, 2, pageable);
+        JSONArray taskArray = new JSONArray();
         List<Task> ts = tasksOfUser.getContent();
-        long total=tasksOfUser.getTotalElements();
-        for (Task task:ts) {
+        long total = tasksOfUser.getTotalElements();
+        for (Task task : ts) {
 
-            String caculateUser=task.getUserId();
-            String taskId=task.getTaskId();
-            Date runTime=task.getRunTime();
-            String permission=task.getPermission();
+            String caculateUser = task.getUserId();
+            String taskId = task.getTaskId();
+            Date runTime = task.getRunTime();
+            String permission = task.getPermission();
             String description = task.getDescription();
 
-            JSONObject obj=new JSONObject();
-            obj.put("userName",caculateUser);
-            obj.put("taskId",taskId);
-            obj.put("runTime",runTime);
-            obj.put("description",description);
-            obj.put("permission",permission);
+            JSONObject obj = new JSONObject();
+            obj.put("userName", caculateUser);
+            obj.put("taskId", taskId);
+            obj.put("runTime", runTime);
+            obj.put("description", description);
+            obj.put("permission", permission);
             taskArray.add(obj);
 
         }
 
-        JSONObject result=new JSONObject();
-        result.put("content",taskArray);
-        result.put("total",total);
+        JSONObject result = new JSONObject();
+        result.put("content", taskArray);
+        result.put("total", total);
 
         return result;
     }
 
-    public JSONObject getPublishedTasksByModelId(String modelId,int page,String userName){
+    public JSONObject getPublishedTasksByModelId(String modelId, int page, String userName) {
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 4, sort);
 
         //获取published task
-        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndStatusAndUserIdNot(modelId,"public",2,userName,pageable);
+        Page<Task> tasks = taskDao.findByComputableIdAndPermissionAndStatusAndUserIdNot(modelId, "public", 2, userName, pageable);
         List<Task> ts = tasks.getContent();
-        long total=tasks.getTotalElements();
-        JSONArray taskArray=new JSONArray();
-        for (Task task:ts) {
+        long total = tasks.getTotalElements();
+        JSONArray taskArray = new JSONArray();
+        for (Task task : ts) {
 
-            String caculateUser=task.getUserId();
-            String taskId=task.getTaskId();
-            Date runTime=task.getRunTime();
-            String permission=task.getPermission();
+            String caculateUser = task.getUserId();
+            String taskId = task.getTaskId();
+            Date runTime = task.getRunTime();
+            String permission = task.getPermission();
             String description = task.getDescription();
 
-            JSONObject obj=new JSONObject();
-            obj.put("userName",caculateUser);
-            obj.put("taskId",taskId);
-            obj.put("runTime",runTime);
-            obj.put("description",description);
-            obj.put("permission",permission);
+            JSONObject obj = new JSONObject();
+            obj.put("userName", caculateUser);
+            obj.put("taskId", taskId);
+            obj.put("runTime", runTime);
+            obj.put("description", description);
+            obj.put("permission", permission);
             taskArray.add(obj);
 
         }
 
-        JSONObject result=new JSONObject();
+        JSONObject result = new JSONObject();
 
-        result.put("content",taskArray);
-        result.put("total",total);
+        result.put("content", taskArray);
+        result.put("total", total);
 
         return result;
     }
@@ -1133,15 +1273,15 @@ public class TaskService {
             task.setStatus(remoteState);
         }
         if (remoteState == 2) {
-            boolean hasValue=false;
-            JSONArray outputs=result.getJSONObject("data").getJSONArray("outputs");
-            for(int i=0;i<outputs.size();i++){
-                if(!outputs.getJSONObject(i).getString("url").equals("")){
-                    hasValue=true;
+            boolean hasValue = false;
+            JSONArray outputs = result.getJSONObject("data").getJSONArray("outputs");
+            for (int i = 0; i < outputs.size(); i++) {
+                if (!outputs.getJSONObject(i).getString("url").equals("")) {
+                    hasValue = true;
                     break;
                 }
             }
-            if(!hasValue){
+            if (!hasValue) {
                 task.setStatus(-1);
             }
             task.setOutputs(result.getJSONObject("data").getJSONArray("outputs").toJavaList(TaskData.class));
@@ -1175,29 +1315,29 @@ public class TaskService {
 
     public String setPublic(String taskId) {
         Task task = taskDao.findFirstByTaskId(taskId);
-        String result=new String();
-        if (task == null){
-            result="0";
+        String result = new String();
+        if (task == null) {
+            result = "0";
             return result;
         }
 
         task.setPermission("public");
         taskDao.save(task);
-        result=task.getPermission();
+        result = task.getPermission();
         return result;
     }
 
     public String setPrivate(String taskId) {
         Task task = taskDao.findFirstByTaskId(taskId);
-        String result=new String();
-        if (task == null){
-            result="0";
+        String result = new String();
+        if (task == null) {
+            result = "0";
             return result;
         }
 
         task.setPermission("private");
         taskDao.save(task);
-        result=task.getPermission();
+        result = task.getPermission();
         return result;
     }
 

@@ -23,30 +23,49 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <style>
-        .el-card__body {
-            padding: 15px 10px;
-        }
 
         .el-radio-button--small .el-radio-button__inner{
             font-size: 14px;
         }
+
+        .detail_option{
+            margin-top: -7px;
+        }
+
+        .minScreen_hide {
+            display: inline-block;
+        }
+
+        @media only screen and (max-width: 700px){
+
+            .detail_option{
+                margin-top: 0;
+            }
+
+            .minScreen_hide {
+                display: none;
+            }
+
+        }
+
     </style>
 </head>
 <body>
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="el-col el-col-20 el-col-offset-2">
+
+    <div class="clearfix" style="margin-bottom: 40px;">
+        <div class="mainContent">
 
             <div class="el-row">
                 <h2 class="main-title">Model Item Repository</h2>
                 <h4 class="sub-title">The repository of models (include tools, algorithms, packages, et al.)</h4>
-                <button class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;" @click="contribute()">+ Contribute</button>
+                <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 <hr>
             </div>
-            <div class="el-col el-col-6" style="margin-top:29px;">
+            <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
 
-                <el-card class="box-card" style="margin-right:20px;">
+                <el-card class="box-card categoryList">
                     <div slot="header" class="clearfix text-center">
                         <span style="font-size: 20px;color:#444">Model Classifications</span>
                     </div>
@@ -77,13 +96,13 @@
                 </el-card>
             </div>
 
-            <div class="el-col el-col-18">
+            <div class="el-col el-col-18 minScreen_maxWidth">
                 <div class="searcherPanel">
                     <div class="searcherInputPanel" @keydown.enter="search()">
                         <input id="searchBox" type="text" placeholder="Model Item Name..." v-model="searchText">
                         <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
-                        <a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x"
-                           aria-hidden="true"></a>
+                        <!--<a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x"-->
+                           <!--aria-hidden="true"></a>-->
                     </div>
                 </div>
 
@@ -184,7 +203,7 @@
                     </span>
                 </div>
 
-                <div id="curClassBar" role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong>Current Classification: {{currentClass}} </strong>
+                <div id="curClassBar" role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
                     <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
                     <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
                 </div>
@@ -202,7 +221,6 @@
                                     <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
                                         <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
                                                 :rounded="false"></avatar>
-
                                         <img v-if="modelItem.image!=''" :src="modelItem.image"
                                              style="width:90px;height: 90px;">
 
@@ -231,11 +249,14 @@
                                     <a :href="'/user/'+ pageOption.users[key].oid" target="_blank"
                                        style="display: inline-block;margin-left: 5px;"><h4>
                                         {{pageOption.users[key].name}}</h4></a>
-                                    <h4 style="display: inline-block;margin-left: 20px">contributed at
+
+                                    <h4 class="screen_view">
+                                        contributed at {{modelItem.createTime.substring(0,10)}} </h4>
+                                    <h4 class="mobile_view">
                                         {{modelItem.createTime.substring(0,10)}} </h4>
                                 </div>
-                                <div class="detail_option" style="margin-top: -7px">
-                                    <div style="display: inline-block">
+                                <div class="detail_option">
+                                    <div class="minScreen_hide">
                                         <el-radio-group v-model="statistic[key]" size="small" @change="switchChange(key)">
                                             <el-radio-button label="Overview"></el-radio-button>
                                             <el-radio-button label="Statistics"></el-radio-button>

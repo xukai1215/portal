@@ -172,9 +172,7 @@ var router = new VueRouter({
 
 
         ]
-    }
-
-)
+    });
 var vue = new Vue(
     {
         el: "#app",
@@ -360,4 +358,4 @@ var vue = new Vue(
         },
 
     }
-)
+);

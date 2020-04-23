@@ -20,5 +20,7 @@ public class FileMeta {
     String suffix;
     String url;
 
+    String templateId;//数据模板id
+
     List<FileMeta> content;//文件夹需要设置该参数
 }

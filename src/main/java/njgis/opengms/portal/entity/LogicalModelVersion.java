@@ -43,6 +43,8 @@ public class LogicalModelVersion {
     List<AuthorInfo> authorship;
 
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
 
     Object mdl;
 

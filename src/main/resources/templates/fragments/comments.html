@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <template th:fragment="comments" id="comments" class="detail_block">
+        <div class="block_head">
+            <div class="head_text">
+                <h4>Comment(s)</h4>
+            </div>
+        </div>
+        <div class="block_content">
+            <div class="comment-box flex" style="flex-grow: 1">
+                <a :href="useroid==''?'/user/login':'/user/'+useroid" class="round_icon">
+                    <img :src="userImg!=''?userImg:'/static/img/icon/default.png'" class="round_icon pull-left" style="border: 1px solid #eee">
+                </a>
+                <div class="flex"
+                     style="flex-direction:row;justify-content:space-between;flex-wrap: wrap;flex-grow:1;margin-left:15px">
+
+                    <el-input
+                            id="commentTextArea"
+                            type="textarea"
+                            :rows="4"
+                            :placeholder="commentTextAreaPlaceHolder"
+                            v-model="commentText"
+                            style="flex-grow: 1;margin-bottom: 10px">
+                    </el-input>
+                    <el-tag
+                            :style="{'visibility':replyTo==''?'hidden':'visible',left:0}"
+                            :key="replyTo"
+
+                            closable
+                            :disable-transitions="false"
+                            @close="tagClose">
+                        {{replyTo}}
+                    </el-tag>
+
+                    <el-button type="primary" plain style="float:right" @click="submitComment">Submit</el-button>
+
+                </div>
+            </div>
+            <el-divider></el-divider>
+            <div class="comment-list">
+                <div class="comment flex" style="margin-top:15px" v-for="(comment,i) in commentList">
+                    <a :href="'/user/'+comment.author.oid" target="_blank" class="round_icon">
+                        <img :src="comment.author.img" class="round_icon"
+                        />
+                    </a>
+
+                    <div class="comment-content" style="margin-left: 15px;flex-grow: 1;padding-bottom: 16px;border-bottom: 1px solid #eee;">
+                        <div class="com-author-name">
+                            <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
+                        </div>
+                        <div class="com-time">
+                            {{comment.date}}
+                        </div>
+                        <div class="com-content" style="margin-top:10px;font-size:20px;">{{comment.content}}</div>
+                        <div class="com-operate flexRowSpaceBetween" style="margin-top:10px; font-size:18px;font-family: sans-serif; "  >
+                            <div>
+                                <!--<span>-->
+                                <!--<i class="thumbs-up">Like</i>-->
+                                <!--</span>-->
+                                <a href="#comments" class="reply hover" @click="replyComment(comment)">
+                                                <i class="el-icon-s-comment"></i>
+                                                Reply
+                                            </a>
+                            </div>
+                            <div v-if="useroid==comment.author.oid" >
+                                            <a class="delete hover" style="display: none;" @click="deleteComment(comment.oid)">
+                                                <i class="el-icon-delete-solid"></i>
+                                                Delete
+                                            </a>
+                            </div>
+                        </div>
+
+                        <div class="com-sub-list">
+                            <div class="com-sub" v-for="(subComm,j) in comment.subCommentList" style="border-top: 1px solid #eee;margin-top:15px;padding-top: 15px;">
+                                <div class="com-sub-author flex">
+                                    <a :href="'/user/'+subComm.author.oid" target="_blank" class="com-sub-icon">
+                                        <img :src="subComm.author.img" class="round_icon">
+                                    </a>
+                                    <div class="com-sub-name-time" style="margin-left:15px">
+                                        <div class="com-author-name">
+                                            <a :href="'/user/'+subComm.author.oid" target="_blank" style="font-size: 18px;">{{subComm.author.name}}</a>
+                                            <span v-if="subComm.replyTo!=null" style="margin:0 5px;font-weight: bold">Reply</span>
+                                            <span v-if="subComm.replyTo!=null">
+                                                <a :href="'/user/'+subComm.replyTo.oid" target="_blank" style="font-size: 18px;font-weight: normal">{{subComm.replyTo.name}}</a>
+                                            </span>
+                                        </div>
+                                        <div class="com-time">
+                                            {{subComm.date}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="com-content" style="margin-top:10px;font-size:20px;">{{subComm.content}}</div>
+                                <div class="com-operate flexRowSpaceBetween" style="margin-top:10px; font-size:18px;font-family: sans-serif; color: #b0b0b0;"  >
+                                    <div>
+                                        <!--<span>-->
+                                        <!--<i class="thumbs-up">Like</i>-->
+                                        <!--</span>-->
+                                        <a href="#comments" class="reply hover" @click="replySubComment(comment,subComm)">
+                                                <i class="el-icon-s-comment"></i>
+                                                Reply
+                                            </a>
+                                    </div>
+                                    <div v-if="useroid==subComm.author.oid" >
+                                            <a class="delete hover" style="display: none;" @click="deleteComment(subComm.oid)">
+                                                <i class="el-icon-delete-solid"></i>
+                                                Delete
+                                            </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</body>
+</html>

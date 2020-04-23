@@ -1192,23 +1192,24 @@ var vue = new Vue({
             });
         },
         getUserData(UsersInfo, prop) {
-            let index = 0;
-            for (i = 0; i < UsersInfo.length; i += 4) {
-                let value1 = UsersInfo.eq(i)[0].value.trim();
-                let value2 = UsersInfo.eq(i)[0].value.trim();
-                let value3 = UsersInfo.eq(i)[0].value.trim();
-                let value4 = UsersInfo.eq(i)[0].value.trim();
-                if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
-                    index = i + 4;
-                }
 
-            }
             for (i = prop.length; i > 0; i--) {
                 prop.pop();
             }
             var result = "{";
-            for (; index < UsersInfo.length; index++) {
+            for (index=0 ; index < UsersInfo.length; index++) {
                 //
+                if(index%4==0){
+                    let value1 = UsersInfo.eq(index)[0].value.trim();
+                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
+                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
+                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
+                    if(value1==''&&value2==''&&value3==''&&value4==''){
+                        index+=4;
+                        continue;
+                    }
+                }
+
                 var Info = UsersInfo.eq(index)[0];
                 if (index % 4 == 3) {
                     if (result) {
@@ -1216,7 +1217,8 @@ var vue = new Vue({
                         prop.push(eval('(' + result + ')'));
                     }
                     result = "{";
-                } else {
+                }
+                else {
                     result += "'" + Info.name + "':'" + Info.value + "',";
                 }
 
@@ -5036,7 +5038,7 @@ var vue = new Vue({
             let id=this.rightTargetItem.url.split('=')[1]
             //下载接口
             if(id!=undefined) {
-                window.open( 'http://111.229.14.128:8082/dataResource/getResource?sourceStoreId='+id);
+                window.open( 'http://111.229.14.128:8899/data?uid='+id);
             }
             else{
                 this.$message.error("No data can be downloaded.");

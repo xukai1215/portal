@@ -19,6 +19,8 @@ public class ConceptVersion {
     String description;
     String detail;
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
     List<String> related;
     int loadCount;
     String creator;

@@ -31,4 +31,6 @@ public interface UnitDao extends MongoRepository<Unit,String> {
     List<Item> findByAuthor(String author);
 
     Page<UnitResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

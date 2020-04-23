@@ -396,7 +396,7 @@ new Vue({
                     // };
                     let series = [];
                     for(i=1;i<valueList.length;i++){
-                        series.push({type: 'line', smooth: true, seriesLayoutBy: 'row'});
+                        series.push({type: 'line', smooth: false, seriesLayoutBy: 'row'});
                     }
                     option = {
                         legend: {},

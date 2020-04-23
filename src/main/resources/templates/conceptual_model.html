@@ -25,6 +25,7 @@
         .el-tabs__header {
             position: unset;
         }
+
         /**
             张硕
             2019.11.14
@@ -43,8 +44,7 @@
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
 
-
-        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: #d2d2d2 solid 1px">
+        <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title">
                     <a th:if="${history!=true}" th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
@@ -76,13 +76,75 @@
                                 data-toggle="tooltip" data-placement="left" title="bind to another model item"
                                 @click="modelItemFormVisible=true">+
                         </button>
-                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
+                        <a class="fa fa-eye" aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
 
                     </div>
 
                 </div>
 
+            </div>
+
+            <div id="Contributor0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="margin-bottom: 3px;height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row">
+                        <div class="text-center">
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="Authorship0" class="detail_block minScreen"
+                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                        <span role="button" tabindex="0" class="ab" style="float: right;"><a
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true" th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
+                             style="">
+                            <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
+                                    <dd th:if="${author.ins!=''}" th:text="${author.ins}"></dd>
+                                    <dt th:if="${author.email!=''}">Email: &nbsp</dt>
+                                    <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
+                                    <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="graph" class="detail_block"
@@ -132,13 +194,14 @@
                             aria-hidden="true"></i></a>
                 </div>
             </div>
+
             <div id="cite" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>How to cite</h4>
                     </div>
                 </div>
-                <div class="block_content flex">
+                <div class="block_content">
                     <div id="cite-text" class="width:100%-50px">
                         <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Conceptual Model, OpenGMS, '"></span>
                             <span th:if="${authorship==''}" th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Conceptual Model, OpenGMS, '">
@@ -155,9 +218,58 @@
                     </div>
                 </div>
             </div>
+
+            <div id="Modifier0" class="detail_block minScreen"
+                 th:if="${history!=true&&modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(modelInfo.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/conceptualModel/'+${modelInfo.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="QR0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                </div>
+            </div>
+
+            <div id="comments">
+                <template th:replace="fragments/comments :: comments"></template>
+            </div>
+
         </div>
-        <div class="right-panel el-col el-col-5">
-            <div id="Contributor" class="detail_block" style="margin-bottom: 55px;">
+
+        <div class="right-panel el-col">
+
+            <div id="Contributor" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4 th:if="${history!=true}">Contributor</h4>
@@ -166,26 +278,27 @@
                 </div>
                 <div class="block_content">
                     <div class="el-row"
-                         style="height: 40px; display: flex; justify-content: center; align-items: center;">
-                        <div class="el-col el-col-4 el-col-offset-3">
+                         style="margin-bottom: 3px;height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col">
                             <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
-                        <div class="el-col el-col-20">
-                            <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4>
-                                </a>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
-                    <div class="el-row el-col-offset-3">
+                    <div class="el-row">
                         <div class="text-center">
                             <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
                 </div>
+
             </div>
+
             <div id="Authorship" class="detail_block"
                  th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
                 <div class="block_head">
@@ -217,6 +330,7 @@
                     </div>
                 </div>
             </div>
+
             <div id="Modifier" class="detail_block"
                  th:if="${history!=true&&modelInfo.contributors!=null&&#lists.size(modelInfo.contributors)!=0}">
                 <div class="block_head">
@@ -245,6 +359,7 @@
                     </div>
                 </div>
             </div>
+
             <div id="QR" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -253,7 +368,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
 
                 </div>
             </div>

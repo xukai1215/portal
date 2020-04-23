@@ -98,6 +98,12 @@
                                                                 <input id="search-box" type="text"
                                                                        class="form-control"
                                                                        v-model="computableModel.bindModelItem">
+                                                                <!--<el-autocomplete-->
+                                                                        <!--v-model="computableModel.bindModelItem"-->
+                                                                        <!--:fetch-suggestions="querySearchAsync"-->
+                                                                        <!--placeholder="Enter model item name..."-->
+                                                                        <!--@select="handleSelect"-->
+                                                                <!--&gt;</el-autocomplete>-->
                                                                 <span class="input-group-btn">
                                                             <button id="bind" class="btn btn-success"
                                                                     type="button">bind</button>
@@ -380,7 +386,7 @@
     </div>
 </div>
 </body>
-<script th></script>
+
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/element-ui/index.js"></script>

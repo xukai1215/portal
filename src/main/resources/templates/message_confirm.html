@@ -38,83 +38,153 @@
                             <el-tab-pane label="OverView" name="first">
                                 <el-card>
                                     <div class="block">
+                                        <div class="radio">
+                                            Sort：
+                                            <el-radio-group v-model="reverse">
+                                                <el-radio :label="true">Reverse order</el-radio>
+                                                <el-radio :label="false">Positive order</el-radio>
+                                            </el-radio-group>
+                                        </div>
+
                                         <el-timeline :reverse="reverse">
-                                        <!--<div >-->
                                             <el-timeline-item
-                                                    v-for = "(item,index) in edit_model_tableData"
+                                                    v-for = "(item,index) in sum_tableData"
+                                                    :key="index"
                                                     :timestamp="item.modifyTime"
+                                                    :color="item.color"
                                                     placement="top"
                                             >
-                                                <el-card>
-                                                    <h4>{{item.modifierName}} edit model's {{item.name}}</h4>
-                                                    <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in model_tableData2"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} confirm {{item.modifierName}}'s edit of model's {{item.name}}</h4>
-                                                    <p>{{username}} confirm in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in model_tableData3"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} reject {{item.modifierName}}'s edit of model's {{item.name}}</h4>
-                                                    <p>{{username}} reject in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in edit_community_tableData"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{item.modifierName}} edit community's {{item.name}}</h4>
-                                                    <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
+                                                <!--unchecked  model：modelItem、conceptualModel、logicalModel、computableModel
+                                                community：concept、spatialReference	、unit、template-->
+                                                <!--model-->
+                                                    <el-card v-if="item.status== 'unchecked'&& item.type == 'modelItem'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'conceptualModel'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'logicalModel'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'computableModel'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
 
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in community_tableData2"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} confirm {{item.modifierName}}'s edit of community's {{item.name}}</h4>
-                                                    <p>{{username}} confirm in {{item.modifyTime}}</p>
-                                                </el-card>
+                                                <!--community-->
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'concept'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'spatialReference'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'unit'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if="item.status== 'unchecked'&& item.type == 'template'">
+                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                    </el-card>
+
+                                                <!--confirmed  model：modelItem、conceptualModel、logicalModel、computableModel
+                                                community：concept、spatialReference	、unit、template-->
+                                                <!--model-->
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'modelItem'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'conceptualModel'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'logicalModel'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'computableModel'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                <!--community-->
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'concept'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'spatialReference'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'unit'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'template'">
+                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                <!--reject  model：modelItem、conceptualModel、logicalModel、computableModel
+                                                community：concept、spatialReference	、unit、template-->
+                                                <!--model-->
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'modelItem'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'conceptualModel'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'logicalModel'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'computableModel'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                <!--community-->
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'concept'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'spatialReference'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else-if ="item.status== 'reject'&&item.type == 'unit'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
+                                                    <el-card v-else ="item.status== 'reject'&&item.type == 'template'">
+                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                    </el-card>
                                             </el-timeline-item>
-                                        <!--</div>-->
-                                        <!--<div >-->
-                                            <el-timeline-item
-                                                    v-for = "(item,index) in community_tableData3"
-                                                    :timestamp="item.modifyTime"
-                                                    placement="top">
-                                                <el-card>
-                                                    <h4>{{username}} reject {{item.modifierName}}'s edit of community's {{item.name}}</h4>
-                                                    <p>{{username}} reject in {{item.modifyTime}}</p>
-                                                </el-card>
-                                            </el-timeline-item>
-                                        <!--</div>-->
                                     </el-timeline>
                                     </div>
                                 </el-card>
                             </el-tab-pane>
                             <el-tab-pane label="Model" name="Second">
+                                <div slot="label">
+                                    Model
+                                    <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData1_length}}
+                                    </span>
+                                </div>
                                 <el-card>
                                     <el-tabs type="border-card">
                                         <el-tab-pane label="Unapproved version">
+                                            <div slot="label">
+                                                Unapproved version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData1_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="model_tableData1"
                                                     style="width: 100%">
@@ -127,22 +197,23 @@
                                                 <el-table-column
                                                         prop="name"
                                                         label="Name"
+                                                        width="200"
                                                 >
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="type"
                                                         label="Type"
-                                                        width="200">
+                                                        width="150">
                                                 </el-table-column>
                                                 <el-table-column
-                                                        prop="modifier"
+                                                        prop="modifierName"
                                                         label="Modifier"
-                                                        width="200">
+                                                        width="120">
                                                 </el-table-column>
 
                                                 <el-table-column
                                                         label="View"
-                                                        width="100">
+                                                        width="150">
                                                     <template slot-scope="scope">
                                                         <el-button
                                                                 class="viewBtn"
@@ -155,7 +226,7 @@
 
                                                 <el-table-column
                                                         label="Operations"
-                                                        width="300">
+                                                        width="200">
                                                     <template slot-scope="scope">
                                                         <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
                                                         <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
@@ -164,6 +235,13 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Accepted version">
+                                            <div slot="label">
+                                                Accepted version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData2_length}}
+                                                </span>
+
+                                            </div>
                                             <el-table
                                                     :data="model_tableData2"
                                                     style="width: 100%">
@@ -184,7 +262,7 @@
                                                         width="200">
                                                 </el-table-column>
                                                 <el-table-column
-                                                        prop="modifier"
+                                                        prop="modifierName"
                                                         label="Modifier"
                                                         width="200">
                                                 </el-table-column>
@@ -205,6 +283,13 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Rejected version">
+                                            <div slot="label">
+                                                Rejected version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData3_length}}
+                                                </span>
+
+                                            </div>
                                             <el-table
                                                     :data="model_tableData3"
                                                     style="width: 100%">
@@ -225,7 +310,7 @@
                                                         width="200">
                                                 </el-table-column>
                                                 <el-table-column
-                                                        prop="modifier"
+                                                        prop="modifierName"
                                                         label="Modifier"
                                                         width="200">
                                                 </el-table-column>
@@ -248,23 +333,35 @@
                                     </el-tabs>
                                 </el-card>
                             </el-tab-pane>
-                            <el-tab-pane label="Data" name="Third">
-                                <el-card>
-                                    <!--<el-table-->
-                                    <!--:data="tableData"-->
-                                    <!--style="width: 100%">-->
-                                    <!--<el-table-column-->
-                                    <!--prop="date"-->
-                                    <!--label="Editor"-->
-                                    <!--width="180">-->
-                                    <!--</el-table-column>-->
-                                    <!--</el-table>-->
-                                </el-card>
-                            </el-tab-pane>
+                            <!--<el-tab-pane label="Data" name="Third">-->
+                                <!--<el-card>-->
+                                    <!--&lt;!&ndash;<el-table&ndash;&gt;-->
+                                    <!--&lt;!&ndash;:data="tableData"&ndash;&gt;-->
+                                    <!--&lt;!&ndash;style="width: 100%">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-table-column&ndash;&gt;-->
+                                    <!--&lt;!&ndash;prop="date"&ndash;&gt;-->
+                                    <!--&lt;!&ndash;label="Editor"&ndash;&gt;-->
+                                    <!--&lt;!&ndash;width="180">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</el-table-column>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</el-table>&ndash;&gt;-->
+                                <!--</el-card>-->
+                            <!--</el-tab-pane>-->
                             <el-tab-pane label="Community" name="Fourth">
+                                <div slot="label">
+                                    Community
+                                    <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData1_length}}
+                                    </span>
+                                </div>
                                 <el-card>
                                     <el-tabs type="border-card">
                                         <el-tab-pane label="Unapproved version">
+                                            <div slot="label">
+                                                Unapproved version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData1_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="community_tableData1"
                                                     style="width: 100%">
@@ -277,22 +374,23 @@
                                                 <el-table-column
                                                         prop="name"
                                                         label="Name"
+                                                        width="200"
                                                 >
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="type"
                                                         label="Type"
-                                                        width="200">
+                                                        width="150">
                                                 </el-table-column>
                                                 <el-table-column
-                                                        prop="modifier"
+                                                        prop="modifierName"
                                                         label="Modifier"
-                                                        width="200">
+                                                        width="120">
                                                 </el-table-column>
 
                                                 <el-table-column
                                                         label="View"
-                                                        width="100">
+                                                        width="150">
                                                     <template slot-scope="scope">
                                                         <el-button
                                                                 class="viewBtn1"
@@ -305,7 +403,7 @@
 
                                                 <el-table-column
                                                         label="Operations"
-                                                        width="300">
+                                                        width="200">
                                                     <template slot-scope="scope">
                                                         <el-button class="accept1" type="success" size="middle" @click="accept1($event)">Accept</el-button>
                                                         <el-button class="reject1" type="danger" size="middle" @click="reject1($event)">Reject</el-button>
@@ -314,6 +412,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Accepted version">
+                                            <div slot="label">
+                                                Accepted version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData2_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="community_tableData2"
                                                     style="width: 100%">
@@ -334,7 +438,7 @@
                                                         width="200">
                                                 </el-table-column>
                                                 <el-table-column
-                                                        prop="modifier"
+                                                        prop="modifierName"
                                                         label="Modifier"
                                                         width="200">
                                                 </el-table-column>
@@ -355,6 +459,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Rejected version">
+                                            <div slot="label">
+                                                Rejected version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{community_tableData3_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="community_tableData3"
                                                     style="width: 100%">
@@ -375,7 +485,7 @@
                                                         width="200">
                                                 </el-table-column>
                                                 <el-table-column
-                                                        prop="modifier"
+                                                        prop="modifierName"
                                                         label="Modifier"
                                                         width="200">
                                                 </el-table-column>
@@ -399,9 +509,21 @@
                                 </el-card>
                             </el-tab-pane>
                             <el-tab-pane label="Theme" name="Fifth">
+                                <div slot="label">
+                                    Theme
+                                    <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData1_length}}
+                                    </span>
+                                </div>
                                 <el-card>
                                     <el-tabs type="border-card">
                                         <el-tab-pane label="Unapproved version">
+                                            <div slot="label">
+                                                Unapproved version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData1_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="theme_tableData1"
                                                     style="width: 100%">
@@ -414,22 +536,23 @@
                                                 <el-table-column
                                                         prop="theme"
                                                         label="Name"
+                                                        width="200"
                                                 >
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="type"
                                                         label="Block"
-                                                        width="200">
+                                                        width="150">
                                                 </el-table-column>
                                                 <el-table-column
                                                         prop="uid"
                                                         label="Modifier"
-                                                        width="200">
+                                                        width="120">
                                                 </el-table-column>
 
                                                 <el-table-column
                                                         label="View"
-                                                        width="100">
+                                                        width="150">
                                                     <template slot-scope="scope">
                                                         <el-button
                                                                 class="viewBtn_theme"
@@ -442,7 +565,7 @@
 
                                                 <el-table-column
                                                         label="Operations"
-                                                        width="300">
+                                                        width="200">
                                                     <template slot-scope="scope">
                                                         <el-button class="accept_theme" type="success" size="middle" @click="accept_theme($event)">Accept</el-button>
                                                         <el-button class="reject_theme" type="danger" size="middle" @click="reject_theme($event)">Reject</el-button>
@@ -451,6 +574,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Accepted version">
+                                            <div slot="label">
+                                                Accepted version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData2_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="theme_tableData2"
                                                     style="width: 100%">
@@ -492,6 +621,12 @@
                                             </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="Rejected version">
+                                            <div slot="label">
+                                                Rejected version
+                                                <span class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_tableData3_length}}
+                                                </span>
+                                            </div>
                                             <el-table
                                                     :data="theme_tableData3"
                                                     style="width: 100%">
@@ -536,6 +671,45 @@
                                     </el-tabs>
                                 </el-card>
                             </el-tab-pane>
+                            <el-tab-pane label="Comment" name="Sixth">
+                                <div slot="label">
+                                    Comment
+                                    <!--<span class="el-badge__content el-badge__content&#45;&#45;undefined">-->
+                                                    <!--{{comments.length}}-->
+                                    <!--</span>-->
+                                </div>
+                                <el-card>
+                                    <el-timeline>
+                                        <el-timeline-item v-for="(comment, index) in comments"
+                                                          :timestamp="comment.date" placement="top">
+                                            <el-card>
+                                                <div class="com-author-name" style="font-weight: bold">
+
+                                                    <span v-if="comment.replier!=null">
+                                                        <a :href="'/user/'+comment.replier.oid" target="_blank" style="font-size: 18px;">{{comment.replier.name}}</a>
+                                                    </span>
+                                                    <span v-if="comment.replier!=null" style="font-size: 18px;margin:0 5px;">reply you</span>
+
+                                                </div>
+                                                <div style="font-size: 20px">{{comment.content}}</div>
+
+                                                <div style="float:right;display: inline-flex;padding: 5px;">
+                                                    <div style="margin-right:5px;">
+                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank">
+                                                            <avatar :username="comment.itemInfo.name" :size="20" :rounded="false"></avatar>
+                                                            <!--<img v-if="modelItem.image!=''" :src="modelItem.image" style="width:90px;height: 90px;">-->
+                                                         </a>
+                                                    </div>
+                                                    <div>
+                                                        <a :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank">{{comment.itemInfo.name}}</a>
+                                                    </div>
+                                                </div>
+
+                                            </el-card>
+                                        </el-timeline-item>
+                                    </el-timeline>
+                                </el-card>
+                            </el-tab-pane>
                         </el-tabs>
                     </el-card>
                 </div>
@@ -549,80 +723,120 @@
 
                     <el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold" >Past:</label>
-                            </div><br>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
+                                <el-card v-if="info_seen">
+                                    <!--Info的渲染，加v-if控制-->
+                                    <div class="title text-center" style="margin-bottom:40px;">
+                                        <h3>
+                                            <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                        </h3>
+                                    </div>
+                                        <div id="detailinfo" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                                </el-card>
+                                    <!--model的渲染，加v-if控制-->
+                                <el-card v-if="model_seen">
+                                    <div class="title text-center" style="margin-bottom:40px;">
+                                        <h3>
+                                            <span style="border-bottom:2px solid #1890ff">Model</span>
+                                        </h3>
+                                    </div>
+                                    <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
 
+                                        <div class="x_content model_item">
+                                            <div>
+                                                <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+                                            </div>
+                                            <el-row :gutter="20" type="center" class="row-bg" id="content">
+                                                <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
+                                                    <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
+                                                        <a :href="'http://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
+                                                            <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
+                                                        </a>
+                                                        <div style="padding: 14px;">
+                                                            <span v-text="item2.name"></span>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </el-card>
+                                    <!--data的渲染，加v-if控制-->
+                                <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                                    <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
+                                        <div class="x_content data_item">
+                                            <div>
+                                                <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+                                            </div>
+                                            <el-row :gutter="20" type="center" class="row-bg" id="content">
+                                                <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
+                                                    <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
+                                                        <a :href="'http://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
+                                                            <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
+                                                        </a>
+                                                        <div style="padding: 14px;">
+                                                            <span class="data_name" v-text="item2.name"></span>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                            </el-card>
+                                    <!--application的渲染，加v-if控制-->
+                                <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                                    <div id="sub_applications">
+                                        <div class="x_content application_item" id="sub_application">
+                                            <el-row :gutter="20" type="center" class="row-bg" id="content2">
+                                                <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
+                                                    <a :href="item.applicationlink">
+                                                        <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
+                                                            <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">
+                                                            <div style="padding: 14px">
+                                                                <span class="application_name" v-text="item.applicationname"></span>
+                                                            </div>
+                                                        </el-card>
+                                                    </a>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                            </el-card>
+                         </el-card>
+                    </el-card>
+                    <el-card>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="detailinfo" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <!--Info的渲染，加v-if控制-->
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="myText1" v-html="info_edited_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
-
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'http://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.dcname"></label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'http://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications">
-                                <div class="x_content application_item" id="sub_application">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
 
-                        </el-card>
-                        <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold">Edited:</label>
-                            </div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="myText1" v-html="info_edited_dialog"></div>
-                            <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
-                                <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -637,10 +851,18 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold"  v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -655,8 +877,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications1">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications1">
                                 <div class="x_content application_item" id="sub_application1">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -672,6 +901,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                         </el-card>
                     </el-card>
 
@@ -690,18 +920,27 @@
 
                     <el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold" >Past:</label>
-                            </div><br>
-
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="detailinfo_appro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="detailinfo_appro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
 
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -716,10 +955,17 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -734,6 +980,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
                             <div v-if="application_seen" id="sub_applications_appro">
                                 <div class="x_content application_item" id="sub_application_appro">
@@ -754,16 +1001,26 @@
 
                         </el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold">Edited:</label>
-                            </div><br>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="myText1_appro" v-html="info_edited_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="myText1_appro" v-html="info_edited_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                                <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -778,10 +1035,17 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold"  v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -796,8 +1060,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications1_appro">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications1_appro">
                                 <div class="x_content application_item" id="sub_application1_appro">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -813,6 +1084,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                         </el-card>
                     </el-card>
 
@@ -831,18 +1103,28 @@
 
                     <el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold" >Past:</label>
-                            </div><br>
-
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="detailinfo_unappro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="detailinfo_unappro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
+                            </el-card>
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
 
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -857,10 +1139,18 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -875,8 +1165,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications_unappro">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications_unappro">
                                 <div class="x_content application_item" id="sub_application_unappro">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -892,19 +1189,32 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
 
                         </el-card>
                         <el-card>
-                            <div>
-                                <label class="col-sm-2 control-label"
-                                       style="width: 110px;font-weight: bold">Edited:</label>
-                            </div><br>
+                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
                             <!--Info的渲染，加v-if控制-->
-                            <div v-if="info_seen" id="myText1_unappro" v-html="info_edited_dialog"></div>
+                            <el-card v-if="info_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
+                                    </h3>
+                                </div>
+                                <div id="myText1_unappro" v-html="info_edited_dialog"></div>
+                            </el-card>
+
                             <!--model的渲染，加v-if控制-->
-                            <div v-if="model_seen" v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
+                            <el-card v-if="model_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Model</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
                                 <div class="x_content model_item">
-                                    <label style="width: 110px;font-weight: bold" v-text="item.mcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
@@ -919,10 +1229,18 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--data的渲染，加v-if控制-->
-                            <div v-if="data_seen" v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
+                            <el-card v-if="data_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Data</span>
+                                    </h3>
+                                </div>
+                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item">
-                                    <label style="width: 110px;font-weight: bold"  v-text="item.dcname"></label>
+                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
@@ -937,8 +1255,15 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                             <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications1_unappro">
+                            <el-card v-if="application_seen">
+                                <div class="title text-center" style="margin-bottom:40px;">
+                                    <h3>
+                                        <span style="border-bottom:2px solid #1890ff">Application</span>
+                                    </h3>
+                                </div>
+                            <div id="sub_applications1_unappro">
                                 <div class="x_content application_item" id="sub_application1_unappro">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
@@ -954,6 +1279,7 @@
                                     </el-row>
                                 </div>
                             </div>
+                            </el-card>
                         </el-card>
                     </el-card>
 
@@ -964,7 +1290,7 @@
                 </el-dialog>
             </div>
         </div>
-    </div>
+        </div>
     </template>
 </div>
 </body>

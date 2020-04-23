@@ -64,7 +64,7 @@
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
 
-        <div class="left-panel el-col el-col-15 el-col-offset-2" style="border-right: 1px solid rgb(173, 173, 173);">
+        <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title">
                     <h2 th:utext="${info.name}" style="display: inline-block;margin-right:15px;"></h2>
@@ -94,6 +94,47 @@
                         <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${info.viewCount}">&nbsp&nbsp341</div>
                     </div>
+                </div>
+            </div>
+
+            <div id="Contributor0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="margin-bottom: 3px;height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row">
+                        <div class="text-center">
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="Knowledge_Graph0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Map</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="height: 200px" id="map">
+
                 </div>
             </div>
 
@@ -159,7 +200,7 @@
                         <h4>How to cite</h4>
                     </div>
                 </div>
-                <div class="block_content flex">
+                <div class="block_content">
                     <div id="cite-text">
                         <span th:text="${user.name}+' ('+${year}+'). '+${info.name}+', Spatial Reference, OpenGMS, '">
                         Tom Marvolo Riddle.(2018).Integrated stand growth model data,
@@ -175,10 +216,56 @@
                 </div>
             </div>
 
+            <div id="Modifier0" class="detail_block minScreen"
+                 th:if="${history!=true&&info.contributors!=null&&#lists.size(info.contributors)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modifier :&nbsp</dt>
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                       target="_blank"></a></dd>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <dt>Modify times :&nbsp</dt>
+                                <dd><span th:text="${#lists.size(info.versions)+'&nbsp'}"></span><a
+                                        th:href="'/version/historyList/spatialReference/'+${info.oid}" target="_blank">View
+                                    History</a></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="QR0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                </div>
+            </div>
+
+            <div id="comments">
+                <template th:replace="fragments/comments :: comments"></template>
+            </div>
+
         </div>
 
-        <div class="right-panel el-col el-col-5">
-            <div id="Contributor" class="detail_block" style="margin-bottom: 55px">
+        <div class="right-panel el-col">
+            <div id="Contributor" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4 th:if="${history!=true}">Contributor</h4>
@@ -187,21 +274,21 @@
                 </div>
                 <div class="block_content">
                     <div class="el-row"
-                         style="height: 40px; display: flex; justify-content: center; align-items: center;">
-                        <div class="el-col el-col-4 el-col-offset-3">
+                         style="margin-bottom: 3px;height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col">
                             <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
-                        <div class="el-col el-col-20">
-                            <div class="pull-left" style="display: block;margin-left: 25px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
-                    <div class="el-row el-col-offset-3">
+                    <div class="el-row">
                         <div class="text-center">
-                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}"></h5>
-                            <h5 th:if="${history==true}" th:text="'modified at '+${date}"></h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
                 </div>
@@ -256,7 +343,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div id="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
 
                 </div>
             </div>

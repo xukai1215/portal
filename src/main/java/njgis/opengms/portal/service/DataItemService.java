@@ -514,7 +514,7 @@ public class DataItemService {
 
     }
 
-    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO) {
+    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO,String userOid) {
 
         int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
@@ -522,7 +522,13 @@ public class DataItemService {
 
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataItemResultDTO> dataItemPage = dataItemDao.findByNameLike(pageable, searchText);
+        Page<DataItemResultDTO> dataItemPage;
+        if(userOid==null){
+            dataItemPage = dataItemDao.findByNameLike(pageable, searchText);
+        }else{
+            dataItemPage = dataItemDao.findByNameLikeAndAuthor(pageable, searchText,userOid);
+        }
+
 
         List<DataItemResultDTO> dataItems = dataItemPage.getContent();
         JSONArray users = new JSONArray();

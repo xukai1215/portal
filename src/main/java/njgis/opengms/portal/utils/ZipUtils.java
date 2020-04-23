@@ -1,14 +1,16 @@
 package njgis.opengms.portal.utils;
 
+import njgis.opengms.portal.entity.support.ZipStreamEntity;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @ClassName ZipUtils
@@ -79,6 +81,66 @@ public class ZipUtils {
         }
 
         return fileNames;
+    }
+
+
+
+    /**
+     * 将多个流转成zip文件输出
+     * @param listStream
+     *            文件流实体类对象
+     * @param fileName zip包的名称
+     * @return
+     */
+    public static InputStream listStreamToZipStream(List<ZipStreamEntity> listStream, String fileName) {
+        boolean flag = false;
+        BufferedInputStream bis = null;
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        InputStream inputStream = null;
+
+        try {
+            File zip = File.createTempFile(fileName, ".zip");
+
+            zos = new ZipOutputStream(new FileOutputStream(zip));
+            byte[] bufs = new byte[1024 * 10];
+            for (ZipStreamEntity zipstream : listStream) {
+                String streamfilename = zipstream.getName();
+                // 创建ZIP实体，并添加进压缩包
+                ZipEntry zipEntry = new ZipEntry(streamfilename);
+                zos.putNextEntry(zipEntry);
+                // 读取待压缩的文件并写进压缩包里
+                bis = new BufferedInputStream(zipstream.getInputstream(), 1024 * 10);
+                int read = 0;
+                while ((read = bis.read(bufs, 0, 1024 * 10)) != -1) {
+                    zos.write(bufs, 0, read);
+                }
+            }
+            flag = true;
+            zos.flush();
+            zos.close();
+
+            inputStream = new FileInputStream(zip);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            // 关闭流
+            try {
+                if (null != bis)
+                    bis.close();
+                if (null != zos)
+                    zos.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+        return inputStream;
     }
 
 

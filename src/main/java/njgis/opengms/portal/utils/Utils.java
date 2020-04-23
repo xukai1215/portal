@@ -6,6 +6,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
@@ -14,20 +16,32 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Utils {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     static int count=0;
+
+//    static String[] visualTemplateIds={"4996e027-209b-4121-907b-1ed36a417d22","f73f31ff-2f23-4c7a-a57d-39d0c7a6c4e6","d3605b83-af8d-491c-91b3-a0e0bf3fe714"};
 
     public static class Method {
         public static String POST = "POST";
         public static String GET = "GET";
+    }
+
+    public static boolean isSameDay(Date day1,Date day2){
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String d1=simpleDateFormat.format(day1);
+        String d2=simpleDateFormat.format(day2);
+        return d1.equals(d2);
+
     }
 
     public static String checkLoginStatus(HttpSession httpSession){
@@ -161,7 +175,7 @@ public class Utils {
             if (file.isEmpty()) {
                 continue;
             } else {
-                File dest = new File(path + "/" + fileName);
+                File dest = new File(path + fileName);
                 if (!dest.getParentFile().exists()) { // 判断文件父目录是否存在
                     dest.getParentFile().mkdir();
                 }
@@ -291,12 +305,15 @@ public class Utils {
             //基本属性结束
 
             //相关数据开始
+
+
             Element RelatedDatasets = Behavior.element("RelatedDatasets");
             if (RelatedDatasets == null) {
                 RelatedDatasets = Behavior.element("DatasetDeclarations");
             }
             List<Element> DatasetItems = RelatedDatasets.elements();
             if (DatasetItems.size() > 0) {
+                String relatedDatasets = mdl.substring(mdl.indexOf("<RelatedDatasets>") + 17, mdl.indexOf("</RelatedDatasets>"));
                 JSONArray DatasetItemArray = new JSONArray();
                 for (Element DatasetDeclaration : DatasetItems) {
                     JSONArray dataset = new JSONArray();
@@ -312,11 +329,11 @@ public class Utils {
                         String external = "";
                         if (DatasetDeclaration.attribute("externalId") != null) {
                             external = DatasetDeclaration.attributeValue("externalId");
-                            root.put("externalId", external);
                         } else if (DatasetDeclaration.attribute("external") != null) {
                             external = DatasetDeclaration.attributeValue("external");
-                            root.put("externalId", external);
                         }
+                        root.put("externalId", external.toLowerCase());
+
                         root.put("parentId", "null");
                         dataset.add(root);
                     } else {
@@ -343,6 +360,7 @@ public class Utils {
                         }
                         List<Element> UdxNodes = udxNode.elements();
                         if (UdxNodes.size() > 0) {
+                            root.put("schema",Utils.getUdxSchema(relatedDatasets,root.getString("text")));
                             root.put("nodes", new JSONArray());
                             convertData(UdxNodes, root);
                         }
@@ -434,25 +452,43 @@ public class Utils {
                 node.put("text", udxNode.attributeValue("name"));
                 String dataType=udxNode.attributeValue("type");
                 String dataType_result="";
-                switch (dataType) {
-                    case "DTKT_INT | DTKT_LIST":
-                        dataType_result = "int_array";
-                        break;
-                    default:
-                        String[] strings=dataType.split("_");
-                        for(int i=0;i<strings.length;i++){
-                            if(!strings[i].equals("DTKT")){
-                                dataType_result+=strings[i];
-                                if(i!=strings.length-1){
-                                    dataType_result+="_";
-                                }
-                            }
+//                switch (dataType) {
+//                    case "DTKT_INT | DTKT_LIST":
+//                        dataType_result = "int_array";
+//                        break;
+//                    default:
+//                        String[] strings=dataType.split("_");
+//                        for(int i=0;i<strings.length;i++){
+//                            if(!strings[i].equals("DTKT")){
+//                                dataType_result+=strings[i];
+//                                if(i!=strings.length-1){
+//                                    dataType_result+="_";
+//                                }
+//                            }
+//                        }
+//                }
+                String[] dataTypes=dataType.split("\\|");
+                if(dataTypes.length>1){
+                    for(int j=0;j<dataTypes.length;j++){
+                        String[] strings=dataTypes[j].trim().split("_");
+                        if(strings[1].equals("LIST")){
+                            strings[1]="ARRAY";
                         }
+                        dataType_result+=strings[1];
+                        if(j!=dataTypes.length-1){
+                            dataType_result+="_";
+                        }
+                    }
                 }
+                else{
+                    String[] strings=dataType.split("_");
+                    dataType_result=strings[1];
+                }
+
                 node.put("dataType", dataType_result);
                 node.put("desc", udxNode.attributeValue("description"));
                 if (udxNode.attributeValue("type").equals("external")) {
-                    node.put("externalId", udxNode.attributeValue("externalId"));
+                    node.put("externalId", udxNode.attributeValue("externalId").toLowerCase());
                 }
                 List<Element> nodeChildren = udxNode.elements();
                 if (nodeChildren.size() > 0) {
@@ -465,6 +501,13 @@ public class Utils {
         } else {
             return;
         }
+    }
+
+    public static String getUdxSchema(String text,String name){
+        int findIndex=text.indexOf(name);
+        int startIndex=text.indexOf(">",findIndex+name.length())+1;
+        int endIndex=text.indexOf("</DatasetItem>",startIndex);
+        return text.substring(startIndex,endIndex);
     }
 
     public static boolean isChinese(String str) {

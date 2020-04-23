@@ -30,6 +30,7 @@ public interface TemplateDao extends MongoRepository<Template,String> {
 
     List<Item> findByAuthor(String author);
 
-
     Page<TemplateResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

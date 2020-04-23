@@ -44,7 +44,7 @@
             }
         },
         error: function (e) {
-            alert("加载用户失败！");
+            alert("Load user failed！");
         }
     });
 

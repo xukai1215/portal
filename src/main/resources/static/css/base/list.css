@@ -1,3 +1,69 @@
+.el-card__body {
+    padding: 15px 10px;
+}
+
+.mainContent{
+    width: 83.33333%;
+    margin-left: 8.33333%;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.categoryList{
+    margin-right:20px;
+}
+
+.screen_view{
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.mobile_view{
+    display:none;
+}
+
+@media only screen and (max-width: 1400px){
+    .mainContent {
+        width: 91.66667%;
+        margin-left: 4.16667%;
+    }
+}
+
+@media only screen and (max-width: 950px){
+
+    .mainContent {
+        margin-top: 20px;
+    }
+
+    .minScreen_maxWidth {
+        width: 100%;
+
+    }
+
+    .minScreen_curClass{
+        display: block;
+    }
+
+    .categoryList{
+        margin-right:0;
+    }
+
+    .detail_option{
+        margin-top: 0;
+    }
+}
+
+@media only screen and (max-width: 480px){
+    .screen_view{
+        display:none;
+    }
+
+    .mobile_view{
+        display: inline-block;
+        margin-left: 20px;
+    }
+}
+
 .detail_title a{
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     position: relative;

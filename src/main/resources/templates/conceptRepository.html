@@ -21,30 +21,25 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" >
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" >
     <style>
-        .el-card__body {
-            padding: 15px 10px;
-        }
-        [v-cloak] {
-            display: none;
-        }
+
     </style>
 </head>
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
-    <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="el-col el-col-20 el-col-offset-2">
+    <div class="clearfix" style="margin-bottom: 40px;">
+        <div class="mainContent">
 
             <div class="el-row">
                 <h2 class="main-title">Concept & Semantic Repository</h2>
                 <h4 class="sub-title">The repository of concept and semantic.</h4>
-                <button class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;" @click="contribute()">+ Contribute</button>
+                <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 <hr>
             </div>
 
-            <div class="el-col el-col-6" style="margin-top:29px;">
-                <el-card class="box-card" style="margin-right:20px;" >
+            <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
+                <el-card class="box-card categoryList">
                     <div slot="header" class="clearfix text-center">
                         <span style="font-size: 20px;color:#444">Classifications</span>
                     </div>
@@ -75,7 +70,7 @@
                 </el-card>
             </div>
 
-            <div class="el-col el-col-18">
+            <div class="el-col el-col-18 minScreen_maxWidth">
                 <div class="searcherPanel">
                     <div class="searcherInputPanel" @keydown.enter="search()">
                         <input id="searchBox" type="text" placeholder="Please enter the name..." v-model="searchText">
@@ -91,7 +86,7 @@
                     </span>
                 </div>
 
-                <div role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong>Current Classification: {{currentClass}} </strong>
+                <div role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
                     <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
                     <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
                 </div>
@@ -122,11 +117,12 @@
                                     <!--<a :href="'/user/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block;margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>-->
                                     <img src="/static/img/icon/default.png" class="round_icon" style="margin-top: -5px; width: 30px; height: 30px; display: inline-block;">
                                     <a href="/user/42" target="_blank" style="display: inline-block; margin-left: 5px;"><h4>NNU_Group</h4></a>
-                                    <h4 style="display: inline-block;margin-left: 20px">contributed at {{concept.createTime.substring(0,10)}} </h4>
+                                    <h4 class="screen_view">contributed at {{concept.createTime.substring(0,10)}} </h4>
+                                    <h4 class="mobile_view">{{concept.createTime.substring(0,10)}} </h4>
                                 </div>
                                 <div class="detail_option">
-                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{concept.viewCount}}
-                                    <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                    <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{concept.viewCount}}
+                                    <!--<a class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
                                 </div>
                                 <br>
                             </div>

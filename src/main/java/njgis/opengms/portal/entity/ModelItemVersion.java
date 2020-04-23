@@ -32,6 +32,8 @@ public class ModelItemVersion {
     List<AuthorInfo> authorship;//
 
     Date modifyTime;
+    Date acceptTime;
+    Date rejectTime;
 
 
 }

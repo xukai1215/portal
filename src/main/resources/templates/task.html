@@ -66,7 +66,7 @@
 
     </style>
 </head>
-<body>
+<body >
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
     <div class="taskMain">
@@ -445,6 +445,11 @@
                                                                     <i class="fa fa-download"></i>
                                                                 </el-button>
 
+                                                                <el-button plain round type="primary"
+                                                                           v-if="modelInEvent.visual"
+                                                                           @click="visualize(modelInEvent)">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </el-button>
                                                             </div>
                                                         </el-col>
                                                     </div>
@@ -504,9 +509,16 @@
                                                     :key="outEventIndex" class="_item">
                                                 <el-row>
                                                     <el-col :span="11" class="_event-desc">
-                                                      <span class="event-name" :title="modelOutEvent.eventName">
-                                                        {{modelOutEvent.eventName}}
-                                                    </span>
+                                                        <span class="event-name" :title="modelOutEvent.eventName">
+                                                            {{modelOutEvent.eventName}}
+                                                        </span>
+                                                        <span v-if="modelOutEvent.data[0].externalId!=undefined">
+
+                                                            <el-tag type="info">
+                                                                Data Type:
+                                                                <a style="text-decoration: underline" :href="'/repository/template/'+modelOutEvent.data[0].externalId.toLowerCase()" target="_blank">{{modelOutEvent.data[0].text}}</a>
+                                                            </el-tag>
+                                                        </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1">
                                                         <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
@@ -519,7 +531,15 @@
                                                                        @click="download(modelOutEvent)">
                                                                 <i class="fa fa-download"></i>
                                                             </el-button>
+
+                                                            <el-button plain round type="primary"
+                                                                       v-if="modelOutEvent.visual"
+                                                                       @click="visualize(modelOutEvent)">
+                                                                <i class="fa fa-eye"></i>
+                                                            </el-button>
                                                         </div>
+
+
                                                     </el-col>
                                                 </el-row>
                                                 <el-row>
@@ -563,7 +583,7 @@
                                         <el-table-column
 
                                                 label="Event Name"
-                                                width="200">
+                                                >
                                             <template slot-scope="scope">
 
                                                 <span :title="scope.row.eventName">
@@ -578,7 +598,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Data Type"
-                                                width="200">
+                                                >
                                             <template slot-scope="scope">
                                                 <el-tag type="info" v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
                                                     <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.data[0].text}}</a>
@@ -590,7 +610,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Value"
-                                                width="200">
+                                                width="180">
                                             <template slot-scope="scope">
                                                 <el-input class="model-input"
                                                           v-if="scope.row.children==undefined&&scope.row.child!=true"
@@ -634,6 +654,12 @@
                                                                v-if="scope.row.url!=''&&scope.row.url!=null"
                                                                @click="download(scope.row)">
                                                         <i class="fa fa-download"></i>
+                                                    </el-button>
+
+                                                    <el-button plain round type="primary"
+                                                               v-if="scope.row.visual"
+                                                               @click="visualize(scope.row)">
+                                                        <i class="fa fa-eye"></i>
                                                     </el-button>
                                                 </div>
                                             </template>
@@ -956,8 +982,9 @@
                             </div>
 
                             <span slot="footer" class="dialog-footer">
-                                <el-button type="primary" @click="selectDataFromPersonal">Confirm</el-button>
                                 <el-button @click="showDataChose = false">Cancel</el-button>
+                                <el-button type="primary" @click="selectDataFromPersonal">Confirm</el-button>
+
                             </span>
                         </el-dialog>
                         <!--                                 dialog end                       -->
@@ -1085,42 +1112,15 @@
                             </div>
                         </el-dialog>
 
-                        <el-dialog top="40px" :width="paramType=='internal'?'70%':'90%'" title="Parameter Detail" :visible.sync="paramDialogVisible">
-                            <el-table v-if="paramType=='internal'"
-                                    :data="paramTable"
-                                    border
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="text"
-                                        label="Parameter"
-                                        >
-                                </el-table-column>
-                                <el-table-column
-                                        prop="desc"
-                                        label="Description"
-                                        >
-                                </el-table-column>
-                                <el-table-column
-                                        prop="dataType"
-                                        label="Type"
-                                        >
-                                </el-table-column>
-                                <el-table-column
+                        <!-- 数据可视化窗口-->
+                        <el-dialog
+                                title="Visualization"
+                                :visible.sync="visualVisible"
+                                width="70%"
+                                style="text-align: center"
+                                >
+                            <img :src="visualSrc"/>
 
-                                        label="Value">
-                                    <template slot-scope="scope">
-                                        <el-input class="model-input"
-                                                  v-model="scope.row.value"
-                                        >
-                                        </el-input>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                            <iframe v-if="paramType=='external'" :src="externalUrl" style="width:100%;min-height: 700px;"></iframe>
-                            <span v-if="paramType=='internal'" slot="footer" class="dialog-footer">
-                                <el-button @click="paramDialogVisible=false">Cancel</el-button>
-                                <el-button type="primary" @click="generateParamFile()">OK</el-button>
-                            </span>
                         </el-dialog>
 
                         <el-dialog top="40px" width="70%" title="Select from Data Item" :visible.sync="dataItemVisible">

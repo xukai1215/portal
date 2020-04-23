@@ -159,10 +159,6 @@ var vue = new Vue({
         fileSearchResult: [],
 
         loadjson: '',
-        paramDialogVisible: false,
-        paramType: "",
-        externalUrl: "",
-        currentEventId: "",
 
         loadDataIndex: 1,
 
@@ -173,12 +169,16 @@ var vue = new Vue({
         uploadInPath: "",
         folderTree: [],
 
+        //uploadForm
         uploadName: "",
         selectLoading: false,
         options: [],
         selectValue: "",
         uploadFiles: [],
         uploadLoading: false,
+
+        visualVisible:false,
+        visualSrc:"",
     },
     computed: {},
     watch: {
@@ -201,30 +201,48 @@ var vue = new Vue({
             this.uploadDialogVisible = false;
         },
         submitUpload() {
+            if(this.uploadName==""){
+                this.$message.error('Please enter the dataset name!');
+                return;
+            }
+            if(this.selectValue==""){
+                this.$message.error('Please select a data template!');
+                return;
+            }
+            if (this.selectedPath.length == 0) {
+                this.$message.error('Please select a folder first!');
+                return;
+            }
+            if(this.uploadFiles.length==0){
+                this.$message.error('Please select files!');
+                return;
+            }
+
+            let formData = new FormData();
+
             this.uploadLoading=true;
-            let files=[];
+
             let configContent = "<UDXZip><Name>";
             for(let index in this.uploadFiles){
                 configContent+="<add value='"+this.uploadFiles[index].name+"' />";
-                files.push(this.uploadFiles[index].raw);
+                formData.append("ogmsdata", this.uploadFiles[index].raw);
             }
             configContent += "</Name>";
-            if(this.selectValue!=0){
-                configContent+="<DataTemplateId>";
+            if(this.selectValue!=null&&this.selectValue!="none"){
+                configContent+="<DataTemplate type='id'>";
                 configContent+=this.selectValue;
-                configContent+="</DataTemplateId>"
+                configContent+="</DataTemplate>"
+            }
+            else{
+                configContent+="<DataTemplate type='none'>";
+                configContent+="</DataTemplate>"
             }
             configContent+="</UDXZip>";
-            console.log(configContent)
-            let file = new File([configContent], 'config.udxcfg', {
+            // console.log(configContent)
+            let configFile = new File([configContent], 'config.udxcfg', {
                 type: 'text/plain',
             });
-            files.push(file);
-
-            let formData = new FormData();
-            for(let index in files){
-                formData.append("ogmsdata", files[index]);
-            }
+            formData.append("ogmsdata", configFile);
             formData.append("name", this.uploadName);
             formData.append("userId", this.uid);
             formData.append("serverNode", "china");
@@ -234,7 +252,7 @@ var vue = new Vue({
                 let ipAndPort = result.data;
 
                 $.ajax({
-                    url: 'http://111.229.14.128:8899/source/tep',
+                    url: 'http://'+ipAndPort+'/data',
                     type: 'post',
                     data: formData,
                     cache: false,
@@ -242,10 +260,40 @@ var vue = new Vue({
                     contentType: false,
                     async: true
                 }).done((res)=> {
-                    this.uploadLoading=false;
+                    if(res.code==0){
+                        let data=res.data;
+                        if(this.uploadFiles.length==1){
+                            data.suffix=this.uploadFiles[0].name.split(".")[1];
+                        }
+                        else{
+                            data.suffix="zip";
+                        }
+                        data.label=data.file_name;
+                        data.file_name+="."+data.suffix;
+                        data.upload=true;
+                        data.templateId=this.selectValue;
+                        this.addDataToPortalBack(data,this.selectValue);
+
+                        //reset
+                        this.uploadName="";
+                        this.selectValue="";
+                        this.selectedPath=[];
+                        this.uploadFiles=[];
+                        this.remoteMethod("");
+                        this.$refs.upload.clearFiles();
+
+
+                    }else{
+                        this.$message.error('Upload failed!');
+                    }
+
+
                     console.log(res);
                 }).fail((res)=> {
+
                     this.uploadLoading=false;
+                    this.uploadDialogVisible=false;
+                    this.$message.error('Upload failed!');
                 });
             });
 
@@ -268,11 +316,10 @@ var vue = new Vue({
                 success: (result) => {
 
                     this.options = [];
-                    this.options.push({"name": "None", "oid": "0"})
+                    this.options.push({"name": "None", "oid": "none"})
                     for (let index in result.data.list) {
                         this.options.push(result.data.list[index]);
                     }
-
 
                     this.selectLoading = false;
                 }
@@ -285,7 +332,7 @@ var vue = new Vue({
         },
         selectFile() {
             if (this.selectedPath.length == 0) {
-                alert('Please select a folder first!')
+                this.$message.error('Please select a folder first!');
                 return;
             }
             $("#uploadFile").click()
@@ -342,7 +389,7 @@ var vue = new Vue({
 
         },
 
-        addDataToPortalBack(item) {//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
+        addDataToPortalBack(item,templateId) {//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
 
             var addItem = []
             if (item instanceof Array) {
@@ -351,11 +398,11 @@ var vue = new Vue({
                 //     addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
             }
             else {
-                let obj = {
-                    file_name: item.label + '.' + item.suffix,
-                    source_store_id: item.url.split('=')[1]
-                }
-                addItem[0] = obj
+                // let obj = {
+                //     file_name: item.label + '.' + item.suffix,
+                //     source_store_id: item.url.split('=')[1]
+                // }
+                addItem[0] = item
             }
             let paths = []
             if (this.uploadInPath == 1) {
@@ -404,6 +451,11 @@ var vue = new Vue({
                                 for (let i = 0; i < item.length; i++) {
                                     console.log(item[i].file_name)
                                     let dataName7Suffix = item[i].file_name.split('.')
+                                    let flag=false;
+                                    for(let id in this.info.visualIds){
+                                        if(id==templateId) flag=true;
+                                    }
+
                                     const newChild = {
                                         id: idList[i].id,
                                         label: dataName7Suffix[0],
@@ -411,6 +463,7 @@ var vue = new Vue({
                                         children: [],
                                         package: false,
                                         upload: true,
+                                        visual: flag,
                                         father: paths[0],
                                         url: idList[i].url,
                                     };
@@ -436,6 +489,18 @@ var vue = new Vue({
 
                         this.addFolderIndex = false;
                         //this.selectedPath=[];
+
+                        //上传成功关闭上传窗口
+                        this.selectedPath=[];
+                        this.uploadName="";
+                        this.selectValue="";
+                        this.uploadFiles=[];
+                        this.uploadLoading=false;
+                        this.uploadDialogVisible=false;
+                        this.$message({
+                            message: 'Upload successfully!',
+                            type: 'success'
+                        });
 
                     }
 
@@ -580,11 +645,11 @@ var vue = new Vue({
                 this.selectedPath.unshift(node);
                 node = node.parent;
             }
-            let allFder = {
+            let allFolder = {
                 key: '0',
                 label: 'All Folder'
             }
-            this.selectedPath.unshift(allFder)
+            this.selectedPath.unshift(allFolder)
             // console.log(this.selectedPath)
             this.selectPathDialog = false;
             this.selectFolderVisible = false;
@@ -596,95 +661,90 @@ var vue = new Vue({
                 return [1, 3];
             }
         },
-        editParam(row) {
-            this.currentEventId = row.eventId;
-            let data = row.data[0];
-            this.paramType = data.dataType;
-            if (this.paramType == "internal") {
-                this.paramTable = data.nodes;
-            }
-            else {
-                this.externalUrl = "/repository/template/" + data.externalId.toLowerCase();
-            }
-            this.paramDialogVisible = true;
-        },
+
 
         uploadToDataContainer(file, event) {
+            let configContent = "<UDXZip><Name>";
+            configContent+="<add value='"+file.name+"' />";
+            configContent += "</Name>";
+            let data=event.data[0];
+            if(data.dataType=="external"){
+                configContent+="<DataTemplate type='id'>";
+                configContent+=data.externalId;
+                configContent+="</DataTemplate>"
+            }else if(data.dataType=="internal"&&data.nodes!=undefined){
+                configContent+="<DataTemplate type='schema'>";
+                configContent+=data.schema.trim();
+                configContent+="</DataTemplate>"
+            }else{
+                configContent+="<DataTemplate type='none'>";
+                configContent+="</DataTemplate>"
+            }
+            configContent+="</UDXZip>";
+            let configFile = new File([configContent], 'config.udxcfg', {
+                type: 'text/plain',
+            });
+
 
             $.get("/dataManager/dataContainerIpAndPort", (result) => {
                 let ipAndPort = result.data;
                 let formData = new FormData();
-                formData.append("file", file);
+                formData.append("ogmsdata", file);
+                formData.append("ogmsdata", configFile);
+                formData.append("name", event.eventName);
+                formData.append("userId", this.uid);
+                formData.append("serverNode", "china");
+                formData.append("origination", "portal");
                 $.ajax({
                     type: "post",
-                    url: "http://" + ipAndPort + "/file/upload/store_dataResource_files",
+                    url: "http://" + ipAndPort + "/data",
                     data: formData,
                     async: true,
                     processData: false,
                     contentType: false,
-                    success: (result) => {
-                        if (result.code == 0) {
-                            let data = result.data;
-                            let dataName = data.file_name.match(/.+(?=\.)/)[0];
-                            let dataSuffix = data.file_name.match(/(?=\.).+/)[0].substring(1);
-                            let dataId = data.source_store_id;
-                            let dataUrl = "http://" + ipAndPort + "/dataResource";
-                            let form = {
-                                "author": "njgis",
-                                "fileName": dataName,
-                                "sourceStoreId": dataId,
-                                "suffix": dataSuffix,
-                                "type": "OTHER",
-                                "fromWhere": "PORTAL"
-                            };
+                    success: (res) => {
+                        if (res.code == 0) {
+                            let data=res.data;
+                            // if(this.uploadFiles.length==1){
+                            //     data.suffix=this.uploadFiles[0].name.split(".")[1];
+                            // }
+                            // else{
+                            //
+                            //     data.suffix="zip";
+                            // }
+                            data.suffix="xml";
+                            data.label=data.file_name;
+                            data.file_name+="."+data.suffix;
 
-                            $.ajax({
-                                type: "post",
-                                url: dataUrl,
-                                data: JSON.stringify(form),
+                            if (event == null) {
+                                this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/data?uid=" + data.source_store_id);
+                                this.$set(this.eventChoosing, 'tag', data.label)
+                                this.$set(this.eventChoosing, 'suffix', data.suffix)
 
-                                async: true,
+                                let uploadEle = $("#upload_" + this.eventChoosing.eventId);
+                                uploadEle.removeAttr("disabled");
+                                uploadEle.children().children().removeClass("el-icon-loading");
+                                uploadEle.children().children().addClass("fa");
+                                uploadEle.children().children().addClass("fa-cloud-upload");
+                                $("#eventInp_" + this.eventChoosing.eventId).val(data.label + data.suffix);
+                                $("#download_" + this.eventChoosing.eventId).css("display", "block");
+                            }
+                            else {
 
-                                contentType: 'application/json',
-                                success: (res) => {
-                                    this.$delete(event, "uploading");
-                                    if (res.code == 0) {
-                                        if (event == null) {
-                                            this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/dataResource/getResource?sourceStoreId=" + res.data.sourceStoreId);
-                                            this.$set(this.eventChoosing, 'tag', res.data.fileName)
-                                            this.$set(this.eventChoosing, 'suffix', res.data.suffix)
+                                this.$set(event, 'url', "http://" + ipAndPort + "/data?uid=" + data.source_store_id);
+                                this.$set(event, 'tag', data.label)
+                                this.$set(event, 'suffix', data.suffix)
 
-                                            let uploadEle = $("#upload_" + this.eventChoosing.eventId);
-                                            uploadEle.removeAttr("disabled");
-                                            uploadEle.children().children().removeClass("el-icon-loading");
-                                            uploadEle.children().children().addClass("fa");
-                                            uploadEle.children().children().addClass("fa-cloud-upload");
-                                            $("#eventInp_" + this.eventChoosing.eventId).val(res.data.fileName + res.data.suffix);
-                                            $("#download_" + this.eventChoosing.eventId).css("display", "block");
-                                        }
-                                        else {
+                                let uploadEle = $("#upload_" + event.eventId);
+                                uploadEle.removeAttr("disabled");
+                                uploadEle.children().children().removeClass("el-icon-loading");
+                                uploadEle.children().children().addClass("fa");
+                                uploadEle.children().children().addClass("fa-cloud-upload");
+                                $("#eventInp_" + event.eventId).val(data.label + data.suffix);
+                                $("#download_" + event.eventId).css("display", "block");
+                            }
 
-                                            this.$set(event, 'url', "http://" + ipAndPort + "/dataResource/getResource?sourceStoreId=" + res.data.sourceStoreId);
-                                            this.$set(event, 'tag', res.data.fileName)
-                                            this.$set(event, 'suffix', res.data.suffix)
-
-                                            let uploadEle = $("#upload_" + event.eventId);
-                                            uploadEle.removeAttr("disabled");
-                                            uploadEle.children().children().removeClass("el-icon-loading");
-                                            uploadEle.children().children().addClass("fa");
-                                            uploadEle.children().children().addClass("fa-cloud-upload");
-                                            $("#eventInp_" + event.eventId).val(res.data.fileName + res.data.suffix);
-                                            $("#download_" + event.eventId).css("display", "block");
-                                        }
-
-                                        $("#uploadInputData").val("");
-
-
-                                    }
-                                }
-                            })
-
-
+                            $("#uploadInputData").val("");
                         }
                     }
                 })
@@ -1170,7 +1230,7 @@ var vue = new Vue({
                 body: JSON.stringify(body)
             })).json();
 
-            if (code == -1 || code == null || code == undefined) {
+            if (code != 0 || code == null || code == undefined) {
                 loading.close();
                 this.$message.error(msg);
                 return;
@@ -1190,6 +1250,7 @@ var vue = new Vue({
                 this.$set(event, "tag", el.tag);
                 this.$set(event, "suffix", el.suffix);
                 this.$set(event, "url", el.url);
+                this.$set(event, "visual", el.visual);
                 if (el.children.length > 0) {
                     if (el.children.length == 1) {
                         event.children[0].value = el.children[0].value;
@@ -1215,6 +1276,11 @@ var vue = new Vue({
 
         goPersonCenter(oid) {
             window.open("/user/" + oid);
+        },
+
+        visualize(event){
+            this.visualSrc = event.url.replace("data","visual");
+            this.visualVisible=true;
         },
 
         download(event) {
@@ -1257,12 +1323,12 @@ var vue = new Vue({
 
         async checkPersonData(event) {
             this.eventChoosing = event;//此处把页面上的event与eventChoosing绑定
-            if (this.first == true) {
-                let d = await this.getTableData(0);
-                this.dataFromDataContainer = d.content;
-                this.total = d.total;
-                this.first = false;
-            }
+            // if (this.first == true) {
+            //     let d = await this.getTableData(0);
+            //     this.dataFromDataContainer = d.content;
+            //     this.total = d.total;
+            //     this.first = false;
+            // }
             this.showDataChose = true;
             this.getUserTaskInfo()
             this.getFilePackage()
@@ -1277,6 +1343,7 @@ var vue = new Vue({
                 this.eventChoosing.tag = this.downloadDataSetName[0].name;
                 this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
                 this.eventChoosing.url = this.downloadDataSetName[0].url;
+                this.eventChoosing.visual = this.downloadDataSetName[0].visual;
 
                 $("#eventInp_" + this.eventChoosing.eventId).val(this.eventChoosing.tag + this.eventChoosing.suffix);
                 $("#download_" + this.eventChoosing.eventId).css("display", "block");
@@ -1576,6 +1643,8 @@ var vue = new Vue({
                                 let tag = el.tag;
                                 let url = el.url;
                                 let suffix = el.suffix;
+                                let templateId = el.externalId;
+                                if(templateId!=null) templateId=templateId.toLowerCase();
                                 let children = el.children;
                                 if (el.eventType == "response") {
                                     if (el.optional) {
@@ -1588,6 +1657,7 @@ var vue = new Vue({
                                                 url,
                                                 tag,
                                                 suffix,
+                                                templateId,
                                                 children
                                             });
                                         }
@@ -1602,6 +1672,7 @@ var vue = new Vue({
                                             url,
                                             tag,
                                             suffix,
+                                            templateId,
                                             children
                                         });
                                     }
@@ -1625,7 +1696,8 @@ var vue = new Vue({
 
                             if (code == -1) {
                                 this.$message.error(msg);
-                                window.open("/user/login");
+                                window.location.href="/user/login";
+                                return;
                             }
 
                             if (code == -2) {
@@ -1633,56 +1705,58 @@ var vue = new Vue({
                                 loading.close();
                                 return;
                             }
+
+                            let interval = setInterval(async () => {
+                                let {code, data, msg} = await (await fetch("/task/getResult", {
+                                    method: "post",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        ip: this.info.taskInfo.ip,
+                                        port: this.info.taskInfo.port,
+                                        tid: tid
+                                    })
+                                })).json();
+                                if (code === -1) {
+                                    this.$message.error(msg);
+                                    clearInterval(interval);
+                                    loading.close();
+                                }
+                                if (data.status === -1) {
+                                    this.$message.error("Some error occured when this model is running!");
+                                    clearInterval(interval);
+                                    loading.close();
+                                } else if (data.status === 2) {
+                                    this.$message.success("The model has run successfully!");
+                                    clearInterval(interval);
+                                    let outputs = data.outputdata;
+
+                                    outputs.forEach(el => {
+                                        let statename = el.statename;
+                                        let eventName = el.event;
+                                        let state = this.info.modelInfo.states.find(state => {
+                                            return state.name == statename;
+                                        });
+                                        if (state == undefined) return;
+                                        let event = state.event.find(event => {
+                                            return event.eventName == eventName;
+                                        });
+                                        if (event == undefined) return;
+                                        this.$set(event, "tag", el.tag);
+                                        this.$set(event, "suffix", el.suffix);
+                                        this.$set(event, "url", el.url);
+                                    });
+
+                                    loading.close();
+                                } else {
+                                }
+                            }, 5000);
                         }
                     })
 
 
-                    let interval = setInterval(async () => {
-                        let {code, data, msg} = await (await fetch("/task/getResult", {
-                            method: "post",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                ip: this.info.taskInfo.ip,
-                                port: this.info.taskInfo.port,
-                                tid: tid
-                            })
-                        })).json();
-                        if (code === -1) {
-                            this.$message.error(msg);
-                            clearInterval(interval);
-                            loading.close();
-                        }
-                        if (data.status === -1) {
-                            this.$message.error("Some error occured when this model is running!");
-                            clearInterval(interval);
-                            loading.close();
-                        } else if (data.status === 2) {
-                            this.$message.success("The model has run successfully!");
-                            clearInterval(interval);
-                            let outputs = data.outputdata;
 
-                            outputs.forEach(el => {
-                                let statename = el.statename;
-                                let eventName = el.event;
-                                let state = this.info.modelInfo.states.find(state => {
-                                    return state.name == statename;
-                                });
-                                if (state == undefined) return;
-                                let event = state.event.find(event => {
-                                    return event.eventName == eventName;
-                                });
-                                if (event == undefined) return;
-                                this.$set(event, "tag", el.tag);
-                                this.$set(event, "suffix", el.suffix);
-                                this.$set(event, "url", el.url);
-                            });
-
-                            loading.close();
-                        } else {
-                        }
-                    }, 5000);
                 }
             }, 2000)
         },
@@ -2092,7 +2166,8 @@ var vue = new Vue({
                     name: eval.label,
                     suffix: eval.suffix,
                     package: eval.package,
-                    url: eval.url
+                    url: eval.url,
+                    visual: eval.visual
                 }
                 this.downloadDataSetName.push(obj)
             }

@@ -471,7 +471,7 @@ var userModels = Vue.extend(
                                 if (json.data == 1) {
                                     alert("delete successfully!")
                                 } else {
-                                    alert("0 failed!")
+                                    alert("delete failed!")
                                 }
                             }
                             if (this.searchText.trim() != "") {
