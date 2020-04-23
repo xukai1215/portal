@@ -448,8 +448,8 @@ var userCommunities = Vue.extend(
                     'dataTemplate': 'templates',
                     'unit&metric': 'units',
                 }
-                let url=urls[this.itemIndex];
-                let name=names[this.itemIndex];
+                let url=urls[a];
+                let name=names[a];
 
                 $.ajax({
                     type: "Get",
@@ -503,17 +503,18 @@ var userCommunities = Vue.extend(
             },
 
             deleteItem(index,oid) {
+                let a=this.$route.params.communityKind
                 if (confirm("Are you sure to delete this model?")) {
                     var urls = {
-                        1:"/repository/deleteConcept",
-                        2:"/repository/deleteSpatialReference",
-                        3:"/repository/deleteTemplate",
-                        4:"/repository/deleteUnit",
+                        'concept&semantic':"/repository/deleteConcept",
+                        'spatialReference':"/repository/deleteSpatialReference",
+                        'dataTemplate':    "/repository/deleteTemplate",
+                        'unit&metric':     "/repository/deleteUnit",
                     };
 
                     $.ajax({
                         type: "POST",
-                        url: urls[index],
+                        url: urls[a],
                         data: {
                             oid: oid
                         },

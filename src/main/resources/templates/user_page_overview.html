@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>User Page | OpenGMS</title>
-
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
@@ -68,19 +69,19 @@
 
                         <div id="menuBack" class="menuContainer" >
                             <div class="menuItem" :class="{menuClicked:bodyIndex==1}">
-                                <button class="noneBorderButton"  @click="menu_Click(1)" style="" >Overview</button>
+                                <button class="noneBorderButton menuButton"  @click="menu_Click(1)" style="" >Overview</button>
                                 <div class="menuBorder"></div>
                             </div>
                             <div class="menuItem" :class="{menuClicked:bodyIndex==4}">
-                                <button class="noneBorderButton"  @click="menu_Click(4)" style="padding: 12px 8px 6px 8px;">Personal Info</button>
+                                <button class="noneBorderButton menuButton"  @click="menu_Click(4)" >Personal Info</button>
                                 <div class="menuBorder"></div>
                             </div>
                             <div class="menuItem" :class="{menuClicked:bodyIndex==2}">
-                                <button class="noneBorderButton"  @click="menu_Click_Resource(2)" style="">Resources</button>
+                                <button class="noneBorderButton menuButton"  @click="menu_Click_Resource(2)" style="">Resources</button>
                                 <div class="menuBorder"></div>
                             </div>
                             <div class="menuItem" :class="{menuClicked:bodyIndex==3}">
-                                <button class="noneBorderButton"  @click="menu_Click(3)" style="">Research</button>
+                                <button class="noneBorderButton menuButton"  @click="menu_Click(3)" style="">Research</button>
                                 <div class="menuBorder"></div>
                             </div>
                         </div>
@@ -259,7 +260,6 @@
                 </div>
             </div>
         </div>
-
         <!--        <div th:replace="fragments/user_page_head :: userPageComm"></div>-->
         <!--x-->
         <div id="downerContainer" class="fullContainer"  >
@@ -411,7 +411,7 @@
                             <button id="viewMoreResources" class="viewMoreButton" @click="menu_Click(2)" style="">View More</button>
                         </div>
                     </div>
-                    <div class="contentContainer backInherit">
+                    <div class="contentContainer backInherit" style="margin-top: 5px">
                         <div id="modelItems" class="contentColContainer" >
                             <div class="subTitle" style="">
                                 <div><h4 style="margin-top: 10px;margin-left: 10px">Models</h4></div>
@@ -419,8 +419,8 @@
                             <div id="modelStatsTable" class="contentColContainer noMargin noBorder7Shadow">
                                 <div id="modelItem" class="itemCardRow" @click="modelItemClick()" style="width: 97%;margin-top: 7px;cursor: pointer">
                                     <div class="leftCard">
-                                        <div style="margin-left: 10px;margin-top: 11px">
-                                            <img src="../static/img/model/model.png"></div>
+                                        <div style="margin-left: 10px;margin-top: 14px">
+                                            <img class="modelIcon" src="../static/img/model/model.png"></div>
                                     </div>
                                     <div class="rightCard">
                                         <div class="titleCard"><h3 style="font-size: 23px">Model Item</h3></div>
@@ -441,8 +441,8 @@
                                 </div>
                                 <div id="conceptualModel" class="itemCardRow" @click="conceptualModelClick()" style="width: 97%;margin-top:7px;cursor: pointer">
                                     <div class="leftCard">
-                                        <div style="margin-left: 10px;margin-top: 11px">
-                                            <img src="../static/img/model/model.png"></div>
+                                        <div style="margin-left: 10px;margin-top: 14px">
+                                            <img class="modelIcon" src="../static/img/model/conceptual.png"></div>
                                     </div>
                                     <div class="rightCard">
                                         <div class="titleCard"><h3 style="font-size: 23px">Conceptual Models</h3></div>
@@ -464,8 +464,8 @@
                                 </div>
                                 <div id="logicalModel" class="itemCardRow" @click="logicalModelClick" style="width: 97%;margin-top: 7px;cursor: pointer">
                                     <div class="leftCard">
-                                        <div style="margin-left: 10px;margin-top: 11px">
-                                            <img src="../static/img/model/model.png"></div>
+                                        <div style="margin-left: 10px;margin-top: 14px">
+                                            <img class="modelIcon" src="../static/img/model/logical.png"></div>
                                     </div>
                                     <div class="rightCard">
                                         <div class="titleCard"><h3 style="font-size: 21px">Logical Models</h3></div>
@@ -486,8 +486,8 @@
                                 </div>
                                 <div id="computableModel" class="itemCardRow" @click="computableModelClick()" style="width: 97%;margin: 7px 0 10px;cursor: pointer">
                                     <div class="leftCard">
-                                        <div style="margin-left: 10px;margin-top: 11px">
-                                            <img src="../static/img/model/model.png"></div>
+                                        <div style="margin-left: 10px;margin-top: 14px">
+                                            <img class="modelIcon" src="../static/img/model/calcModel.png"></div>
                                     </div>
                                     <div class="rightCard">
                                         <div class="titleCard"><h3 style="font-size: 23px">Computable Models</h3></div>
@@ -508,7 +508,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="contentColContainer backInherit noMargin noBorder7Shadow" style="width: 50%">
+                        <div id="communities" class="contentColContainer backInherit noMargin noBorder7Shadow" style="width: 49.5%;max-width: 588px;min-width: 325px;">
                             <div id="dataItemContainer" class="contentColContainer">
                                 <div class="subTitle" style="">
                                     <div><h4 style="margin-top: 10px;margin-left: 10px">Data</h4></div>
@@ -516,8 +516,8 @@
                                 <div class="contentColContainer noMargin noBorder7Shadow" style="width: 100%">
                                     <div id="dataItem" class="itemCardRow" @click="datalItemClick()" style="width: 97%;margin: 7px 0 5px;cursor: pointer" >
                                         <div class="leftCard">
-                                            <div style="margin-left: 10px;margin-top: 11px">
-                                                <img src="../static/img/model/model.png"></div>
+                                            <div style="margin-left: 10px;margin-top: 15px">
+                                                <i class="fa fa-database" style="font-size: 78px;color: #00c0ff;"></i></div>
                                         </div>
                                         <div class="rightCard">
                                             <div class="titleCard"><h3 style="font-size: 23px">Data Item</h3></div>
@@ -775,7 +775,7 @@
 
             <!--  info-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==4}" >
-                <div class="leftContentContainer">
+                <div class="leftPersonInfo">
                     <div id="personalIntro" class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px">Personal Introduction</h4></div>
@@ -1087,7 +1087,7 @@
                         <!-- /.modal-dialog -->
                     </div>
                 </div>
-                <div class="rigntContentContainer">
+                <div class="rigntPersonInfo">
                     <!--                    <div class="contentColContainer">-->
                     <div class="contentColContainer" style="flex: 1;width: 99%">
                         <div class="subTitle">
@@ -1273,7 +1273,7 @@
                             </button>
                         </div>
                         <div id="contactTable" class="contentContainer" >
-                            <div class="rigntContentContainer" >
+<!--                            <div class="rigntContentContainer" >-->
                                 <div class="contentContainer" style="flex-direction: column; padding-left: 25px">
                                     <h4 v-if="userPersonalInfo.email">E-mail: <a style="text-decoration:underline" :href="'mailto:'+userPersonalInfo.email">{{userPersonalInfo.email}}</a></h4>
                                     <h4 v-if="userPersonalInfo.phone" >Phone Number: <span>{{userPersonalInfo.phone}}</span></h4>
@@ -1281,7 +1281,7 @@
                                     <h4 v-if="userPersonalInfo.faceBook">Facebook: <span>{{userPersonalInfo.faceBook}}</span></h4>
                                     <h4 v-if="userPersonalInfo.personPage">Person Page: <span>{{userPersonalInfo.personPage}}</span></h4>
                                 </div>
-                            </div>
+<!--                            </div>-->
                         </div>
                         <div class="modal fade" id="editUserContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -1353,7 +1353,7 @@
 
             <!--   model item-->
             <div class="bodyContainer" :class="{flexActive:bodyIndex==2}" >
-                <div id="modelStats" class="leftContentContainer" style="width: 290px">
+                <div id="modelStats" class="leftContentContainer" >
                     <div  class="contentColContainer">
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 5px;font-style:italic;font-weight: 600;color: #999999;">Resources Stats</h4></div>
@@ -1368,50 +1368,54 @@
 <!--                            <p>Create Date</p>-->
 <!--                        </div>-->
 <!--                    </div>-->
-                    <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
-                        <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Model & Data</h4></div>
-                        <ul>
-                            <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
-                            <!--                                <p>99999</p></div></a></li>-->
-                            <li><a id="tab-Model Item" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==1}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="modelItemClick()">Model Item<div class="statsNumber" :class="{statsNumberFullColor:showIndex==1}">
-                                <p>{{modelItems.total}}</p></div></a></li>
-                            <li><a id="tab-Data Item" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==2}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="datalItemClick()">Data Item <div class="statsNumber" :class="{statsNumberFullColor:showIndex==2}">
-                                <p>{{dataItems.total}}</p></div></a></li>
-                            <li><a id="tab-Conceptual Model" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==3}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptualModelClick()">Conceptual Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==3}">
-                                <p>{{conceptualModels.total}}</p></div></a></li>
-                            <li><a id="Logical Model" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==4}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="logicalModelClick()">Logical Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==4}">
-                                <p>{{logicalModels.total}}</p></div></a></li>
-                            <li><a id="Computable Model" aria-controls="pane-Computable Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==5}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="computableModelClick()">Computable Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==5}">
-                                <p>{{computableModels.total}}</p></div></a></li>
-                        </ul>
-                    </div>
+                    <div class="flexCol classification">
+                        <div  id="modelClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
+                            <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Model & Data</h4></div>
+                            <ul>
+                                <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
+                                <!--                                <p>99999</p></div></a></li>-->
+                                <li><a id="tab-Model Item" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==1}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="modelItemClick()">Model Item<div class="statsNumber" :class="{statsNumberFullColor:showIndex==1}">
+                                    <p>{{modelItems.total}}</p></div></a></li>
+                                <li><a id="tab-Data Item" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==2}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="datalItemClick()">Data Item <div class="statsNumber" :class="{statsNumberFullColor:showIndex==2}">
+                                    <p>{{dataItems.total}}</p></div></a></li>
+                                <li><a id="tab-Conceptual Model" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==3}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptualModelClick()">Conceptual Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==3}">
+                                    <p>{{conceptualModels.total}}</p></div></a></li>
+                                <li><a id="Logical Model" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==4}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="logicalModelClick()">Logical Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==4}">
+                                    <p>{{logicalModels.total}}</p></div></a></li>
+                                <li><a id="Computable Model" aria-controls="pane-Computable Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==5}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="computableModelClick()">Computable Model <div class="statsNumber" :class="{statsNumberFullColor:showIndex==5}">
+                                    <p>{{computableModels.total}}</p></div></a></li>
+                            </ul>
+                        </div>
 
-                    <div  id="communityClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
-                        <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Community</h4></div>
-                        <ul>
-                            <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
-                            <!--                                <p>99999</p></div></a></li>-->
-                            <li><a id="tab-Concept" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==6}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptClick()">Concept & Semantic<div class="statsNumber" :class="{statsNumberFullColor:showIndex==6}">
-                                <p>{{concepts.total}}</p></div></a></li>
-                            <li><a id="tab-SpaReference" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==7}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="spatialClick()">Spatial Reference<div class="statsNumber" :class="{statsNumberFullColor:showIndex==7}">
-                                <p>{{spatials.total}}</p></div></a></li>
-                            <li><a id="tab-DataTemplate" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==8}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="templateClick()">Data Template<div class="statsNumber" :class="{statsNumberFullColor:showIndex==8}">
-                                <p>{{templates.total}}</p></div></a></li>
-                            <li><a id="tab-Unit" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==9}"
-                                   style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="unitClick()">Unit & Metric<div class="statsNumber" :class="{statsNumberFullColor:showIndex==9}">
-                                <p>{{units.total}}</p></div></a></li>
-                        </ul>
+                        <div  id="communityClassification" class="contentColContainer contentUlContainer" style="margin-top: 0px;">
+                            <div class="subTitle" style="height: 42px"><h4 style="margin-left: 10px">Community</h4></div>
+                            <ul>
+                                <!--                            <li><a style="display: flex;justify-content: space-between">All <div class="statsNumber">-->
+                                <!--                                <p>99999</p></div></a></li>-->
+                                <li><a id="tab-Concept" aria-controls="pane-Model Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==6}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="conceptClick()">Concept & Semantic<div class="statsNumber" :class="{statsNumberFullColor:showIndex==6}">
+                                    <p>{{concepts.total}}</p></div></a></li>
+                                <li><a id="tab-SpaReference" aria-controls="pane-Data Item" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==7}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="spatialClick()">Spatial Reference<div class="statsNumber" :class="{statsNumberFullColor:showIndex==7}">
+                                    <p>{{spatials.total}}</p></div></a></li>
+                                <li><a id="tab-DataTemplate" aria-controls="pane-Conceptual Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==8}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="templateClick()">Data Template<div class="statsNumber" :class="{statsNumberFullColor:showIndex==8}">
+                                    <p>{{templates.total}}</p></div></a></li>
+                                <li><a id="tab-Unit" aria-controls="pane-Logical Model" role="tab" tabindex="0" class="el-tabs__item" :class="{blueFont:showIndex==9}"
+                                       style="display: flex;justify-content: space-between; line-height: 21px;padding: 0;height: 25px" @click="unitClick()">Unit & Metric<div class="statsNumber" :class="{statsNumberFullColor:showIndex==9}">
+                                    <p>{{units.total}}</p></div></a></li>
+                            </ul>
+                        </div>
+
                     </div>
 
                 </div>
+
 
                 <div class="rigntContentContainer" style="width:900px">
                     <div class="itemContainer" :class="{showActive:showIndex==1}" >
@@ -1441,29 +1445,38 @@
                             <div class="list-item" v-if="modelItems.result" v-for="(modelItem,key) in modelItems.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                <img  class="modelImg" :src="modelItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #78d3f9">
-                                                <div style="display: flex">
-                                                    <a :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
-                                                    </a>
-                                                    <div :class="modelItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{modelItem.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
+                                                </a>
+                                                <div :class="modelItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{modelItem.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{modelItem.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                                    <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{modelItem.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div class="tags" v-if="modelItem.keywords.length>0">
@@ -1514,34 +1527,39 @@
                             <div class="list-item" v-if="dataItems.result" v-for="(dataItem,key) in dataItems.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/dataItem/'+ dataItem.oid" target="_blank">
-                                                <img  class="dataImg" :src="dataItem.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a :href="'/dataItem/'+ dataItem.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4>
-                                                    </a>
-                                                    <div :class="dataItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{dataItem.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div>
+                                                <a :href="'/dataItem/'+ dataItem.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4>
+                                                </a>
+                                                <div :class="dataItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{dataItem.description}}</p>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{dataItem.viewCount}}
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                                    <avatar  :username="dataItem.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{dataItem.description}}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-<!--                                        <div class="tags" v-if="dataItem.keywords.length>0">-->
-<!--                                            <span class="badge badge-info" v-for="keyword in dataItem.keywords">{{keyword.toUpperCase()}}</span>-->
-<!--                                        </div>-->
+                                        <div class="tags"  style="float: left">
+                                            <span class="badge badge-info" v-for="(tagitem,ind) in dataItem.keywords" :key="ind">{{tagitem}}</span>
+
+                                        </div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}
                                         </div>
@@ -1587,32 +1605,42 @@
                             <div class="list-item" v-if="conceptualModels.result" v-for="(conceptualModel,key) in conceptualModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
-                                                <img  class="modelImg" :src="conceptualModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{conceptualModel.name}}</h4>
-                                                    </a>
-                                                    <div :class="conceptualModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conceptualModel.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{conceptualModel.name}}</h4>
+                                                </a>
+                                                <div :class="conceptualModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{conceptualModel.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conceptualModel.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
+                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="conceptualModel.image!=''" :src="conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{conceptualModel.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div class="tags">
+
                                         </div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)+' '+conceptualModel.createTime.substring(11,19)}}
@@ -1659,29 +1687,38 @@
                             <div class="list-item" v-if="logicalModels.result" v-for="(logicalModel,key) in logicalModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
-                                                <img  class="modelImg" :src="logicalModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{logicalModel.name}}</h4>
-                                                        <div :class="logicalModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{logicalModel.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{logicalModel.name}}</h4>
+                                                </a>
+                                                <div :class="logicalModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{logicalModel.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{logicalModel.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
+                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="logicalModel.image!=''" :src="logicalModel.image" onerror=src="../static/img/model/logical.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{logicalModel.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div></div>
@@ -1730,29 +1767,38 @@
                             <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
-                                                    </a>
-                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                </a>
+                                                <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{computableModel.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                    <avatar v-if="computableModel.image==''||computableModel.img==null" :username="computableModel.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="computableModel.image!=''" :src="computableModel.image" onerror=src="../static/img/model/calcModel.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{computableModel.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div></div>
@@ -1801,29 +1847,38 @@
                             <div class="list-item" :key="concept.oid" v-if="concepts.total" v-for="(concept,key) in concepts.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/concept/'+ concept.oid" target="_blank">
-                                                <img  class="modelImg" :src="concept.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a  :href="'/repository/concept/'+ concept.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{concept.name}}</h4>
-                                                    </a>
-                                                    <div :class="concept.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{concept.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/repository/concept/'+ concept.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{concept.name}}</h4>
+                                                </a>
+                                                <div :class="concept.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{concept.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{concept.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/repository/concept/'+ concept.oid" target="_blank">
+                                                    <avatar v-if="concept.image==''||concept.image==null" :username="concept.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="concept.image!=''" :src="concept.image" onerror=src="../static/img/model/semantics.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{concept.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
@@ -1875,29 +1930,38 @@
                             <div class="list-item" :key="spatial.oid" v-if="spatials.result" v-for="(spatial,key) in spatials.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                <img  class="modelImg" :src="computableModel.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a  :href="'/repository/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{spatial.name}}</h4>
-                                                    </a>
-                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{spatial.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/repository/spatial/'+spatial.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{spatial.name}}</h4>
+                                                </a>
+                                                <div :class="spatial.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{spatial.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{spatial.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/repository/spatial/'+ spatial.oid" target="_blank">
+                                                    <avatar v-if="spatial.image==''||spatial.img==null" :username="spatial.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="spatial.image!=''" :src="spatial.image" onerror=src="../static/img/model/spatialReference.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{spatial.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div></div>
@@ -1946,29 +2010,38 @@
                             <div class="list-item" :key="template.oid" v-if="templates.result" v-for="(template,key) in templates.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/repository/template/'+ template.oid" target="_blank">
-                                                <img  class="modelImg" :src="template.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a  :href="'/template/'+ template.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{template.name}}</h4>
-                                                    </a>
-                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{template.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/repository/template/'+template.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{template.name}}</h4>
+                                                </a>
+                                                <div :class="template.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{template.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{template.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/repository/template/'+ template.oid" target="_blank">
+                                                    <avatar v-if="template.image==''||template.image==null" :username="template.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="template.image!=''" :src="template.image" onerror=src="../static/img/model/template.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{template.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div></div>
@@ -2017,29 +2090,38 @@
                             <div class="list-item" :key="unit.oid" v-if="units.result" v-for="(unit,key) in units.result">
                                 <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
-                                        <div class="imgPallet">
-                                            <a  :href="'/repository/unit/'+ unit.oid" target="_blank">
-                                                <img  class="modelImg" :src="unit.image==''?'../static/img/model/model.png':'../static/img/model/model.png'">
-                                            </a>
-                                        </div>
-                                        <div style="flex: 1;">
-                                            <div class="subTitle" style="height: 45px;width: 100%;border-bottom-style: none;background-color: #8cd3f9">
-                                                <div>
-                                                    <a  :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                        <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{unit.name}}</h4>
-                                                    </a>
-                                                    <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
-                                                </div>
-                                                <div>
-                                                    <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{unit.viewCount}}
-                                                </div>
+                                        <div class="subTitle resourceTitle" >
+                                            <div style="display: flex">
+                                                <a :href="'/repository/unit/'+unit.oid" target="_blank">
+                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{unit.name}}</h4>
+                                                </a>
+                                                <div :class="unit.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
-                                            <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
-                                                <div class="modelInfo">
-                                                    <p>{{unit.description}}</p>
-                                                </div>
+                                            <div>
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{unit.viewCount}}
                                             </div>
                                         </div>
+                                        <div style="display: flex;">
+                                            <div class="imgPallet">
+                                                <a class="img" :href="'/repository/unit/'+ unit.oid" target="_blank">
+                                                    <avatar v-if="unit.image==''||unit.image==null" :username="unit.name" :size="120"
+                                                            :rounded="false"></avatar>
+
+                                                    <img v-if="unit.image!=''" :src="unit.image" onerror=src="../static/img/model/unit.png"
+                                                         style="width:120px;height: 120px;">
+
+                                                </a>
+                                            </div>
+                                            <div style="flex: 1;">
+
+                                                <div class="contentContainer" style="height: 125px; justify-content: flex-start;align-items: center">
+                                                    <div class="modelInfo">
+                                                        <p>{{unit.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
                                         <div></div>
@@ -2328,12 +2410,13 @@
                                                     <div :class="project.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
+                                                    <button class="squareButton safeBack" @click="editProjectClick(key,project.oid)" data-toggle="modal" data-target="#projectInfo"  style="margin-right:10px ">
+                                                        <i class="fa fa-pencil" style="font-size: 20px;"></i>
+                                                    </button>
                                                     <button class="squareButton alertBack" @click="deleteResearchItemClick(2,project.oid)">
-                                                        <div>×</div>
+                                                        <i class="fa fa-trash-o" style="font-size: 20px;"></i>
                                                     </button>
-                                                    <button class="squareButton safeBack" @click="editProjectClick(key,project.oid)" data-toggle="modal" data-target="#projectInfo">
-                                                        <i class="fa fa-pencil-square-o" style="font-size: 25px;margin-left: 3px"></i>
-                                                    </button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -2348,10 +2431,10 @@
                                     </div>
 
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <div class="viewCount">
-                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}
-                                        </div>
-                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+<!--                                        <div class="viewCount">-->
+<!--                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}-->
+<!--                                        </div>-->
+<!--                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>-->
                                     </div>
                                 </div>
 
@@ -2511,11 +2594,11 @@
                                                     <div :class="conference.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
-                                                    <button class="squareButton alertBack" @click="deleteResearchItemClick(3,conference.oid)">
-                                                        <div>×</div>
+                                                    <button class="squareButton safeBack" @click="editConferenceClick(key,conference.oid)" data-toggle="modal" data-target="#conferenceInfo"  style="margin-right:10px ">
+                                                        <i class="fa fa-pencil" style="font-size: 20px;"></i>
                                                     </button>
-                                                    <button class="squareButton safeBack" @click="editConferenceClick(key,conference.oid)" data-toggle="modal" data-target="#conferenceInfo">
-                                                        <i class="fa fa-pencil-square-o" style="font-size: 25px;margin-left: 3px"></i>
+                                                    <button class="squareButton alertBack" @click="deleteResearchItemClick(3,conference.oid)">
+                                                        <i class="fa fa-trash-o" style="font-size: 20px;"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -2531,11 +2614,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
-                                        <div class="viewCount">
-                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}
-                                        </div>
-                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
+                                    <div class="cardDowner" style="display: flex;margin-top: 0; background-color: rgba(232,232,232,0.5);height: 40px;" >
+<!--                                        <div class="viewCount">-->
+<!--                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}-->
+<!--                                        </div>-->
+<!--                                        <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>-->
                                     </div>
                                 </div>
 
@@ -2645,7 +2728,6 @@
 </div>
 </body>
 <script src="../static/js/common/jquery-3.3.1.min.js"></script>
-<script src="../static/js/common/vue.min.js"></script>
 <script src="../static/js/common/axios.min.js"></script>
 <script src="../static/element-ui/index.js"></script>
 <script type="text/javascript" src="../../static/js/common/bootstrap.min.js"></script>

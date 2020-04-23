@@ -1265,6 +1265,7 @@ var userDataSpace = Vue.extend(
                     this.rightTargetItem.label=$('.renameFileInput').eq(this.rightTargetItem.index).val();
                     console.log(this.myFileShown)
                     this.updateFileToPortalBack();
+                    this.renameIndex=''
                 }
 
             },
@@ -2109,6 +2110,8 @@ var userDataSpace = Vue.extend(
         },
 
         mounted() {
+            var vue_this=this
+
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()
 
@@ -2277,11 +2280,11 @@ var userDataSpace = Vue.extend(
                 $('.fileTemplate').on('click',':not(.wzhMicroInput)',function (e) {
 
                     e.stopPropagation();
-                    if(vue.rightMenuShow==true)
-                        vue.rightMenuShow=false
+                    if(vue_this.rightMenuShow==true)//vue组件命名为userDataSpace
+                        vue_this.rightMenuShow=false
                     if(e.currentTarget.className.indexOf('renameContainer')==-1&&vue.renameIndex!=''){
                         console.log(e.currentTarget.className)
-                        vue.renameIndex=''
+                        vue_this.renameIndex=''
                     }
                 })
 

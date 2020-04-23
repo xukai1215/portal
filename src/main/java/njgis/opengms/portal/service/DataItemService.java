@@ -561,7 +561,7 @@ public class DataItemService {
 
     //search
     public JSONObject searchByTitleByOid(DataItemFindDTO dataItemFindDTO, String oid) {
-        String userName = userDao.findFirstByOid(oid).getUserName();
+//        String userName = userDao.findFirstByOid(oid).getUserName();
         int page = dataItemFindDTO.getPage();
         int pageSize = dataItemFindDTO.getPageSize();
         String sortElement = dataItemFindDTO.getSortElement();
@@ -570,7 +570,7 @@ public class DataItemService {
 
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataItemResultDTO> dataItemResultDTOPage = dataItemDao.findByNameContainsIgnoreCaseAndUserName(name, userName, pageable);
+        Page<DataItem> dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
 
         JSONObject result = new JSONObject();
         result.put("list", dataItemResultDTOPage.getContent());

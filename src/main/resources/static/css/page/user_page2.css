@@ -266,7 +266,18 @@ button:focus{
 .leftContentContainer{
     display: flex;
     flex-direction: column;
-    width: 720px;
+    width: 59.5%;
+    /*max-width: 720px;*/
+    justify-content: flex-start;
+    align-items: stretch;
+    background-color: #f3f3f3;
+}
+
+.leftPersonInfo{
+    display: flex;
+    flex-direction: column;
+    width: 59.5%;
+    /*max-width: 720px;*/
     justify-content: flex-start;
     align-items: stretch;
     background-color: #f3f3f3;
@@ -275,7 +286,18 @@ button:focus{
 .rigntContentContainer{
     display: flex;
     flex-direction: column;
-    width: 465px;
+    width: 39.5%;
+    /*max-width: 465px;*/
+    justify-content: flex-start;
+    align-items: stretch;
+    background-color: #f3f3f3;
+}
+
+.rigntPersonInfo{
+    display: flex;
+    flex-direction: column;
+    width: 39.5%;
+    /*max-width: 465px;*/
     justify-content: flex-start;
     align-items: stretch;
     background-color: #f3f3f3;
@@ -351,6 +373,8 @@ button:focus{
 #modelItems{
     margin-top: 0;
     width: 49.5%;
+    max-width: 588px;
+    min-width: 325px;
 }
 
 #dataItemContainer{
@@ -718,6 +742,7 @@ input::placeholder{
 
 .cardUpper{
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     border-radius: 4px 4px 0 0;
     flex: 1;
@@ -736,7 +761,7 @@ input::placeholder{
 
 .seeDetails{
     /*display: none;*/
-    margin-left: 163px;
+    margin-left: calc(50% - 60.5px);
     flex-direction:column ;
     padding: 0 8px 3px;
     justify-content: center;
@@ -876,6 +901,18 @@ input::placeholder{
     /*font-family: Baskerville;*/
 }
 
+.resourceTitle{
+    height: 45px;
+    width: 100%;
+    border-bottom-style: none;
+    /*background-color: #78d3f9;*/
+    background-image: linear-gradient(to right, rgb(253, 249, 244) 0%, rgb(216, 244, 249) 100%);
+}
+
+.tags{
+    margin-left: 5px;
+}
+
 .splitBlock{
     /*width: 100%;*/
     display: flex;
@@ -968,6 +1005,10 @@ input::placeholder{
     font-family:Tahoma ;
 }
 
+.menuButton{
+    padding: 11px 0 8px 0 ;
+}
+
 .noneBorderButton:focus{
     outline: none;
 
@@ -1004,14 +1045,22 @@ input::placeholder{
 }
 
 .imgPallet{
-    height: 170px;
-    width: 155px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 125px;
+    width: 125px;
     background-color: white;
 }
 
 .modelImg{
     width: 100%;
     height: 100%;
+}
+
+.modelIcon{
+    width: 80px;
+    height: 80px;
 }
 
 .blueFont{
@@ -1660,5 +1709,82 @@ input[type="radio"]:checked + span {
     border-radius: 4px;
     background-color: #0f9ae0;
 
+}
 
+#modelStats{
+    width: 290px;
+}
+
+@media only screen and (max-width: 685px){
+    #modelItems{
+        width: 99.9% !important;
+    }
+
+    #communities{
+        width: 99.9% !important;
+    }
+
+    .leftContentContainer{
+        width: 100%;
+    }
+
+    .rigntContentContainer{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1207px){
+    .rigntContentContainer{
+        width: calc(100% - 300px) !important;
+    }
+
+    .searchInput{
+        width: calc(80% - 35px);
+    }
+
+    .menuContainer{
+        width: 100%;
+    }
+
+}
+
+@media only screen and (max-width: 1043px){
+    .rigntContentContainer{
+        width: 100% !important;
+    }
+
+    .bodyContainer,.flexActive{
+        width: 100%;
+    }
+
+    .contentColContainer,.modelTable{
+        align-items: stretch;
+        padding-right:3px ;
+    }
+
+    .userInfoContainer{
+        width: 100%;
+    }
+
+    #modelStats{
+        width: 538px !important;
+        /*flex-direction: row;*/
+    }
+
+    .classification{
+        flex-direction: row;
+    }
+}
+
+@media only screen and (max-width: 500px){
+    .contentColContainer,.modelTable{
+        align-items: stretch;
+        padding-right:3px ;
+    }
+}
+
+@media only screen and (max-width: 841px){
+    .leftPersonInfo,.rigntPersonInfo{
+        width: 100%;
+    }
 }
