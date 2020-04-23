@@ -385,8 +385,8 @@ var userModels = Vue.extend(
                     'logicalmodel':   'logicalModels',
                     'computablemodel':'computableModels',
                 }
-                let url=urls[this.itemIndex];
-                let name=names[this.itemIndex];
+                let url=urls[a];
+                let name=names[a];
 
                 if (this.deploys_show) {
                     this.searchComputerModelsForDeploy();
@@ -445,15 +445,15 @@ var userModels = Vue.extend(
             deleteItem(index,oid) {
                 if (confirm("Are you sure to delete this model?")) {
                     var urls = {
-                        1:"/modelItem/delete",
-                        2:"/conceptualModel/delete",
-                        3:"/logicalModel/delete",
-                        4:"/computableModel/delete",
+                         'modelitem':      "/modelItem/delete",
+                         'conceptualmodel':"/conceptualModel/delete",
+                         'logicalmodel':   "/logicalModel/delete",
+                         'computablemodel':"/computableModel/delete",
                     };
 
                     $.ajax({
                         type: "POST",
-                        url: urls[index],
+                        url: urls[this.$route.params.modelitemKind],
                         data: {
                             oid: oid
                         },
@@ -471,7 +471,7 @@ var userModels = Vue.extend(
                                 if (json.data == 1) {
                                     alert("delete successfully!")
                                 } else {
-                                    alert("delete failed!")
+                                    alert("0 failed!")
                                 }
                             }
                             if (this.searchText.trim() != "") {

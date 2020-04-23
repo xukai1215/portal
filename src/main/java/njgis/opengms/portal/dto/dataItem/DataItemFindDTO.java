@@ -21,6 +21,8 @@ public class DataItemFindDTO {
     List<String> searchContent;
     String searchText;
 
+    String userId;
+
     String dataId;
     List<String> relatedModels;
 

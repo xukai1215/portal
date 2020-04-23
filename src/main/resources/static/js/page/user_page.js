@@ -1,6 +1,9 @@
 new Vue({
     el: '#userPage',
 
+    components: {
+        'avatar': VueAvatar.Avatar
+    },
     data:
         function () {
             return {
@@ -809,14 +812,14 @@ new Vue({
             $.ajax({
                 type: "GET",
                 url: "/dataItem/searchByNameByOid",
-                data: {
+                data:{
                     page: this.pageOption.currentPage-1,
                     asc: this.pageOption.sortAsc,
                     pageSize: 6,
                     oid: hrefs[hrefs.length - 1],
                     sortElement:'viewCount',
                     searchText:'',
-                },
+                } ,
                 async: true,
                 success: (json) => {
 
