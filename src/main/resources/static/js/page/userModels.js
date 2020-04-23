@@ -443,6 +443,7 @@ var userModels = Vue.extend(
             },
 
             deleteItem(index,oid) {
+                let a=this.$route.params.modelitemKind
                 if (confirm("Are you sure to delete this model?")) {
                     var urls = {
                          'modelitem':      "/modelItem/delete",
@@ -453,7 +454,7 @@ var userModels = Vue.extend(
 
                     $.ajax({
                         type: "POST",
-                        url: urls[this.$route.params.modelitemKind],
+                        url: urls[a],
                         data: {
                             oid: oid
                         },
