@@ -26,6 +26,8 @@ import org.bson.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +65,8 @@ import static njgis.opengms.portal.utils.Utils.saveFiles;
 
 @Service
 public class ComputableModelService {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     ItemService itemService;
 
@@ -460,10 +464,14 @@ public class ComputableModelService {
     }
 
     public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String uid) {
+        logger.info(files.get(0).getName());
+        logger.info(String.valueOf(files.get(0).getSize()));
+
         JSONObject result = new JSONObject();
         ComputableModel computableModel = new ComputableModel();
 
         String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
+        logger.info(path);
         List<String> resources = new ArrayList<>();
         saveFiles(files, path, uid, "",resources);
         if (resources == null) {
@@ -657,7 +665,7 @@ public class ComputableModelService {
                 result.put("code", 1);
                 result.put("id", computableModel.getOid());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("计算模型创建错误",e);
                 result.put("code", -2);
             }
         }
@@ -1016,6 +1024,38 @@ public class ComputableModelService {
             computableModelPage = computableModelDao.findByClassificationsIn(classes, pageable);
         } else {
             computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
+        }
+
+
+        obj.put("list", computableModelPage.getContent());
+        obj.put("total", computableModelPage.getTotalElements());
+        obj.put("pages", computableModelPage.getTotalPages());
+
+        return obj;
+    }
+
+    public JSONObject listByAuthor(ModelItemFindDTO modelItemFindDTO, String userName, List<String> classes) {
+
+        JSONObject obj = new JSONObject();
+        //TODO Sort是可以设置排序字段的
+        int page = modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String searchText = modelItemFindDTO.getSearchText();
+        //List<String> classifications=modelItemFindDTO.getClassifications();
+        //默认以viewCount排序
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<ComputableModel> computableModelPage;
+
+        if (searchText.equals("") && classes.get(0).equals("all")) {
+            computableModelPage = computableModelDao.findByAuthor(userName,pageable);
+        } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userName, pageable);
+        } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+            computableModelPage = computableModelDao.findByClassificationsInAndAuthor(classes, userName, pageable);
+        } else {
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(searchText, classes, userName, pageable);
         }
 
 

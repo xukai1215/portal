@@ -34,4 +34,6 @@ public interface ConceptDao extends MongoRepository<Concept,String> {
     List<Item> findByAuthor(String author);
 
     Page<ConceptResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

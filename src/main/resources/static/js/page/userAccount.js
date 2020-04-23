@@ -18,6 +18,7 @@ var userAccount = Vue.extend(
                     name:'',
                 },
 
+                subscribe:false,
 
             }
         },
@@ -50,11 +51,25 @@ var userAccount = Vue.extend(
 
             },
 
+            setSubscribe(){
+
+                $.post("/user/setSubscribe",{subscribe:this.subscribe},(result)=>{
+                    let data = result.data;
+                    if(result.code==-1){
+                        alert("Please login first");
+                        window.location.href="/user/login";
+                    }
+
+                })
+            },
+
+
             getUserInfo() {
                 axios.get('/user/getLoginUser').then(
                     res => {
                         if(res.data.code==0){
                             this.userInfo = res.data.data
+                            this.subscribe = this.userInfo.subscribe;
                             let orgs = this.userInfo.organizations;
 
                             if (orgs.length != 0) {

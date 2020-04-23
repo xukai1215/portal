@@ -624,7 +624,9 @@ public class ModelItemService {
                         JSONObject item=new JSONObject();
                         item.put("oid",dataItem.getId());
                         item.put("name",dataItem.getName());
-                        item.put("author",userService.getByOid(dataItem.getAuthor()));
+                        User user=userService.getByOid(dataItem.getAuthor());
+                        item.put("author",user.getName());
+                        item.put("author_uid", user.getUserName());
                         result.add(item);
                     }
                 }
@@ -638,6 +640,7 @@ public class ModelItemService {
                         item.put("oid", modelItem1.getOid());
                         item.put("name", modelItem1.getName());
                         item.put("author", userService.getByUid(modelItem1.getAuthor()).getName());
+                        item.put("author_uid", modelItem1.getAuthor());
                         result.add(item);
                     }
                 }
@@ -651,6 +654,7 @@ public class ModelItemService {
                         item.put("oid", conceptualModel.getOid());
                         item.put("name", conceptualModel.getName());
                         item.put("author", userService.getByUid(conceptualModel.getAuthor()).getName());
+                        item.put("author_uid", conceptualModel.getAuthor());
                         result.add(item);
                     }
                 }
@@ -664,6 +668,7 @@ public class ModelItemService {
                         item.put("oid", logicalModel.getOid());
                         item.put("name", logicalModel.getName());
                         item.put("author", userService.getByUid(logicalModel.getAuthor()).getName());
+                        item.put("author_uid", logicalModel.getAuthor());
                         result.add(item);
                     }
                 }
@@ -677,6 +682,7 @@ public class ModelItemService {
                         item.put("oid", computableModel.getOid());
                         item.put("name", computableModel.getName());
                         item.put("author", userService.getByUid(computableModel.getAuthor()).getName());
+                        item.put("author_uid", computableModel.getAuthor());
                         result.add(item);
                     }
                 }
@@ -690,6 +696,7 @@ public class ModelItemService {
                         item.put("oid", concept.getOid());
                         item.put("name", concept.getName());
                         item.put("author", userService.getByUid(concept.getAuthor()).getName());
+                        item.put("author_uid", concept.getAuthor());
                         result.add(item);
                     }
                 }
@@ -703,6 +710,7 @@ public class ModelItemService {
                         item.put("oid", spatialReference.getOid());
                         item.put("name", spatialReference.getName());
                         item.put("author", userService.getByUid(spatialReference.getAuthor()).getName());
+                        item.put("author_uid", spatialReference.getAuthor());
                         result.add(item);
                     }
                 }
@@ -716,6 +724,7 @@ public class ModelItemService {
                         item.put("oid", template.getOid());
                         item.put("name", template.getName());
                         item.put("author", userService.getByUid(template.getAuthor()).getName());
+                        item.put("author_uid", template.getAuthor());
                         result.add(item);
                     }
                 }
@@ -729,6 +738,7 @@ public class ModelItemService {
                         item.put("oid", unit.getOid());
                         item.put("name", unit.getName());
                         item.put("author", userService.getByUid(unit.getAuthor()).getName());
+                        item.put("author_uid", unit.getAuthor());
                         result.add(item);
                     }
                 }
@@ -903,7 +913,7 @@ public class ModelItemService {
         return result;
     }
 
-    public JSONObject list(ModelItemFindDTO modelItemFindDTO,List<String> classes) {
+    public JSONObject list(ModelItemFindDTO modelItemFindDTO, String userName,List<String> classes) {
 
         JSONObject obj = new JSONObject();
         //TODO Sort是可以设置排序字段的
@@ -934,16 +944,28 @@ public class ModelItemService {
         }
 
         Page<ModelItemResultDTO> modelItemPage = null;
-
-        if (searchText.equals("")&&classes.get(0).equals("all")) {
-            modelItemPage = modelItemDao.findAllByNameContains("",pageable);
-        } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
-            modelItemPage = modelItemDao.findByNameContainsIgnoreCase(searchText, pageable);
-        } else if(searchText.equals("")&&!classes.get(0).equals("all")){
-            modelItemPage = modelItemDao.findByClassificationsIn(classes, pageable);
+        if(userName==null){
+            if (searchText.equals("")&&classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findAllByNameContains("",pageable);
+            } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCase(searchText, pageable);
+            } else if(searchText.equals("")&&!classes.get(0).equals("all")){
+                modelItemPage = modelItemDao.findByClassificationsIn(classes, pageable);
+            }else{
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText,classes, pageable);
+            }
         }else{
-            modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText,classes, pageable);
+            if (searchText.equals("")&&classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findAllByNameContainsAndAuthor("",userName,pageable);
+            } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userName, pageable);
+            } else if(searchText.equals("")&&!classes.get(0).equals("all")){
+                modelItemPage = modelItemDao.findByClassificationsInAndAuthor(classes,userName, pageable);
+            }else{
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(searchText,classes,userName, pageable);
+            }
         }
+
 
         List<ModelItemResultDTO> modelItems=modelItemPage.getContent();
         JSONArray users=new JSONArray();

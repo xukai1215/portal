@@ -23,6 +23,7 @@ import njgis.opengms.portal.service.ItemService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -123,7 +124,20 @@ public class DataItemRestController {
     //kai's function
     @RequestMapping(value="/searchByName",method = RequestMethod.POST)
     JsonResult searchByName(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO));
+        return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO,null));
+    }
+
+    @RequestMapping(value="/searchByNameAndAuthor",method = RequestMethod.POST)
+    JsonResult searchByNameAndAuthor(@RequestBody DataItemFindDTO dataItemFindDTO,HttpServletRequest request){
+
+        HttpSession session = request.getSession();
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            String userOid = session.getAttribute("oid").toString();
+            return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO,userOid));
+        }
+
     }
 
     @RequestMapping(value="/searchResourceByNameAndCate",method = RequestMethod.POST)

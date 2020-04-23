@@ -525,7 +525,7 @@
                         <h4>How to cite</h4>
                     </div>
                 </div>
-                <div class="block_content flex" th:object="${datainfo}">
+                <div class="block_content" th:object="${datainfo}">
                     <div id="cite-text" class="">
                         <span th:if="${authorship!=''}"
                               th:text="${authorship}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS, '"></span>
@@ -660,7 +660,7 @@
         </div>
 
         <!--Relation 弹出框-->
-        <el-dialog :visible.sync="dialogTableVisible" title="Add Related Model Item" :before-close="handleClose"
+        <el-dialog :visible.sync="dialogTableVisible" title="Add Related Model Item"
                    width="70%" top="40px">
 
             <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">

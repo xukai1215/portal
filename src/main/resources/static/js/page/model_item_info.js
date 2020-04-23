@@ -52,6 +52,7 @@ var info=new Vue({
             }],
 
             useroid: '',
+            userUid:"",
             userImg:"",
             loading: false,
             related3Models: [],
@@ -572,7 +573,7 @@ var info=new Vue({
             let url, contentType;
             switch (this.relateType) {
                 case "dataItem":
-                    url = "/dataItem/searchByName";
+                    url = "/dataItem/searchByNameAndAuthor";
                     data = {
                         page: this.pageOption.currentPage + 1,
                         pageSize: 5,
@@ -608,8 +609,12 @@ var info=new Vue({
                     data = JSON.stringify(data);
                     contentType = "application/json";
                     break;
-                default:
+                case "modelItem":
                     url = "/" + this.relateType + "/list";
+                    contentType = "application/x-www-form-urlencoded";
+                    break;
+                default:
+                    url = "/" + this.relateType + "/listByAuthor";
                     contentType = "application/x-www-form-urlencoded";
             }
             $.ajax({
@@ -842,6 +847,7 @@ var info=new Vue({
                 if (res.status == 200) {
                     if (res.data.oid != '') {
                         this.useroid = res.data.oid;
+                        this.userUid = res.data.uid;
                         this.userImg = res.data.image;
                     }
 

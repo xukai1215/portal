@@ -6,7 +6,7 @@ body::-webkit-scrollbar{
   width:0px;
 }
 .leftMenu{
-  overflow:hidden;
+  overflow-x: hidden;
   position:absolute;
   cursor:default;
   left: 0px;

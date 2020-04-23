@@ -84,8 +84,9 @@
                                     <div class="com-sub-name-time" style="margin-left:15px">
                                         <div class="com-author-name">
                                             <a :href="'/user/'+subComm.author.oid" target="_blank" style="font-size: 18px;">{{subComm.author.name}}</a>
-                                            <span v-if="subComm.replyTo!=null" style="margin-left:5px;font-weight: bold">Reply
-                                                <a :href="'/user/'+subComm.replyTo.oid" target="_blank" style="margin-left:5px;font-size: 18px;font-weight: normal">{{subComm.replyTo.name}}</a>
+                                            <span v-if="subComm.replyTo!=null" style="margin:0 5px;font-weight: bold">Reply</span>
+                                            <span v-if="subComm.replyTo!=null">
+                                                <a :href="'/user/'+subComm.replyTo.oid" target="_blank" style="font-size: 18px;font-weight: normal">{{subComm.replyTo.name}}</a>
                                             </span>
                                         </div>
                                         <div class="com-time">

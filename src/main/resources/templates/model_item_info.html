@@ -55,9 +55,13 @@
             float: left;
         }
 
-        .el-badge__content {
+        .el-tabs__item .el-badge__content {
             margin-left: 5px;
             background-color: #bbbbbb;
+        }
+
+        img{
+            width:100%;
         }
 
     </style>
@@ -212,7 +216,7 @@
                     <el-tab-pane name="Computable Model">
                         <div slot="label">
                             <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
-                            Computable Model
+                            Computable Model List
                             <span class="el-badge__content el-badge__content--undefined"
                                   th:text="${#lists.size(computableModels)}">
                             </span>
@@ -252,7 +256,7 @@
 
                     </el-tab-pane>
                     <el-tab-pane name="Conceptual Model">
-                        <div slot="label">Conceptual Model
+                        <div slot="label">Conceptual Model List
                             <span class="el-badge__content el-badge__content--undefined"
                                   th:text="${#lists.size(conceptualModels)}">
                             </span>
@@ -292,7 +296,7 @@
                         </div>
                     </el-tab-pane>
                     <el-tab-pane name="Logical Model">
-                        <div slot="label">Logical Model
+                        <div slot="label">Logical Model List
                             <span class="el-badge__content el-badge__content--undefined"
                                   th:text="${#lists.size(logicalModels)}">
                             </span>
@@ -650,7 +654,7 @@
                         <h4>How to cite</h4>
                     </div>
                 </div>
-                <div class="block_content flex">
+                <div class="block_content">
                     <div id="cite-text">
                         <span th:if="${authorship!=''}"
                               th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Model Item, OpenGMS, '"></span>
@@ -856,7 +860,7 @@
 
 
     <!--Relation 弹出框-->
-    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%"
+    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle"  width="70%"
                top="40px">
 
         <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
@@ -887,12 +891,21 @@
 
                 <el-table-column fixed="right" label="Operation" width="100">
                     <template slot-scope="scope">
-
                         <el-button
+                                v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"
                                 size="mini"
                                 type="danger"
                                 @click="handleDelete(scope.$index, scope.row)">Delete
                         </el-button>
+                        <el-button
+                                v-else
+                                :disabled="scope.row.author_uid!=userUid"
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">Delete
+                        </el-button>
+
+
                     </template>
                 </el-table-column>
             </el-table>
@@ -910,7 +923,7 @@
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="Detail">
+                            <el-form-item label="Overview">
                                 <span>{{ props.row.description }}</span>
                             </el-form-item>
 
@@ -923,10 +936,10 @@
                         <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
                     </template>
                 </el-table-column>
-                <el-table-column
-                        label="Contributor"
-                        prop="author">
-                </el-table-column>
+                <!--<el-table-column-->
+                        <!--label="Contributor"-->
+                        <!--prop="author">-->
+                <!--</el-table-column>-->
                 <el-table-column fixed="right" label="Operation" width="100">
                     <template slot-scope="scope">
                         <el-button

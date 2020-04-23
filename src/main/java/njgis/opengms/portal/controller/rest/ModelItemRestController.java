@@ -14,6 +14,7 @@ import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -149,7 +150,21 @@ public class ModelItemRestController {
 
     @RequestMapping (value="/list",method = RequestMethod.POST)
     JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
-        return ResultUtils.success(modelItemService.list(modelItemFindDTO,classes));
+        return ResultUtils.success(modelItemService.list(modelItemFindDTO,null,classes));
+    }
+
+    @RequestMapping (value="/listByAuthor",method = RequestMethod.POST)
+    JsonResult listByAuthor(ModelItemFindDTO modelItemFindDTO,
+                            @RequestParam(value="classifications[]") List<String> classes,
+                            HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(modelItemService.list(modelItemFindDTO,userName,classes));
+        }
+
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
@@ -332,12 +347,12 @@ public class ModelItemRestController {
             nowCalendar.setTime(now);
             nowCalendar.add(Calendar.DATE, 1);
 
-            while (!isSameDay(c.getTime(),nowCalendar.getTime())){
+            while (!Utils.isSameDay(c.getTime(),nowCalendar.getTime())){
                 dateList.add(sdf.format(c.getTime()));
                 if(index<dailyViewCountList.size()) {
                     DailyViewCount daily = dailyViewCountList.get(index);
 
-                    if (isSameDay(daily.getDate(), c.getTime())) {
+                    if (Utils.isSameDay(daily.getDate(), c.getTime())) {
                         int count=daily.getCount();
                         if(count>max){
                             max=count;
@@ -381,10 +396,10 @@ public class ModelItemRestController {
             nowCalendar.add(Calendar.DATE, 1);
 
             int count=1;
-            while (!isSameDay(calendar.getTime(),nowCalendar.getTime())){
+            while (!Utils.isSameDay(calendar.getTime(),nowCalendar.getTime())){
                 if(index<dailyInvokeCounts.size()) {
                     DailyViewCount dailyInvokeCount = dailyInvokeCounts.get(index);
-                    if (isSameDay(calendar.getTime(), dailyInvokeCount.getDate())) {
+                    if (Utils.isSameDay(calendar.getTime(), dailyInvokeCount.getDate())) {
                         int times=invokeArray.getInteger(count);
                         times+=dailyInvokeCount.getCount();
                         invokeArray.set(count,times);
@@ -408,14 +423,6 @@ public class ModelItemRestController {
 
         return ResultUtils.success(result);
     }
-
-    private boolean isSameDay(Date day1,Date day2){
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        String d1=simpleDateFormat.format(day1);
-        String d2=simpleDateFormat.format(day2);
-        return d1.equals(d2);
-
-    }
-
+    
 
 }

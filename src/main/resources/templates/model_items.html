@@ -28,67 +28,26 @@
             font-size: 14px;
         }
 
-        .mainContent{
-            width: 83.33333%;
-            margin-left: 8.33333%;
-        }
-
-        .categoryList{
-            margin-right:20px;
-        }
-
         .detail_option{
             margin-top: -7px;
         }
 
-        .screen_view{
+        .minScreen_hide {
             display: inline-block;
-            margin-left: 20px;
         }
 
-        .mobile_view{
-            display:none;
-        }
+        @media only screen and (max-width: 700px){
 
-        @media only screen and (max-width: 1200px){
-            .mainContent {
-                width: 91.66667%;
-                margin-left: 4.16667%;
-            }
-        }
-
-        @media only screen and (max-width: 950px){
-            .minScreen_maxWidth {
-                width: 100%;
+            .detail_option{
+                margin-top: 0;
             }
 
             .minScreen_hide {
                 display: none;
             }
-            
-            .minScreen_curClass{
-                display: block;
-            }
 
-            .categoryList{
-                margin-right:0;
-            }
-
-            .detail_option{
-                margin-top: 0;
-            }
         }
 
-        @media only screen and (max-width: 480px){
-            .screen_view{
-                display:none;
-            }
-
-            .mobile_view{
-                display: inline-block;
-                margin-left: 20px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -297,7 +256,7 @@
                                         {{modelItem.createTime.substring(0,10)}} </h4>
                                 </div>
                                 <div class="detail_option">
-                                    <div class="visible-lg-inline-block minScreen_hide" style="display: inline-block">
+                                    <div class="minScreen_hide">
                                         <el-radio-group v-model="statistic[key]" size="small" @change="switchChange(key)">
                                             <el-radio-button label="Overview"></el-radio-button>
                                             <el-radio-button label="Statistics"></el-radio-button>

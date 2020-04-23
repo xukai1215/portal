@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
+    List<Item> findAllByAuthorshipIsNotNull();
+
     ModelItem findFirstById(String id);
 
     ModelItem findFirstByOid(String id);
@@ -31,13 +33,19 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     Page<ModelItemResultDTO> findAllByNameContains(String name,Pageable pageable);
 
+    Page<ModelItemResultDTO> findAllByNameContainsAndAuthor(String name, String author, Pageable pageable);
+
     Page<ModelItemResultDTO> findByNameContainsIgnoreCase(String name,Pageable pageable);
 
     Page<ModelItem> findByNameLikeIgnoreCase(String name,Pageable pageable);
 
     Page<ModelItemResultDTO> findByClassificationsIn(List<String> classes,Pageable pageable);
 
+    Page<ModelItemResultDTO> findByClassificationsInAndAuthor(List<String> classes, String author, Pageable pageable);
+
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassificationsIn(String name,List<String> classes,Pageable pageable);
+
+    Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name,List<String> classes,String author, Pageable pageable);
 
     Page<ModelItemResultDTO> findByAuthor(String author,Pageable pageable);
 

@@ -453,7 +453,7 @@ var userModels = Vue.extend(
 
                     $.ajax({
                         type: "POST",
-                        url: urls[index],
+                        url: urls[this.itemIndex],
                         data: {
                             oid: oid
                         },

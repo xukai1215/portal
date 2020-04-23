@@ -28,7 +28,11 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     Page<ComputableModel> findByClassificationsIn(List<String> classes, Pageable pageable);
 
+    Page<ComputableModel> findByClassificationsInAndAuthor(List<String> classes, String author, Pageable pageable);
+
     Page<ComputableModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
+
+    Page<ComputableModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name, List<String> classes, String author, Pageable pageable);
 
     List<ComputableModel> findByDeployedServiceNotNull(Pageable pageable);
 
@@ -49,4 +53,6 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
     Page<ComputableModel> findByContentType(String contentType, Pageable pageable);
 
     List<ComputableModel> findByContentType(String contentType);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 }

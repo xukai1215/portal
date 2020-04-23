@@ -583,7 +583,7 @@
                                         <el-table-column
 
                                                 label="Event Name"
-                                                width="200">
+                                                >
                                             <template slot-scope="scope">
 
                                                 <span :title="scope.row.eventName">
@@ -598,7 +598,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Data Type"
-                                                width="200">
+                                                >
                                             <template slot-scope="scope">
                                                 <el-tag type="info" v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
                                                     <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.data[0].text}}</a>
@@ -610,7 +610,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Value"
-                                                width="200">
+                                                width="180">
                                             <template slot-scope="scope">
                                                 <el-input class="model-input"
                                                           v-if="scope.row.children==undefined&&scope.row.child!=true"

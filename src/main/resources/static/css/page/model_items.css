@@ -207,9 +207,6 @@ a:focus,a:active,a:hover,h3:hover{
 .el-collapse-item__header:active{
     margin-left: 10px;
 }
-.el-card__body{
-    padding: 0px;
-}
 
 .el-collapse-item .el-button{
 

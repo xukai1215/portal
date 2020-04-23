@@ -40,8 +40,38 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
 
-    <style>
-    </style>
+    <script src="/static/js/common/md5.js"></script>
+    <script src="/static/js/common/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/static/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script src="/static/js/common/jquery.rotate.min.js"></script>
+    <script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>
+    <script src="/static/js/common/bootstrap.min.js"></script>
+    <script src="/static/js/common/mdb.min.js"></script>
+    <script src="/static/js/common/piexif.min.js"></script>
+    <script src="/static/js/common/fileinput.js"></script>
+    <script src="/static/js/common/bootstrap-treeview.js"></script>
+
+    <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+    <!--<script src="/static/js/common/echarts.min.js"></script>-->
+    <!--<script src="/static/js/common/world.js"></script>-->
+    <script src="/static/js/common/axios.min.js"></script>
+
+    <!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+    <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+
+    <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+    <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+    <script src="/static/js/common/bootstrap-tagsinput.js"></script>
+    <script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
+
+
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-router.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <script src="/static/element-ui/umd/locale/en.js"></script>
+    <!--<script src="/static/js/page/user_space.js"></script>-->
 </head>
 
 <body>
@@ -58,43 +88,9 @@
         <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
         <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" :itemindex-raw="itemIndex"></router-view>
 
-
-
     </div>
 
-
 </div>
-</div>
-</body>
-
-<script src="/static/js/common/md5.js"></script>
-<script src="/static/js/common/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="/static/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script src="/static/js/common/jquery.rotate.min.js"></script>
-<script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>
-<script src="/static/js/common/bootstrap.min.js"></script>
-<script src="/static/js/common/mdb.min.js"></script>
-<script src="/static/js/common/piexif.min.js"></script>
-<script src="/static/js/common/fileinput.js"></script>
-<script src="/static/js/common/bootstrap-treeview.js"></script>
-
-<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
-<!--<script src="/static/js/common/echarts.min.js"></script>-->
-<!--<script src="/static/js/common/world.js"></script>-->
-<script src="/static/js/common/axios.min.js"></script>
-<script src="/static/js/common/vue.min.js"></script>
-<script src="/static/js/common/vue-router.js"></script>
-<script src="/static/js/common/vue-avatar.min.js"></script>
-<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
-<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
-<script src="/static/element-ui/index.js"></script>
-<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
-
-<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
-<script src="/static/js/common/bootstrap-tagsinput.js"></script>
-<script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
-<script src="/static/element-ui/umd/locale/en.js"></script>
-<!--<script src="/static/js/page/user_space.js"></script>-->
 
 <!--sideBar组件-->
 <template th:replace="fragments/newSideBar :: headSideBar"></template>
@@ -168,12 +164,15 @@
 <template th:replace="userAccount :: userAccount"></template>
 <script src="/static/js/page/userAccount.js"></script>
 <!--feedback组件-->
-<template th:replace="feedback :: feedback"></template>
+<template th:replace="feedBack :: feedback"></template>
 <script src="/static/js/page/feedBack.js"></script>
 <!--notice组件-->
 <template th:replace="message_confirm :: notice"></template>
 <script src="/static/js/page/message_confirm.js"></script>
+
+
+</body>
+
 <!--根组件-->
 <script src="/static/js/page/userSpace1.js"></script>
-
 </html>

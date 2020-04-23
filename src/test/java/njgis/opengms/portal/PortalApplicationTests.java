@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
+import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.utils.ChartUtils;
 import njgis.opengms.portal.utils.Object.ChartOption;
@@ -16,6 +17,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,11 +76,98 @@ public class PortalApplicationTests {
     @Autowired
     TaskDao taskDao;
 
+    @Autowired
+    AuthorshipDao authorshipDao;
+
     @Value("${resourcePath}")
     private String resourcePath;
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void authorships(){
+
+        List<Item> items = new ArrayList<>();
+
+        pushAuthorship(modelItemDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.ModelItem);
+
+        //pushAuthorship(dataItemDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.DataItem);
+
+        pushAuthorship(conceptualModelDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.ConceptualModel);
+        pushAuthorship(logicalModelDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.LogicalModel);
+        pushAuthorship(computableModelDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.ComputableModel);
+        pushAuthorship(conceptDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.Concept);
+        pushAuthorship(spatialReferenceDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.SpatialReference);
+        pushAuthorship(templateDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.Template);
+        pushAuthorship(unitDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.Unit);
+
+    }
+
+    void pushAuthorship(List<Item> items,ItemTypeEnum type){
+        for(int i=0;i<items.size();i++){
+            Item item = items.get(i);
+            if(item.getAuthorship().size()==0){
+                continue;
+            }
+
+            for(AuthorInfo authorInfo : item.getAuthorship()) {
+                Authorship authorship = new Authorship();
+
+                BeanUtils.copyProperties(authorInfo,authorship);
+
+                Authorship exist = null;
+                if (authorship.getEmail() != null && !authorship.getEmail().trim().equals("")) {
+                    exist = authorshipDao.findByEmail(authorship.getEmail());
+                }
+                if (authorship.getHomepage() != null && exist == null && !authorship.getHomepage().trim().equals(""))
+                    exist = authorshipDao.findByHomepage((authorship.getHomepage().trim()));
+                if (authorship.getName() != null && exist == null && !authorship.getName().trim().equals(""))
+                    exist = authorshipDao.findByName((authorship.getName().trim()));
+                if (authorship.getName() != null && exist == null && !authorship.getName().trim().equals(""))
+                    exist = authorshipDao.findByAliasIn((authorship.getName().trim()));
+
+                if (exist != null) {
+                    //添加别名
+                    if(!exist.getName().equals(authorship.getName().trim())) {
+                        Boolean nameExist = false;
+                        for (String alias : exist.getAlias()) {
+                            if (alias.equals(authorship.getName().trim())) {
+                                nameExist = true;
+                            }
+                        }
+                        if (!nameExist) {
+                            List<String> aliases = exist.getAlias();
+                            aliases.add(authorship.getName().trim());
+                            exist.setAlias(aliases);
+                        }
+                    }
+                    //添加条目
+                    List<ItemInfo> itemInfoList = exist.getItems();
+                    ItemInfo itemInfo = new ItemInfo();
+                    itemInfo.setType(type);
+                    itemInfo.setOid(item.getOid());
+                    itemInfoList.add(itemInfo);
+                    exist.setItems(itemInfoList);
+
+                    authorshipDao.save(exist);
+                } else {
+                    authorship.setOid(UUID.randomUUID().toString());
+
+                    //添加条目
+                    List<ItemInfo> itemInfoList = authorship.getItems();
+                    ItemInfo itemInfo = new ItemInfo();
+                    itemInfo.setType(type);
+                    itemInfo.setOid(item.getOid());
+                    itemInfoList.add(itemInfo);
+                    authorship.setItems(itemInfoList);
+
+                    authorshipDao.insert(authorship);
+
+                }
+            }
+        }
+    }
 
     @Test
     public void GenerateSitemap() {
@@ -373,19 +462,33 @@ public class PortalApplicationTests {
         if(user.getModelItems()>0||user.getDataItems()>0||user.getConceptualModels()>0||user.getLogicalModels()>0||
                 user.getComputableModels()>0||user.getConcepts()>0||user.getSpatials()>0||user.getTemplates()>0||
                 user.getUnits()>0||user.getThemes()>0){
-            message+="You have shared some resources about geographic models in the platform, including ";
+            message+="You have shared some resources about geographic model in the platform, including ";
             List<String> stringList = new ArrayList<>();
             JSONArray items=new JSONArray();
-            addItem(user.getModelItems(), "model item",user.getUserName(),stringList, items);
-            addItem(user.getConceptualModels(), "conceptual model",user.getUserName(),stringList, items);
-            addItem(user.getLogicalModels(), "logical model",user.getUserName(),stringList, items);
-            addItem(user.getComputableModels(), "computable model",user.getUserName(),stringList, items);
-            addItem(user.getDataItems(), "data item",user.getOid(),stringList, items);
-            addItem(user.getConcepts(), "concept",user.getUserName(),stringList, items);
-            addItem(user.getSpatials(), "spatial reference",user.getUserName(),stringList, items);
-            addItem(user.getTemplates(), "data template",user.getUserName(),stringList, items);
-            addItem(user.getUnits(), "unit & metric",user.getUserName(),stringList, items);
-            addItem(user.getThemes(), "theme",user.getUserName(),stringList, items);
+
+            List<DailyViewCount> sevenDayViewCountList = new ArrayList<>();
+            Calendar calendar = Calendar.getInstance();
+            for(int i=-6;i<=0;i++){
+                calendar.setTime(now);
+                calendar.add(Calendar.DATE, i);
+                DailyViewCount dailyViewCount = new DailyViewCount(calendar.getTime(),0);
+                sevenDayViewCountList.add(dailyViewCount);
+            }
+
+
+            List<Integer> countList=new ArrayList<>();
+            List<String> nameList=new ArrayList<>();
+
+            addItem(countList,nameList,sevenDayViewCountList, user.getModelItems(), "model item",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getConceptualModels(), "conceptual model",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getLogicalModels(), "logical model",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getComputableModels(), "computable model",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getDataItems(), "data item",user.getOid(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getConcepts(), "concept",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getSpatials(), "spatial reference",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getTemplates(), "data template",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getUnits(), "unit & metric",user.getUserName(),stringList, items);
+            addItem(countList,nameList,sevenDayViewCountList, user.getThemes(), "theme",user.getUserName(),stringList, items);
             for(int i=0;i<stringList.size();i++){
                 message+=stringList.get(i);
                 if(i< stringList.size()-2){
@@ -421,12 +524,35 @@ public class PortalApplicationTests {
 
                 total+=items.getJSONObject(items.size()-1-i).getInteger("view count");
             }
+
+            //饼图
+            ChartOption pieOption = new ChartOption();
+            String[] pieTypes=new String[countList.size()];
+            int[][] ints=new int[1][countList.size()];
+            for(int i=0;i<countList.size();i++){
+                pieTypes[i]=nameList.get(i);
+                ints[0][i]=countList.get(i);
+            }
+            pieOption.setTitle("Type Statistics");
+            pieOption.setSubTitle("");
+            pieOption.setData(ints);
+            pieOption.setTypes(pieTypes);
+            pieOption.setValXis(pieTypes);
+            pieOption.setTitlePosition("center");
+
+            String piePath = ChartUtils.generatePie(pieOption);
+
+            message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
             message+="Many people have noticed what you done in OpenGMS, your contributions have been viewed and invoked "+total+" times. " +
                     "The most influential item that you contributed is "+items.getJSONObject(0).getString("name")+", it has been viewed "+items.getJSONObject(0).getInteger("view count")+" times. "+
                     "The page view of your contributions are shown in the figure below:<br/><br/>";
+
+
+
+            //柱状图
             ChartOption chartOption=new ChartOption();
             chartOption.setTitle("Page View Statistics");
-            chartOption.setSubTitle("Go to OpenGMS to check daily page view of your contributions");
+            chartOption.setSubTitle("Go to OpenGMS to check more daily page view of your contributions");
             chartOption.setTitlePosition("center");
             int size=0;
             if(items.size()>=5){
@@ -437,34 +563,76 @@ public class PortalApplicationTests {
             String[] types=new String[size];
             int[][] data=new int[1][size];
             for(int i=0;i<types.length;i++){
-                types[i]=items.getJSONObject(i).getString("name");
+                String itemName = items.getJSONObject(i).getString("name");
+                types[i]=itemName.length()>16?(itemName.substring(0,14)+"..."):itemName;
                 data[0][i]=items.getJSONObject(i).getInteger("view count");
             }
             chartOption.setTypes(types);
             chartOption.setData(data);
             chartOption.setValXis(types);
             String chartPath=ChartUtils.generateBar(chartOption);
+
+            //折线图
+            ChartOption lineChart = new ChartOption();
+            lineChart.setTitle("Daily page views in the last 7 days");
+            lineChart.setSubTitle("");
+            lineChart.setTitlePosition("left");
+            String[] dates = new String[7];
+            int[][] viewCounts = new int[1][7];
+
+            for(int i=0;i<sevenDayViewCountList.size();i++){
+                DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                dates[i] = sdf.format(dailyViewCount.getDate());
+                viewCounts[0][i] = dailyViewCount.getCount();
+            }
+
+            lineChart.setTypes(new String[]{"Daily page view"});
+            lineChart.setData(viewCounts);
+            lineChart.setValXis(dates);
+            String lineChartPath = ChartUtils.generateLine(lineChart);
+
+            //
+            JSONObject pieChartInfo = new JSONObject();
+            pieChartInfo.put("name","pieChart");
+            pieChartInfo.put("path",piePath);
+
             JSONObject imageInfo = new JSONObject();
             imageInfo.put("name","chart1");
             imageInfo.put("path",chartPath);
+
+            JSONObject lineChartInfo = new JSONObject();
+            lineChartInfo.put("name","lineChart");
+            lineChartInfo.put("path",lineChartPath);
+
             JSONArray imageList=new JSONArray();
+            imageList.add(pieChartInfo);
             imageList.add(imageInfo);
+            imageList.add(lineChartInfo);
 
             message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+            message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
+
             message+="If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
             message+="Sincerely,<br/>";
             message+="OpenGMS Team<br/>";
-            message+="http://geomodeling.njnu.edu.cn</p>";
+            message+="http://geomodeling.njnu.edu.cn</p><br/>";
 
-            commonService.sendEmailWithImg("OpenGMS Team","921485453@qq.com","Geographic Modeling and Simulation Review", message,imageList);
+            message+="<p>To unsubscribe from this community discussion, go to <a href=\"http://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
+
+            commonService.sendEmailWithImg("OpenGMS Team","921485453@qq.com","Open Geographic Modeling and Simulation Review", message,imageList);
 
 
         }
     }
 
-    private void addItem(int count, String type,String author, List<String> StringList,JSONArray items){
+    private void addItem(List<Integer> countList,List<String> nameList,List<DailyViewCount> sevenDayViewCountList, int count, String type,String author, List<String> StringList,JSONArray items){
 
         if(count>0) {
+
+            countList.add(count);
+            nameList.add(type);
+
             String str = count + " " + type;
             if (count > 1) {
                 str += "s";
@@ -508,8 +676,41 @@ public class PortalApplicationTests {
                 jsonObject.put("name",item.getName());
                 jsonObject.put("view count",item.getViewCount());
                 jsonObject.put("type",type);
-
                 items.add(jsonObject);
+
+                List<DailyViewCount> dailyViewCountList = item.getDailyViewCount();
+                if(dailyViewCountList!=null&&dailyViewCountList.size()!=0) {
+                    Date now = new Date();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(now);
+                    calendar.add(Calendar.DATE, -6);
+                    int i = 0;
+                    for (; i < dailyViewCountList.size(); i++) {
+                        if (calendar.getTime().before(dailyViewCountList.get(i).getDate())) {
+                            break;
+                        }
+                    }
+
+                    int j=0;
+
+                    while (i != dailyViewCountList.size() && j < 7) {
+
+                        DailyViewCount sd = sevenDayViewCountList.get(j);
+                        DailyViewCount d = dailyViewCountList.get(i);
+                        if (Utils.isSameDay(sd.getDate(), d.getDate())) {
+                            sd.setCount(sd.getCount() + d.getCount());
+                            sevenDayViewCountList.set(j, sd);
+                            i++;
+                        }
+
+                        j++;
+
+                    }
+
+                }
+
+
+
             }
         }
     }

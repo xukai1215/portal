@@ -2,10 +2,8 @@ package njgis.opengms.portal.entity;
 
 import lombok.Data;
 import njgis.opengms.portal.entity.support.*;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,19 +12,19 @@ import java.util.List;
  */
 @Data
 @Document
-public class Theme{
-    @Id
-    String id;
-    String oid;
+public class Theme extends Item {
+//    @Id
+//    String id;
+//    String oid;
     String creator_name;
     String creator_oid;
     String themename;
     String sub_themename;
-    String detail;
+//    String detail;
     List<SubDetail> subDetails;
 //    String sub_detail;
     String image;
-    String author;
+//    String author;
     String tabledata;
     //修改confirm字段
     String Info_edit;
@@ -46,7 +44,7 @@ public class Theme{
     List<Reference> references;
     List<Maintainer> maintainer;//其余的维护者为下标0之后存储
 
-    Date createTime;
-    Date lastModifyTime;
+//    Date createTime;
+//    Date lastModifyTime;
 
 }

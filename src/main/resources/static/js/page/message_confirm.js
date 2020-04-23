@@ -99,9 +99,23 @@ var notice = Vue.extend({
             message_num:0,
 
             reverse: true,
+
+            comments:[],
         };
     },
     methods:{
+        getComments(){
+            $.get("/comment/getCommentsByUser",{},(result)=>{
+                let code = result.code;
+                if(code == -1){
+                    alert("please login");
+                    window.location.href="/user/login";
+                }
+                this.comments = result.data;
+
+
+            })
+        },
         handleClick(tab, event){
             console.log(tab, event);
         },
@@ -877,6 +891,7 @@ var notice = Vue.extend({
     },
     mounted(){
         this.sendcurIndexToParent();
+        this.getComments();
         this.getVersions();
         $(() => {
 

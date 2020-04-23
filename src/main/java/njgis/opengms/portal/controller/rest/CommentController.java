@@ -3,11 +3,11 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dao.CommentDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.CommentDTO;
 import njgis.opengms.portal.dto.CommentResultDTO;
 import njgis.opengms.portal.entity.Comment;
+import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -38,10 +38,42 @@ public class CommentController {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    DataItemDao dataItemDao;
+
+    @Autowired
+    ModelItemDao modelItemDao;
+
+    @Autowired
+    ConceptualModelDao conceptualModelDao;
+
+    @Autowired
+    LogicalModelDao logicalModelDao;
+
+    @Autowired
+    ComputableModelDao computableModelDao;
+
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    ThemeDao themeDao;
+
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
     private JSONArray userArray=new JSONArray();
+
+    SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
     @RequestMapping(value="/add",method = RequestMethod.POST)
@@ -124,7 +156,7 @@ public class CommentController {
             }
             count++;
             JSONObject commentObj=new JSONObject();
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
             commentObj.put("oid",commentResultDTO.getOid());
             commentObj.put("content",commentResultDTO.getContent());
             commentObj.put("date",simpleDateFormat.format(commentResultDTO.getDate()));
@@ -178,6 +210,84 @@ public class CommentController {
         userArray.add(author);
 
         return author;
+    }
+
+    @RequestMapping(value="/getCommentsByUser", method = RequestMethod.GET)
+    public JsonResult getCommentsByUser(HttpServletRequest request){
+
+        HttpSession session=request.getSession();
+
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else {
+            String oid = session.getAttribute("oid").toString();
+            List<Comment> commentList = commentDao.findAllByAuthorIdOrReplyToUserId(oid,oid);
+            JSONArray jsonArray = new JSONArray();
+            for(int i=0;i<commentList.size();i++){
+                Comment comment = commentList.get(i);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("content",comment.getContent());
+                jsonObject.put("author",getUser(comment.getAuthorId()));
+                jsonObject.put("replier",getUser(comment.getReplyToUserId()));
+                jsonObject.put("date",simpleDateFormat.format(comment.getDate()));
+
+                String id = comment.getRelateItemId();
+                JSONObject itemInfo = getItemInfoByTypeAndId(comment.getRelateItemType(),comment.getRelateItemId());
+                jsonObject.put("itemInfo",itemInfo);
+
+                jsonArray.add(jsonObject);
+
+            }
+
+            return ResultUtils.success(jsonArray);
+        }
+
+
+    }
+
+    public JSONObject getItemInfoByTypeAndId(ItemTypeEnum itemType,String id){
+        JSONObject itemInfo = new JSONObject();
+        Item item = new Item();
+        switch (itemType){
+            case ModelItem:
+                item = modelItemDao.findFirstByOid(id);
+                break;
+            case DataItem:
+                item = dataItemDao.findFirstById(id);
+                break;
+            case ConceptualModel:
+                item = conceptualModelDao.findFirstByOid(id);
+                break;
+            case LogicalModel:
+                item = logicalModelDao.findFirstByOid(id);
+                break;
+            case ComputableModel:
+                item = computableModelDao.findFirstByOid(id);
+                break;
+            case Concept:
+                item = conceptDao.findByOid(id);
+                break;
+            case SpatialReference:
+                item = spatialReferenceDao.findByOid(id);
+                break;
+            case Template:
+                item = templateDao.findByOid(id);
+                break;
+            case Unit:
+                item = unitDao.findByOid(id);
+                break;
+            case Theme:
+                item = themeDao.findByOid(id);
+                break;
+
+        }
+        String itemTypeStr = itemType.name();
+
+        itemInfo.put("oid",item.getOid());
+        itemInfo.put("name",item.getName());
+        itemInfo.put("type",itemTypeStr.substring(0,1).toLowerCase()+itemTypeStr.substring(1));
+
+        return itemInfo;
     }
 
 }
