@@ -819,7 +819,10 @@ var userDataSpace = Vue.extend(
 
             //显示鼠标hover的title
             showtitle(ev) {
-                return ev.label + "\n" + "Type: " + ev.suffix;
+                let suffix
+                if (ev.suffix==='') suffix = 'package'
+                else suffix = ev.suffix
+                return ev.label + "\n" + "Type: " + suffix;
             },
 
             getImg(item) {
