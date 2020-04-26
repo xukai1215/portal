@@ -2,6 +2,7 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.DataItemDao;
