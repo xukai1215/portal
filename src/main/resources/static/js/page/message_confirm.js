@@ -750,7 +750,7 @@ var notice = Vue.extend({
                     //定义match用于存储与后台数据进行匹配的条目数据
                     let match = {};
                     console.log(this.theme_tableData1[i]);
-                    match.time = this.theme_tableData1[i].time;
+                    match.time = this.theme_tableData1[i].unformatTime;
                     match.themename = this.theme_tableData1[i].theme;
                     match.type= this.theme_tableData1[i].type;
                     console.log(match);
@@ -942,6 +942,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -988,6 +989,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -1034,6 +1036,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -1080,6 +1083,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
