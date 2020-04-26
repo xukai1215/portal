@@ -361,14 +361,15 @@ public class RepositoryService {
 
         List<Maintainer> maintainers = theme.getMaintainer();
         JSONArray maintainer_result = new JSONArray();
-        for (int i=0;i<maintainers.size();i++){
-            JSONObject ma = new JSONObject();
-            Maintainer maintainer = maintainers.get(i);
-            ma.put("name",maintainer.getName());
-            ma.put("id",maintainer.getId());
-            maintainer_result.add(ma);
+        if (maintainers!=null) {
+            for (int i = 0; i < maintainers.size(); i++) {
+                JSONObject ma = new JSONObject();
+                Maintainer maintainer = maintainers.get(i);
+                ma.put("name", maintainer.getName());
+                ma.put("id", maintainer.getId());
+                maintainer_result.add(ma);
+            }
         }
-
 
         modelAndView.addObject("image", htmlLoadPath+theme.getImage());
         modelAndView.addObject("detail",theme_detailDesc);
