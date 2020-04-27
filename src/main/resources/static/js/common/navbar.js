@@ -821,6 +821,17 @@ $(document).ready(function () {
                 }
             })
             $("#notice_num").text(message_num);
+            //判断message_num是否为0，控制导航栏红点显示
+            if (message_num!=0){
+                $(".message_user").show();
+                $("#notice_num").show();
+            } else {
+                $(".message_user").hide();
+                $("#notice_num").hide();
+            }
+
+
+
 
         }
     })

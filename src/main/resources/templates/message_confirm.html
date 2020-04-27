@@ -58,111 +58,111 @@
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-if="item.status== 'unchecked'&& item.type == 'modelItem'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'conceptualModel'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'logicalModel'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'computableModel'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
 
                                                 <!--community-->
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'concept'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'spatialReference'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'unit'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if="item.status== 'unchecked'&& item.type == 'template'">
-                                                        <h4>{{item.modifierName}} edit {{item.type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{item.modifierName}} edited in {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
 
                                                 <!--confirmed  model：modelItem、conceptualModel、logicalModel、computableModel
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'modelItem'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'conceptualModel'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'logicalModel'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'computableModel'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'concept'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'spatialReference'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'unit'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.status== 'confirmed'&&item.type == 'template'">
-                                                        <h4>{{username}} confirm {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} confirm in {{item.modifyTime}}</p>
+                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--reject  model：modelItem、conceptualModel、logicalModel、computableModel
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'modelItem'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/modelItem/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'conceptualModel'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/conceptualModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'logicalModel'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/logicalModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'computableModel'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/computableModel/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'concept'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/concept/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'spatialReference'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/spatialReference/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else-if ="item.status== 'reject'&&item.type == 'unit'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/unit/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                     <el-card v-else ="item.status== 'reject'&&item.type == 'template'">
-                                                        <h4>{{username}} reject {{item.modifierName}}'s edit of {{item.type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p>{{username}} reject in {{item.modifyTime}}</p>
+                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/template/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                             </el-timeline-item>
                                     </el-timeline>
@@ -237,7 +237,7 @@
                                         <el-tab-pane label="Accepted version">
                                             <div slot="label">
                                                 Accepted version
-                                                <span class="el-badge__content el-badge__content--undefined">
+                                                <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
                                                     {{model_tableData2_length}}
                                                 </span>
 
@@ -285,7 +285,7 @@
                                         <el-tab-pane label="Rejected version">
                                             <div slot="label">
                                                 Rejected version
-                                                <span class="el-badge__content el-badge__content--undefined">
+                                                <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
                                                     {{model_tableData3_length}}
                                                 </span>
 
@@ -333,19 +333,6 @@
                                     </el-tabs>
                                 </el-card>
                             </el-tab-pane>
-                            <!--<el-tab-pane label="Data" name="Third">-->
-                                <!--<el-card>-->
-                                    <!--&lt;!&ndash;<el-table&ndash;&gt;-->
-                                    <!--&lt;!&ndash;:data="tableData"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;style="width: 100%">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<el-table-column&ndash;&gt;-->
-                                    <!--&lt;!&ndash;prop="date"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;label="Editor"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;width="180">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</el-table-column>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</el-table>&ndash;&gt;-->
-                                <!--</el-card>-->
-                            <!--</el-tab-pane>-->
                             <el-tab-pane label="Community" name="Fourth">
                                 <div slot="label">
                                     Community
@@ -414,7 +401,7 @@
                                         <el-tab-pane label="Accepted version">
                                             <div slot="label">
                                                 Accepted version
-                                                <span class="el-badge__content el-badge__content--undefined">
+                                                <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
                                                     {{community_tableData2_length}}
                                                 </span>
                                             </div>
@@ -461,7 +448,7 @@
                                         <el-tab-pane label="Rejected version">
                                             <div slot="label">
                                                 Rejected version
-                                                <span class="el-badge__content el-badge__content--undefined">
+                                                <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
                                                     {{community_tableData3_length}}
                                                 </span>
                                             </div>
@@ -549,7 +536,6 @@
                                                         label="Modifier"
                                                         width="120">
                                                 </el-table-column>
-
                                                 <el-table-column
                                                         label="View"
                                                         width="150">
@@ -562,7 +548,6 @@
                                                         </el-button>
                                                     </template>
                                                 </el-table-column>
-
                                                 <el-table-column
                                                         label="Operations"
                                                         width="200">
@@ -576,7 +561,7 @@
                                         <el-tab-pane label="Accepted version">
                                             <div slot="label">
                                                 Accepted version
-                                                <span class="el-badge__content el-badge__content--undefined">
+                                                <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
                                                     {{theme_tableData2_length}}
                                                 </span>
                                             </div>
@@ -623,7 +608,7 @@
                                         <el-tab-pane label="Rejected version">
                                             <div slot="label">
                                                 Rejected version
-                                                <span class="el-badge__content el-badge__content--undefined">
+                                                <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
                                                     {{theme_tableData3_length}}
                                                 </span>
                                             </div>

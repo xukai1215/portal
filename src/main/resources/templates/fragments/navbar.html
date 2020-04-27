@@ -84,7 +84,15 @@
                     <li id="userLoged" style="float: right">
                         <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
                             <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
-                            <div id="userName" style="display: inline-block">Hello!!!!!!!!!</div>
+                            <div class="el-badge item">
+                                <div id="userName" style="display: inline-block">Hello!!!!!!!!!</div>
+                                <sup class="el-badge__content is-fixed is-dot message_user" style="
+                                    width: 8px;
+                                    top: 0px!important;
+                                    right: 0px!important;
+                                      ">
+                                </sup>
+                            </div>
                         </a>
                     </li>
                 </div>
@@ -281,5 +289,6 @@
 </body>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/navbar.js"></script>
+<script src="/static/socket/message.js"></script>
 
 </html>

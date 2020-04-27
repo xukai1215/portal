@@ -212,7 +212,37 @@ var notice = Vue.extend({
                         }else {
                             this.sum_tableData[i].color = '#20D1D4';
                         }
+                        // 将type字母分开存到ex_type中
+                        if (this.sum_tableData[i].type == "modelItem"){
+                            this.sum_tableData[i].ex_type = "Model Item";
+                        }else if (this.sum_tableData[i].type == "conceptualModel") {
+                            this.sum_tableData[i].ex_type = "Conceptual Model";
+                        }else if (this.sum_tableData[i].type == "logicalModel") {
+                            this.sum_tableData[i].ex_type = "Logical Model";
+                        }else if (this.sum_tableData[i].type == "computableModel") {
+                            this.sum_tableData[i].ex_type = "Computable Model";
+                        }else if (this.sum_tableData[i].type == "spatialReference") {
+                            this.sum_tableData[i].ex_type = "Spatial Reference";
+                        }else {
+                            this.sum_tableData[i].ex_type = this.sum_tableData[i].type;
+                        }
+
+                        let data ={
+                            userName:this.sum_tableData[i].modifier
+                        }
+                        //将通过userName获取用户的oid并存入sum_tableDta的oid中
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.sum_tableData[i].oid = json;
+                            }
+                        })
+
                     }
+
                     this.model_tableData1_length = this.model_tableData1.length;
                     this.model_tableData2_length = this.model_tableData2.length;
                     this.model_tableData3_length = this.model_tableData3.length;
