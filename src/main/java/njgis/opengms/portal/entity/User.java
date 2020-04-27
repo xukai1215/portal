@@ -1,5 +1,6 @@
 package njgis.opengms.portal.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.*;
 import org.springframework.data.annotation.Id;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Document
 @Data
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 public class User {
     @Id
     String id;

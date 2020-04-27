@@ -275,4 +275,16 @@ public class ThemeRestController {
         JsonResult result = new JsonResult();
         return result;
     }
+
+    @RequestMapping(value = "/getoid",method = RequestMethod.GET)
+    public String  getoid(@PathParam("userName") String userName){
+        String oid = "";
+        List<User> users = userDao.findAll();
+        for (int i=0;i<users.size();i++){
+            if (users.get(i).getUserName().equals(userName)){
+                oid = users.get(i).getOid();
+            }
+        }
+        return oid;
+    }
 }
