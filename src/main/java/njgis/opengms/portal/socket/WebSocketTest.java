@@ -1,10 +1,16 @@
 package njgis.opengms.portal.socket;
 
+import org.springframework.stereotype.Component;
+
 import javax.websocket.*;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.websocket.server.ServerEndpoint;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@ServerEndpoint("/websocket")
+@Component
 /**
  * @Auther mingyuan
  * @Data 2019.12.26 11:39

@@ -1509,6 +1509,8 @@ var createTheme = Vue.extend({
                             }
                             else{
                                 alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                //产生信号调用计数，启用websocket
+
                                 window.location.href = "/user/userSpace";
                             }
                         }
@@ -1523,6 +1525,8 @@ var createTheme = Vue.extend({
                 })
             }
         });
+
+
 
         $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
 

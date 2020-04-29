@@ -403,7 +403,6 @@
                                                                 <el-form-item label="Detail">
                                                                     <span>{{ props.row.description }}</span>
                                                                 </el-form-item>
-
                                                             </el-form>
                                                         </template>
                                                     </el-table-column>
@@ -575,6 +574,17 @@
                                                     </div>
                                                 </el-card>
                                             </a>
+                                            <!--&lt;!&ndash;测试聊天室&ndash;&gt;-->
+                                            <!--<el-card>-->
+                                               <!--Welcome-->
+                                                <!--<br/>-->
+                                                <!--<input id="message_text" type="text"/>-->
+                                                <!--<el-button type="success" @click="send_message()">发送消息</el-button>-->
+                                                <!--<hr/>-->
+                                                <!--<button onclick="closeWebSocket()">关闭聊天室连接</button>-->
+                                                <!--<hr/>-->
+                                                <!--<div id="message"></div>-->
+                                            <!--</el-card>-->
                                         </el-col>
                                         <el-tooltip class="item" effect="dark" content="Application editor" placement="top-start">
                                             <el-button type="info" @click="show_icon" icon="el-icon-edit" circle ></el-button>
@@ -585,7 +595,6 @@
                             </div>
                         </div>
                     </div>
-                </el-card>
             </div>
         </div>
     </div>
@@ -614,19 +623,7 @@
          <el-button type="primary" @click="show_sub_application">confirm</el-button>
          </span>
     </el-dialog>
-    <!--申请成为维护者的弹出框-->
-    <!--<el-dialog-->
-            <!--title="Apply to be a maintainer"-->
-            <!--:visible.sync="dialogVisible"-->
-            <!--width="30%"-->
-            <!--:before-close="handleClose">-->
-                <!--<span>Please input you reason.</span>-->
-                <!--<el-input type="textarea" v-model="form.desc"></el-input>-->
-                 <!--<span slot="footer" class="dialog-footer">-->
-                <!--<el-button @click="dialogVisible = false">cancel</el-button>-->
-                <!--<el-button type="primary" @click="send_message">Send</el-button>-->
-                 <!--</span>-->
-    <!--</el-dialog>-->
+
 </div>
 
 </body>
@@ -642,5 +639,9 @@
 <script src="/static/js/page/theme_info.js"></script>
 <script src="/static/js/common/navbar.js"></script>
 <script src="/static/js/common/vue-avatar.min.js"></script>
+<!--<script src="/static/socket/message.js"></script>-->
+<script src="/static/socket/jquery.min.js"></script>
+<script src="/static/socket/sockjs.min.js"></script>
+
 
 </html>
