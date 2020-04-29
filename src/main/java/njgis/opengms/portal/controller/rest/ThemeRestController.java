@@ -5,16 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dao.DataItemDao;
-import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.dao.ThemeDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.dto.theme.ThemeVersionDTO;
-import njgis.opengms.portal.entity.DataItem;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.Theme;
-import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.ThemeService;
 import njgis.opengms.portal.service.UserService;
@@ -56,6 +50,9 @@ public class ThemeRestController {
     ModelItemDao modelItemDao;
 
     @Autowired
+    ModelItemVersionDao modelItemVersionDao;
+
+    @Autowired
     DataItemDao dataItemDao;
 
     @Autowired
@@ -63,6 +60,48 @@ public class ThemeRestController {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    ConceptualModelDao conceptualModelDao;
+
+    @Autowired
+    ConceptualModelVersionDao conceptualModelVersionDao;
+
+    @Autowired
+    LogicalModelDao logicalModelDao;
+
+    @Autowired
+    LogicalModelVersionDao logicalModelVersionDao;
+
+    @Autowired
+    ComputableModelDao computableModelDao;
+
+    @Autowired
+    ComputableModelVersionDao computableModelVersionDao;
+
+    @Autowired
+    ConceptDao conceptDao;
+
+    @Autowired
+    ConceptVersionDao conceptVersionDao;
+
+    @Autowired
+    SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    SpatialReferenceVersionDao spatialReferenceVersionDao;
+
+    @Autowired
+    UnitDao unitDao;
+
+    @Autowired
+    UnitVersionDao unitVersionDao;
+
+    @Autowired
+    TemplateDao templateDao;
+
+    @Autowired
+    TemplateVersionDao templateVersionDao;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -286,5 +325,281 @@ public class ThemeRestController {
             }
         }
         return oid;
+    }
+    @RequestMapping(value = "/getModifierName",method = RequestMethod.GET)
+    public String  getModifierName(@PathParam("uid") String uid){
+        String userName = "";
+        List<User> users = userDao.findAll();
+        for (int i=0;i<users.size();i++){
+            if (users.get(i).getOid().equals(uid)){
+                userName = users.get(i).getUserName();
+            }
+        }
+        return userName;
+    }
+
+    @RequestMapping(value = "getAuthorMessageNum", method = RequestMethod.GET)
+    public Integer getAuthorMessageNum(String type, @PathParam("oid") String oid){
+        Integer message_num = 0;
+        String author = "";
+        //需要根据type取出作者的uid
+        switch (type){
+            case "modelItem":{
+                List<ModelItem> modelItems = modelItemDao.findAll();
+                for (int i = 0 ;i<modelItems.size();i++){
+                    if (oid.equals(modelItems.get(i).getOid())){
+                        author = modelItems.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "conceptualModel":{
+                List<ConceptualModel> conceptualModels = conceptualModelDao.findAll();
+                for (int i = 0 ;i<conceptualModels.size();i++){
+                    if (oid.equals(conceptualModels.get(i).getOid())){
+                        author = conceptualModels.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "logicalModel":{
+                List<LogicalModel> logicalModels = logicalModelDao.findAll();
+                for (int i = 0 ;i<logicalModels.size();i++){
+                    if (oid.equals(logicalModels.get(i).getOid())){
+                        author = logicalModels.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "computableModel":{
+                List<ComputableModel> computableModels = computableModelDao.findAll();
+                for (int i = 0 ;i<computableModels.size();i++){
+                    if (oid.equals(computableModels.get(i).getOid())){
+                        author = computableModels.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "concept":{
+                List<Concept> concepts = conceptDao.findAll();
+                for (int i = 0 ;i<concepts.size();i++){
+                    if (oid.equals(concepts.get(i).getOid())){
+                        author = concepts.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "spatialReference":{
+                List<SpatialReference> spatialReferences = spatialReferenceDao.findAll();
+                for (int i = 0 ;i<spatialReferences.size();i++){
+                    if (oid.equals(spatialReferences.get(i).getOid())){
+                        author = spatialReferences.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "unit":{
+                List<Unit> units = unitDao.findAll();
+                for (int i = 0 ;i<units.size();i++){
+                    if (oid.equals(units.get(i).getOid())){
+                        author = units.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "template":{
+                List<Template> templates = templateDao.findAll();
+                for (int i = 0 ;i<templates.size();i++){
+                    if (oid.equals(templates.get(i).getOid())){
+                        author = templates.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "theme":{
+                List<Theme> themes = themeDao.findAll();
+                for (int i = 0 ;i<themes.size();i++){
+                    if (oid.equals(themes.get(i).getOid())){
+                        author = themes.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        //并根据author取出所有unchecked消息数量
+        List<ModelItemVersion> modelItemVersions = modelItemVersionDao.findAll();
+        for (int i=0 ; i <modelItemVersions.size(); i++){
+            if (author.equals(modelItemVersions.get(i).getCreator())&&modelItemVersions.get(i).getStatus() == 0){
+                message_num ++ ;
+            }
+        }
+        List<ConceptualModelVersion> conceptualModelVersions = conceptualModelVersionDao.findAll();
+        for (int i=0 ; i <conceptualModelVersions.size(); i++){
+            if (author.equals(conceptualModelVersions.get(i).getCreator())&&conceptualModelVersions.get(i).getVerStatus() == 0){
+                message_num ++ ;
+            }
+        }
+        List<LogicalModelVersion> logicalModelVersions = logicalModelVersionDao.findAll();
+        for (int i =0;i<logicalModelVersions.size();i++){
+            if (author.equals(logicalModelVersions.get(i).getCreator())&&logicalModelVersions.get(i).getVerStatus() == 0){
+                message_num ++;
+            }
+        }
+        List<ComputableModelVersion> computableModelVersions = computableModelVersionDao.findAll();
+        for (int i =0;i<computableModelVersions.size();i++){
+            if (author.equals(computableModelVersions.get(i).getCreator())&&computableModelVersions.get(i).getVerStatus() == 0){
+                message_num ++;
+            }
+        }
+        List<ConceptVersion> conceptVersions = conceptVersionDao.findAll();
+        for (int i =0;i<conceptVersions.size();i++){
+            if (author.equals(conceptVersions.get(i).getCreator())&&conceptVersions.get(i).getVerStatus() == 0){
+                message_num ++;
+            }
+        }
+        List<SpatialReferenceVersion> spatialReferenceVersions = spatialReferenceVersionDao.findAll();
+        for (int i =0;i<spatialReferenceVersions.size();i++){
+            if (author.equals(spatialReferenceVersions.get(i).getCreator())&&spatialReferenceVersions.get(i).getVerStatus() == 0){
+                message_num ++;
+            }
+        }
+        List<UnitVersion> unitVersions = unitVersionDao.findAll();
+        for (int i =0;i<unitVersions.size();i++){
+            if (author.equals(unitVersions.get(i).getCreator())&&unitVersions.get(i).getVerStatus() == 0){
+                message_num ++;
+            }
+        }
+        List<TemplateVersion> templateVersions = templateVersionDao.findAll();
+        for (int i =0;i<templateVersions.size();i++){
+            if (author.equals(templateVersions.get(i).getCreator())&&templateVersions.get(i).getVerStatus() == 0){
+                message_num ++;
+            }
+        }
+        return message_num;
+    }
+
+    @RequestMapping(value = "getThemeMessageNum",method = RequestMethod.GET)
+    public JSONArray getThemeMessageNum(String type, @PathParam("oid") String oid){
+        JSONArray jsonArray = new JSONArray();
+        String author = "";
+        String uid = "";
+        //需要根据type取出作者的uid
+        switch (type){
+            case "modelItem":{
+                List<ModelItem> modelItems = modelItemDao.findAll();
+                for (int i = 0 ;i<modelItems.size();i++){
+                    if (oid.equals(modelItems.get(i).getOid())){
+                        author = modelItems.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "conceptualModel":{
+                List<ConceptualModel> conceptualModels = conceptualModelDao.findAll();
+                for (int i = 0 ;i<conceptualModels.size();i++){
+                    if (oid.equals(conceptualModels.get(i).getOid())){
+                        author = conceptualModels.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "logicalModel":{
+                List<LogicalModel> logicalModels = logicalModelDao.findAll();
+                for (int i = 0 ;i<logicalModels.size();i++){
+                    if (oid.equals(logicalModels.get(i).getOid())){
+                        author = logicalModels.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "computableModel":{
+                List<ComputableModel> computableModels = computableModelDao.findAll();
+                for (int i = 0 ;i<computableModels.size();i++){
+                    if (oid.equals(computableModels.get(i).getOid())){
+                        author = computableModels.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "concept":{
+                List<Concept> concepts = conceptDao.findAll();
+                for (int i = 0 ;i<concepts.size();i++){
+                    if (oid.equals(concepts.get(i).getOid())){
+                        author = concepts.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "spatialReference":{
+                List<SpatialReference> spatialReferences = spatialReferenceDao.findAll();
+                for (int i = 0 ;i<spatialReferences.size();i++){
+                    if (oid.equals(spatialReferences.get(i).getOid())){
+                        author = spatialReferences.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "unit":{
+                List<Unit> units = unitDao.findAll();
+                for (int i = 0 ;i<units.size();i++){
+                    if (oid.equals(units.get(i).getOid())){
+                        author = units.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "template":{
+                List<Template> templates = templateDao.findAll();
+                for (int i = 0 ;i<templates.size();i++){
+                    if (oid.equals(templates.get(i).getOid())){
+                        author = templates.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+            case "theme":{
+                List<Theme> themes = themeDao.findAll();
+                for (int i = 0 ;i<themes.size();i++){
+                    if (oid.equals(themes.get(i).getOid())){
+                        author = themes.get(i).getAuthor();
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        List<User> users = userDao.findAll();
+        for (int i=0; i<users.size();i++){
+            if (author.equals(users.get(i).getUserName())){
+                uid = users.get(i).getOid();
+            }
+        }
+
+        List<Theme> themes = themeDao.findAll();
+        for (int i=0;i<themes.size();i++){
+            if (themes.get(i).getCreator_oid().equals(uid)&&themes.get(i).getSubDetails()!=null){
+                jsonArray.add(themes.get(i));
+            }
+        }
+        return jsonArray;
+
+
     }
 }

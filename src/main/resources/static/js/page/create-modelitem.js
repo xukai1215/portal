@@ -313,7 +313,12 @@ var createModelItem = Vue.extend({
         cls: [],
         clsStr: '',
 
+        path:"ws://localhost:8080/websocket",
+        socket:"",
 
+        message_num_socket:0,
+        message_num_socket_theme:0,
+        modelitem_oid:"",
     }
     },
     methods: {
@@ -384,12 +389,145 @@ var createModelItem = Vue.extend({
 
         sendcurIndexToParent(){
             this.$emit('com-sendcurindex',this.curIndex)
+        },
+        // send_message(){
+        //     let message = "hahalll";
+        //     console.log("message");
+        //     this.websocket.send(message);
+        //     // setMessageInnerHTML(message);
+        // },
+
+        init:function () {
+
+            if ('WebSocket' in window) {
+                // this.socket = new WebSocket("ws://localhost:8080/websocket");
+                this.socket = new WebSocket(this.path)
+                // 监听socket连接
+                this.socket.onopen = this.open
+                // 监听socket错误信息
+                this.socket.onerror = this.error
+                // 监听socket消息
+                this.socket.onmessage = this.getMessage
+
+            }
+            else {
+                alert('当前浏览器 Not support websocket');
+                console.log("websocket 无法连接");
+            }
+        },
+        open: function () {
+            console.log("socket连接成功")
+        },
+        error: function () {
+            console.log("连接错误");
+        },
+        getMessage: function (msg) {
+            console.log(msg.data);
+        },
+        send: function (msg) {
+            this.socket.send(msg);
+        },
+        close: function () {
+            console.log("socket已经关闭")
+        },
+
+        //获取当前消息数目
+        getMessageNum(modelitem_oid){
+            this.message_num_socket = 0;//初始化消息数目
+            let data = {
+                type: 'modelItem',
+                oid : modelitem_oid,
+            }
+
+            //根据oid去取该作者的被编辑的条目数量
+            $.ajax({
+                url:"/theme/getAuthorMessageNum",
+                type:"GET",
+                data:data,
+                async:false,
+                success:(json)=>{
+                    this.message_num_socket = json;
+                }
+            })
+            let data_theme = {
+                type: 'modelItem',
+                oid : modelitem_oid,
+            }
+            $.ajax({
+                url:"/theme/getThemeMessageNum",
+                async:false,
+                type:"GET",
+                data:data_theme,
+                success:(json)=>{
+                    console.log(json);
+                    for (let i=0;i<json.length;i++) {
+                        for (let k = 0; k < 4; k++) {
+                            let type;
+                            switch (k) {
+                                case 0:
+                                    type = json[i].subDetails;
+                                    break;
+                                case 1:
+                                    type = json[i].subClassInfos;
+                                    break;
+                                case 2:
+                                    type = json[i].subDataInfos;
+                                    break;
+                                case 3:
+                                    type = json[i].subApplications;
+                                    break;
+
+                            }
+                            if (type != null && type.length > 0) {
+                                for (let j = 0; j < type.length; j++) {
+                                    if (k == 0) {
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+                                    }else if (k == 1){
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+
+                                    }else if (k == 2){
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+
+                                    } else if (k == 3){
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+
+
         }
+
+    },
+
+    destroyed () {
+        // 销毁监听
+        this.socket.onclose = this.close
     },
     mounted() {
 
+        let that = this;
+
+        that.init();
+
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
-        this.sendcurIndexToParent()
+        this.sendcurIndexToParent();
 
         $(() => {
             let height = document.documentElement.clientHeight;
@@ -541,7 +679,7 @@ var createModelItem = Vue.extend({
         }
         else {
             // $("#title").text("Modify Model Item")
-            $("#subRteTitle").text("/Modify Model Item")
+            $("#subRteTitle").text("/Modify Model Item");
 
             document.title="Modify Model Item | OpenGMS"
             $.ajax({
@@ -550,7 +688,7 @@ var createModelItem = Vue.extend({
                 data: {},
 
                 success: (result) => {
-                    console.log(result)
+                    console.log(result);
                     var basicInfo = result.data;
 
                     if(basicInfo.status=="public"){
@@ -938,6 +1076,60 @@ var createModelItem = Vue.extend({
             }
         });
 
+        // //此处进行websocket配置
+        // // let that = this;
+        // //尝试配置websocket,测试成功，可以连接
+        // var websocket = new WebSocket("ws://localhost:8080/websocket");
+        //
+        // //判断当前浏览器是否支持WebSocket
+        // if ('WebSocket' in window) {
+        //     websocket = new WebSocket("ws://localhost:8080/websocket");
+        //     console.log("websocket 已连接");
+        // }
+        // else {
+        //     alert('当前浏览器 Not support websocket');
+        //     console.log("websocket 无法连接");
+        // }
+        //
+        // //连接发生错误的回调方法
+        // websocket.onerror = function () {
+        //     setMessageInnerHTML("聊天室连接发生错误");
+        // };
+        //
+        // //连接成功建立的回调方法
+        // websocket.onopen = function () {
+        //     setMessageInnerHTML("聊天室连接成功");
+        // }
+        //
+        // //连接关闭的回调方法
+        // websocket.onclose = function () {
+        //     setMessageInnerHTML("聊天室连接关闭");
+        // }
+        //
+        // //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        // window.onbeforeunload = function () {
+        //     closeWebSocket();
+        // }
+        //
+        // websocket.onmessage = function(event) {
+        //     setMessage(event.data);
+        //     // setMessageInnerHTML(event.data);
+        // };
+        //
+        // function setMessage(data) {
+        //     setMessageInnerHTML(data);
+        //
+        // }
+        // //将消息显示在网页上
+        // function setMessageInnerHTML(innerHTML) {
+        //     // document.getElementById('message').innerHTML += innerHTML + '<br/>';
+        // }
+        //
+        // //关闭WebSocket连接
+        // function closeWebSocket() {
+        //     websocket.close();
+        // }
+
         $(".finish").click(()=> {
             let loading = this.$loading({
                 lock: true,
@@ -954,8 +1146,7 @@ var createModelItem = Vue.extend({
             modelItemObj.authorship=[];
             this.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
-            if(modelItemObj.name.trim()=="")
-            {
+            if(modelItemObj.name.trim()==""){
                 alert("please enter name");
                 return;
             }
@@ -963,8 +1154,6 @@ var createModelItem = Vue.extend({
                 alert("please select classification");
                 return;
             }
-            // modelItemObj.Providers = [];
-            // getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.Providers)
 
             modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
@@ -1006,9 +1195,7 @@ var createModelItem = Vue.extend({
                         loading.close();
                         if (result.code == "0") {
                             alert("Create successful!");
-
                             window.location.href = "/modelItem/" + result.data;
-                            //window.location.reload();
                         }
                         else if(result.code==-1){
                             alert("Please login first!");
@@ -1044,13 +1231,19 @@ var createModelItem = Vue.extend({
                                 window.location.href = "/modelItem/" + result.data.oid;
                             }
                             else{
+                                //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
+                                let currentUrl = window.location.href;
+                                let index = currentUrl.lastIndexOf("\/");
+                                that.modelitem_oid = currentUrl.substring(index + 1,currentUrl.length);
+                                console.log(that.modelitem_oid);
+
+                                that.getMessageNum(that.modelitem_oid);
+                                let params = that.message_num_socket;
+                                that.send(params);
+
                                 alert("Success! Changes have been submitted, please wait for the webmaster to review.");
                                 window.location.href = "/user/userSpace";
                             }
-
-
-                            // window.location.href = "/modelItem/" + result.data;
-                            //window.location.reload();
                         }
                         else if(result.code==-2){
                             alert("Please login first!");
@@ -1064,12 +1257,23 @@ var createModelItem = Vue.extend({
             }
         });
 
+        // $(".prev").click(()=>{
+        //
+        //     let currentUrl = window.location.href;
+        //     let index = currentUrl.lastIndexOf("\/");
+        //     that.modelitem_oid = currentUrl.substring(index + 1,currentUrl.length);
+        //     console.log(that.modelitem_oid);
+        //     //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
+        //     that.getMessageNum(that.modelitem_oid);
+        //     let params = that.message_num_socket;
+        //     that.send(params);
+        // });
+
 
         $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
 
 
         //作者添加
-
         $(".user-add").click(function () {
             user_num++;
             var content_box = $(this).parent().children('div');

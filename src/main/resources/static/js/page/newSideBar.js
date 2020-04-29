@@ -221,7 +221,6 @@ Vue.component('headSideBar', {
                                             case "0":
                                                 that.message_num++;
                                         }
-
                                     }
                                 }
                             }

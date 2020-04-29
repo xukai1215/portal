@@ -824,7 +824,7 @@ var vue = new Vue({
         },
         edit_theme_info(){
 
-            $(".detailIntroducePanel").hide();
+            $(".detailIntroducePanel").m();
             $(".edit_detail").show();
 
             $.ajax({
@@ -1507,49 +1507,53 @@ var vue = new Vue({
                     }
                 }
             })
-            // //尝试配置websocket,测试成功，可以连接
-            // let websocket = null;
-            // //判断当前浏览器是否支持WebSocket
-            // if ('WebSocket' in window) {
-            //     websocket = new WebSocket("ws://localhost:8080/web/websocket");
-            // }
-            // else {
-            //     alert('当前浏览器 Not support websocket')
-            // }
-            //
-            // //连接发生错误的回调方法
-            // websocket.onerror = function () {
-            //     setMessageInnerHTML("聊天室连接发生错误");
-            // };
-            //
-            // //连接成功建立的回调方法
-            // websocket.onopen = function () {
-            //     setMessageInnerHTML("聊天室连接成功");
-            // }
-            //
-            // //连接关闭的回调方法
-            // websocket.onclose = function () {
-            //     setMessageInnerHTML("聊天室连接关闭");
-            // }
-            //
-            // //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-            // window.onbeforeunload = function () {
-            //     closeWebSocket();
-            // }
-            //
-            // //将消息显示在网页上
-            // function setMessageInnerHTML(innerHTML) {
-            //     document.getElementById('message').innerHTML += innerHTML + '<br/>';
-            // }
-            //
-            // //关闭WebSocket连接
-            // function closeWebSocket() {
-            //     websocket.close();
-            // }
-            //
-            // //发送消息
-            // let message = "info_confirm";
-            // websocket.send(message);
+
+
+            //尝试配置websocket,测试成功，可以连接
+            let websocket = null;
+            //判断当前浏览器是否支持WebSocket
+            if ('WebSocket' in window) {
+
+                websocket = new WebSocket("ws://localhost:8080/web/websocket");
+                console.log("websocket 已连接");
+            }
+            else {
+                alert('当前浏览器 Not support websocket')
+            }
+
+            //连接发生错误的回调方法
+            websocket.onerror = function () {
+                setMessageInnerHTML("聊天室连接发生错误");
+            };
+
+            //连接成功建立的回调方法
+            websocket.onopen = function () {
+                setMessageInnerHTML("聊天室连接成功");
+            }
+
+            //连接关闭的回调方法
+            websocket.onclose = function () {
+                setMessageInnerHTML("聊天室连接关闭");
+            }
+
+            //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+            window.onbeforeunload = function () {
+                closeWebSocket();
+            }
+
+            //将消息显示在网页上
+            function setMessageInnerHTML(innerHTML) {
+                document.getElementById('message').innerHTML += innerHTML + '<br/>';
+            }
+
+            //关闭WebSocket连接
+            function closeWebSocket() {
+                websocket.close();
+            }
+
+            //发送消息
+            let message = "info_confirm";
+            websocket.send(message);
 
         });
         //编辑模型
