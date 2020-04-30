@@ -271,8 +271,10 @@ public class RepositoryService {
 
         ModelAndView modelAndView = new ModelAndView();
 
-
         Theme theme = themeDao.findByOid(id);
+        theme=(Theme)itemService.recordViewCount(theme);
+        themeDao.save(theme);
+
         if(theme==null){
             modelAndView.setViewName("error/404");
             return modelAndView;
@@ -280,7 +282,7 @@ public class RepositoryService {
 
         modelAndView.setViewName("theme_info");
         modelAndView.addObject("info", theme);
-        themeDao.save(theme);
+
 
         //详情页面
         //String detailResult;

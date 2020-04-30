@@ -205,7 +205,7 @@ public class CommentController {
         JSONObject author=new JSONObject();
         author.put("oid",userOid);
         author.put("name",user.getName());
-        author.put("img",htmlLoadPath+user.getImage());
+        author.put("img",user.getImage().trim().equals("")?"":htmlLoadPath+user.getImage());
 
         userArray.add(author);
 

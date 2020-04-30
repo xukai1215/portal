@@ -37,7 +37,7 @@
     </style>
 </head>
 <body>
-<div id="app" v-cloak>
+<div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
@@ -51,7 +51,7 @@
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
 
-                    <a th:if="${history!=true}"  class='fa fa-pencil fa-2x' aria-hidden='true'
+                    <a th:if="${history!=true}" class='fa fa-pencil fa-2x' aria-hidden='true'
                        @click="edit"></a>
 
 
@@ -81,9 +81,10 @@
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
                         <span th:if="${modelInfo.contentType=='Package'}">
                             <button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"
-                                       @click="dialogVisible = true">Deploy
+                                    @click="dialogVisible = true">Deploy
                             </button>
-                            <button  th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button" @click="invoke()">
+                            <button th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button"
+                                    @click="invoke()">
                                 Invoke
                             </button>
                         </span>
@@ -112,14 +113,17 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                    Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
                     <div class="el-row">
                         <div class="text-center">
-                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
-                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13
+                                14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13
+                                14:32:18 </h5>
                         </div>
                     </div>
                 </div>
@@ -138,9 +142,11 @@
                     <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
-                                aria-expanded="true" th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
+                                aria-expanded="true"
+                                th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse"
+                             th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
                              style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
@@ -172,36 +178,35 @@
                         </div>
                     </div>
 
-                    <div class="el-card filecontent is-always-shadow" id="browsercont" style="height: 300px; overflow-y: auto;">
+                    <div class="el-card filecontent is-always-shadow" id="browsercont"
+                         style="height: 300px; overflow-y: auto;">
 
                         <!--</el-row>-->
-                        <el-card th:each="data,key:${resources}"
-                                 th:title="${data.name}" class="dataitemisol" shadow="never" th:id="${key.index}"
-                                 th:key="${key.index}" @click.native="getid(id)" style="width: 150px;">
+                        <div class="el-card dataitemisol is-never-shadow"
+                             th:each="data,key:${resources}"
+                             th:title="${data.name}" shadow="never" th:id="${key.index}"
+                             th:key="${key.index}" @click.native="getid(id)"
+                             style="width: 150px;"><!---->
+                            <div class="el-card__body">
+                                <div class="el-row">
+                                    <div class="el-col el-col-6">&nbsp;</div>
+                                    <div class="el-col el-col-12"><a
+                                            th:href="${loadPath}+'/computableModel/'+${modelInfo.contentType}+${data.path}"><img
+                                            th:src="'/static/img/filebrowser/'+${data.suffix}+'.svg'" style="height: 60%; width: 100%;"></a>
+                                    </div>
+                                    <div class="el-col el-col-6">&nbsp;</div>
+                                </div>
+                                <div class="el-row">
+                                    <div class="el-col el-col-2">&nbsp;</div>
+                                    <div class="el-col el-col-20"><p th:text="${data.name}"
+                                            style="overflow-wrap: break-word; word-break: break-all; text-align: center;">
+                                        </p></div>
+                                    <div class="el-col el-col-2">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
 
-                            <el-row>
-                                <el-col :span="6">&nbsp</el-col>
-                                <el-col :span="12"><a
-                                        th:href="${loadPath}+'/computableModel/'+${modelInfo.contentType}+${data.path}"><img
-                                        th:src="'/static/img/filebrowser/'+${data.suffix}+'.svg'"
-                                        style="height: 60%;width:100%"></a></el-col>
-                                <el-col :span="6">&nbsp</el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="2">&nbsp</el-col>
-                                <el-col :span="20">
 
-                                    <p style="word-wrap: break-word;word-break: break-all;text-align: center"
-                                       th:text="${data.name}"></p>
-                                </el-col>
-                                <el-col :span="2">&nbsp</el-col>
-
-                            </el-row>
-
-                            <!--menu item -->
-
-
-                        </el-card>
                     </div>
 
 
@@ -238,7 +243,7 @@
                 </div>
             </div>
 
-            <div id="MDL" class="detail_block" th:if="${mdlJson}!=null">
+            <div v-cloak id="MDL" class="detail_block" th:if="${mdlJson}!=null">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>MDL</h4>
@@ -305,7 +310,8 @@
                         </table>
                     </el-tab-pane>
                     <el-tab-pane label="Behavior" name="Behavior">
-                        <el-button style="position: absolute; z-index: 900" @click="showMxGraph()"> Show Detail </el-button>
+                        <el-button style="position: absolute; z-index: 900" @click="showMxGraph()"> Show Detail
+                        </el-button>
                         <div id="mxGraphContainer"></div>
                     </el-tab-pane>
                     <el-tab-pane label="Runtime" name="Runtime">
@@ -380,11 +386,14 @@
                 </div>
                 <div class="block_content">
                     <div id="cite-text" class="width:100%">
-                        <span th:if="${authorship!=''}" th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Computable Model, OpenGMS, '"></span>
-                            <span th:if="${authorship==''}" th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Computable Model, OpenGMS, '">
+                        <span th:if="${authorship!=''}"
+                              th:text="${authorship}+' ('+${year}+'). '+${modelInfo.name}+', Computable Model, OpenGMS, '"></span>
+                        <span th:if="${authorship==''}"
+                              th:text="${user.name}+' ('+${year}+'). '+${modelInfo.name}+', Computable Model, OpenGMS, '">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
-                        <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}"
+                        <a style="word-break:break-all;"
+                           th:href="'http://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}"
                            th:text="'http://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}">
                             http://geomodeling.njnu.edu.cn/computableModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
@@ -459,14 +468,17 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                    Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
                     <div class="el-row">
                         <div class="text-center">
-                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
-                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13
+                                14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13
+                                14:32:18 </h5>
                         </div>
                     </div>
                 </div>
@@ -485,9 +497,11 @@
                     <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
-                                aria-expanded="true" th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
+                                aria-expanded="true"
+                                th:text="${key.index==0?'[Collapse]':'[Expand]'}">[Expand]</a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse"
+                             th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
                              style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
@@ -554,11 +568,13 @@
              style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
 
     </div>
-    <div id="ModelShow" style="display: none;">
-        <iframe src="/common/ModelShow" style="width: 100%; height: 100%;z-index: 990; position:absolute;  top:0px;"></iframe>
-        <el-button style="z-index: 999; position: absolute;left: 20px;top: 10px;" @click="hideMxGraph" > Close </el-button>
+    <div v-cloak id="ModelShow" style="display: none;">
+        <iframe src="/common/ModelShow"
+                style="width: 100%; height: 100%;z-index: 990; position:absolute;  top:0px;"></iframe>
+        <el-button style="z-index: 999; position: absolute;left: 20px;top: 10px;" @click="hideMxGraph"> Close
+        </el-button>
     </div>
-    <el-dialog
+    <el-dialog v-cloak
             title=""
             :visible.sync="dialogVisible"
             width="30%"
@@ -628,11 +644,10 @@
 <script src="../static/js/common/navbar.js"></script>
 
 
-
 <script>
-    var behavior={};
+    var behavior = {};
 
-    if (Behavior.StateGroup[0].States ===  '') {
+    if (Behavior.StateGroup[0].States === '') {
         behavior.states = [];
     }
     else {
@@ -653,8 +668,8 @@
         behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
     }
 
-    function getLoadJson(){
-        return JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
+    function getLoadJson() {
+        return JSON.stringify(behavior).replace(new RegExp("\"Event\":", "gm"), "\"events\":");
     }
 
 </script>

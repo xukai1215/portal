@@ -24,8 +24,8 @@ var info=new Vue({
                 paginationShow: false,
                 progressBar: true,
                 sortAsc: false,
-                currentPage: 1,
-                pageSize: 5,
+                currentPage: 0,
+                pageSize: 6,
 
                 total: 264,
                 searchResult: [],
@@ -564,7 +564,7 @@ var info=new Vue({
         search() {
             var data = {
                 asc: this.pageOption.sortAsc,
-                page: this.pageOption.currentPage,
+                page: this.pageOption.currentPage-1,
                 pageSize: this.pageOption.pageSize,
                 searchText: this.relateSearch,
                 sortType: "default",
@@ -575,8 +575,8 @@ var info=new Vue({
                 case "dataItem":
                     url = "/dataItem/searchByNameAndAuthor";
                     data = {
-                        page: this.pageOption.currentPage + 1,
-                        pageSize: 5,
+                        page: this.pageOption.currentPage,
+                        pageSize: 6,
                         asc: true,
                         classifications: [],
                         category: '',
@@ -608,10 +608,6 @@ var info=new Vue({
                     data.asc = data.asc == true ? 0 : 1;
                     data = JSON.stringify(data);
                     contentType = "application/json";
-                    break;
-                case "modelItem":
-                    url = "/" + this.relateType + "/list";
-                    contentType = "application/x-www-form-urlencoded";
                     break;
                 default:
                     url = "/" + this.relateType + "/listByAuthor";
@@ -806,7 +802,7 @@ var info=new Vue({
                                 break;
                         }
                         this.tableData = [];
-                        this.pageOption.currentPage = 0;
+                        this.pageOption.currentPage = 1;
                         this.pageOption.searchResult = [];
                         this.relateSearch = "";
                         this.getRelation();

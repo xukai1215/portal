@@ -258,6 +258,7 @@ public class ModelItemService {
             computableJson.put("name",computableModel.getName());
             computableJson.put("oid",computableModel.getOid());
             computableJson.put("description",computableModel.getDescription());
+            computableJson.put("contentType",computableModel.getContentType());
             computableArray.add(computableJson);
         }
 
@@ -984,7 +985,7 @@ public class ModelItemService {
 
             users.add(userObj);
 
-            modelItems.get(i).setAuthor(user.getName());
+//            modelItems.get(i).setAuthor(user.getName());
 
         }
 

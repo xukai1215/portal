@@ -69,7 +69,8 @@
 <body >
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div class="taskMain">
+    <div style="height:600px;" v-loading="true" v-if="initializing"></div>
+    <div class="taskMain" v-else>
         <el-row type="flex" justify="space-around">
             <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">
                 <div id="introContainer" class="slider scrollbar">
