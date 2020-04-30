@@ -24,23 +24,19 @@
 }
 
 
-@media only screen and (max-width:730px){
+@media only screen and (max-width:767px){
     #partner{
         padding-left: 0px;
         padding-right: 0px;
     }
 
     #partnerContainer div{
-        width: 50%;
-
+        width: 100%;
+        margin-bottom:15px ;
     }
 }
 
 @media only screen and (max-width: 501px){
-    #partnerContainer div {
-        width: 100%;
-        margin-bottom:15px ;
-    }
 
     #partnerTitle{
         height: 60px;

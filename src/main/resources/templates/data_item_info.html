@@ -672,16 +672,7 @@
                         :data="tableData"
                         ref="leftTable"
                         :max-height="tableMaxHeight">
-                    <el-table-column type="expand">
-                        <template slot-scope="props">
-                            <el-form label-position="left" inline class="demo-table-expand">
-                                <el-form-item label="Contributor">
-                                    <span>{{ props.row.author }}</span>
-                                </el-form-item>
 
-                            </el-form>
-                        </template>
-                    </el-table-column>
                     <el-table-column
                             label="Name">
                         <template slot-scope="props">
@@ -693,9 +684,10 @@
                         <template slot-scope="scope">
 
                             <el-button
+                                    :disabled="scope.row.author!=userUid"
                                     size="mini"
                                     type="danger"
-                                    @click="handleDelete(scope.$index, scope.row)">Delete
+                                    @click="handleDelete(scope.$index, scope.row)">Remove
                             </el-button>
                         </template>
                     </el-table-column>
@@ -728,10 +720,10 @@
                                target="_blank">{{props.row.name}}</a>
                         </template>
                     </el-table-column>
-                    <el-table-column
-                            label="Contributor"
-                            prop="author">
-                    </el-table-column>
+                    <!--<el-table-column-->
+                            <!--label="Contributor"-->
+                            <!--prop="author">-->
+                    <!--</el-table-column>-->
                     <el-table-column fixed="right" label="Operation" width="100">
                         <template slot-scope="scope">
                             <el-button

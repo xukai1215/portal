@@ -21,4 +21,6 @@ public class Authorship extends AuthorInfo {
     List<String> alias = new ArrayList<>();
     List<ItemInfo> items = new ArrayList<>();
 
+    Boolean subscribe=true;
+
 }

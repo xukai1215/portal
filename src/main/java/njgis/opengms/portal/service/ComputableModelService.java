@@ -99,6 +99,11 @@ public class ComputableModelService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+
+    public List<ComputableModel> findAllByMd5(String md5){
+        return computableModelDao.findAllByMd5(md5);
+    }
+
     /**
      * 张硕
      * 2019.12.04
@@ -464,14 +469,12 @@ public class ComputableModelService {
     }
 
     public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String uid) {
-        logger.info(files.get(0).getName());
-        logger.info(String.valueOf(files.get(0).getSize()));
 
         JSONObject result = new JSONObject();
         ComputableModel computableModel = new ComputableModel();
 
         String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
-        logger.info(path);
+
         List<String> resources = new ArrayList<>();
         saveFiles(files, path, uid, "",resources);
         if (resources == null) {
@@ -489,8 +492,9 @@ public class ComputableModelService {
                 String md5 = "";
                 if (jsonObject.getString("contentType").equals("Package")) {
                     String filePath = path + resources.get(0);
-                    FileInputStream file = new FileInputStream(filePath);
-                    md5 = DigestUtils.md5DigestAsHex(IOUtils.readFully(file, -1, true));
+                    File file = new File(filePath);
+
+                    md5 = Utils.getMd5ByFile(file);
 
                     String mdlPath = null;
                     String testDataDirectoryPath = null;

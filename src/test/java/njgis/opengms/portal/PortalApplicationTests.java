@@ -7,8 +7,7 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.service.CommonService;
-import njgis.opengms.portal.utils.ChartUtils;
-import njgis.opengms.portal.utils.Object.ChartOption;
+import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.io.FileUtils;
@@ -79,6 +78,9 @@ public class PortalApplicationTests {
     @Autowired
     AuthorshipDao authorshipDao;
 
+    @Autowired
+    UserService userService;
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -92,7 +94,7 @@ public class PortalApplicationTests {
 
         pushAuthorship(modelItemDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.ModelItem);
 
-        //pushAuthorship(dataItemDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.DataItem);
+        pushAuthorship(dataItemDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.DataItem);
 
         pushAuthorship(conceptualModelDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.ConceptualModel);
         pushAuthorship(logicalModelDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.LogicalModel);
@@ -101,17 +103,19 @@ public class PortalApplicationTests {
         pushAuthorship(spatialReferenceDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.SpatialReference);
         pushAuthorship(templateDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.Template);
         pushAuthorship(unitDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.Unit);
+        pushAuthorship(themeDao.findAllByAuthorshipIsNotNull(),ItemTypeEnum.Theme);
 
     }
 
     void pushAuthorship(List<Item> items,ItemTypeEnum type){
         for(int i=0;i<items.size();i++){
             Item item = items.get(i);
-            if(item.getAuthorship().size()==0){
-                continue;
-            }
+            List<AuthorInfo> authorInfoList = item.getAuthorship();
 
             for(AuthorInfo authorInfo : item.getAuthorship()) {
+                if(authorInfo.getName()==null||authorInfo.getName().trim().equals("")){
+                    continue;
+                }
                 Authorship authorship = new Authorship();
 
                 BeanUtils.copyProperties(authorInfo,authorship);
@@ -451,179 +455,56 @@ public class PortalApplicationTests {
 
     @Test
     public void sendEmail(){
-        User user = userDao.findFirstByOid("24");
-        String message = "<p style='font-family: sans-serif;'>Dear ";
-        message+=user.getName()+":<br/><br/>";
-        Date now = new Date();
-        Date registerTime = user.getCreateTime();
-        int rangeDay = (int)((now.getTime()-registerTime.getTime())/(1000*3600*24));
-        int total=0;
-        message+="It has been " + rangeDay + " days since you register as a member of <a href='http://geomodeling.njnu.edu.cn'><b>OpenGMS</b></a>. ";
-        if(user.getModelItems()>0||user.getDataItems()>0||user.getConceptualModels()>0||user.getLogicalModels()>0||
-                user.getComputableModels()>0||user.getConcepts()>0||user.getSpatials()>0||user.getTemplates()>0||
-                user.getUnits()>0||user.getThemes()>0){
-            message+="You have shared some resources about geographic model in the platform, including ";
-            List<String> stringList = new ArrayList<>();
-            JSONArray items=new JSONArray();
+        userService.sendEmail();
+    }
 
-            List<DailyViewCount> sevenDayViewCountList = new ArrayList<>();
-            Calendar calendar = Calendar.getInstance();
-            for(int i=-6;i<=0;i++){
-                calendar.setTime(now);
-                calendar.add(Calendar.DATE, i);
-                DailyViewCount dailyViewCount = new DailyViewCount(calendar.getTime(),0);
-                sevenDayViewCountList.add(dailyViewCount);
-            }
+    @Test
+    public void setComputableModelMdlJson(){
+        ComputableModel computableModel = computableModelDao.findFirstByOid("c116da86-9059-4fbb-9846-456a5fa371bc");
+        JSONObject mdlJson = XmlTool.documentToJSONObject(computableModel.getMdl());
+        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+        //处理mdl格式错误
+        JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
 
-
-            List<Integer> countList=new ArrayList<>();
-            List<String> nameList=new ArrayList<>();
-
-            addItem(countList,nameList,sevenDayViewCountList, user.getModelItems(), "model item",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getConceptualModels(), "conceptual model",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getLogicalModels(), "logical model",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getComputableModels(), "computable model",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getDataItems(), "data item",user.getOid(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getConcepts(), "concept",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getSpatials(), "spatial reference",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getTemplates(), "data template",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getUnits(), "unit & metric",user.getUserName(),stringList, items);
-            addItem(countList,nameList,sevenDayViewCountList, user.getThemes(), "theme",user.getUserName(),stringList, items);
-            for(int i=0;i<stringList.size();i++){
-                message+=stringList.get(i);
-                if(i< stringList.size()-2){
-                    message+=", ";
-                }else if(i==stringList.size()-2){
-                    message+=" and ";
-                }else{
-                    message+=". ";
-                }
-            }
-            message+="Thank you for your contribution to geographic modeling and simulation!<br/><br/>";
-
-
-            for(int i=0;i<items.size();i++){
-                for(int j=0;j<items.size()-1-i;j++){
-                    JSONObject item=new JSONObject();
-                    JSONObject item1=new JSONObject();
-
-                    item.put("name",items.getJSONObject(j).getString("name"));
-                    item.put("view count",items.getJSONObject(j).getString("view count"));
-                    item.put("type",items.getJSONObject(j).getString("type"));
-
-                    item1.put("name",items.getJSONObject(j+1).getString("name"));
-                    item1.put("view count",items.getJSONObject(j+1).getString("view count"));
-                    item1.put("type",items.getJSONObject(j+1).getString("type"));
-
-
-                    if(item1.getInteger("view count")>item.getInteger("view count")){
-                        items.set(j,item1);
-                        items.set(j+1,item);
-                    }
-                }
-
-                total+=items.getJSONObject(items.size()-1-i).getInteger("view count");
-            }
-
-            //饼图
-            ChartOption pieOption = new ChartOption();
-            String[] pieTypes=new String[countList.size()];
-            int[][] ints=new int[1][countList.size()];
-            for(int i=0;i<countList.size();i++){
-                pieTypes[i]=nameList.get(i);
-                ints[0][i]=countList.get(i);
-            }
-            pieOption.setTitle("Type Statistics");
-            pieOption.setSubTitle("");
-            pieOption.setData(ints);
-            pieOption.setTypes(pieTypes);
-            pieOption.setValXis(pieTypes);
-            pieOption.setTitlePosition("center");
-
-            String piePath = ChartUtils.generatePie(pieOption);
-
-            message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
-            message+="Many people have noticed what you done in OpenGMS, your contributions have been viewed and invoked "+total+" times. " +
-                    "The most influential item that you contributed is "+items.getJSONObject(0).getString("name")+", it has been viewed "+items.getJSONObject(0).getInteger("view count")+" times. "+
-                    "The page view of your contributions are shown in the figure below:<br/><br/>";
-
-
-
-            //柱状图
-            ChartOption chartOption=new ChartOption();
-            chartOption.setTitle("Page View Statistics");
-            chartOption.setSubTitle("Go to OpenGMS to check more daily page view of your contributions");
-            chartOption.setTitlePosition("center");
-            int size=0;
-            if(items.size()>=5){
-                size=5;
-            }else{
-                size=items.size();
-            }
-            String[] types=new String[size];
-            int[][] data=new int[1][size];
-            for(int i=0;i<types.length;i++){
-                String itemName = items.getJSONObject(i).getString("name");
-                types[i]=itemName.length()>16?(itemName.substring(0,14)+"..."):itemName;
-                data[0][i]=items.getJSONObject(i).getInteger("view count");
-            }
-            chartOption.setTypes(types);
-            chartOption.setData(data);
-            chartOption.setValXis(types);
-            String chartPath=ChartUtils.generateBar(chartOption);
-
-            //折线图
-            ChartOption lineChart = new ChartOption();
-            lineChart.setTitle("Daily page views in the last 7 days");
-            lineChart.setSubTitle("");
-            lineChart.setTitlePosition("left");
-            String[] dates = new String[7];
-            int[][] viewCounts = new int[1][7];
-
-            for(int i=0;i<sevenDayViewCountList.size();i++){
-                DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                dates[i] = sdf.format(dailyViewCount.getDate());
-                viewCounts[0][i] = dailyViewCount.getCount();
-            }
-
-            lineChart.setTypes(new String[]{"Daily page view"});
-            lineChart.setData(viewCounts);
-            lineChart.setValXis(dates);
-            String lineChartPath = ChartUtils.generateLine(lineChart);
-
-            //
-            JSONObject pieChartInfo = new JSONObject();
-            pieChartInfo.put("name","pieChart");
-            pieChartInfo.put("path",piePath);
-
-            JSONObject imageInfo = new JSONObject();
-            imageInfo.put("name","chart1");
-            imageInfo.put("path",chartPath);
-
-            JSONObject lineChartInfo = new JSONObject();
-            lineChartInfo.put("name","lineChart");
-            lineChartInfo.put("path",lineChartPath);
-
-            JSONArray imageList=new JSONArray();
-            imageList.add(pieChartInfo);
-            imageList.add(imageInfo);
-            imageList.add(lineChartInfo);
-
-            message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
-            message+="<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
-
-            message+="If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
-            message+="Sincerely,<br/>";
-            message+="OpenGMS Team<br/>";
-            message+="http://geomodeling.njnu.edu.cn</p><br/>";
-
-            message+="<p>To unsubscribe from this community discussion, go to <a href=\"http://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
-
-            commonService.sendEmailWithImg("OpenGMS Team","921485453@qq.com","Open Geographic Modeling and Simulation Review", message,imageList);
-
-
+        String type=modelClass.getString("type");
+        if(type!=null){
+            modelClass.put("style",type);
         }
+        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+        }
+
+        JSONArray HCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+        if(HCinsert!=null){
+
+            JSONArray HCadd= new JSONArray();
+
+            for(int j=0;j<HCinsert.size();j++){
+                JSONObject obj=HCinsert.getJSONObject(j);
+                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+                    HCadd.add(obj);
+                }
+            }
+
+            runtime.getJSONArray("HardwareConfigures").getJSONObject(0).put("Add",HCadd);
+        }
+
+        JSONArray SCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+        if(SCinsert!=null){
+
+            JSONArray SCadd= new JSONArray();
+
+            for(int j=0;j<HCinsert.size();j++){
+                JSONObject obj=HCinsert.getJSONObject(j);
+                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+                    SCadd.add(obj);
+                }
+            }
+
+            runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).put("Add",SCadd);
+        }
+        computableModel.setMdlJson(mdlJson);
+        computableModelDao.save(computableModel);
     }
 
     private void addItem(List<Integer> countList,List<String> nameList,List<DailyViewCount> sevenDayViewCountList, int count, String type,String author, List<String> StringList,JSONArray items){

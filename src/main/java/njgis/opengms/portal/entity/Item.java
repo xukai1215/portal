@@ -39,7 +39,7 @@ public class Item {
     List<String> contributors;
     List<String> versions;
 
-    boolean lock;
+    boolean lock=false;
 
     //statistic
     int shareCount=0;

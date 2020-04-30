@@ -1,6 +1,7 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.theme.ThemeResultDTO;
+import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.Theme;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ public interface ThemeDao extends MongoRepository<Theme,String> {
     List<Theme> findAll();
 
     Theme findByThemename(String themename);
+
+    List<Item> findAllByAuthorshipIsNotNull();
 
 //    Page<Theme> findByClassarr(String classarr, Pageable pageable);
 //

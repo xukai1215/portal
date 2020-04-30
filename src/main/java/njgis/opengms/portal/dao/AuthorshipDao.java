@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface AuthorshipDao extends MongoRepository<Authorship,String> {
 
+   Authorship findFirstById(String id);
+
    Authorship findByEmail(String email);
 
    Authorship findByHomepage(String homepage);
