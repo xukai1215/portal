@@ -180,41 +180,13 @@ public class TaskService {
 
         user = userDao.findFirstByUserName(userName);
 
-        userJson.put("userName", user.getName());
+        userJson.put("userName", user.getUserName());
         userJson.put("userOid", user.getOid());
 
         JSONObject result = new JSONObject();
 
         //获得task信息
         Task task = findByTaskId(taskId);
-        //判断权限信息
-        boolean hasPermission = false;
-
-        if (task.getPermission().equals("private") && !task.getUserId().equals(userName)) {
-            result.put("permission", "forbid");
-            return result;
-        } else {
-            result.put("permission", "allow");
-        }
-
-//        List<String> publicInfos = task.getIsPublic();
-//        if (publicInfos.get(0).equals("public")) {
-//            result.put("permission", "yes");
-//        } else {
-//
-//            for (String publicInfo : publicInfos) {
-//                if (publicInfo.equals(userName)) {
-//                    hasPermission = true;
-//                    result.put("permission", "yes");
-//                    break;
-//                }
-//
-//            }
-//            if (hasPermission == false) {
-//                result.put("permission", "no");
-//                return result;
-//            }
-//        }
 
         JsonResult jsonResult = generateTask(modelId, userName);
         JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
@@ -240,6 +212,34 @@ public class TaskService {
         taskInfo.put("status", task.getStatus());
         taskInfo.put("outputs", task.getOutputs());
 //
+        //判断权限信息
+        boolean hasPermission = false;
+
+//        List<String> publicInfos = task.getIsPublic();
+//        if (publicInfos.get(0).equals("public")) {
+//            result.put("permission", "yes");
+//        } else {
+//
+//            for (String publicInfo : publicInfos) {
+//                if (publicInfo.equals(userName)) {
+//                    hasPermission = true;jjj
+//                    result.put("permission", "yes");
+//                    break;
+//                }
+//
+//            }
+//            if (hasPermission == false) {
+//                result.put("permission", "no");
+//                return result;
+//            }
+//        }
+        if (task.getPermission().equals("private")&&!task.getUserId().equals(userName) ) {
+            result.put("permission", "forbid");
+//            return result;
+        } else {
+            result.put("permission", "allow");
+        }
+
         List<TaskData> inputs = task.getInputs();
         for(int i=0;i<inputs.size();i++){
             TaskData input=inputs.get(i);
@@ -273,9 +273,47 @@ public class TaskService {
         result.put("taskInfo", taskInfo);
         result.put("dxInfo", dxInfo);
         System.out.println(result);
+
         return result;
     }
 
+    public Task templateMatch(Task task){//为taskoutput匹配templateId
+
+        String modelId = task.getComputableId();
+        ComputableModel modelInfo = computableModelService.getByOid(modelId);
+        JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
+        JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
+        JSONArray states = mdlObj.getJSONArray("states");
+
+        List<TaskData> outputs = task.getOutputs();
+
+        for (int i=0;i<states.size();i++){
+            JSONObject obj = (JSONObject)states.get(i);
+            JSONArray event = obj.getJSONArray("event");
+            for( int j=0; j<event.size();j++ ){
+                JSONObject file = (JSONObject) event.get(j);
+                JSONArray dataArray = file.getJSONArray("data");
+                JSONObject data = (JSONObject) dataArray.get(0);
+
+                if(file.getString("eventType").equals("noresponse")){
+                    for (TaskData output : outputs){
+                        if(output.getEvent().equals(file.getString("eventName"))){
+                            if(data.getString("dataType").equals("external"))
+                                output.setTemplateId(data.getString("externalId"));
+                            else
+                                output.setTemplateId("schema");
+                        }
+                    }
+                }
+            }
+
+        }
+
+        task.setOutputs(outputs);
+
+        return task;
+
+    }
 
     public JSONObject initTask(String oid, String userName) {
         //条目信息
@@ -1284,7 +1322,10 @@ public class TaskService {
             if (!hasValue) {
                 task.setStatus(-1);
             }
+
             task.setOutputs(result.getJSONObject("data").getJSONArray("outputs").toJavaList(TaskData.class));
+
+            task = templateMatch(task);
         }
         save(task);
 

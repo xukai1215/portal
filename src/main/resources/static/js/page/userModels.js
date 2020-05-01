@@ -295,6 +295,7 @@ var userModels = Vue.extend(
                 this.pageSize = 10;
                 this.isInSearch = 0;
                 let a=this.$route.params.modelitemKind
+                this.await = true
                 //副标题切换
                 let titles={
                     'modelitem':'Model Item',
@@ -359,6 +360,7 @@ var userModels = Vue.extend(
                             if (this.page == 1) {
                                 this.pageInit();
                             }
+                            this.await = false
 
                         }
                     }
@@ -372,7 +374,7 @@ var userModels = Vue.extend(
                 this.pageSize = 10;
                 this.isInSearch = 1;
                 let a=this.$route.params.modelitemKind
-
+                this.await = true
                 let urls={
                     'modelitem':      '/modelItem/searchModelItemsByUserId',
                     'conceptualmodel':'/conceptualModel/searchConceptualModelsByUserId',
@@ -422,7 +424,7 @@ var userModels = Vue.extend(
                                 if (this.page == 1) {
                                     this.pageInit();
                                 }
-
+                                this.await = false
                             }
 
                         }

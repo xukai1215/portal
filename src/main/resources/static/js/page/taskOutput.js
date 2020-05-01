@@ -624,8 +624,15 @@ var vue = new Vue({
 
     async mounted() {
 
-        this.info = info;
         console.log(this.info);
+        if(info==null||info==undefined){
+            alert("Initialization error!")
+        }else if(info.permission==='forbid'){
+            alert("You do not have a permission to this private page")
+            return
+        }
+
+        this.info = info;
 
         axios.get("/task/visualTemplateIds")
             .then((res)=>{

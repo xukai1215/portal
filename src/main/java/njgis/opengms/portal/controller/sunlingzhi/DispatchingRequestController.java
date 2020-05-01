@@ -38,6 +38,37 @@ public class DispatchingRequestController {
     @Value("${managerServerIpAndPort}")
     String managerServerIpAndPort;
 
+    @RequestMapping (value="/uploadMutiFiles",method = RequestMethod.POST)
+    JSONObject uploadMutiFiles(@RequestParam("ogmsdata") MultipartFile[] files,
+                               @RequestParam("name")String uploadName,
+                               @RequestParam("userId")String userName,
+                               @RequestParam("serverNode")String serverNode,
+                               @RequestParam("origination")String origination
+
+    ) throws IOException {
+        String url="http://"+ dataContainerIpAndPort +"/data";
+
+//        JSONObject j=JSONObject.parseObject(MyHttpUtils.POSTMultiPartFileToDataServer(url,"utf-8",file,uploadName,userName,serverNode,origination));
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+
+        for(int i=0;i<files.length;i++)
+            part.add("ogmsdata", files[i].getResource());
+        part.add("name", uploadName);
+        part.add("userId", userName);
+        part.add("serverNode", serverNode);
+        part.add("origination", origination);
+
+        JSONObject jsonObject = restTemplate.postForObject(url, part, JSONObject.class);
+        if(jsonObject.getIntValue("code")==-1){
+            throw new MyException("远程服务出错");
+        }
+        return jsonObject;
+
+    }
+
     @RequestMapping (value="/upload",method = RequestMethod.POST)
     JsonResult upload(@RequestParam("file")MultipartFile file,
                       @RequestParam("host")String host,
@@ -65,7 +96,7 @@ public class DispatchingRequestController {
     @RequestMapping (value="/uploadFiles",method = RequestMethod.POST)
     ResponseEntity<JSONObject> uploadFile(@RequestParam("file") MultipartFile file) throws  IOException {
         RestTemplate restTemplate=new RestTemplate();
-        String url="http://" + dataContainerIpAndPort + "/file/upload/store_dataResource_files";
+        String url="http://" + dataContainerIpAndPort + "/data";
         String fileName=file.getOriginalFilename();
 
         File temp=File.createTempFile("temp","&"+fileName);

@@ -101,14 +101,23 @@
                             </div>
                         </section>
                         <section class="flexRowContainer flexWrap " style="max-width: 1050px">
-                            <h4 style="margin: auto;color: #666666" v-if="searchResult.length==0&&!await ">No Results Found ...</h4>
-                            <router-view :search-result-raw="searchResult" @com-edit="editItem" @com-delete="deleteItem" @com-format="formatDate" >
+                            <div v-if="await" class="progress-cover progress-cover-primary" style="margin-top: 100px;">
+                                <div class="progress progress-medium fluent-position">
+                                    <span class="progress-span"></span>
+                                    <span class="progress-span"></span>
+                                    <span class="progress-span"></span>
+                                    <span class="progress-span"></span>
+                                    <span class="progress-span"></span>
+                                </div>
+                            </div>
+
+                            <router-view v-if="!await" :search-result-raw="searchResult" @com-edit="editItem" @com-delete="deleteItem" @com-format="formatDate" >
                                 <!--                        model item-->
                             </router-view>
                             <!--                        <model-item :searchResultRaw="searchResult"></model-item>-->
-
+                            <h4 style="margin:80px auto;color: #666666" v-if="searchResult.length==0&&!await ">No Result Found ...</h4>
                             <!--                        页码-->
-                            <nav aria-label="Page navigation example">
+                            <nav v-if="searchResult.length>0&&!await"  aria-label="Page navigation example">
                                 <ul class="pagination pagination-circle pg-blue wzhPageControl">
                                     <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
                                             class="page-link"

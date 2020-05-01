@@ -107,15 +107,15 @@ public class TaskRestController {
         } else {
             String userName = request.getSession().getAttribute("uid").toString();
             JSONObject info=taskService.initTaskOutput(ids, userName);
-            if(info.getString("permission").equals("forbid")){
-                modelAndView.setViewName("error/404");
-            }
-            else {
+//            if(info.getString("permission").equals("forbid")){
+//                modelAndView.setViewName("error/404");
+//            }
+//            else {
 
                 modelAndView.setViewName("taskOutput");
                 modelAndView.addObject("logged", "0");
                 modelAndView.addObject("info", info);
-            }
+//            }
             return modelAndView;
         }
 

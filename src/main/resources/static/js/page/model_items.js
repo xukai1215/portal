@@ -445,7 +445,7 @@ new Vue({
                 success: function (result) {
                     var json = JSON.parse(result);
                     if (json.oid != '') {
-                        window.location.href="/user/createModelItem";
+                        window.location.href="/user/userSpace#/model/createModelItem";
                     }
                     else{
                         window.location.href="/user/login";

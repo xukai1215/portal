@@ -184,7 +184,7 @@
                                                     </button>
                                                     <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                             style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                            @click="addOutputToMyData(input)">Add to My Data
+                                                            @click="addOutputToMyData(input,index)">Add to My Data
                                                     </button>
                                                 </li>
                                             </ul>
@@ -204,36 +204,13 @@
                                                     </button>
                                                     <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
                                                             style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                            @click="addOutputToMyData(output)">Add to My Data
+                                                            @click="addOutputToMyData(output,index)">Add to My Data
                                                     </button>
                                                 </li>
                                             </ul>
                                         </div>
 
-                                        <el-dialog :visible.sync="addOutputToMyDataVisible" title="Add Output to My Data"
-                                                   width="35%">
-                                            <el-card style="min-height: 300px;">
-                                                <el-tree
-                                                        :data="folderTree"
-                                                        ref="folderTree2"
-                                                        node-key="id"
-                                                        highlight-current
-                                                        default-expand-all
-                                                        :expand-on-click-node="false"
-                                                >
-                                            <span class="custom-tree-node" slot-scope="{ node, data }">
-                                                <span>{{ node.label }}</span>
-                                            </span>
-                                                </el-tree>
-                                            </el-card>
-                                            <span slot="footer" class="dialog-footer">
-                                        <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
-                                                   @click="addFolderinTree(2,index)">Add new folder</el-button>
-                                        <el-button @click="addOutputToMyDataVisible = false">Cancel</el-button>
-                                        <el-button type="primary"
-                                                   @click="addOutputToMyDataConfirm(index)">OK</el-button>
-                                    </span>
-                                        </el-dialog>
+
 
                                         <div class="pull-right" :attr.uid="task.msr_id"
                                              style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
@@ -255,7 +232,7 @@
                                     calculation tasks</h4>
                             </div>
                             <div class="flexRowCenter">
-                                <nav aria-label="Page navigation example">
+                                <nav v-if="searchResult.length!=0&&resourceLoad!=false" aria-label="Page navigation example">
                                     <ul class="pagination pagination-circle pg-blue wzhPageControl">
                                         <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
                                                 class="page-link"
@@ -294,6 +271,33 @@
                 <!--                富文本编辑器-->
                 <textarea id="detail" style="display: none"
                           placeholder="Input detail about the data here."></textarea>
+
+<!--                el-dialog放在这一层-->
+                <el-dialog :visible.sync="addOutputToMyDataVisible" title="Add Output to My Data"
+                           width="35%">
+                    <el-card style="min-height: 300px;">
+                        <el-tree
+                                :data="folderTree"
+                                ref="folderTree2"
+                                node-key="id"
+                                highlight-current = true
+                                default-expand-all
+                                :expand-on-click-node="false"
+                        >
+                                            <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                <span>{{ node.label }}</span>
+                                            </span>
+                        </el-tree>
+                    </el-card>
+                    <span slot="footer" class="dialog-footer">
+                                        <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
+                                                   @click="addFolderinTree(2)">Add new folder</el-button>
+                                        <el-button @click="addOutputToMyDataVisible = false">Cancel</el-button>
+                                        <el-button type="primary"
+                                                   @click="addOutputToMyDataConfirm()">OK</el-button>
+                                    </span>
+                </el-dialog>
+
                 <el-dialog id="taskDataShareDialog" top="20px" width="70%" title="Share as Data Item"
                            :visible.sync="taskSharingVisible" :before-close="handleClose">
                     <el-steps style="margin-bottom: 15px;" align-center :active="taskSharingActive" finish-status="success">

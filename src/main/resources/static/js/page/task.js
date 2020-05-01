@@ -254,13 +254,13 @@ var vue = new Vue({
                 let ipAndPort = result.data;
 
                 $.ajax({
-                    url: 'http://'+ipAndPort+'/data',
+                    url: '/dispatchRequest/uploadMutiFiles',
                     type: 'post',
                     data: formData,
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: true
+                    async: true,
                 }).done((res)=> {
                     if(res.code==0){
                         let data=res.data;
@@ -526,17 +526,18 @@ var vue = new Vue({
         },
 
         addFolderInTree(pageIndex, index) {
+            // this.$refs.folderTree.setCurrentKey('');
             var node, data
             if (pageIndex == 'myData') {
                 data = this.$refs.folderTree.getCurrentNode();
                 if (data == undefined) alert('Please select a file directory')
                 node = this.$refs.folderTree.getNode(data);
             }
-            else {
-                data = this.$refs.folderTree2[index].getCurrentNode();
-                if (data == undefined) alert('Please select a file directory')
-                node = this.$refs.folderTree2[index].getNode(data);
-            }
+            // else {
+                //     data = this.$refs.folderTree2[index].getCurrentNode();
+                //     if (data == undefined) alert('Please select a file directory')
+                //     node = this.$refs.folderTree2[index].getNode(data);
+                // }
 
             let folderExited = data.children
 
@@ -634,6 +635,9 @@ var vue = new Vue({
                         this.folderTree = res.data.data;
                         this.selectFolderVisible = true;
 
+                        this.$nextTick(()=>{
+                            this.$refs.folderTree.setCurrentKey(null); //打开树之前先清空选择
+                            })
                     }
 
                 });
@@ -1434,15 +1438,17 @@ var vue = new Vue({
         },
 
         findFather(file, father) {
-            if (this.fatherIndex === '0')
-                this.myFileShown = this.myFile;
-            for (let i = 0; i < file.length; i++) {
-                if (file[i].id === this.fatherIndex) {
-                    this.myFileShown = father.children;
-                    console.log(this.myFileShown)
-                    return;
-                } else {
-                    this.findFather(file[i].children, file[i])
+            if(file) {
+                if (this.fatherIndex === '0')
+                    this.myFileShown = this.myFile;
+                for (let i = 0; i < file.length; i++) {
+                    if (file[i].id === this.fatherIndex) {
+                        this.myFileShown = father.children;
+                        console.log(this.myFileShown)
+                        return;
+                    } else {
+                        this.findFather(file[i].children, file[i])
+                    }
                 }
             }
         },
@@ -1506,15 +1512,16 @@ var vue = new Vue({
 
         refreshChild(file) {
             console.log(this.fatherIndex)
-            for (let i = 0; i < file.length; i++) {
-                if (file[i].id === this.fatherIndex) {
-                    file[i].children = this.myFileShown
-                    console.log(this.myFile)
-                    return;
-                } else {
-                    this.refreshChild(file[i].children)
+            if (file)
+                for (let i = 0; i < file.length; i++) {
+                    if (file[i].id === this.fatherIndex) {
+                        file[i].children = this.myFileShown
+                        console.log(this.myFile)
+                        return;
+                    } else {
+                        this.refreshChild(file[i].children)
+                    }
                 }
-            }
         },
 
         singleClick($event, eval) {

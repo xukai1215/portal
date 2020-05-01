@@ -356,7 +356,7 @@ var data_items = new Vue({
                 alert("Please login");
                 window.location.href = "/user/login";
             }else{
-                window.location.href="user/userSpace";
+                window.location.href="/user/userSpace#/data/createDataItem";
 
             }
         },
