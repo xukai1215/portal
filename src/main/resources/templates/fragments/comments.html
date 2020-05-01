@@ -30,9 +30,8 @@
                     <el-tag
                             :style="{'visibility':replyTo==''?'hidden':'visible',left:0}"
                             :key="replyTo"
-
                             closable
-                            :disable-transitions="false"
+                            :disable-transitions="true"
                             @close="tagClose">
                         {{replyTo}}
                     </el-tag>
@@ -45,7 +44,7 @@
             <div class="comment-list">
                 <div class="comment flex" style="margin-top:15px" v-for="(comment,i) in commentList">
                     <a :href="'/user/'+comment.author.oid" target="_blank" class="round_icon">
-                        <img :src="comment.author.img" class="round_icon"
+                        <img :src="comment.author.img!=''?comment.author.img:'/static/img/icon/default.png'" class="round_icon"
                         />
                     </a>
 
@@ -79,7 +78,7 @@
                             <div class="com-sub" v-for="(subComm,j) in comment.subCommentList" style="border-top: 1px solid #eee;margin-top:15px;padding-top: 15px;">
                                 <div class="com-sub-author flex">
                                     <a :href="'/user/'+subComm.author.oid" target="_blank" class="com-sub-icon">
-                                        <img :src="subComm.author.img" class="round_icon">
+                                        <img :src="subComm.author.img!=''?subComm.author.img:'/static/img/icon/default.png'" class="round_icon">
                                     </a>
                                     <div class="com-sub-name-time" style="margin-left:15px">
                                         <div class="com-author-name">

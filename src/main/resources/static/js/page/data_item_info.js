@@ -34,6 +34,7 @@ var  data_item_info= new Vue({
             thisthumbs:'',
             userName:'',
             useroid:'',
+            userUid:'',
             dataCategory:[],
             viewCount:'',
             related3Models:[],
@@ -71,7 +72,7 @@ var  data_item_info= new Vue({
                 progressBar: true,
                 sortAsc: false,
                 currentPage: 1,
-                pageSize: 5,
+                pageSize: 6,
 
                 total: 264,
                 searchResult: [],
@@ -552,7 +553,7 @@ var  data_item_info= new Vue({
             };
             let url,contentType;
 
-                    url="/modelItem/list";
+                    url="/modelItem/listByAuthor";
                     contentType="application/x-www-form-urlencoded";
 
             $.ajax({
@@ -1243,6 +1244,7 @@ var  data_item_info= new Vue({
                 if (res.status == 200) {
                     if (res.data.oid != '') {
                         this.useroid = res.data.oid;
+                        this.userUid = res.data.uid;
                         this.userImg = res.data.image;
                     }
 

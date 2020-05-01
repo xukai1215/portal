@@ -7,21 +7,26 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public enum ItemTypeEnum {
 
-    DataItem(0),
+    DataItem(0,"data item"),
 
-    ModelItem(1),
-    ConceptualModel(2),
-    LogicalModel(3),
-    ComputableModel(4),
+    ModelItem(1,"model item"),
+    ConceptualModel(2,"conceptual model"),
+    LogicalModel(3,"logical model"),
+    ComputableModel(4,"computable model"),
 
-    Concept(5),
-    SpatialReference(6),
-    Template(7),
-    Unit(8),
+    Concept(5,"concept"),
+    SpatialReference(6,"spatial reference"),
+    Template(7,"template"),
+    Unit(8,"unit"),
 
-    Theme(9);
+    Theme(9,"theme");
 
     private int number;
+    private String text;
+
+    public String getText() {
+        return text;
+    }
 
     public static ItemTypeEnum getItemTypeByNum(int number){
         for(ItemTypeEnum itemTypeEnum:ItemTypeEnum.values()){

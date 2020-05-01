@@ -61,6 +61,7 @@ var notice = Vue.extend({
             model_tableData1_length:0,
             model_tableData2_length:0,
             model_tableData3_length:0,
+
             edit_model_tableData:[],//用于获取model的version数据，用于显示谁编辑了什么
             community_tableData1:[],
             community_tableData2:[],
@@ -77,6 +78,8 @@ var notice = Vue.extend({
             theme_tableData2_length:0,
             theme_tableData3_length:0,
 
+
+            table_length_sum:0,
             sum_tableData:[],//为了解决时间线多个v-for无法将多个表格数据时间正序排列的问题，将所有表格数据放到一个表格中
             //存放Info临时点击数据
             info_past_dialog:"",
@@ -212,6 +215,120 @@ var notice = Vue.extend({
                         }else {
                             this.sum_tableData[i].color = '#20D1D4';
                         }
+                        // 将type字母分开存到ex_type中
+                        if (this.sum_tableData[i].type == "modelItem"){
+                            this.sum_tableData[i].ex_type = "Model Item";
+                        }else if (this.sum_tableData[i].type == "conceptualModel") {
+                            this.sum_tableData[i].ex_type = "Conceptual Model";
+                        }else if (this.sum_tableData[i].type == "logicalModel") {
+                            this.sum_tableData[i].ex_type = "Logical Model";
+                        }else if (this.sum_tableData[i].type == "computableModel") {
+                            this.sum_tableData[i].ex_type = "Computable Model";
+                        }else if (this.sum_tableData[i].type == "spatialReference") {
+                            this.sum_tableData[i].ex_type = "Spatial Reference";
+                        }else {
+                            this.sum_tableData[i].ex_type = this.sum_tableData[i].type;
+                        }
+
+                        let data ={
+                            userName:this.sum_tableData[i].modifier
+                        }
+                        //将通过userName获取用户的oid并存入sum_tableDta的oid中
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.sum_tableData[i].oid = json;
+                            }
+                        })
+                    }
+
+                    //将各个表中的modifier的oid获取并存储
+                    for (let i=0;i<this.model_tableData1.length;i++){
+                        let data = {
+                            userName:this.model_tableData1[i].modifier
+                        }
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.model_tableData1[i].oid = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<this.model_tableData2.length;i++){
+                        let data = {
+                            userName:this.model_tableData2[i].modifier
+                        }
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.model_tableData2[i].oid = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<this.model_tableData3.length;i++){
+                        let data = {
+                            userName:this.model_tableData3[i].modifier
+                        }
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.model_tableData3[i].oid = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<this.community_tableData1.length;i++){
+                        let data = {
+                            userName:this.community_tableData1[i].modifier
+                        }
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.community_tableData1[i].oid = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<this.community_tableData2.length;i++){
+                        let data = {
+                            userName:this.community_tableData2[i].modifier
+                        }
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.community_tableData2[i].oid = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<this.community_tableData3.length;i++){
+                        let data = {
+                            userName:this.community_tableData3[i].modifier
+                        }
+                        $.ajax({
+                            type:"GET",
+                            url:"/theme/getoid",
+                            data:data,
+                            async:false,
+                            success:(json)=>{
+                                this.community_tableData3[i].oid = json;
+                            }
+                        })
                     }
                     this.model_tableData1_length = this.model_tableData1.length;
                     this.model_tableData2_length = this.model_tableData2.length;
@@ -220,6 +337,8 @@ var notice = Vue.extend({
                     this.community_tableData2_length = this.community_tableData2.length;
                     this.community_tableData3_length = this.community_tableData3.length;
 
+
+                    this.table_length_sum += (this.model_tableData1_length+this.community_tableData1_length);
                     console.log(this.sum_tableData);
                 }
             })
@@ -750,7 +869,7 @@ var notice = Vue.extend({
                     //定义match用于存储与后台数据进行匹配的条目数据
                     let match = {};
                     console.log(this.theme_tableData1[i]);
-                    match.time = this.theme_tableData1[i].time;
+                    match.time = this.theme_tableData1[i].unformatTime;
                     match.themename = this.theme_tableData1[i].theme;
                     match.type= this.theme_tableData1[i].type;
                     console.log(match);
@@ -942,6 +1061,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Info",
                                                             info_past:json[i].detail,
@@ -988,6 +1108,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Model",
                                                             classinfo:json[i].classinfo,
@@ -1034,6 +1155,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Data",
                                                             dataClassInfo:json[i].dataClassInfo,
@@ -1080,6 +1202,7 @@ var notice = Vue.extend({
                                                         that.theme_tableData1.push({
                                                             uid: type[j].uid,
                                                             time: type[j].formatTime,
+                                                            unformatTime:type[j].time,
                                                             theme: json[i].themename,
                                                             type:"Application",
                                                             application:json[i].application,
@@ -1125,9 +1248,53 @@ var notice = Vue.extend({
                                 }
                         }
                     }
+                    for (let i=0;i<that.theme_tableData1.length;i++){
+                        let data = {
+                            uid:that.theme_tableData1[i].uid
+                        }
+                        $.ajax({
+                            url:"/theme/getModifierName",
+                            type:"GET",
+                            async:false,
+                            data:data,
+                            success:(json)=>{
+                                that.theme_tableData1[i].userName = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<that.theme_tableData2.length;i++){
+                        let data = {
+                            uid:that.theme_tableData2[i].uid
+                        }
+                        $.ajax({
+                            url:"/theme/getModifierName",
+                            type:"GET",
+                            async:false,
+                            data:data,
+                            success:(json)=>{
+                                that.theme_tableData2[i].userName = json;
+                            }
+                        })
+                    }
+                    for (let i=0;i<that.theme_tableData3.length;i++){
+                        let data = {
+                            uid:that.theme_tableData3[i].uid
+                        }
+                        $.ajax({
+                            url:"/theme/getModifierName",
+                            type:"GET",
+                            async:false,
+                            data:data,
+                            success:(json)=>{
+                                that.theme_tableData3[i].userName = json;
+                            }
+                        })
+                    }
                     that.theme_tableData1_length = that.theme_tableData1.length;
                     that.theme_tableData2_length = that.theme_tableData2.length;
                     that.theme_tableData3_length = that.theme_tableData3.length;
+
+                   that.table_length_sum+=that.theme_tableData1_length;
                }
            })
 

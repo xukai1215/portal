@@ -156,7 +156,7 @@
 .subLog li{
     /*display: none;*/
     width: 150px;
-    height: 45.5px;
+    height: 45px;
     transition:.5s;
 
 }
@@ -561,6 +561,6 @@
      right: 30%!important;
  }
 
-sup.el-badge__content.is-fixed {
-    width: 20px;
-}
+/*sup.el-badge__content.is-fixed {*/
+    /*width: 20px;*/
+/*}*/

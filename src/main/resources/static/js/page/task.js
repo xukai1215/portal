@@ -1,6 +1,8 @@
 var vue = new Vue({
     el: "#app",
     data: {
+        initializing:true,
+
         radioStyle: "Classic",
         semanticsActiveStates: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
@@ -2359,6 +2361,9 @@ var vue = new Vue({
         let {data} = await (await fetch("/task/TaskInit/" + id)).json();
         if (data == null || data == undefined) {
             alert("Initialization error!")
+        }
+        else{
+            this.initializing=false;
         }
         let states = data.modelInfo.states;
         for (i = 0; i < states.length; i++) {

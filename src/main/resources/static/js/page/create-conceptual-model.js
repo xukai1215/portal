@@ -40,6 +40,11 @@ var createConceptualModel = Vue.extend({
             userId: "",
             userName: "",
             loginFlag: false,
+
+            path:"ws://localhost:8080/websocket",
+            socket:"",
+
+            conceptualModel_oid:"",
         }
     },
     methods: {
@@ -61,7 +66,6 @@ var createConceptualModel = Vue.extend({
             window.location.href=urls[index]
 
         },
-
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -146,14 +150,123 @@ var createConceptualModel = Vue.extend({
                 }
             }
         },
-
         sendcurIndexToParent(){
             this.$emit('com-sendcurindex',this.curIndex)
+        },
+
+        init:function () {
+
+            if ('WebSocket' in window) {
+                // this.socket = new WebSocket("ws://localhost:8080/websocket");
+                this.socket = new WebSocket(this.path);
+                // 监听socket连接
+                this.socket.onopen = this.open;
+                // 监听socket错误信息
+                this.socket.onerror = this.error;
+                // 监听socket消息
+                this.socket.onmessage = this.getMessage;
+
+            }
+            else {
+                alert('当前浏览器 Not support websocket');
+                console.log("websocket 无法连接");
+            }
+        },
+        open: function () {
+            console.log("socket连接成功")
+        },
+        error: function () {
+            console.log("连接错误");
+        },
+        getMessage: function (msg) {
+            console.log(msg.data);
+        },
+        send: function (msg) {
+            this.socket.send(msg);
+        },
+        close: function () {
+            console.log("socket已经关闭")
+        },
+        getMessageNum(conceptualModel_oid){
+            this.message_num_socket = 0;//初始化消息数目
+            let data = {
+                type: 'conceptualModel',
+                oid : conceptualModel_oid,
+            };
+
+            //根据oid去取该作者的被编辑的条目数量
+            $.ajax({
+                url:"/theme/getAuthorMessageNum",
+                type:"GET",
+                data:data,
+                async:false,
+                success:(json)=>{
+                    this.message_num_socket = json;
+                }
+            });
+            let data_theme = {
+                type: 'conceptualModel',
+                oid : conceptualModel_oid,
+            };
+            $.ajax({
+                url:"/theme/getThemeMessageNum",
+                async:false,
+                type:"GET",
+                data:data_theme,
+                success:(json)=>{
+                    console.log(json);
+                    for (let i=0;i<json.length;i++) {
+                        for (let k = 0; k < 4; k++) {
+                            let type;
+                            switch (k) {
+                                case 0:
+                                    type = json[i].subDetails;
+                                    break;
+                                case 1:
+                                    type = json[i].subClassInfos;
+                                    break;
+                                case 2:
+                                    type = json[i].subDataInfos;
+                                    break;
+                                case 3:
+                                    type = json[i].subApplications;
+                                    break;
+                            }
+                            if (type != null && type.length > 0) {
+                                for (let j = 0; j < type.length; j++) {
+                                    if (k == 0) {
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+                                    }else if (k == 1){
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+                                    }else if (k == 2){
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+                                    } else if (k == 3){
+                                        switch (type[j].status) {
+                                            case "0":
+                                                this.message_num_socket++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            })
         }
-
-
     },
     mounted() {
+        let that = this;
+        that.init();
+
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
         this.sendcurIndexToParent()
 
@@ -668,6 +781,14 @@ var createConceptualModel = Vue.extend({
                     if(res.code===0) {
                         switch (res.data.code) {
                             case 0:
+                                let currentUrl = window.location.href;
+                                let index = currentUrl.lastIndexOf("\/");
+                                that.conceptualModel_oid = currentUrl.substring(index + 1,currentUrl.length);
+                                console.log(that.conceptualModel_oid);
+                                //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
+                                that.getMessageNum(that.conceptualModel_oid);
+                                let params = that.message_num_socket;
+                                that.send(params);
                                 alert("Success! Changes have been submitted, please wait for the webmaster to review.");
                                 window.location.href = "/user/userSpace";
                                 break;
@@ -693,6 +814,17 @@ var createConceptualModel = Vue.extend({
             }
         })
 
+
+        // $(".prev").click(()=>{
+        //     let currentUrl = window.location.href;
+        //     let index = currentUrl.lastIndexOf("\/");
+        //     that.conceptualModel_oid = currentUrl.substring(index + 1,currentUrl.length);
+        //     console.log(that.conceptualModel_oid);
+        //     //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
+        //     that.getMessageNum(that.conceptualModel_oid);
+        //     let params = that.message_num_socket;
+        //     that.send(params);
+        // });
 
         //模型条目搜索
         $('#search-box').keyup(() => {

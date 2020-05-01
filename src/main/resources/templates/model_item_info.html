@@ -60,8 +60,8 @@
             background-color: #bbbbbb;
         }
 
-        img{
-            width:100%;
+        .label{
+            vertical-align: text-top;
         }
 
     </style>
@@ -228,9 +228,27 @@
                                 <a th:href="'/computableModel/'+${model.oid}" class="img">
                                     <img src="/static/img/model/calcModel.png">
                                 </a>
+
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/computableModel/'+${model.oid}" target="_blank"
                                        th:text="${model.name}">Ground Water Flow System</a>
+                                    <div style="display: inline-block;margin-left:5px">
+                                        <span class="label label-success" th:if="${model.contentType == 'Package'}">
+                                            Model Service Package
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
+                                            Source Code
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
+                                            Library
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
+                                            Link
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
+                                            Service
+                                        </span>
+                                    </div>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
@@ -872,16 +890,16 @@
                     :data="tableData"
                     ref="leftTable"
                     :max-height="tableMaxHeight">
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="Contributor">
-                                <span>{{ props.row.author }}</span>
-                            </el-form-item>
+                <!--<el-table-column type="expand">-->
+                    <!--<template slot-scope="props">-->
+                        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                            <!--<el-form-item label="Contributor">-->
+                                <!--<span>{{ props.row.author }}</span>-->
+                            <!--</el-form-item>-->
 
-                        </el-form>
-                    </template>
-                </el-table-column>
+                        <!--</el-form>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
                 <el-table-column
                         label="Name">
                     <template slot-scope="props">
@@ -895,14 +913,14 @@
                                 v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"
                                 size="mini"
                                 type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">Delete
+                                @click="handleDelete(scope.$index, scope.row)">Remove
                         </el-button>
                         <el-button
                                 v-else
-                                :disabled="scope.row.author_uid!=userUid"
+                                :disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"
                                 size="mini"
                                 type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">Delete
+                                @click="handleDelete(scope.$index, scope.row)">Remove
                         </el-button>
 
 
@@ -954,7 +972,7 @@
                            @current-change="handlePageChange"
                            :current-page="pageOption.currentPage"
                            layout="total, prev, pager, next, jumper"
-                           :page-size="5"
+                           :page-size="6"
                            :total="pageOption.total">
             </el-pagination>
         </el-card>

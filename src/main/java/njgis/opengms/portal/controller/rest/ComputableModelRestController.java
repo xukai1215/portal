@@ -364,6 +364,13 @@ public class ComputableModelRestController {
         return ResultUtils.success(user.getOid());
 
     }
+
+    @RequestMapping (value = "/findAllByMd5", method = RequestMethod.GET)
+    public JsonResult findByMd5(@RequestParam(value="md5") String md5){
+        List<ComputableModel> computableModel = computableModelService.findAllByMd5(md5);
+        return ResultUtils.success(computableModel);
+    }
+
     @RequestMapping(value = "/getRelatedDataByPage",method = RequestMethod.GET)
     public JsonResult getRelatedDataByPage(ComputableModelFindDTO computableModelFindDTO, @RequestParam(value = "oid") String oid){
 
