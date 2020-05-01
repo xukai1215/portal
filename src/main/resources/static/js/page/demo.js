@@ -16,7 +16,7 @@ var vue = new Vue({
 
             form.setAttribute("target", "");
             form.setAttribute('method', 'get');
-            form.setAttribute('action', "http://geomodeling.njnu.edu.cn/GeoModeling/DownloadDemoServlet");
+            form.setAttribute('action', "https://geomodeling.njnu.edu.cn/GeoModeling/DownloadDemoServlet");
 
             document.body.appendChild(form);  //将表单放置在web中
             //将查询参数控件提交到表单上

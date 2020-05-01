@@ -532,8 +532,8 @@
                         <span th:if="${authorship==''}"
                               th:text="${user.name}+' ('+${#dates.format(datainfo.data.createTime,'yyyy')}+'). '+${datainfo.data.name}+', Data Item, OpenGMS, '"></span>
                         <a style="word-break:break-all;"
-                           th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"
-                           th:text="'http://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"></a>
+                           th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"
+                           th:text="'https://geomodeling.njnu.edu.cn/dataItem/'+${datainfo.data.id}"></a>
                     </div>
                     <div id="copy" class="btn btn-info">
                         Copy
@@ -558,7 +558,7 @@
                 </div>
             </div>
 
-            <div id="comments">
+            <div id="comments" class="detail_block">
                 <template th:replace="fragments/comments :: comments"></template>
             </div>
 

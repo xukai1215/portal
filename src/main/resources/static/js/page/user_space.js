@@ -3240,7 +3240,7 @@ var vue = new Vue({
                 $('.wzhSelectContainer input').css('background','#63b75d')
             }
             // else if(this.deploys_show){
-            //     url = "http://geomodeling.njnu.edu.cn/GeoModeling/ComputableModelsForDeployServlet";
+            //     url = "https://geomodeling.njnu.edu.cn/GeoModeling/ComputableModelsForDeployServlet";
             //     name = "computableModels";
 
             // }
@@ -3874,7 +3874,7 @@ var vue = new Vue({
 
             $.ajax({
                 type: "Get",
-                url: "http://geomodeling.njnu.edu.cn/GeoModeling/UpdateRecordsServlet",
+                url: "https://geomodeling.njnu.edu.cn/GeoModeling/UpdateRecordsServlet",
                 data: {},
                 cache: false,
                 async: true,
@@ -3909,7 +3909,7 @@ var vue = new Vue({
 
             form.setAttribute("target", "");
             form.setAttribute('method', 'get');
-            form.setAttribute('action', "http://geomodeling.njnu.edu.cn/GeoModeling/DownloadAllDataServlet");
+            form.setAttribute('action', "https://geomodeling.njnu.edu.cn/GeoModeling/DownloadAllDataServlet");
 
             var input1 = document.createElement("input");
             input1.setAttribute('type', 'hidden');

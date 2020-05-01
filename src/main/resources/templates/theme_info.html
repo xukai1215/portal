@@ -135,7 +135,7 @@
 
                                         <el-col :span="4" th:each="item:${modelClass.content}" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a th:href="'http://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
+                                                <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
                                                     <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
                                                 </a>
@@ -154,7 +154,7 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'http://geomodeling.njnu.edu.cn/modelItem/'+item2.oid">
+                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+item2.oid">
                                                     <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
                                                 </a>
                                                 <div style="padding: 14px;">
@@ -299,7 +299,7 @@
                                         <el-col :span="4" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
                                                 <!--<a th:href="${dataClass.url[0].url_download[0]}" ><img src="/static/thematicmodel/css/images/model/thumb.png" class="image"></a>-->
-                                                <a th:href="'http://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
+                                                <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
                                                     <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
                                                 </a>
                                                 <div style="padding: 14px;">
@@ -316,7 +316,7 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'http://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
+                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
                                                     <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
                                                 </a>
                                                 <div style="padding: 14px;">

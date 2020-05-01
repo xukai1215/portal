@@ -164,9 +164,9 @@
                             <span th:text="${modelInfo.author}+'.('+${year}+').'+${modelInfo.name}+','">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
-                            <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/logicalModel/'+${modelInfo.oid}"
-                               th:text="'http://geomodeling.njnu.edu.cn/logicalModel/'+${modelInfo.oid}">
-                                http://geomodeling.njnu.edu.cn/logicalModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                            <a style="word-break:break-all;" th:href="'https://geomodeling.njnu.edu.cn/logicalModel/'+${modelInfo.oid}"
+                               th:text="'https://geomodeling.njnu.edu.cn/logicalModel/'+${modelInfo.oid}">
+                                https://geomodeling.njnu.edu.cn/logicalModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                             </a>
                         </div>
                         <div id="copy" class="btn btn-info">
@@ -227,8 +227,8 @@
     window.RESOURCES_PATH = "/static/js/conceptModelEditor/resources";
     window.IMAGE_PATH = "/static/js/conceptModelEditor/images";
     window.STENCIL_PATH = "/static/js/conceptModelEditor/stencils";
-    EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
-    SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    EXPORT_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    SAVE_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
     editMode = false;
 </script>
@@ -325,7 +325,7 @@
 
                 //  mainUI.setStatusText("Load OK");
                 // $.ajax({
-                //     url: "http://geomodeling.njnu.edu.cn/GeoModelingNew/ConceptModelInfoServlet",
+                //     url: "https://geomodeling.njnu.edu.cn/GeoModelingNew/ConceptModelInfoServlet",
                 //     type: "get",
                 //     data: { "mid": uid },
                 //     success: function (result) {

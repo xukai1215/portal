@@ -248,7 +248,7 @@ var vue = new Vue({
 
         share(url){
             this.shareIndex=true;
-            this.downloadUrl='http://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+            this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
 
         },
 

@@ -208,9 +208,9 @@
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
 
-                        <a style="word-break:break-all;" th:href="'http://geomodeling.njnu.edu.cn/conceptualModel/'+${modelInfo.oid}"
-                           th:text="'http://geomodeling.njnu.edu.cn/conceptualModel/'+${modelInfo.oid}">
-                            http://geomodeling.njnu.edu.cn/conceptualModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        <a style="word-break:break-all;" th:href="'https://geomodeling.njnu.edu.cn/conceptualModel/'+${modelInfo.oid}"
+                           th:text="'https://geomodeling.njnu.edu.cn/conceptualModel/'+${modelInfo.oid}">
+                            https://geomodeling.njnu.edu.cn/conceptualModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">
@@ -261,7 +261,7 @@
                 </div>
             </div>
 
-            <div id="comments">
+            <div id="comments" class="detail_block">
                 <template th:replace="fragments/comments :: comments"></template>
             </div>
 
@@ -441,8 +441,8 @@
     RESOURCES_PATH = "/static/js/graphEditor/resources";
     IMAGE_PATH = "/static/js/graphEditor/images";
     STENCIL_PATH = "/static/js/graphEditor/stencils";
-    // EXPORT_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
-    // SAVE_URL = "http://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    // EXPORT_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    // SAVE_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
     editModel = false;
 </script>
