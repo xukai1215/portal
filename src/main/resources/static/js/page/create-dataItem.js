@@ -1068,7 +1068,7 @@ var createDataItem = Vue.extend({
         //                         window.location.href = "/modelItem/" + result.data.oid;
         //                     }
         //                     else{
-        //                         alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+        //                         alert("Success! Changes have been submitted, please wait for the author to review.");
         //                         window.location.href = "/user/userSpace";
         //                     }
         //

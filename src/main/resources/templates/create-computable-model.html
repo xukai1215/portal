@@ -29,6 +29,10 @@
         label {
             font-size: 14px;
         }
+
+        .el-radio__label {
+            font-size: 16px;
+        }
     </style>
 
 
@@ -95,20 +99,22 @@
                                                                 Bind Model Item
                                                             </label>
                                                             <div class="input-group col-md-5">
-                                                                <input id="search-box" type="text"
-                                                                       class="form-control"
-                                                                       v-model="computableModel.bindModelItem">
-                                                                <!--<el-autocomplete-->
-                                                                        <!--v-model="computableModel.bindModelItem"-->
-                                                                        <!--:fetch-suggestions="querySearchAsync"-->
-                                                                        <!--placeholder="Enter model item name..."-->
-                                                                        <!--@select="handleSelect"-->
-                                                                <!--&gt;</el-autocomplete>-->
-                                                                <span class="input-group-btn">
-                                                            <button id="bind" class="btn btn-success"
-                                                                    type="button">bind</button>
-                                                        </span>
+                                                                <!--<input id="search-box" type="text"-->
+                                                                       <!--class="form-control"-->
+                                                                       <!--v-model="computableModel.bindModelItem">-->
+                                                                <!--&lt;!&ndash;<el-autocomplete&ndash;&gt;-->
+                                                                        <!--&lt;!&ndash;v-model="computableModel.bindModelItem"&ndash;&gt;-->
+                                                                        <!--&lt;!&ndash;:fetch-suggestions="querySearchAsync"&ndash;&gt;-->
+                                                                        <!--&lt;!&ndash;placeholder="Enter model item name..."&ndash;&gt;-->
+                                                                        <!--&lt;!&ndash;@select="handleSelect"&ndash;&gt;-->
+                                                                <!--&lt;!&ndash;&gt;</el-autocomplete>&ndash;&gt;-->
+                                                                <!--<span class="input-group-btn">-->
+                                                            <!--<button id="bind" class="btn btn-success"-->
+                                                                    <!--type="button">bind</button>-->
+                                                        <!--</span>-->
 
+                                                                <el-button type="primary" @click="openModelItemDialog()" style="margin-right:10px">Select</el-button>
+                                                                {{computableModel.bindModelItem}}
                                                             </div>
                                                         </div>
 
@@ -132,39 +138,48 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group" style="margin-top:50px">
+                                                        <div class="form-group" style="margin-top:10px">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
                                                                 Content Type
                                                             </label>
-                                                            <div class="input-group col-md-5">
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Package"
-                                                                           checked="checked"/>
-                                                                    <label style="float:left; margin-left: 5px;">Model Service Package</label>
-                                                                </label>
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Code"/>
-                                                                    <label style="float:left; margin-left: 5px;">Source Code</label>
-                                                                </label>
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Library"/>
-                                                                    <label style="float:left; margin-left: 5px;">Library</label>
-                                                                </label>
-                                                                <br/>
+                                                            <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
 
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Service"/>
-                                                                    <label style="float:left; margin-left: 5px;">Service URL</label>
-                                                                </label>
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Link"/>
-                                                                    <label style="float:left; margin-left: 5px;">Link</label>
-                                                                </label>
+                                                                <el-radio-group v-model="computableModel.contentType">
+                                                                    <el-radio label="Package">Model Service Package</el-radio>
+                                                                    <el-radio label="Code">Source Code</el-radio>
+                                                                    <el-radio label="Library">Library</el-radio>
+                                                                    <el-radio label="Service">Service URL</el-radio>
+                                                                    <el-radio label="Link">Link</el-radio>
+                                                                </el-radio-group>
+
+                                                                <!--<label style="margin-right: 20px; font-size: 20px">-->
+                                                                    <!--<input type="radio" name="ContentType"-->
+                                                                           <!--value="Package"-->
+                                                                           <!--checked="checked"/>-->
+                                                                    <!--<label style="float:left; margin-left: 5px;">Model Service Package</label>-->
+                                                                <!--</label>-->
+                                                                <!--<label style="margin-right: 20px; font-size: 20px">-->
+                                                                    <!--<input type="radio" name="ContentType"-->
+                                                                           <!--value="Code"/>-->
+                                                                    <!--<label style="float:left; margin-left: 5px;">Source Code</label>-->
+                                                                <!--</label>-->
+                                                                <!--<label style="margin-right: 20px; font-size: 20px">-->
+                                                                    <!--<input type="radio" name="ContentType"-->
+                                                                           <!--value="Library"/>-->
+                                                                    <!--<label style="float:left; margin-left: 5px;">Library</label>-->
+                                                                <!--</label>-->
+                                                                <!--<br/>-->
+
+                                                                <!--<label style="margin-right: 20px; font-size: 20px">-->
+                                                                    <!--<input type="radio" name="ContentType"-->
+                                                                           <!--value="Service"/>-->
+                                                                    <!--<label style="float:left; margin-left: 5px;">Service URL</label>-->
+                                                                <!--</label>-->
+                                                                <!--<label style="margin-right: 20px; font-size: 20px">-->
+                                                                    <!--<input type="radio" name="ContentType"-->
+                                                                           <!--value="Link"/>-->
+                                                                    <!--<label style="float:left; margin-left: 5px;">Link</label>-->
+                                                                <!--</label>-->
                                                             </div>
                                                         </div>
 
@@ -239,6 +254,10 @@
 
                                                             <input id="file" type="file" style="display: none;"
                                                                    accept="application/x-zip-compressed"/>
+
+                                                            <input id="file_multi" type="file" style="display: none;" multiple="multiple"/>
+
+
 
                                                         </div>
                                                     </div>
@@ -381,7 +400,61 @@
                         </div>
                     </div>
                 </div>
+                <el-dialog :visible.sync="bindModelItemDialogVisible" title="Bind Model Item"  width="50%"
+                           top="40px">
+
+
+                    <el-card class="box-card">
+                        <el-input placeholder="Model item name..." v-model="pageOption.searchText" class="input-with-select">
+                            <el-button slot="append" icon="el-icon-search" @click="searchModelItem()"></el-button>
+                        </el-input>
+                        <el-table
+                                :data="pageOption.searchResult"
+                                style="margin-top:17px;"
+                        >
+                            <el-table-column type="expand">
+                                <template slot-scope="props">
+                                    <el-form label-position="left" inline class="demo-table-expand">
+                                        <el-form-item label="Overview">
+                                            <span>{{ props.row.description }}</span>
+                                        </el-form-item>
+
+                                    </el-form>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Name">
+                                <template slot-scope="props">
+                                    <a :href="'/modelItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Contributor">
+                                <template slot-scope="props">
+                                    <a :href="'/user/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column fixed="right" label="Operation" width="100">
+                                <template slot-scope="scope">
+                                    <el-button
+                                            size="mini"
+                                            type="success"
+                                            @click="selectModelItem(scope.$index, scope.row)">Choose
+                                    </el-button>
+
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination style="text-align: center;margin-top:20px"
+                                       @current-change="handlePageChange"
+                                       :current-page="pageOption.currentPage"
+                                       layout="total, prev, pager, next, jumper"
+                                       :page-size="6"
+                                       :total="pageOption.total">
+                        </el-pagination>
+                    </el-card>
+                </el-dialog>
             </div>
+
         </template>
 
         </div>

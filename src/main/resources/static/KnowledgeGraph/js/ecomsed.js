@@ -119,7 +119,7 @@ var app = new Vue({
       let that = this;
       $.ajax({
         url:
-          "http://geomodeling.njnu.edu.cn/Knowledge/GetModelGraphBySearchTextServlet",
+          "https://geomodeling.njnu.edu.cn/Knowledge/GetModelGraphBySearchTextServlet",
         type: "get",
         data: { type: "model", text: "ecomsed", sTime: year, eTime: year },
         success: function(graph) {
@@ -986,7 +986,7 @@ var app = new Vue({
       let that = this;
       let promise = new Promise(function(resolve, reject) {
         $.ajax({
-          url: "http://geomodeling.njnu.edu.cn/Knowledge/GetLocationByIdServlet",
+          url: "https://geomodeling.njnu.edu.cn/Knowledge/GetLocationByIdServlet",
           data: { id: id },
           type: "get",
           success: function(data) {
@@ -1113,7 +1113,7 @@ var app = new Vue({
         if (this.keywordChart === null) {
           $.ajax({
             url:
-              "http://geomodeling.njnu.edu.cn/Knowledge/GetKeywordsByIdDivideInYearServlet",
+              "https://geomodeling.njnu.edu.cn/Knowledge/GetKeywordsByIdDivideInYearServlet",
             data: { id: "37ade37b-7728-442b-89f4-1eb34e4a63e9" },
             type: "get",
             success: function(data) {

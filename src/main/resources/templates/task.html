@@ -69,8 +69,8 @@
 <body >
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div style="height:600px;" v-loading="true" v-if="initializing"></div>
-    <div class="taskMain" v-else>
+    <div style="height:700px;" v-loading="true" v-if="initializing"></div>
+    <div class="taskMain" :style="{'visibility':initializing==true?'hidden':'visible'}">
         <el-row type="flex" justify="space-around">
             <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">
                 <div id="introContainer" class="slider scrollbar">
@@ -396,7 +396,7 @@
                                                         </span>
                                                         <span v-if="modelInEvent.data[0].externalId!=undefined">
 
-                                                            <el-tag type="info">
+                                                            <el-tag type="info" :disable-transitions="true">
                                                                 Data Type:
                                                                 <a style="text-decoration: underline" :href="'/repository/template/'+modelInEvent.data[0].externalId.toLowerCase()" target="_blank">{{modelInEvent.data[0].text}}</a>
                                                             </el-tag>
@@ -475,7 +475,7 @@
                                                                 label="Data Type"
                                                         >
                                                             <template slot-scope="scope">
-                                                                <el-tag type="info">
+                                                                <el-tag type="info" :disable-transitions="true">
                                                                     {{scope.row.eventType}}
                                                                 </el-tag>
                                                             </template>
@@ -515,7 +515,7 @@
                                                         </span>
                                                         <span v-if="modelOutEvent.data[0].externalId!=undefined">
 
-                                                            <el-tag type="info">
+                                                            <el-tag type="info" :disable-transitions="true">
                                                                 Data Type:
                                                                 <a style="text-decoration: underline" :href="'/repository/template/'+modelOutEvent.data[0].externalId.toLowerCase()" target="_blank">{{modelOutEvent.data[0].text}}</a>
                                                             </el-tag>
@@ -575,7 +575,7 @@
                                                 width="140"
                                         style="text-align: center;">
                                             <template slot-scope="scope">
-                                                <el-tag
+                                                <el-tag :disable-transitions="true"
                                                         :type="scope.row.eventType === 'response' ? 'primary' : (scope.row.eventType=== 'noresponse' ? 'success' : 'info')"
                                                         disable-transitions>{{scope.row.eventType === 'response'?'Input':(scope.row.eventType=== 'noresponse' ? 'Output':'Parameter')}}
                                                 </el-tag>
@@ -601,10 +601,10 @@
                                                 label="Data Type"
                                                 >
                                             <template slot-scope="scope">
-                                                <el-tag type="info" v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
+                                                <el-tag type="info" :disable-transitions="true" v-if="scope.row.externalId!=undefined" :title="scope.row.eventName">
                                                     <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.data[0].text}}</a>
                                                 </el-tag>
-                                                <el-tag type="info" v-if="scope.row.eventType!='response'&&scope.row.eventType!='noresponse'" :title="scope.row.eventName">
+                                                <el-tag type="info" :disable-transitions="true" v-if="scope.row.eventType!='response'&&scope.row.eventType!='noresponse'" :title="scope.row.eventName">
                                                     {{scope.row.eventType}}
                                                 </el-tag>
                                             </template>

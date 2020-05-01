@@ -592,7 +592,7 @@ var createUnit =Vue.extend({
                                 that.getMessageNum(that.unit_oid);
                                 let params = that.message_num_socket;
                                 that.send(params);
-                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                alert("Success! Changes have been submitted, please wait for the author to review.");
                                 window.location.href = "/user/userSpace";
 
                             }

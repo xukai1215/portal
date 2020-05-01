@@ -609,7 +609,7 @@ var  data_item_info= new Vue({
 
             if(currentData!=''){
                 let url ="/dispatchRequest/download?url=" + currentData;
-                 this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+url+">",{
+                 this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+url+">",{
                      dangerouslyUseHTMLString: true
                  })
                 // this.dataid='';
@@ -1225,7 +1225,7 @@ var  data_item_info= new Vue({
                     downloadAllZipUrl+=id;
 
                 }
-                this.$alert("<textarea style='width: 100%;height:auto'>http://geomodeling.njnu.edu.cn"+downloadAllZipUrl+"</textarea>","Sharing link",{
+                this.$alert("<textarea style='width: 100%;height:auto'>https://geomodeling.njnu.edu.cn"+downloadAllZipUrl+"</textarea>","Sharing link",{
                     dangerouslyUseHTMLString: true
                 })
             }
@@ -1270,8 +1270,8 @@ var  data_item_info= new Vue({
         this.currentDataId=url[url.length-1]
 
         // var cite=document.getElementById("citeurl");
-        // cite.src='http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
-        // cite.innerText='<http://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
+        // cite.src='https://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
+        // cite.innerText='<https://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
 
         var dataitemid=currenturl.split("/");
         var alldata=new Array();
@@ -1505,7 +1505,7 @@ $(function () {
         //             downloadAllZipUrl+=id;
         //
         //         }
-        //         this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+downloadAllZipUrl+">",{
+        //         this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+downloadAllZipUrl+">",{
         //             dangerouslyUseHTMLString: true
         //         })
         //     }
@@ -1515,7 +1515,7 @@ $(function () {
         //
         //     // if(currentData!=''){
         //     //     let url ="/dispatchRequest/download?url=" + currentData;
-        //     //     this.$alert("<input style='width: 100%' value="+'http://geomodeling.njnu.edu.cn'+url+">",{
+        //     //     this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+url+">",{
         //     //         dangerouslyUseHTMLString: true
         //     //     })
         //     //     // this.dataid='';

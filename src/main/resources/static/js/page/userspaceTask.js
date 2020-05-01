@@ -935,7 +935,7 @@ var userTask = Vue.extend(
 
                 form.setAttribute("target", "");
                 form.setAttribute('method', 'get');
-                form.setAttribute('action', "http://geomodeling.njnu.edu.cn/GeoModeling/DownloadAllDataServlet");
+                form.setAttribute('action', "https://geomodeling.njnu.edu.cn/GeoModeling/DownloadAllDataServlet");
 
                 var input1 = document.createElement("input");
                 input1.setAttribute('type', 'hidden');

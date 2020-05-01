@@ -188,7 +188,7 @@ public class PortalApplicationTests {
             content+="\t<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.9\">\n";
 
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>1.0</priority>\n";
@@ -197,7 +197,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/modelItem/repository</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/modelItem/repository</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -206,7 +206,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/dataItem/repository</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/repository</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -215,7 +215,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/concept</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/concept</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -224,7 +224,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/spatialReference</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/spatialReference</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -233,7 +233,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/template</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/template</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -242,7 +242,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/unit</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/unit</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -251,7 +251,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/hydro-model-integration/main</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/hydro-model-integration/main</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -260,7 +260,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/FGM-theme/</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/FGM-theme/</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -269,7 +269,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -278,7 +278,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/TrafficNoiseTheme/</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/TrafficNoiseTheme/</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -287,7 +287,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -296,7 +296,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/app/geodetector.html</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/app/geodetector.html</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -305,7 +305,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/app/B-SHADE_Sampling.html</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/app/B-SHADE_Sampling.html</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -314,7 +314,7 @@ public class PortalApplicationTests {
 //
 //
 //            content+="\t\t<url>\n";
-//            content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html</loc>\n";
+//            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html</loc>\n";
 //            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
 //            content+="\t\t\t<changefreq>weekly</changefreq>\n";
 //            content+="\t\t\t<priority>0.9</priority>\n";
@@ -325,7 +325,7 @@ public class PortalApplicationTests {
 //            for(ModelItem modelItem:modelItemList){
 //
 //                content+="\t\t<url>\n";
-//                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/modelItem/"+modelItem.getOid()+"</loc>\n";
+//                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/modelItem/"+modelItem.getOid()+"</loc>\n";
 //                content+="\t\t\t<lastmod>"+sdf.format(modelItem.getLastModifyTime())+"</lastmod>\n";
 //                content+="\t\t\t<changefreq>monthly</changefreq>\n";
 //                content+="\t\t\t<priority>0.8</priority>\n";
@@ -341,7 +341,7 @@ public class PortalApplicationTests {
 //            for(DataItem dataItem:dataItemList){
 //
 //                content+="\t\t<url>\n";
-//                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/dataItem/"+dataItem.getId()+"</loc>\n";
+//                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/"+dataItem.getId()+"</loc>\n";
 //                content+="\t\t\t<lastmod>"+sdf.format(dataItem.getLastModifyTime())+"</lastmod>\n";
 //                content+="\t\t\t<changefreq>monthly</changefreq>\n";
 //                content+="\t\t\t<priority>0.8</priority>\n";
@@ -359,7 +359,7 @@ public class PortalApplicationTests {
             for(Concept concept:conceptList){
 
                 content+="\t\t<url>\n";
-                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/concept/"+concept.getOid()+"</loc>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/concept/"+concept.getOid()+"</loc>\n";
                 content+="\t\t\t<lastmod>"+sdf.format(concept.getLastModifyTime())+"</lastmod>\n";
                 content+="\t\t\t<changefreq>monthly</changefreq>\n";
                 content+="\t\t\t<priority>0.8</priority>\n";
@@ -378,7 +378,7 @@ public class PortalApplicationTests {
             for(SpatialReference spatialReference:spatialReferenceList){
 
                 content+="\t\t<url>\n";
-                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/spatialReference/"+spatialReference.getOid()+"</loc>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/spatialReference/"+spatialReference.getOid()+"</loc>\n";
                 content+="\t\t\t<lastmod>"+sdf.format(spatialReference.getLastModifyTime())+"</lastmod>\n";
                 content+="\t\t\t<changefreq>monthly</changefreq>\n";
                 content+="\t\t\t<priority>0.8</priority>\n";
@@ -397,7 +397,7 @@ public class PortalApplicationTests {
             for(Template template:templateList){
 
                 content+="\t\t<url>\n";
-                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/template/"+template.getOid()+"</loc>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/template/"+template.getOid()+"</loc>\n";
                 content+="\t\t\t<lastmod>"+sdf.format(template.getLastModifyTime())+"</lastmod>\n";
                 content+="\t\t\t<changefreq>monthly</changefreq>\n";
                 content+="\t\t\t<priority>0.8</priority>\n";
@@ -416,7 +416,7 @@ public class PortalApplicationTests {
             for(Unit unit:unitList){
 
                 content+="\t\t<url>\n";
-                content+="\t\t\t<loc>http://geomodeling.njnu.edu.cn/repository/unit/"+unit.getOid()+"</loc>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/unit/"+unit.getOid()+"</loc>\n";
                 content+="\t\t\t<lastmod>"+sdf.format(unit.getLastModifyTime())+"</lastmod>\n";
                 content+="\t\t\t<changefreq>monthly</changefreq>\n";
                 content+="\t\t\t<priority>0.8</priority>\n";
@@ -858,7 +858,7 @@ public class PortalApplicationTests {
     public void visitWebSite(){
         HttpURLConnection conn = null;
         try {
-            URL realUrl = new URL("http://geomodeling.njnu.edu.cn/iEMSsRegion");
+            URL realUrl = new URL("https://geomodeling.njnu.edu.cn/iEMSsRegion");
             conn = (HttpURLConnection) realUrl.openConnection();
             conn.setRequestMethod("GET");
             conn.setUseCaches(false);
