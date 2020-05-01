@@ -157,7 +157,7 @@ public class UserService {
             int rangeDay = (int) Math.ceil((now.getTime() - registerTime.getTime()) / (1000 * 3600 * 24));
             int total = 0;
             JSONArray imageList = new JSONArray();
-            message += "It has been " + rangeDay + " days since you register as a member of <a href='http://geomodeling.njnu.edu.cn'>OpenGMS</a>. ";
+            message += "It has been " + rangeDay + " days since you register as a member of <a href='https://geomodeling.njnu.edu.cn'>OpenGMS</a>. ";
             if (user.getModelItems() > 0 || user.getDataItems() > 0 || user.getConceptualModels() > 0 || user.getLogicalModels() > 0 ||
                     user.getComputableModels() > 0 || user.getConcepts() > 0 || user.getSpatials() > 0 || user.getTemplates() > 0 ||
                     user.getUnits() > 0 || user.getThemes() > 0) {
@@ -297,7 +297,7 @@ public class UserService {
                     pieChartInfo.put("name", "pieChart");
                     pieChartInfo.put("path", piePath);
                     imageList.add(pieChartInfo);
-                    message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
+                    message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
                 }
                 message += "Many people have noticed what you shared in OpenGMS, your contributions have been viewed and invoked " + total + " times. " +
                         "The most influential item that you contributed is " + items.getJSONObject(0).getString("name") + ", it has been viewed " + items.getJSONObject(0).getInteger("view count") + " times. " +
@@ -307,23 +307,23 @@ public class UserService {
                 imageInfo.put("name", "chart1");
                 imageInfo.put("path", chartPath);
                 imageList.add(imageInfo);
-                message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
 
                 if(!lineChartHidden){
                     JSONObject lineChartInfo = new JSONObject();
                     lineChartInfo.put("name", "lineChart");
                     lineChartInfo.put("path", lineChartPath);
                     imageList.add(lineChartInfo);
-                    message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
+                    message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
                 }
             }
 
             message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
             message += "Sincerely,<br/>";
             message += "OpenGMS Team<br/>";
-            message += "http://geomodeling.njnu.edu.cn</p>";
+            message += "https://geomodeling.njnu.edu.cn</p>";
             message+="<hr/>";
-            message+="<p>To unsubscribe from this notice, go to <a href=\"http://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
+            message+="<p>To unsubscribe from this notice, go to <a href=\"https://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
 
             commonService.sendEmailWithImg("OpenGMS Team", user.getEmail(), "Open Geographic Modeling and Simulation Review", message, imageList);
 
@@ -339,7 +339,7 @@ public class UserService {
             }
             String message = "<p style='font-family: sans-serif;'>Dear ";
             message += authorship.getName() + ":<br/><br/>";
-            message += "<p>We have many geographic models of you in our platform, <a href='http://geomodeling.njnu.edu.cn'>OpenGMS</a>, including ";
+            message += "<p>We have many geographic models of you in our platform, <a href='https://geomodeling.njnu.edu.cn'>OpenGMS</a>, including ";
 
 
             int[] typesCounts = new int[10];
@@ -510,7 +510,7 @@ public class UserService {
                 pieChartInfo.put("name", "pieChart");
                 pieChartInfo.put("path", piePath);
                 imageList.add(pieChartInfo);
-                message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
+                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
             }
             message += "Many people have noticed your works in OpenGMS, your works have been viewed and invoked " + totalViewCount + " times. " +
                     "The most influential work of you in our platform is " + top5Items[0].getName() + ", it has been viewed " + top5Items[0].getViewCount() + " times. " +
@@ -519,22 +519,22 @@ public class UserService {
             imageInfo.put("name", "chart1");
             imageInfo.put("path", chartPath);
             imageList.add(imageInfo);
-            message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+            message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
 
             if(!lineChartHidden) {
                 JSONObject lineChartInfo = new JSONObject();
                 lineChartInfo.put("name", "lineChart");
                 lineChartInfo.put("path", lineChartPath);
                 imageList.add(lineChartInfo);
-                message += "<center><a href='http://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
+                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
             }
 
             message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
             message += "Sincerely,<br/>";
             message += "OpenGMS Team<br/>";
-            message += "http://geomodeling.njnu.edu.cn</p>";
+            message += "https://geomodeling.njnu.edu.cn</p>";
             message+="<hr/>";
-            message+="<p>To unsubscribe from this notice, go to <a href=\"http://geomodeling.njnu.edu.cn/authorship/unsubscribe?id="+authorship.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
+            message+="<p>To unsubscribe from this notice, go to <a href=\"https://geomodeling.njnu.edu.cn/authorship/unsubscribe?id="+authorship.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
 
             commonService.sendEmailWithImg("OpenGMS Team", "921485453@qq.com", "Open Geographic Modeling and Simulation Review", message, imageList);
 
@@ -659,7 +659,7 @@ public class UserService {
                 String subject="OpenGMS Portal Password Reset";
                 String content="Hello " + user.getName() + ":<br/>"+
                         "Your password has been reset to <b>"+password+"</b>. You can change the password after logging in.<br/>"+
-                        "Welcome to <a href='http://geomodeling.njnu.edu.cn' target='_blank'>OpenGMS</a> !";
+                        "Welcome to <a href='https://geomodeling.njnu.edu.cn' target='_blank'>OpenGMS</a> !";
 
                 Boolean flag = commonService.sendEmail(email,subject,content);
                 if(flag) {

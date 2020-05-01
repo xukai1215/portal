@@ -21,6 +21,18 @@ var createComputableModel = Vue.extend({
 
             },
 
+            bindModelItemDialogVisible:false,
+            pageOption: {
+                paginationShow:false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
+                searchText: '',
+                total: 264,
+                searchResult: [],
+            },
+
             userInfo: {},
 
             //文件框选择
@@ -47,6 +59,61 @@ var createComputableModel = Vue.extend({
         }
     },
     methods: {
+        selectModelItem(index,info){
+            console.log(info);
+            this.computableModel.bindModelItem = info.name;
+            this.computableModel.bindOid = info.oid;
+            this.bindModelItemDialogVisible = false;
+        },
+        handlePageChange(val) {
+
+            this.pageOption.currentPage = val;
+
+            this.searchModelItem();
+        },
+        openModelItemDialog(){
+            this.pageOption.currentPage = 1;
+            this.bindModelItemDialogVisible = true;
+            this.searchModelItem();
+        },
+        searchModelItem(){
+            let data = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage-1,
+                pageSize: this.pageOption.pageSize,
+                searchText: this.pageOption.searchText,
+                sortType: "default",
+                classifications: ["all"],
+            };
+            let url = "/modelItem/listByAuthor";
+            let contentType = "application/x-www-form-urlencoded";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                async: true,
+                contentType: contentType,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption.total = data.total;
+                        this.pageOption.pages = data.pages;
+                        this.pageOption.searchResult = data.list;
+                        this.pageOption.users = data.users;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow = true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
         changeRter(index){
             this.curIndex = index;
             var urls={
@@ -115,7 +182,13 @@ var createComputableModel = Vue.extend({
             }
         },
         addFile(){
-            $("#file").click();
+            if(this.computableModel.contentType == "Package"){
+                $("#file").click();
+            }else{
+                $("#file_multi").click();
+            }
+
+
         },
         removeFile(){
             if(this.fileSelect!="") {
@@ -371,7 +444,30 @@ var createComputableModel = Vue.extend({
             //清空
             let file=document.getElementById("file");
             file.value='';
-        })
+        });
+
+        $("#file_multi").change(()=> {
+            this.resources=[];
+            let files=$("#file_multi")[0].files;
+            for(i=0;i<files.length;i++){
+                let file=files[i];
+                this.fileArray.push(file);
+                let res={};
+                res.name=file.name;
+                res.path="";
+                let names=res.name.split('.');
+                res.suffix=names[names.length-1];
+                res.size=file.size;
+                res.lastModified=file.lastModified;
+                res.type=file.type;
+                this.resources.push(res);
+            }
+
+
+            //清空
+            let file=document.getElementById("file");
+            file.value='';
+        });
 
         $.ajax({
             type: "GET",
@@ -675,21 +771,29 @@ var createComputableModel = Vue.extend({
 
         $(".finish").click(()=>{
             this.formData=new FormData();
+
+            if(this.computableModel.bindModelItem==""){
+                alert("Please bind a model item")
+                return;
+            }
+            if(this.computableModel.name.trim()==""){
+                alert("Please enter name")
+                return;
+            }
+            if(this.computableModel.contentType=="Package"||this.computableModel.contentType=="Code"||this.computableModel.contentType=="Library"){
+                if(this.fileArray.length==0){
+                    alert("Please select files !");
+                    return;
+                }
+            }
+
             let loading = this.$loading({
                 lock: true,
                 text: "Uploading...",
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            if($("#bind").html() == "bind"){
-                alert("please bind model item (Step1)")
-                return;
-            }
-            if(this.computableModel.name.trim()==""){
-                alert("please enter name")
-                return;
-            }
-            this.computableModel.contentType=$("input[name='ContentType']:checked").val();
+
             this.computableModel.isAuthor=$("input[name='author_confirm']:checked").val();
 
             var detail = tinyMCE.activeEditor.getContent();
@@ -780,7 +884,7 @@ var createComputableModel = Vue.extend({
                                 that.getMessageNum(that.computableModel_oid);
                                 let params = that.message_num_socket;
                                 that.send(params);
-                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                alert("Success! Changes have been submitted, please wait for the author to review.");
                                 window.location.href="/user/userspace"
                             case 1:
                                 alert("update computable model successfully!");
@@ -843,42 +947,42 @@ var createComputableModel = Vue.extend({
 
         });
 
-        //绑定模型条目
-        $("#bind").click(() => {
-            this.computableModel.bindModelItem = $("#search-box").val();
-            if ($("#bind").html() == "unbind") {
-                $("#bind").html("bind");
-                $("#bind").removeClass("btn-warning");
-                $("#bind").addClass("btn-success")
-                document.getElementById("search-box").readOnly = false;
-
-            }
-            else {
-
-                $.ajax({
-                    data: "Get",
-                    url: "/modelItem/findByName",
-                    data: {
-                        name: this.computableModel.bindModelItem.trim()
-                    },
-                    cache: false,
-                    async: true,
-                    success: (json) => {
-                        if(json.data!=null){
-                            $("#bind").html("unbind")
-                            $("#bind").removeClass("btn-success");
-                            $("#bind").addClass("btn-warning")
-                            document.getElementById("search-box").readOnly = true;
-                            this.computableModel.bindOid=json.data.oid;
-                        }
-                        else{
-                            alert("Can not find model item \""+this.computableModel.bindModelItem.trim()+"\",please check the name!")
-                        }
-                    }
-                })
-
-            }
-        })
+        // //绑定模型条目
+        // $("#bind").click(() => {
+        //     this.computableModel.bindModelItem = $("#search-box").val();
+        //     if ($("#bind").html() == "unbind") {
+        //         $("#bind").html("bind");
+        //         $("#bind").removeClass("btn-warning");
+        //         $("#bind").addClass("btn-success")
+        //         document.getElementById("search-box").readOnly = false;
+        //
+        //     }
+        //     else {
+        //
+        //         $.ajax({
+        //             data: "Get",
+        //             url: "/modelItem/findByName",
+        //             data: {
+        //                 name: this.computableModel.bindModelItem.trim()
+        //             },
+        //             cache: false,
+        //             async: true,
+        //             success: (json) => {
+        //                 if(json.data!=null){
+        //                     $("#bind").html("unbind")
+        //                     $("#bind").removeClass("btn-success");
+        //                     $("#bind").addClass("btn-warning")
+        //                     document.getElementById("search-box").readOnly = true;
+        //                     this.computableModel.bindOid=json.data.oid;
+        //                 }
+        //                 else{
+        //                     alert("Can not find model item \""+this.computableModel.bindModelItem.trim()+"\",please check the name!")
+        //                 }
+        //             }
+        //         })
+        //
+        //     }
+        // })
 
         $("input[name='ContentType']").iCheck({
             //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系

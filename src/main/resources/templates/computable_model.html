@@ -237,7 +237,7 @@
                 <div class="block_content flex">
                     <div id="link-text" class="width:100%">
                         <a th:href="${modelInfo.url}" th:text="${modelInfo.url}" target="_blank">
-                            http://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                            https://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                 </div>
@@ -393,9 +393,9 @@
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
                         <a style="word-break:break-all;"
-                           th:href="'http://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}"
-                           th:text="'http://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}">
-                            http://geomodeling.njnu.edu.cn/computableModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                           th:href="'https://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}"
+                           th:text="'https://geomodeling.njnu.edu.cn/computableModel/'+${modelInfo.oid}">
+                            https://geomodeling.njnu.edu.cn/computableModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
                     <div id="copy" class="btn btn-info">
@@ -447,7 +447,7 @@
                 </div>
             </div>
 
-            <div id="comments">
+            <div id="comments" class="detail_block">
                 <template th:replace="fragments/comments :: comments"></template>
             </div>
         </div>

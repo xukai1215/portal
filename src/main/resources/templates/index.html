@@ -11,12 +11,9 @@
     <meta name="description" content="OpenGMS can help you explore and share resources about geographic modeling and simulation.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
-<!--    <link rel="stylesheet" href="/static/css/index/element_ui/index.css">-->
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/css/index/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/swiper.min.css" />
-<!--    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/style.css" />-->
-<!--    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/index.css" />-->
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/element_ui/index.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/style.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/universal.css" />
@@ -69,7 +66,33 @@
             .qrcodeShow{
                 visibility: hidden;
             }
+        }
 
+        .el-carousel__item{
+            text-align: center;
+            color: red;
+        }
+
+        .el-carousel__item a {
+            color: red;
+            font-family: initial;
+            font-size: 28px;
+            opacity: 0.75;
+            line-height: 70px;
+            margin: 0;
+        }
+
+        .el-carousel__item a:hover {
+            text-decoration: underline;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
         }
 
 
@@ -126,26 +149,55 @@
             </div>
         </section>
 
-        <!-- one sentence summary the web gate  -->
-        <section id="blackPic" style="height: 90px;">
-            <div class="el-row" style="height: 90px;">
-                <div class="aftcarheight el-col el-col-14 el-col-offset-5">
-                    <div>
-                        <!--<p style="font-size: 1vw; font-weight: 100; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">-->
-                        <!--Hydrology, Geomorphology, Geology,-->
-                        <!--Glaciology, Biogeography, Meteorology, Climatology, Pedology, Oceanography, Coastal, Landscape-->
-                        <!--Ecology,-->
-                        <!--Ecosystem, Paleogeography, Quaternary Science, Environmental Management,-->
-                        <!--Agriculture, Industrial, Traffic, Tourism, Population, Regional, Urban, Rural,-->
-                        <!--Historical,Cultural,-->
-                        <!--Social, Economic, Political, Health, Development, Behavioral <strong>. . .</strong></p></div>-->
-                        <!--<p></p>-->
-                        <img src="/static/img/manyModels.png" style="height: 89px;width:100%;">
+        <el-carousel height="70px" direction="vertical" :autoplay="true" indicator-position="none" interval="3000">
+            <el-carousel-item>
+                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
+                <a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf" target="_blank">
+                    OpenGMS joins the call for transparency of COVID-19 models
+                </a>
+            </el-carousel-item>
 
-                    </div>
-                </div>
-            </div>
-        </section>
+            <el-carousel-item>
+                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
+                <a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">
+                    CoMSES adds OpenGMS to Trusted Digital Repositories for SoftWare
+                </a>
+            </el-carousel-item>
+
+            <el-carousel-item>
+                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
+                <a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf" target="_blank">
+                    OpenGMS joins the call for transparency of COVID-19 models
+                </a>
+            </el-carousel-item>
+
+            <el-carousel-item>
+                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
+                <a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">
+                    CoMSES adds OpenGMS to Trusted Digital Repositories for SoftWare
+                </a>
+            </el-carousel-item>
+        </el-carousel>
+        <!-- one sentence summary the web gate  -->
+        <!--<section id="blackPic" style="height: 90px;">-->
+            <!--<div class="el-row" style="height: 90px;">-->
+                <!--<div class="aftcarheight el-col el-col-14 el-col-offset-5">-->
+                    <!--<div>-->
+                        <!--&lt;!&ndash;<p style="font-size: 1vw; font-weight: 100; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">&ndash;&gt;-->
+                        <!--&lt;!&ndash;Hydrology, Geomorphology, Geology,&ndash;&gt;-->
+                        <!--&lt;!&ndash;Glaciology, Biogeography, Meteorology, Climatology, Pedology, Oceanography, Coastal, Landscape&ndash;&gt;-->
+                        <!--&lt;!&ndash;Ecology,&ndash;&gt;-->
+                        <!--&lt;!&ndash;Ecosystem, Paleogeography, Quaternary Science, Environmental Management,&ndash;&gt;-->
+                        <!--&lt;!&ndash;Agriculture, Industrial, Traffic, Tourism, Population, Regional, Urban, Rural,&ndash;&gt;-->
+                        <!--&lt;!&ndash;Historical,Cultural,&ndash;&gt;-->
+                        <!--&lt;!&ndash;Social, Economic, Political, Health, Development, Behavioral <strong>. . .</strong></p></div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<p></p>&ndash;&gt;-->
+                        <!--<img src="/static/img/manyModels.png" style="height: 89px;width:100%;">-->
+
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</section>-->
 
 
         <!--Platform Functionalities-->
@@ -398,23 +450,23 @@
                             center.
                             And various web applications would be offered in certain centers.</p>
                         <el-button type="warning" style="margin-top: 32px" size="medium"
-                            @click="window.open('http://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html')">Saga
+                            @click="window.open('https://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html')">Saga
                         </el-button>
-                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/hydro-model-integration/main')">Hydrology
+                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('https://geomodeling.njnu.edu.cn/hydro-model-integration/main')">Hydrology
                         </el-button>
-                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('http://geomodeling.njnu.edu.cn/FGM-theme/')">Forest Growth
-                        </el-button>
-                        <el-button type="warning" style="margin-top: 32px" size="medium"
-                        @click="window.open('http://geomodeling.njnu.edu.cn/TrafficNoiseTheme/')">Traffic Noise
+                        <el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open('https://geomodeling.njnu.edu.cn/FGM-theme/')">Forest Growth
                         </el-button>
                         <el-button type="warning" style="margin-top: 32px" size="medium"
-                        @click="window.open('http://geomodeling.njnu.edu.cn/app/geodetector.html')">Geodetector
+                        @click="window.open('https://geomodeling.njnu.edu.cn/TrafficNoiseTheme/')">Traffic Noise
                         </el-button>
                         <el-button type="warning" style="margin-top: 32px" size="medium"
-                        @click="window.open('http://geomodeling.njnu.edu.cn/app/B-SHADE_Sampling.html')">B-SHADE-Sampling
+                        @click="window.open('https://geomodeling.njnu.edu.cn/app/geodetector.html')">Geodetector
                         </el-button>
                         <el-button type="warning" style="margin-top: 32px" size="medium"
-                        @click="window.open('http://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html')">B-SHADE-Estimation
+                        @click="window.open('https://geomodeling.njnu.edu.cn/app/B-SHADE_Sampling.html')">B-SHADE-Sampling
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                        @click="window.open('https://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html')">B-SHADE-Estimation
                         </el-button>
                         <!--<el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open()">-->
                             <!--Meteorological-->
@@ -995,35 +1047,35 @@
             </div>
             <div id="partnerContainer" style="float:none">
                 <el-row>
-                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24">
+                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" style="margin-bottom:15px;">
                         <a href="https://www.comses.net/" target="_blank">
                             <img src="/static/img/team/CoMSES.png" style="width: 250px;height: 100px;">
                         </a>
                     </div>
 
-                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" >
+                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" style="margin-bottom:15px;">
                         <a href="https://csdms.colorado.edu/" target="_blank">
                             <img src="/static/img/team/CSDMS.png" style="width: 325px;height:70px;margin:20px 0 10px">
                         </a>
                     </div>
 
-                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24">
+                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" style="margin-bottom:15px;">
                         <a href="https://www.openmi.org/" target="_blank">
                             <img src="/static/img/team/openMI.png" style="width:180px;height:100px">
                         </a>
                     </div>
 
-                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24">
+                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" style="margin-bottom:15px;">
                         <a href="http://www.opengeospatial.org/" target="_blank">
                             <img src="/static/img/team/ogc.png" style="width:140px;">
                         </a>
                     </div>
-                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24">
+                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" style="margin-bottom:15px;">
                         <a href="http://www.nsfc.gov.cn/" target="_blank">
                             <img src="/static/img/team/NNSFC.png" style="width:440px;height: 80px;margin-top: 15px">
                         </a>
                     </div>
-                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24">
+                    <div class="el-col el-col-lg-8 el-col-md-12 el-col-sm-24" style="margin-bottom:15px;">
                         <a href="http://www.njnu.edu.cn/" target="_blank">
                             <img src="/static/img/team/NJNU.jpg" style="width: 80px;height: 80px;margin-top: 15px">
                         </a>
@@ -1064,8 +1116,8 @@
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
-<script src="/static/js/common/navbarJquery.js/"></script>
-<script src="/static/js/common/backTop.js/"></script>
+<script src="/static/js/common/navbarJquery.js"></script>
+<script src="/static/js/common/backTop.js"></script>
 
 <script>
     $("#wx").mouseover(function(){

@@ -1508,7 +1508,7 @@ var createTheme = Vue.extend({
                                 window.location.href = "/theme/" + result.data.oid;
                             }
                             else{
-                                alert("Success! Changes have been submitted, please wait for the webmaster to review.");
+                                alert("Success! Changes have been submitted, please wait for the author to review.");
                                 //产生信号调用计数，启用websocket
 
                                 window.location.href = "/user/userSpace";

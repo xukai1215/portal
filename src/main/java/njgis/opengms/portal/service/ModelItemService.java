@@ -985,6 +985,8 @@ public class ModelItemService {
 
             users.add(userObj);
 
+            modelItems.get(i).setAuthor_name(user.getName());
+            modelItems.get(i).setAuthor_oid(user.getOid());
 //            modelItems.get(i).setAuthor(user.getName());
 
         }

@@ -3,8 +3,6 @@ package njgis.opengms.portal.dto.modelItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import njgis.opengms.portal.entity.support.ModelItemRelate;
-import njgis.opengms.portal.entity.support.Reference;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +26,8 @@ public class ModelItemResultDTO{
     String image;
     String description;
     String author;
+    String author_oid;
+    String author_name;
     String status;
 
     List<String> keywords;
