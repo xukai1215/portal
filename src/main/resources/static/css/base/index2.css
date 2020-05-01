@@ -325,6 +325,10 @@
     width: 600px;height: 480px;margin-right: 0px;float:left
 }
 
+.el-carousel__item a{
+
+}
+
 @media only screen and (max-width: 1385px){
     #rightHeaderPic{
         margin-right: 0;
