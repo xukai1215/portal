@@ -104,6 +104,8 @@ var notice = Vue.extend({
             reverse: true,
 
             comments:[],
+
+            loading: true,
         };
     },
     methods:{
@@ -116,7 +118,11 @@ var notice = Vue.extend({
                 }
                 this.comments = result.data;
 
-
+                if (this.comments.length == 0){
+                    $(".comment").show();
+                } else {
+                    $(".comment").hide();
+                }
             })
         },
         handleClick(tab, event){
@@ -196,16 +202,20 @@ var notice = Vue.extend({
                         }
                     }
 
+                    this.sum_tableData = this.sum_tableData.concat(this.comments);
+
+
                     //将sum_tableData的数据按照时间排序(冒泡排序)
                     for (let i=0;i<this.sum_tableData.length;i++){
                         for (let j=this.sum_tableData.length-1;j>i;j--){
-                            if (this.sum_tableData[j].modifyTime<this.sum_tableData[j-1].modifyTime){
+                            if ((this.sum_tableData[j].modifyTime||this.sum_tableData[j].date)<(this.sum_tableData[j-1].modifyTime||this.sum_tableData[j-1].date)){
                                 let temp = this.sum_tableData[j];
                                 this.sum_tableData[j] = this.sum_tableData[j-1];
                                 this.sum_tableData[j-1] = temp;
                             }
                         }
                     }
+
                     //为时间线涂色
                     for (let i=0;i<this.sum_tableData.length;i++){
                         if (this.sum_tableData[i].status == "confirmed") {
@@ -340,9 +350,19 @@ var notice = Vue.extend({
 
                     this.table_length_sum += (this.model_tableData1_length+this.community_tableData1_length);
                     console.log(this.sum_tableData);
+
+
+                    if (this.sum_tableData.length == 0){
+                        $(".overview").show();
+                    } else {
+                        $(".overview").hide();
+                    }
                 }
             })
+
+            // this.loading = false;
         },
+
         // getEditVersion(){
         //     $.ajax({
         //         type:"GET",

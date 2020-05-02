@@ -524,9 +524,9 @@ public class DataItemService {
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItemResultDTO> dataItemPage;
         if(userOid==null){
-            dataItemPage = dataItemDao.findByNameLike(pageable, searchText);
+            dataItemPage = dataItemDao.findByNameLikeIgnoreCase(pageable, searchText);
         }else{
-            dataItemPage = dataItemDao.findByNameLikeAndAuthor(pageable, searchText,userOid);
+            dataItemPage = dataItemDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
         }
 
 

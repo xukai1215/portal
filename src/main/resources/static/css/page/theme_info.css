@@ -670,3 +670,10 @@ zhtml,body{
 .edit_themename{
     width: 75%;
 }
+
+span.model_name {
+    overflow: hidden;
+}
+span.data_name {
+    overflow: hidden;
+}
