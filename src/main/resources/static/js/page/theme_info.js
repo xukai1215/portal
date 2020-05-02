@@ -527,11 +527,6 @@ var vue = new Vue({
                 crossDomain: true,
                 success: (data) => {
                     data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        window.location.href = "/user/login";
-                    }
-                    else {
                         let arr = window.location.href.split("/");
                         let bindOid = arr[arr.length - 1].split("#")[0];
                         this.setSession("bindOid", bindOid);
@@ -561,7 +556,7 @@ var vue = new Vue({
                                 window.open("/repository/createUnit", "_blank")
                                 break;
                         }
-                    }
+
                 }
             })
         },
@@ -839,12 +834,6 @@ var vue = new Vue({
                 crossDomain: true,
                 success: (data) => {
                     data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
-                    }
-                    else {
                         $.ajax({
                             url:"/theme/getInfo/" + this.themeoid,
                             type:"get",
@@ -889,7 +878,7 @@ var vue = new Vue({
                                 });
                             }
                         })
-                    }
+
                 }
             })
         },
@@ -907,12 +896,6 @@ var vue = new Vue({
                 crossDomain: true,
                 success: (data) => {
                     data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
-                    }
-                    else {
                         $.ajax({
                             url:"/theme/getInfo/" + this.themeoid,
                             type:"get",
@@ -940,8 +923,6 @@ var vue = new Vue({
                             }
 
                         })
-
-                    }
                 }
             })
         },
@@ -958,12 +939,6 @@ var vue = new Vue({
                 crossDomain: true,
                 success: (data) => {
                     data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
-                    }
-                    else {
                         $.ajax({
                             url:"/theme/getInfo/" + this.themeoid,
                             type:"get",
@@ -985,7 +960,6 @@ var vue = new Vue({
                                 }
                             }
                         })
-                    }
                 }
             })
         },
@@ -1002,12 +976,6 @@ var vue = new Vue({
                 crossDomain: true,
                 success: (data) => {
                     data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
-                    }
-                    else {
                         $.ajax({
                             url:"/theme/getInfo/" + this.themeoid,
                             type:"get",
@@ -1028,7 +996,6 @@ var vue = new Vue({
                                 }
                             }
                         })
-                    }
                 }
             })
         },
@@ -1051,12 +1018,6 @@ var vue = new Vue({
                     crossDomain: true,
                     success: (data) => {
                         data = JSON.parse(data);
-                        if (data.oid == "") {
-                            alert("Please login first");
-                            this.setSession("history", window.location.href);
-                            window.location.href = "/user/login";
-                        }
-                        else {
                             $.ajax({
                                 url: "/theme/getInfo/" + this.themeoid,
                                 type: "get",
@@ -1081,7 +1042,6 @@ var vue = new Vue({
                                     }
                                 }
                             })
-                        }
                     }
                 })
                 //循环给input赋name值
@@ -1107,12 +1067,6 @@ var vue = new Vue({
                     crossDomain: true,
                     success: (data) => {
                         data = JSON.parse(data);
-                        if (data.oid == "") {
-                            alert("Please login first");
-                            this.setSession("history", window.location.href);
-                            window.location.href = "/user/login";
-                        }
-                        else {
                             $.ajax({
                                 url: "/theme/getInfo/" + this.themeoid,
                                 type: "get",
@@ -1135,7 +1089,6 @@ var vue = new Vue({
                                     }
                                 }
                             })
-                        }
                     }
                 })
                 //循环给input赋name值
@@ -1160,12 +1113,6 @@ var vue = new Vue({
                 crossDomain: true,
                 success: (data) => {
                     data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
-                    }
-                    else {
                         $.ajax({
                             url:"/theme/getInfo/" + this.themeoid,
                             type:"get",
@@ -1188,7 +1135,6 @@ var vue = new Vue({
                                 }
                             }
                         })
-                    }
                 }
             })
             //循环给input赋name、link、image值
@@ -1429,16 +1375,9 @@ var vue = new Vue({
             crossDomain: true,
             success: (data) => {
                 data = JSON.parse(data);
-                if (data.oid == "") {
-                    alert("Please login first");
-                    this.setSession("history", window.location.href);
-                    window.location.href = "/user/login";
-                }
-                else {
                     let href = window.location.href;
                     let hrefs = href.split('/');
                     that.themeoid = hrefs[hrefs.length - 1].split("#")[0];
-                }
             }
         });
         //点击confirm按钮，将数据更新到theme数据表中

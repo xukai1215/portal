@@ -26,6 +26,9 @@
         .el-menu{
             border:none;
         }
+        a:hover{
+        text-decoration: none;!important;
+        }
     </style>
 </head>
 <body class="scrollbar">
@@ -40,7 +43,7 @@
                                 <div class="logoPanel">
                                 </div>
                                 <div slot="header" class="clearfix text-center">
-                                    <img th:src="'/static/upload'+${info.image}" id="header_image">
+                                    <img th:src="'/static'+${info.image}" id="header_image">
                                     <div>
                                         <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
                                         <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
@@ -123,44 +126,42 @@
                         <div id="model" class="infoPanel container-fluid dataPanel">
                             <div class="title text-center">
                                 <h3>
-                                    <span>Model</span>
+                                    <span>Models</span>
                                     <el-button class="editicon" type="primary" @click="edit_theme_model()" icon="el-icon-edit" circle style="display: none"></el-button>
                                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit_theme_model()"></a>-->
                                 </h3>
                             </div>
                             <div th:each="modelClass,index:${modelClassInfos}" class="model_card">
                                 <div class="x_content model_item" th:id="'modelClass'+${index.index}">
-
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
-
                                         <el-col :span="4" th:each="item:${modelClass.content}" style="margin-top:20px;" id="model_col">
+                                            <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
                                                     <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
-                                                </a>
                                                 <div style="padding: 14px;">
-                                                    <span th:text="${item.name}" class="model_name"></span>
+                                                    <span th:text="${item.name}" class="model_name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>
                                             </el-card>
+                                            </a>
                                         </el-col>
-
                                     </el-row>
-
                                 </div>
                             </div>
                             <div v-for="(item,index) in modelClassInfos" :key="item.mcname" class="sub_model_card">
                                 <div class="x_content model_item" :id="'sub_modelClass'+index">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
+                                            <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+item2.oid">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+item2.oid">
+
                                                     <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
+
                                                 <div style="padding: 14px;">
-                                                    <span class="model_name" v-text="item2.name"></span>
+                                                    <span class="model_name" v-text="item2.name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>
                                             </el-card>
+                                            </a>
                                         </el-col>
                                     </el-row>
                                 </div>
@@ -293,19 +294,21 @@
                                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit_theme_data"></a>-->
                                 </h3>
                             </div>
-                            <div th:each="dataClass,index:${dataClassInfos}" >
+                            <div th:each="dataClass,index:${dataClassInfos}">
                                 <div class="x_content data_item" th:id="'dataClass'+${index.index}">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content1">
                                         <el-col :span="4" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
+                                            <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
                                                 <!--<a th:href="${dataClass.url[0].url_download[0]}" ><img src="/static/thematicmodel/css/images/model/thumb.png" class="image"></a>-->
-                                                <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
-                                                    <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
-                                                </a>
+
+                                                 <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
+
                                                 <div style="padding: 14px;">
-                                                    <span th:text="${item.name}" class="data_name"></span>
+                                                    <span th:text="${item.name}" class="data_name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>
                                             </el-card>
+                                            </a>
                                         </el-col>
                                     </el-row>
                                 </div>
@@ -315,14 +318,14 @@
                                 <div class="x_content data_item" :id="'sub_dataClass'+index">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
+                                            <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
                                                     <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
                                                 <div style="padding: 14px;">
                                                     <span class="data_name" v-text="item2.name"></span>
                                                 </div>
                                             </el-card>
+                                            </a>
                                         </el-col>
                                     </el-row>
                                 </div>
@@ -472,7 +475,7 @@
                                         <el-col :span="4" v-for="(item,index) in themeObj.application" :key="item.id" style="margin-top:20px;" id="model_col3">
                                             <a href="${item.applicationlink}">
                                                 <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">
+                                                    <img :src="'/static/repository/theme/' + item.applicationname" class="image" id="sub_application_image">
                                                     <div style="padding: 14px">
                                                         <span v-text="item.applicationname"></span>
                                                     </div>
