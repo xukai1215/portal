@@ -153,9 +153,9 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+item2.oid">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
+                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="model_card">
 
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
+                                                    <avatar :username = "item2.name" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"> </avatar>
 
                                                 <div style="padding: 14px;">
                                                     <span class="model_name" v-text="item2.name" style="-webkit-line-clamp: 2;"></span>
@@ -299,8 +299,8 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content1">
                                         <el-col :span="4" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
-                                                 <avatar th:username="${item.name}" :size="140" :rounded="false"></avatar>
+                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
+                                                 <avatar th:username="${item.name}" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}" class="data_name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>
@@ -316,8 +316,8 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content">
                                         <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
+                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="data_card">
+                                                    <avatar :username = "item2.name" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
                                                 <div style="padding: 14px;">
                                                     <span class="data_name" v-text="item2.name"></span>
                                                 </div>
@@ -454,7 +454,7 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
                                             <a th:href="${item.link}">
-                                                <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto">
+                                                <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
                                                     <img th:src="'/static'+${item.image}" class="image" id="application_image">
                                                     <div style="padding: 14px;">
                                                         <span th:text="${item.name}"></span>
@@ -471,7 +471,7 @@
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
                                         <el-col :span="4" v-for="(item,index) in themeObj.application" :key="item.id" style="margin-top:20px;" id="model_col3">
                                             <a href="${item.applicationlink}">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
+                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width:180px;height: 250px">
                                                     <img :src="'/static/repository/theme/' + item.applicationname" class="image" id="sub_application_image">
                                                     <div style="padding: 14px">
                                                         <span v-text="item.applicationname"></span>
@@ -565,35 +565,26 @@
                             <div id="maintainers">
                                 <div class="x_content"  id="maintainers1">
                                     <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4" th:each="item:${maintainer}" style="margin-top:20px;" id="model_col3">
+                                        <el-col  th:each="item:${maintainer}" style="margin-top:20px;">
+                                            <el-card>
                                             <a th:href="'/user/'+${item.id}">
-                                                <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:130px;height: 75px">
+                                                <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:130px;height: 75px">-->
                                                     <!--<img th:src="'/static/upload'+${item.image}" class="image" id="maintainers_image">-->
-                                                    <div style="padding: 14px;">
-                                                        <div class="user_img" style="float:left;">
-                                                            <img class="round_icon user_img" src="/static/img/icon/default.png">
+
+                                                    <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;align-items: center;padding: 10px;">
+                                                        <div class="el-col ">
+                                                            <img src="/static/img/icon/default.png"
+                                                                 class="round_icon" style="width:40px;height: 40px;float:left;">
                                                         </div>
-                                                        <div style="float: right;margin-top: 12px">
-                                                            <span th:text="${item.name}"></span>
+                                                        <div class="el-col">
+                                                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                                                <a ><h4  th:text="${item.name}" style="padding: 0;"></h4></a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </el-card>
                                             </a>
-                                            <!--&lt;!&ndash;测试聊天室&ndash;&gt;-->
-                                            <!--<el-card>-->
-                                               <!--Welcome-->
-                                                <!--<br/>-->
-                                                <!--<input id="message_text" type="text"/>-->
-                                                <!--<el-button type="success" @click="send_message()">发送消息</el-button>-->
-                                                <!--<hr/>-->
-                                                <!--<button onclick="closeWebSocket()">关闭聊天室连接</button>-->
-                                                <!--<hr/>-->
-                                                <!--<div id="message"></div>-->
-                                            <!--</el-card>-->
+                                            </el-card>
                                         </el-col>
-                                        <!--<el-tooltip class="item" effect="dark" content="Application editor" placement="top-start">-->
-                                            <!--<el-button type="info" @click="show_icon" icon="el-icon-edit" circle ></el-button>-->
-                                        <!--</el-tooltip>-->
                                     </el-row>
 
                                 </div>
