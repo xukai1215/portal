@@ -1,5 +1,12 @@
 //element-ui 切换英文，勿删！
 ELEMENT.locale(ELEMENT.lang.en)
+
+$("#wx").mouseover(function(){
+    $("#wxqrcode").fadeIn();
+});
+$("#wx").mouseout(function(){
+    $("#wxqrcode").fadeOut();
+});
 // 获得下拉一级菜单
 // 获得下拉二级菜单
 // var menu=bar.children;
@@ -833,7 +840,7 @@ $(document).ready(function () {
 })
 // let that = this;
 //尝试配置websocket,测试成功，可以连接
-let websocket = null;
+var websocket = null;
 
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {

@@ -1,5 +1,6 @@
-
-
+$(function() {
+    $('.marquee').liMarquee();
+})
 
 var vue = new Vue({
     el: "#app",
@@ -9,8 +10,13 @@ var vue = new Vue({
         userId: "",
         loginFlag: false,
         findItem: [],
+        timer:null,
     },
+
     mounted(){
+
+
+
         //照片无限滚动
         var oDiv = document.getElementById('div1');
         var oUl = oDiv.getElementsByTagName('ul')[0];

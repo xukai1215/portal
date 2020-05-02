@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/index2.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" href="/static/css/common/liMarquee.css">
     <style>
 
 
@@ -68,43 +69,34 @@
             }
         }
 
-        .el-carousel__item{
+        .marquee{
+            height: 70px;
+            width: 100%;
             text-align: center;
-            color: red;
+            vertical-align: center;
+            color: #c00000;
         }
 
-        .el-carousel__item a {
-            color: red;
-            font-family: sans-serif;
-            font-size: 27px;
+
+        .marquee a {
+            color: #c00000;
+            font-family: 'Lato', sans-serif;
+            font-size: 28px;
             opacity: 0.75;
             line-height: 70px;
             margin: 0;
         }
 
-        .el-carousel__item a:hover {
+        .marquee a:hover {
+            color: #c00000;
             text-decoration: underline;
-        }
-
-        .el-carousel__item:nth-child(2n) {
-            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
-
-        }
-
-        .el-carousel__item:nth-child(2n+1) {
-            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
         }
 
 
     </style>
+
+
 </head>
-
-<style>
-.el-col-1{
-    width:4.75%
-}
-
-</style>
 
 <body>
     <div id="app">
@@ -149,35 +141,56 @@
             </div>
         </section>
 
-        <el-carousel height="70px" direction="vertical" :autoplay="false" indicator-position="none" interval="3000">
-            <el-carousel-item>
-                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
-                <a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf" target="_blank">
-                    OpenGMS joins the call for transparency of COVID-19 models
-                </a>
-            </el-carousel-item>
+        <div class="marquee str_wrap" style="display: inline-block; height: 70px;">
+            <div class="str_move str_origin" style="left: 0px;">
+                <div style="margin-left: 300px; display: inline-block;">
+                    <i class="fa fa-bullhorn fa-2x" style="margin: 0px 15px;"></i>
+                    <a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf"
+                        target="_blank">
+                        OpenGMS joins the call for transparency of COVID-19 models ( in <i>Science</i> )
+                    </a>
+                </div>
+                <div style="margin-left: 300px; display: inline-block;">
+                    <i class="fa fa-paper-plane-o fa-2x" style="margin: 0px 15px;"></i>
+                    <a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">
+                        CoMSES adds OpenGMS to Trusted Digital Repositories for Software
+                    </a>
+                </div>
 
-            <el-carousel-item>
-                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
-                <a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">
-                    CoMSES adds OpenGMS to Trusted Digital Repositories for SoftWare
-                </a>
-            </el-carousel-item>
+            </div>
+        </div>
+        <!--<el-carousel height="70px" :autoplay="true" arrow="never" indicator-position="none" interval="5000">-->
+            <!--<el-carousel-item>-->
+                <!--<i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>-->
+                <!--<a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf" target="_blank">-->
+                    <!--OpenGMS joins the call for transparency of COVID-19 models in Science-->
+                <!--</a>-->
+            <!--</el-carousel-item>-->
 
-            <el-carousel-item>
-                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
-                <a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf" target="_blank">
-                    OpenGMS joins the call for transparency of COVID-19 models
-                </a>
-            </el-carousel-item>
+            <!--<el-carousel-item>-->
+                <!--<i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>-->
+                <!--<a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">-->
+                    <!--CoMSES adds OpenGMS to Trusted Digital Repositories for Software-->
+                <!--</a>-->
+            <!--</el-carousel-item>-->
 
-            <el-carousel-item>
-                <i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>
-                <a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">
-                    CoMSES adds OpenGMS to Trusted Digital Repositories for SoftWare
-                </a>
-            </el-carousel-item>
-        </el-carousel>
+            <!--<el-carousel-item>-->
+                <!--<i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>-->
+                <!--<a href="https://geomodeling.njnu.edu.cn/static/file/Call for transparency of COVID-19 models-Science.pdf" target="_blank">-->
+                    <!--OpenGMS joins the call for transparency of COVID-19 models in Science-->
+                <!--</a>-->
+            <!--</el-carousel-item>-->
+
+            <!--<el-carousel-item>-->
+                <!--<i class="fa fa-paper-plane fa-2x" style="margin-right: 10px;"></i>-->
+                <!--<a href="https://www.comses.net/resources/trusted-digital-repositories/" target="_blank">-->
+                    <!--CoMSES adds OpenGMS to Trusted Digital Repositories for Software-->
+                <!--</a>-->
+            <!--</el-carousel-item>-->
+        <!--</el-carousel>-->
+
+
+
         <!-- one sentence summary the web gate  -->
         <!--<section id="blackPic" style="height: 90px;">-->
             <!--<div class="el-row" style="height: 90px;">-->
@@ -1105,7 +1118,7 @@
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/index/bootstrap.min.js"></script>
-
+<script src="/static/js/common/jquery.liMarquee.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/css/index/element_ui/index.js"></script>
 
@@ -1120,11 +1133,6 @@
 <script src="/static/js/common/backTop.js"></script>
 
 <script>
-    $("#wx").mouseover(function(){
-        $("#wxqrcode").fadeIn();
-    });
-    $("#wx").mouseout(function(){
-        $("#wxqrcode").fadeOut();
-    });
+
 </script>
 </html>

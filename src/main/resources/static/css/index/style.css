@@ -13,7 +13,7 @@ body {
   /*font-family: "proxima-nova",sans-serif,"Helvetica Neue",Helvetica,Arial,sans-serif;*/
   font-size: 14px;
   color: #444;
-  -webkit-font-smoothing: antialiased; 
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
@@ -82,7 +82,7 @@ ul {
   border: none;
 }
 
-/** 调整导航菜单的高度和字体大小 **/
+/** è°ƒæ•´å¯¼èˆªèœå•çš„é«˜åº¦å’Œå­—ä½“å¤§å° **/
 
 .el-menu--horizontal>.el-menu-item,
 .el-menu--horizontal>.el-submenu>.el-submenu__title {
@@ -101,9 +101,9 @@ ul {
   background: none !important;
 }
 
-/** 轮播图设置**/
+/** è½®æ’­å›¾è®¾ç½®**/
 
-/* 
+/*
 .el-carousel__item{
   box-shadow: 0px 4px -10px 0px red;
 } */
@@ -146,7 +146,7 @@ ul {
   left: 0;
   top:0;
   height: 100%;
-  /**双边阴影**/
+  /**åŒè¾¹é˜´å½±**/
   box-shadow: 50px 0px 100px 0px #00001e80 inset, -50px 0px 100px 0px #00001e80 inset;
   width: 100%;
 }
@@ -171,7 +171,7 @@ ul {
   margin-bottom: 50px;
   font-size: 24px;
   font-weight: 600;
-  font-family: 'Cera','Open Sans',sans-serif!important;
+  font-family: 'Lato', sans-serif;
 }
 
 .title p {
@@ -426,7 +426,7 @@ h3 {
   background-color: #f6f6f6;
 }
 
-#partner #inner { 
+#partner #inner {
   width: 1000px;
   margin: auto;
 }
@@ -453,7 +453,7 @@ h3 {
   position: relative;
 }
 
-/*****拖动**********/
+/*****æ‹–åŠ¨**********/
 
 .swiper-container {
   width: 100%;
@@ -489,7 +489,7 @@ h3 {
   transition: transform 2s 0s;
 }
 
-/**  父级元素的hover触发子级元素样式的改变，如果是兄弟节点则中间用加号  **/
+/**  çˆ¶çº§å…ƒç´ çš„hoverè§¦å‘å­çº§å…ƒç´ æ ·å¼çš„æ”¹å˜ï¼Œå¦‚æžœæ˜¯å…„å¼ŸèŠ‚ç‚¹åˆ™ä¸­é—´ç”¨åŠ å·  **/
 
 .swiper-slide:hover>.swiper-content {
   transform: scale(1.1);
@@ -601,7 +601,7 @@ h3 {
   width: 16.66%;
   height: 0;
   padding-bottom: 30%;
-  ;
+;
   float: left;
   box-shadow: 0px 40px 40px 5px rgba(0, 0, 0, 0.5);
   margin-right: -10px;
@@ -751,7 +751,7 @@ h3 {
   bottom: 10px;
   font-size: 1.5em;
   font-weight: 400;
- 
+
 }
 .el-button.is-circle{
   padding: 10px;
@@ -766,8 +766,8 @@ h3 {
 }
 .producerImg{
 
- max-width: 150px;
-max-height: 200px;
+  max-width: 150px;
+  max-height: 200px;
 }
 
 .ec-tooltip{
@@ -811,7 +811,7 @@ max-height: 200px;
 
 
 
-/*** 自适应 ***/
+/*** è‡ªé€‚åº” ***/
 
 @media screen and (min-width: 1220px) {
   .to-use {
@@ -836,10 +836,10 @@ max-height: 200px;
 
 
 
-/* carousel之下 */
+/* carouselä¹‹ä¸‹ */
 
 .aftcarheight{
-           
+
   text-align: center;
   display: inline-block;
   padding: 12px;
@@ -881,14 +881,14 @@ max-height: 200px;
 
   background-color:  #eefffec7;
 
-    /* transform: scale(1.2);
-            -webkit-transform: scale(1.2);
-            -moz-transform: scale(1.2);
-            -o-transform: scale(1.2);
-            -ms-transform: scale(1.2); 
-           box-shadow: 0 0 10px #000;
+  /* transform: scale(1.2);
+          -webkit-transform: scale(1.2);
+          -moz-transform: scale(1.2);
+          -o-transform: scale(1.2);
+          -ms-transform: scale(1.2);
+         box-shadow: 0 0 10px #000;
 
-            background-color:#fdf9e7 */
+          background-color:#fdf9e7 */
 }
 /* .item>.content .el-card ,icon{
   font-size: 7em;
@@ -901,7 +901,7 @@ max-height: 200px;
   height:190px;
 } */
 div.el-carousel__container.colpeo.el-carousel--card{
-   width:600px; 
+  width:600px;
 }
 div.el-carousel__container{
 
@@ -929,14 +929,14 @@ div.el-carousel__container{
   width: 100%;
   background: url(../../../static/img/index_section/labs-bg.jpg) no-repeat;
   background-size: cover;
-  
+
 }
 .newscard span{
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 18px;
 
 }
- 
+
 
 
 .newscard .mq{
@@ -956,7 +956,7 @@ div.el-carousel__container{
   height: 190px;
 }
 
-/* 响应式 */
+/* å“åº”å¼ */
 
 img:hover{
   /* transform: scale(1.2);
@@ -993,10 +993,7 @@ strong:hover{
 .el-carousel__item, .el-carousel__mask{
   position: absolute;
 }
-marquee{
-  height: 100px;
-  width:1000px;
-}
+
 .marcontent{
   position: absolute;
   left: -900px;

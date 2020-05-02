@@ -676,7 +676,7 @@
                     <el-table-column
                             label="Name">
                         <template slot-scope="props">
-                            <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                            <a :href="'/modelItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
                         </template>
                     </el-table-column>
 
@@ -684,7 +684,7 @@
                         <template slot-scope="scope">
 
                             <el-button
-                                    :disabled="scope.row.author!=userUid"
+                                    :disabled="scope.row.author!=userUid&&scope.row.author_uid!=userUid"
                                     size="mini"
                                     type="danger"
                                     @click="handleDelete(scope.$index, scope.row)">Remove
