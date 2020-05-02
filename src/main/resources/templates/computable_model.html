@@ -187,23 +187,28 @@
                              th:title="${data.name}" shadow="never" th:id="${key.index}"
                              th:key="${key.index}" @click.native="getid(id)"
                              style="width: 150px;"><!---->
-                            <div class="el-card__body">
-                                <div class="el-row">
-                                    <div class="el-col el-col-6">&nbsp;</div>
-                                    <div class="el-col el-col-12"><a
-                                            th:href="${loadPath}+'/computableModel/'+${modelInfo.contentType}+${data.path}"><img
-                                            th:src="'/static/img/filebrowser/'+${data.suffix}+'.svg'" style="height: 60%; width: 100%;"></a>
+                            <a target="_blank"
+                               th:href="${loadPath}+'/computableModel/'+${modelInfo.contentType}+${data.path}"
+                                style="color:black">
+                                <div class="el-card__body">
+                                    <div class="el-row">
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                        <div class="el-col el-col-12">
+                                            <img
+                                                    th:src="'/static/img/filebrowser/'+${data.suffix}+'.svg'"
+                                                    style="height: 60%; width: 100%;">
+                                        </div>
+                                        <div class="el-col el-col-6">&nbsp;</div>
                                     </div>
-                                    <div class="el-col el-col-6">&nbsp;</div>
-                                </div>
-                                <div class="el-row">
-                                    <div class="el-col el-col-2">&nbsp;</div>
-                                    <div class="el-col el-col-20"><p th:text="${data.name}"
-                                            style="overflow-wrap: break-word; word-break: break-all; text-align: center;">
+                                    <div class="el-row">
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                        <div class="el-col el-col-20"><p th:text="${data.name}"
+                                                                         style="overflow-wrap: break-word; word-break: break-all; text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5">
                                         </p></div>
-                                    <div class="el-col el-col-2">&nbsp;</div>
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
 
 
@@ -575,12 +580,12 @@
         </el-button>
     </div>
     <el-dialog v-cloak
-            title=""
-            :visible.sync="dialogVisible"
-            width="30%"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            :show-close="dialogShowClose">
+               title=""
+               :visible.sync="dialogVisible"
+               width="30%"
+               :close-on-click-modal="false"
+               :close-on-press-escape="false"
+               :show-close="dialogShowClose">
         <span v-if="contentBeforeDeploy">
             <h4>This computable model has not been deployed, do you want to deploy it now?</h4>
         </span>

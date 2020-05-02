@@ -28,7 +28,7 @@ new Vue({
         var validatePass2 = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('Please enter password again'));
-            } else if (value !== this.ruleForm2.password) {
+            } else if (value !== this.ruleForm2.pwd) {
                 callback(new Error('Password and Confirm Password are inconsistent!'));
             } else {
                 callback();
@@ -57,6 +57,7 @@ new Vue({
                 email:'',
                 // code:'1234',
                 password: '',
+                pwd: '',
                 checkPass: '',
                 name:'',
                 orgs:[],
@@ -70,7 +71,7 @@ new Vue({
                 // code:[
                 //     { validator: validateCode, trigger: 'blur' }
                 // ],
-                password: [
+                pwd: [
                     { validator: validatePass, trigger: 'blur' }
                 ],
                 checkPass: [
@@ -134,7 +135,7 @@ new Vue({
         register(){
 
             this.ruleForm2.userName=this.ruleForm2.email;
-            this.ruleForm2.password=hex_md5(this.ruleForm2.password)
+            this.ruleForm2.password=hex_md5(this.ruleForm2.pwd);
 
             $.ajax({
                 url : '/user/add',
@@ -154,7 +155,7 @@ new Vue({
                     else if(result.data==-1){
                         this.$message({
                             showClose: true,
-                            message: 'Username has existed, please change your username',
+                            message: 'Email has existed, please change your Email',
                             type: 'error'
                         });
                     }

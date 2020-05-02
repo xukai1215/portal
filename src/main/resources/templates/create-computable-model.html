@@ -186,7 +186,7 @@
                                                     </div>
                                                     <div class="step-tab-panel" id="step2">
                                                         <div id="URL" class="clearfix"
-                                                             style="display: none;margin-top:50px">
+                                                             style="margin-top:50px" v-if="computableModel.contentType=='Link'||computableModel.contentType=='Service'">
                                                             <div class="form-group">
                                                                 <label for="URL_text"
                                                                        class="control-label col-md-4 col-md-offset-2">Please
@@ -197,7 +197,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div id="Files">
+                                                        <div id="Files" v-else>
                                                             <el-button v-if="resources.length==0" type="primary"
                                                                        @click="addFile()">+ Add
                                                             </el-button>
@@ -234,10 +234,9 @@
                                                                             <el-col :span="6">&nbsp</el-col>
                                                                         </el-row>
                                                                         <el-row>
-                                                                            <el-col :span="2">&nbsp</el-col>
                                                                             <el-col :span="20">
 
-                                                                                <p style="word-wrap: break-word;word-break: break-all;text-align: center"
+                                                                                <p style="word-wrap: break-word;word-break: break-all;text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5"
                                                                                 >{{resource.name}}</p>
                                                                             </el-col>
                                                                             <el-col :span="2">&nbsp</el-col>

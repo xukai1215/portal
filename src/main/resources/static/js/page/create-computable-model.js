@@ -85,7 +85,7 @@ var createComputableModel = Vue.extend({
                 sortType: "default",
                 classifications: ["all"],
             };
-            let url = "/modelItem/listByAuthor";
+            let url = "/modelItem/list";
             let contentType = "application/x-www-form-urlencoded";
 
             $.ajax({
@@ -576,60 +576,8 @@ var createComputableModel = Vue.extend({
                     if(basicInfo.resourceJson!=null)
                     this.resources=basicInfo.resourceJson;
 
-                    $("#search-box").val(basicInfo.relateModelItemName)
                     this.computableModel.bindModelItem=basicInfo.relateModelItemName;
                     this.computableModel.bindOid=basicInfo.relateModelItem;
-                    $("#bind").html("unbind")
-                    $("#bind").removeClass("btn-success");
-                    $("#bind").addClass("btn-warning")
-                    document.getElementById("search-box").readOnly = true;
-
-
-                    if(basicInfo.contentType=="Package"){
-                        $("input[name='ContentType']").eq(0).iCheck('check');
-                        $("#resource").val("");
-                        $("#resource").attr("accept","application/x-zip-compressed");
-                        $("#resource").removeAttr("multiple");
-                        $("#Files").show();
-                        $("#URL").hide();
-                    }
-                    else if(basicInfo.contentType=="Code"){
-                        $("input[name='ContentType']").eq(1).iCheck('check');
-                        $("#resource").val("");
-                        $("#resource").removeAttr("accept");
-                        $("#resource").attr("multiple","multiple");
-                        $("#Files").show();
-                        $("#URL").hide();
-                    }
-                    else if(basicInfo.contentType=="Library"){
-                        $("input[name='ContentType']").eq(2).iCheck('check');
-                        $("#resource").val("");
-                        $("#resource").removeAttr("accept");
-                        $("#resource").attr("multiple","multiple");
-
-                        $("#Files").show();
-                        $("#URL").hide();
-                    }
-                    else if(basicInfo.contentType=="Link"){
-                        $("input[name='ContentType']").eq(3).iCheck('check');
-
-                        $("#Files").hide();
-                        $("#URL").show();
-
-                        $("#resource").val("");
-                        this.computableModel.url=basicInfo.url;
-
-                    }
-                    else if(basicInfo.contentType=="Service"){
-                        $("input[name='ContentType']").eq(4).iCheck('check');
-
-                        $("#Files").hide();
-                        $("#URL").show();
-
-                        $("#resource").val("");
-                        this.computableModel.url=basicInfo.url;
-
-                    }
 
                     $(".providers").children(".panel").remove();
 
@@ -783,6 +731,12 @@ var createComputableModel = Vue.extend({
             if(this.computableModel.contentType=="Package"||this.computableModel.contentType=="Code"||this.computableModel.contentType=="Library"){
                 if(this.fileArray.length==0){
                     alert("Please select files !");
+                    return;
+                }
+            }
+            if(this.computableModel.contentType=="Service"||this.computableModel.contentType=="Link"){
+                if(this.computableModel.url==""){
+                    alert("Please enter URL")
                     return;
                 }
             }

@@ -9,13 +9,11 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.service.VersionService;
 import njgis.opengms.portal.utils.ResultUtils;
-import org.omg.PortableInterceptor.USER_EXCEPTION;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -347,7 +345,7 @@ public class VersionRestController {
             ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
             if (modelItem.getVersions() == null || modelItem.getVersions().size() == 0) {
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
-                BeanUtils.copyProperties(modelItem, modelItemVersion);
+                BeanUtils.copyProperties(modelItem, modelItemVersion, "id");
                 modelItemVersion.setOid(UUID.randomUUID().toString());
                 modelItemVersion.setOriginOid(modelItem.getOid());
                 modelItemVersion.setVerNumber((long) 0);

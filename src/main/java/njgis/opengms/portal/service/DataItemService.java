@@ -1282,6 +1282,7 @@ public class DataItemService {
             object.put("name", modelItem.getName());
             User user = userDao.findFirstByUserName(modelItem.getAuthor());
             object.put("author", user.getName());
+            object.put("author_uid", user.getUserName());
             result.add(object);
         }
 

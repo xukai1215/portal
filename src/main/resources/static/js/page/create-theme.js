@@ -474,7 +474,7 @@ var createTheme = Vue.extend({
                 case "dataItem":
                     url="/dataItem/searchByName";
                     data = {
-                        page: this.pageOption2.currentPage+1,
+                        page: this.pageOption2.currentPage,
                         pageSize: 5,
                         asc: true,
                         classifications: [],
