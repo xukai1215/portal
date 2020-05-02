@@ -911,6 +911,7 @@ input::placeholder{
 
 .tags{
     margin-left: 5px;
+    max-width: 750px;
 }
 
 .splitBlock{

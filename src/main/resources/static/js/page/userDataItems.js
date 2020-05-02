@@ -18,6 +18,8 @@ var userDataItems = Vue.extend(
 
                 },
 
+                await:false,
+
                 resourceLoad:false,
 
                 //分页控制
@@ -173,6 +175,7 @@ var userDataItems = Vue.extend(
             getDataItems() {
                 this.pageSize = 10;
                 this.isInSearch = 0;
+                this.await = true
                 var da = {
                     userOid: this.userId,
                     page: this.page,
@@ -195,6 +198,7 @@ var userDataItems = Vue.extend(
                     }
                     this.data_show = true
                     this.loading = false
+                    this.await = false
 
                 })
 
@@ -230,6 +234,8 @@ var userDataItems = Vue.extend(
             searchItems(){
                 this.pageSize = 10;
                 this.isInSearch = 1;
+                // this.searchResult = []
+                this.await = true
                 var that = this;
                 var da = {
                     userOid: this.userId,
@@ -251,6 +257,7 @@ var userDataItems = Vue.extend(
                                     if (this.page == 1) {
                                         this.pageInit();
                                     }
+                                    this.await = false
                                 } else {
                                     alert("no result")
                                 }

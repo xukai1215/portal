@@ -527,7 +527,6 @@ var createDataItem = Vue.extend({
             })
 
 
-            //this.getModels();
         });
 
         $("input[name='Status']").iCheck({
@@ -617,6 +616,7 @@ var createDataItem = Vue.extend({
                     return img.hasAttribute('internal-blob');
                 }
             });
+
         }
         else {
             // $("#title").text("Modify Model Item")

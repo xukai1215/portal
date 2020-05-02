@@ -679,12 +679,19 @@ new Vue({
         },
 
         descriptionConfirm(){
-            $('#descriptionInputContainer').css({display:'none'});
-            this.description=$('#descriptionInput').val();
-            console.log(this.description);
-            $('#descriptionDetail').css({display:'block'});
-            $('#editDescriptionButton').css({display:'flex'});
-            this.descriptionAddToBack();
+
+            if($('#descriptionInput').val()=='')
+                alert("Please input at least one word")
+            else{
+                this.description=$('#descriptionInput').val();
+
+                console.log(this.description);
+                $('#descriptionDetail').css({display:'block'});
+                $('#editDescriptionButton').css({display:'flex'});
+                this.descriptionAddToBack();
+                $('#descriptionInputContainer').css({display:'none'});
+            }
+
 
         },
 
@@ -2612,8 +2619,6 @@ new Vue({
         $('#closeSaveUserImg').click(()=>{
             $('#editUserImg').modal('hide')
         })
-
-
 
         //上传头像
         var targetW,targetH//设为上层变量便于后续调用

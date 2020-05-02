@@ -1273,14 +1273,23 @@ public class UserService {
             String fileName = files.get(i).get("file_name").toString();
             String url = "http://" + dataContainerIpAndPort + "/data?uid=" + files.get(i).get("source_store_id").toString();
             String[] a = fileName.split("\\.");
-            String name = a[0];
-            String suffix = a[1];
+            String name = files.get(i).get("label").toString();
+            String suffix = files.get(i).get("suffix").toString();
             String id = UUID.randomUUID().toString();
             String templateId = files.get(i).get("templateId").toString();
 
             pathsCopy.addAll(paths);
             user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url, templateId));
             JSONObject obj=new JSONObject();
+            for(String tempId:visualTemplateIds){
+                if(tempId.equals(files.get(i).get("templateId").toString())){
+                    obj.put("visual",true);
+                    break;
+                }
+            }
+            if(!obj.containsKey("visual")){
+                obj.put("visual",false);
+            }
             obj.put("id",id);
             obj.put("url",url);
             idList.add(obj);

@@ -83,6 +83,8 @@ var userCommunities = Vue.extend(
 
                 },
 
+                await:false,
+
                 //分页控制
                 page: 1,
                 sortAsc: -1,//1 -1
@@ -355,6 +357,7 @@ var userCommunities = Vue.extend(
             getCommunity(index) {
                 this.pageSize = 10;
                 this.isInSearch = 0;
+                this.await = true
                 let a=this.$route.params.communityKind
 
                 // if(index!=null&&index!=undefined)
@@ -424,6 +427,7 @@ var userCommunities = Vue.extend(
                             if (this.page == 1) {
                                 this.pageInit();
                             }
+                            this.await = false
 
                         }
                     }
@@ -435,6 +439,7 @@ var userCommunities = Vue.extend(
                 this.resourceLoad = true;
                 this.pageSize = 10;
                 this.isInSearch = 1;
+                this.await = true
                 let a=this.$route.params.communityKind
                 let urls={
                     'concept&semantic':'/repository/searchConceptsByUserId',
@@ -482,7 +487,7 @@ var userCommunities = Vue.extend(
                             if (this.page == 1) {
                                 this.pageInit();
                             }
-
+                            this.await = false
                         }
 
                     }

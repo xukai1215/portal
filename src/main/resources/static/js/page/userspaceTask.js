@@ -236,84 +236,10 @@ var userTask = Vue.extend(
                     this.getPageList();
                     this.page = pageNo;
 
-                    switch (this.pageControlIndex) {
-                        // this.computerModelsDeploy = [];
-                        // this.resourceLoad = true;
-                        // this.curPage = pageNo;
-                        // this.getPageList();
-                        // this.page = pageNo;
-                        // this.getDataItems();
-                        case 2:
 
-                            if (this.isInSearch == 0)
-                                this.getModels();
-                            else this.searchModels();
-                            break;
-                        //
-                        case 3:
-
-                            if (this.isInSearch == 0)
-                                this.getDataItems();
-                            else this.searchDataItem();
-                            break;
-
-                        case 4:
-
-                            if (this.isInSearch == 0)
-                                this.getConcepts();
-                            else this.searchConcepts();
-                            break;
-                        case 5:
-
-                            if (this.isInSearch == 0)
-                                this.showTasksByStatus(this.taskStatus);
-                            else this.searchSpatials()
-                            break;
-                        case 6:
-
-                            if (this.isInSearch == 0)
-                                this.getTemplates();
-                            else this.searchTemplates();
-                            break;
-                        case 7:
-
-                            if (this.isInSearch == 0)
-                                this.getUnits();
-                            else this.searchUnits();
-                            break;
-
-                        case 7:
-                            if (this.isInSearch == 0)
-                                this.getTheme();
-                            else {
-                            }
-                            break;
-
-                        case 9:
-
-                            if (this.isInSearch == 0) {
-                                if (this.taskStatus != 10)
-                                    this.showTasksByStatus(this.taskStatus)
-                                else
-                                    this.getModels();
-                            } else this.searchModels();
-                            break;
-
-
-
-                    }
-                    // if(this.researchIndex==1||this.researchIndex==2||this.researchIndex==3){
-                    //     this.resourceLoad = true;
-                    //     this.searchResult = [];
-                    //     //not result scroll
-                    //     //window.scrollTo(0, 0);
-                    //     this.curPage = pageNo;
-                    //     this.getPageList();
-                    //     this.pageSize=4;
-                    //     this.page = pageNo;
-                    //     this.getResearchItems();
-                    // }
-                    //this.changeCurPage.emit(this.curPage);
+                    if (this.isInSearch == 0)
+                        this.showTasksByStatus(this.taskStatus);
+                    else this.searchTasks()
                 }
             },
 
@@ -483,6 +409,7 @@ var userTask = Vue.extend(
             showTasksByStatus(status) {
                 let name = 'tasks'
                 this.taskStatus = status
+                this.isInSearch = 0;
                 if (this.taskStatus === 'successful')
                     $('.wzhSelectContainer input').css('background', '#63b75d')
                 else if (this.taskStatus === 'all')
@@ -533,7 +460,7 @@ var userTask = Vue.extend(
             searchTasks() {
                 let url = "/task/searchTasksByUserId";
                 let name = "tasks";
-
+                this.isInSearch = 1;
                 $.ajax({
                     type: "Get",
                     url: url,
@@ -571,7 +498,7 @@ var userTask = Vue.extend(
                 })
             },
 
-            addOutputToMyData(output) {
+            addOutputToMyData(output,index) {
                 console.log(output)
                 this.outputToMyData = output
                 this.addOutputToMyDataVisible = true
@@ -586,6 +513,9 @@ var userTask = Vue.extend(
                         } else {
                             this.folderTree = res.data.data;
                             this.selectPathDialog = true;
+                            this.$nextTick(()=>{
+                                this.$refs.folderTree.setCurrentKey(null); //打开树之前先清空选择
+                            })
                         }
 
 
@@ -593,8 +523,8 @@ var userTask = Vue.extend(
             },
 
             addOutputToMyDataConfirm(index) {
-                let data = this.$refs.folderTree2[index].getCurrentNode();
-                let node = this.$refs.folderTree2[index].getNode(data);
+                let data = this.$refs.folderTree2.getCurrentNode();
+                let node = this.$refs.folderTree2.getNode(data);
 
                 while (node.key != undefined && node.key != 0) {
                     this.selectedPath.unshift(node);
@@ -611,7 +541,8 @@ var userTask = Vue.extend(
                 let obj = {
                     label: this.outputToMyData.event,
                     suffix: this.outputToMyData.suffix,
-                    url: this.outputToMyData.url
+                    url: this.outputToMyData.url,
+                    templateId:this.outputToMyData.templateId,
                 }
 
                 this.addDataToPortalBack(obj)
@@ -1104,19 +1035,13 @@ var userTask = Vue.extend(
 
             //task output加入data space中
             addFolderinTree(pageIndex,index){
-                var node,data
-                if(pageIndex=='myData'){
-                    data=this.$refs.folderTree.getCurrentNode();
-                    if(data==undefined) alert('Please select a file directory')
-                    node=this.$refs.folderTree.getNode(data);
-                }
-                else{
-                    data=this.$refs.folderTree2[index].getCurrentNode();
-                    if(data==undefined) alert('Please select a file directory')
-                    node=this.$refs.folderTree2[index].getNode(data);
-                }
+                let node, data
 
-                let folderExited=data.children
+                data = this.$refs.folderTree2.getCurrentNode();
+                if (data == undefined || data == null) alert('Please select a file directory')
+                node = this.$refs.folderTree2.getNode(data);
+
+                let folderExited = data.children
 
                 console.log(node);
                 let paths=[];
@@ -1181,6 +1106,106 @@ var userTask = Vue.extend(
                 });
 
 
+
+            },
+
+            submitUpload() {
+                if(this.uploadName==""){
+                    this.$message.error('Please enter the dataset name!');
+                    return;
+                }
+                if(this.selectValue==""){
+                    this.$message.error('Please select a data template!');
+                    return;
+                }
+                if (this.selectedPath.length == 0) {
+                    this.$message.error('Please select a folder first!');
+                    return;
+                }
+                if(this.uploadFiles.length==0){
+                    this.$message.error('Please select files!');
+                    return;
+                }
+
+                let formData = new FormData();
+
+                this.uploadLoading=true;
+
+                let configContent = "<UDXZip><Name>";
+                for(let index in this.uploadFiles){
+                    configContent+="<add value='"+this.uploadFiles[index].name+"' />";
+                    formData.append("ogmsdata", this.uploadFiles[index].raw);
+                }
+                configContent += "</Name>";
+                if(this.selectValue!=null&&this.selectValue!="none"){
+                    configContent+="<DataTemplate type='id'>";
+                    configContent+=this.selectValue;
+                    configContent+="</DataTemplate>"
+                }
+                else{
+                    configContent+="<DataTemplate type='none'>";
+                    configContent+="</DataTemplate>"
+                }
+                configContent+="</UDXZip>";
+                // console.log(configContent)
+                let configFile = new File([configContent], 'config.udxcfg', {
+                    type: 'text/plain',
+                });
+                formData.append("ogmsdata", configFile);
+                formData.append("name", this.uploadName);
+                formData.append("userId", this.uid);
+                formData.append("serverNode", "china");
+                formData.append("origination", "portal");
+
+                $.get("/dataManager/dataContainerIpAndPort", (result) => {
+                    let ipAndPort = result.data;
+
+                    $.ajax({
+                        url: 'http://'+ipAndPort+'/data',
+                        type: 'post',
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        async: true
+                    }).done((res)=> {
+                        if(res.code==0){
+                            let data=res.data;
+                            if(this.uploadFiles.length==1){
+                                data.suffix=this.uploadFiles[0].name.split(".")[1];
+                            }
+                            else{
+                                data.suffix="zip";
+                            }
+                            data.label=data.file_name;
+                            data.file_name+="."+data.suffix;
+                            data.upload=true;
+                            data.templateId=this.selectValue;
+                            this.addDataToPortalBack(data,this.selectValue);
+
+                            //reset
+                            this.uploadName="";
+                            this.selectValue="";
+                            this.selectedPath=[];
+                            this.uploadFiles=[];
+                            this.remoteMethod("");
+                            this.$refs.upload.clearFiles();
+
+
+                        }else{
+                            this.$message.error('Upload failed!');
+                        }
+
+
+                        console.log(res);
+                    }).fail((res)=> {
+
+                        this.uploadLoading=false;
+                        this.uploadDialogVisible=false;
+                        this.$message.error('Upload failed!');
+                    });
+                });
+
             },
 
             addDataToPortalBack(item){//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
@@ -1194,8 +1219,13 @@ var userTask = Vue.extend(
                 else{
                     let obj={
                         file_name:item.label+'.'+item.suffix,
-                        source_store_id:item.url.split('=')[1]
+                        label:item.label,
+                        suffix:item.suffix,
+                        source_store_id:item.url.split('=')[1],
+                        templateId:item.templateId,
+                        upload:'false'
                     }
+                    if(item.url==='') obj.source_store_id = '';
                     addItem[0]=obj
                 }
                 let paths=[]
@@ -1237,53 +1267,13 @@ var userTask = Vue.extend(
                             alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
-                        } else {
-                            let idList=json.data
-                            console.log(idList)
-                            if (item instanceof Array){
-                                if (this.uploadInPath == 1) {
-                                    for (let i = 0; i < item.length; i++) {
-                                        console.log(item[i].file_name)
-                                        let dataName7Suffix = item[i].file_name.split('.')
-                                        const newChild = {
-                                            id: idList[i].id,
-                                            label: dataName7Suffix[0],
-                                            suffix: dataName7Suffix[1],
-                                            children: [],
-                                            package: false,
-                                            upload: true,
-                                            father: paths[0],
-                                            url: idList[i].url,
-                                        };
-                                        if (this.myFileShown.length === 0)
-                                            this.addChild(this.myFile, paths[0], newChild)
-                                        this.myFileShown.push(newChild);
-                                        console.log(this.myFileShown)
-                                        // this.getFilePackage();
-                                        console.log(this.myFile)
-                                    }
-                                } else {
-                                    setTimeout(()=>{
-                                        this.refreshPackage(0)},300);
-                                    //要写一个前台按路径查找的函数
-                                }
-                            }else{
-                                let obj=item
-                                obj.id=idList[0].id
-                                obj.url=idList[0].url
-                                if (this.myFileShown.length === 0)
-                                    this.addChild(this.myFile, paths[0], item)
-                                this.myFileShown.push(item);
-                            }
-
-                            this.addFolderIndex = false;
-                            //this.selectedPath=[];
-
+                        }else{
+                            this.$message({
+                                message: 'Upload successfully!',
+                                type: 'success'
+                            });
                         }
 
-                        setTimeout(()=>{
-                            this.uploadDialogVisible=false
-                        },500)
 
                     }
                 });

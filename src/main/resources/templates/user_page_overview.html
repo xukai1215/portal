@@ -280,7 +280,7 @@
 
                             </div>
                             <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none">
-                                <div class="contentContainer" style="flex-direction: column;padding: 10px 0;min-height: 80px">
+                                <div  class="contentContainer" style="flex-direction: column;padding: 10px 0;min-height: 80px">
                                     <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" ><p style="font-size: 16px">Description</p>
                                         <button th:if="${userInfo.oid==userInfo.loginId}" id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
                                             Add
@@ -335,7 +335,7 @@
                             <div class="contentContainer colArrange" >
                                 <div id="affiliationInfoContainer" class="contentContainer affiliationInfoContainer" style=" ">
                                     <div v-if="userPersonalInfo.affiliation" class="contentColContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                        <h3 v-if="userPersonalInfo.affiliation" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
+                                        <h3 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation!=null" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
                                         <p style="color: rgb(130,130,130);">Department :</p> <h4 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation.department">{{userPersonalInfo.affiliation.department}}</h4>
 <!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>-->
 <!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>-->
@@ -350,7 +350,7 @@
 <!--                                         style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >-->
                                 <div class="contentColContainer affiliationInfoContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
                                     <h4 style="color: #828282;margin-left: -3px">Laboratory</h4>
-                                    <h4 style="" v-if="userPersonalInfo.lab">{{userPersonalInfo.lab.name}}</h4>
+                                    <h4 style="" v-if="userPersonalInfo.lab&&userPersonalInfo.lab!=null">{{userPersonalInfo.lab.name}}</h4>
                                 </div>
 <!--                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>-->
 
@@ -649,7 +649,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                                 <div></div>
                                                 <a :href="articles.result[0].link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                             </div>
@@ -695,7 +695,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                                 <div></div>
                                                 <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                             </div>
@@ -742,7 +742,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                            <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                                 <div></div>
                                                 <a style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">LEARN MORE<div class="arrowRightBig"></div></a>
                                             </div>
@@ -786,30 +786,40 @@
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests" class="contentColContainer leftJusitifyCol noMargin" style="width: 100%;padding-bottom: 10px">
+
+                        <div v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests"
+                             class="contentColContainer leftJusitifyCol noMargin"
+                             style="width: 100%;padding-bottom: 10px">
                             <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Description</p>
-                            <div v-if="userPersonalInfo.description" style="flex-direction: column;padding: 0px 28px 15px">
+                            <div v-if="userPersonalInfo.description"
+                                 style="flex-direction: column;padding: 0px 28px 15px">
                                 <h4>{{userPersonalInfo.description}}</h4>
+
                             </div>
+<!--                            <h4 v-if="userPersonalInfo.description==null||userPersonalInfo.description==''">He/She may have a lot to say about him/herself, but he/she has no time yet.</h4>-->
                             <div class="innerBorder"></div>
                             <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Subject Areas</p>
-                            <div  style="flex-direction: column;padding: 0px 28px 15px">
+                            <div style="flex-direction: column;padding: 0px 28px 15px">
                                 <h4 v-for="subjectArea in userPersonalInfo.subjectAreas">{{subjectArea}}</h4>
                             </div>
                             <div class="innerBorder"></div>
                             <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Research Interests</p>
                             <div style="flex-direction: column;padding-left: 28px">
-                                <h4 v-for="researchInterest in userPersonalInfo.researchInterests">{{researchInterest}}</h4>
+                                <h4 v-for="researchInterest in userPersonalInfo.researchInterests">
+                                    {{researchInterest}}</h4>
                             </div>
                         </div>
-                        <div  v-else style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
+                        <div v-else style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
+                            <div th:if="${userInfo.oid==userInfo.loginId}"
+                                 class=" containerWithBorder noBackColor colArrange sizeAdaption"
+                                 style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addUserIntroClick()" data-toggle="modal" data-target="#editUserIntro">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Personal Introduction</h4>
-                                <div class="hoverLine" ></div>
+                                <div class="hoverLine"></div>
                             </div>
                         </div>
+
                     </div>
                     <div role="eduExperience" class="contentColContainer" >
                         <div class="subTitle" style="">
@@ -842,8 +852,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="!educationExperience.total" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
+                        <div th:if="${userInfo.oid==userInfo.loginId}" v-if="educationExperience.total==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
+                            <div class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addEduXpceClick()" data-toggle="modal" data-target="#editEduXpce">
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Education Experience</h4>
@@ -862,7 +872,7 @@
                             </button>
                         </div>
                         <div class="listItemContainer">
-                            <div class="list-item" v-if="awardandHonor.total>0" v-for="(awardHonor,key) in awardandHonor.result">
+                            <div class="list-item" v-if="awardandHonor.total>0&&awardandHonor!=null" v-for="(awardHonor,key) in awardandHonor.result">
                                 <div class="itemCardCol rowArrange" style="width: 98%;background-color: #fafafa;min-height: 80px; margin-top: 5px">
                                     <div class="cardContentContainer" style="width: 98%;margin:0;border: none;">
                                         <div>
@@ -879,9 +889,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="!userPersonalInfo.awdHonors" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
-                            <div th:if="${userInfo.oid==userInfo.loginId}" v-if="awardandHonor.total==0" class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
+                        <div th:if="${userInfo.oid==userInfo.loginId}" v-if="awardandHonor.total==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
+                            <div  class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addAwdHonorClick()" data-toggle="modal" data-target="#editAwdHonor">
+                                <h2 style="font-weight: 600">Add</h2>
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Awards & Honors</h4>
                                 <div class="hoverLine" ></div>
@@ -1093,13 +1104,13 @@
                         <div class="subTitle">
                             <h4 style="margin: 10px;color:#828282 ">Affiliation</h4>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="editAffiliation"
-                                    v-if="userPersonalInfo.affiliation.name" class="addEditButton"
+                                    v-if="userPersonalInfo.affiliation!=null&&userPersonalInfo.affiliation.name" class="addEditButton"
                                     data-toggle="modal" data-target="#editUserAffiliation"  @click="editAffiliationClick()">
                                 Edit
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div v-if="userPersonalInfo.affiliation.name" style="flex-direction: column;padding: 0px 3px 20px;width: 90%">
+                        <div v-if="userPersonalInfo.affiliation!=null&&userPersonalInfo.affiliation.name" style="flex-direction: column;padding: 0px 3px 20px;width: 90%">
                             <h3 style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
                             <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation.department">Department :</p> <h4>{{userPersonalInfo.affiliation.department}}</h4>
                             <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation.position">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>
@@ -1177,14 +1188,14 @@
                         <div class="subTitle" style="">
                             <div><h4 style="margin-top: 10px;margin-left: 10px;font-width:800px">Laboratory</h4></div>
                             <button th:if="${userInfo.oid==userInfo.loginId}" id="editLab"
-                                    v-if="userPersonalInfo.lab.name" class="addEditButton"
+                                    v-if="userPersonalInfo.lab!=null&&userPersonalInfo.lab.name" class="addEditButton"
                                     data-toggle="modal" data-target="#editUserLab"  @click="editLabClick()">
                                 Edit
                                 <div class="hoverLine"></div>
                             </button>
                         </div>
-                        <div v-if="userPersonalInfo.lab.name" style="padding: 0px 3px 20px;width: 90%">
-                            <div class="infoContainer" v-if="userPersonalInfo.lab.name">
+                        <div v-if="userPersonalInfo.lab!=null&&userPersonalInfo.lab.name" style="padding: 0px 3px 20px;width: 90%">
+                            <div class="infoContainer" v-if="userPersonalInfo.lab!=null&&userPersonalInfo.lab.name">
                                 <h3 style="font-weight: 600;color: #474747 ">{{userPersonalInfo.lab.name}}</h3>
                             </div>
                             <!--                            <div class="infoContainer">-->
@@ -1192,7 +1203,7 @@
                             <!--                                    <h3>{{userLab.labInfo.leaderName}}</h3>-->
                             <!--                                </a>-->
                             <!--                            </div>-->
-                            <div class="infoContainer" v-if="userLab.labInfo">
+                            <div class="infoContainer" v-if="userLab!=null&&userLab.labInfo">
                                 <p>Lab Members</p>
                                 <div v-for="member in userLab.members" class="rowArrange">
                                     <a :href="'/user/'+member.oid" target="_blank">
@@ -1443,7 +1454,7 @@
                                 </span>
                             </div>
                             <div class="list-item" v-if="modelItems.result" v-for="(modelItem,key) in modelItems.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 8px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px; margin-top: 8px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -1478,12 +1489,12 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div class="tags" v-if="modelItem.keywords.length>0">
                                             <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
                                         </div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)+' '+modelItem.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)}}
                                         </div>
                                     </div>
                                 </div>
@@ -1525,7 +1536,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" v-if="dataItems.result" v-for="(dataItem,key) in dataItems.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="display: flex;width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div>
@@ -1541,9 +1552,10 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                    <avatar  :username="dataItem.name" :size="120"
+                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"
                                                             :rounded="false"></avatar>
-
+                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="dataItem.image"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -1555,7 +1567,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div class="tags"  style="float: left">
                                             <span class="badge badge-info" v-for="(tagitem,ind) in dataItem.keywords" :key="ind">{{tagitem}}</span>
 
@@ -1603,7 +1615,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" v-if="conceptualModels.result" v-for="(conceptualModel,key) in conceptualModels.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -1622,7 +1634,7 @@
                                                     <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="conceptualModel.image!=''" :src="conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
+                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1638,7 +1650,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div class="tags">
 
                                         </div>
@@ -1685,7 +1697,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" v-if="logicalModels.result" v-for="(logicalModel,key) in logicalModels.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -1704,7 +1716,7 @@
                                                     <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="logicalModel.image!=''" :src="logicalModel.image" onerror=src="../static/img/model/logical.png"
+                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="logicalModel.image" onerror=src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1720,7 +1732,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}
@@ -1765,7 +1777,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" :key="computableModel.oid" v-if="computableModels.result" v-for="(computableModel,key) in computableModels.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -1781,10 +1793,10 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                    <avatar v-if="computableModel.image==''||computableModel.img==null" :username="computableModel.name" :size="120"
+                                                    <avatar v-if="computableModel.image==''||computableModel.image==null" :username="computableModel.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="computableModel.image!=''" :src="computableModel.image" onerror=src="../static/img/model/calcModel.png"
+                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="computableModel.image" onerror=src="../static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1800,7 +1812,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
@@ -1845,7 +1857,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" :key="concept.oid" v-if="concepts.total" v-for="(concept,key) in concepts.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -1864,7 +1876,7 @@
                                                     <avatar v-if="concept.image==''||concept.image==null" :username="concept.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="concept.image!=''" :src="concept.image" onerror=src="../static/img/model/semantics.png"
+                                                    <img v-if="concept.image!=''&&concept.image!=null" :src="concept.image" onerror=src="../static/img/model/semantics.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1880,7 +1892,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <!--                                        <div class="tags" v-if="computableModel.keywords.length>0">-->
                                         <!--                                            <span class="badge badge-info" v-for="keyword in computableModel.keywords">{{keyword.toUpperCase()}}</span>-->
                                         <!--                                        </div>-->
@@ -1928,7 +1940,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" :key="spatial.oid" v-if="spatials.result" v-for="(spatial,key) in spatials.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -1947,7 +1959,7 @@
                                                     <avatar v-if="spatial.image==''||spatial.img==null" :username="spatial.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="spatial.image!=''" :src="spatial.image" onerror=src="../static/img/model/spatialReference.png"
+                                                    <img v-if="spatial.image!=''&&spatial.img!=null" :src="spatial.image" onerror=src="../static/img/model/spatialReference.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1963,7 +1975,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{spatial.createTime.substring(0,10)+' '+spatial.createTime.substring(11,19)}}
@@ -2008,7 +2020,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" :key="template.oid" v-if="templates.result" v-for="(template,key) in templates.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -2027,7 +2039,7 @@
                                                     <avatar v-if="template.image==''||template.image==null" :username="template.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="template.image!=''" :src="template.image" onerror=src="../static/img/model/template.png"
+                                                    <img v-if="template.image!=''&&template.image!=null" :src="template.image" onerror=src="../static/img/model/template.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -2043,7 +2055,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{template.createTime.substring(0,10)+' '+template.createTime.substring(11,19)}}
@@ -2088,7 +2100,7 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" :key="unit.oid" v-if="units.result" v-for="(unit,key) in units.result">
-                                <div class="itemCardCol" style="width: 98%;height: 210px;margin-top: 7px;border: none">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
@@ -2107,7 +2119,7 @@
                                                     <avatar v-if="unit.image==''||unit.image==null" :username="unit.name" :size="120"
                                                             :rounded="false"></avatar>
 
-                                                    <img v-if="unit.image!=''" :src="unit.image" onerror=src="../static/img/model/unit.png"
+                                                    <img v-if="unit.image!=''&&unit.image!=null" :src="unit.image" onerror=src="../static/img/model/unit.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -2123,7 +2135,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
                                             <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{unit.createTime.substring(0,10)+' '+unit.createTime.substring(11,19)}}
@@ -2235,7 +2247,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div class="viewCount">
                                             <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{article.viewCount}}
                                         </div>
@@ -2430,7 +2442,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
 <!--                                        <div class="viewCount">-->
 <!--                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{project.viewCount}}-->
 <!--                                        </div>-->
@@ -2614,7 +2626,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="cardDowner" style="display: flex;margin-top: 0; background-color: rgba(232,232,232,0.5);height: 40px;" >
+                                    <div class="cardDowner" style="display: flex;margin-top: 0; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
 <!--                                        <div class="viewCount">-->
 <!--                                            <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conference.viewCount}}-->
 <!--                                        </div>-->

@@ -1,6 +1,7 @@
 ELEMENT.locale(ELEMENT.lang.en)
 
 //此页面为根文件，控制路由切换
+//侧边栏选中高亮由路由关键字判断，在sidebar中
 var router = new VueRouter({
         routes:[
             // {
@@ -274,8 +275,6 @@ var vue = new Vue(
         mounted() {
             let that= this;
             //用于消息判断
-
-
             $(document).on('click','.share-button',function ($event) {
                 $.ajax({
                     url: "/theme/getoid",
