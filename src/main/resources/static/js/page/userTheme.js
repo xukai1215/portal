@@ -88,6 +88,16 @@ var userTheme = Vue.extend(
                 // this.editOid = sessionStorage.getItem('editItemOid');
             },
 
+            // manageItem(index){
+            //     //此处跳转至统一页面，vue路由管理显示
+            //     this.itemIndex=index;
+            //     this.searchText = ''
+            //     var urls={
+            //         1:'/user/userSpace#/userTheme',
+            //     };
+            //     window.location.href=urls[index]
+            //     this.getModels();
+            // },
             //page
             // 初始化page并显示第一页
             pageInit() {
@@ -291,23 +301,40 @@ var userTheme = Vue.extend(
             },
 
             //
-            // deleteItem(id) {
-            //     //todo 删除category中的 id
-            //     var cfm = confirm("Are you sure to delete?");
-            //
-            //     if (cfm == true) {
-            //         axios.get("/dataItem/del/", {
-            //             params: {
-            //                 id: id
-            //             }
-            //         }).then(res => {
-            //             if (res.status == 200) {
-            //                 alert("delete success!");
-            //                 this.getDataItems();
-            //             }
-            //         })
-            //     }
-            // },
+            deleteItem(index,oid) {
+                if (confirm("Are you sure to delete this model?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/theme/delete",
+                        data: {
+                            oid: oid
+                        },
+                        cache: false,
+                        async: true,
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: (json) => {
+                            if (json.code == -1) {
+                                alert("Please log in first!")
+                            } else {
+                                if (json.data == 1) {
+                                    alert("delete successfully!")
+                                } else {
+                                    alert("delete failed!")
+                                }
+                            }
+                            // if (this.searchText.trim() != "") {
+                            //     this.searchModels();
+                            // } else {
+                            //     this.getModels(index);
+                            // }
+                        }
+                    })
+                }
+            },
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
             }

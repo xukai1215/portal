@@ -817,6 +817,13 @@ public class UserService {
         userDao.save(user);
     }
 
+    public void themeItemMinusMinus(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        int count=user.getThemes();
+        user.setThemes(--count);
+        userDao.save(user);
+    }
+
     public User getByUid(String userName){
         try {
             return userDao.findFirstByUserName(userName);
