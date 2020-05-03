@@ -183,8 +183,8 @@
                     </div>
                 </div>
 
-                <i th:each="theme,index:${themeResult}">
-                    <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                <!--<i >-->
+                    <div th:each="theme,index:${themeResult}" class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
                     <el-card slot="header" shadow="hover">
                         <a th:href="'../repository/theme/'+${theme.oid}"  target="_blank">
                             <img th:src="'../static'+${theme.img}"  style="width:100%;height: auto;" class="image">
@@ -205,7 +205,7 @@
                             </div>
                         </div>
                     </div>
-                </i>
+                <!--</i>-->
 
 
 
