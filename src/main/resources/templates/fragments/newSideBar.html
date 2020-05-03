@@ -21,23 +21,25 @@
                 <div class="flexCol flexCenter titleContainer" style=" flex: 1;">
                     <div id="title" class="flexCol"  style="display:inline-block;color: rgb(248, 249, 250);font-size:24px;text-align: center;"></div>
                 </div>
-                <div class="flexRow flexCenter iconContainer" style="" @click="getThemeMessage">
-                    <el-badge :value="message_num" class="item">
-                        <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 2px ">
+                <div class="flexRow flexCenter iconContainer" style="">
+                    <div @click="getThemeMessage">
+                    <el-badge :value="message_num" class="item" >
+                        <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 20px ">
                             <i class="fa fa-bell"></i>
                         </div>
                     </el-badge>
-
-                    <div class="innerBorderCol"></div>
-                    <div id="dropmu" class="flexCenter cursorPointer" style="padding: 5px;font-size: 17px;margin-right: 7px ">
-                        <i class="ms-Icon ms-Icon--MoreVertical"></i>
                     </div>
+                    <div class="innerBorderCol"></div>
+
 
                     <img class="round_icon" :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image" style="width:30px;height: 30px;display: inline-block;margin-right:10px">
                     <p id="userName" style="color: rgb(248, 249, 250);margin: 0">{{userInfo.name}}</p>
+                    <div id="dropmu" class="flexCenter cursorPointer" style="padding: 5px;font-size: 17px;margin-right: 7px ">
+                        <i class="ms-Icon ms-Icon--MoreVertical"></i>
+                    </div>
                 </div>
 
-                <div id="submenu" class="sub zmax flexCenter" style="right:70px;width: 180px;margin-top: -10px">
+                <div id="submenu" class="sub zmax flexCenter" style="right:0px;width: 180px;margin-top: -10px">
                     <ul id="leftUl" class="flexCol " style="width: 160px">
                         <li><a id="userPageDir" :href="'/user/'+userInfo.oid">My Page</a></li>
                         <li><a href="/user/out">Log Out</a></li>
