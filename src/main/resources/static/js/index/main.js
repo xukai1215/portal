@@ -1,5 +1,8 @@
 $(function() {
-    $('.marquee').liMarquee();
+    $('.marquee').liMarquee({
+        scrollamount: 65,
+        drag: false,
+    });
 })
 
 var vue = new Vue({

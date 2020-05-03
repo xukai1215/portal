@@ -167,6 +167,7 @@ new Vue({
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
                         window.location.href = "/user/userSpace#/model/manageLogicalModel/"+oid;
+                        window.sessionStorage.setItem("editLogicalModel_id",oid)
                         // $.ajax({
                         //     type: "GET",
                         //     url: "/logicalModel/getUserOidByOid",
