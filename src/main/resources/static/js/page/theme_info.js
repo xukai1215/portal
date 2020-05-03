@@ -819,7 +819,7 @@ var vue = new Vue({
         },
         edit_theme_info(){
 
-            $(".detailIntroducePanel").m();
+            $(".detailIntroducePanel").hide();
             $(".edit_detail").show();
 
             $.ajax({

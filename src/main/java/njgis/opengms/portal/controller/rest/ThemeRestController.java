@@ -198,21 +198,36 @@ public class ThemeRestController {
         String oid = session.getAttribute("oid").toString();
         List<Theme> themes = themeDao.findAll();
         for (int i=0;i<themes.size();i++){
-            if (themes.get(i).getCreator_oid().equals(oid)&&themes.get(i).getSubDetails()!=null){
+            if (themes.get(i).getCreator_oid().equals(oid)){
+                int flag = 0;
                 //对获取的数组中的编辑时间进行format
-                for (int j=0;j<themes.get(i).getSubDetails().size();j++){
-                    themes.get(i).getSubDetails().get(j).setFormatTime(sdf.format(themes.get(i).getSubDetails().get(j).getTime()));
+                if (themes.get(i).getSubDetails()!=null) {
+                    flag = 1;
+                    for (int j = 0; j < themes.get(i).getSubDetails().size(); j++) {
+                        themes.get(i).getSubDetails().get(j).setFormatTime(sdf.format(themes.get(i).getSubDetails().get(j).getTime()));
+                    }
                 }
-                for (int j=0;j<themes.get(i).getSubClassInfos().size();j++){
-                    themes.get(i).getSubClassInfos().get(j).setFormatTime(sdf.format(themes.get(i).getSubClassInfos().get(j).getTime()));
+                if (themes.get(i).getSubClassInfos()!=null) {
+                    flag = 1;
+                    for (int j = 0; j < themes.get(i).getSubClassInfos().size(); j++) {
+                        themes.get(i).getSubClassInfos().get(j).setFormatTime(sdf.format(themes.get(i).getSubClassInfos().get(j).getTime()));
+                    }
                 }
-                for (int j=0;j<themes.get(i).getSubDataInfos().size();j++){
-                    themes.get(i).getSubDataInfos().get(j).setFormatTime(sdf.format(themes.get(i).getSubDataInfos().get(j).getTime()));
+                if (themes.get(i).getSubDataInfos()!=null) {
+                    flag = 1;
+                    for (int j = 0; j < themes.get(i).getSubDataInfos().size(); j++) {
+                        themes.get(i).getSubDataInfos().get(j).setFormatTime(sdf.format(themes.get(i).getSubDataInfos().get(j).getTime()));
+                    }
                 }
-                for (int j=0;j<themes.get(i).getSubApplications().size();j++){
-                    themes.get(i).getSubApplications().get(j).setFormatTime(sdf.format(themes.get(i).getSubApplications().get(j).getTime()));
+                if (themes.get(i).getSubApplications()!=null) {
+                    flag = 1;
+                    for (int j = 0; j < themes.get(i).getSubApplications().size(); j++) {
+                        themes.get(i).getSubApplications().get(j).setFormatTime(sdf.format(themes.get(i).getSubApplications().get(j).getTime()));
+                    }
                 }
-                jsonArray.add(themes.get(i));
+                if (flag == 1) {
+                    jsonArray.add(themes.get(i));
+                }
             }
         }
         return jsonArray;
