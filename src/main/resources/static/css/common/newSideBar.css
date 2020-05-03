@@ -59,6 +59,12 @@
     margin: 3px;
 }
 
+.imgInTitle{
+    width: 22px;
+    height: 22px;
+    margin: 12px 6px 12px -1.2px;
+}
+
 .sideContainer {
     width: 240px;
     height: 100%;
@@ -113,6 +119,14 @@
     justify-content: space-between;
 }
 
+.threeLine{
+    word-break: break-all;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
 .sideUl {
     /*margin-top: 20px;*/
     width: 100%;
@@ -126,6 +140,12 @@
 
 .topContainer{
    height: 100%;
+}
+
+.overviewContainer{
+    max-height: 65px;
+    min-height: 30px;
+    margin-bottom: 5px
 }
 
 .rowUl{

@@ -244,6 +244,24 @@ var userTheme = Vue.extend(
                 this.page = 1;
             },
 
+            deleteItem(id) {
+                //todo 删除category中的 id
+                var cfm = confirm("Are you sure to delete?");
+
+                if (cfm == true) {
+                    axios.get("/repository/theme/delete", {
+                        params: {
+                            id: id
+                        }
+                    }).then(res => {
+                        if (res.status == 200) {
+                            alert("delete success!");
+                            this.getTheme();
+                        }
+                    })
+                }
+            },
+
             getTheme() {
                 this.pageSize = 10;
                 this.isInSearch = 0;

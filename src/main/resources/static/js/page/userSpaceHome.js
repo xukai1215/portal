@@ -88,6 +88,10 @@ var userSpaceHome = Vue.extend(
 
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
+            },
+
+            openTheme(){
+                window.location.href='/user/userSpace#/userTheme'
             }
         },
 

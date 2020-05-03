@@ -195,9 +195,16 @@
                 <div class=" acrylicBack flexRow"
                      style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)">
                     <div class="flexRow " style="width: 100%;">
-                        <div class="content_w100" style="padding-top: 23px">
-                            <p style="word-break: break-all;">
-                                <b style="margin-right: 25px">Overview:</b>{{modelItem.description}}</p>
+                        <div class="content_w100" style="padding-top: 20px">
+                            <div class="flexJustStart flexAlignStrench overviewContainer" style="">
+                                <div>
+                                    <b style="margin-right: 25px;">Overview:</b>
+                                </div>
+                                <div>
+                                    <p class="threeLine" style="">{{modelItem.description}}</p>
+                                </div>
+                            </div>
+
                             <p>
                                 <b style="margin-right: 3px">Create Time:</b> {{formatDateChild(modelItem.createTime)}}</p>
                         </div>

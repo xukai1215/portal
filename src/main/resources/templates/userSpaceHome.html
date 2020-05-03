@@ -20,8 +20,12 @@
                     </section>
                     <section class="flexRowContainer flexWrap contentSection">
                         <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol" style="align-items: flex-start">
-                                <h4>Model</h4>
+                            <div class="content_w68 flexCol" style="align-items: flex-start;padding-left: 25px">
+                                <div class="flexJustStart">
+                                    <img class="imgInTitle" src="/static/img/model/model.png">
+                                    <h4 style="font-size: 22px">Model</h4>
+                                </div>
+
                                 <p style="font-size: 16px">You can manage model provided by yourself</p>
                                 <div class="flexCol flexCenter " style="">
 <!--                                    <div class="lineButton flexCol" @click="manageItem(1)">-->
@@ -32,7 +36,8 @@
                             </div>
                             <div class="innerBorderCol"></div>
                             <div class="content_w32">
-                                <h4>Manage</h4>
+<!--                                <img src="/static/img/model/model.png">-->
+                                <h4 style="margin-top: 15px;">Manage</h4>
                                 <h4>my</h4>
                                 <h4>model</h4>
                                 <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px" @click="manageItem(1)">
@@ -41,8 +46,11 @@
                             </div>
                         </div>
                         <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol" style="align-items: flex-start">
-                                <h4>Data</h4>
+                            <div class="content_w68 flexCol" style="align-items: flex-start;padding-left: 25px">
+                                <div class="flexJustStart">
+                                    <i class="fa fa-database imgInTitle" style="font-size: 22px;color: #05c4ff"></i>
+                                    <h4 style="font-size: 22px">Data</h4>
+                                </div>
                                 <p style="font-size: 16px">You can manage data provided by yourself</p>
 <!--                                <div class="flexCol flexCenter " style="">-->
 <!--                                    <div class="lineButton flexCol" @click="manageItem(2)">-->
@@ -53,7 +61,7 @@
                             </div>
                             <div class="innerBorderCol"></div>
                             <div class="content_w32">
-                                <h4>Manage</h4>
+                                <h4 style="margin-top: 15px;">Manage</h4>
                                 <h4>my</h4>
                                 <h4>data</h4>
                                 <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px" @click="manageItem(2)">
@@ -62,8 +70,11 @@
                             </div>
                         </div>
                         <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol" style="align-items: flex-start">
-                                <h4>Task</h4>
+                            <div class="content_w68 flexCol" style="align-items: flex-start;padding-left: 25px">
+                                <div class="flexJustStart">
+                                    <i class="el-icon-s-tools imgInTitle" style="font-size: 22px;color: #05c4ff;"></i>
+                                    <h4 style="font-size: 22px">Task</h4>
+                                </div>
                                 <p style="font-size: 16px">You can manage task provided by yourself</p>
 <!--                                <div class="flexCol flexCenter " style="">-->
 <!--                                    <div class="lineButton flexCol" @click="manageItem(3)">-->
@@ -74,7 +85,7 @@
                             </div>
                             <div class="innerBorderCol"></div>
                             <div class="content_w32">
-                                <h4>Manage</h4>
+                                <h4 style="margin-top: 15px;">Manage</h4>
                                 <h4>my</h4>
                                 <h4>task</h4>
                                 <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px" @click="manageItem(3)">
@@ -83,8 +94,13 @@
                             </div>
                         </div>
                         <div class="contentCard flexRowContainer flexColCenter">
-                            <div class="content_w68 flexCol " style="align-items: flex-start">
-                                <h4>Community</h4>
+                            <div class="content_w68 flexCol " style="align-items: flex-start;padding-left: 25px">
+                                <div class="flexJustStart">
+                                    <i data-icon-name="HomeGroup" aria-hidden="true" class="ms-Icon root-43"
+                                       style="font-size: 22px;font-weight: 600; color: #05c4ff;margin: 9px 6.5px 12px -1px;"></i>
+                                    <h4 style="font-size: 22px">Community</h4>
+                                </div>
+
                                 <p style="font-size: 16px">You can manage community provided by yourself</p>
 <!--                                <div class="flexCol flexCenter " style="">-->
 <!--                                    <div class="lineButton flexCol " @click="manageItem(4)">-->
@@ -95,7 +111,7 @@
                             </div>
                             <div class="innerBorderCol"></div>
                             <div class="content_w32">
-                                <h4>Manage</h4>
+                                <h4 style="margin-top: 15px;">Manage</h4>
                                 <h4>my</h4>
                                 <h4>community</h4>
                                 <button class="circleMiddle flexCenter" style="margin: 14px 0 0 10px;font-size: 17px" @click="manageItem(4)">
@@ -110,10 +126,14 @@
                             <h4 class="flexColCenter" style="margin: 0 5px"><i class="ms-Icon ms-Icon--Toolbox" style="margin-top: 2px;font-weight: 600"></i>&nbspQuick Tools</h4>
                             <div class="innerBorder" style="flex: 1;"></div>
                         </div>
-                        <div class="contentCard_w100 flexRowContainer flexColCenter flexJustAround" style="margin-top: 12px;height: 110px">
+                        <div class="contentCard_w100 flexRowContainer flexCenter" style="margin-top: 12px;height: 110px">
                             <div class="square_80 flexCol flexColCenter cursorPointer quickToolsCard" @click="intergrateModel()">
                                 <img width="45px"  src="../../static/img/model/invoke.png">
                                 <h5 style="text-align: center;margin-top: 5px">Integrated Modeling</h5>
+                            </div>
+                            <div class="square_80 flexCol flexColCenter cursorPointer quickToolsCard" @click="openTheme()">
+                                <i class="el-icon-s-order" style="font-size: 42px;color: #05c4ff;margin-bottom: 4px;"></i>
+                                <h5 style="text-align: center;margin-top: 5px">Theme</h5>
                             </div>
                         </div>
                     </section>

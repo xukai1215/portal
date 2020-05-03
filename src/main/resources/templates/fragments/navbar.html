@@ -97,7 +97,14 @@
                 <div class="phoneLoged">
                     <li id="phoneUserDrop" style="float: right;width: 40px; margin-right: 5%;">
                     <div style="padding: 10px 5px;cursor:pointer">
-                        <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
+                        <div class="el-badge item">
+                            <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
+                            <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
+                                right: 0px !important;
+                                border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
+                            </sup>
+                        </div>
+
                     </div>
                     </li>
                 </div>
@@ -146,7 +153,7 @@
                         <!--<a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>-->
                     <!--</el-badge>-->
                     <div class="el-badge item">
-                        <a href="/user/userSpace#/notice">Notice</a>
+                        <a id="userNoticeDir1" href="/user/userSpace#/notice">Notice</a>
                         <sup class="el-badge__content is-fixed notice_num" style="top:30%;right: 30%!important;"></sup>
                     </div>
                 </li>
@@ -160,6 +167,10 @@
                 <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;"></span></p></li>
                 <li><a href="/user/userSpace">My Space</a></li>
                 <li><a id="phoneUserPageDir" href="">My Page</a></li>
+                <li class="el-badge item">
+                    <a id="userNoticeDir2" href="/user/userSpace#/notice">Notice</a>
+                    <sup class="el-badge__content is-fixed notice_num" style="right: 45%!important;"></sup>
+                </li>
                 <li style="background-color: rgb(0,192,255)"><a href="/user/out">Log Out</a></li>
                 <!--                        <li><a href="">Thematic Center</a></li>-->
             </ul>
@@ -220,6 +231,7 @@
                         <li><a href="/repository/template">Data Template</a></li>
                         <li><a href="/repository/unit">Unit & Metric</a></li>
                         <li><a href="/repository/thematic">Thematic Center</a></li>
+                        <li><a href="/statistics">Statistics</a></li>
                     </ul>
                     </div>
                 <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" style="cursor: pointer">Help <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
