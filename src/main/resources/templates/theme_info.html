@@ -301,8 +301,8 @@
                             </div>
                             <div th:each="dataClass,index:${dataClassInfos}">
                                 <div class="x_content data_item" th:id="'dataClass'+${index.index}" style="width: 80%">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content1">
-                                        <el-col :span="4" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
+                                    <el-row :gutter="200" type="center" class="row-bg" id="content1">
+                                        <el-col :span="8" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
                                                  <avatar th:username="${item.name}" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
@@ -318,8 +318,8 @@
 
                             <div v-for="(item, index) in dataClassInfos" :key="item.dcname" class="sub_data_card">
                                 <div class="x_content data_item" :id="'sub_dataClass'+index" style="width: 80%">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
+                                    <el-row :gutter="200" type="center" class="row-bg" id="content">
+                                        <el-col :span="8" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
                                             <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="data_card">
                                                     <avatar :username = "item2.name" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
@@ -456,8 +456,8 @@
                             </div>
                             <div id="applications">
                                 <div class="x_content application_item"  id="application">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
+                                    <el-row :gutter="200" type="center" class="row-bg" id="content2">
+                                        <el-col :span="8" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
                                             <a th:href="${item.link}">
                                                 <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
                                                     <img th:src="'/static'+${item.image}" class="image" id="application_image">
@@ -473,8 +473,8 @@
 
                             <div id="sub_applications">
                                 <div class="x_content application_item" id="sub_application">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4" v-for="(item,index) in themeObj.application" :key="item.id" style="margin-top:20px;" id="model_col3">
+                                    <el-row :gutter="200" type="center" class="row-bg" id="content2">
+                                        <el-col :span="8" v-for="(item,index) in themeObj.application" :key="item.id" style="margin-top:20px;" id="model_col3">
                                             <a href="${item.applicationlink}">
                                                 <el-card :body-style="{padding:'0px'}" shadow="hover" style="width:180px;height: 250px">
                                                     <img :src="'/static/repository/theme/' + item.applicationname" class="image" id="sub_application_image">
