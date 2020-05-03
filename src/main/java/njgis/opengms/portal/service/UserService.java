@@ -868,8 +868,6 @@ public class UserService {
             user1.setWiki("");
             Affiliation affiliation=new Affiliation();
             user1.setAffiliation(affiliation);
-            UserLab lab=new UserLab();
-            user1.setLab(lab);
             userDao.insert(user1);
             return 1;
         }
