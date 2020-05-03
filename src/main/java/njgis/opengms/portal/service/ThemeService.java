@@ -9,10 +9,7 @@ import njgis.opengms.portal.dao.ThemeDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
-import njgis.opengms.portal.entity.DataItem;
-import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.Theme;
-import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -414,5 +411,16 @@ public class ThemeService {
 
         modelAndView.addObject("user_information",userinfo);
         return modelAndView;
+    }
+
+    public int delete(String oid,String userName){
+        Theme theme = themeDao.findFirstByOid(oid);
+        if (theme!=null) {
+            themeDao.delete(theme);
+            userService.themeItemMinusMinus(userName);
+            return 1;
+        }else {
+            return -1;
+        }
     }
 }
