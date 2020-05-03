@@ -826,14 +826,14 @@ $(document).ready(function () {
 
                 }
             })
-            $("#notice_num").text(message_num);
+            $(".notice_num").text(message_num);
             //判断message_num是否为0，控制导航栏红点显示
             if (message_num!=0){
                 $(".message_user").show();
-                $("#notice_num").show();
+                $(".notice_num").show();
             } else {
                 $(".message_user").hide();
-                $("#notice_num").hide();
+                $(".notice_num").hide();
             }
         }
     })
@@ -879,17 +879,15 @@ websocket.onmessage = function(event) {
 function setMessage(data) {
    // alert(data);
     message_num = data;
-    $("#notice_num").text(message_num);
+    $(".notice_num").text(message_num);
     //判断message_num是否为0，控制导航栏红点显示
     if (message_num!=0){
         $(".message_user").show();
-        $("#notice_num").show();
+        $(".notice_num").show();
     } else {
         $(".message_user").hide();
-        $("#notice_num").hide();
+        $(".notice_num").hide();
     }
-    console.log("limingyuan8888888888");
-   console.log(data);
 }
 //将消息显示在网页上
 function setMessageInnerHTML(innerHTML) {
