@@ -138,10 +138,10 @@
                                             <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="model_card">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
-                                                 <div th:unless="${item.image}">
+                                                 <div th:unless="${item.image}!=''">
                                                     <avatar th:username="${item.name}" :size="180" :rounded="false" ></avatar>
                                                  </div>
-                                                <div th:if="${item.image}">
+                                                <div th:if="${item.image!=''}">
                                                     <img th:src="'/static'+${item.image}" class="image" style="height: 180px!important;width: 180px!important;">
                                                 </div>
                                                 <div style="padding: 14px;">
@@ -590,9 +590,9 @@
                                                 </a>
                                             </el-card>
                                         </el-col>
-                                        <el-tooltip class="item" effect="dark" content="Application editor" placement="top-start">
-                                            <el-button type="info" @click="show_icon" icon="el-icon-edit" circle ></el-button>
-                                        </el-tooltip>
+                                        <!--<el-tooltip class="item" effect="dark" content="Application editor" placement="top-start">-->
+                                            <!--<el-button type="info" @click="show_icon" icon="el-icon-edit" circle ></el-button>-->
+                                        <!--</el-tooltip>-->
                                     </el-row>
 
                                 </div>

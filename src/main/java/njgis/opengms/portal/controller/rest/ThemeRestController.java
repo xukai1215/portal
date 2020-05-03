@@ -617,4 +617,15 @@ public class ThemeRestController {
 
 
     }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public JsonResult deleteTheme(@RequestParam(value="oid") String oid, HttpServletRequest request){
+        HttpSession session=request.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=session.getAttribute("uid").toString();
+        return ResultUtils.success(themeService.delete(oid,userName));
+    }
 }

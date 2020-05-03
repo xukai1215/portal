@@ -71,8 +71,16 @@
                             <span class="label label-warning">
                                 Computable Model
                             </span>
-                            <span th:utext="${modelInfo.contentType}" class="label label-info"
-                                  style="margin-left: 10px">Primary</span>
+                            <span th:if="${modelInfo.contentType=='Package'}" class="label label-info"
+                                  style="margin-left: 10px">Model Service Package</span>
+                            <span th:if="${modelInfo.contentType=='Code'}" class="label label-info"
+                                  style="margin-left: 10px">Source Code</span>
+                            <span th:if="${modelInfo.contentType=='Library'}" class="label label-info"
+                                  style="margin-left: 10px">Library</span>
+                            <span th:if="${modelInfo.contentType=='Service URL'}" class="label label-info"
+                                  style="margin-left: 10px">Service</span>
+                            <span th:if="${modelInfo.contentType=='Link'}" class="label label-info"
+                                  style="margin-left: 10px">Link</span>
                         </div>
                     </div>
 
