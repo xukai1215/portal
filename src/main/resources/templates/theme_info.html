@@ -138,7 +138,12 @@
                                             <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="model_card">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
-                                                    <avatar th:username="${item.name}" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
+                                                 <div th:unless="${item.image}">
+                                                    <avatar th:username="${item.name}" :size="180" :rounded="false" ></avatar>
+                                                 </div>
+                                                <div th:if="${item.image}">
+                                                    <img th:src="'/static'+${item.image}" class="image" style="height: 180px!important;width: 180px!important;">
+                                                </div>
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}" class="model_name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>

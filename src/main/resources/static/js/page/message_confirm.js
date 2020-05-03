@@ -250,7 +250,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.sum_tableData[i].oid = json;
+                                this.sum_tableData[i].modifier_oid = json;
                             }
                         })
                     }
@@ -266,7 +266,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.model_tableData1[i].oid = json;
+                                this.model_tableData1[i].modifier_oid = json;
                             }
                         })
                     }
@@ -280,7 +280,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.model_tableData2[i].oid = json;
+                                this.model_tableData2[i].modifier_oid = json;
                             }
                         })
                     }
@@ -294,7 +294,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.model_tableData3[i].oid = json;
+                                this.model_tableData3[i].modifier_oid = json;
                             }
                         })
                     }
@@ -308,7 +308,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.community_tableData1[i].oid = json;
+                                this.community_tableData1[i].modifier_oid = json;
                             }
                         })
                     }
@@ -322,7 +322,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.community_tableData2[i].oid = json;
+                                this.community_tableData2[i].modifier_oid = json;
                             }
                         })
                     }
@@ -336,7 +336,7 @@ var notice = Vue.extend({
                             data:data,
                             async:false,
                             success:(json)=>{
-                                this.community_tableData3[i].oid = json;
+                                this.community_tableData3[i].modifier_oid = json;
                             }
                         })
                     }

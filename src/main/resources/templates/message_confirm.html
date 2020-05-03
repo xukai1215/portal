@@ -60,36 +60,36 @@
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-if="item.status== 'unchecked'&&(item.type=='modelItem'||item.type=='conceptualModel'||item.type=='logicalModel'||item.type=='computableModel')">
-                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if="item.status== 'unchecked'&&(item.type=='concept'||item.type=='spatialReference'||item.type=='unit'||item.type=='template')">
-                                                        <h4><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p><a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--confirmed  model：modelItem、conceptualModel、logicalModel、computableModel
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-else-if = "item.status== 'confirmed'&&(item.type=='modelItem'||item.type=='conceptualModel'||item.type=='logicalModel'||item.type=='computableModel')">
-                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You confirm <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if = "item.status== 'confirmed'&&(item.type=='concept'||item.type=='spatialReference'||item.type=='unit'||item.type=='template')">
-                                                        <h4>You confirm <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You confirm <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--reject  model：modelItem、conceptualModel、logicalModel、computableModel
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-else-if ="item.status== 'reject'&&(item.type=='modelItem'||item.type=='conceptualModel'||item.type=='logicalModel'||item.type=='computableModel')">
-                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You reject <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if ="item.status== 'reject'&&(item.type=='concept'||item.type=='spatialReference'||item.type=='unit'||item.type=='template')">
-                                                        <h4>You reject <a :href="'/user/'+item.oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You reject <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--comment-->
@@ -167,7 +167,7 @@
                                                                     label="Modifier"
                                                                     width="120">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -226,7 +226,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -277,7 +277,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -340,7 +340,7 @@
                                                                     label="Modifier"
                                                                     width="120">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -398,7 +398,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -407,10 +407,10 @@
                                                                     width="100">
                                                                 <template slot-scope="scope">
                                                                     <el-button
-                                                                            class="viewAcceptBtn"
+                                                                            class="viewAcceptBtn1"
                                                                             size="middle"
                                                                             type="primary"
-                                                                            @click="viewAccept($event)">View
+                                                                            @click="viewAccept1($event)">View
                                                                     </el-button>
                                                                 </template>
                                                             </el-table-column>
@@ -448,7 +448,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
                                                                 </template>
                                                             </el-table-column>
 
