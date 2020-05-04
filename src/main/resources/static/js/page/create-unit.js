@@ -462,6 +462,30 @@ var createUnit =Vue.extend({
         $("#step").steps({
             onFinish: function () {
                 alert('Wizard Completed');
+            },
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if (this.cls.length == 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }
+                    else if ($("#nameInput").val().trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
             }
         });
 
@@ -500,17 +524,6 @@ var createUnit =Vue.extend({
         }
 
         var unitObj ={};
-        $(".next").click(()=> {
-
-            if (this.cls.length == 0) {
-                alert("Please select parent node");
-                return false;
-            }
-            if ($("#nameInput").val() === "") {
-                alert("Please enter unit's name");
-                return false;
-            }
-        });
 
         $(".finish").click(()=> {
             let loading = this.$loading({
@@ -527,11 +540,6 @@ var createUnit =Vue.extend({
             var detail = tinyMCE.activeEditor.getContent();
             unitObj.detail = detail.trim();
             console.log(unitObj)
-
-            if(unitObj.name.trim()==""){
-                alert("please enter name")
-                return;
-            }
 
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {

@@ -448,6 +448,30 @@ var createTemplate = Vue.extend({
         $("#step").steps({
             onFinish: function () {
                 alert('Wizard Completed');
+            },
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if (this.cls.length == 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }
+                    else if ($("#nameInput").val().trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
             }
         });
 
@@ -485,17 +509,6 @@ var createTemplate = Vue.extend({
         }
 
         var templateObj ={};
-        $(".next").click(()=> {
-
-            if (this.cls.length == 0) {
-                alert("Please select parent node");
-                return false;
-            }
-            if ($("#nameInput").val() === "") {
-                alert("Please enter template's name");
-                return false;
-            }
-        });
 
         $(".finish").click(()=> {
             let loading = this.$loading({
@@ -509,11 +522,6 @@ var createTemplate = Vue.extend({
             templateObj.uploadImage = $('#imgShow').get(0).currentSrc;
             templateObj.description = $("#descInput").val();
             templateObj.xml = $("#xml").val();
-
-            if(templateObj.name.trim()==""){
-                alert("please enter name")
-                return;
-            }
 
             var detail = tinyMCE.activeEditor.getContent();
             templateObj.detail = detail.trim();

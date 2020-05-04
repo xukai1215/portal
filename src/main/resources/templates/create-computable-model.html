@@ -185,13 +185,13 @@
                                                             </div>
                                                         </div>
                                                         <div id="Files" v-else>
-                                                            <el-button v-if="resources.length==0" type="primary"
+                                                            <el-button v-if="(resources.length==0&&computableModel.contentType=='Package')||computableModel.contentType!='Package'" type="primary"
                                                                        @click="addFile()">+ Add
                                                             </el-button>
                                                             <el-button v-if="resources.length!=0" type="danger"
                                                                        @click="removeFile()">- Remove
                                                             </el-button>
-                                                            <el-button v-if="resources.length!=0" type="success"
+                                                            <el-button v-if="resources.length!=0&&computableModel.contentType=='Package'" type="success"
                                                                        @click="replaceFile()">Replace
                                                             </el-button>
 
@@ -207,7 +207,7 @@
                                                                 <div @click="resClick"
                                                                      v-for="(resource, index) in resources">
                                                                     <!--</el-row>-->
-                                                                    <el-card style="width:10%" :key="index"
+                                                                    <el-card style="width:10%;cursor:pointer;" :key="index"
                                                                              :align="index"
                                                                              :title="resource.name" class="dataitemisol"
                                                                              shadow="never">
@@ -216,14 +216,15 @@
                                                                             <el-col :span="6">&nbsp</el-col>
                                                                             <el-col :span="12"><a><img
                                                                                     :src="'/static/img/filebrowser/'+resource.suffix+'.svg'"
+                                                                                    onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
                                                                                     style="height: 60%;width:100%"></a>
                                                                             </el-col>
                                                                             <el-col :span="6">&nbsp</el-col>
                                                                         </el-row>
-                                                                        <el-row>
+                                                                        <el-row style="height: 45px;">
                                                                             <el-col :span="20">
 
-                                                                                <p style="word-wrap: break-word;word-break: break-all;text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5"
+                                                                                <p style="overflow: hidden;word-wrap: break-word;word-break: break-all;text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5"
                                                                                 >{{resource.name}}</p>
                                                                             </el-col>
                                                                             <el-col :span="2">&nbsp</el-col>

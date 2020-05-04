@@ -724,21 +724,35 @@ var createConceptualModel = Vue.extend({
 
         $("#step").steps({
             onFinish: function () {
-                alert('Wizard Completed');
+
+            },
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if (this.conceptualModel.bindOid == ""||this.conceptualModel.bindOid == null) {
+                        new Vue().$message({
+                            message: 'Please bind a model item!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }
+                    else if (this.conceptualModel.name.trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }else{
+                    return true;
+                }
             }
         });
 
-        $(".next").click(function () {
-            if($("#bind").html() == "bind"){
-
-
-                return;
-            }
-            else{
-
-            }
-
-        });
 
         $(".finish").click(()=>{
             this.formData=new FormData();
@@ -748,14 +762,7 @@ var createConceptualModel = Vue.extend({
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            if($("#bind").html() == "bind"){
-                alert("please bind model item (Step1)")
-                return;
-            }
-            if(this.conceptualModel.name.trim()==""){
-                alert("please enter name")
-                return;
-            }
+
             this.conceptualModel.contentType=$("input[name='ContentType']:checked").val();
             this.conceptualModel.isAuthor=$("input[name='author_confirm']:checked").val();
             var detail = tinyMCE.activeEditor.getContent();

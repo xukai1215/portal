@@ -46,6 +46,7 @@ tbody tr td {
 }
 
 .content-body .list-item {
+    margin-top: -1px;
     border: solid #d8d8d8 1px;
     border-width: 1px 1px;
     padding: 15px 20px;

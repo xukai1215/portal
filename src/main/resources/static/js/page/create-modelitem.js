@@ -891,7 +891,30 @@ var createModelItem = Vue.extend({
 
         $("#step").steps({
             onFinish: function () {
-                alert('Wizard Completed');
+
+            },
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if ($("#nameInput").val().trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else if (this.cls.length == 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else{
+                    return true;
+                }
             }
         });
 
@@ -952,7 +975,7 @@ var createModelItem = Vue.extend({
                     data=data.data;
                     $("#doi_searchBox").removeClass("spinner")
                     if (data == "ERROR") {
-                        alert(data);
+                        // alert(data);
                     }
                     // if(!json.doi){
                     //     alert("ERROR")
@@ -1063,24 +1086,24 @@ var createModelItem = Vue.extend({
         }
 
 
-        var modelItemObj = {};
-        $(".next").click(()=> {
-            modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
-            modelItemObj.name = $("#nameInput").val();
-            modelItemObj.keywords = $("#tagInput").val().split(",");
-            modelItemObj.description = $("#descInput").val();
-            modelItemObj.image = $('#imgShow').get(0).src;
-            modelItemObj.authorship=[];
-
-            if (this.cls.length == 0) {
-                alert("Please select parent node");
-                return false;
-            }
-            if ($("#nameInput").val() === "") {
-                alert("Please enter model item name");
-                return false;
-            }
-        });
+        // var modelItemObj = {};
+        // $(".next").click(()=> {
+        //     modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
+        //     modelItemObj.name = $("#nameInput").val();
+        //     modelItemObj.keywords = $("#tagInput").val().split(",");
+        //     modelItemObj.description = $("#descInput").val();
+        //     modelItemObj.image = $('#imgShow').get(0).src;
+        //     modelItemObj.authorship=[];
+        //
+        //     if (this.cls.length == 0) {
+        //         alert("Please select parent node");
+        //         return false;
+        //     }
+        //     if ($("#nameInput").val() === "") {
+        //         alert("Please enter model item name");
+        //         return false;
+        //     }
+        // });
 
         // //此处进行websocket配置
         // // let that = this;
