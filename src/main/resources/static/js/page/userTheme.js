@@ -18,6 +18,8 @@ var userTheme = Vue.extend(
 
                 },
 
+                await:false,
+
                 resourceLoad:false,
 
                 //分页控制
@@ -290,7 +292,7 @@ var userTheme = Vue.extend(
                 this.isInSearch = 0;
                 var url = "/repository/getThemesByUserId";
                 var name = "themes";
-
+                this.await = true
                 $.ajax({
                     type: "Get",
                     url: url,
@@ -319,6 +321,7 @@ var userTheme = Vue.extend(
                             if (this.page == 1) {
                                 this.pageInit();
                             }
+                            this.await = false
                         }
                     }
                 })
