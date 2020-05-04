@@ -35,4 +35,7 @@ public interface ThemeDao extends MongoRepository<Theme,String> {
 //    Page<Theme> findByDataClassInfo(String dataclassinfo, Pageable pageable);
 
     //Page<ThemeResultDTO> findByClassarr(String )
+//    Page<ThemeResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    Page<ThemeResultDTO> findByThemenameContainsIgnoreCaseAndAndAuthor(String name, String author, Pageable pageable);
 }

@@ -628,4 +628,22 @@ public class ThemeRestController {
         String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(themeService.delete(oid,userName));
     }
+
+    @RequestMapping (value="/searchThemeByUserId",method = RequestMethod.GET)
+    public JsonResult searchThemeByUserId(HttpServletRequest request,
+                                               @RequestParam(value="searchText") String searchText,
+                                               @RequestParam(value="page") int page,
+                                               @RequestParam(value="sortType") String sortType,
+                                               @RequestParam(value="asc") int sortAsc){
+
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String uid=session.getAttribute("uid").toString();
+
+        JSONObject result=themeService.searchThemeByUserId(searchText.trim(),uid,page,sortType,sortAsc);
+
+        return ResultUtils.success(result);
+    }
 }

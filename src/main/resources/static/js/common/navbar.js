@@ -831,7 +831,11 @@ $(document).ready(function () {
 
                 }
             })
-            $(".notice_num").text(message_num);
+            if (message_num<100) {
+                $(".notice_num").text(message_num);
+            }else {
+                $(".notice_num").text("99+");
+            }
             //判断message_num是否为0，控制导航栏红点显示
             if (message_num!=0){
                 $(".message_user").show();

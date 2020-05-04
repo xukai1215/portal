@@ -160,6 +160,8 @@ Vue.component('headSideBar', {
             clearTimeout(timerDrop);
             target.children('ul').children('#phoneLogin').css('height','0')
         }
+
+
     },
 
     created(){
