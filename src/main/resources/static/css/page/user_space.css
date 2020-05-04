@@ -2618,7 +2618,7 @@ ul.flexLi {
 .content_w68 {
     width: 68%;
     height: 100%;
-    padding: 10px 10px 10px 18px;
+    padding: 15px;
     /*color: whitesmoke;*/
     /*background-image: url("/static/img/carousels/example6_press.jpeg");*/
 }
@@ -2679,15 +2679,15 @@ ul.flexLi {
     height: 50px;
     border-radius: 50%;
     box-sizing: border-box;
-    border: 3px solid rgb(5, 166, 255);
+    border: 3px solid rgb(5, 176, 255);
     background: white;
-    color: rgb(5, 166, 255);
+    color: rgb(5, 176, 255);
     cursor: pointer;
     transition: .3s;
 }
 
 .circleMiddle:hover {
-    background: rgb(5, 166, 255);
+    background: rgb(5, 176, 255);
     color: rgb(248, 249, 250);
     box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
 }
@@ -2914,10 +2914,11 @@ ul.flexLi {
 
 .quickToolsCard{
     transition: all .3s ease-out;
+    margin: 0 5px;
 }
 
 .quickToolsCard:hover{
-    box-shadow: 0 6px 14px 0 rgba(0,0,0,.130), 0 1.2px 3.5px 0 rgba(0,0,0,.108);
+    box-shadow: 0 6px 14px 0 rgba(0,0,0,.130), 0 1.22px 3.5px 0 rgba(0,0,0,.108);
 }
 
 .cell{

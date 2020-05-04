@@ -1483,6 +1483,7 @@ var userDataSpace = Vue.extend(
                 this.uploadSource=[];
                 this.selectedPath=[];
                 this.uploadFileList=[];
+                this.uploadLoading=false;
                 setTimeout(()=>{
                         this.uploadDialogVisible=true;
                     },100

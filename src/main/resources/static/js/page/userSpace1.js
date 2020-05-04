@@ -204,6 +204,9 @@ var vue = new Vue(
 
                 },
 
+                //websocket
+                websktPath:"ws://localhost:8080/websocket",
+                userspaceSocket:"",
 
             }
         },
@@ -211,7 +214,37 @@ var vue = new Vue(
         router:router,
 
         methods:{
-
+            //websocket
+            // init:function () {
+            //
+            //     if ('WebSocket' in window) {
+            //         // this.userspaceSocket = new WebSocket("ws://localhost:8080/websocket");
+            //         this.userspaceSocket = new WebSocket(this.path)
+            //         // 监听socket连接
+            //         this.userspaceSocket.onopen = this.open
+            //         // 监听socket错误信息
+            //         this.userspaceSocket.onerror = this.error
+            //         // 监听socket消息
+            //         this.userspaceSocket.onmessage = this.getMessage
+            //
+            //     }
+            //     else {
+            //         // alert('当前浏览器 Not support websocket');
+            //         console.log("websocket 无法连接");
+            //     }
+            // },
+            //
+            // open: function () {
+            //     console.log("socket连接成功")
+            // },
+            // error: function () {
+            //     console.log("连接错误");
+            // },
+            // getMessage: function (msg) {
+            //     if(msg === 'user change')
+            //         this.getUserInfo();
+            // },
+            // //
 
             //公共功能
             setSession(name, value) {
@@ -267,6 +300,11 @@ var vue = new Vue(
                 )
             },
 
+        },
+
+        destroyed () {
+            // 销毁监听
+            this.userspaceSocket.onclose = this.close
         },
 
         created() {
@@ -358,3 +396,4 @@ var vue = new Vue(
 
     }
 );
+

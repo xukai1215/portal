@@ -418,6 +418,13 @@
 
 }
 
+.notice_num{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 18px;
+}
+
 /* .fullsub a:hover{
     color: rgb(0,192,255);
 } */

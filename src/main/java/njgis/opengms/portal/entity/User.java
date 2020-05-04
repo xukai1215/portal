@@ -51,7 +51,7 @@ public class User {
     List<Conference> conferences;
     List<EducationExperience> educationExperiences;
 
-    UserLab lab;
+    UserLab lab = new UserLab();
 //    String lab;
     List<Project> projects;
 

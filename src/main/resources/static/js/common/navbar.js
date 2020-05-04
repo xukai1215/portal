@@ -411,14 +411,14 @@ $('#phoneCommunity').click((e)=>{
         clearTimeout(timeout1);
         target.css('display','block')
         fullSubMenuDropDpwn(target);
-        $('#phoneHelp').animate({marginTop:250},190);
+        $('#phoneHelp').animate({marginTop:300},150);
     }
 
     else{
-        $('#phoneHelp').css('margin-top','0px');
+        $('#phoneHelp').animate({marginTop:0},80);
         var timeout1=setTimeout(()=>{
             fullSubMenuFoldUp(target);
-        },175);
+        },180);
 
 
 
@@ -463,6 +463,11 @@ $('#phoneUserDrop').click((e)=>{
     if (display=='none'){
         target.css('display','block')
         $('#mainBar').children('ul').css('background-color','#141414')
+        //所有打开的全部收起
+        fullSubMenuFoldUp($('#phoneSubCom'));
+        $('#phoneHelp').css('margin-top','0px');
+        fullSubMenuFoldUp($('#phoneSubHelp'));
+        $('#aboutUs').css('margin-top','0px');
         fullSubMenuFoldUp($('#phonesub'));
         fullSubMenuDropDpwn(target);
     }
@@ -882,7 +887,7 @@ function setMessage(data) {
     $(".notice_num").text(message_num);
     //判断message_num是否为0，控制导航栏红点显示
     if (message_num!=0){
-        $(".message_user").show();
+        $(".message_user").show();//包括小屏适配
         $(".notice_num").show();
     } else {
         $(".message_user").hide();

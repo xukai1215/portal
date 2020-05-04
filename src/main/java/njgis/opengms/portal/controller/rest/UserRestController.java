@@ -96,6 +96,7 @@ public class UserRestController {
             modelAndView.addObject("name","OpenGMS");
         }else{
             modelAndView.setViewName("redirect:/user/userSpace");
+
         }
 
         return modelAndView;
@@ -117,6 +118,13 @@ public class UserRestController {
             session.setAttribute("oid", result.get("oid"));
             session.setAttribute("uid", result.get("uid"));
             session.setAttribute("name",result.get("name"));
+
+//            WebSocketTest webSocketTest = new WebSocketTest(); //发送websocket信息
+//            try {
+//                webSocketTest.sendMessage("user change");
+//            }catch (Exception e){
+//
+//            }
             return "1";
         }
 
