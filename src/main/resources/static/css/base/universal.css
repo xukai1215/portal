@@ -7,6 +7,19 @@
     /*filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);*/
     /*filter:gray; !*ie9- *!*/
 /*}*/
+
+.fontsize-20{
+    font-size: 20px;
+}
+
+.fontsize-18{
+    font-size: 18px;
+}
+
+.fontsize-15{
+    font-size: 15px;
+}
+
 @font-face {
     font-family: 'aktiv-grotesk';
     src: url("../fonts/aktivgroteskbold-webfont.woff2.ttf") format('truetype');

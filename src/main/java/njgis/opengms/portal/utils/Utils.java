@@ -2,6 +2,8 @@ package njgis.opengms.portal.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import njgis.opengms.portal.entity.Classification;
+import njgis.opengms.portal.service.ClassificationService;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -39,6 +41,7 @@ public class Utils {
         public static String POST = "POST";
         public static String GET = "GET";
     }
+
 
     public static String getMd5ByFile(File file) throws FileNotFoundException {
         String value = null;

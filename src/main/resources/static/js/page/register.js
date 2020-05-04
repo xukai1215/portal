@@ -100,10 +100,10 @@ new Vue({
                 if (valid) {
                     this.register();
                 } else {
-                    this.$message({
-                        showClose: true,
-                        message: 'error submit!!',
-                        type: 'error'
+                    this.$notify.error({
+                        title: 'Error',
+                        message: 'Please check your information.',
+                        offset: 70
                     });
                     return false;
                 }
@@ -145,25 +145,26 @@ new Vue({
 
                 success : (result)=> {
                     if(result.data==1) {
-                        this.$message({
-                            showClose: true,
-                            message: 'register successfully!',
-                            type: 'success'
+                        this.$notify.success({
+                            title: 'Success',
+                            message: 'Register successful!',
+                            offset: 70
                         });
                         window.location.href = '/user/login'
                     }
                     else if(result.data==-1){
-                        this.$message({
-                            showClose: true,
+                        this.$notify.error({
+                            title: 'Error',
                             message: 'Email has existed, please change your Email',
-                            type: 'error'
+                            offset: 70
                         });
+
                     }
                     else if(result.data==-2){
-                        this.$message({
-                            showClose: true,
+                        this.$notify.error({
+                            title: 'Error',
                             message: 'Email has existed, please change your Email',
-                            type: 'error'
+                            offset: 70
                         });
 
                     }

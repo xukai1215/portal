@@ -179,7 +179,7 @@
                     <div th:each="classS:${classifications}">
                         <span style="font-size:24px;margin-right: 8px">●</span>
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class}" :to="{ path: '/' }">Earth
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"  th:onclick="window.open('/modelItem/repository?category='+[[${class.oid}]])" :to="{ path: '/' }">Earth
                                 System Classification
                             </el-breadcrumb-item>
                         </el-breadcrumb>

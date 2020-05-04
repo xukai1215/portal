@@ -23,6 +23,18 @@ var createLogicalModel = Vue.extend({
 
             },
 
+            bindModelItemDialogVisible:false,
+            pageOption: {
+                paginationShow:false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
+                searchText: '',
+                total: 264,
+                searchResult: [],
+            },
+
             userInfo: {},
             //文件框
             resources: [],
@@ -49,6 +61,61 @@ var createLogicalModel = Vue.extend({
         }
     },
     methods: {
+        selectModelItem(index,info){
+            console.log(info);
+            this.logicalModel.bindModelItem = info.name;
+            this.logicalModel.bindOid = info.oid;
+            this.bindModelItemDialogVisible = false;
+        },
+        handlePageChange(val) {
+
+            this.pageOption.currentPage = val;
+
+            this.searchModelItem();
+        },
+        openModelItemDialog(){
+            this.pageOption.currentPage = 1;
+            this.bindModelItemDialogVisible = true;
+            this.searchModelItem();
+        },
+        searchModelItem(){
+            let data = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage-1,
+                pageSize: this.pageOption.pageSize,
+                searchText: this.pageOption.searchText,
+                sortType: "default",
+                classifications: ["all"],
+            };
+            let url = "/modelItem/list";
+            let contentType = "application/x-www-form-urlencoded";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                async: true,
+                contentType: contentType,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption.total = data.total;
+                        this.pageOption.pages = data.pages;
+                        this.pageOption.searchResult = data.list;
+                        this.pageOption.users = data.users;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow = true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
@@ -783,62 +850,7 @@ var createLogicalModel = Vue.extend({
         //     let params = that.message_num_socket;
         //     that.send(params);
         // });
-        //模型条目搜索
-        $('#search-box').keyup(() => {
-                $.ajax({
-                    data: "Get",
-                    url: "/modelItem/findNamesByName",
-                    data: {
-                        name: this.logicalModel.bindModelItem.trim()
-                    },
-                    cache: false,
-                    async: true,
-                    success: (json) => {
-                        console.log(json.data)
-                        $("#search-box").autocomplete({
-                            source: json.data
-                        });
-                    }
-                })
 
-        });
-
-        //绑定模型条目
-        $("#bind").click(() => {
-            this.logicalModel.bindModelItem = $("#search-box").val();
-            if ($("#bind").html() == "unbind") {
-                $("#bind").html("bind");
-                $("#bind").removeClass("btn-warning");
-                $("#bind").addClass("btn-success")
-                document.getElementById("search-box").readOnly = false;
-
-            }
-            else {
-
-                $.ajax({
-                    data: "Get",
-                    url: "/modelItem/findByName",
-                    data: {
-                        name: this.logicalModel.bindModelItem.trim()
-                    },
-                    cache: false,
-                    async: true,
-                    success: (json) => {
-                        if(json.data!=null){
-                            $("#bind").html("unbind")
-                            $("#bind").removeClass("btn-success");
-                            $("#bind").addClass("btn-warning")
-                            document.getElementById("search-box").readOnly = true;
-                            this.logicalModel.bindOid=json.data.oid;
-                        }
-                        else{
-                            alert("Can not find model item \""+this.logicalModel.bindModelItem.trim()+"\",please check the name!")
-                        }
-                    }
-                })
-
-            }
-        })
 
         $("input[name='ContentType']").iCheck({
             //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系

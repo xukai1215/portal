@@ -7,13 +7,12 @@ $(function () {
         input.setAttribute('value', cite);
         input.select();
         if (document.execCommand('copy')) {
-            document.execCommand('copy');
-            // this.$message({
-            //     showClose: true,
-            //     message: 'Copy successfully!',
-            //     type: 'success'
-            // });
-            alert('Copy successfully!');
+            new Vue().$message({
+                showClose: true,
+                message: 'Copy successfully!',
+                type: 'success',
+                offset: 100,
+            });
         }
         document.body.removeChild(input);
     })

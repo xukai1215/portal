@@ -2,10 +2,10 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.entity.Classification;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -22,12 +22,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +47,12 @@ public class CommonService {
     @Autowired
     DataItemDao dataItemDao;
 
+    @Autowired
+    ClassificationService classificationService;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
+
 
     @Value("${local.ip}")
     String ip;
@@ -60,6 +63,94 @@ public class CommonService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+
+    public String getDetail(String model_detailDesc){
+        String detailResult = "";
+
+        int num=model_detailDesc.indexOf("upload/document/");
+        if(num==-1||num>20){
+            detailResult=model_detailDesc;
+        }
+        else {
+            if(model_detailDesc.indexOf("/")==0){
+                model_detailDesc.substring(1);
+            }
+            //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
+            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
+            try {
+                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            if (model_detailDesc.length() > 0) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    StringBuilder detail = new StringBuilder();
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(file);
+                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+                        BufferedReader br = new BufferedReader(inputStreamReader);
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
+                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
+                            detail.append(line);
+                        }
+                        br.close();
+                        inputStreamReader.close();
+                        fileInputStream.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    detailResult = detail.toString();
+                } else {
+                    detailResult = model_detailDesc;
+                }
+            } else {
+                detailResult = model_detailDesc;
+            }
+        }
+
+        return detailResult;
+    }
+
+    public JSONArray getClassifications(List<String> classifications){
+        JSONArray classResult=new JSONArray();
+
+        for(int i=0;i<classifications.size();i++){
+
+            JSONArray array=new JSONArray();
+            String classId=classifications.get(i);
+
+            do{
+                Classification classification=classificationService.getByOid(classId);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name",classification.getNameEn());
+                jsonObject.put("oid",classification.getOid());
+
+                array.add(jsonObject);
+                classId=classification.getParentId();
+            }while(classId!=null);
+
+            JSONArray array1=new JSONArray();
+            for(int j=array.size()-1;j>=0;j--){
+                array1.add(array.get(j));
+            }
+
+            classResult.add(array1);
+
+        }
+        System.out.println(classResult);
+        return classResult;
+    }
 
     public Boolean sendEmail(String to,String subject,String content) {
         MimeMessage message = mailSender.createMimeMessage();

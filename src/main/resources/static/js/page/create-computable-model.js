@@ -881,63 +881,6 @@ var createComputableModel = Vue.extend({
         // });
 
 
-        //模型条目搜索
-        $('#search-box').keyup(() => {
-                $.ajax({
-                    data: "Get",
-                    url: "/modelItem/findNamesByName",
-                    data: {
-                        name: this.computableModel.bindModelItem.trim()
-                    },
-                    cache: false,
-                    async: true,
-                    success: (json) => {
-                        console.log(json.data)
-                        $("#search-box").autocomplete({
-                            source: json.data
-                        });
-                    }
-                })
-
-        });
-
-        // //绑定模型条目
-        // $("#bind").click(() => {
-        //     this.computableModel.bindModelItem = $("#search-box").val();
-        //     if ($("#bind").html() == "unbind") {
-        //         $("#bind").html("bind");
-        //         $("#bind").removeClass("btn-warning");
-        //         $("#bind").addClass("btn-success")
-        //         document.getElementById("search-box").readOnly = false;
-        //
-        //     }
-        //     else {
-        //
-        //         $.ajax({
-        //             data: "Get",
-        //             url: "/modelItem/findByName",
-        //             data: {
-        //                 name: this.computableModel.bindModelItem.trim()
-        //             },
-        //             cache: false,
-        //             async: true,
-        //             success: (json) => {
-        //                 if(json.data!=null){
-        //                     $("#bind").html("unbind")
-        //                     $("#bind").removeClass("btn-success");
-        //                     $("#bind").addClass("btn-warning")
-        //                     document.getElementById("search-box").readOnly = true;
-        //                     this.computableModel.bindOid=json.data.oid;
-        //                 }
-        //                 else{
-        //                     alert("Can not find model item \""+this.computableModel.bindModelItem.trim()+"\",please check the name!")
-        //                 }
-        //             }
-        //         })
-        //
-        //     }
-        // })
-
         $("input[name='ContentType']").iCheck({
             //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
             radioClass: 'iradio_flat-green',

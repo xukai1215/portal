@@ -48,11 +48,7 @@ new Vue({
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    if (this.ruleForm.remember) {
-                        localStorage.setItem('account', this.ruleForm.account);
-                        localStorage.setItem('password', this.ruleForm.password);
-                        localStorage.setItem('remember', "yes");
-                    } else {
+                    if (!this.ruleForm.remember) {
                         localStorage.removeItem('account');
                         localStorage.removeItem('password');
                         localStorage.setItem('remember', "no");
@@ -80,11 +76,16 @@ new Vue({
                 data: this.ruleForm,
                 // dataType : 'json',
                 success: (result) => {
+                    if (this.ruleForm.remember) {
+                        localStorage.setItem('account', this.ruleForm.account);
+                        localStorage.setItem('password', this.ruleForm.password);
+                        localStorage.setItem('remember', "yes");
+                    }
                     if (result == "1") {
-                        this.$message({
-                            showClose: true,
-                            message: 'login successfully!',
-                            type: 'success'
+                        this.$notify.success({
+                            title: 'Success',
+                            message: 'Login successful!',
+                            offset: 70
                         });
                         const href = window.location.href;
                         let history=window.sessionStorage.getItem('history');
@@ -100,11 +101,13 @@ new Vue({
                         window.sessionStorage.setItem('history','');
                     }
                     else {
-                        this.$message({
-                            showClose: true,
-                            message: 'login error',
-                            type: 'error'
+
+                        this.$notify.error({
+                            title: 'Error',
+                            message: 'Login failed, email or password is wrong!',
+                            offset: 70
                         });
+
                     }
                 },
                 error: function (e) {

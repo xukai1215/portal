@@ -620,6 +620,7 @@ new Vue({
             for(i=0;i<this.treeData.length;i++){
                 if(category==this.treeData[i].oid){
                     this.$refs.tree1.setCurrentKey(this.treeData[i].id);
+                    this.currentClass=this.treeData[i].label;
                     break;
                 }
                 else{

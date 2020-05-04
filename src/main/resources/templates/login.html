@@ -47,14 +47,14 @@
                     <div  style="margin-top: 30px">
                         <el-col :span="20" :offset="1">
                             <el-form label-position="right" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm" size="medium">
-                                <el-form-item label="Email" prop="account">
+                                <el-form-item label="Email">
                                     <el-input type="text" v-model="ruleForm.account" autocomplete="off" placeholder="email address"></el-input>
                                 </el-form-item>
-                                <el-form-item label="Password" prop="password">
+                                <el-form-item label="Password">
                                     <el-input type="password" v-model="ruleForm.password" autocomplete="off" placeholder="password"></el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-checkbox label="Remember the password" name="type" v-model="ruleForm.remember"></el-checkbox>
+                                    <el-checkbox label="Remember email and password" name="type" v-model="ruleForm.remember"></el-checkbox>
                                     <br/>
                                     Forget your password ? <a href="javascript:void(0)" id="resetPW" @click="resetPassword">Reset</a>
                                 </el-form-item>
