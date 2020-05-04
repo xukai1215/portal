@@ -214,37 +214,37 @@ var vue = new Vue(
         router:router,
 
         methods:{
-            //websocket
-            // init:function () {
+            // websocket
+            initWebSkt:function () {
+
+                if ('WebSocket' in window) {
+                    // this.userspaceSocket = new WebSocket("ws://localhost:8080/websocket");
+                    this.userspaceSocket = new WebSocket(this.websktPath)
+                    // 监听socket连接
+                    this.userspaceSocket.onopen = this.open
+                    // 监听socket错误信息
+                    this.userspaceSocket.onerror = this.error
+                    // 监听socket消息
+                    this.userspaceSocket.onmessage = this.getMessage
+
+                }
+                else {
+                    // alert('当前浏览器 Not support websocket');
+                    console.log("websocket 无法连接");
+                }
+            },
+
+            open: function () {
+                console.log("父组件socket连接成功")
+            },
+            error: function () {
+                console.log("连接错误");
+            },
+            getMessage: function (msg) {
+                if(msg.data === 'user change')
+                    this.getUserInfo();
+            },
             //
-            //     if ('WebSocket' in window) {
-            //         // this.userspaceSocket = new WebSocket("ws://localhost:8080/websocket");
-            //         this.userspaceSocket = new WebSocket(this.path)
-            //         // 监听socket连接
-            //         this.userspaceSocket.onopen = this.open
-            //         // 监听socket错误信息
-            //         this.userspaceSocket.onerror = this.error
-            //         // 监听socket消息
-            //         this.userspaceSocket.onmessage = this.getMessage
-            //
-            //     }
-            //     else {
-            //         // alert('当前浏览器 Not support websocket');
-            //         console.log("websocket 无法连接");
-            //     }
-            // },
-            //
-            // open: function () {
-            //     console.log("socket连接成功")
-            // },
-            // error: function () {
-            //     console.log("连接错误");
-            // },
-            // getMessage: function (msg) {
-            //     if(msg === 'user change')
-            //         this.getUserInfo();
-            // },
-            // //
 
             //公共功能
             setSession(name, value) {
@@ -300,6 +300,12 @@ var vue = new Vue(
                 )
             },
 
+            updateUserInfo(userId){
+                if(this.userInfo.oid!=userId)
+                    this.getUserInfo();
+
+            },
+
         },
 
         destroyed () {
@@ -312,6 +318,8 @@ var vue = new Vue(
 
         mounted() {
             let that= this;
+            that.initWebSkt();//初始化websocket
+
             //用于消息判断
             $(document).on('click','.share-button',function ($event) {
                 $.ajax({

@@ -397,6 +397,10 @@ var createModelItem = Vue.extend({
         //     // setMessageInnerHTML(message);
         // },
 
+        sendUserToParent(userId){
+            this.$emit('com-senduserinfo',userId)
+        },
+
         init:function () {
 
             if ('WebSocket' in window) {
@@ -624,6 +628,8 @@ var createModelItem = Vue.extend({
                 else {
                     this.userId = data.oid;
                     this.userName = data.name;
+
+                    this.sendUserToParent(this.userId)
                     //$("#provider_body .providers h4 a").eq(0).text(data.name);
                     // $.get("http://localhost:8081/GeoModelingNew/UserInfoServlet",{"userId":this.userId},(result)=> {
                     //     this.userInfo=eval('('+result+')');

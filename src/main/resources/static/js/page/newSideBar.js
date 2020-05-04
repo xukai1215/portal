@@ -32,6 +32,7 @@ Vue.component('headSideBar', {
         userInfoinParent: {
             handler() {
                 this.userInfo = this.userInfoinParent
+                this.getMessageInfo()
             },
             immediate: true
         },
@@ -159,22 +160,9 @@ Vue.component('headSideBar', {
             // target.children('ul').children().css('display','none')
             clearTimeout(timerDrop);
             target.children('ul').children('#phoneLogin').css('height','0')
-        }
+        },
 
-
-    },
-
-    created(){
-        this.getUserInfo()
-    },
-
-    mounted(){
-        let that = this;
-        //let that= this;
-        //用于判断用户是否收到消息
-        $(document).ready(function () {
-            // console.log(window.name);
-            // that.message_num = window.name;
+        getMessageInfo(){
             $.ajax({
                 url:"/theme/getedit",
                 async:false,
@@ -204,24 +192,24 @@ Vue.component('headSideBar', {
                                     if (k == 0) {
                                         switch (type[j].status) {
                                             case "0":
-                                                that.message_num++;
+                                                this.message_num++;
                                         }
                                     }else if (k == 1){
                                         switch (type[j].status) {
                                             case "0":
-                                                that.message_num++;
+                                                this.message_num++;
                                         }
 
                                     }else if (k == 2){
                                         switch (type[j].status) {
                                             case "0":
-                                                that.message_num++;
+                                                this.message_num++;
                                         }
 
                                     } else if (k == 3){
                                         switch (type[j].status) {
                                             case "0":
-                                                that.message_num++;
+                                                this.message_num++;
                                         }
                                     }
                                 }
@@ -237,16 +225,17 @@ Vue.component('headSideBar', {
                             //下面将type分到model、community中
                             //model：modelItem、conceptualModel、logicalModel、computableModel
                             // community：concept、spatialReference	、unit、template
+                            this.message_num = 0
                             for (let i=0;i<json.data.uncheck.length;i++){
                                 if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
                                     // this.model_tableData1.push(json.data.uncheck[i]);
-                                    that.message_num++;
+                                    this.message_num++;
                                 }else {
                                     // this.community_tableData1.push(json.data.uncheck[i]);
-                                    that.message_num++;
+                                    this.message_num++;
                                 }
                             }
-                            if (that.message_num==0){
+                            if (this.message_num==0){
                                 $(".el-badge__content").hide();
                             } else {
                                 $(".el-badge__content").show();
@@ -257,7 +246,18 @@ Vue.component('headSideBar', {
 
                 }
             })
-        })
+        }
+    },
+
+    created(){
+        this.getUserInfo()
+    },
+
+    mounted(){
+        let that = this;
+        //let that= this;
+        //用于判断用户是否收到消息
+        that.getMessageInfo()
 
         $('#dropmu').click((e)=>{
             // clearTimeout(tFoldLmu);

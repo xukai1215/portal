@@ -16,6 +16,7 @@ import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.Categorys;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataItemService;
@@ -97,9 +98,13 @@ public class DataItemRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            System.out.println(modelAndView.getModel().get("user"));
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -311,10 +316,12 @@ public class DataItemRestController {
         view.addObject("authorship",authorshipString);
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            view.addObject("unlogged", "1");
-        else
-            view.addObject("logged", "0");
-
+            view.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            view.addObject("userNavBar",user);
+            view.addObject("logged", true);
+        }
         return view;
     }
 

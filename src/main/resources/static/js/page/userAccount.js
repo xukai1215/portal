@@ -254,8 +254,11 @@ var userAccount = Vue.extend(
 
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
-            }
+            },
 
+            sendUserToParent(userId){
+                this.$emit('com-senduserinfo',userId)
+            },
         },
 
         created() {
@@ -299,6 +302,7 @@ var userAccount = Vue.extend(
                             this.userName = data.name;
                             console.log(this.userId)
 
+                            this.sendUserToParent(this.userId)
 
                             $("#author").val(this.userName);
 

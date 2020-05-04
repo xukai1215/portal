@@ -221,6 +221,10 @@ var createConceptualModel = Vue.extend({
             this.$emit('com-sendcurindex',this.curIndex)
         },
 
+        sendUserToParent(userId){
+            this.$emit('com-senduserinfo',userId)
+        },
+
         init:function () {
 
             if ('WebSocket' in window) {
@@ -380,6 +384,8 @@ var createConceptualModel = Vue.extend({
                         this.userId = data.oid;
                         this.userName = data.name;
                         console.log(this.userId)
+
+                        this.sendUserToParent(this.userId)
                         // this.addAllData()
 
                         // axios.get("/dataItem/amountofuserdata",{

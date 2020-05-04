@@ -66,9 +66,13 @@ public class ModelItemRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
+
         return modelAndView;
 
     }

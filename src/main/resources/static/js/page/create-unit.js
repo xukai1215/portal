@@ -142,6 +142,10 @@ var createUnit =Vue.extend({
             this.$emit('com-sendcurindex',this.curIndex)
         },
 
+        sendUserToParent(userId){
+            this.$emit('com-senduserinfo',userId)
+        },
+
         init:function () {
 
             if ('WebSocket' in window) {
@@ -478,6 +482,8 @@ var createUnit =Vue.extend({
                 else {
                     this.userId = data.oid;
                     this.userName = data.name;
+
+                    this.sendUserToParent(this.userId)
                 }
             }
         })

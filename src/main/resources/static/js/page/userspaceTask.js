@@ -1296,7 +1296,12 @@ var userTask = Vue.extend(
 
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
-            }
+            },
+
+            sendUserToParent(userId){
+                this.$emit('com-senduserinfo',userId)
+            },
+
 
         },
 
@@ -1344,6 +1349,7 @@ var userTask = Vue.extend(
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)
+                            this.sendUserToParent(this.userId)
                             // this.addAllData()
 
                             // axios.get("/dataItem/amountofuserdata",{

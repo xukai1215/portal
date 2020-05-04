@@ -67,6 +67,23 @@ public class WebSocketTest {
     }
 
     /**
+     * 后台向前台发送信息
+     * @Auther wzh
+     * @param message 需要发送的信息
+    */
+    public void sendMessageToAll(String message){
+        for(WebSocketTest item: webSocketSet){
+            try {
+                item.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+                continue;
+            }
+        }
+    }
+
+
+    /**
      * 发生错误时调用
      * @param session
      * @param error

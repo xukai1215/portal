@@ -1,5 +1,8 @@
 package njgis.opengms.portal.controller.rest;
 
+import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +15,9 @@ import javax.servlet.http.HttpSession;
 @RequestMapping (value = "/help")
 public class HelpRestController {
 
+    @Autowired
+    UserService userService;
+
     @RequestMapping(value = "/demo", method = RequestMethod.GET)
     public ModelAndView getDemo(HttpServletRequest req) {
         System.out.println("demo");
@@ -21,9 +27,12 @@ public class HelpRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -36,9 +45,12 @@ public class HelpRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -51,9 +63,12 @@ public class HelpRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 

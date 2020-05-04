@@ -11,8 +11,10 @@ import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
-import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.intergrate.Model;
+import njgis.opengms.portal.entity.DataItem;
+import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.Theme;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
@@ -399,10 +401,14 @@ public class ThemeService {
     public ModelAndView getMessagePage(String uid,HttpServletRequest req){
         ModelAndView modelAndView = new ModelAndView();
         User user = userDao.findFirstByOid(uid);
+
         if(user==null){
-            modelAndView.setViewName("error/404");
+            modelAndView.addObject("logged", false);
+            modelAndView.setViewName("login");
             return modelAndView;
         }
+        modelAndView.addObject("userNavBar",user);
+        modelAndView.addObject("logged", true);//判断登录用于navbar
 
         modelAndView.setViewName("message_confirm");
         modelAndView.addObject("info",user);

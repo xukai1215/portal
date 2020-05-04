@@ -86,7 +86,7 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
-        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" :itemindex-raw="itemIndex"></router-view>
+        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" @com-senduserinfo="updateUserInfo" :itemindex-raw="itemIndex"></router-view>
 
     </div>
 
