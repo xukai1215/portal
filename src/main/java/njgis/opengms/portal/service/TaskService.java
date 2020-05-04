@@ -118,11 +118,13 @@ public class TaskService {
             modelAndView.addObject("dxType", dxServer.getString("type"));
             modelAndView.addObject("mdlJson", convertMdl(modelInfo.getMdl()));
 
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
 
         } else {
             modelAndView.setViewName("login");
+//            modelAndView.addObject("logged", false);
         }
-
 
         return modelAndView;
     }

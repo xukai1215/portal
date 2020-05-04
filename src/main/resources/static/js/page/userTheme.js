@@ -18,6 +18,8 @@ var userTheme = Vue.extend(
 
                 },
 
+                await:false,
+
                 resourceLoad:false,
 
                 //分页控制
@@ -290,7 +292,7 @@ var userTheme = Vue.extend(
                 this.isInSearch = 0;
                 var url = "/repository/getThemesByUserId";
                 var name = "themes";
-
+                this.await = true
                 $.ajax({
                     type: "Get",
                     url: url,
@@ -319,6 +321,7 @@ var userTheme = Vue.extend(
                             if (this.page == 1) {
                                 this.pageInit();
                             }
+                            this.await = false
                         }
                     }
                 })
@@ -384,6 +387,10 @@ var userTheme = Vue.extend(
 
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
+            },
+
+            sendUserToParent(userId){
+                this.$emit('com-senduserinfo',userId)
             }
 
         },
@@ -431,6 +438,7 @@ var userTheme = Vue.extend(
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)
+                            this.sendUserToParent(this.userId)
                             // this.addAllData()
 
                             // axios.get("/dataItem/amountofuserdata",{
@@ -475,6 +483,8 @@ var userTheme = Vue.extend(
 
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()
+
+
 
         },
 

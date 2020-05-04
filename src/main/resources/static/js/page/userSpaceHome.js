@@ -86,13 +86,19 @@ var userSpaceHome = Vue.extend(
                 window.open('/computableModel/integrating')
             },
 
+            openTheme(){
+                window.location.href='/user/userSpace#/userTheme'
+            },
+
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
             },
 
-            openTheme(){
-                window.location.href='/user/userSpace#/userTheme'
-            }
+            sendUserToParent(userId){
+                this.$emit('com-senduserinfo',userId)
+            },
+
+
         },
 
         created() {
@@ -135,6 +141,7 @@ var userSpaceHome = Vue.extend(
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)
+                            this.sendUserToParent(this.userId)
                             // this.addAllData()
 
                             // axios.get("/dataItem/amountofuserdata",{

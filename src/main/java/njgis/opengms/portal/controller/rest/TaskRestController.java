@@ -10,6 +10,7 @@ import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.DailyViewCount;
@@ -70,18 +71,17 @@ public class TaskRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     ModelAndView getTask(@PathVariable("id") String id, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (session.getAttribute("uid") == null) {
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("login");
-            modelAndView.addObject("unlogged", "1");
-            return modelAndView;
-        } else {
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("task");
-            modelAndView.addObject("logged", "0");
-            return modelAndView;
-        }
 
+        ModelAndView modelAndView = new ModelAndView();
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+            modelAndView.setViewName("task");
+        }
+        return modelAndView;
     }
 
 //    @RequestMapping(value="/renameTag",method = RequestMethod.POST)
@@ -102,7 +102,7 @@ public class TaskRestController {
         if (session.getAttribute("uid") == null) {
 
             modelAndView.setViewName("login");
-            modelAndView.addObject("unlogged", "1");
+            modelAndView.addObject("logged", false);
             return modelAndView;
         } else {
             String userName = request.getSession().getAttribute("uid").toString();
@@ -112,13 +112,14 @@ public class TaskRestController {
 //            }
 //            else {
 
-                modelAndView.setViewName("taskOutput");
-                modelAndView.addObject("logged", "0");
-                modelAndView.addObject("info", info);
+            modelAndView.setViewName("taskOutput");
+            User user = userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar", user);
+            modelAndView.addObject("logged", true);
+            modelAndView.addObject("info", info);
 //            }
             return modelAndView;
         }
-
 
 
     }

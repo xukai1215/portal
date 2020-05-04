@@ -72,20 +72,20 @@
                 <div class="indentmenu">
                     <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a class="fa fa-navicon " style="cursor: pointer;"></a></li>
                 </div>
-                <div th:if="${unlogged}" class="login">
+                <div th:unless="${logged}" class="login">
                     <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
                     <li><a class="login" href="/user/register">Sign Up</a></li>
                 </div>
-                <div th:if="${unlogged}" class="login2">
+                <div th:unless="${logged}" class="login2">
                     <li id="dropls"><a style="cursor:pointer"><p style="font-size: 13px">Log in</p><div class="innerBorder"></div><p style="font-size: 13px">Sign up</p></a></li>
                 </div>
                 <!--/*@thymesVar id="logged" type=""*/-->
                 <div th:if="${logged}" class="loged" >
                     <li id="userLoged" style="float: right">
                         <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
-                            <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
+                            <img class="userIcon round_icon" th:src="${( userNavBar.image == null ||#strings.isEmpty(userNavBar.image)) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
                             <div class="el-badge item">
-                                <div id="userName" style="display: inline-block">Hello!!!!!!!!!</div>
+                                <div id="userName" th:text="${userNavBar.name}" style="display: inline-block">Hello!!!!!!!!!</div>
                                 <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
                                 right: 0px !important;
                                 border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
@@ -94,11 +94,11 @@
                         </a>
                     </li>
                 </div>
-                <div class="phoneLoged">
+                <div th:if="${logged}" class="phoneLoged">
                     <li id="phoneUserDrop" style="float: right;width: 40px; margin-right: 5%;">
                     <div style="padding: 10px 5px;cursor:pointer">
                         <div class="el-badge item">
-                            <img class="userIcon round_icon" src="" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
+                            <img class="userIcon round_icon" th:src="${(#strings.isEmpty(userNavBar.image) || userNavBar.image == null) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
                             <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
                                 right: 0px !important;
                                 border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
@@ -144,10 +144,10 @@
 
         <!--        用户登录后的下拉-->
 <!--        大屏幕-->
-        <div class="subLog zmax" id="logedSub" style="right: 0px">
+        <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 0px">
             <ul>
                 <li><a id="userSpaceDir" href="/user/userSpace">My Space</a></li>
-                <li><a id="userPageDir" href="">My Page</a></li>
+                <li><a id="userPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
                 <li>
                     <!--<el-badge :value="2" class="item">-->
                         <!--<a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>-->
@@ -162,11 +162,12 @@
             </ul>
         </div>
 <!--        小屏幕-->
-        <div id="phoneUserSub" class="fullSub zmax" style="">
+        <div th:if="${logged}" id="phoneUserSub" class="fullSub zmax" style="">
             <ul>
-                <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;"></span></p></li>
+                <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">
+                    Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;" th:text="${userNavBar.name}"></span></p></li>
                 <li><a href="/user/userSpace">My Space</a></li>
-                <li><a id="phoneUserPageDir" href="">My Page</a></li>
+                <li><a id="phoneUserPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
                 <li class="el-badge item">
                     <a id="userNoticeDir2" href="/user/userSpace#/notice">Notice</a>
                     <sup class="el-badge__content is-fixed notice_num" style="right: 45%!important;"></sup>
@@ -243,7 +244,7 @@
                     </ul>
                 </div>
                 <li id="aboutUs"><a href="http://opengmsteam.com/">About us</a></li>
-                <div id="phoneLogin">
+                <div th:unless="${logged}" id="phoneLogin">
 <!--                        <a href="" style="padding: 0px">-->
                     <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/login">Log In</a></li>
                     <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/register">Sigh Up</a></li>

@@ -9,33 +9,33 @@
             var windowWidth=$(window).width();
 
             if (json.oid != '') {
-                $(".login").css("display", "none");
-                $(".login2").css("display", "none");
-                $("#phoneLogin").css("display", "none");
+                // $(".login").css("display", "none");
+                // $(".login2").css("display", "none");
+                // $("#phoneLogin").css("display", "none");
 
                 //小屏适配和大屏均获取用户姓名
-                $("#userName").text(json.name);
-                $("#userAloha").text(json.name);
+                // $("#userName").text(json.name);
+                // $("#userAloha").text(json.name);
                 // if (windowWidth > 956)  {
                 //     $(".loged").css("display", "block");
                 // }
                 // else if(windowWidth > 826) {
                 //大屏加载
                 if(windowWidth>501) {
-                    $(".loged").css("display", "block");
+                    // $(".loged").css("display", "block");
 
-                    var image = (json.image == "" || json.image == null) ? "/static/img/icon/default.png" : json.image;
-                    $(".userIcon").attr("src", image)
+                    // var image = (json.image == "" || json.image == null) ? "/static/img/icon/default.png" : json.image;
+                    // $(".userIcon").attr("src", image)
 
-                    $("#userPageDir").attr("href", "/user/" + json.oid);
+                    // $("#userPageDir").attr("href", "/user/" + json.oid);
                 }
                 //小屏加载
                 else {
-                    $(".phoneLoged").css("display", "block");
-                    var image = (json.image == "" || json.image == null) ? "/static/img/icon/default.png" : json.image;
-                    $(".userIcon").attr("src", image)
+                    // $(".phoneLoged").css("display", "block");
+                    // var image = (json.image == "" || json.image == null) ? "/static/img/icon/default.png" : json.image;
+                    // $(".userIcon").attr("src", image)
 
-                    $("#phoneUserPageDir").attr("href", "/user/" + json.oid);
+                    // $("#phoneUserPageDir").attr("href", "/user/" + json.oid);
                 }
 
 

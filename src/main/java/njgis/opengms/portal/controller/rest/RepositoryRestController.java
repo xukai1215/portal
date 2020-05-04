@@ -19,7 +19,6 @@ import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Application;
 import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.RepositoryService;
@@ -97,9 +96,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("user",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -110,9 +112,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("user",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -123,9 +128,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -136,9 +144,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -159,9 +170,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -364,9 +378,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -528,9 +545,12 @@ public class RepositoryRestController {
         modelAndView.setViewName("templateRepository");
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -680,9 +700,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -867,9 +890,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 
@@ -921,9 +947,12 @@ public class RepositoryRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 

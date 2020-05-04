@@ -222,8 +222,13 @@ var createComputableModel = Vue.extend({
                 }
             }
         },
+
         sendcurIndexToParent(){
             this.$emit('com-sendcurindex',this.curIndex)
+        },
+
+        sendUserToParent(userId){
+            this.$emit('com-senduserinfo',userId)
         },
 
         init:function () {
@@ -259,6 +264,7 @@ var createComputableModel = Vue.extend({
         close: function () {
             console.log("socket已经关闭")
         },
+
         getMessageNum(computableModel_oid){
             this.message_num_socket = 0;//初始化消息数目
             let data = {
@@ -387,6 +393,8 @@ var createComputableModel = Vue.extend({
                         this.userId = data.oid;
                         this.userName = data.name;
                         console.log(this.userId)
+
+                        this.sendUserToParent(this.userId)
                         // this.addAllData()
 
                         // axios.get("/dataItem/amountofuserdata",{

@@ -148,10 +148,15 @@ public class ComputableModelRestController {
 
         HttpSession session=req.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("user",user);
+            System.out.println(modelAndView.getModel().get("user"));
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
+
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
@@ -252,9 +257,13 @@ public class ComputableModelRestController {
         ModelAndView modelAndView = computableModelService.integrate(computableModelList);
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            System.out.println(modelAndView.getModel().get("user"));
+            modelAndView.addObject("logged", true);
+        }
         return modelAndView;
     }
 

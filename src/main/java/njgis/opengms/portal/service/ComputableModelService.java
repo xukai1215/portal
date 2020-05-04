@@ -258,13 +258,19 @@ public class ComputableModelService {
 
             HttpSession session = httpServletRequest.getSession();
 
+
+
             if (session.getAttribute("uid") == null) {
                 ModelAndView modelAndView = new ModelAndView();
                 modelAndView.setViewName("login");
-                modelAndView.addObject("unlogged", "1");
+                modelAndView.addObject("logged", false);
                 return modelAndView;
             } else {
                 ModelAndView modelAndView = new ModelAndView();
+
+                User user =  userService.getByUid(session.getAttribute("uid").toString());
+                modelAndView.addObject("userNavBar",user);
+                modelAndView.addObject("logged", true);
 
                 modelAndView.setViewName("computable_model");
                 modelAndView.addObject("logged", "0");

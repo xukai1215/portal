@@ -50,10 +50,22 @@ public class ConceptualModelRestController {
     UserService userService;
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
-    public ModelAndView getModelItems() {
+    public ModelAndView getModelItems(HttpServletRequest request) {
         System.out.println("conceptual model");
 
         ModelAndView modelAndView = new ModelAndView();
+
+        HttpSession session=request.getSession();
+
+        if(session.getAttribute("uid")==null)
+            modelAndView.addObject("logged", false);
+        else{
+            User user =  userService.getByUid(session.getAttribute("uid").toString());
+            modelAndView.addObject("userNavBar",user);
+            System.out.println(modelAndView.getModel().get("user"));
+            modelAndView.addObject("logged", true);
+        }
+
         modelAndView.setViewName("conceptual_models");
 
         return modelAndView;

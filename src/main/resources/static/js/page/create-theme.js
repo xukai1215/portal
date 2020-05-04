@@ -558,6 +558,9 @@ var createTheme = Vue.extend({
                         let arr = window.location.href.split("/");
                         let bindOid = arr[arr.length - 1].split("#")[0];
                         this.setSession("bindOid", bindOid);
+
+                        this.sendUserToParent(this.userId)
+
                         switch (this.relateType) {
                             case "modelItem":
                                 window.open("/user/createModelItem", "_blank")
@@ -794,6 +797,10 @@ var createTheme = Vue.extend({
                 }
 
             }
+        },
+
+        sendUserToParent(userId){
+            this.$emit('com-senduserinfo',userId)
         },
     },
     mounted() {
