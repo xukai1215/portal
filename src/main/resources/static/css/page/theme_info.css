@@ -649,10 +649,10 @@ zhtml,body{
     -webkit-box-orient: vertical;
     /*-webkit-line-clamp:2;*/
 }
-.el-badge__content{
-    margin-right: 10px;
-    background-color: #f50657!important;
-}
+/*.el-badge__content{*/
+    /*margin-right: 10px;*/
+    /*background-color: #f50657!important;*/
+/*}*/
 .fa-2x {
     font-size: 1em;
 }

@@ -324,6 +324,55 @@ var userTheme = Vue.extend(
                 })
             },
 
+            searchItems() {
+                this.resourceLoad = true;
+                this.pageSize = 10;
+                this.isInSearch = 1;
+                // let a=this.$route.params.modelitemKind
+                this.await = true;
+                let url = '/theme/searchThemeByUserId';
+                let name = 'theme';
+
+                if (this.deploys_show) {
+                    this.searchComputerModelsForDeploy();
+                } else {
+                    $.ajax({
+                        type: "Get",
+                        url: url,
+                        data: {
+                            searchText: this.searchText,
+                            page: this.page - 1,
+                            pagesize: this.pageSize,
+                            sortType: this.sortType,
+                            asc: this.sortAsc
+                        },
+                        cache: false,
+                        async: true,
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: (json) => {
+                            if (json.code != 0) {
+                                alert("Please login first!");
+                                window.location.href = "/user/login";
+                            } else {
+                                data = json.data;
+                                this.resourceLoad = false;
+                                this.totalNum = data.count;
+                                this.searchCount = Number.parseInt(data["count"]);
+                                this.$set(this,"searchResult",data[name]);
+                                console.log(this.searchResult);
+                                if (this.page == 1) {
+                                    this.pageInit();
+                                }
+                                this.await = false
+                            }
+                        }
+                    })
+                }
+            },
             editItem(index,oid){
                 var urls={
                     1:'/repository/theme/'+oid,

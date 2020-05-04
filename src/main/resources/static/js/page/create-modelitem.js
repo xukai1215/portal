@@ -401,11 +401,11 @@ var createModelItem = Vue.extend({
 
             if ('WebSocket' in window) {
                 // this.socket = new WebSocket("ws://localhost:8080/websocket");
-                this.socket = new WebSocket(this.path)
+                this.socket = new WebSocket(this.path);
                 // 监听socket连接
-                this.socket.onopen = this.open
+                this.socket.onopen = this.open;
                 // 监听socket错误信息
-                this.socket.onerror = this.error
+                this.socket.onerror = this.error;
                 // 监听socket消息
                 this.socket.onmessage = this.getMessage
 
@@ -437,7 +437,7 @@ var createModelItem = Vue.extend({
             let data = {
                 type: 'modelItem',
                 oid : modelitem_oid,
-            }
+            };
 
             //根据oid去取该作者的被编辑的条目数量
             $.ajax({

@@ -23,8 +23,8 @@
                 </div>
                 <div class="flexRow flexCenter iconContainer" style="">
                     <div @click="getThemeMessage">
-                    <el-badge :value="message_num" class="item" >
-                        <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 20px ">
+                    <el-badge :value="message_num" :max="99" class="item">
+                        <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 25px ">
                             <i class="fa fa-bell"></i>
                         </div>
                     </el-badge>

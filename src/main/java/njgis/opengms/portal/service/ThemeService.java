@@ -7,7 +7,9 @@ import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.ModelItemDao;
 import njgis.opengms.portal.dao.ThemeDao;
 import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeAddDTO;
+import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.intergrate.Model;
@@ -18,6 +20,10 @@ import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -422,5 +428,21 @@ public class ThemeService {
         }else {
             return -1;
         }
+    }
+    public JSONObject searchThemeByUserId(String searchText,String userId, int page, String sortType, int asc){
+
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<ThemeResultDTO> themes = themeDao.findByThemenameContainsIgnoreCaseAndAndAuthor(searchText,userId,pageable);
+//        Page<ModelItemResultDTO> modelItems = modelItemDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
+
+        JSONObject themeObject = new JSONObject();
+        themeObject.put("count",themes.getTotalElements());
+        themeObject.put("theme",themes.getContent());
+
+        return themeObject;
+
     }
 }
