@@ -254,19 +254,32 @@ var userTheme = Vue.extend(
                 this.page = 1;
             },
 
-            deleteItem(id) {
-                //todo 删除category中的 id
-                var cfm = confirm("Are you sure to delete?");
-
-                if (cfm == true) {
-                    axios.get("/repository/theme/delete", {
-                        params: {
-                            id: id
-                        }
-                    }).then(res => {
-                        if (res.status == 200) {
-                            alert("delete success!");
-                            this.getTheme();
+            deleteItem(oid) {
+                if (confirm("Are you sure to delete this model?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/theme/delete",
+                        data: {
+                            oid: oid
+                        },
+                        cache: false,
+                        async: true,
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: (json) => {
+                            if (json.code == -1) {
+                                alert("Please log in first!")
+                            } else {
+                                if (json.data == 1) {
+                                    alert("delete successfully!")
+                                    this.getTheme();
+                                } else {
+                                    alert("delete failed!")
+                                }
+                            }
                         }
                     })
                 }
@@ -302,7 +315,7 @@ var userTheme = Vue.extend(
                             this.resourceLoad = false;
                             this.totalNum = data.count;
                             this.searchCount = Number.parseInt(data["count"]);
-                            this.searchResult = data[name];
+                            this.$set(this,"searchResult",data[name]);
                             if (this.page == 1) {
                                 this.pageInit();
                             }
@@ -319,40 +332,7 @@ var userTheme = Vue.extend(
             },
 
             //
-            deleteItem(index,oid) {
-                if (confirm("Are you sure to delete this model?")) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/theme/delete",
-                        data: {
-                            oid: oid
-                        },
-                        cache: false,
-                        async: true,
-                        dataType: "json",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
-                        success: (json) => {
-                            if (json.code == -1) {
-                                alert("Please log in first!")
-                            } else {
-                                if (json.data == 1) {
-                                    alert("delete successfully!")
-                                } else {
-                                    alert("delete failed!")
-                                }
-                            }
-                            // if (this.searchText.trim() != "") {
-                            //     this.searchModels();
-                            // } else {
-                            //     this.getModels(index);
-                            // }
-                        }
-                    })
-                }
-            },
+
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
             }
