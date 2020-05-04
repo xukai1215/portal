@@ -823,10 +823,10 @@ var createConcept = Vue.extend({
 
             conceptInfo: {},
 
-            path:"ws://localhost:8080/websocket",
-            socket:"",
+            path: "ws://localhost:8080/websocket",
+            socket: "",
 
-            concept_oid:"",
+            concept_oid: "",
         }
     },
     methods: {
@@ -882,15 +882,15 @@ var createConcept = Vue.extend({
                 prop.pop();
             }
             var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
+            for (index = 0; index < UsersInfo.length; index++) {
                 //
-                if(index%4==0){
+                if (index % 4 == 0) {
                     let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
+                    let value2 = UsersInfo.eq(index + 1)[0].value.trim();
+                    let value3 = UsersInfo.eq(index + 2)[0].value.trim();
+                    let value4 = UsersInfo.eq(index + 3)[0].value.trim();
+                    if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
+                        index += 4;
                         continue;
                     }
                 }
@@ -1049,15 +1049,15 @@ var createConcept = Vue.extend({
                 }
             })
         },
-        sendcurIndexToParent(){
-            this.$emit('com-sendcurindex',this.curIndex)
+        sendcurIndexToParent() {
+            this.$emit('com-sendcurindex', this.curIndex)
         },
 
-        sendUserToParent(userId){
-            this.$emit('com-senduserinfo',userId)
+        sendUserToParent(userId) {
+            this.$emit('com-senduserinfo', userId)
         },
 
-        init:function () {
+        init: function () {
 
             if ('WebSocket' in window) {
                 // this.socket = new WebSocket("ws://localhost:8080/websocket");
@@ -1090,35 +1090,35 @@ var createConcept = Vue.extend({
         close: function () {
             console.log("socket已经关闭")
         },
-        getMessageNum(concept_oid){
+        getMessageNum(concept_oid) {
             this.message_num_socket = 0;//初始化消息数目
             let data = {
                 type: 'concept',
-                oid : concept_oid,
+                oid: concept_oid,
             };
 
             //根据oid去取该作者的被编辑的条目数量
             $.ajax({
-                url:"/theme/getAuthorMessageNum",
-                type:"GET",
-                data:data,
-                async:false,
-                success:(json)=>{
+                url: "/theme/getAuthorMessageNum",
+                type: "GET",
+                data: data,
+                async: false,
+                success: (json) => {
                     this.message_num_socket = json;
                 }
             });
             let data_theme = {
                 type: 'concept',
-                oid : concept_oid,
+                oid: concept_oid,
             };
             $.ajax({
-                url:"/theme/getThemeMessageNum",
-                async:false,
-                type:"GET",
-                data:data_theme,
-                success:(json)=>{
+                url: "/theme/getThemeMessageNum",
+                async: false,
+                type: "GET",
+                data: data_theme,
+                success: (json) => {
                     console.log(json);
-                    for (let i=0;i<json.length;i++) {
+                    for (let i = 0; i < json.length; i++) {
                         for (let k = 0; k < 4; k++) {
                             let type;
                             switch (k) {
@@ -1142,17 +1142,17 @@ var createConcept = Vue.extend({
                                             case "0":
                                                 this.message_num_socket++;
                                         }
-                                    }else if (k == 1){
+                                    } else if (k == 1) {
                                         switch (type[j].status) {
                                             case "0":
                                                 this.message_num_socket++;
                                         }
-                                    }else if (k == 2){
+                                    } else if (k == 2) {
                                         switch (type[j].status) {
                                             case "0":
                                                 this.message_num_socket++;
                                         }
-                                    } else if (k == 3){
+                                    } else if (k == 3) {
                                         switch (type[j].status) {
                                             case "0":
                                                 this.message_num_socket++;
@@ -1167,7 +1167,7 @@ var createConcept = Vue.extend({
         }
     },
 
-    destroyed () {
+    destroyed() {
         // 销毁监听
         this.socket.onclose = this.close
     },
@@ -1198,7 +1198,7 @@ var createConcept = Vue.extend({
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
+        if ((oid === "0") || (oid === "") || (oid === null) || (oid === undefined)) {
 
             // $("#title").text("Create Concept & Semantic")
             $("#subRteTitle").text("/Create Concept & Semantic")
@@ -1356,7 +1356,32 @@ var createConcept = Vue.extend({
         $("#step").steps({
             onFinish: function () {
                 alert('Wizard Completed');
+            },
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if (this.cls.length == 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }
+                    else if ($("#nameInput").val().trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
             }
+
         });
 
         //related
@@ -1402,17 +1427,6 @@ var createConcept = Vue.extend({
 
 
         var conceptObj = {};
-        $(".next").click(() => {
-
-            if (this.cls.length == 0) {
-                alert("Please select parent node");
-                return false;
-            }
-            if ($("#nameInput").val() === "") {
-                alert("Please enter concept's name");
-                return false;
-            }
-        });
 
         $(".finish").click(() => {
             let loading = this.$loading({
@@ -1430,11 +1444,6 @@ var createConcept = Vue.extend({
             var detail = tinyMCE.activeEditor.getContent();
             conceptObj.detail = detail.trim();
             console.log(conceptObj)
-
-            if (conceptObj.name.trim() == "") {
-                alert("please enter name")
-                return;
-            }
 
             let formData = new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
@@ -1488,7 +1497,7 @@ var createConcept = Vue.extend({
                             } else {
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
-                                that.concept_oid = currentUrl.substring(index + 1,currentUrl.length);
+                                that.concept_oid = currentUrl.substring(index + 1, currentUrl.length);
                                 console.log(that.concept_oid);
                                 //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
                                 that.getMessageNum(that.concept_oid);

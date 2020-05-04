@@ -439,6 +439,30 @@ var createSpatialReference = Vue.extend({
         $("#step").steps({
             onFinish: function () {
                 alert('Wizard Completed');
+            },
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if (this.cls.length == 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }
+                    else if ($("#nameInput").val().trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
             }
         });
 
@@ -477,17 +501,6 @@ var createSpatialReference = Vue.extend({
         }
 
         var spatialObj = {};
-        $(".next").click(() => {
-
-            if (this.cls.length == 0) {
-                alert("Please select parent node");
-                return false;
-            }
-            if ($("#nameInput").val() === "") {
-                alert("Please enter spatial reference's name");
-                return false;
-            }
-        });
 
         $(".finish").click(() => {
             let loading = this.$loading({
@@ -506,10 +519,6 @@ var createSpatialReference = Vue.extend({
             spatialObj.detail = detail.trim();
             console.log(spatialObj)
 
-            if(spatialObj.name.trim()==""){
-                alert("please enter name")
-                return;
-            }
 
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {

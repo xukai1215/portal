@@ -204,14 +204,15 @@
                                         <div class="el-col el-col-12">
                                             <img
                                                     th:src="'/static/img/filebrowser/'+${data.suffix}+'.svg'"
+                                                    onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
                                                     style="height: 60%; width: 100%;">
                                         </div>
                                         <div class="el-col el-col-6">&nbsp;</div>
                                     </div>
-                                    <div class="el-row">
+                                    <div class="el-row" style="height: 45px;">
                                         <div class="el-col el-col-2">&nbsp;</div>
                                         <div class="el-col el-col-20"><p th:text="${data.name}"
-                                                                         style="overflow-wrap: break-word; word-break: break-all; text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5">
+                                                                         style="overflow: hidden;overflow-wrap: break-word; word-break: break-all; text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5">
                                         </p></div>
                                         <div class="el-col el-col-2">&nbsp;</div>
                                     </div>
