@@ -23,6 +23,19 @@ var createConceptualModel = Vue.extend({
 
             },
 
+            bindModelItemDialogVisible:false,
+            pageOption: {
+                paginationShow:false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 5,
+                searchText: '',
+                total: 264,
+                searchResult: [],
+            },
+
+
             userInfo: {},
             //文件框
             resources: [],
@@ -48,6 +61,60 @@ var createConceptualModel = Vue.extend({
         }
     },
     methods: {
+        selectModelItem(index,info){
+            console.log(info);
+            this.conceptualModel.bindModelItem = info.name;
+            this.conceptualModel.bindOid = info.oid;
+            this.bindModelItemDialogVisible = false;
+        },
+        handlePageChange(val) {
+
+            this.pageOption.currentPage = val;
+
+            this.searchModelItem();
+        },
+        openModelItemDialog(){
+            this.pageOption.currentPage = 1;
+            this.bindModelItemDialogVisible = true;
+            this.searchModelItem();
+        },
+        searchModelItem(){
+            let data = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage-1,
+                pageSize: this.pageOption.pageSize,
+                searchText: this.pageOption.searchText,
+                sortType: "default",
+                classifications: ["all"],
+            };
+            let url = "/modelItem/list";
+            let contentType = "application/x-www-form-urlencoded";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                async: true,
+                contentType: contentType,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption.total = data.total;
+                        this.pageOption.pages = data.pages;
+                        this.pageOption.searchResult = data.list;
+                        this.pageOption.users = data.users;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow = true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
         changeRter(index){
             this.curIndex = index;
             var urls={

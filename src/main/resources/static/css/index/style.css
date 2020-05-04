@@ -285,7 +285,7 @@ h3 {
 }
 
 .footer .list-title {
-  font-size: 18px;
+  /*font-size: 18px;*/
   font-weight: 600;
 }
 
@@ -332,9 +332,9 @@ h3 {
 
 .copyright-title {
   margin-bottom: 15px;
-  /* font-style: italic; */
-  font-size: 24px;
-  font-weight: 600;
+   font-style: italic;
+  font-size: 30px;
+  /*font-weight: 600;*/
 }
 
 .nav-right {

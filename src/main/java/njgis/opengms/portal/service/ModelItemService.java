@@ -94,7 +94,8 @@ public class ModelItemService {
     @Autowired
     DataItemDao dataItemDao;
 
-
+    @Autowired
+    CommonService commonService;
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -117,82 +118,13 @@ public class ModelItemService {
 
         modelItemDao.save(modelInfo);
         //类
-        JSONArray classResult=new JSONArray();
-
-        List<String> classifications = modelInfo.getClassifications();
-        for(int i=0;i<classifications.size();i++){
-
-            JSONArray array=new JSONArray();
-            String classId=classifications.get(i);
-
-            do{
-                Classification classification=classificationService.getByOid(classId);
-                array.add(classification.getNameEn());
-                classId=classification.getParentId();
-            }while(classId!=null);
-
-            JSONArray array1=new JSONArray();
-            for(int j=array.size()-1;j>=0;j--){
-                array1.add(array.getString(j));
-            }
-
-            classResult.add(array1);
-
-        }
-        System.out.println(classResult);
+        JSONArray classResult=commonService.getClassifications(modelInfo.getClassifications());
 
         //详情页面
         String detailResult;
         String model_detailDesc=modelInfo.getDetail();
-        int num=model_detailDesc.indexOf("upload/document/");
-        if(num==-1||num>20){
-            detailResult=model_detailDesc;
-        }
-        else {
-            if(model_detailDesc.indexOf("/")==0){
-                model_detailDesc.substring(1);
-            }
-            //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
-            try {
-                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            if (model_detailDesc.length() > 0) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    StringBuilder detail = new StringBuilder();
-                    try {
-                        FileInputStream fileInputStream = new FileInputStream(file);
-                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
-                        BufferedReader br = new BufferedReader(inputStreamReader);
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
-                            detail.append(line);
-                        }
-                        br.close();
-                        inputStreamReader.close();
-                        fileInputStream.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    detailResult = detail.toString();
-                } else {
-                    detailResult = model_detailDesc;
-                }
-            } else {
-                detailResult = model_detailDesc;
-            }
-        }
+        detailResult = commonService.getDetail(model_detailDesc);
+
 
         //时间
         Date date=modelInfo.getCreateTime();

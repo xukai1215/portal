@@ -99,19 +99,6 @@
                                                                 Bind Model Item
                                                             </label>
                                                             <div class="input-group col-md-5">
-                                                                <!--<input id="search-box" type="text"-->
-                                                                       <!--class="form-control"-->
-                                                                       <!--v-model="computableModel.bindModelItem">-->
-                                                                <!--&lt;!&ndash;<el-autocomplete&ndash;&gt;-->
-                                                                        <!--&lt;!&ndash;v-model="computableModel.bindModelItem"&ndash;&gt;-->
-                                                                        <!--&lt;!&ndash;:fetch-suggestions="querySearchAsync"&ndash;&gt;-->
-                                                                        <!--&lt;!&ndash;placeholder="Enter model item name..."&ndash;&gt;-->
-                                                                        <!--&lt;!&ndash;@select="handleSelect"&ndash;&gt;-->
-                                                                <!--&lt;!&ndash;&gt;</el-autocomplete>&ndash;&gt;-->
-                                                                <!--<span class="input-group-btn">-->
-                                                            <!--<button id="bind" class="btn btn-success"-->
-                                                                    <!--type="button">bind</button>-->
-                                                        <!--</span>-->
 
                                                                 <el-button type="primary" @click="openModelItemDialog()" style="margin-right:10px">Select</el-button>
                                                                 {{computableModel.bindModelItem}}
@@ -403,8 +390,8 @@
                            top="40px">
 
 
-                    <el-card class="box-card">
-                        <el-input placeholder="Model item name..." v-model="pageOption.searchText" class="input-with-select">
+
+                        <el-input placeholder="Model item name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchModelItem()">
                             <el-button slot="append" icon="el-icon-search" @click="searchModelItem()"></el-button>
                         </el-input>
                         <el-table
@@ -450,7 +437,7 @@
                                        :page-size="6"
                                        :total="pageOption.total">
                         </el-pagination>
-                    </el-card>
+
                 </el-dialog>
             </div>
 

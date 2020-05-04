@@ -164,9 +164,21 @@ new Vue({
                 success: (data) => {
                     data = JSON.parse(data);
                     if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history",window.location.href);
-                        window.location.href = "/user/login";
+                        this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
+                            dangerouslyUseHTMLString: true,
+                            confirmButtonText: 'Log In',
+                            cancelButtonClass: 'fontsize-15',
+                            confirmButtonClass: 'fontsize-15',
+                            type: 'info',
+                            center: true,
+                            showClose: false,
+                        }).then(() => {
+                            this.setSession("history",window.location.href);
+                            window.location.href = "/user/login";
+                        }).catch(() => {
+
+                        });
+
                     }
                     else {
                         let href=window.location.href;
@@ -244,10 +256,7 @@ new Vue({
                         this.$alert('Model item is not exist,please check the name.', 'Error', {
                             confirmButtonText: 'OK',
                             callback: action => {
-                                this.$message({
-                                    type: 'info',
-                                    message: `action: ${ action }`
-                                });
+
                             }
                         });
                     }
