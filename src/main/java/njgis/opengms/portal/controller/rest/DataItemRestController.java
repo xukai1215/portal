@@ -3,7 +3,6 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.bean.datacontainer.AddDataResource;
 import njgis.opengms.portal.dao.CategoryDao;
 import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.ModelItemDao;
@@ -629,20 +628,20 @@ public class DataItemRestController {
 
 
 
-    /**
-     * 添加数据资源，在上传数据资源文件到数据容器后，我们还需要对其进行字段补充，再添加到数据库
-     * @param dataResource
-     * @return
-     */
-    @RequestMapping (value = "/addDataResource", method = RequestMethod.POST)
-    JsonResult addDataResource(@RequestBody AddDataResource dataResource) {
-        RestTemplate restTemplate = new RestTemplate();
-        JSONObject jsonObject =
-                restTemplate.postForObject("http://" + dataContainerIpAndPort + "/dataResource",
-                        dataResource,
-                        JSONObject.class);
-        return ResultUtils.success(jsonObject);
-    }
+//    /**
+//     * 添加数据资源，在上传数据资源文件到数据容器后，我们还需要对其进行字段补充，再添加到数据库
+//     * @param dataResource
+//     * @return
+//     */
+//    @RequestMapping (value = "/addDataResource", method = RequestMethod.POST)
+//    JsonResult addDataResource(@RequestBody AddDataResource dataResource) {
+//        RestTemplate restTemplate = new RestTemplate();
+//        JSONObject jsonObject =
+//                restTemplate.postForObject("http://" + dataContainerIpAndPort + "/dataResource",
+//                        dataResource,
+//                        JSONObject.class);
+//        return ResultUtils.success(jsonObject);
+//    }
 
 
 

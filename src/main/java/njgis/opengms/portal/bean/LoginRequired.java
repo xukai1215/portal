@@ -1,4 +1,4 @@
-package njgis.opengms.portal.annotation;
+package njgis.opengms.portal.bean;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
