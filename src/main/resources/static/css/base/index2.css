@@ -155,7 +155,80 @@
     color:white;
     font-size: 18px;
     z-index: 999999;
+    transition: .3s all;
 }
+
+.nutButton{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2.5px #e6e6e6 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #e6e6e6;
+    transition: .3s all ;
+}
+
+.nutButton:hover{
+    background-color: #e6e6e6;
+    color: #333333;
+    font-weight: 500;
+}
+
+.nutButtonBlack{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2px #333333 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #333333;
+    transition: .3s all ;
+}
+
+.nutButtonBlack:hover{
+    background-color: #333333;
+    color: #e6e6e6;
+    font-weight: 500;
+}
+
+.nutButtonBlue{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2px #2991f7 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #2991f7;
+    transition: .3s all ;
+}
+
+.nutButtonBlue:hover{
+    background-color: #2991f7;
+    color: #e6e6e6;
+    font-weight: 500;
+}
+
+.nutButtonBlueFill{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2px #3da2ff solid;
+    padding: 0 15px;
+    background-color: #3da2ff;
+    color: #e6e6e6;
+    transition: .3s all ;
+}
+
+.nutButtonBlueFill:hover{
+    background-color: #34acf7;
+    border: 2px #34acf7 solid;
+}
+
+.hoverLineBtn span{
+    transition: .3s all;
+}
+
+.hoverLineBtn:hover>span{
+    text-decoration:underline
+}
+
 
 .wzhI{
     margin-right: 2px;
@@ -484,7 +557,7 @@
     }
 
     #headerSection{
-        width:700px;
+        width:630px;
         text-align: justify;
     }
 

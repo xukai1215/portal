@@ -1,0 +1,68 @@
+.flexCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.flexRow {
+    display: flex;
+    /*flex-direction: column;*/
+}
+
+.flexAlignStart{
+    display: flex;
+    align-items: flex-start;
+}
+
+.flexAlignEnd{
+    display: flex;
+    align-items: flex-End;
+}
+
+.flexAlignStrench{
+    display: flex;
+    align-items: stretch;
+}
+
+.flexAlignCenter{
+    display: flex;
+    align-items: center;
+}
+
+.flexJustStart{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.flexJustEnd{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.flexJustCenter{
+    display: flex;
+    justify-content: center;
+}
+
+.flexJustAround{
+    display: flex;
+    justify-content: space-around;
+}
+
+.flexJustBetween{
+    display: flex;
+    justify-content: space-between;
+}
+
+.flexCenter{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.flexRowReverse{
+    flex-direction: row-reverse;
+}
+
+.flexColReverse{
+    flex-direction: column-reverse;
+}
