@@ -277,8 +277,9 @@ var userDataSpace = Vue.extend(
                         });
 
                 }
-                else{
+                else {
                     alert("Please select data first!")
+
                 }
             },
 
@@ -506,11 +507,17 @@ var userDataSpace = Vue.extend(
                 }
 
                 if( this.newFolderName===''){
-                    alert('Please input the folder name');
+                    this.$alert('Please input the folder name.', 'Tip', {
+                        type:'warning',
+                        confirmButtonText: 'comfirm',
+                    })
                     this.addFolderIndex=true;
                 }
                 else if(folderName.indexOf(this.newFolderName)!=-1){
-                    alert('this name is existing in this path, please input a new one');
+                    this.$alert('This name is existing in this path, please input a new one.', 'Tip', {
+                        type:'warning',
+                        confirmButtonText: 'comfirm',
+                    })
                     this.newFolderName='';
                     this.addFolderIndex=true;
                 }
@@ -557,12 +564,19 @@ var userDataSpace = Vue.extend(
                 var node,data
                 if(pageIndex=='myData'){
                     data=this.$refs.folderTree.getCurrentNode();
-                    if(data==undefined) alert('Please select a file directory')
+                    if(data==undefined)
+                    this.$alert('Please select a file directory.', 'Tip', {
+                        type:'warning',
+                        confirmButtonText: 'comfirm',
+                    })
                     node=this.$refs.folderTree.getNode(data);
                 }
                 else{
                     data=this.$refs.folderTree2[index].getCurrentNode();
-                    if(data==undefined) alert('Please select a file directory')
+                    this.$alert('Please select a file directory.', 'Tip', {
+                        type:'warning',
+                        confirmButtonText: 'comfirm',
+                    })
                     node=this.$refs.folderTree2[index].getNode(data);
                 }
 
@@ -588,7 +602,10 @@ var userDataSpace = Vue.extend(
                     if(folderExited.some((item)=>{
                         return  item.label===value;
                     })==true){
-                        alert('this name is existing in this path, please input a new one');
+                        this.$alert('This name is existing in this path, please input a new one.', 'Tip', {
+                            type:'warning',
+                            confirmButtonText: 'comfirm',
+                        })
                         return
                     }
 
@@ -1270,14 +1287,25 @@ var userDataSpace = Vue.extend(
 
             },
 
+            arrayMatch(array,name){
+                for(item in array){
+                    if(item === name)
+                        return 1
+                }
+                return 0
+            },
+
             renameConfirm(){
                 let folderName=[];
                 for(let i=0;i<this.myFileShown.length;i++){
                     if(this.myFileShown[i].package===true)
-                        folderName.push(this.myFileShown[i].label)
+                        folderName.push(this.myFileShown[i].label+'.'+this.myFileShown[i].suffix)
                 }
-                if(folderName.indexOf($('.renameFileInput').eq(this.rightTargetItem.index).val())!=-1)
-                    alert('this name is existing in this path, please input a new one');
+                if(a)
+                    this.$alert('This name is existing in this path, please input a new one.', 'Tip', {
+                        type:'warning',
+                        confirmButtonText: 'comfirm',
+                    })
                 else{
                     this.rightTargetItem.label=$('.renameFileInput').eq(this.rightTargetItem.index).val();
                     console.log(this.myFileShown)

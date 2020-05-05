@@ -557,7 +557,11 @@ var userCommunities = Vue.extend(
 
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
-            }
+            },
+
+            sendUserToParent(userId){
+                this.$emit('com-senduserinfo',userId)
+            },
         },
 
         created() {
