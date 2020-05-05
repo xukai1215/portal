@@ -184,7 +184,9 @@ var userAccount = Vue.extend(
                 userUpdate.description = $("#inputDescription").val().trim();
                 userUpdate.organizations = $("#inputOrganizations").val().split(",");
                 userUpdate.subjectAreas = $("#inputSubjectAreas").val().split(",");
-                userUpdate.uploadImage = $("#userPhoto").get(0).src;
+                userUpdate.uploadImage = '';
+                if($("#userPhoto").get(0).src!="http://localhost:8080/static/img/icon/default.png")
+                    userUpdate.uploadImage = $("#userPhoto").get(0).src;
 
                 let that = this
                 $.ajax({
