@@ -249,10 +249,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="el-card is-always-shadow"><!---->
-                        <div class="el-card__body" style="padding: 9px;"><span><i class="el-icon-document"></i>&nbsp;&nbsp; contents</span>
-                        </div>
-                    </div>
+
                     <div class="el-card filecontent is-always-shadow" id="browsercont"
                          style="height: 300px; overflow-y: auto;"><!---->
                         <el-card th:each="item,key:${datainfo.data.dataList}"
@@ -262,6 +259,7 @@
                             <el-row>
                                 <el-col :span="6">&nbsp</el-col>
                                 <el-col :span="12"><img th:src="'/static/img/filebrowser/'+${item.suffix}+'.svg'"
+                                                        onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
                                                         style="height: 60%;width:100%"></el-col>
                                 <el-col :span="6">&nbsp</el-col>
                             </el-row>

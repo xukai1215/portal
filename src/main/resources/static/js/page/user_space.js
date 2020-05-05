@@ -666,7 +666,7 @@ var vue = new Vue({
                     console.log(res);
                     if (res.status == 200) {
 
-                        this.openConfirmBox("Create successfully! Do you want to view this Data Item?", "Message", res.data.data.id);
+                        this.openConfirmBox("create successful! Do you want to view this Data Item?", "Message", res.data.data.id);
                         this.taskSharingVisible = false;
                         this.allFileTaskSharingVisible = false;
                     }
@@ -916,7 +916,6 @@ var vue = new Vue({
                                     success: (json) => {
                                         if (json.code == -1) {
                                             alert("Please login first!")
-                                            window.sessionStorage.setItem("history", window.location.href);
                                             window.location.href = "/user/login"
                                         } else {
                                             // this.rightTargetItem=null;
@@ -967,12 +966,12 @@ var vue = new Vue({
                                     type: "POST",
                                     url: "/task/setPrivate",
                                     data: {taskId: task.taskId},
-                                    async: true,
+                                    async: true,'''' +
+                                    ''
                                     contentType: "application/x-www-form-urlencoded",
                                     success: (json) => {
                                         if (json.code == -1) {
                                             alert("Please login first!")
-                                            window.sessionStorage.setItem("history", window.location.href);
                                             window.location.href = "/user/login"
                                         } else {
                                             // this.rightTargetItem=null;
@@ -1238,7 +1237,6 @@ var vue = new Vue({
                         let json=res.data;
                         if(json.code==-1){
                             alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
                             window.location.href="/user/login"
                         }
                         else {
@@ -1405,7 +1403,6 @@ var vue = new Vue({
                 success: (json) => {
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
                         this.myFileShown = json.data.data;
@@ -1566,7 +1563,6 @@ var vue = new Vue({
                     success: (json) => {
                         if (json.code == -1) {
                             alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
                         }
                         else {
@@ -4876,7 +4872,6 @@ var vue = new Vue({
                 success: (json) => {
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
                         let idList=json.data
@@ -5114,7 +5109,6 @@ var vue = new Vue({
                                     let data = json.data;
                                     if (json.code == -1) {
                                         alert("Please login first!")
-                                        window.sessionStorage.setItem("history", window.location.href);
                                         window.location.href = "/user/login"
                                     } else {
                                         for(let i=0;i<data.length;i++)
@@ -5525,7 +5519,6 @@ var vue = new Vue({
                     let json=res.data;
                     if(json.code==-1){
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href="/user/login"
                     }
                     else {

@@ -16,7 +16,6 @@ import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.Categorys;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataItemService;
@@ -89,22 +88,13 @@ public class DataItemRestController {
      * @return modelAndView
      */
     @RequestMapping("/repository")
-    public ModelAndView getModelItems(HttpServletRequest req ){
+    public ModelAndView getModelItems(){
 
         System.out.println("data-items-page");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("data_items");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            System.out.println(modelAndView.getModel().get("user"));
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -235,7 +225,7 @@ public class DataItemRestController {
      * @return
      */
     @RequestMapping (value = "/{id}", method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id,HttpServletRequest req){
+    ModelAndView get(@PathVariable ("id") String id){
 
         ModelAndView view = new ModelAndView();
 
@@ -314,14 +304,7 @@ public class DataItemRestController {
         view.addObject("classifications",classifications);
         view.addObject("relatedModels",modelItemArray);
         view.addObject("authorship",authorshipString);
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            view.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            view.addObject("userNavBar",user);
-            view.addObject("logged", true);
-        }
+
         return view;
     }
 

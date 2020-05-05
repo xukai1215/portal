@@ -235,7 +235,6 @@ var  data_item_info= new Vue({
                         let json=res.data;
                         if(json.code==-1){
                             alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
                             window.location.href="/user/login"
                         }
                         else {
@@ -326,7 +325,7 @@ var  data_item_info= new Vue({
                 success: (json) => {
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
+
                         window.location.href = "/user/login"
                     }
                     else {
@@ -1238,7 +1237,6 @@ var  data_item_info= new Vue({
 
     mounted(){
 
-        this.setSession("history", window.location.href);
         axios.get("/user/load")
             .then((res) => {
                 if (res.status == 200) {

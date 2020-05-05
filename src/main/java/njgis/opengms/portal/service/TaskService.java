@@ -118,12 +118,8 @@ public class TaskService {
             modelAndView.addObject("dxType", dxServer.getString("type"));
             modelAndView.addObject("mdlJson", convertMdl(modelInfo.getMdl()));
 
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-
         } else {
             modelAndView.setViewName("login");
-//            modelAndView.addObject("logged", false);
         }
 
         return modelAndView;
@@ -154,12 +150,12 @@ public class TaskService {
         if (isUserOwnTask == false) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("login");
-            modelAndView.addObject("unlogged", "1");
+
             return modelAndView;
         } else {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("taskOutput");
-            modelAndView.addObject("logged", "0");
+
             return modelAndView;
         }
     }

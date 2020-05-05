@@ -41,8 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.IOUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -166,7 +164,7 @@ public class ComputableModelService {
 
 
 
-    public ModelAndView getPage(String id, HttpServletRequest httpServletRequest) {
+    public ModelAndView getPage(String id) {
         //条目信息
         try {
 
@@ -256,25 +254,11 @@ public class ComputableModelService {
                 }
             }
 
-            HttpSession session = httpServletRequest.getSession();
 
-
-
-            if (session.getAttribute("uid") == null) {
-                ModelAndView modelAndView = new ModelAndView();
-                modelAndView.setViewName("login");
-                modelAndView.addObject("logged", false);
-                return modelAndView;
-            } else {
                 ModelAndView modelAndView = new ModelAndView();
 
-                User user =  userService.getByUid(session.getAttribute("uid").toString());
-                modelAndView.addObject("userNavBar",user);
-                modelAndView.addObject("logged", true);
+                modelAndView.setViewName("computable_model");
 
-                modelAndView.setViewName("computable_model");
-                modelAndView.addObject("logged", "0");
-                modelAndView.setViewName("computable_model");
                 modelAndView.addObject("modelInfo", modelInfo);
                 modelAndView.addObject("classifications", classResult);
                 modelAndView.addObject("date", dateResult);
@@ -296,10 +280,9 @@ public class ComputableModelService {
                 modelAndView.addObject("lastModifyTime", lastModifyTime);
 
 
-
                 return modelAndView;
 
-            }
+
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ModelContainerDao;
 import njgis.opengms.portal.entity.ModelContainer;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -28,17 +25,10 @@ public class StatisticRestController {
     UserService userService;
 
     @RequestMapping(value="",method= RequestMethod.GET)
-    ModelAndView serverIndex(HttpServletRequest request){
+    ModelAndView serverIndex(){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("Statistics");
-        HttpSession session = request.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
+
         return modelAndView;
     }
 

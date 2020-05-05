@@ -2,8 +2,6 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
@@ -26,7 +24,6 @@ import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -167,8 +164,8 @@ public class ThemeRestController {
     }
 
     @RequestMapping(value = "/getmessagepage/{id}", method = RequestMethod.GET)
-    public ModelAndView getMessagePage(@PathVariable("id") String id,HttpServletRequest req){
-        return themeService.getMessagePage(id,req);
+    public ModelAndView getMessagePage(@PathVariable("id") String id){
+        return themeService.getMessagePage(id);
     }
 
     @RequestMapping(value = "/getuser",method = RequestMethod.GET)
