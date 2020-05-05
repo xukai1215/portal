@@ -1,4 +1,4 @@
-package njgis.opengms.portal;
+package njgis.opengms.portal.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

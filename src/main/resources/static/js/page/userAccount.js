@@ -56,8 +56,13 @@ var userAccount = Vue.extend(
                 $.post("/user/setSubscribe",{subscribe:this.subscribe},(result)=>{
                     let data = result.data;
                     if(result.code==-1){
-                        alert("Please login first");
-                        window.location.href="/user/login";
+                        this.$alert('Please login first', 'Tip', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
+
                     }
 
                 })

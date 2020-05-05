@@ -1,6 +1,5 @@
 package njgis.opengms.portal.controller.rest;
 
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping (value = "/help")
@@ -25,14 +23,6 @@ public class HelpRestController {
         modelAndView.setViewName("demo");
         modelAndView.addObject("name","OpenGMS");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -43,14 +33,6 @@ public class HelpRestController {
         modelAndView.setViewName("manual");
         modelAndView.addObject("name","OpenGMS");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -61,14 +43,6 @@ public class HelpRestController {
         modelAndView.setViewName("document");
         modelAndView.addObject("name","OpenGMS");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 

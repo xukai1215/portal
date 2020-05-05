@@ -94,62 +94,30 @@ public class RepositoryRestController {
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("redirect:/conceptualModel/"+id);
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("user",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
     @RequestMapping(value="/logicalModel/{id}",method = RequestMethod.GET)
-    public ModelAndView redirectLogicalModel(@PathVariable("id") String id,HttpServletRequest req){
+    public ModelAndView redirectLogicalModel(@PathVariable("id") String id){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("redirect:/logicalModel/"+id);
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("user",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
     @RequestMapping(value="/computableModel/{id}",method = RequestMethod.GET)
-    public ModelAndView redirectComputableModel(@PathVariable("id") String id,HttpServletRequest req){
+    public ModelAndView redirectComputableModel(@PathVariable("id") String id){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("redirect:/computableModel/"+id);
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
     @RequestMapping(value="/dataItem/{id}",method = RequestMethod.GET)
-    public ModelAndView redirectDataItem(@PathVariable("id") String id,HttpServletRequest req){
+    public ModelAndView redirectDataItem(@PathVariable("id") String id){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("redirect:/dataItem/"+id);
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -162,20 +130,12 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value="/concept",method = RequestMethod.GET)
-    public ModelAndView getConceptRepository(HttpServletRequest req) {
+    public ModelAndView getConceptRepository() {
         System.out.println("conceptRepository");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("conceptRepository");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -370,20 +330,12 @@ public class RepositoryRestController {
 
     //spatialReference
     @RequestMapping(value="/spatialReference",method = RequestMethod.GET)
-    public ModelAndView getSpatialReferenceRepository(HttpServletRequest req) {
+    public ModelAndView getSpatialReferenceRepository() {
         System.out.println("spatialReferenceRepository");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("spatialReferenceRepository");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -544,13 +496,7 @@ public class RepositoryRestController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("templateRepository");
         HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
+
         return modelAndView;
     }
 
@@ -699,13 +645,7 @@ public class RepositoryRestController {
         modelAndView.setViewName("unitRepository");
 
         HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
+
         return modelAndView;
     }
 
@@ -868,7 +808,7 @@ public class RepositoryRestController {
 
     //Thematic
     @RequestMapping(value = "/thematic",method = RequestMethod.GET)
-    public ModelAndView getThematic(HttpServletRequest req) {
+    public ModelAndView getThematic() {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("Thematic");
@@ -887,15 +827,6 @@ public class RepositoryRestController {
         }
         modelAndView.addObject("themeResult",themeRs);
 
-
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -939,20 +870,12 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value="/theme",method = RequestMethod.GET)
-    public ModelAndView getThemeRepository(HttpServletRequest req) {
+    public ModelAndView getThemeRepository() {
         System.out.println("themeRepository");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("themeRepository");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 

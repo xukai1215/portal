@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import njgis.opengms.portal.annotation.LoginRequired;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
@@ -146,23 +147,15 @@ public class ComputableModelRestController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("computable_models");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("user",user);
-            System.out.println(modelAndView.getModel().get("user"));
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
 
     }
 
+    @LoginRequired
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id ,HttpServletRequest httpServletRequest){
+    ModelAndView get(@PathVariable ("id") String id ){
 
-        return computableModelService.getPage(id,httpServletRequest);
+        return computableModelService.getPage(id);
 
     }
 
@@ -255,15 +248,7 @@ public class ComputableModelRestController {
     ModelAndView integrating(HttpServletRequest request){
         Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
         ModelAndView modelAndView = computableModelService.integrate(computableModelList);
-        HttpSession session = request.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            System.out.println(modelAndView.getModel().get("user"));
-            modelAndView.addObject("logged", true);
-        }
+
         return modelAndView;
     }
 

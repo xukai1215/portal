@@ -1,7 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
 import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RestController
 public class MainRestController {
@@ -27,16 +25,6 @@ public class MainRestController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index");
-
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            System.out.println(modelAndView.getModel().get("user"));
-            modelAndView.addObject("logged", true);
-        }
 
         return modelAndView;
     }

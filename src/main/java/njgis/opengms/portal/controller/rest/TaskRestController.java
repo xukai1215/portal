@@ -3,6 +3,7 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
+import njgis.opengms.portal.annotation.LoginRequired;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ComputableModelDao;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
@@ -10,7 +11,6 @@ import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.DailyViewCount;
@@ -68,19 +68,14 @@ public class TaskRestController {
     @Value("${dataContainerIpAndPort}")
     private String dataContainerIpAndPort;
 
+    @LoginRequired
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    ModelAndView getTask(@PathVariable("id") String id, HttpServletRequest request) {
-        HttpSession session = request.getSession();
+    ModelAndView getTask(@PathVariable("id") String id) {
 
         ModelAndView modelAndView = new ModelAndView();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-            modelAndView.setViewName("task");
-        }
+
+        modelAndView.setViewName("task");
+
         return modelAndView;
     }
 
@@ -95,6 +90,7 @@ public class TaskRestController {
 //        return ResultUtils.success(taskService.renameTag(taskId,outputs));
 //    }
 
+    @LoginRequired
     @RequestMapping(value = "/output/{id}", method = RequestMethod.GET)
     ModelAndView getTaskOutput(@PathVariable("id") String ids, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -102,7 +98,7 @@ public class TaskRestController {
         if (session.getAttribute("uid") == null) {
 
             modelAndView.setViewName("login");
-            modelAndView.addObject("logged", false);
+
             return modelAndView;
         } else {
             String userName = request.getSession().getAttribute("uid").toString();
@@ -113,9 +109,7 @@ public class TaskRestController {
 //            else {
 
             modelAndView.setViewName("taskOutput");
-            User user = userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar", user);
-            modelAndView.addObject("logged", true);
+
             modelAndView.addObject("info", info);
 //            }
             return modelAndView;

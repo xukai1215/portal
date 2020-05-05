@@ -44,7 +44,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -258,14 +257,6 @@ public class RepositoryService {
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
         return modelAndView;
     }
 
@@ -385,13 +376,7 @@ public class RepositoryService {
         modelAndView.addObject("dataClassInfos",dataClassInfos_result);
         modelAndView.addObject("applications",applications_result);
         modelAndView.addObject("maintainer",maintainer_result);
-//        modelAndView.addObject("oid",theme.get)
-        /*判断登陆*/
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("unlogged", "1");
-        else
-            modelAndView.addObject("logged", "0");
+
         return modelAndView;
     }
 //    public ModelAndView getThematic(String id, HttpServletRequest req) {
@@ -734,15 +719,6 @@ public class RepositoryService {
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
-
         return modelAndView;
     }
 
@@ -1049,14 +1025,7 @@ public class RepositoryService {
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
+
         return modelAndView;
     }
 
@@ -1344,15 +1313,6 @@ public class RepositoryService {
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
-
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
 
         return modelAndView;
     }

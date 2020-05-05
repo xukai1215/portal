@@ -3022,7 +3022,6 @@ new Vue({
                 success:(json)=>{
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
                         that.getUserInfo();

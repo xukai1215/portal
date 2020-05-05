@@ -193,7 +193,6 @@ new Vue({
                             center: true,
                             showClose: false,
                         }).then(() => {
-                            this.setSession("history",window.location.href);
                             window.location.href = "/user/login";
                         }).catch(() => {
 

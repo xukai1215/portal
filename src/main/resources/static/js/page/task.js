@@ -443,7 +443,6 @@ var vue = new Vue({
                 success: (json) => {
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
                         let idList = json.data
@@ -628,7 +627,6 @@ var vue = new Vue({
                     let json = res.data;
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     }
                     else {
@@ -1495,7 +1493,6 @@ var vue = new Vue({
                 success: (json) => {
                     if (json.code == -1) {
                         alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
                         window.location.href = "/user/login"
                     } else {
                         this.myFileShown = json.data.data;
@@ -2367,7 +2364,13 @@ var vue = new Vue({
         this.oid = id;
         let {data} = await (await fetch("/task/TaskInit/" + id)).json();
         if (data == null || data == undefined) {
-            alert("Initialization error!")
+            this.$alert('Initialization failure: an error occured on the server.<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Error', {
+                confirmButtonText: 'Try again',
+                dangerouslyUseHTMLString: true,
+                callback: action => {
+                    window.location.reload();
+                }
+            });
         }
         else{
             this.initializing=false;

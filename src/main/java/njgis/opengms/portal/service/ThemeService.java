@@ -1,14 +1,10 @@
 package njgis.opengms.portal.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.mail.imap.protocol.Item;
 import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.ModelItemDao;
 import njgis.opengms.portal.dao.ThemeDao;
 import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
-import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.entity.DataItem;
@@ -19,7 +15,6 @@ import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -29,8 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.swing.plaf.PanelUI;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -398,17 +391,9 @@ public class ThemeService {
         return result;
     }
 
-    public ModelAndView getMessagePage(String uid,HttpServletRequest req){
+    public ModelAndView getMessagePage(String uid){
         ModelAndView modelAndView = new ModelAndView();
         User user = userDao.findFirstByOid(uid);
-
-        if(user==null){
-            modelAndView.addObject("logged", false);
-            modelAndView.setViewName("login");
-            return modelAndView;
-        }
-        modelAndView.addObject("userNavBar",user);
-        modelAndView.addObject("logged", true);//判断登录用于navbar
 
         modelAndView.setViewName("message_confirm");
         modelAndView.addObject("info",user);

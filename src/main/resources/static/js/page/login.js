@@ -84,21 +84,19 @@ new Vue({
                     if (result == "1") {
                         this.$notify.success({
                             title: 'Success',
-                            message: 'Login successful!',
+                            message: 'Login successful ! Redirecting...',
                             offset: 70
                         });
-                        const href = window.location.href;
-                        let history=window.sessionStorage.getItem('history');
-                        if (href.indexOf("login") == -1) {
-                            window.location.href = href;
-                        }
-                        else if(history!=undefined&&history!=''&&history.indexOf('login')==-1&&history.indexOf('register')==-1){
-                            window.location.href=history;
-                        }
-                        else {
-                            window.location.href = "/user/userSpace";
-                        }
-                        window.sessionStorage.setItem('history','');
+                        setTimeout(()=>{
+
+                            if(preUrl!=null){
+                                window.location.href=preUrl;
+                            }
+                            else {
+                                window.location.href = "/user/userSpace";
+                            }
+                        },1000)
+
                     }
                     else {
 

@@ -58,20 +58,12 @@ public class ModelItemRestController {
     private String htmlLoadPath;
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
-    public ModelAndView getModelItems(HttpServletRequest req) {
+    public ModelAndView getModelItems() {
         System.out.println("model items");
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("model_items");
 
-        HttpSession session=req.getSession();
-        if(session.getAttribute("uid")==null)
-            modelAndView.addObject("logged", false);
-        else{
-            User user =  userService.getByUid(session.getAttribute("uid").toString());
-            modelAndView.addObject("userNavBar",user);
-            modelAndView.addObject("logged", true);
-        }
 
         return modelAndView;
 

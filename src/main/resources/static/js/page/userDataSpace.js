@@ -1877,7 +1877,7 @@ var userDataSpace = Vue.extend(
                         console.log(res);
                         if (res.status == 200) {
 
-                            this.openConfirmBox("Create successfully! Do you want to view this Data Item?", "Message", res.data.data.id);
+                            this.openConfirmBox("create successful! Do you want to view this Data Item?", "Message", res.data.data.id);
                             this.taskSharingVisible = false;
                             this.allFileTaskSharingVisible = false;
                         }

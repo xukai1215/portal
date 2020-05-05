@@ -227,7 +227,6 @@ var info=new Vue({
                             center: true,
                             showClose: false,
                         }).then(() => {
-                            this.setSession("history",window.location.href);
                             window.location.href = "/user/login";
                         }).catch(() => {
 
@@ -827,7 +826,6 @@ var info=new Vue({
         },
     },
     mounted() {
-        this.setSession("history", window.location.href);
 
         let currenturl = window.location.href;
         let dataitemid = currenturl.split("/");
