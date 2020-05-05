@@ -25,4 +25,6 @@ public class PortalApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
         return builder.sources(PortalApplication.class);
     }
+
+
 }
