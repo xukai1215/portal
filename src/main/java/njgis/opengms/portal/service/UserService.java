@@ -557,16 +557,16 @@ public class UserService {
             List<Item> itemList=new ArrayList<>();
             switch (type){
                 case "model item":
-                    itemList=modelItemDao.findByAuthor(author);
+                    itemList=modelItemDao.findAllByAuthor(author);
                     break;
                 case "conceptual model":
-                    itemList=conceptualModelDao.findByAuthor(author);
+                    itemList=conceptualModelDao.findAllByAuthor(author);
                     break;
                 case "logical model":
                     itemList=logicalModelDao.findByAuthor(author);
                     break;
                 case "computable model":
-                    itemList=computableModelDao.findByAuthor(author);
+                    itemList=computableModelDao.findAllByAuthor(author);
                     break;
                 case "data item":
                     itemList=dataItemDao.findByAuthor(author);
@@ -902,7 +902,7 @@ public class UserService {
         BeanUtils.copyProperties(userUpdateDTO,user);
         //判断是否为新图片
         String uploadImage=userUpdateDTO.getUploadImage();
-        if(!uploadImage.contains("/user/")) {
+        if(!uploadImage.contains("base64")) {
             //删除旧图片
             File file=new File(resourcePath+user.getImage());
             if(file.exists()&&file.isFile())

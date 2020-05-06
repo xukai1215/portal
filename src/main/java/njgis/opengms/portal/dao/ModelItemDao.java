@@ -47,15 +47,14 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name,List<String> classes,String author, Pageable pageable);
 
-    Page<ModelItemResultDTO> findByAuthor(String author,Pageable pageable);
+    Page<ModelItemResultDTO> findByAuthor(String author, Pageable pageable);
 
-    List<Item> findByAuthor(String author);
+    List<Item> findAllByAuthor(String author);
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 
     List<ModelItem> findAllByClassificationsIn(String cla);
 
-    List<ModelItem> findAllByClassificationsIn(List<String> clas);
 
 
 }

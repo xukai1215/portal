@@ -34,9 +34,9 @@ public interface ConceptualModelDao extends MongoRepository<ConceptualModel,Stri
 
     Page<ConceptualModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name, List<String> classes, String author, Pageable pageable);
 
-    Page<ConceptualModel> findByAuthor(String author,Pageable pageable);
+    Page<ConceptualModel> findByAuthor(String author, Pageable pageable);
 
-    List<Item> findByAuthor(String author);
+    List<Item> findAllByAuthor(String author);
 
     Page<ConceptualModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import njgis.opengms.portal.annotation.LoginRequired;
+import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
