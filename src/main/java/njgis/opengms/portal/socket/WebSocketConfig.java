@@ -12,7 +12,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @Configuration
 public class WebSocketConfig {
 
-//    部署时注释掉！！！
+    //部署时注释掉！！！
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();

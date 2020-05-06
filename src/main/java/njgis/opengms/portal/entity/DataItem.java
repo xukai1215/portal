@@ -39,9 +39,4 @@ public class DataItem extends Item{
 
     DataItemMeta meta;
 
-    List<Comments> comments;
-
-
-
-
 }

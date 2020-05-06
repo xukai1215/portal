@@ -6,9 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
-import njgis.opengms.portal.dto.comments.CommentInfo;
-import njgis.opengms.portal.dto.comments.CommentsAddDTO;
-import njgis.opengms.portal.dto.comments.CommentsUpdateDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
@@ -213,79 +210,6 @@ public class DataItemService {
 
     }
 
-    //对评论的评论
-    public void reply(CommentsAddDTO commentsAddDTO) {
-
-        String id = commentsAddDTO.getId();
-        String commentId = commentsAddDTO.getCommentid();
-
-        DataItem dataItem = getById(id);
-        List<CommentInfo> co = new ArrayList<>();
-
-        List<Comments> comments = dataItem.getComments();
-        //todo 用id找到对应评论
-
-        for (int i = 0; i < comments.size(); i++) {
-            if (comments.get(i).getId().equals(commentId)) {
-
-                co = comments.get(i).getCommentsForComment();
-
-                //如果没有对评论的评论时
-                if (co == null) {
-                    co = new ArrayList<>();
-                }
-
-                co.add(commentsAddDTO.getCommentsForComment());
-
-                comments.get(i).setCommentsForComment(co);
-
-                break;
-            }
-        }
-        dataItemDao.save(dataItem);
-
-
-    }
-
-    //提交评论
-    public void putComment(CommentsAddDTO commentsAddDTO) {
-        String id = commentsAddDTO.getId();
-
-        DataItem dataItem = getById(id);
-
-        List<Comments> comment = new ArrayList<>();
-
-        comment = dataItem.getComments();
-
-        comment.add(commentsAddDTO.getMyComment());
-
-        dataItem.setComments(comment);
-
-
-        dataItemDao.save(dataItem);
-
-    }
-
-    //点赞
-    public Integer thumbsUp(CommentsUpdateDTO commentsUpdateDTO) {
-        String commentid = commentsUpdateDTO.getCommentId();
-        DataItem dataItem = getById(commentsUpdateDTO.getDataId());
-
-        List<Comments> comments = dataItem.getComments();
-        Integer zan = new Integer(-1);
-
-        for (int i = 0; i < comments.size(); i++) {
-            if (comments.get(i).getId().equals(commentid)) {
-                zan = comments.get(i).getThumbsUpNumber();
-                comments.get(i).setThumbsUpNumber(zan + 1);
-                break;
-            }
-        }
-
-        dataItemDao.save(dataItem);
-
-        return zan + 1;
-    }
 
     //用户拿到上传的所有条目
     public Page<DataItem> getUsersUploadData(String author, Integer page, Integer pagesize, Integer asc) {
@@ -306,9 +230,7 @@ public class DataItemService {
     //获得用户创建条目的总数
     public Integer getAmountOfData(String userOid) {
 
-
-        List<DataItem> resultList = new ArrayList<DataItem>();
-        resultList = dataItemDao.findAllByAuthor(userOid);
+        List<Item> resultList = dataItemDao.findAllByAuthor(userOid);
         return resultList.size();
     }
 

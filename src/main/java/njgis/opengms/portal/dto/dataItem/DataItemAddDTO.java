@@ -3,7 +3,6 @@ package njgis.opengms.portal.dto.dataItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import njgis.opengms.portal.entity.Comments;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DataItemMeta;
 import njgis.opengms.portal.entity.support.DataMeta;
@@ -45,5 +44,4 @@ public class DataItemAddDTO {
 
     DataItemMeta meta;
 
-    List<Comments> comments;
 }
