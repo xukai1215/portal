@@ -37,7 +37,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
     //用户中心所有用户上传的数据条目列表
     Page<DataItem> findByAuthor(Pageable pageable,String author);
 
-    List<Item> findByAuthor(String author);
+    List<Item> findAllByAuthor(String author);
 
     Page<DataItemResultDTO> findByNameLikeIgnoreCase(Pageable pageable, String name);
 
@@ -46,7 +46,6 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
     Page<DataItemResultDTO> findByNameContainsIgnoreCaseAndUserName(String name, String userName, Pageable pageable);
 
 
-    List<DataItem> findAllByAuthor(String author);
     List<DataItem> findAllByClassificationsContaining(List<String> classifications);
 
 

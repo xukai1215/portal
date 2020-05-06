@@ -109,7 +109,12 @@ new Vue({
                     }
                 },
                 error: function (e) {
-                    alert("Submit Error");
+                    this.$message({
+                        message: 'Submit Error!',
+                        type: 'error',
+                        offset: 40,
+                        showClose: true,
+                    });
                 }
             });
         },

@@ -1,6 +1,6 @@
 $(function() {
     $('.marquee').liMarquee({
-        scrollamount: 65,
+        scrollamount: 60,
         drag: false,
     });
 })

@@ -7,8 +7,6 @@ import njgis.opengms.portal.dao.CategoryDao;
 import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.ModelItemDao;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
-import njgis.opengms.portal.dto.comments.CommentsAddDTO;
-import njgis.opengms.portal.dto.comments.CommentsUpdateDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
@@ -306,53 +304,6 @@ public class DataItemRestController {
 
         return view;
     }
-
-    /**
-     * 依据id，获取datainfo详情页面对应数据的评论
-     * @param id
-     * @return
-     */
-    @RequestMapping(value="/getcomment/{id}",method = RequestMethod.GET)
-    JsonResult getComment(@PathVariable ("id") String id){
-        return ResultUtils.success(dataItemService.getById(id));
-    }
-
-    /**
-     *对datainfo评论回复
-     * @author lan
-     * @param commentsAddDTO 数据条目id,评论id,对评论的评论内容及作者
-     *
-     */
-    @RequestMapping(value="/reply",method = RequestMethod.POST)
-    JsonResult reply(@RequestBody CommentsAddDTO commentsAddDTO){
-        dataItemService.reply(commentsAddDTO);
-        return ResultUtils.success();
-    }
-
-    /***
-     * 为datainfo特定数据添加评论
-     * @author lan
-     * @param commentsAddDTO 数据内容
-     * @return
-     */
-    @RequestMapping(value="/putcomment",method = RequestMethod.POST)
-    JsonResult putcomment(@RequestBody CommentsAddDTO commentsAddDTO){
-        dataItemService.putComment(commentsAddDTO);
-        return ResultUtils.success();
-    }
-
-
-    /**
-     * 为datainfo特定数据进行点赞
-     * @param commentsUpdateDTO
-     * @return
-     */
-    @RequestMapping(value="/thumbsup",method = RequestMethod.POST)
-    Integer putcomment(@RequestBody CommentsUpdateDTO commentsUpdateDTO){
-
-        return dataItemService.thumbsUp(commentsUpdateDTO);
-    }
-
 
 
     /**
