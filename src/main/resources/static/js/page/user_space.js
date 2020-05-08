@@ -966,8 +966,7 @@ var vue = new Vue({
                                     type: "POST",
                                     url: "/task/setPrivate",
                                     data: {taskId: task.taskId},
-                                    async: true,'''' +
-                                    ''
+                                    async: true,
                                     contentType: "application/x-www-form-urlencoded",
                                     success: (json) => {
                                         if (json.code == -1) {

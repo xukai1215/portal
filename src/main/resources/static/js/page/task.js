@@ -202,6 +202,19 @@ var vue = new Vue({
             this.$refs.upload.abort();
             this.uploadDialogVisible = false;
         },
+
+        uploadClick(){
+            this.uploadSource=[];
+            this.selectedPath=[];
+            this.uploadFileList=[];
+            this.uploadLoading=false;
+            setTimeout(()=>{
+                    this.uploadDialogVisible=true;
+                },100
+
+            )
+        },
+
         submitUpload() {
             if(this.uploadName==""){
                 this.$message.error('Please enter the dataset name!');
@@ -882,7 +895,7 @@ var vue = new Vue({
         },
         downloadData() {
             if (this.currentDataUrl != "") {
-                window.open("/dispatchRequest/download?url=" + this.currentData.url);
+                window.open(this.currentData.url);
             }
             else {
                 this.$message("Please select data first!")

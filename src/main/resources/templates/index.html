@@ -21,6 +21,7 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/index2.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhFlexContainer.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <link rel="stylesheet" href="/static/css/common/liMarquee.css">
     <style>
@@ -111,7 +112,7 @@
                         <div id="headerContentContainer" style="">
                         <header class="wzhHeader" >
                             <h1 id="headerSentence" >Open Geographic</br>Modeling and Simulation</br> (OpenGMS)</h1>
-                            <h1 id="headerSentenceBig" >Open Geographic Modeling and</br> Simulation (OpenGMS)</h1>
+                            <h1 id="headerSentenceBig" >Open Geographic Modeling </br>and Simulation (OpenGMS)</h1>
                         </header>
                         <main style="margin-top: 1px;">
                             <p id="headerSection"style="">This platform supports sharing your resources in geographic
@@ -121,12 +122,12 @@
                             resource libraries, leaving them for the next generation, and ultimately
                             advance in knowledge. </p>
                         </main>
-                        <div class="wzhFilter">
-                            <button class="wzhButton" style="margin-top: 1px; float: left;width: 38%;padding-left: 4px;" onclick="window.location.href='/modelItem/repository'">
-                                <span style="font-size: 17px">Explore more</span>
+                        <div class="wzhFilter" style="box-shadow:none;width: 80%;margin-top: 9px">
+                            <button class="wzhButton hoverLineBtn flexJustStart" style="margin-top: 1px; float: left;width: 35%;padding-left: 1px;" onclick="window.location.href='/modelItem/repository'">
+                                <span style="font-size: 19px">Explore more<i class="fa fa-chevron-right" aria-hidden="true" style="margin: 5px;font-size: 15px;"></i></span>
                             </button>
-                            <button class="wzhButton" style="margin-top: 1px; float: right;width: 35%;padding-right: 5%;" onclick="window.location.href='/user/login'">
-                                <span style="font-size: 18px">Join us</span>
+                            <button class="nutButton" style="margin: 7px 13px 0; float: right;width: 30%;" onclick="window.location.href='/user/login'">
+                                <span style="font-size: 19px">Join us</span>
                             </button>
                         </div>
                         </div>
@@ -486,8 +487,8 @@
 <!--                                    data-target="#modelRepSentence" style="margin-left: 15%"><p-->
 <!--                                    style="font-size:17.6px">Learn More</p></button>-->
 
-                            <div class="wzhFilter3" style="left: 0;right:0;margin: auto auto 10px;">
-                                <button class="discoverButton" onclick="window.location.href='/modelItem/repository'">DISCOVER</button>
+                            <div class="flexCenter" style="">
+                                <button class="nutButtonBlueFill" onclick="window.location.href='/modelItem/repository'">DISCOVER</button>
                             </div>
                         </div>
 
@@ -521,8 +522,8 @@
 <!--                                    data-target="#dataRepSentence" style="margin-left: 15%"><p-->
 <!--                                    style="font-size:17.6px">Learn More</p></button>-->
 
-                            <div class="wzhFilter3" style="left: 0;right:0;margin: auto auto 10px;">
-                                <button class="discoverButton" onclick="window.location.href='dataItem/repository'">
+                            <div class="flexCenter" >
+                                <button class="nutButtonBlueFill" onclick="window.location.href='dataItem/repository'">
                                     DISCOVER
                                 </button>
                             </div>
@@ -555,31 +556,31 @@
                                 to publish data files as reusable services and to share computers as available services.
                             </p>
                         </div>
-                        <div style="height: 50px; margin: 10px 0;padding-top: 5px">
+                        <div class="flexJustAround" style="height: 50px; margin: 10px 0;padding-top: 5px">
 <!--                            <button class="lMoreButton " type="button" data-toggle="collapse"-->
 <!--                                    data-target="#usingModel" style="float: none;margin-left: 0"><p-->
 <!--                                    style="font-size:17.6px">Learn More</p></button>-->
 
-                            <div class="wzhFilter3" style="left: 1%;margin-top: 0px;width: 80px">
-                                <button class="mutiButton"
+                            <div class="flexCenter" style="left: 1%;margin-top: 0px;width: 80px">
+                                <button class="nutButtonBlueFill"
                                         onclick="window.location.href='/modelItem/3f6857ba-c2d2-4e27-b220-6e5367803a12'">
                                     SWAT
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left:25%;margin-top: 0px;width: 80px">
-                                <button class="mutiButton" style="float: left"
+                            <div class="flexCenter" style="left:25%;margin-top: 0px;width: 80px">
+                                <button class="nutButtonBlueFill" style="float: left"
                                         onclick="window.location.href='/modelItem/5738ef7c-a5ac-46b5-a347-3c823f71b3a7'">
                                     FVCOME
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 50%;margin-top:0px;width: 80px">
-                                <button class="mutiButton"
+                            <div class="flexCenter" style="left: 50%;margin-top:0px;width: 80px">
+                                <button class="nutButtonBlueFill"
                                         onclick="window.location.href='/modelItem/b3a88af1-3568-4219-99c4-aa8fbce3227d'">
                                     SWMM
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 75%;margin-top: 0px;width: 80px">
-                                <button class="mutiButton" onclick="window.location.href='/modelItem/repository'">Expore
+                            <div class="flexCenter" style="left: 75%;margin-top: 0px;width: 80px">
+                                <button class="nutButtonBlueFill" onclick="window.location.href='/modelItem/repository'">Expore
                                     More
                                 </button>
                             </div>
@@ -610,43 +611,45 @@
                             center.
                                 And various web applications would be offered in certain centers.</p>
                         </div>
-                        <div style="height: 110px; margin: 10px 0px;padding-top: 5px">
+                        <div class="flexJustAround" style=" margin: 10px 0px;padding-top: 5px">
 <!--                            <button class="lMoreButton " type="button" data-toggle="collapse"-->
 <!--                                    data-target="#ThCenterSentence" style="float: none;margin-left: 0"><p-->
 <!--                                    style="font-size:17.6px">Learn More</p></button>-->
-                            <div class="wzhFilter3" style="left: 2%;margin-top: 0px;width: 80px">
-                                <button class="mutiButton" onclick="window.location.href='/Online_Saga/saga-tools'">
+                            <div class="flexCenter" style="left: 2%;margin-top: 0px;width: 80px">
+                                <button class="nutButtonBlueFill" onclick="window.location.href='/Online_Saga/saga-tools'">
                                     Saga
                                 </button>
                             </div>
-                            <div class="wzhFilter3"
+                            <div class="flexCenter"
                                  style="float: none;left: 26%;margin-top: 0px;width:80px;">
-                                <button class="mutiButton" style="float: left"
+                                <button class="nutButtonBlueFill" style="float: left"
                                         onclick="window.location.href='/hydro-model-integration/main'">SWMM
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 50%;margin-top: 0px;width: 80px">
-                                <button class="mutiButton" style="float: left"
+                            <div class="flexCenter" style="left: 50%;margin-top: 0px;width: 80px">
+                                <button class="nutButtonBlueFill" style="float: left"
                                         onclick="window.location.href='/FGM-theme/'">Forest Growth
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 75%;margin-top: 0px;width: 80px">
-                                <button class="mutiButton" onclick="window.location.href='/TrafficNoiseTheme/'">Traffic
+                            <div class="flexCenter" style="left: 75%;margin-top: 0px;width: 80px">
+                                <button class="nutButtonBlueFill" onclick="window.location.href='/TrafficNoiseTheme/'">Traffic
                                     Noise
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 3%;margin-top: 55px">
-                                <button class="mutiButton" onclick="window.location.href='/app/geodetector.html'">
+                        </div>
+                        <div class="flexJustAround" style="margin-bottom: 10px">
+                            <div class="flexCenter" style="left: 3%;">
+                                <button class="nutButtonBlueFill" onclick="window.location.href='/app/geodetector.html'">
                                     Geodetector
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 33%;margin-top: 55px;width: 110px">
-                                <button class="mutiButton" style="font-size: 15px" onclick="window.location.href='/app/B-SHADE_Sampling.html'">
+                            <div class="flexCenter" style="left: 33%;width: 110px">
+                                <button class="nutButtonBlueFill" style="font-size: 15px" onclick="window.location.href='/app/B-SHADE_Sampling.html'">
                                     B-Shade-Sampling
                                 </button>
                             </div>
-                            <div class="wzhFilter3" style="left: 66%;margin-top: 55px;width: 110px">
-                                <button class="mutiButton" style="font-size: 15px"
+                            <div class="flexCenter" style="left: 66%;width: 110px">
+                                <button class="nutButtonBlueFill" style="font-size: 15px"
                                         onclick="window.location.href='/app/B-SHADE_Estimation.html'">B-Shade-Estimation
                                 </button>
                             </div>
@@ -729,8 +732,8 @@
 <!--                              <button class="lMoreButton " type="button" data-toggle="collapse"-->
 <!--                                      data-target="#mscSentence" style="float: none;margin-top: 12px"><p-->
 <!--                                      style="font-size:17.6px">Learn More</p></button>-->
-                              <div class="wzhFilter3" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
-                                  <button class="discoverButton" type="warning"  onclick="window.location.href='http://106.14.78.235:8060/index'">Use Now</button>
+                              <div class="flexCenter" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
+                                  <button class="nutButtonBlueFill" type="warning"  onclick="window.location.href='http://106.14.78.235:8060/index'">Use Now</button>
 
                               </div>
 
@@ -752,8 +755,8 @@
 <!--                           <button class="lMoreButton " type="button" data-toggle="collapse"-->
 <!--                                   data-target="#dscSentence" style="float: none;margin-top: 12px"><p-->
 <!--                                   style="font-size:17.6px">Learn More</p></button>-->
-                           <div class="wzhFilter3" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
-                               <button class="discoverButton" type="warning"  onclick="window.location.href='http://106.14.78.235:8899/'">Use Now</button>
+                           <div class="flexCenter" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
+                               <button class="nutButtonBlueFill" type="warning"  onclick="window.location.href='http://106.14.78.235:8899/'">Use Now</button>
                            </div>
                        </div>
                        <div class="item">
@@ -778,8 +781,8 @@
 <!--                           <button class="lMoreButton " type="button" data-toggle="collapse"-->
 <!--                                   data-target="#mwtSentence" style="float: none;margin-top: 12px"><p-->
 <!--                                   style="font-size:17.6px">Learn More</p></button>-->
-                           <div class="wzhFilter3" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
-                               <button class="discoverButton" type="warning"  onclick="window.location.href='http://106.14.78.235:8060/index'">Use Now</button>
+                           <div class="flexCenter" style="left:0;right:0;margin-left: auto;margin-right: auto; margin-top: 0px">
+                               <button class="nutButtonBlueFill" type="warning"  onclick="window.location.href='http://106.14.78.235:8060/index'">Use Now</button>
                            </div>
                        </div>
 <!--                   </div>-->
