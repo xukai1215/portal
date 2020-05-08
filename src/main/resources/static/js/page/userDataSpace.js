@@ -840,12 +840,6 @@ var userDataSpace = Vue.extend(
                     author: this.userName
                 }
             },
-            handleDataDownloadClick({sourceStoreId}) {
-                let url =
-                    "http://172.21.212.64:8899/data?uid=" +
-                    sourceStoreId;
-                window.open("/dispatchRequest/download?url=" + url);
-            },
 
             //显示鼠标hover的title
             showtitle(ev) {
@@ -984,7 +978,7 @@ var userDataSpace = Vue.extend(
                 if (this.downloadDataSet.length > 0) {
 
                     const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://111.229.14.128:8082/dataResource/getResources?" + keys;
+                    let url = "http://111.229.14.128:8899/data?uid=" + keys;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';

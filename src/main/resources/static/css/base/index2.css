@@ -508,6 +508,10 @@
     .phoneSentenceContent{
         font-size: 15px;
     }
+
+    .wzhFilter>.nutButton{
+        padding: 0;
+    }
 }
 
 @media only screen and (max-width:400px) {

@@ -633,8 +633,7 @@ var  data_item_info= new Vue({
 
             }
 
-             // let downloadallzipurl="http://172.21.212.64:8082/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
-             //
+
              let link =document.createElement("a");
              link.style.display='none';
              link.href=downloadAllZipUrl;

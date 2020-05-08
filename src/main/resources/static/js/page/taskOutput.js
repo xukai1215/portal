@@ -142,17 +142,14 @@ var vue = new Vue({
                 userName: this.info.userInfo.userName
             };
         },
-        handleDataDownloadClick({ sourceStoreId }) {
-            window.open("/dispatchRequest/downloadBySourceStoreId?sourceStoreId=" + sourceStoreId);
-        },
-        handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
-            let url =
-                "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
-                sourceStoreId;
-            this.showDataChose = false;
-            this.eventChoosing.tag = fileName + "." + suffix;
-            this.eventChoosing.url = url;
-        },
+        // handleDataChooseClick({ sourceStoreId, fileName, suffix }) {
+        //     let url =
+        //         "http://172.21.212.64:8082/dataResource/getResource?sourceStoreId=" +
+        //         sourceStoreId;
+        //     this.showDataChose = false;
+        //     this.eventChoosing.tag = fileName + "." + suffix;
+        //     this.eventChoosing.url = url;
+        // },
         switchClick(i) {
             if (i == 1) {
                 $(".tab1").css("display", "block");
@@ -574,31 +571,6 @@ var vue = new Vue({
             //包含上传的文件信息和服务端返回的所有信息都在这个对象里
             this.$refs.upload.uploadFiles
         },
-
-        confirmSelect(){
-            if(this.selectData.length==0){
-                this.$message("you have selected no data")
-            }else{
-                let da=this.selectData.pop()
-
-                let key=this.keyInput
-                // $('#datainput'+key)[0].value=da.item.fileName
-
-                this.selectDataDialog = false
-
-                //todo 拼接url
-                this.modelInEvent.url="http://172.21.212.64:8082/dataResource/getResource?sourceStoreId="+da.item.sourceStoreId
-                this.modelInEvent.tag=da.item.fileName
-
-            }
-
-
-            this.selectData=[]
-
-
-
-
-        }
 
     },
 
