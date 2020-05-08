@@ -1,6 +1,5 @@
 package njgis.opengms.portal.dto.dataItem;
 
-import njgis.opengms.portal.entity.Comments;
 import njgis.opengms.portal.entity.support.DataItemMeta;
 
 import java.util.List;
@@ -30,5 +29,4 @@ public class DataItemUpdateDTO {
 
     DataItemMeta meta;
 
-    Comments comments;
 }

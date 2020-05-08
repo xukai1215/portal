@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+    <!-- 磁盘缓存位置 -->
+    <diskStore path="java.io.tmpdir/ehcache"/>
+
+    <!--//默认缓存策略，当ehcache找不到定义的缓存时，则使用这个缓存策略。只能定义一个。-->
+    <defaultCache
+            eternal="true"
+            maxElementsInMemory="1000"
+            maxElementsOnDisk="5000"
+            overflowToDisk="true"
+            diskPersistent="true"
+            memoryStoreEvictionPolicy="LRU">
+        <!--启动时从硬盘读取缓存-->
+        <BootstrapCacheLoaderFactory
+                class="net.sf.ehcache.store.DiskStoreBootstrapCacheLoaderFactory"
+                properties="bootstrapAsynchronously=true" />
+    </defaultCache>
+
+
+    <!-- 这里以example为例 -->
+    <cache
+            name="example"
+            eternal="false"
+            maxElementsInMemory="100"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="300"
+            memoryStoreEvictionPolicy="LRU"/>
+
+</ehcache>

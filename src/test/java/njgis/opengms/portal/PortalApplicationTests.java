@@ -535,7 +535,7 @@ public class PortalApplicationTests {
                     itemList=computableModelDao.findAllByAuthor(author);
                     break;
                 case "data item":
-                    itemList=dataItemDao.findByAuthor(author);
+                    itemList=dataItemDao.findAllByAuthor(author);
                     break;
                 case "concept":
                     itemList=conceptDao.findByAuthor(author);

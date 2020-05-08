@@ -3687,7 +3687,7 @@ Sidebar.prototype.destroy = function()
  */
 Sidebar.prototype.addGeoIconPalette = function()
 {
-    var prefix = "https://geomodeling.njnu.edu.cn/GeoModeling/showIconServlet?uid=";
+    var prefix = "/geoIcon/getImage?iconId=";
     $.ajax({
         url:'/geoIcon/parentList',
         type: 'get',
