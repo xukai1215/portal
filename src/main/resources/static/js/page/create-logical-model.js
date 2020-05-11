@@ -780,14 +780,37 @@ var createLogicalModel = Vue.extend({
                     loading.close();
                     switch (res.data.code) {
                         case 1:
-                            alert("create logical model successfully!");
-                            window.location.href = "/logicalModel/" + res.data.id;
+                            this.$confirm('<div style=\'font-size: 18px\'>Create logical model successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/logicalModel/" + res.data.id;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/models/logicalmodel";
+                            });
+
                             break;
                         case -1:
-                            alert("save files error");
+                            this.$alert('Save files error!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    
+                                }
+                            });
                             break;
                         case -2:
-                            alert("create fail");
+                            this.$alert('Created failed!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                             break;
                     }
                 }).fail(function (res) {

@@ -1223,15 +1223,38 @@ var createModelItem = Vue.extend({
                     success: function (result) {
                         loading.close();
                         if (result.code == "0") {
-                            alert("Create successful!");
-                            window.location.href = "/modelItem/" + result.data;
+
+                            this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/modelItem/" + res.data.id;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/models/modelitem";
+                            });
                         }
                         else if(result.code==-1){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
+
                         }
                         else{
-                            alert("Create failed!")
+                            this.$alert('Created failed!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
                     }
                 })
