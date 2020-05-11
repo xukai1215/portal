@@ -2,6 +2,8 @@ package njgis.opengms.portal.dto.modelItem;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @ClassName DataItemFindDTO
  * @Description todo
@@ -10,7 +12,10 @@ import lombok.Data;
  * @Version 1.0.0
  */
 @Data
-public class ModelItemFindDTO {
+public class ModelItemFindDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer page = 1;
     private Integer pageSize = 10;
     private Boolean asc = false;

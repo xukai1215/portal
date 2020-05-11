@@ -63,6 +63,10 @@
             flex-direction: unset;
         }
 
+        .innerBorder{
+            border:0;
+        }
+
 
     </style>
 </head>
@@ -131,7 +135,6 @@
                 <div class="relatedDataItem" v-if="loadDataIndex==1">
                     <el-table
                             :data="relatePageOption.searchResult"
-                            style="margin-top:17px;"
                     >
                         <el-table-column type="expand">
                             <template slot-scope="props">
@@ -251,7 +254,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <el-pagination style="padding:10px"
+                        <el-pagination style="text-align: center;padding:10px"
                                 small
                                 @current-change="loadUserTask"
                                 :current-page="exampleDataListOfUser.currentPage"
@@ -322,7 +325,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <el-pagination style="padding:10px"
+                        <el-pagination style="text-align: center;padding:10px"
                                 small
                                 @current-change="loadPublishedData"
                                 :current-page="exampleDataList.currentPage"

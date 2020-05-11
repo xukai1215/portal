@@ -1086,7 +1086,7 @@ var createModelItem = Vue.extend({
         }
 
 
-        // var modelItemObj = {};
+        var modelItemObj = {};
         // $(".next").click(()=> {
         //     modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
         //     modelItemObj.name = $("#nameInput").val();

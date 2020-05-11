@@ -26,12 +26,7 @@ new Vue({
     methods: {
         submitComment(){
             if(this.useroid==""||this.useroid==null||this.useroid==undefined){
-                this.$message({
-                    dangerouslyUseHTMLString: true,
-                    message: '<strong>Please <a href="/user/login">log in</a> first.</strong>',
-                    offset: 40,
-                    showClose: true,
-                });
+                this.confirmLogin();
             }else if(this.commentText.trim()==""){
                 this.$message({
                     message: 'Comment can not be empty!',
@@ -149,6 +144,21 @@ new Vue({
             this.commentParentId=null;
         },
 
+        confirmLogin(){
+            this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: 'Log In',
+                cancelButtonClass: 'fontsize-15',
+                confirmButtonClass: 'fontsize-15',
+                type: 'info',
+                center: true,
+                showClose: false,
+            }).then(() => {
+                window.location.href = "/user/login";
+            }).catch(() => {
+
+            });
+        },
 
         edit(){
             $.ajax({
@@ -164,19 +174,7 @@ new Vue({
                 success: (data) => {
                     data = JSON.parse(data);
                     if (data.oid == "") {
-                        this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
-                            dangerouslyUseHTMLString: true,
-                            confirmButtonText: 'Log In',
-                            cancelButtonClass: 'fontsize-15',
-                            confirmButtonClass: 'fontsize-15',
-                            type: 'info',
-                            center: true,
-                            showClose: false,
-                        }).then(() => {
-                            window.location.href = "/user/login";
-                        }).catch(() => {
-
-                        });
+                        this.confirmLogin();
 
                     }
                     else {

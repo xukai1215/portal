@@ -206,7 +206,6 @@ var createComputableModel = Vue.extend({
             }
         },
         replaceFile(){
-            this.fileArray=new Array();
             $("#file").click();
         },
         resClick(e){
@@ -432,9 +431,11 @@ var createComputableModel = Vue.extend({
 
 
         $("#file").change(()=> {
+            this.fileArray=[];
             this.resources=[];
             let files=$("#file")[0].files;
             let file=files[0];
+
 
             let res={};
             res.name=file.name;
@@ -452,6 +453,7 @@ var createComputableModel = Vue.extend({
                     offset: 70,
                 });
             }else{
+                this.fileArray.push(file);
                 this.resources.push(res);
             }
 
@@ -461,11 +463,10 @@ var createComputableModel = Vue.extend({
         });
 
         $("#file_multi").change(()=> {
-            // this.resources=[];
             let files=$("#file_multi")[0].files;
             for(i=0;i<files.length;i++){
                 let file=files[i];
-                this.fileArray.push(file);
+
                 let res={};
                 res.name=file.name;
                 res.path="";
@@ -474,7 +475,18 @@ var createComputableModel = Vue.extend({
                 res.size=file.size;
                 res.lastModified=file.lastModified;
                 res.type=file.type;
-                this.resources.push(res);
+                let exist = false;
+                for(j=0;j<this.fileArray.length;j++) {
+                    let fileExist = this.fileArray[j];
+                    if(fileExist.name==file.name&&fileExist.lastModified == file.lastModified&&fileExist.size == file.size && fileExist.type == file.type){
+                        exist = true;
+                        break;
+                    }
+                }
+                if(!exist){
+                    this.fileArray.push(file);
+                    this.resources.push(res);
+                }
             }
 
 
@@ -760,6 +772,7 @@ var createComputableModel = Vue.extend({
                             return false;
                         }
                     }
+                    return true;
                 }
                 else{
                     return true;
