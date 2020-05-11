@@ -841,19 +841,40 @@ var createComputableModel = Vue.extend({
                     // $(".uploading").css("display", "none");
                     switch (res.data.code) {
                         case 1:
-                            alert("create computable model successfully!");
-                            window.location.href = "/computableModel/" + res.data.id;
+                            this.$confirm('<div style=\'font-size: 18px\'>Create computable model successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/computableModel/" + res.data.id;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/models/computablemodel";
+                            });
+
                             break;
                         case -1:
-                            alert("save files error");
+                            this.$alert('Save files error!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                             break;
                         case -2:
-                            alert("create fail");
+                            this.$alert('Created failed!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                             break;
                     }
                 }).fail((res) => {
-
-                    alert("please login first");
                     window.location.href = "/user/login";
                 });
             }

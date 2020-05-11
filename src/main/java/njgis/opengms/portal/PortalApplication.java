@@ -16,6 +16,7 @@ import java.io.IOException;
 @EnableSwagger2
 @EnableCaching
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+
 public class PortalApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws IOException {
