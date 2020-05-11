@@ -19,15 +19,12 @@
     </defaultCache>
 
 
-    <!-- 这里以example为例 -->
-    <cache
-            name="example"
-            eternal="false"
-            maxElementsInMemory="100"
-            overflowToDisk="false"
-            diskPersistent="false"
-            timeToIdleSeconds="0"
-            timeToLiveSeconds="300"
-            memoryStoreEvictionPolicy="LRU"/>
+    <cache name="modelItemCache"
+           eternal="true"
+           maxElementsInMemory="1000"
+           maxElementsOnDisk="5000"
+           overflowToDisk="true"
+           diskPersistent="true"
+           memoryStoreEvictionPolicy="LRU"/>
 
 </ehcache>

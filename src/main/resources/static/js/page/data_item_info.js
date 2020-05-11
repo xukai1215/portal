@@ -103,6 +103,22 @@ var  data_item_info= new Vue({
     } ,
     methods: {
 
+        confirmLogin(){
+            this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: 'Log In',
+                cancelButtonClass: 'fontsize-15',
+                confirmButtonClass: 'fontsize-15',
+                type: 'info',
+                center: true,
+                showClose: false,
+            }).then(() => {
+                window.location.href = "/user/login";
+            }).catch(() => {
+
+            });
+        },
+
         submitComment(){
             if(this.useroid==""||this.useroid==null||this.useroid==undefined){
                 this.$message({
@@ -234,8 +250,7 @@ var  data_item_info= new Vue({
                     .then(res=> {
                         let json=res.data;
                         if(json.code==-1){
-                            alert("Please login first!")
-                            window.location.href="/user/login"
+                            this.confirmLogin();
                         }
                         else {
                             this.folderTree=res.data.data;
@@ -277,9 +292,7 @@ var  data_item_info= new Vue({
                         contentType: "application/x-www-form-urlencoded",
                         success: (json) => {
                             if (json.code == -1) {
-                                alert("Please login first!")
-                                window.sessionStorage.setItem("history", window.location.href);
-                                window.location.href = "/user/login"
+                                this.confirmLogin();
                             }
                             else {
                                 const newChild = {id: json.data, label: value, children: []};
@@ -324,9 +337,7 @@ var  data_item_info= new Vue({
                 contentType: "application/x-www-form-urlencoded",
                 success: (json) => {
                     if (json.code == -1) {
-                        alert("Please login first!")
-
-                        window.location.href = "/user/login"
+                        this.confirmLogin();
                     }
                     else {
                         alert("Fork successfully!");
@@ -494,9 +505,7 @@ var  data_item_info= new Vue({
                 success: (data) => {
                     data = JSON.parse(data);
                     if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
+                        this.confirmLogin();
                     }
                     else {
                         this.tableData = [];
@@ -527,8 +536,7 @@ var  data_item_info= new Vue({
                 success: (data) => {
                     data=JSON.parse(data);
                     if (data.oid == "") {
-                        alert("Please login first");
-                        window.location.href = "/user/login";
+                        this.confirmLogin();
                     }
                     else{
                         // let arr=window.location.href.split("/");

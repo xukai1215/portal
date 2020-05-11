@@ -204,6 +204,22 @@ var info=new Vue({
             this.commentParentId=null;
         },
 
+        confirmLogin(){
+            this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: 'Log In',
+                cancelButtonClass: 'fontsize-15',
+                confirmButtonClass: 'fontsize-15',
+                type: 'info',
+                center: true,
+                showClose: false,
+            }).then(() => {
+                window.location.href = "/user/login";
+            }).catch(() => {
+
+            });
+        },
+
         edit() {
             $.ajax({
                 type: "GET",
@@ -218,19 +234,7 @@ var info=new Vue({
                 success: (data) => {
                     data = JSON.parse(data);
                     if (data.oid == "") {
-                        this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
-                            dangerouslyUseHTMLString: true,
-                            confirmButtonText: 'Log In',
-                            cancelButtonClass: 'fontsize-15',
-                            confirmButtonClass: 'fontsize-15',
-                            type: 'info',
-                            center: true,
-                            showClose: false,
-                        }).then(() => {
-                            window.location.href = "/user/login";
-                        }).catch(() => {
-
-                        });
+                        this.confirmLogin()
 
                     }
                     else {
@@ -290,8 +294,7 @@ var info=new Vue({
                 success: (data) => {
                     data = JSON.parse(data);
                     if (data.oid == "") {
-                        alert("Please login first");
-                        window.location.href = "/user/login";
+                        this.confirmLogin()
                     }
                     else {
                         let arr = window.location.href.split("/");
@@ -337,8 +340,8 @@ var info=new Vue({
         addRelatedModel() {
 
             if (this.useroid == '') {
-                alert("Please login");
-                window.location.href = "/user/login";
+                this.confirmLogin()
+
             } else {
                 this.searchAddModelPage = 1
                 this.searchAddRelatedModels = []
@@ -769,9 +772,8 @@ var info=new Vue({
                 success: (data) => {
                     data = JSON.parse(data);
                     if (data.oid == "") {
-                        alert("Please login first");
-                        this.setSession("history", window.location.href);
-                        window.location.href = "/user/login";
+                        this.confirmLogin()
+
                     }
                     else {
                         switch (order) {
