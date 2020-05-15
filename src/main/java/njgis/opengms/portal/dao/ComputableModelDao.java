@@ -57,4 +57,6 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
     List<ComputableModel> findByContentType(String contentType);
 
     List<Item> findAllByAuthorshipIsNotNull();
+
+    ComputableModel findFirstByAuthorAndMd5(String author, String md5);
 }

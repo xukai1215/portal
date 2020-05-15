@@ -371,6 +371,12 @@ public class ComputableModelRestController {
         return ResultUtils.success(computableModelService.getRelatedDataByPage(computableModelFindDTO,oid));
     }
 
+    @RequestMapping(value = "/judgeComputerModelByUserNameAndPid", method = RequestMethod.GET)
+    public JsonResult judgeComputerModelByUserNameAndPid(@RequestParam(value = "userName") String userName,
+                                                         @RequestParam(value = "pid") String pid){
+        boolean result = computableModelService.judgeComputerModelByUserNameAndPid(userName, pid);
+        return ResultUtils.success(result);
+    }
 
 
 }

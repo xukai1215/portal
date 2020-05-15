@@ -1248,6 +1248,15 @@ public class ComputableModelService {
 
     }
 
+    public boolean judgeComputerModelByUserNameAndPid(String author, String pid) {
+        ComputableModel result = computableModelDao.findFirstByAuthorAndMd5(author,pid);
+        if(result != null){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     private String getConn(String str) {
         String conn = "";
         switch (str) {

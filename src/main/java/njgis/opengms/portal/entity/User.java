@@ -45,7 +45,7 @@ public class User {
     List<String> subjectAreas;
     List<String> researchInterests;
 
-    List<Article> articles;
+    List<String> articles;
     List<AcademicService> academicServices;
     List<AwardandHonor> awardsHonors;
     List<Conference> conferences;

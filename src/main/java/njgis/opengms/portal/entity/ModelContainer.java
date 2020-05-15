@@ -23,4 +23,6 @@ public class ModelContainer {
     GeoInfoMeta geoInfo;
     Date date;
     Date updateDate;
+    boolean status;
+    String t_id;
 }
