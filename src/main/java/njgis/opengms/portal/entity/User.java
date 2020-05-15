@@ -39,13 +39,15 @@ public class User {
 
     Boolean subscribe=true;
 
+    List<SubscribeItem> subscribeItemList;
+
     Introduction introduction;
 
     List<String> organizations;
     List<String> subjectAreas;
     List<String> researchInterests;
 
-    List<Article> articles;
+    List<String> articles;
     List<AcademicService> academicServices;
     List<AwardandHonor> awardsHonors;
     List<Conference> conferences;
@@ -79,5 +81,5 @@ public class User {
     Date updateTime;
     Date lastSendEmailTime;
 
-
+    GeoInfoMeta geoInfo;
 }

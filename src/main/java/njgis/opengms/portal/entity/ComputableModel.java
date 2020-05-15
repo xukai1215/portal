@@ -47,6 +47,8 @@ public class ComputableModel extends Item {
 
     Object mdlJson;
 
+    String runtime;
+
     int invokeCount = 0;
     List<DailyViewCount> dailyInvokeCount = new ArrayList<>();
 }

@@ -8,6 +8,7 @@ import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.service.UserService;
+import njgis.opengms.portal.utils.ChartUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.io.FileUtils;
@@ -86,6 +87,13 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void Emap(){
+        List<String> countries = Arrays.asList("China","India","Australia");
+        List<Integer> counts = Arrays.asList(20,10,5);
+        System.out.println(ChartUtils.generateMap(countries,counts));
+    }
 
     @Test
     public void authorships(){

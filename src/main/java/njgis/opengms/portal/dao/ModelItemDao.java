@@ -6,6 +6,7 @@ import njgis.opengms.portal.entity.ModelItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -29,9 +30,9 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     //Page<ModelItem> findByNameLike(String name, Pageable pageable);
 
-    List<ModelItem> findByNameLike(String name);
+    List<ModelItem> findByNameLike(@Param("name") String name);
 
-    Page<ModelItemResultDTO> findAllByNameContains(String name,Pageable pageable);
+    Page<ModelItemResultDTO> findAllByNameContains(@Param("name") String name,Pageable pageable);
 
     Page<ModelItemResultDTO> findAllByNameContainsAndAuthor(String name, String author, Pageable pageable);
 
