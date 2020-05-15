@@ -48,7 +48,7 @@ new Vue({
                     },
                     {
                         "oid": "39c0824e-8b1a-44e5-8716-c7893afe05e8",
-                        "label": "Voideo Data Format",
+                        "label": "Video Data Format",
                     },
                     {
                         "oid": "82b1c2b4-4c12-441d-9d9c-09365c3c8a24",

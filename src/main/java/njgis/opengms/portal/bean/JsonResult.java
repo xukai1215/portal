@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @ClassName JsonResult
  * @Description todo
@@ -16,7 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JsonResult<T> {
+public class JsonResult<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer code=0;
     private String msg="success";
     private T data;

@@ -53,7 +53,7 @@ var createTemplate = Vue.extend({
                     {
                         id: 6,
                         "oid": "39c0824e-8b1a-44e5-8716-c7893afe05e8",
-                        "label": "Voideo Data Format",
+                        "label": "Video Data Format",
                     },
                     {
                         id: 7,
