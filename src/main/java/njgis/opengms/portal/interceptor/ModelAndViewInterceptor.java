@@ -36,9 +36,10 @@ public class ModelAndViewInterceptor implements HandlerInterceptor {
                            ModelAndView modelAndView) throws Exception {
         if(modelAndView!=null) {
             HttpSession session = request.getSession();
-            if (session.getAttribute("uid") == null)
+            if (session.getAttribute("uid") == null) {
+                modelAndView.addObject("userNavBar", new User());
                 modelAndView.addObject("logged", false);
-            else {
+            } else {
                 User user = userService.getByUid(session.getAttribute("uid").toString());
                 modelAndView.addObject("userNavBar", user);
                 System.out.println(modelAndView.getModel().get("user"));

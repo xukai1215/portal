@@ -87,7 +87,7 @@
                     <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
-                        <span th:if="${modelInfo.contentType=='Package'}">
+                        <span th:if="${modelInfo.contentType=='Package'||modelInfo.contentType=='Service'}">
                             <button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"
                                     @click="dialogVisible = true">Deploy
                             </button>
@@ -242,7 +242,7 @@
             </div>
 
             <div id="link" class="detail_block"
-                 th:if="${modelInfo.contentType=='Link'||modelInfo.contentType=='Service'}">
+                 th:if="${modelInfo.contentType=='Link'||(modelInfo.contentType=='Service' && modelInfo.mdl == null)}">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Link</h4>

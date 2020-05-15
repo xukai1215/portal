@@ -142,7 +142,29 @@
                                                             @change="setSubscribe()">
                                                         </el-switch>
                                                     </div>
-                                                    <el-tag type="info" style="margin-top: 10px">If you want to receive report letter from us, please choose "Yes".</el-tag>
+                                                    <el-tag type="info" style="margin-top: 10px">Whether receive all of your contributions' statistical report. </el-tag>
+
+                                                    <div style="margin-top:30px">
+                                                        <h5>Subscribe to the specified</h5>
+                                                    </div>
+                                                    <el-table
+
+                                                            :data="subscribeList"
+                                                            style="width: 100%">
+                                                        <el-table-column
+                                                                align="center"
+                                                                header-align="center"
+                                                                prop="type"
+                                                                label="Type">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                align="center"
+                                                                header-align="center"
+                                                                prop="name"
+                                                                label="Name">
+                                                        </el-table-column>
+
+                                                    </el-table>
                                                 </li>
                                             </ul>
                                         </div>

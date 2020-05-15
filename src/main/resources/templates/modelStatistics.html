@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Statistics | OpenGMS</title>
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/tree.css">
+    <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <div class="el-col el-col-20 el-col-offset-2">
+            <div class="el-card text-center" style="margin-bottom:20px;border-color:#aaa">
+                <h2><i class="el-icon-data-analysis" style="margin-right:10px"></i>Statistics</h2>
+            </div>
+
+            <div class="el-row" style="padding-bottom:20px;margin-bottom: 20px;border-bottom: 1px solid #aaa">
+                <div class="el-col-lg-12 text-center" style="display: inline-block;border-right: 1px solid #aaa">
+                    <h3>Computable Model</h3>
+                    <h3>
+                        <a href="/">
+                        <avatar username="SWAT_Model" :size="30"
+                                :rounded="false" style="display: inline-block;vertical-align: text-top;"></avatar>
+                        SWAT_Model</a>
+                    </h3>
+                </div>
+                <div class="el-col-lg-6 text-center" style="display: inline-block;border-right: 1px solid #ccc;height: 106px">
+                    <h3>Total View Times</h3>
+                    <h3>2153</h3>
+                </div>
+                <div class="el-col-lg-6 text-center" style="display: inline-block">
+                    <h3>Total Invoke Times</h3>
+                    <h3>137</h3>
+                </div>
+                <hr>
+            </div>
+            <div class="el-row" style="margin-top:30px;font-size: 20px">
+
+                <div id="chart_left" style="width:45%;height: 700px;display: inline-block">
+                    <div id="chart_leftTop" style="height:350px"></div>
+                    <div id="chart_leftBottom" style="height:350px"></div>
+                </div>
+                <div id="chart_right" style="width:54%;height: 700px;display: inline-block"></div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/world.js"></script>
+
+<script>
+    new Vue({
+        el: "#app",
+        components: {
+            'avatar': VueAvatar.Avatar
+        },
+        data: {
+            activeName: 'overview',
+        },
+        methods: {
+
+            userMap(){
+
+                let data = [
+                    {name:'China',value: 107},
+                    {name:'India',value: 2},
+                    {name:'Australia',value: 3},
+                    {name:'United States',value: 2},
+                    {name:'South Africa',value: 1},
+                    {name:'Switzerland',value: 1},
+                    {name:'Canada',value: 1},
+                    {name:'United Kingdom',value: 1},
+                    {name:'Germany',value: 1},
+                    {name:'Spain',value: 1},
+                ];
+
+                var MapOptions = {
+                    title: {
+                        text: 'Locations of visitors',
+                        left: '50%',
+                        top: '98%',
+                        itemGap: 5,
+                        textAlign: 'center',
+                        textVerticalAlign: 'bottom'
+                    },
+                    backgroundColor: "transparent",
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function(params){
+
+                            if(params.name && params.value) {
+                                return params.name + ": " + params.value;
+                            } else if(params.name){
+                                return params.name;
+                            } else{
+                                return params.value;
+                            }
+                        }
+                    },
+                    visualMap: {
+                        left: 'right',
+                        min: 0,
+                        max: 107,
+                        inRange: {
+                            color: ["#f3b1ab","#e42515"]
+                        },
+                        text:['High','Low'],           // 文本，默认为数值文本
+                        calculable: true
+                    },
+                    series: [
+                        {
+                            name: '点',
+                            type: 'map',
+                            roam: false,
+                            map:'world',
+                            top:'50%',
+                            itemStyle:{
+                                emphasis:{label:{show:true}}
+                            },
+                            // 文本位置修正
+                            textFixed: {
+                                Alaska: [20, -20]
+                            },
+                            data:data
+                        },{
+                            type: 'pie',
+                            radius : '30%',
+                            center: ['50%', '25%'],//饼图位置控制
+                            label: {
+                                formatter: '{b}: {@[1]} ({d}%)'
+                            },
+                            data:data
+                        }
+                    ]
+                };
+
+                let myChart = echarts.init(document.getElementById('chart_right'),'light');
+                myChart.setOption(MapOptions);
+
+                myChart.on("mouseover",function(params){
+                    console.log(params);
+                    myChart.dispatchAction({
+                        type: 'highlight',
+                        dataIndex: params.dataIndex
+                    });
+                })
+
+                myChart.on('mouseout',function(){
+                    myChart.dispatchAction({
+                        type: 'downplay',
+                        seriesIndex: [0,1]
+                    });
+                });
+
+
+            },
+            lineChart(){
+                $.get("/modelItem/getDailyViewCount",{oid:"29c36489-6039-467d-9561-6d0b600d7d05"},(result)=> {
+                    let valueList = result.data.valueList;
+
+                    let myChart = echarts.init(document.getElementById('chart_leftTop'));
+                    let option = {
+                        title: {
+                            text: 'View and invoke times in recent days (UTC +08:00)',
+
+                            left: '50%',
+                            top: '90%',
+                            itemGap: 5,
+                            textAlign: 'center',
+                            textVerticalAlign: 'bottom'
+                        },
+                        legend: {
+
+                        },
+                        tooltip: [{
+                            trigger: 'axis',
+                            showContent: true
+                        }],
+                        dataset: [{
+                            source: valueList,
+                        }],
+                        xAxis: [
+                            {type: 'category',axisTick:{show:false}},
+
+                        ],
+                        yAxis: [
+                            {gridIndex: 0},
+                        ],
+                        grid: [
+                            {x: '7%', y: '7%', width: '85%', height: '70%'},
+                        ],
+                        series: [
+                            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        ]
+                    };
+                    myChart.setOption(option);
+
+                });
+            },
+            barChart(){
+                $.get("/modelItem/getDailyViewCount",{oid:"29c36489-6039-467d-9561-6d0b600d7d05"},(result)=> {
+                    let valueList = result.data.valueList;
+
+                    let myChart = echarts.init(document.getElementById('chart_leftBottom'));
+                    let option = {
+                        title: {
+                            text: 'View and invoke times at different hours (UTC +08:00)',
+                            left: '50%',
+                            top: '98%',
+                            itemGap: 5,
+                            textAlign: 'center',
+                            textVerticalAlign: 'bottom'
+                        },
+                        legend: {
+
+                        },
+                        tooltip: [{
+                            trigger: 'axis',
+                            showContent: true
+                        }],
+                        xAxis: [
+                            {gridIndex: 0,type: 'category',axisTick:{show:false},data: ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]},
+
+                        ],
+                        yAxis: [
+                            {gridIndex: 0},
+                        ],
+                        grid: [
+                            {x: '10%', y: '7%', width: '85%', height: '77%'},
+                        ],
+                        series: [
+                            {
+                                name: 'View Times',
+                                type: 'bar',
+                                data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3, 2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+                            },
+                            {
+                                name: 'Invoke Times',
+                                type: 'bar',
+                                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3, 2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+
+                });
+            },
+        },
+        mounted() {
+
+            this.lineChart();
+            this.barChart();
+            this.userMap();
+
+
+        }
+    })
+</script>
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+
+</html>

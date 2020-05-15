@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
@@ -15,12 +16,10 @@ import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.ModelService;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.Utils;
-import njgis.opengms.portal.utils.XmlTool;
-import njgis.opengms.portal.utils.ZipUtils;
-import njgis.opengms.portal.utils.deCode;
+import njgis.opengms.portal.utils.*;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.dom4j.DocumentException;
@@ -298,6 +297,29 @@ public class ComputableModelService {
             System.out.println("有人乱查数据库！！该ID不存在Model Item对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
+    }
+
+    public JsonResult addService(ModelService modelService){
+
+        JSONObject userObj = userService.validPassword(modelService.getUserName(),modelService.getPassword(),null);
+        if(userObj==null){
+            return ResultUtils.error(-1,"userName or password is wrong!");
+        }
+
+        ComputableModel computableModel = new ComputableModel();
+        BeanUtils.copyProperties(modelService,computableModel);
+        computableModel.setOid(UUID.randomUUID().toString());
+        computableModel.setContentType("Service");
+        computableModel.setDeploy(true);
+        Date date = new Date();
+        computableModel.setCreateTime(date);
+        computableModel.setLastModifyTime(date);
+        computableModel.setAuthor(userObj.getString("uid"));
+        computableModel.setMdlJson(Utils.convertMdl(modelService.getMdl()));
+        computableModelDao.insert(computableModel);
+
+        return ResultUtils.success();
+
     }
 
     public JSONObject getRelatedDataByPage(ComputableModelFindDTO computableModelFindDTO,String oid){

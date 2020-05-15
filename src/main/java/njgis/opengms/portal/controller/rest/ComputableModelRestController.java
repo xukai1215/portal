@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
@@ -15,6 +14,7 @@ import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.intergrate.ModelParam;
+import njgis.opengms.portal.entity.support.ModelService;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.TaskService;
@@ -151,7 +151,13 @@ public class ComputableModelRestController {
 
     }
 
-    @LoginRequired
+    @RequestMapping(value="/addService",method = RequestMethod.POST)
+    public JsonResult addService(ModelService modelService){
+
+        return computableModelService.addService(modelService);
+
+    }
+
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
     ModelAndView get(@PathVariable ("id") String id ){
 

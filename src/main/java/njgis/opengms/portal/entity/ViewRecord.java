@@ -13,7 +13,7 @@ public class ViewRecord {
 
     @Id
     String id;
-
+    String ip;
     ItemTypeEnum itemType;
     String itemOid;
     Date date;

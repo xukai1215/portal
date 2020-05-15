@@ -39,6 +39,8 @@ public class User {
 
     Boolean subscribe=true;
 
+    List<SubscribeItem> subscribeItemList;
+
     Introduction introduction;
 
     List<String> organizations;
@@ -79,5 +81,5 @@ public class User {
     Date updateTime;
     Date lastSendEmailTime;
 
-
+    GeoInfoMeta geoInfo;
 }

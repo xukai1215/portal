@@ -136,6 +136,10 @@ public class UserService {
         return item;
     }
 
+    public void sendSingleModelReport(){
+
+    }
+
     public void sendEmail(){
 
         sendEmailToAuthor();
@@ -925,8 +929,11 @@ public class UserService {
             user = userDao.findFirstByUserName(account);
         }
         if (user != null) {
-            if (user.getPassword().equals(password)) {
+            if(!ip.equals(null)&&!ip.trim().equals("")){
                 SetLastLoginIp(user,ip);
+            }
+            if (user.getPassword().equals(password)) {
+
                 JSONObject result=new JSONObject();
                 result.put("name",user.getName());
                 result.put("oid",user.getOid());
@@ -939,6 +946,11 @@ public class UserService {
 
     public void SetLastLoginIp(User user,String ip){
         user.setLastLoginIp(ip);
+        try {
+            user.setGeoInfo(Utils.getGeoInfoMeta(ip));
+        }catch (Exception e ){
+            throw new RuntimeException(e.getMessage());
+        }
         userDao.save(user);
     }
 

@@ -19,6 +19,7 @@ public class Item implements Serializable {
     private static final long serialVersionUID = 1L;
 
     //Basic Info
+
     @Id
     String id;
     String oid;
@@ -30,7 +31,7 @@ public class Item implements Serializable {
     List<String> keywords;
 
     @JsonFormat(pattern = "yyyy-MM-dd")//是否有用待测试
-    Date createTime;
+            Date createTime;
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date lastModifyTime;
 
@@ -45,15 +46,14 @@ public class Item implements Serializable {
     List<String> contributors;
     List<String> versions;
 
-    boolean lock=false;
+    boolean lock = false;
 
     //statistic
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
+    int shareCount = 0;
+    int viewCount = 0;
+    int thumbsUpCount = 0;
 
-    List<DailyViewCount> dailyViewCount=new ArrayList<>();
-
+    List<DailyViewCount> dailyViewCount = new ArrayList<>();
 
 
 }

@@ -75,7 +75,7 @@
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-<script src="/static/js/common/echarts_oldversion.min.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
 <script src="/static/js/common/world.js"></script>
 
 <script>
@@ -130,7 +130,7 @@
             },
 
             createOverview(){
-                var allStatistic = echarts.init(document.getElementById('all'));
+                var allStatistic = echarts.init(document.getElementById('all'),'light');
                 allStatistic.showLoading();
 
                 $.get("/static/modelItemTree.json", function (diskData) {
@@ -272,7 +272,7 @@
                         cityObj.value = 1;
                         cityObj.computerNodeInfos.push(infoArray[i]);
                         cityCount.push(cityObj);
-                        geoCoord[city] = [geoJson.longitude, geoJson.latitude];
+                        geoCoord[city] = [parseFloat(geoJson.longitude), parseFloat(geoJson.latitude)];
 
                     }
                 }
@@ -292,7 +292,7 @@
                     };
                     let city = chartInfo.cityCount[i];
                     let geoCoord = chartInfo.geoCoord[city.name];
-                    geoCoord.push(city.value);
+                    geoCoord.push(city.value.toString());
                     cityObj.name = city.name;
                     cityObj.value = geoCoord;
                     chartdata.push(cityObj);
@@ -349,6 +349,7 @@
                             label: {
                                 normal: {
                                     show: true,
+                                    formatter: '{@[2]}',
                                     textStyle: {
                                         color: '#fff',
                                         fontSize: 9,

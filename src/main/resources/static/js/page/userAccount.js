@@ -20,6 +20,12 @@ var userAccount = Vue.extend(
 
                 subscribe:false,
 
+                subscribeList:[{
+                    type: "Computable Model",
+                    name: "Swat",
+                    oid: "",
+                }],
+
             }
         },
 
