@@ -1979,6 +1979,7 @@ body {
     margin-right: 9px;
     margin-top: 5px;
     float: left;
+    box-sizing: border-box;
     /*border: none;*/
 
 }
@@ -2936,7 +2937,15 @@ ul.flexLi {
     float: left;
 }
 
+.noScroll{
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
 
+.noScroll .el-dialog__body{
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
 
 
 /*scrollbar样式*/

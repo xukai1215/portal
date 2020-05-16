@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,12 +22,14 @@ public class Article {
     List<String> authors;
 
     int viewCount;
-    String contributor;
+//    String contributor;
+    List<String> contributors = new ArrayList<>();
+//    List<String> userAuthors = new ArrayList<>();
     String journal;
-    int startPage;
-    int endPage;
+    String pageRange="";
     String link;
     String date;
+    String doi="";
     Date creatDate;
 
 }

@@ -6,11 +6,13 @@ import njgis.opengms.portal.dto.article.ArticleFindDTO;
 import njgis.opengms.portal.entity.support.Article;
 import njgis.opengms.portal.service.ArticleService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value="/article")
@@ -41,6 +43,11 @@ public class ArticleRestController {
         return ResultUtils.success(articleService.searchByTitleByOid(articleFindDTO,oid));
     }
 
+    @RequestMapping(value="/searchUserArticleByTitle",method=RequestMethod.GET)
+    JsonResult searchUserArticleBytitle(@RequestParam(value = "searchText")String title,@RequestParam(value = "page")int page , String oid){
+        return ResultUtils.success(articleService.searchUserArticleByTitle(title,page,oid));
+    }
+
 //    @RequestParam(value="pageSize") int pageSize,
 //    @RequestParam(value="page") int page,
 //    @RequestParam(value="sortElement") String sortElement,
@@ -61,6 +68,30 @@ public class ArticleRestController {
         return ResultUtils.success(articleService.getByUserOidBySort(articleFindDTO,userName));
     }
 
+    @RequestMapping(value="/searchByDOI",method=RequestMethod.POST)
+    public JsonResult searchNewArticleByDOI(@RequestParam(value="doi") String DOI, HttpServletRequest httpServletRequest) throws IOException, DocumentException {
+        HttpSession session=httpServletRequest.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=session.getAttribute("uid").toString();
+        return ResultUtils.success(articleService.getArticleByDOI(DOI,userName));
+    }
+
+    @RequestMapping(value="/addManually",method=RequestMethod.POST)
+    public JsonResult addNewMannual(@RequestBody ArticleAddDTO articleAddDTO, HttpServletRequest httpServletRequest){
+        System.out.println(articleAddDTO);
+        HttpSession session=httpServletRequest.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userOid=session.getAttribute("oid").toString();
+        int index=articleService.addNewManual(articleAddDTO,userOid);
+        return ResultUtils.success(index);
+    }
+
     @RequestMapping(value="/add",method=RequestMethod.POST)
     public JsonResult addNewArticle(@RequestBody ArticleAddDTO articleAddDTO, HttpServletRequest httpServletRequest){
         System.out.println(articleAddDTO);
@@ -69,8 +100,20 @@ public class ArticleRestController {
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }
-        String userName=session.getAttribute("uid").toString();
-        int index=articleService.addNewArticle(articleAddDTO,userName);
+        String userOid=session.getAttribute("oid").toString();
+        int index=articleService.addNewArticleByDoi(articleAddDTO,userOid);
+        return ResultUtils.success(index);
+    }
+
+    @RequestMapping(value="/addContributor",method=RequestMethod.POST)
+    public JsonResult addContributor(@RequestParam(value = "title") String title, @RequestParam(value = "journal") String journal,HttpServletRequest httpServletRequest){
+        HttpSession session=httpServletRequest.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userOid=session.getAttribute("oid").toString();
+        int index=articleService.addContributor(title,journal,userOid);
         return ResultUtils.success(index);
     }
 
@@ -90,16 +133,18 @@ public class ArticleRestController {
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");
         }else{
-            String userName=session.getAttribute("uid").toString();
-            JsonResult result= ResultUtils.success(articleService.deleteByOid(oid,userName));
+            String userOid=session.getAttribute("oid").toString();
+            JsonResult result= ResultUtils.success(articleService.deleteByOid(oid,userOid));
             System.out.println(result);
             return result;
         }
     }
 
 
-    @RequestMapping(value = "/listByUserOid",method = RequestMethod.GET)
+    @RequestMapping(value = "/listArticle",method = RequestMethod.GET)
     JsonResult listByUserOid(ArticleFindDTO articleFindDTO, @RequestParam(value="oid") String oid){
         return ResultUtils.success(articleService.listByUserOid(articleFindDTO,oid));
     }
+
+
 }

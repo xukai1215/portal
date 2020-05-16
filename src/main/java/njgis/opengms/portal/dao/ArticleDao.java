@@ -14,6 +14,12 @@ public interface ArticleDao extends MongoRepository<Article,String> {
 
      Article findFirstByTitle(String title);
 
+     Article findByDoi(String doi);
+
+     Article findFirstByTitleAndJournal(String title,String journal);
+
+     List<Article> findFirstByTitleAndJournalAndDoi(String title,String journal,String doi);
+
      //Page<ModelItem> findByTitleLike(String title, Pageable pageable);
 
      List<Article> findByTitleLike(String title);
@@ -29,9 +35,11 @@ public interface ArticleDao extends MongoRepository<Article,String> {
      Page<Article> findByCreatDate(String creatDate,Pageable pageable);
 //
 //
-     Page<ArticleResultDTO> findByContributor(String contributor,Pageable pageable);
+//     Page<ArticleResultDTO> findByContributor(String contributor,Pageable pageable);
+//
+//     Page<ArticleResultDTO> findByTitleContainsIgnoreCaseAndContributor(String title,String contributor,Pageable pageable);
 
-     Page<ArticleResultDTO> findByTitleContainsIgnoreCaseAndContributor(String title,String contributor,Pageable pageable);
+     Page<ArticleResultDTO> findByTitle(String title,Pageable pageable);
 
      void deleteArticleByOid(String oid);
 }

@@ -644,7 +644,7 @@
                                                         <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
                                                         <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
                                                         <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
-                                                        <p><span>Pages:</span> &nbsp&nbsp{{articles.result[0].startPage}}&nbsp-&nbsp{{articles.result[0].endPage}}</p>
+                                                        <p v-if="article.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{article.pageRange}}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -892,7 +892,6 @@
                         <div th:if="${userInfo.oid==userInfo.loginId}" v-if="awardandHonor.total==0" style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
                             <div  class=" containerWithBorder noBackColor colArrange sizeAdaption" style="color: #00aaffe0;cursor: pointer;width: 50%;border-radius: 4px"
                                  @click="addAwdHonorClick()" data-toggle="modal" data-target="#editAwdHonor">
-                                <h2 style="font-weight: 600">Add</h2>
                                 <h2 style="font-weight: 600">Add</h2>
                                 <h4 style="letter-spacing: 2px">My Awards & Honors</h4>
                                 <div class="hoverLine" ></div>
@@ -2219,30 +2218,34 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" v-if="articles.total>0" v-for="(article,key) in articles.result">
-                                <div class="itemCardCol" style="width: 98%;height: 240px;margin-top: 8px;border: none;">
+                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 260px;margin-top: 8px;border: none;">
                                     <div class="cardUpper colArrange" style="background-color: #fafafa">
-                                        <div class="cardHeadContainer" style="height: 72px;">
-                                            <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
+                                        <div class="cardHeadContainer" style="max-height: 110px;">
+                                            <div class="subTitle" style="height: auto;max-height: 105px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-                                                    <h4>{{article.title}}</h4>
+                                                    <h4 class="fourLine">{{article.title}}</h4>
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
-                                                <div class="deleteEditContainer">
-                                                    <button class="squareButton safeBack" @click="editArticleClick(key,article.oid)" data-toggle="modal" data-target="#articleInfo" style="margin-right:10px ">
+                                                <div th:if="${userInfo.oid==userInfo.loginId}" class="deleteEditContainer">
+
+                                                    <button v-if="article.doi==''" class="squareButton safeBack" @click="editArticleClick(key,article.oid)" data-toggle="modal" data-target="#articleInfo" style="margin-right:10px ">
                                                         <i class="fa fa-pencil" style="font-size: 20px;"></i>
                                                     </button>
+                                                    <div title="Get by DOI" v-else class="rsquare" style="margin-right:10px" @click="window.open('https://doi.org/'+article.doi)">
+                                                        <p style="font-size: 10px;font-family: Monlo;font-weight: 600">DOI</p></div>
                                                     <button class="squareButton alertBack" @click="deleteResearchItem(1,article.oid)" >
                                                         <i class="fa fa-trash-o" style="font-size: 20px;"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="cardContentContainer">
+                                        <div class="cardContentContainer" style="height: 108px;margin-bottom: 2px">
                                             <div>
-                                                <p><span>Authors:</span> &nbsp&nbsp{{article.authors[0]}}, {{article.authors[1]}} </p>
-                                                <p><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
-                                                <p><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
-                                                <p><span>Pages:</span> &nbsp&nbsp{{article.startPage}}&nbsp-&nbsp{{article.endPage}}</p>
+                                                <p><span>Authors:</span><span>&nbsp&nbsp{{article.authors[0]}},</span><span v-if="article.authors[1]">{{article.authors[1]}}, </span><span v-if="article.authors[2]">{{article.authors[2]}},</span>
+                                                    <span v-if="article.authors.length>3"> et al.</span> </p>
+                                                <p v-if="article.journal!=''"><span>Journal:</span> &nbsp&nbsp{{article.journal}}</p>
+                                                <p v-if="article.date!=''"><span>Date:</span> &nbsp&nbsp{{article.date}}</p>
+                                                <p v-if="article.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{article.pageRange}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -2251,7 +2254,7 @@
                                         <div class="viewCount">
                                             <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{article.viewCount}}
                                         </div>
-                                        <a :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
+                                        <a v-if="article.link!=''" :href="article.link" style="margin-right:35px; font-weight: 600; color: rgb(153, 153, 153);font-style: italic;">SOURCE<div class="arrowRightBig"></div></a>
                                     </div>
                                 </div>
 
@@ -2272,120 +2275,147 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="articleInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header" style="background: deepskyblue">
-                                        <h3 class="modal-title" style="color:aliceblue;text-align: center">
-                                            {{addorEdit}} Article
-                                        </h3>
-                                    </div>
-                                    <div class="modal-body" style="font-size: 20px;overflow: hidden">
-                                        <section class="panel">
-                                            <header class="panel-heading custom-tab ">
-                                                <ul class="nav nav-tabs">
-                                                    <li class="active">
-                                                        <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
-                                                            Reference</a>
-                                                    </li>
-                                                    <li class="">
-                                                        <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
-                                                            Reference by DOI</a>
-                                                    </li>
-                                                </ul>
-                                            </header>
-                                            <div class="panel-body">
-                                                <div class="tab-content">
-                                                    <div class="tab-pane active" >
-                                                        <div class="form-group">
-                                                            <label for="articleTitle"
-                                                                   class="col-sm-4 control-label">Title</label>
-                                                            <div class="col-sm-12">
-                                                                <input type="text" class="form-control"
-                                                                       id="articleTitle"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="articleAuthor"
-                                                                   class="col-sm-4 control-label">Author</label>
-                                                            <div class="col-sm-12">
-                                                                <input type="text" class="form-control"
-                                                                       id="articleAuthor"/>
-                                                                <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label for="articleDate"
-                                                                   class="col-sm-4 control-label">Date</label>
-                                                            <div class="col-sm-12">
-                                                                <input type="text" class="form-control"
-                                                                       id="articleDate"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="articleJournal"
-                                                                   class="col-sm-4 control-label">Journal</label>
-                                                            <div class="col-sm-12">
-                                                                <input type="text" class="form-control"
-                                                                       id="articleJournal"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="articleStartPage"
-                                                                   class="col-sm-4 control-label">Pages</label>
-                                                            <div class="col-sm-12" style="display: flex;justify-content: space-between">
-                                                                <input type="text" class="form-control" style="width: 45%"
-                                                                       id="articleStartPage"/>-
-                                                                <input type="text" class="form-control" style="width: 45%"
-                                                                       id="articleEndPage"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="articleLink"
-                                                                   class="col-sm-4 control-label">Link</label>
-                                                            <div class="col-sm-12">
-                                                                <input type="text" class="form-control"
-                                                                       id="articleLink"/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="automatically">
-                                                        <div class="form-group"
-                                                             style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
-                                                            <lable class="control-label col-md-2">
-                                                                DOI :
-                                                            </lable>
-                                                            <div class="input-group col-md-10">
-                                                                <input id="doi_searchBox" type="text"
-                                                                       class="form-control">
-                                                                <span class="input-group-btn">
-                                                                            <button id="doiSearch"
-                                                                                    class="btn btn-default"
-                                                                                    type="button">Search</button>
-                                                                        </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                        <el-dialog :title="addorEdit + ' Article'" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
+                                        Reference</a>
+                                </li>
+                                <li class="">
+                                    <a href="#automatically" data-toggle="tab" style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
+                                        Reference by DOI</a>
+                                </li>
+                            </ul>
+                            <div class="">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="manually">
+                                        <div class="form-group">
+                                            <label for="articleTitle"
+                                                   class="col-sm-4 control-label">Title</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control"
+                                                       id="articleTitle"/>
                                             </div>
-                                        </section>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="articleAuthor"
+                                                   class="col-sm-4 control-label">Author</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control"
+                                                       id="articleAuthor"/>
+                                                <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="articleDate"
+                                                   class="col-sm-4 control-label">Date</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control"
+                                                       id="articleDate"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="articleJournal"
+                                                   class="col-sm-4 control-label">Journal</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control"
+                                                       id="articleJournal"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="articlePageRange"
+                                                   class="col-sm-4 control-label">Page Range</label>
+                                            <div class="col-sm-12" style="display: flex;justify-content: space-between">
+                                                <input type="text" class="form-control"
+                                                       id="articlePageRange"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="articleLink"
+                                                   class="col-sm-4 control-label">Link</label>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control"
+                                                       id="articleLink"/>
+                                            </div>
+                                        </div>
+<!--                                        <div class="form-group flexRow" style="padding-top: 3px;padding-left: 16px">-->
+<!--                                            <p style="font-weight: 600;margin-right: 10px">Status</p>-->
+<!--                                            <el-checkbox-group v-model="checkedIdentity" @change="changeChecked">-->
+<!--                                                <el-checkbox v-for="Identity in Identities" :label="Identity" :key="Identity">{{Identity}}</el-checkbox>-->
+<!--                                            </el-checkbox-group>-->
+
+<!--                                        </div>-->
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-success" style="font-size:15px" @click="updateArticleConfirmClick()">
-                                            Save
-                                        </button>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal"
-                                                style="font-size:15px">
-                                            Cancel
-                                        </button>
+                                    <div class="tab-pane" id="automatically" v-loading="doiLoading">
+                                        <div class="form-group"
+                                             style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
+                                            <lable class="control-label col-md-2">
+                                                DOI :
+                                            </lable>
+                                            <div class="input-group col-md-10">
+                                                <input id="doi_searchBox" type="text"
+                                                       class="form-control" v-model="doi">
+                                                <span class="input-group-btn">
+                                                    <button id="doiSearch"
+                                                            class="btn btn-default"
+                                                            type="button" @click="searchDoi()">Search</button>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
-                                <!-- /.modal-content -->
+
                             </div>
-                            <!-- /.modal-dialog -->
+                            <span slot="footer" class="dialog-footer">
+                                        <el-button type="primary" @click="updateArticleConfirmClick">Upload</el-button>
+                                        <el-button @click="editArticleDialog = false">cancel</el-button>
+
+                                </span>
+                        </el-dialog>
+                        <el-dialog title="Is this article you want to upload?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
+                            <h4>{{articleUploading.title}}</h4>
+                            <p v-if="articleUploading.authors.length>0"><span>Authors:</span><span>&nbsp&nbsp{{articleUploading.authors[0]}},</span>
+                                <span v-if="articleUploading.authors[1]">{{articleUploading.authors[1]}}, </span>
+                                <span v-if="articleUploading.authors[2]">{{articleUploading.authors[2]}},</span>
+                                <span v-if="articleUploading.authors.length>3"> et al.</span> </p>
+                            <p v-if="articleUploading.journal!=''"><span>Journal:</span> &nbsp&nbsp{{articleUploading.journal}}</p>
+                            <p v-if="articleUploading.date!=''"><span>Date:</span> &nbsp&nbsp{{articleUploading.date}}</p>
+                            <p v-if="articleUploading.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{articleUploading.pageRange}}</p>
+                            <p v-if="articleUploading.link!=''"><span>Link:</span> &nbsp&nbsp{{articleUploading.link}}</p>
+                            <p v-if="articleUploading.doi!=''"><span>DOI:</span> &nbsp&nbsp{{articleUploading.doi}}</p>
+<!--                            <div class="flex">-->
+
+<!--                            </div>-->
+                            <span slot="footer" class="dialog-footer">
+<!--                                <div class="flex flexRowSpaceBetween" >-->
+<!--                                    <div class="flexColCenter">-->
+<!--                                        <p style="font-weight: 600;margin-right: 10px">Yes,</p>-->
+<!--                                        <el-button type="success" @click="articleDoiUploadConfirm('author')" plain>I am the author</el-button>-->
+<!--                                        <el-button type="primary" @click="articleDoiUploadConfirm('learner')" plain>I am a learner</el-button>-->
+<!--                                    </div>-->
+<!--                                    <div class="innerBorderCol" style="height: 40px"></div>-->
+                                    <el-button type="success" @click="articleDoiUploadConfirm()" plain>Yes, this is it</el-button>
+                                    <el-button @click="dialogVisible = false">Cancel</el-button>
+<!--                                </div>-->
+                            </span>
+                        </el-dialog>
+                        <el-dialog title="Tip"
+                                   :visible.sync = "showUploadedArticleDialog" width="30%" custom-class="min400w">
+                            <div class="flexCol" style="font-size:16px;word-break: normal ">
+                                <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been
+                                    <span style="color: #2b95f7"> uploaded</span> yet, do you want to be one of the contrbutors?</p>
+                            </div>
+
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="success" @click="addContributorConfirm()"
+                                               plain>Yes, I do</el-button>
+                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
                         </div>
-                    </div>
+
 
                     <div class="itemContainer" :class="{showActive:researchIndex==2}" >
                         <div  class="contentColContainer" style="margin-bottom: 0">

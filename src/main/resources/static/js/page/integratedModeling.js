@@ -1,5 +1,8 @@
 var vue = new Vue({
     el: "#app",
+    // component:{
+    //     'user-data':userDataSpace,
+    // },
     data:{
         models:[],
         modelParams:[],
@@ -15,6 +18,8 @@ var vue = new Vue({
 
         currentEvent:{},
         iframeWindow:{},
+
+        userDataSpaceVisible:false,
 
     },
     methods:{
