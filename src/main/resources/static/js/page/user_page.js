@@ -160,13 +160,14 @@ new Vue({
                 },
 
                 articleToBack:{
-                    title:'aa',
-                    author:[],
-                    journal:'ss',
-                    startPage:1,
-                    endPage:2,
+                    title:'',
+                    authors:[],
+                    journal:'',
+                    pageRange:'',
                     date:2019,
-                    link:'aa',
+                    DOI:'',
+                    // status:'',
+                    link:'',
                 },
 
                 projectToBack:{
@@ -253,6 +254,22 @@ new Vue({
 
                 addorEdit:'Add',
 
+                editArticleDialog:false,
+
+                showUploadArticleDialog:false,
+
+                showUploadedArticleDialog:false,
+
+                articleUploading:{
+                    title:'',
+                    authors:[],
+                    journal:'',
+                    pageRange:'',
+                    date:2019,
+                    doi:'',
+                    status:'',
+                    link:'',
+                },
 
                 space:[],
 
@@ -269,6 +286,16 @@ new Vue({
                 isAwdTimeDate:false,
 
                 selectUserImgVisible:false,
+
+                Identities:['Author','Learner'],
+
+                checkedIdentity:[],
+
+                doi:'',
+
+                doiLoading:false,
+
+
             }
         },
 
@@ -1193,12 +1220,9 @@ new Vue({
             const hrefs=window.location.href.split('/');
             $.ajax({
                 type:"GET",
-                url:"/article/listByUserOid",
+                url:"/user/listArticle",
                 data:{
                     page:this.pageOption.currentPage-1,
-                    pageSize:this.pageOption.pageSize,
-                    asc:this.articles.sortAsc,
-                    sortElement:'creatDate',
                     oid:hrefs[hrefs.length - 1],
                 },
                 async:true,
@@ -1468,50 +1492,78 @@ new Vue({
         },
 
         addArticleClick(){
+            this.editArticleDialog = true;
             this.addorEdit='Add';
             $("#articleTitle").val('');
+
+            if ($("#articleAuthor").nextAll().length == 0)//如果不存在tageditor,则创建一个
+                Vue.nextTick(() => {
+                    $("#articleAuthor").tagEditor({
+                        forceLowercase: false
+                    })
+                })
+
             $('#articleAuthor').tagEditor('destroy');
             $('#articleAuthor').tagEditor({
                 initialTags:  [''],
                 forceLowercase: false,
             });
             $("#articleJournal").val('');
-            $("#articleStartPage").val('');
-            $("#articleEndPage").val('');
+            $("#articlePageRange").val('');
             $("#articleDate").val('');
             $("#articleLink").val('');
+
+            this.doi ='';
+        },
+
+        changeChecked(){
+            if(this.checkedIdentity.length>1)
+                this.checkedIdentity.splice(0,1)
         },
 
         editArticleClick(key,oid){
+            this.editArticleDialog = true;
             this.addorEdit='Edit';
             this.editOid=oid;
-            $("#articleTitle").val(this.articles.result[key].title);
-            $('#articleAuthor').tagEditor('destroy');
-            $('#articleAuthor').tagEditor({
-                initialTags: this.articles.result[key].authors,
-                forceLowercase: false,
-            });
-            $("#articleJournal").val(this.articles.result[key].journal);
-            $("#articleStartPage").val(this.articles.result[key].startPage);
-            $("#articleEndPage").val(this.articles.result[key].endPage);
-            $("#articleDate").val(this.articles.result[key].date);
-            $("#articleLink").val(this.articles.result[key].link);
+            Vue.nextTick(()=>{
+                $("#articleTitle").val(this.articles.result[key].title);
+                $("#articleJournal").val(this.articles.result[key].journal);
+                $("#articlePageRange").val(this.articles.result[key].pageRange);
+                $("#articleDate").val(this.articles.result[key].date);
+                $("#articleLink").val(this.articles.result[key].link);
+                if ($("#articleAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
+                    Vue.nextTick(() => {
+                        $("#articleAuthor").tagEditor({
+                            forceLowercase: false
+                        })
+                        $('#articleAuthor').tagEditor('destroy');
+                        $('#articleAuthor').tagEditor({
+                            initialTags: this.articles.result[key].authors,
+                            forceLowercase: false,
+                        });
+
+                    })
+                }else{
+                    $('#articleAuthor').tagEditor('destroy');
+                    $('#articleAuthor').tagEditor({
+                        initialTags: this.articles.result[key].authors,
+                        forceLowercase: false,
+                    });
+                }
+
+            })
+
         },
 
         updateArticleConfirmClick(){
-
-            this.articleToBack.title=$("#articleTitle").val();
-            var tags = $('#articleAuthor').tagEditor('getTags')[0].tags;
-            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
-            this.articleToBack.author=tags;
-            this.articleToBack.journal=$("#articleJournal").val();
-            this.articleToBack.startPage=$("#articleStartPage").val();
-            this.articleToBack.endPage=$("#articleEndPage").val();
-            this.articleToBack.date=$("#articleDate").val();
-            this.articleToBack.link=$("#articleLink").val();
             // console.log(this.articleToBack);
             if(this.addorEdit=='Add'){
-                this.ArticleAddToBack();
+                if ($(".nav.nav-tabs").eq(0).children()[0].className == "active"){
+                    this.articleAddtoBackManual()
+                }else{
+                    this.articleAddToBack();
+                }
+
             }
             else if(this.addorEdit=='Edit'){
                 this.editArticle();
@@ -1808,12 +1860,9 @@ new Vue({
             let hrefs = window.location.href.split("/");
             $.ajax({
                 type:"GET",
-                url:"/article/searchByTitleByOid",
+                url:"/article/searchUserArticleByTitle",
                 data:{
                     page:this.pageOption.currentPage-1,
-                    pageSize:this.pageOption.pageSize,
-                    asc:this.articles.sortAsc,
-                    sortElement:"creatDate",
                     searchText:this.searchText,
                     oid:hrefs[hrefs.length-1]
                 },
@@ -1831,7 +1880,7 @@ new Vue({
                         const data = json.data;
                         // this.articles.total=data.total;
                         // this.articles.result=data.list;
-                        Vue.set(this.articles ,'total', data.total);
+                        // Vue.set(this.articles ,'total', data.total);
                         Vue.set(this.articles ,'result', data.list);
                         this.pageOption.progressBar=false;
                         // console.log(data);
@@ -1958,8 +2007,13 @@ new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
-                            alert("Please log in first!")
+                        if(json.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
                         }
                         else{
                             if(json.data==1){
@@ -2006,8 +2060,13 @@ new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
-                            alert("Please log in first!")
+                        if(json.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
                         }
                         else{
                             if(json.data==1){
@@ -2049,8 +2108,13 @@ new Vue({
                     },
                     crossDomain: true,
                     success: (json) => {
-                        if(json.code==-1){
-                            alert("Please log in first!")
+                        if(json.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
                         }
                         else{
                             if(json.data==1){
@@ -2073,20 +2137,21 @@ new Vue({
             }
         },
 
-        ArticleAddToBack(){
-            if(this.articleToBack.title.trim()==""||this.articleToBack.author.length==0)
+        articleAddToBack(){
+            if(this.articleToBack.title.trim()==""||this.articleToBack.authors.length==0)
                 alert("Please enter the Title and at least one Author.");
             else
             {
                 let obj=
                     {
                         title:this.articleToBack.title,
-                        authors:this.articleToBack.author,
+                        authors:this.articleToBack.authors,
                         journal:this.articleToBack.journal,
-                        startPage:this.articleToBack.startPage,
-                        endPage:this.articleToBack.endPage,
+                        pageRange:this.articleToBack.pageRange,
                         date:this.articleToBack.date,
                         link:this.articleToBack.link,
+                        // status:this.checkedIdentity[0],
+                        doi:this.articleToBack.doi,
                     }
                 $.ajax({
                     url: "/article/add",
@@ -2100,7 +2165,9 @@ new Vue({
                             // console.log(json.data);
                             if(json.data==1){
                                 alert("Add Success");
+                                this.editArticleDialog = false
                                 this.articleHandleCurrentChange(1);
+                                this.articleToBack = {}
                             }
                             else if (json.data==2)
                                 alert("You have uploaded an article with this Title ever.")
@@ -2113,6 +2180,57 @@ new Vue({
 
         },
 
+        articleAddtoBackManual(){
+            this.articleToBack.title=$("#articleTitle").val();
+            var tags = $('#articleAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            this.articleToBack.authors=tags;
+            this.articleToBack.journal=$("#articleJournal").val();
+            this.articleToBack.pageRange=$("#articlePageRange").val();
+            this.articleToBack.date=$("#articleDate").val();
+            this.articleToBack.link=$("#articleLink").val();
+            this.articleToBack.doi='';
+            if(this.articleToBack.title.trim()==""||this.articleToBack.authors.length==0)
+                alert("Please enter the Title and at least one Author.");
+            else
+            {
+                let obj=
+                    {
+                        title:this.articleToBack.title,
+                        authors:this.articleToBack.authors,
+                        journal:this.articleToBack.journal,
+                        pageRange:this.articleToBack.pageRange,
+                        date:this.articleToBack.date,
+                        link:this.articleToBack.link,
+                        // status:this.checkedIdentity[0],
+                        doi:this.articleToBack.doi,
+                    }
+                $.ajax({
+                    url: "/article/addManually",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+
+                    async:true,
+                    success:(json)=>{
+                        if(json.code==0){
+                            // console.log(json.data);
+                            if(json.data==1){
+                                alert("Add Success");
+                                this.editArticleDialog = false
+                                this.articleHandleCurrentChange(1);
+                                this.articleToBack = {}
+                            }
+                            else if (json.data==2)
+                                alert("You have uploaded an article with this Title ever.")
+                        }
+                        else alert("Add Error");//此处error信息不明确，记得后加
+                    }
+
+                })
+            }
+        },
+
         editArticle(){
             // var urls={
             //     1:"/article/editByOid",
@@ -2120,19 +2238,28 @@ new Vue({
             //     3:"/conference/editByOid",
             // }
             // var url=urls[this.researchIndex];
-            if(this.articleToBack.title.trim()==""||this.articleToBack.author.length==0)
+            this.articleToBack.title=$("#articleTitle").val();
+            var tags = $('#articleAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            this.articleToBack.authors=tags;
+            this.articleToBack.journal=$("#articleJournal").val();
+            this.articleToBack.pageRange=$("#articlePageRange").val();
+            this.articleToBack.date=$("#articleDate").val();
+            this.articleToBack.link=$("#articleLink").val();
+            this.articleToBack.doi='';
+            if(this.articleToBack.title.trim()==""||this.articleToBack.authors.length==0)
                 alert("Please enter the Title and at least one Author.");
             else {
                 let obj =
                     {
                         title:this.articleToBack.title,
-                        authors:this.articleToBack.author,
+                        authors:this.articleToBack.authors,
                         journal:this.articleToBack.journal,
-                        startPage:this.articleToBack.startPage,
-                        endPage:this.articleToBack.endPage,
+                        pageRange:this.articleToBack.pageRange,
                         date:this.articleToBack.date,
                         link:this.articleToBack.link,
                         oid:this.editOid,
+                        // status:this.articleToBack.status,
                     }
                 $.ajax({
                     url: "/article/editByOid",
@@ -2146,6 +2273,7 @@ new Vue({
                             alert("Edit Success");
                             this.articleHandleCurrentChange(1);
                         } else alert("Edit Error");//此处error信息不明确，记得后加
+                        this.editArticleDialog = false;
                     }
                 })
             }
@@ -2221,7 +2349,7 @@ new Vue({
         },
 
         ConferenceAddToBack(){
-            if(this.conferenceToBack.title=="")
+            if(this.conferenceToBack.title.trim()=="")
                 alert("Please enter the project name.");
             else
             {
@@ -2505,7 +2633,136 @@ new Vue({
             })
             $('#editUserContact').modal('hide');
 
-},
+
+            },
+
+        searchDoi(){
+            if(this.doi == ''){
+                this.$alert('Please input the DOI', 'Tip', {
+                    confirmButtonText: 'Confirm',
+                    callback: ()=>{
+                        return
+                    }
+                    }
+                );
+            }else{
+                this.doiLoading = true
+                $.ajax({
+                    type: "POST",
+                    url: "/article/searchByDOI",
+                    data: {
+                        doi: this.doi
+                    },
+                    cache: false,
+                    async: true,
+                    success: (res) => {
+                        if(res.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
+                        }
+                        data=res.data;
+                        this.doiLoading = false;
+                        if (data.find == -1) {
+                            this.$alert('Failed to connect, please try again!', 'Tip', {
+                                    confirmButtonText: 'Confirm',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }else if(data.find==0){
+                            this.$alert('Find no result, check the DOI you have input.', 'Tip', {
+                                    confirmButtonText: 'Confirm',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }
+                        else if(data.find==1) {
+
+                            this.showUploadArticleDialog = true;
+                            this.articleUploading = data.article;
+
+                        }else if(data.find==2){
+                            this.showUploadedArticleDialog=true;
+                            this.articleUploading = data.article;
+                            // this.$confirm('This article has been uploaded yet, do you want to be one of the contrbutors?', 'Tip', {
+                            //     confirmButtonText: 'Yes',
+                            //     cancelButtonText: 'Cancel',
+                            //     center: true
+                            // }).then(() => {
+                            //     $.ajax({
+                            //         type: "POST",
+                            //         url: "/article/addContributor",
+                            //         data: {
+                            //             title: data.article.title,
+                            //             journal: data.article.journal,
+                            //         },
+                            //         cache: false,
+                            //         async: true,
+                            //         success: (res) => {
+                            //             data=res.data;
+                            //             if(data==1)
+                            //                 this.editArticleDialog = false
+                            //         }
+                            //     })
+                            //
+                            // }).catch(() => {
+                            //
+                            // });
+
+                        }
+
+                    },
+                    error: (data) => {
+                        this.doiLoading = false;
+                        $("#doi_searchBox").removeClass("spinner")
+                        this.$alert('Failed to connect, please try again!', 'Tip', {
+                                confirmButtonText: 'Confirm',
+                                callback: ()=>{
+                                    return
+                                }
+                            }
+                        );
+                        $("#doiDetails").css("display", "none");
+                        $("#doiTitle").val("")
+                    }
+                })
+            }
+        },
+
+        articleDoiUploadConfirm(status){
+            this.articleToBack = this.articleUploading;
+            this.showUploadArticleDialog = false;
+            // this.articleToBack.status = status;
+        },
+
+        addContributorConfirm(){
+            $.ajax({
+                type: "POST",
+                url: "/article/addContributor",
+                data: {
+                    title: this.articleUploading.title,
+                    journal: this.articleUploading.journal,
+                },
+                cache: false,
+                async: true,
+                success: (res) => {
+                    data=res.data;
+                    if(data==1){
+                        this.articleHandleCurrentChange(1)
+                        this.editArticleDialog = false
+                        this.showUploadedArticleDialog = false
+                    }
+
+                }
+            })
+        }
 
     },
 
@@ -2580,10 +2837,6 @@ new Vue({
             }
 
         )
-
-        $("#articleAuthor").tagEditor({
-            forceLowercase: false
-        });
 
         this.clickCount=0;
 

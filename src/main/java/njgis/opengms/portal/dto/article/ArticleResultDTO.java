@@ -17,8 +17,7 @@ public class ArticleResultDTO {
 
     String contributor;
     String journal;
-    int startPage;
-    int endPage;
+    String pageRange;
     String date;
     String link;
     int viewCount;

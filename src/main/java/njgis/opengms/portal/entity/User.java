@@ -6,6 +6,7 @@ import njgis.opengms.portal.entity.support.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,17 +42,17 @@ public class User {
 
     Introduction introduction;
 
-    List<String> organizations;
     List<String> subjectAreas;
     List<String> researchInterests;
 
-    List<Article> articles;
+    List<String> organizations;
+    List<String> articles = new ArrayList<>();//保存article的id
     List<AcademicService> academicServices;
     List<AwardandHonor> awardsHonors;
     List<Conference> conferences;
     List<EducationExperience> educationExperiences;
-
     UserLab lab = new UserLab();
+
 //    String lab;
     List<Project> projects;
 

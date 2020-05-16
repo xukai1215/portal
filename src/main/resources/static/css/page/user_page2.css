@@ -453,6 +453,11 @@ button:focus{
     align-items: center;
 }
 
+.flexRow {
+    display: flex;
+    /*flex-direction: column;*/
+}
+
 .statsNumber {
     display: flex;
     justify-content: center;
@@ -491,6 +496,23 @@ button:focus{
     width: 47px;
     height: 21px;
     /*border: #0f9ae0 2px solid;*/
+    color: #fbfbfb;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    font-size: 15px;
+    padding-top: 0;
+}
+
+.rsquare{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #428bca;
+    cursor:pointer;
+    width: 23px;
+    height: 20px;
+    /*border: #428bca 2px solid;*/
     color: #fbfbfb;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -618,7 +640,7 @@ input::placeholder{
     /*box-shadow: 0px 1px 2px    rgba(0,0,0,0.3);*/
     font-family: sans-serif;
     border: 1px solid #d8dbe2;
-    overflow: hidden;
+    /*overflow: hidden;*/
     transition: .2s;
 }
 
@@ -746,7 +768,7 @@ input::placeholder{
     justify-content: flex-start;
     border-radius: 4px 4px 0 0;
     flex: 1;
-    overflow: hidden;
+    /*overflow: hidden;*/
     border: 1px solid #d8dbe2;
 }
 
@@ -950,6 +972,18 @@ input::placeholder{
     color: #999999;
     transform: rotate(45deg);
     z-index: 5;
+}
+
+.fourLine{
+    word-break: break-all;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.min400w{
+    min-width: 400px;
 }
 
 .itemContainer{
@@ -1158,7 +1192,7 @@ input::placeholder{
     line-height: 22px;
     max-width: 700px;
     font-weight: 600;
-    max-height: 50px;
+    /*max-height: 50px;*/
 }
 
 .cardContentContainer{
@@ -1606,6 +1640,14 @@ input[type="radio"]:checked + span {
 .form-group {
     margin-top: 10px;
     overflow: hidden;
+}
+
+.form-group .el-checkbox__label{
+    font-weight: 600;
+}
+
+.form-group .el-checkbox__inner{
+    border-color: #ccc;
 }
 
 .deleteEditContainer{
