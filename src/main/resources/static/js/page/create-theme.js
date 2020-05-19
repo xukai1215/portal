@@ -65,6 +65,53 @@ var createTheme = Vue.extend({
                 }]
             },
 
+            themeVersion:{
+                modifierClass:[{
+                    oid:"",
+                    userName:'',
+                    name:''
+                }],
+                subDetails:[{
+                    detail:'',
+                    // time后台设置
+                    // status: '',后台确定
+                    // formatTime:'',后台设置
+                    // Class<Check> checkClass;后台处理设置
+                }],
+                subClassInfos:[{
+                    // modify_time后台设置
+                    // status: '',后台确定
+                    // formatTime:'',后台设置
+                    mcname:'',
+                    models:[{
+                        model_oid:'',
+                        model_name:'',
+                    }]
+                    // Class<Check> checkClass;后台处理设置
+                }],
+                subDataInfos:[{
+                    // modify_time后台设置
+                    // status: '',后台确定
+                    // formatTime:'',后台设置
+                    dcname:'',
+                    data:[{
+                        data_oid:'',
+                        data_name:'',
+                    }]
+                    // Class<Check> checkClass;后台处理设置
+                }],
+                subApplications:[{
+                    // modify_time后台设置
+                    // status: '',后台确定
+                    // formatTime:'',后台设置
+                    // Class<Check> checkClass;后台处理设置
+                    applicationname:'',
+                    applicationlink:'',
+                    application_image:'',
+                    upload_application_image:''
+                }]
+            },
+
             oidnumber: 0,
             numOfModelPerRow: 5,
             classarr: [],
@@ -1469,7 +1516,7 @@ var createTheme = Vue.extend({
                 });
                 formData.append("info",file);
                 $.ajax({
-                    url: "/repository/addTheme",
+                    url: "/theme/addTheme",
                     type: "POST",
                     processData: false,
                     contentType: false,
@@ -1486,7 +1533,7 @@ var createTheme = Vue.extend({
                             window.location.href="/user/login";
                         }
                         else{
-                            alert("Create failed!")
+                            alert("Create failed!");
                         }
                     }
                 })
@@ -1533,7 +1580,116 @@ var createTheme = Vue.extend({
             }
         });
 
-
+        // $(".finish").click(()=> {
+        //     let loading = this.$loading({
+        //         lock: true,
+        //         text: "Uploading...",
+        //         spinner: "el-icon-loading",
+        //         background: "rgba(0, 0, 0, 0.7)"
+        //     });
+        //     if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+        //
+        //     }else {
+        //         for(i = 0;i<that.themeObj.application.length; i++){
+        //             if (that.themeObj.application[i].applicationname == ""||that.themeObj.application[i].applicationlink ==""||that.themeObj.application[i].upload_application_image==""){
+        //                 alert("Please complete the information");
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        //     //查看classinfo与dataClassInfo，如果存在一个也未输入，则删除
+        //     if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0) {
+        //         that.themeObj.classinfo.splice(0,1);
+        //     }
+        //     if (that.themeObj.dataClassInfo.length==1&&that.themeObj.dataClassInfo[0].dcname==""&&that.themeObj.dataClassInfo[0].datasoid.length==0) {
+        //         that.themeObj.dataClassInfo.splice(0,1);
+        //     }
+        //     if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+        //         that.themeObj.application.splice(0,1);
+        //     }
+        //
+        //     that.themeObj.themename = $("#nameInput").val();
+        //     that.themeObj.image = $('#imgShow').get(0).src;
+        //
+        //     var detail = tinyMCE.activeEditor.getContent();
+        //     that.themeObj.detail = detail.trim();
+        //     console.log(that.themeObj);
+        //
+        //     that.themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
+        //
+        //     that.themeObj.tabledata = that.editableTabs_model;
+        //
+        //     let formData=new FormData();
+        //
+        //     if ((oid === "0") || (oid === "") || (oid == null)) {
+        //         let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
+        //             type: 'text/plain',
+        //         });
+        //         formData.append("info",file);
+        //         $.ajax({
+        //             url: "/theme/addTheme",
+        //             type: "POST",
+        //             processData: false,
+        //             contentType: false,
+        //             async: true,
+        //             data: formData,
+        //             success: function (result) {
+        //                 loading.close();
+        //                 if (result.code == "0") {
+        //                     alert("Create Success");
+        //                     window.location.href = "/repository/theme/" + result.data;//刷新当前页面
+        //                 }
+        //                 else if(result.code==-1){
+        //                     alert("Please login first!");
+        //                     window.location.href="/user/login";
+        //                 }
+        //                 else{
+        //                     alert("Create failed!");
+        //                 }
+        //             }
+        //         })
+        //     } else {
+        //
+        //         that.themeObj["oid"] = oid;
+        //
+        //         let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
+        //             type: 'text/plain',
+        //         });
+        //         formData.append("info",file);
+        //         $.ajax({
+        //             url: "/theme/update",
+        //             type: "POST",
+        //             processData: false,
+        //             contentType: false,
+        //             async: true,
+        //             data: formData,
+        //
+        //             success: function (result) {
+        //                 loading.close();
+        //                 if (result.code === 0) {
+        //                     if(result.data.method==="update") {
+        //                         alert("Update Success");
+        //                         $("#editModal", parent.document).remove();
+        //                         window.location.href = "/theme/" + result.data.oid;
+        //                     }
+        //                     else{
+        //                         alert("Success! Changes have been submitted, please wait for the author to review.");
+        //                         //产生信号调用计数，启用websocket
+        //
+        //                         window.location.href = "/user/userSpace";
+        //                     }
+        //                 }
+        //                 else if(result.code==-2){
+        //                     alert("Please login first!");
+        //                     window.location.href="/user/login";
+        //                 }
+        //                 else{
+        //                     alert(result.msg);
+        //                 }
+        //             }
+        //         })
+        //     }
+        // });
 
         $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
 

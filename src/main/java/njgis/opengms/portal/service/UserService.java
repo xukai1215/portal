@@ -744,6 +744,12 @@ public class UserService {
         userDao.save(user);
     }
 
+    public void messageNumPlusPlus(String username){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        user.setMessageNum(++count);
+        userDao.save(user);
+    }
     //--
     public void modelItemMinusMinus(String userName){
         User user = userDao.findFirstByUserName(userName);
@@ -834,7 +840,23 @@ public class UserService {
         user.setThemes(--count);
         userDao.save(user);
     }
-
+    public void messageNumMinusMinus(String username){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        user.setMessageNum(--count);
+        userDao.save(user);
+    }
+//    public String getAuthorUserName(String authorName){
+//        String authorUserName = "";
+//        List<User> users = userDao.findAll();
+//        for (int i=0;i<users.size();i++){
+//            if (authorName.equals(users.get(i).getName())){
+//                authorUserName = users.get(i).getUserName();
+//                break;
+//            }
+//        }
+//        return authorUserName;
+//    }
     public User getByUid(String userName){
         try {
             return userDao.findFirstByUserName(userName);

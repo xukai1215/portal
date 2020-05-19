@@ -10,7 +10,7 @@ Vue.component('headSideBar', {
                 data:[],
                 application:[]
             }],
-            message_num:0,
+            // message_num:0,
             curIndex:1,
             itemIndex: 1,
 
@@ -32,7 +32,7 @@ Vue.component('headSideBar', {
         userInfoinParent: {
             handler() {
                 this.userInfo = this.userInfoinParent
-                this.getMessageInfo()
+                // this.getMessageInfo();
             },
             immediate: true
         },
@@ -161,92 +161,16 @@ Vue.component('headSideBar', {
             clearTimeout(timerDrop);
             target.children('ul').children('#phoneLogin').css('height','0')
         },
-
-        getMessageInfo(){
-            $.ajax({
-                url:"/theme/getedit",
-                async:false,
-                type:"GET",
-                success:(json)=>{
-                    console.log(json);
-                    for (let i=0;i<json.length;i++) {
-                        for (let k = 0; k < 4; k++) {
-                            let type;
-                            switch (k) {
-                                case 0:
-                                    type = json[i].subDetails;
-                                    break;
-                                case 1:
-                                    type = json[i].subClassInfos;
-                                    break;
-                                case 2:
-                                    type = json[i].subDataInfos;
-                                    break;
-                                case 3:
-                                    type = json[i].subApplications;
-                                    break;
-
-                            }
-                            if (type != null && type.length > 0) {
-                                for (let j = 0; j < type.length; j++) {
-                                    if (k == 0) {
-                                        switch (type[j].status) {
-                                            case "0":
-                                                this.message_num++;
-                                        }
-                                    }else if (k == 1){
-                                        switch (type[j].status) {
-                                            case "0":
-                                                this.message_num++;
-                                        }
-
-                                    }else if (k == 2){
-                                        switch (type[j].status) {
-                                            case "0":
-                                                this.message_num++;
-                                        }
-
-                                    } else if (k == 3){
-                                        switch (type[j].status) {
-                                            case "0":
-                                                this.message_num++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $.ajax({
-                        type: "GET",
-                        url: "/version/getVersions",
-                        data: {},
-                        async: false,
-                        success: (json) => {
-                            //下面将type分到model、community中
-                            //model：modelItem、conceptualModel、logicalModel、computableModel
-                            // community：concept、spatialReference	、unit、template
-                            this.message_num = 0
-                            for (let i=0;i<json.data.uncheck.length;i++){
-                                if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
-                                    // this.model_tableData1.push(json.data.uncheck[i]);
-                                    this.message_num++;
-                                }else {
-                                    // this.community_tableData1.push(json.data.uncheck[i]);
-                                    this.message_num++;
-                                }
-                            }
-                            if (this.message_num==0){
-                                $(".el-badge__content").hide();
-                            } else {
-                                $(".el-badge__content").show();
-                            }
-                        }
-                    })
-
-
-                }
-            })
-        }
+        //
+        // getMessageNum(){
+        //     $.ajax({
+        //         url:"/theme/getMessageNum",
+        //         type:"GET",
+        //         success:(data)=>{
+        //             this.message_num = data;
+        //         }
+        //     })
+        // }
     },
 
     created(){
@@ -257,7 +181,8 @@ Vue.component('headSideBar', {
         let that = this;
         //let that= this;
         //用于判断用户是否收到消息
-        that.getMessageInfo()
+        // that.getMessageInfo();
+        this.getMessageNum();
 
         $('#dropmu').click((e)=>{
             // clearTimeout(tFoldLmu);

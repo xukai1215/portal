@@ -460,9 +460,11 @@ public class ModelItemService {
         }
     }
 
+
     public JSONObject update(ModelItemUpdateDTO modelItemUpdateDTO, String uid){
         ModelItem modelItem=modelItemDao.findFirstByOid(modelItemUpdateDTO.getOid());
         String author=modelItem.getAuthor();
+        String authorUserName = author;
         if(!modelItem.isLock()) {
             if (author.equals(uid)) {
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItem);
@@ -515,6 +517,7 @@ public class ModelItemService {
                 modelItemVersion.setModifyTime(curDate);
                 modelItemVersion.setVerNumber(curDate.getTime());
                 modelItemVersion.setStatus(0);
+                userService.messageNumPlusPlus(authorUserName);
                 modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
                 modelItemVersion.setCreator(author);
                 modelItemVersionDao.insert(modelItemVersion);

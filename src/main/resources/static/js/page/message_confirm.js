@@ -70,6 +70,7 @@ var notice = Vue.extend({
             community_tableData2_length:0,
             community_tableData3_length:0,
             edit_community_tableData:[],//用于获取community的version数据，用于显示谁编辑了什么
+            edit_theme_tableData:[],
 
             theme_tableData1:[],
             theme_tableData2:[],
@@ -106,6 +107,8 @@ var notice = Vue.extend({
             comments:[],
 
             loading: true,
+
+            tabPosition: 'left'
         };
     },
     methods:{
@@ -144,7 +147,7 @@ var notice = Vue.extend({
         getVersions(){
             $.ajax({
                 type: "GET",
-                url: "/version/getVersions",
+                url: "/theme/getMessageData",
                 data: {},
                 async: true,
                 success: (json) => {
@@ -155,8 +158,11 @@ var notice = Vue.extend({
                         if (json.data.accept[i].type == "modelItem" || json.data.accept[i].type == "conceptualModel"||json.data.accept[i].type == "logicalModel"||json.data.accept[i].type == "computableModel"){
                             this.model_tableData2.push(json.data.accept[i]);
                             this.sum_tableData.push(json.data.accept[i]);
-                        }else {
+                        }else if (json.data.accept[i].type == "concept" || json.data.accept[i].type == "spatialReference"||json.data.accept[i].type == "unit"||json.data.accept[i].type == "template") {
                             this.community_tableData2.push(json.data.accept[i]);
+                            this.sum_tableData.push(json.data.accept[i]);
+                        }else if (json.data.accept[i].type == "theme") {
+                            this.theme_tableData2.push(json.data.accept[i]);
                             this.sum_tableData.push(json.data.accept[i]);
                         }
                     }
@@ -164,33 +170,29 @@ var notice = Vue.extend({
                         if (json.data.reject[i].type == "modelItem" || json.data.reject[i].type == "conceptualModel"||json.data.reject[i].type == "logicalModel"||json.data.reject[i].type == "computableModel"){
                             this.model_tableData3.push(json.data.reject[i]);
                             this.sum_tableData.push(json.data.reject[i]);
-                        }else {
+                        }else if (json.data.reject[i].type == "concept" || json.data.reject[i].type == "spatialReference"||json.data.reject[i].type == "unit"||json.data.reject[i].type == "template"){
                             this.community_tableData3.push(json.data.reject[i]);
+                            this.sum_tableData.push(json.data.reject[i]);
+                        }else if (json.data.reject[i].type == "theme") {
+                            this.theme_tableData3.push(json.data.reject[i]);
                             this.sum_tableData.push(json.data.reject[i]);
                         }
                     }
                     for (let i=0;i<json.data.uncheck.length;i++){
                         if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
                             this.model_tableData1.push(json.data.uncheck[i]);
+                            this.sum_tableData.push(json.data.uncheck[i]);
                             this.message_num++;
-                        }else {
+                        }else if (json.data.uncheck[i].type == "concept" || json.data.uncheck[i].type == "spatialReference"||json.data.uncheck[i].type == "unit"||json.data.uncheck[i].type == "template"){
                             this.community_tableData1.push(json.data.uncheck[i]);
+                            this.sum_tableData.push(json.data.uncheck[i]);
+                            this.message_num++;
+                        }else if (json.data.uncheck[i].type == "theme") {
+                            this.theme_tableData1.push(json.data.uncheck[i]);
+                            this.sum_tableData.push(json.data.uncheck[i]);
                             this.message_num++;
                         }
                     }
-                    for (let i=0;i<json.data.edit.length;i++){
-                        if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"||json.data.edit[i].type == "computableModel"){
-                            json.data.edit[i].status = "unchecked";
-                            this.edit_model_tableData.push(json.data.edit[i]);
-                            this.sum_tableData.push(json.data.edit[i]);
-                        }else {
-                            json.data.edit[i].status = "unchecked";
-                            this.edit_community_tableData.push(json.data.edit[i]);
-                            this.sum_tableData.push(json.data.edit[i]);
-                        }
-                    }
-
-
 
                     for (let i = 0;i<this.sum_tableData.length;i++) {
                         if (this.sum_tableData[i].status!="unchecked"){
@@ -239,116 +241,21 @@ var notice = Vue.extend({
                         }else {
                             this.sum_tableData[i].ex_type = this.sum_tableData[i].type;
                         }
-
-                        let data ={
-                            userName:this.sum_tableData[i].modifier
-                        }
-                        //将通过userName获取用户的oid并存入sum_tableDta的oid中
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.sum_tableData[i].modifier_oid = json;
-                            }
-                        })
                     }
 
-                    //将各个表中的modifier的oid获取并存储
-                    for (let i=0;i<this.model_tableData1.length;i++){
-                        let data = {
-                            userName:this.model_tableData1[i].modifier
-                        }
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.model_tableData1[i].modifier_oid = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<this.model_tableData2.length;i++){
-                        let data = {
-                            userName:this.model_tableData2[i].modifier
-                        }
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.model_tableData2[i].modifier_oid = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<this.model_tableData3.length;i++){
-                        let data = {
-                            userName:this.model_tableData3[i].modifier
-                        }
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.model_tableData3[i].modifier_oid = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<this.community_tableData1.length;i++){
-                        let data = {
-                            userName:this.community_tableData1[i].modifier
-                        }
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.community_tableData1[i].modifier_oid = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<this.community_tableData2.length;i++){
-                        let data = {
-                            userName:this.community_tableData2[i].modifier
-                        }
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.community_tableData2[i].modifier_oid = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<this.community_tableData3.length;i++){
-                        let data = {
-                            userName:this.community_tableData3[i].modifier
-                        }
-                        $.ajax({
-                            type:"GET",
-                            url:"/theme/getoid",
-                            data:data,
-                            async:false,
-                            success:(json)=>{
-                                this.community_tableData3[i].modifier_oid = json;
-                            }
-                        })
-                    }
+
                     this.model_tableData1_length = this.model_tableData1.length;
                     this.model_tableData2_length = this.model_tableData2.length;
                     this.model_tableData3_length = this.model_tableData3.length;
                     this.community_tableData1_length = this.community_tableData1.length;
                     this.community_tableData2_length = this.community_tableData2.length;
                     this.community_tableData3_length = this.community_tableData3.length;
+                    this.theme_tableData1_length = this.theme_tableData1.length;
+                    this.theme_tableData2_length = this.theme_tableData2.length;
+                    this.theme_tableData3_length = this.theme_tableData3.length;
 
 
-                    this.table_length_sum += (this.model_tableData1_length+this.community_tableData1_length);
+                    this.table_length_sum += (this.model_tableData1_length+this.community_tableData1_length+this.theme_tableData1_length);
                     console.log(this.sum_tableData);
 
 
@@ -362,18 +269,6 @@ var notice = Vue.extend({
 
             // this.loading = false;
         },
-
-        // getEditVersion(){
-        //     $.ajax({
-        //         type:"GET",
-        //         url:"/version/getEditVersion",
-        //         data:{},
-        //         async:false,
-        //         success:(json)=>{
-        //             console.log(json);
-        //         }
-        //     })
-        // },
         view(event){
             let refLink=$(".viewBtn");
             for(i=0;i<refLink.length;i++){
@@ -398,449 +293,11 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
-        //控制theme未审核部分的显示
         view_theme(event){
             let refLink=$(".viewBtn_theme");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
-                   // window.open("/version/"+this.community_tableData1[i].type+"/"+this.community_tableData1[i].oid);
-                    //测试refLink
-                    if (this.theme_tableData1[i].info_seen){
-                        this.info_seen = this.theme_tableData1[i].info_seen;
-                        this.model_seen = this.theme_tableData1[i].model_seen;
-                        this.data_seen = this.theme_tableData1[i].data_seen;
-                        this.application_seen = this.theme_tableData1[i].application_seen;
-                        this.info_past_dialog = this.theme_tableData1[i].info_past;
-                        this.info_edited_dialog = this.theme_tableData1[i].info_edited;
-                    }
-                    else if (this.theme_tableData1[i].model_seen) {
-                        this.info_seen = this.theme_tableData1[i].info_seen;
-                        this.model_seen = this.theme_tableData1[i].model_seen;
-                        this.data_seen = this.theme_tableData1[i].data_seen;
-                        this.application_seen = this.theme_tableData1[i].application_seen;
-                        this.classinfo=[];
-                        this.sub_classinfo=[];
-                        for (let j=0;j<this.theme_tableData1[i].classinfo.length;j++) {
-                            this.classinfo.push({
-                                mcname:this.theme_tableData1[i].classinfo[j].mcname,
-                                modelsoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData1[i].classinfo[j].modelsoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'modelItem',
-                                    oid: this.theme_tableData1[i].classinfo[j].modelsoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.classinfo[j].modelsoid.push({
-                                        name: name,
-                                        oid: this.theme_tableData1[i].classinfo[j].modelsoid[k]
-                                })
-                            }
-                        }
-                        for (let j=0;j<this.theme_tableData1[i].sub_classinfo.length;j++) {
-                            this.sub_classinfo.push({
-                                mcname:this.theme_tableData1[i].sub_classinfo[j].mcname,
-                                modelsoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData1[i].sub_classinfo[j].modelsoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'modelItem',
-                                    oid: this.theme_tableData1[i].sub_classinfo[j].modelsoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.sub_classinfo[j].modelsoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData1[i].sub_classinfo[j].modelsoid[k]
-                                })
-                            }
-                        }
-                    }
-                    else if(this.theme_tableData1[i].data_seen){
-                        this.info_seen = this.theme_tableData1[i].info_seen;
-                        this.model_seen = this.theme_tableData1[i].model_seen;
-                        this.data_seen = this.theme_tableData1[i].data_seen;
-                        this.application_seen = this.theme_tableData1[i].application_seen;
-                        this.dataClassInfo=[];
-                        this.sub_dataClassInfos=[];
-                        // this.dataClassInfo = this.theme_tableData1[i].dataClassInfo;
-                        for (let j=0;j<this.theme_tableData1[i].dataClassInfo.length;j++) {
-                            this.dataClassInfo.push({
-                                dcname:this.theme_tableData1[i].dataClassInfo[j].dcname,
-                                datasoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData1[i].dataClassInfo[j].datasoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'dataItem',
-                                    oid: this.theme_tableData1[i].dataClassInfo[j].datasoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.dataClassInfo[j].datasoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData1[i].dataClassInfo[j].datasoid[k]
-                                })
-                            }
-                        }
-                        // this.sub_dataClassInfos = this.theme_tableData1[i].sub_dataClassInfos;
-                        for (let j=0;j<this.theme_tableData1[i].sub_dataClassInfos.length;j++) {
-                            this.sub_dataClassInfos.push({
-                                dcname:this.theme_tableData1[i].sub_dataClassInfos[j].dcname,
-                                datasoid: []
-                            });
-                            for (let k=0;k<this.theme_tableData1[i].sub_dataClassInfos[j].datasoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'dataItem',
-                                    oid: this.theme_tableData1[i].sub_dataClassInfos[j].datasoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.sub_dataClassInfos[j].datasoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData1[i].sub_dataClassInfos[j].datasoid[k]
-                                })
-                            }
-                        }
-                    }
-                    else {
-                        this.info_seen = this.theme_tableData1[i].info_seen;
-                        this.model_seen = this.theme_tableData1[i].model_seen;
-                        this.data_seen = this.theme_tableData1[i].data_seen;
-                        this.application_seen = this.theme_tableData1[i].application_seen;
-                        this.application = this.theme_tableData1[i].application;
-                        this.sub_applications = this.theme_tableData1[i].sub_applications;
-                    }
-                }
-            }
-            //console.log(event.currentTarget);
-        },
-        //控制theme审核通过部分的显示
-        view_theme_accept(event){
-            let refLink=$(".viewAcceptBtn_theme");
-            for(i=0;i<refLink.length;i++){
-                if(event.currentTarget===refLink[i]){
-                   // window.open("/version/"+this.community_tableData1[i].type+"/"+this.community_tableData1[i].oid);
-                    //测试refLink
-                    if (this.theme_tableData2[i].info_seen){
-                        this.info_seen = this.theme_tableData2[i].info_seen;
-                        this.model_seen = this.theme_tableData2[i].model_seen;
-                        this.data_seen = this.theme_tableData2[i].data_seen;
-                        this.application_seen = this.theme_tableData2[i].application_seen;
-                        this.info_past_dialog = this.theme_tableData2[i].info_past;
-                        this.info_edited_dialog = this.theme_tableData2[i].info_edited;
-                    }
-                    else if (this.theme_tableData2[i].model_seen) {
-                        this.info_seen = this.theme_tableData2[i].info_seen;
-                        this.model_seen = this.theme_tableData2[i].model_seen;
-                        this.data_seen = this.theme_tableData2[i].data_seen;
-                        this.application_seen = this.theme_tableData2[i].application_seen;
-                        this.classinfo=[];
-                        this.sub_classinfo=[];
-                        for (let j=0;j<this.theme_tableData2[i].classinfo.length;j++) {
-                            this.classinfo.push({
-                                mcname:this.theme_tableData2[i].classinfo[j].mcname,
-                                modelsoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData2[i].classinfo[j].modelsoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'modelItem',
-                                    oid: this.theme_tableData2[i].classinfo[j].modelsoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.classinfo[j].modelsoid.push({
-                                        name: name,
-                                        oid: this.theme_tableData2[i].classinfo[j].modelsoid[k]
-                                })
-                            }
-                        }
-                        for (let j=0;j<this.theme_tableData2[i].sub_classinfo.length;j++) {
-                            this.sub_classinfo.push({
-                                mcname:this.theme_tableData2[i].sub_classinfo[j].mcname,
-                                modelsoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData2[i].sub_classinfo[j].modelsoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'modelItem',
-                                    oid: this.theme_tableData2[i].sub_classinfo[j].modelsoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.sub_classinfo[j].modelsoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData2[i].sub_classinfo[j].modelsoid[k]
-                                })
-                            }
-                        }
-                    }
-                    else if(this.theme_tableData2[i].data_seen){
-                        this.info_seen = this.theme_tableData2[i].info_seen;
-                        this.model_seen = this.theme_tableData2[i].model_seen;
-                        this.data_seen = this.theme_tableData2[i].data_seen;
-                        this.application_seen = this.theme_tableData2[i].application_seen;
-                        this.dataClassInfo=[];
-                        this.sub_dataClassInfos=[];
-                        // this.dataClassInfo = this.theme_tableData2[i].dataClassInfo;
-                        for (let j=0;j<this.theme_tableData2[i].dataClassInfo.length;j++) {
-                            this.dataClassInfo.push({
-                                dcname:this.theme_tableData2[i].dataClassInfo[j].dcname,
-                                datasoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData2[i].dataClassInfo[j].datasoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'dataItem',
-                                    oid: this.theme_tableData2[i].dataClassInfo[j].datasoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.dataClassInfo[j].datasoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData2[i].dataClassInfo[j].datasoid[k]
-                                })
-                            }
-                        }
-                        // this.sub_dataClassInfos = this.theme_tableData2[i].sub_dataClassInfos;
-                        for (let j=0;j<this.theme_tableData2[i].sub_dataClassInfos.length;j++) {
-                            this.sub_dataClassInfos.push({
-                                dcname:this.theme_tableData2[i].sub_dataClassInfos[j].dcname,
-                                datasoid: []
-                            });
-                            for (let k=0;k<this.theme_tableData2[i].sub_dataClassInfos[j].datasoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'dataItem',
-                                    oid: this.theme_tableData2[i].sub_dataClassInfos[j].datasoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.sub_dataClassInfos[j].datasoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData2[i].sub_dataClassInfos[j].datasoid[k]
-                                })
-                            }
-                        }
-                    }
-                    else {
-                        this.info_seen = this.theme_tableData2[i].info_seen;
-                        this.model_seen = this.theme_tableData2[i].model_seen;
-                        this.data_seen = this.theme_tableData2[i].data_seen;
-                        this.application_seen = this.theme_tableData2[i].application_seen;
-                        this.application = this.theme_tableData2[i].application;
-                        this.sub_applications = this.theme_tableData2[i].sub_applications;
-                    }
-                }
-            }
-            //console.log(event.currentTarget);
-        },
-        //控制theme审核未通过部分的显示
-        view_theme_reject(event){
-            let refLink=$(".viewRejectBtn_theme");
-            for(i=0;i<refLink.length;i++){
-                if(event.currentTarget===refLink[i]){
-                    // window.open("/version/"+this.community_tableData1[i].type+"/"+this.community_tableData1[i].oid);
-                    //测试refLink
-                    if (this.theme_tableData3[i].info_seen){
-                        this.info_seen = this.theme_tableData3[i].info_seen;
-                        this.model_seen = this.theme_tableData3[i].model_seen;
-                        this.data_seen = this.theme_tableData3[i].data_seen;
-                        this.application_seen = this.theme_tableData3[i].application_seen;
-                        this.info_past_dialog = this.theme_tableData3[i].info_past;
-                        this.info_edited_dialog = this.theme_tableData3[i].info_edited;
-                    }
-                    else if (this.theme_tableData3[i].model_seen) {
-                        this.info_seen = this.theme_tableData3[i].info_seen;
-                        this.model_seen = this.theme_tableData3[i].model_seen;
-                        this.data_seen = this.theme_tableData3[i].data_seen;
-                        this.application_seen = this.theme_tableData3[i].application_seen;
-                        this.classinfo=[];
-                        this.sub_classinfo=[];
-                        for (let j=0;j<this.theme_tableData3[i].classinfo.length;j++) {
-                            this.classinfo.push({
-                                mcname:this.theme_tableData3[i].classinfo[j].mcname,
-                                modelsoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData3[i].classinfo[j].modelsoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'modelItem',
-                                    oid: this.theme_tableData3[i].classinfo[j].modelsoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.classinfo[j].modelsoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData3[i].classinfo[j].modelsoid[k]
-                                })
-                            }
-                        }
-                        for (let j=0;j<this.theme_tableData3[i].sub_classinfo.length;j++) {
-                            this.sub_classinfo.push({
-                                mcname:this.theme_tableData3[i].sub_classinfo[j].mcname,
-                                modelsoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData3[i].sub_classinfo[j].modelsoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'modelItem',
-                                    oid: this.theme_tableData3[i].sub_classinfo[j].modelsoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.sub_classinfo[j].modelsoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData3[i].sub_classinfo[j].modelsoid[k]
-                                })
-                            }
-                        }
-                    }
-                    else if(this.theme_tableData3[i].data_seen){
-                        this.info_seen = this.theme_tableData3[i].info_seen;
-                        this.model_seen = this.theme_tableData3[i].model_seen;
-                        this.data_seen = this.theme_tableData3[i].data_seen;
-                        this.application_seen = this.theme_tableData3[i].application_seen;
-                        this.dataClassInfo=[];
-                        this.sub_dataClassInfos=[];
-                        // this.dataClassInfo = this.theme_tableData3[i].dataClassInfo;
-                        for (let j=0;j<this.theme_tableData3[i].dataClassInfo.length;j++) {
-                            this.dataClassInfo.push({
-                                dcname:this.theme_tableData3[i].dataClassInfo[j].dcname,
-                                datasoid: []
-                            })
-                            for (let k=0;k<this.theme_tableData3[i].dataClassInfo[j].datasoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'dataItem',
-                                    oid: this.theme_tableData3[i].dataClassInfo[j].datasoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.dataClassInfo[j].datasoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData3[i].dataClassInfo[j].datasoid[k]
-                                })
-                            }
-                        }
-                        // this.sub_dataClassInfos = this.theme_tableData3[i].sub_dataClassInfos;
-                        for (let j=0;j<this.theme_tableData3[i].sub_dataClassInfos.length;j++) {
-                            this.sub_dataClassInfos.push({
-                                dcname:this.theme_tableData3[i].sub_dataClassInfos[j].dcname,
-                                datasoid: []
-                            });
-                            for (let k=0;k<this.theme_tableData3[i].sub_dataClassInfos[j].datasoid.length;k++) {
-                                let name;
-                                let data = {
-                                    type: 'dataItem',
-                                    oid: this.theme_tableData3[i].sub_dataClassInfos[j].datasoid[k],
-                                };
-                                $.ajax({
-                                    url: "/theme/getname",
-                                    type: "GET",
-                                    data: data,
-                                    async: false,
-                                    success: (data) => {
-                                        name = data;
-                                    }
-                                });
-                                this.sub_dataClassInfos[j].datasoid.push({
-                                    name: name,
-                                    oid: this.theme_tableData3[i].sub_dataClassInfos[j].datasoid[k]
-                                })
-                            }
-                        }
-                    }
-                    else {
-                        this.info_seen = this.theme_tableData3[i].info_seen;
-                        this.model_seen = this.theme_tableData3[i].model_seen;
-                        this.data_seen = this.theme_tableData3[i].data_seen;
-                        this.application_seen = this.theme_tableData3[i].application_seen;
-                        this.application = this.theme_tableData3[i].application;
-                        this.sub_applications = this.theme_tableData3[i].sub_applications;
-                    }
+                   window.open("/theme/uncheck/"+this.theme_tableData1[i].oid);
                 }
             }
             //console.log(event.currentTarget);
@@ -863,6 +320,15 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        view_theme_accept(event){
+            let refLink=$(".viewAcceptBtn_theme");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/theme/accept/"+this.theme_tableData2[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         viewReject(event){
             let refLink=$(".viewRejectBtn");
             for(i=0;i<refLink.length;i++){
@@ -881,30 +347,14 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
-        accept_theme(event){
-            let refLink=$(".accept_theme");
+        view_theme_reject(event){
+            let refLink=$(".viewRejectBtn_theme");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
-                    // alert("ok");
-                    //定义match用于存储与后台数据进行匹配的条目数据
-                    let match = {};
-                    console.log(this.theme_tableData1[i]);
-                    match.time = this.theme_tableData1[i].unformatTime;
-                    match.themename = this.theme_tableData1[i].theme;
-                    match.type= this.theme_tableData1[i].type;
-                    console.log(match);
-                    $.ajax({
-                        url:"/theme/accept",
-                        type:"POST",
-                        async:false,
-                        contentType: "application/json",
-                        data:JSON.stringify(match),//js对象转换为字符串
-                        success:(json) =>{
-                            window.location.reload();
-                        }
-                    })
+                    window.open("/theme/reject/"+this.theme_tableData3[i].oid);
                 }
             }
+            //console.log(event.currentTarget);
         },
         accept(event){
             let accepts=$(".accept");
@@ -954,25 +404,23 @@ var notice = Vue.extend({
                 }
             }
         },
-        reject_theme(event){
-            let refLink=$(".reject_theme");
-            for(i=0;i<refLink.length;i++){
-                if(event.currentTarget===refLink[i]){
-                    // alert("ok");
-                    //定义match用于存储与后台数据进行匹配的条目数据
-                    let match = {};
-                    console.log(this.theme_tableData1[i]);
-                    match.time = this.theme_tableData1[i].time;
-                    match.themename = this.theme_tableData1[i].theme;
-                    match.type= this.theme_tableData1[i].type;
-                    console.log(match);
+        accept_theme(event){
+            let accepts=$(".accept_theme");
+
+            for(i=0;i<accepts.length;i++){
+                if(event.currentTarget===accepts[i]){
+                    let tableItem=this.theme_tableData1[i];
+                    let data={
+                        oid:tableItem.oid,
+                        themeOid:tableItem.themeOid,
+                    };
                     $.ajax({
-                        url:"/theme/reject",
                         type:"POST",
-                        async:false,
+                        url:"/theme/accept",
                         contentType: "application/json",
-                        data:JSON.stringify(match),//js对象转换为字符串
-                        success:(json) =>{
+                        data: JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
                             window.location.reload();
                         }
                     })
@@ -1026,7 +474,30 @@ var notice = Vue.extend({
                     })
                 }
             }
-        }
+        },
+        reject_theme(event){
+            let rejects=$(".reject_theme");
+
+            for(i=0;i<rejects.length;i++){
+                if(event.currentTarget===rejects[i]){
+                    let tableItem=this.theme_tableData1[i];
+                    let data={
+                        oid:tableItem.oid,
+                        themeOid:tableItem.themeOid,
+                    }
+                    $.ajax({
+                        type:"POST",
+                        url:"/theme/reject",
+                        contentType: "application/json",
+                        data:JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
+                            window.location.reload();
+                        }
+                    })
+                }
+            }
+        },
     },
     mounted(){
         this.sendcurIndexToParent();
@@ -1045,299 +516,5 @@ var notice = Vue.extend({
                 this.ScreenMaxHeight = (height) + "px";
             };
         });
-        let that = this;
-       $(document).ready(function () {
-           //取出编辑信息
-           $.ajax({
-               url:"/theme/getedit",
-               async:false,
-               type:"GET",
-               success:(json)=>{
-                   console.log(json);
-
-                    for (let i=0;i<json.length;i++) {
-                            for (let k = 0; k < 4; k++) {
-                                let type;
-                                switch (k) {
-                                    case 0:
-                                        type = json[i].subDetails;
-                                        break;
-                                    case 1:
-                                        type = json[i].subClassInfos;
-                                        break;
-                                    case 2:
-                                        type = json[i].subDataInfos;
-                                        break;
-                                    case 3:
-                                        type = json[i].subApplications;
-                                        break;
-
-                                }
-                                if (type != null && type.length > 0) {
-                                    for (let j = 0; j < type.length; j++) {
-                                            if (k == 0) {
-                                                switch (type[j].status) {
-                                                    case "0":
-                                                        that.theme_tableData1.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            unformatTime:type[j].time,
-                                                            theme: json[i].themename,
-                                                            type:"Info",
-                                                            info_past:json[i].detail,
-                                                            info_edited:type[j].detail,
-                                                            info_seen:true,
-                                                            model_seen:false,
-                                                            data_seen:false,
-                                                            application_seen:false
-                                                        });
-                                                        that.message_num++;
-                                                        break;
-                                                    case "1":
-                                                        that.theme_tableData2.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Info",
-                                                            info_past:json[i].detail,
-                                                            info_edited:type[j].detail,
-                                                            info_seen:true,
-                                                            model_seen:false,
-                                                            data_seen:false,
-                                                            application_seen:false
-                                                        });
-                                                        break;
-                                                    case "-1":
-                                                        that.theme_tableData3.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Info",
-                                                            info_past:json[i].detail,
-                                                            info_edited:type[j].detail,
-                                                            info_seen:true,
-                                                            model_seen:false,
-                                                            data_seen:false,
-                                                            application_seen:false
-                                                        });
-                                                        break;
-                                                }
-                                        }else if (k == 1){
-                                                switch (type[j].status) {
-                                                    case "0":
-                                                        that.theme_tableData1.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            unformatTime:type[j].time,
-                                                            theme: json[i].themename,
-                                                            type:"Model",
-                                                            classinfo:json[i].classinfo,
-                                                            sub_classinfo:type[j].sub_classInfo,
-                                                            info_seen:false,
-                                                            model_seen:true,
-                                                            data_seen:false,
-                                                            application_seen:false
-                                                        });
-                                                        that.message_num++;
-                                                        break;
-                                                    case "1":
-                                                        that.theme_tableData2.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Model",
-                                                            classinfo:json[i].classinfo,
-                                                            sub_classinfo:type[j].sub_classInfo,
-                                                            info_seen:false,
-                                                            model_seen:true,
-                                                            data_seen:false,
-                                                            application_seen:false
-                                                        });
-                                                        break;
-                                                    case "-1":
-                                                        that.theme_tableData3.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Model",
-                                                            classinfo:json[i].classinfo,
-                                                            sub_classinfo:type[j].sub_classInfo,
-                                                            info_seen:false,
-                                                            model_seen:true,
-                                                            data_seen:false,
-                                                            application_seen:false
-                                                        });
-                                                        break;
-                                                }
-                                        }else if (k == 2){
-                                                switch (type[j].status) {
-                                                    case "0":
-                                                        that.theme_tableData1.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            unformatTime:type[j].time,
-                                                            theme: json[i].themename,
-                                                            type:"Data",
-                                                            dataClassInfo:json[i].dataClassInfo,
-                                                            sub_dataClassInfos:type[j].sub_dataClassInfos,
-                                                            info_seen:false,
-                                                            model_seen:false,
-                                                            data_seen:true,
-                                                            application_seen:false
-                                                        })
-                                                        that.message_num++;
-                                                        break;
-                                                    case "1":
-                                                        that.theme_tableData2.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Data",
-                                                            dataClassInfo:json[i].dataClassInfo,
-                                                            sub_dataClassInfos:type[j].sub_dataClassInfos,
-                                                            info_seen:false,
-                                                            model_seen:false,
-                                                            data_seen:true,
-                                                            application_seen:false
-                                                        })
-                                                        break;
-                                                    case "-1":
-                                                        that.theme_tableData3.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Data",
-                                                            dataClassInfo:json[i].dataClassInfo,
-                                                            sub_dataClassInfos:type[j].sub_dataClassInfos,
-                                                            info_seen:false,
-                                                            model_seen:false,
-                                                            data_seen:true,
-                                                            application_seen:false
-                                                        })
-                                                        break;
-                                                }
-                                            } else if (k == 3){
-                                                switch (type[j].status) {
-                                                    case "0":
-                                                        that.theme_tableData1.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            unformatTime:type[j].time,
-                                                            theme: json[i].themename,
-                                                            type:"Application",
-                                                            application:json[i].application,
-                                                            sub_applications:type[j].sub_applications,
-                                                            info_seen:false,
-                                                            model_seen:false,
-                                                            data_seen:false,
-                                                            application_seen:true
-                                                        });
-                                                        that.message_num++;
-                                                        break;
-                                                    case "1":
-                                                        that.theme_tableData2.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Application",
-                                                            application:json[i].application,
-                                                            sub_applications:type[j].sub_applications,
-                                                            info_seen:false,
-                                                            model_seen:false,
-                                                            data_seen:false,
-                                                            application_seen:true
-                                                        });
-                                                        break;
-                                                    case "-1":
-                                                        that.theme_tableData3.push({
-                                                            uid: type[j].uid,
-                                                            time: type[j].formatTime,
-                                                            theme: json[i].themename,
-                                                            type:"Application",
-                                                            application:json[i].application,
-                                                            sub_applications:type[j].sub_applications,
-                                                            info_seen:false,
-                                                            model_seen:false,
-                                                            data_seen:false,
-                                                            application_seen:true
-                                                        });
-                                                        break;
-                                                }
-                                            }
-                                    }
-                                }
-                        }
-                    }
-                    for (let i=0;i<that.theme_tableData1.length;i++){
-                        let data = {
-                            uid:that.theme_tableData1[i].uid
-                        }
-                        $.ajax({
-                            url:"/theme/getModifierName",
-                            type:"GET",
-                            async:false,
-                            data:data,
-                            success:(json)=>{
-                                that.theme_tableData1[i].userName = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<that.theme_tableData2.length;i++){
-                        let data = {
-                            uid:that.theme_tableData2[i].uid
-                        }
-                        $.ajax({
-                            url:"/theme/getModifierName",
-                            type:"GET",
-                            async:false,
-                            data:data,
-                            success:(json)=>{
-                                that.theme_tableData2[i].userName = json;
-                            }
-                        })
-                    }
-                    for (let i=0;i<that.theme_tableData3.length;i++){
-                        let data = {
-                            uid:that.theme_tableData3[i].uid
-                        }
-                        $.ajax({
-                            url:"/theme/getModifierName",
-                            type:"GET",
-                            async:false,
-                            data:data,
-                            success:(json)=>{
-                                that.theme_tableData3[i].userName = json;
-                            }
-                        })
-                    }
-                    that.theme_tableData1_length = that.theme_tableData1.length;
-                    that.theme_tableData2_length = that.theme_tableData2.length;
-                    that.theme_tableData3_length = that.theme_tableData3.length;
-
-                   that.table_length_sum+=that.theme_tableData1_length;
-               }
-           })
-
-           //取出当前登陆用户信息
-           $.ajax({
-               url:"/theme/getuser",
-               async: false,
-               type:"GET",
-               success:(data)=>{
-                   that.useroid = data.oid;
-                   that.username = data.name;
-               }
-           });
-           //取出作者信息
-           $.ajax({
-               url:"/theme/getuserinfo",
-               async:false,
-               type:"GET",
-               data:that.useroid,
-               success:(json)=>{
-
-               }
-           })
-       })
     }
 })
