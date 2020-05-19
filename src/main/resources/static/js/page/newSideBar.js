@@ -10,7 +10,7 @@ Vue.component('headSideBar', {
                 data:[],
                 application:[]
             }],
-            // message_num:0,
+            // g:0,
             curIndex:1,
             itemIndex: 1,
 
@@ -182,7 +182,7 @@ Vue.component('headSideBar', {
         //let that= this;
         //用于判断用户是否收到消息
         // that.getMessageInfo();
-        this.getMessageNum();
+        // this.getMessageNum();
 
         $('#dropmu').click((e)=>{
             // clearTimeout(tFoldLmu);
