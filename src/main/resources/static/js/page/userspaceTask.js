@@ -626,11 +626,11 @@ var userTask = Vue.extend(
             taskSharingFinish() {
 
                 this.taskSharingActive = 4;
-                var selectResult = []
+                var selectResult = [];
                 selectResult = this.multipleSelection;
 
 
-                console.log(selectResult)
+                console.log(selectResult);
                 for (let select of selectResult) {
                     if (select.tag) {
                         select.name = select.tag;

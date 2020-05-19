@@ -317,6 +317,7 @@ public class ConceptualModelService {
 
                 Date now = new Date();
 
+                String authorUserName = author0;
                 if (author0.equals(uid)) {
                     conceptualModel.setLastModifyTime(now);
                     conceptualModelDao.save(conceptualModel);
@@ -333,6 +334,7 @@ public class ConceptualModelService {
                     conceptualModelVersion.setModifier(uid);
                     conceptualModelVersion.setVerNumber(now.getTime());
                     conceptualModelVersion.setVerStatus(0);
+                    userService.messageNumPlusPlus(authorUserName);
                     conceptualModelVersion.setModifyTime(now);
                     conceptualModelVersion.setCreator(author0);
 

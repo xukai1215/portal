@@ -1,17 +1,21 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.dto.theme.ThemeVersionDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.ThemeService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +25,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Auther mingyuan
@@ -100,8 +107,43 @@ public class ThemeRestController {
     @Autowired
     TemplateVersionDao templateVersionDao;
 
+    @Autowired
+    ThemeVersionDao themeVersionDao;
+
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+    @RequestMapping(value = "/addTheme", method = RequestMethod.POST)
+    public JsonResult addTheme(HttpServletRequest request) throws IOException {
+        HttpSession session = request.getSession();
+
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file = multipartRequest.getFile("info");
+        String model = IOUtils.toString(file.getInputStream(), "utf-8");
+        JSONObject jsonObject = JSONObject.parseObject(model);
+        //将拿到的数据通过themeAddDTO这个结构来传输
+        ThemeAddDTO themeAddDTO = JSONObject.toJavaObject(jsonObject, ThemeAddDTO.class);
+        themeAddDTO.setCreator_name(session.getAttribute("name").toString());
+        themeAddDTO.setCreator_oid(session.getAttribute("oid").toString());
+
+        List<Maintainer> maintainers = new ArrayList<>();
+        Maintainer maintainer = new Maintainer();
+        maintainer.setName(session.getAttribute("name").toString());
+        maintainer.setId(session.getAttribute("oid").toString());
+        maintainers.add(maintainer);
+        themeAddDTO.setMaintainer(maintainers);
+
+        String uid = session.getAttribute("uid").toString();
+
+        System.out.println("add theme");
+
+        Theme theme = themeService.insertTheme(themeAddDTO, uid);
+
+        userService.themePlusPlus(uid);
+        return ResultUtils.success(theme.getOid());
+    }
 
     @RequestMapping(value = "/getInfo/{id}",method = RequestMethod.GET)
     JsonResult getInfo(@PathVariable ("id") String id){
@@ -119,34 +161,6 @@ public class ThemeRestController {
         JSONObject result = themeService.getDataItem(oid);
         return ResultUtils.success(result);
     }
-    //往数据库中加新的sub（副本）
-    @RequestMapping(value = "/addsub", method = RequestMethod.POST)
-    public JsonResult addsub(HttpServletRequest request) throws IOException{
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file=multipartRequest.getFile("info");
-        //取出是什么type
-        String type = multipartRequest.getParameter("type");
-
-        String model= IOUtils.toString(file.getInputStream(),"utf-8");
-        JSONObject jsonObject=JSONObject.parseObject(model);
-        ThemeUpdateDTO themeUpdateDTO = JSONObject.toJavaObject(jsonObject,ThemeUpdateDTO.class);
-
-
-        HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null){
-            return ResultUtils.error(-2,"未登录");
-        }
-        String oid = session.getAttribute("oid").toString();
-        JSONObject result = themeService.addSub(themeUpdateDTO,oid,type);
-        if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
-        }
-        else {
-            return ResultUtils.success(result);
-        }
-    }
-
     @RequestMapping(value = "/getname",method = RequestMethod.GET)
     public String  getname(String type,@PathParam("oid") String oid){
 
@@ -175,13 +189,6 @@ public class ThemeRestController {
         //取出用户的oid以及名称
         String oid=session.getAttribute("oid").toString();
         String name = session.getAttribute("name").toString();
-//        List<User> users = userDao.findAll();
-//        for (int i=0;i<users.size();i++){
-//            if (oid.equals(users.get(i).getOid())){
-//                String name = users.get(i).getName();
-//                break;
-//            }
-//        }
         user.put("oid",oid);
         user.put("name",name);
         return user;
@@ -232,99 +239,73 @@ public class ThemeRestController {
 
     @RequestMapping(value = "/accept",method = RequestMethod.POST)
     public JsonResult  replace(@RequestBody ThemeVersionDTO themeVersionDTO){
-        String themename = themeVersionDTO.getThemename();
-        String type = themeVersionDTO.getType();
-        Date time = themeVersionDTO.getTime();
-        Theme theme = themeDao.findByThemename(themename);
-        switch (type){
-            case "Info":
-                for (int i=0;i<theme.getSubDetails().size();i++){
-                    if (theme.getSubDetails().get(i).getTime().equals(time)){
-                        theme.setDetail(theme.getSubDetails().get(i).getDetail());
-                        theme.getSubDetails().get(i).setStatus("1");
-                        break;
-                    }
+            Date curDate = new Date();
+            Theme theme = themeDao.findFirstByOid(themeVersionDTO.getThemeOid());
+            String authorUserName = theme.getAuthor();
+            if (theme.getVersions() == null || theme.getVersions().size() == 0) {
+                ThemeVersion themeVersion = new ThemeVersion();
+                BeanUtils.copyProperties(theme, themeVersion, "id");
+                themeVersion.setOid(UUID.randomUUID().toString());
+                themeVersion.setThemeOid(theme.getOid());
+                themeVersion.setVerNumber((long) 0);
+                themeVersion.setStatus(2);
+                themeVersion.setModifierOid(theme.getAuthor());
+                themeVersion.setModifyTime(theme.getCreateTime());
+                themeVersionDao.insert(themeVersion);
+
+                List<String> versions = theme.getVersions();
+                if (versions == null) versions = new ArrayList<>();
+                versions.add(themeVersion.getOid());
+                theme.setVersions(versions);
+            }
+
+            ThemeVersion themeVersion = themeVersionDao.findFirstByOid(themeVersionDTO.getOid());
+
+            //版本更替
+            BeanUtils.copyProperties(themeVersion, theme, "id");
+            theme.setOid(themeVersion.getThemeOid());
+            List<String> versions = theme.getVersions();
+            versions.add(themeVersion.getOid());
+            theme.setVersions(versions);
+
+            List<String> contributors = theme.getContributors();
+            contributors = contributors == null ? new ArrayList<>() : contributors;
+            String contributor = themeVersion.getModifierOid();
+            boolean exist = false;
+            for (int i = 0; i < contributors.size(); i++) {
+                if (contributors.get(i).equals(contributor)) {
+                    exist = true;
                 }
-                break;
-            case "Model":
-                for (int i=0;i<theme.getSubClassInfos().size();i++){
-                    if (theme.getSubClassInfos().get(i).getTime().equals(time)){
-                        theme.setClassinfo(theme.getSubClassInfos().get(i).getSub_classInfo());
-                        theme.getSubClassInfos().get(i).setStatus("1");
-                        break;
-                    }
-                }
-                break;
-            case "Data":
-                for (int i=0;i<theme.getSubDataInfos().size();i++){
-                    if(theme.getSubDataInfos().get(i).getTime().equals(time)){
-                        theme.setDataClassInfo(theme.getSubDataInfos().get(i).getSub_dataClassInfos());
-                        theme.getSubDataInfos().get(i).setStatus("1");
-                        break;
-                    }
-                }
-                break;
-            case "Application":
-                for (int i=0;i<theme.getSubApplications().size();i++){
-                    if (theme.getSubApplications().get(i).getTime().equals(time)){
-                        theme.setApplication(theme.getSubApplications().get(i).getSub_applications());
-                        theme.getSubApplications().get(i).setStatus("1");
-                        break;
-                    }
-                }
-                break;
-        }
-        themeDao.save(theme);
-        JsonResult result = new JsonResult();
-        return result;
+            }
+            if (!exist && !contributor.equals(theme.getAuthor())) {
+                contributors.add(contributor);
+                theme.setContributors(contributors);
+            }
+
+            theme.setLastModifier(contributor);
+            theme.setLock(false);
+            theme.setLastModifyTime(themeVersion.getModifyTime());
+            themeDao.save(theme);
+
+            themeVersion.setStatus(1);//
+            userService.themeItemMinusMinus(authorUserName);
+            themeVersion.setAcceptTime(curDate);
+            themeVersionDao.save(themeVersion);
+            return ResultUtils.success();
     }
     @RequestMapping(value = "/reject",method = RequestMethod.POST)
     public JsonResult  reject(@RequestBody ThemeVersionDTO themeVersionDTO){
-        String themename = themeVersionDTO.getThemename();
-        String type = themeVersionDTO.getType();
-        Date time = themeVersionDTO.getTime();
-        Theme theme = themeDao.findByThemename(themename);
-        switch (type){
-            case "Info":
-                for (int i=0;i<theme.getSubDetails().size();i++){
-                    if (theme.getSubDetails().get(i).getTime().equals(time)){
-//                        theme.setDetail(theme.getSubDetails().get(i).getDetail());
-                        theme.getSubDetails().get(i).setStatus("-1");
-                        break;
-                    }
-                }
-                break;
-            case "Model":
-                for (int i=0;i<theme.getSubClassInfos().size();i++){
-                    if (theme.getSubClassInfos().get(i).getTime().equals(time)){
-//                        theme.setClassinfo(theme.getSubClassInfos().get(i).getSub_classInfo());
-                        theme.getSubClassInfos().get(i).setStatus("-1");
-                        break;
-                    }
-                }
-                break;
-            case "Data":
-                for (int i=0;i<theme.getSubDataInfos().size();i++){
-                    if(theme.getSubDataInfos().get(i).getTime().equals(time)){
-//                        theme.setDataClassInfo(theme.getSubDataInfos().get(i).getSub_dataClassInfos());
-                        theme.getSubDataInfos().get(i).setStatus("-1");
-                        break;
-                    }
-                }
-                break;
-            case "Application":
-                for (int i=0;i<theme.getSubApplications().size();i++){
-                    if (theme.getSubApplications().get(i).getTime().equals(time)){
-//                        theme.setApplication(theme.getSubApplications().get(i).getSub_applications());
-                        theme.getSubApplications().get(i).setStatus("-1");
-                        break;
-                    }
-                }
-                break;
-        }
-        themeDao.save(theme);
-        JsonResult result = new JsonResult();
-        return result;
+            Date curDate = new Date();
+            Theme theme = themeDao.findFirstByOid(themeVersionDTO.getThemeOid());
+            String authorUserName = theme.getAuthor();
+            ThemeVersion themeVersion = themeVersionDao.findFirstByOid(themeVersionDTO.getOid());
+            themeVersion.setStatus(-1);
+            userService.themeItemMinusMinus(authorUserName);
+            themeVersion.setRejectTime(curDate);
+            themeVersionDao.save(themeVersion);
+            theme.setLock(false);
+            themeDao.save(theme);
+            return ResultUtils.success();
     }
 
     @RequestMapping(value = "/getoid",method = RequestMethod.GET)
@@ -642,5 +623,60 @@ public class ThemeRestController {
         JSONObject result=themeService.searchThemeByUserId(searchText.trim(),uid,page,sortType,sortAsc);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/getMessageData", method = RequestMethod.GET)
+    public JsonResult getMessageData(HttpServletRequest request) {
+        JSONObject version = new JSONObject();
+        JSONObject themeVersion = new JSONObject();
+        version = themeService.getVersion(request);
+        return ResultUtils.success(version);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public JsonResult updateTheme(HttpServletRequest request) throws IOException{
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        String oid = session.getAttribute("oid").toString();
+        if(uid==null){
+            return ResultUtils.error(-2,"未登录");
+        }
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile file=multipartRequest.getFile("info");
+        String model=IOUtils.toString(file.getInputStream(),"utf-8");
+        JSONObject jsonObject=JSONObject.parseObject(model);
+        ThemeUpdateDTO themeUpdateDTO=JSONObject.toJavaObject(jsonObject,ThemeUpdateDTO.class);
+
+        JSONObject result=themeService.update(themeUpdateDTO,uid,oid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
+    }
+
+    @RequestMapping(value = "/uncheck/{id}", method = RequestMethod.GET)
+    public ModelAndView getThemeEditPage(@PathVariable("id") String id) {
+        System.out.println("theme compare");
+        return themeService.getThemeEditPage(id);
+    }
+    @RequestMapping(value = "/accept/{id}", method = RequestMethod.GET)
+    public ModelAndView getThemeAccept(@PathVariable("id") String id) {
+        System.out.println("theme compare");
+        return themeService.getThemeAccept(id);
+    }
+    @RequestMapping(value = "/reject/{id}", method = RequestMethod.GET)
+    public ModelAndView getThemeReject(@PathVariable("id") String id) {
+        System.out.println("theme compare");
+        return themeService.getThemeReject(id);
+    }
+    @RequestMapping(value = "/getMessageNum", method = RequestMethod.GET)
+    public Integer getMessageNum(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String userOid = session.getAttribute("oid").toString();
+        User user = userDao.findFirstByOid(userOid);
+        Integer messageNum = user.getMessageNum();
+        return messageNum;
     }
 }

@@ -837,38 +837,6 @@ public class RepositoryRestController {
         return ResultUtils.success();
     }
 
-    @RequestMapping(value = "/addTheme", method = RequestMethod.POST)
-    public JsonResult addTheme(HttpServletRequest request) throws IOException {
-        HttpSession session = request.getSession();
-
-        if(session.getAttribute("uid") == null){
-            return ResultUtils.error(-1, "no login");
-        }
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile file = multipartRequest.getFile("info");
-        String model = IOUtils.toString(file.getInputStream(), "utf-8");
-        JSONObject jsonObject = JSONObject.parseObject(model);
-        ThemeAddDTO themeAddDTO = JSONObject.toJavaObject(jsonObject, ThemeAddDTO.class);
-        themeAddDTO.setCreator_name(session.getAttribute("name").toString());
-        themeAddDTO.setCreator_oid(session.getAttribute("oid").toString());
-
-        List<Maintainer> maintainers = new ArrayList<>();
-        Maintainer maintainer = new Maintainer();
-        maintainer.setName(session.getAttribute("name").toString());
-        maintainer.setId(session.getAttribute("oid").toString());
-        maintainers.add(maintainer);
-        themeAddDTO.setMaintainer(maintainers);
-
-        String uid = session.getAttribute("uid").toString();
-
-        System.out.println("add theme");
-
-        Theme theme = repositoryService.insertTheme(themeAddDTO, uid);
-
-        userService.themePlusPlus(uid);
-        return ResultUtils.success(theme.getOid());
-    }
-
     @RequestMapping(value="/theme",method = RequestMethod.GET)
     public ModelAndView getThemeRepository() {
         System.out.println("themeRepository");

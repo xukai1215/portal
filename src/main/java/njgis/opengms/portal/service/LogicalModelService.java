@@ -344,6 +344,7 @@ public class LogicalModelService {
 
 
                 Date now = new Date();
+                String authorUserName = logicalModel_ori.getAuthor();
                 if (logicalModel_ori.getAuthor().equals(uid)) {
                     logicalModel.setLastModifyTime(now);
                     logicalModelDao.save(logicalModel);
@@ -359,6 +360,7 @@ public class LogicalModelService {
                     logicalModelVersion.setModifier(uid);
                     logicalModelVersion.setVerNumber(now.getTime());
                     logicalModelVersion.setVerStatus(0);
+                    userService.messageNumPlusPlus(authorUserName);
                     logicalModelVersion.setModifyTime(now);
                     logicalModelVersion.setCreator(author0);
 

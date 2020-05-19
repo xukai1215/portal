@@ -23,11 +23,18 @@
                 </div>
                 <div class="flexRow flexCenter iconContainer" style="">
                     <div @click="getThemeMessage">
-                    <el-badge :value="message_num" :max="99" class="item">
-                        <div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 25px ">
-                            <i class="fa fa-bell"></i>
+                    <!--<el-badge :value="message_num" :max="99" class="item">-->
+                        <!--<div class="flexCenter cursorPointer" style="padding: 5px;font-size: 18px;margin-right: 25px ">-->
+                            <!--<i class="fa fa-bell"></i>-->
+                        <!--</div>-->
+                    <!--</el-badge>-->
+                        <!--原生写法-->
+                        <div class="el-badge item">
+                            <div class="flexCenter cursorPointer" style="padding: 5px; font-size: 18px; margin-right: 25px;">
+                                <i class="fa fa-bell"></i>
+                            </div>
+                            <sup th:if="${userNavBar.messageNum}" th:text="${userNavBar.messageNum}" class="el-badge__content el-badge__content--undefined is-fixed"></sup>
                         </div>
-                    </el-badge>
                     </div>
                     <div class="innerBorderCol"></div>
 

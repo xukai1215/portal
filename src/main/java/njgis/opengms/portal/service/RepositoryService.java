@@ -569,6 +569,8 @@ public class RepositoryService {
                 concept.setImage(path);
             }
 
+            String authorUserName = author;
+
             Date now = new Date();
             if (author.equals(uid)) {
 
@@ -584,6 +586,7 @@ public class RepositoryService {
                 conceptVersion.setModifier(uid);
                 conceptVersion.setVerNumber(now.getTime());
                 conceptVersion.setVerStatus(0);
+                userService.messageNumPlusPlus(authorUserName);
                 conceptVersion.setModifyTime(now);
                 conceptVersion.setCreator(author);
 
@@ -880,6 +883,8 @@ public class RepositoryService {
                 Utils.base64StrToImage(imgStr, resourcePath + path);
                 spatialReference.setImage(path);
             }
+            String authorUserName = author;
+
             Date now = new Date();
             if (author.equals(uid)) {
 
@@ -895,6 +900,7 @@ public class RepositoryService {
                 spatialReferenceVersion.setModifier(uid);
                 spatialReferenceVersion.setVerNumber(now.getTime());
                 spatialReferenceVersion.setVerStatus(0);
+                userService.messageNumPlusPlus(authorUserName);
                 spatialReferenceVersion.setModifyTime(now);
                 spatialReferenceVersion.setCreator(author);
 
@@ -1165,6 +1171,7 @@ public class RepositoryService {
                 Utils.base64StrToImage(imgStr, resourcePath + path);
                 template.setImage(path);
             }
+            String authorUserName = author;
 
             Date now = new Date();
             if (author.equals(uid)) {
@@ -1180,6 +1187,7 @@ public class RepositoryService {
                 templateVersion.setModifier(uid);
                 templateVersion.setVerNumber(now.getTime());
                 templateVersion.setVerStatus(0);
+                userService.messageNumPlusPlus(authorUserName);
                 templateVersion.setModifyTime(now);
                 templateVersion.setCreator(author);
 
@@ -1478,6 +1486,7 @@ public class RepositoryService {
                 Utils.base64StrToImage(imgStr, resourcePath + path);
                 unit.setImage(path);
             }
+            String authorUserName = author;
 
             Date now = new Date();
             if (author.equals(uid)) {
@@ -1493,6 +1502,7 @@ public class RepositoryService {
                 unitVersion.setModifier(uid);
                 unitVersion.setVerNumber(now.getTime());
                 unitVersion.setVerStatus(0);
+                userService.messageNumPlusPlus(authorUserName);
                 unitVersion.setModifyTime(now);
                 unitVersion.setCreator(author);
 
@@ -1546,46 +1556,7 @@ public class RepositoryService {
         }
     }
 
-    public Theme insertTheme(ThemeAddDTO themeAddDTO, String uid){
-        Theme theme = new Theme();
-        BeanUtils.copyProperties(themeAddDTO, theme);
 
-        Date now = new Date();
-        theme.setCreateTime(now);
-        theme.setLastModifyTime(now);
-        theme.setOid(UUID.randomUUID().toString());
-        theme.setAuthor(uid);
-
-        //设置图片
-        String path = "/repository/theme/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs = themeAddDTO.getUploadImage().split(",");
-        if(strs.length > 1){
-            String imgStr = themeAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            theme.setImage(path);
-        } else {
-            theme.setImage("");
-        }
-
-        //从application数组中依次拿出uploadimage，转换为地址后放到image中
-        List<Application> applications = themeAddDTO.getApplication();
-
-        for(int i = 0;i<applications.size();i++){
-            String path1 = "/repository/theme/" + UUID.randomUUID().toString() + ".jpg";
-            Application application = applications.get(i);
-            String[] strs1 = application.getUpload_application_image().split(",");
-            if(strs1.length>1){
-                String imgStr = application.getUpload_application_image().split(",")[1];
-                Utils.base64StrToImage(imgStr, resourcePath+path1);
-                application.setApplication_image(path1);
-                //因为upload_application_image为base64，存入数据库非常占内存，故在此处将此属性转为空存入
-                application.setUpload_application_image("");
-            } else {
-                application.setApplication_image("");
-            }
-        }
-        return themeDao.insert(theme);
-    }
 
     private void traverseJson(String rootId, JSONObject jsonObject) {
         Classification classification = templateClassificationDao.findFirstByOid(rootId);

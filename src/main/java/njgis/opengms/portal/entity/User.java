@@ -75,6 +75,8 @@ public class User {
     int projectsCount;
     int conferencesCount;
 
+    int messageNum;
+
     Affiliation affiliation;
     Date createTime;
     Date updateTime;
