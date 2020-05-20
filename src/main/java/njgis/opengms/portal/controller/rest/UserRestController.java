@@ -2,12 +2,13 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.FileMeta;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
+import njgis.opengms.portal.service.ArticleService;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.LabService;
 import njgis.opengms.portal.service.UserService;
@@ -38,6 +39,9 @@ public class UserRestController {
 
     @Autowired
     DataItemService dataItemService;
+
+    @Autowired
+    ArticleService articleService;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -724,5 +728,24 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/listArticle",method = RequestMethod.GET)
+    JsonResult listArticle(@RequestParam(value="page")int page, @RequestParam(value="oid") String oid){
+        return ResultUtils.success(userService.listUserArticle(page,oid));
+    }
 
+    @RequestMapping(value="/userSpace/sendFeedback",method = RequestMethod.POST)
+    JsonResult sendFeedback(@RequestParam("content") String content,  HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }else {
+
+
+            String userName = session.getAttribute("uid").toString();
+            String result = userService.sendFeedback(content,userName);
+            return ResultUtils.success(result);
+        }
+
+    }
 }

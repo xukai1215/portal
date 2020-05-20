@@ -837,6 +837,8 @@ public class ComputableModelService {
 
 
             Date now = new Date();
+            String authorUserName = computableModel_ori.getAuthor();
+
             if (computableModel_ori.getAuthor().equals(uid)) {
                 computableModel.setLastModifyTime(now);
                 computableModelDao.save(computableModel);
@@ -852,6 +854,8 @@ public class ComputableModelService {
                 computableModelVersion.setModifier(uid);
                 computableModelVersion.setVerNumber(now.getTime());
                 computableModelVersion.setVerStatus(0);
+                userService.messageNumPlusPlus(authorUserName);
+
                 computableModelVersion.setModifyTime(now);
                 computableModelVersion.setCreator(author0);
 

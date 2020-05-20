@@ -11,8 +11,9 @@ public class ArticleAddDTO {
     String title;
     List<String> authors;
     String journal;
-    int startPage;
-    int endPage;
+    String pageRange;
     String date;
     String link;
+    String DOI;
+//    String status;
 }

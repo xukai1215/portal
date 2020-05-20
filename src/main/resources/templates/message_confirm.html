@@ -60,38 +60,53 @@
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-if="item.status== 'unchecked'&&(item.type=='modelItem'||item.type=='conceptualModel'||item.type=='logicalModel'||item.type=='computableModel')">
-                                                        <h4><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a> edit {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if="item.status== 'unchecked'&&(item.type=='concept'||item.type=='spatialReference'||item.type=='unit'||item.type=='template')">
-                                                        <h4><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edit {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
-                                                        <p><a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a> edited at {{item.modifyTime}}</p>
+                                                        <h4><a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a> edit {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <p><a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a> edited at {{item.modifyTime}}</p>
                                                     </el-card>
+                                                <!--theme-->
+                                                <el-card v-else-if="item.status== 'unchecked'&&(item.type=='theme')">
+                                                    <h4><a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a> edit {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.themeOid" target="_blank">{{item.name}}</a></h4>
+                                                    <p><a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a> edited at {{item.modifyTime}}</p>
+                                                </el-card>
                                                 <!--confirmed  model：modelItem、conceptualModel、logicalModel、computableModel
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-else-if = "item.status== 'confirmed'&&(item.type=='modelItem'||item.type=='conceptualModel'||item.type=='logicalModel'||item.type=='computableModel')">
-                                                        <h4>You confirm <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You confirm <a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if = "item.status== 'confirmed'&&(item.type=='concept'||item.type=='spatialReference'||item.type=='unit'||item.type=='template')">
-                                                        <h4>You confirm <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You confirm <a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You confirm at {{item.modifyTime}}</p>
                                                     </el-card>
+                                                <!--theme-->
+                                                <el-card v-else-if = "item.status== 'confirmed'&&(item.type=='theme')">
+                                                    <h4>You confirm <a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.themeOid" target="_blank">{{item.name}}</a></h4>
+                                                    <p>You confirm at {{item.modifyTime}}</p>
+                                                </el-card>
                                                 <!--reject  model：modelItem、conceptualModel、logicalModel、computableModel
                                                 community：concept、spatialReference	、unit、template-->
                                                 <!--model-->
                                                     <el-card v-else-if ="item.status== 'reject'&&(item.type=='modelItem'||item.type=='conceptualModel'||item.type=='logicalModel'||item.type=='computableModel')">
-                                                        <h4>You reject <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You reject <a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a>'s edit of {{item.ex_type}}'s <a :href="'/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if ="item.status== 'reject'&&(item.type=='concept'||item.type=='spatialReference'||item.type=='unit'||item.type=='template')">
-                                                        <h4>You reject <a :href="'/user/'+item.modifier_oid" target="_blank">{{item.modifierName}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
+                                                        <h4>You reject <a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.originOid" target="_blank">{{item.name}}</a></h4>
                                                         <p>You reject at {{item.modifyTime}}</p>
                                                     </el-card>
+                                                <!--theme-->
+                                                <el-card v-else-if ="item.status== 'reject'&&(item.type=='theme')">
+                                                    <h4>You reject <a :href="'/user/'+item.modifier.modifier_oid" target="_blank">{{item.modifier.modifier_name}}</a>'s edit of {{item.ex_type}}'s <a :href="'/repository/'+item.type+'/'+item.themeOid" target="_blank">{{item.name}}</a></h4>
+                                                    <p>You reject at {{item.modifyTime}}</p>
+                                                </el-card>
                                                 <!--comment-->
                                                 <!--model与community模型链接不同，故要进行判断-->
                                                 <!--model-->
@@ -125,7 +140,7 @@
                                     </span>
                                 </div>
                                 <el-card>
-                                    <el-tabs type="border-card">
+                                    <el-tabs :tab-position="tabPosition">
                                         <el-tab-pane label="Model">
                                             <div slot="label">
                                                 Model
@@ -167,7 +182,7 @@
                                                                     label="Modifier"
                                                                     width="120">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -226,7 +241,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -277,7 +292,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -340,7 +355,7 @@
                                                                     label="Modifier"
                                                                     width="120">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -398,7 +413,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -448,7 +463,7 @@
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier_oid">{{scope.row.modifierName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -475,7 +490,7 @@
                                                 Theme
                                                 <span class="el-badge__content el-badge__content--undefined">
                                                     {{theme_tableData1_length}}
-                                    </span>
+                                                </span>
                                             </div>
                                             <el-card>
                                                 <el-tabs type="border-card">
@@ -483,35 +498,35 @@
                                                         <div slot="label">
                                                             Unapproved version
                                                             <span class="el-badge__content el-badge__content--undefined">
-                                                    {{theme_tableData1_length}}
-                                                </span>
+                                                            {{theme_tableData1_length}}
+                                                            </span>
                                                         </div>
                                                         <el-table
                                                                 :data="theme_tableData1"
                                                                 style="width: 100%">
                                                             <el-table-column
                                                                     fixed
-                                                                    prop="time"
+                                                                    prop="modifyTime"
                                                                     label="Date"
                                                                     width="200">
                                                             </el-table-column>
                                                             <el-table-column
-                                                                    prop="theme"
+                                                                    prop="name"
                                                                     label="Name"
                                                                     width="200"
                                                             >
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="type"
-                                                                    label="Block"
+                                                                    label="Type"
                                                                     width="150">
                                                             </el-table-column>
                                                             <el-table-column
-                                                                    prop="uid"
+                                                                    prop="modifierName"
                                                                     label="Modifier"
                                                                     width="120">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.uid">{{scope.row.userName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
                                                             <el-table-column
@@ -522,7 +537,7 @@
                                                                             class="viewBtn_theme"
                                                                             size="middle"
                                                                             type="primary"
-                                                                            @click="view_theme($event),dialogVisible1 = true">View
+                                                                            @click="view_theme($event)">View
                                                                     </el-button>
                                                                 </template>
                                                             </el-table-column>
@@ -548,26 +563,26 @@
                                                                 style="width: 100%">
                                                             <el-table-column
                                                                     fixed
-                                                                    prop="time"
+                                                                    prop="modifyTime"
                                                                     label="Date"
                                                                     width="200">
                                                             </el-table-column>
                                                             <el-table-column
-                                                                    prop="theme"
+                                                                    prop="name"
                                                                     label="Name"
                                                             >
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="type"
-                                                                    label="Block"
+                                                                    label="Type"
                                                                     width="200">
                                                             </el-table-column>
                                                             <el-table-column
-                                                                    prop="uid"
+                                                                    prop="modifierName"
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.uid">{{scope.row.userName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -579,7 +594,7 @@
                                                                             class="viewAcceptBtn_theme"
                                                                             size="middle"
                                                                             type="primary"
-                                                                            @click="view_theme_accept($event),dialogVisible2 = true">View
+                                                                            @click="view_theme_accept($event)">View
                                                                     </el-button>
                                                                 </template>
                                                             </el-table-column>
@@ -599,26 +614,26 @@
                                                             <el-table-column
 
                                                                     fixed
-                                                                    prop="time"
+                                                                    prop="modifyTime"
                                                                     label="Date"
                                                                     width="200">
                                                             </el-table-column>
                                                             <el-table-column
-                                                                    prop="theme"
+                                                                    prop="name"
                                                                     label="Name"
                                                             >
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="type"
-                                                                    label="Block"
+                                                                    label="Type"
                                                                     width="200">
                                                             </el-table-column>
                                                             <el-table-column
-                                                                    prop="uid"
+                                                                    prop="modifierName"
                                                                     label="Modifier"
                                                                     width="200">
                                                                 <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.uid">{{scope.row.userName}}</a>
+                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
@@ -630,7 +645,7 @@
                                                                             class="viewRejectBtn_theme"
                                                                             size="middle"
                                                                             type="primary"
-                                                                            @click="view_theme_reject($event),dialogVisible3 = true">View
+                                                                            @click="view_theme_reject($event)">View
                                                                     </el-button>
                                                                 </template>
                                                             </el-table-column>
@@ -692,580 +707,580 @@
                     </el-card>
                 </div>
                 <!--控制theme未审核部分的显示-->
-                <el-dialog
-                        title="View"
-                        :visible.sync="dialogVisible1"
-                        width="70%"
-                        top="40px"
-                        :before-close="handleClose">
+                <!--<el-dialog-->
+                        <!--title="View"-->
+                        <!--:visible.sync="dialogVisible1"-->
+                        <!--width="70%"-->
+                        <!--top="40px"-->
+                        <!--:before-close="handleClose">-->
 
-                    <el-card>
-                        <el-card>
-                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
-                                <el-card v-if="info_seen">
-                                    <!--Info的渲染，加v-if控制-->
-                                    <div class="title text-center" style="margin-bottom:40px;">
-                                        <h3>
-                                            <span style="border-bottom:2px solid #1890ff">Theme Info</span>
-                                        </h3>
-                                    </div>
-                                        <div id="detailinfo" class="detailIntroducePanel" v-html="info_past_dialog"></div>
-                                </el-card>
-                                    <!--model的渲染，加v-if控制-->
-                                <el-card v-if="model_seen">
-                                    <div class="title text-center" style="margin-bottom:40px;">
-                                        <h3>
-                                            <span style="border-bottom:2px solid #1890ff">Model</span>
-                                        </h3>
-                                    </div>
-                                    <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                    <!--<el-card>-->
+                        <!--<el-card>-->
+                            <!--<div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>-->
+                                <!--<el-card v-if="info_seen">-->
+                                    <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                                    <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                        <!--<h3>-->
+                                            <!--<span style="border-bottom:2px solid #1890ff">Theme Info</span>-->
+                                        <!--</h3>-->
+                                    <!--</div>-->
+                                        <!--<div id="detailinfo" class="detailIntroducePanel" v-html="info_past_dialog"></div>-->
+                                <!--</el-card>-->
+                                    <!--&lt;!&ndash;model的渲染，加v-if控制&ndash;&gt;-->
+                                <!--<el-card v-if="model_seen">-->
+                                    <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                        <!--<h3>-->
+                                            <!--<span style="border-bottom:2px solid #1890ff">Model</span>-->
+                                        <!--</h3>-->
+                                    <!--</div>-->
+                                    <!--<div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">-->
 
-                                        <div class="x_content model_item">
-                                            <div>
-                                                <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
-                                            </div>
-                                            <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                                <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                                    <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                        <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
-                                                            <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                        </a>
-                                                        <div style="padding: 14px;">
-                                                            <span v-text="item2.name"></span>
-                                                        </div>
-                                                    </el-card>
-                                                </el-col>
-                                            </el-row>
-                                        </div>
-                                    </div>
-                                </el-card>
-                                    <!--data的渲染，加v-if控制-->
-                                <el-card v-if="data_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Data</span>
-                                    </h3>
-                                </div>
-                                    <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
-                                        <div class="x_content data_item">
-                                            <div>
-                                                <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
-                                            </div>
-                                            <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                                <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                                    <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                        <a :href="'https://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
-                                                            <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                        </a>
-                                                        <div style="padding: 14px;">
-                                                            <span class="data_name" v-text="item2.name"></span>
-                                                        </div>
-                                                    </el-card>
-                                                </el-col>
-                                            </el-row>
-                                        </div>
-                                    </div>
-                            </el-card>
-                                    <!--application的渲染，加v-if控制-->
-                                <el-card v-if="application_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Application</span>
-                                    </h3>
-                                </div>
-                                    <div id="sub_applications">
-                                        <div class="x_content application_item" id="sub_application">
-                                            <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                                <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                                    <a :href="item.applicationlink">
-                                                        <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                            <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">
-                                                            <div style="padding: 14px">
-                                                                <span class="application_name" v-text="item.applicationname"></span>
-                                                            </div>
-                                                        </el-card>
-                                                    </a>
-                                                </el-col>
-                                            </el-row>
-                                        </div>
-                                    </div>
-                            </el-card>
-                         </el-card>
-                    </el-card>
-                    <el-card>
-                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <el-card v-if="info_seen">
-                                <!--Info的渲染，加v-if控制-->
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
-                                    </h3>
-                                </div>
-                                <div id="myText1" v-html="info_edited_dialog"></div>
-                            </el-card>
-                            <!--model的渲染，加v-if控制-->
-                            <el-card v-if="model_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Model</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
-                                <div class="x_content model_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+                                        <!--<div class="x_content model_item">-->
+                                            <!--<div>-->
+                                                <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>-->
+                                            <!--</div>-->
+                                            <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                                <!--<el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">-->
+                                                    <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">-->
+                                                        <!--<a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">-->
+                                                            <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                        <!--</a>-->
+                                                        <!--<div style="padding: 14px;">-->
+                                                            <!--<span v-text="item2.name"></span>-->
+                                                        <!--</div>-->
+                                                    <!--</el-card>-->
+                                                <!--</el-col>-->
+                                            <!--</el-row>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</el-card>-->
+                                    <!--&lt;!&ndash;data的渲染，加v-if控制&ndash;&gt;-->
+                                <!--<el-card v-if="data_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Data</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                    <!--<div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">-->
+                                        <!--<div class="x_content data_item">-->
+                                            <!--<div>-->
+                                                <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>-->
+                                            <!--</div>-->
+                                            <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                                <!--<el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">-->
+                                                    <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">-->
+                                                        <!--<a :href="'https://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">-->
+                                                            <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                        <!--</a>-->
+                                                        <!--<div style="padding: 14px;">-->
+                                                            <!--<span class="data_name" v-text="item2.name"></span>-->
+                                                        <!--</div>-->
+                                                    <!--</el-card>-->
+                                                <!--</el-col>-->
+                                            <!--</el-row>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                            <!--</el-card>-->
+                                    <!--&lt;!&ndash;application的渲染，加v-if控制&ndash;&gt;-->
+                                <!--<el-card v-if="application_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Application</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                    <!--<div id="sub_applications">-->
+                                        <!--<div class="x_content application_item" id="sub_application">-->
+                                            <!--<el-row :gutter="20" type="center" class="row-bg" id="content2">-->
+                                                <!--<el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">-->
+                                                    <!--<a :href="item.applicationlink">-->
+                                                        <!--<el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">-->
+                                                            <!--<img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image">-->
+                                                            <!--<div style="padding: 14px">-->
+                                                                <!--<span class="application_name" v-text="item.applicationname"></span>-->
+                                                            <!--</div>-->
+                                                        <!--</el-card>-->
+                                                    <!--</a>-->
+                                                <!--</el-col>-->
+                                            <!--</el-row>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                            <!--</el-card>-->
+                         <!--</el-card>-->
+                    <!--</el-card>-->
+                    <!--<el-card>-->
+                            <!--<div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>-->
+                            <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="info_seen">-->
+                                <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Theme Info</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div id="myText1" v-html="info_edited_dialog"></div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;model的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="model_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Model</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">-->
+                                <!--<div class="x_content model_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>-->
 
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/' + item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="model_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--data的渲染，加v-if控制-->
-                            <el-card v-if="data_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Data</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/modelItem/' + item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="model_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;data的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="data_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Data</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">-->
+                                <!--<div class="x_content data_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>-->
 
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--application的渲染，加v-if控制-->
-                            <el-card v-if="application_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Application</span>
-                                    </h3>
-                                </div>
-                            <div id="sub_applications1">
-                                <div class="x_content application_item" id="sub_application1">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image1">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                        </el-card>
-                    </el-card>
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="data_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;application的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="application_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Application</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div id="sub_applications1">-->
+                                <!--<div class="x_content application_item" id="sub_application1">-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content2">-->
+                                        <!--<el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">-->
+                                            <!--<a :href="item.applicationlink">-->
+                                                <!--<el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">-->
+                                                    <!--<img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image1">-->
+                                                    <!--<div style="padding: 14px">-->
+                                                        <!--<span class="application_name" v-text="item.applicationname"></span>-->
+                                                    <!--</div>-->
+                                                <!--</el-card>-->
+                                            <!--</a>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                        <!--</el-card>-->
+                    <!--</el-card>-->
 
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogVisible1 = false">Cancel</el-button>
-                        <el-button type="primary" @click="dialogVisible1 = false">Confirm</el-button>
-                    </span>
-                </el-dialog>
+                    <!--<span slot="footer" class="dialog-footer">-->
+                        <!--<el-button @click="dialogVisible1 = false">Cancel</el-button>-->
+                        <!--<el-button type="primary" @click="dialogVisible1 = false">Confirm</el-button>-->
+                    <!--</span>-->
+                <!--</el-dialog>-->
                 <!--控制theme审核通过部分的显示-->
-                <el-dialog
-                        title="View"
-                        :visible.sync="dialogVisible2"
-                        width="70%"
-                        top="40px"
-                        :before-close="handleClose">
+                <!--<el-dialog-->
+                        <!--title="View"-->
+                        <!--:visible.sync="dialogVisible2"-->
+                        <!--width="70%"-->
+                        <!--top="40px"-->
+                        <!--:before-close="handleClose">-->
 
-                    <el-card>
-                        <el-card>
-                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <el-card v-if="info_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
-                                    </h3>
-                                </div>
-                                <div id="detailinfo_appro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
-                            </el-card>
-                            <!--model的渲染，加v-if控制-->
-                            <el-card v-if="model_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Model</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                    <!--<el-card>-->
+                        <!--<el-card>-->
+                            <!--<div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>-->
+                            <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="info_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Theme Info</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div id="detailinfo_appro" class="detailIntroducePanel" v-html="info_past_dialog"></div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;model的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="model_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Model</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">-->
 
-                                <div class="x_content model_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--data的渲染，加v-if控制-->
-                            <el-card v-if="data_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Data</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--application的渲染，加v-if控制-->
-                            <div v-if="application_seen" id="sub_applications_appro">
-                                <div class="x_content application_item" id="sub_application_appro">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image_appro">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
+                                <!--<div class="x_content model_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;data的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="data_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Data</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">-->
+                                <!--<div class="x_content data_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="data_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;application的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<div v-if="application_seen" id="sub_applications_appro">-->
+                                <!--<div class="x_content application_item" id="sub_application_appro">-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content2">-->
+                                        <!--<el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">-->
+                                            <!--<a :href="item.applicationlink">-->
+                                                <!--<el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">-->
+                                                    <!--<img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image_appro">-->
+                                                    <!--<div style="padding: 14px">-->
+                                                        <!--<span class="application_name" v-text="item.applicationname"></span>-->
+                                                    <!--</div>-->
+                                                <!--</el-card>-->
+                                            <!--</a>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
-                        </el-card>
-                        <el-card>
-                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <el-card v-if="info_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
-                                    </h3>
-                                </div>
-                                <div id="myText1_appro" v-html="info_edited_dialog"></div>
-                            </el-card>
-                            <!--model的渲染，加v-if控制-->
-                            <el-card v-if="model_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Model</span>
-                                    </h3>
-                                </div>
-                                <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
-                                <div class="x_content model_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/' + item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="model_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--data的渲染，加v-if控制-->
-                            <el-card v-if="data_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Data</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--application的渲染，加v-if控制-->
-                            <el-card v-if="application_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Application</span>
-                                    </h3>
-                                </div>
-                            <div id="sub_applications1_appro">
-                                <div class="x_content application_item" id="sub_application1_appro">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image1_appro">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                        </el-card>
-                    </el-card>
+                        <!--</el-card>-->
+                        <!--<el-card>-->
+                            <!--<div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>-->
+                            <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="info_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Theme Info</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div id="myText1_appro" v-html="info_edited_dialog"></div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;model的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="model_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Model</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">-->
+                                <!--<div class="x_content model_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/modelItem/' + item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="model_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;data的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="data_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Data</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">-->
+                                <!--<div class="x_content data_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="data_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;application的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="application_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Application</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div id="sub_applications1_appro">-->
+                                <!--<div class="x_content application_item" id="sub_application1_appro">-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content2">-->
+                                        <!--<el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">-->
+                                            <!--<a :href="item.applicationlink">-->
+                                                <!--<el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">-->
+                                                    <!--<img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image1_appro">-->
+                                                    <!--<div style="padding: 14px">-->
+                                                        <!--<span class="application_name" v-text="item.applicationname"></span>-->
+                                                    <!--</div>-->
+                                                <!--</el-card>-->
+                                            <!--</a>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                        <!--</el-card>-->
+                    <!--</el-card>-->
 
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogVisible2 = false">Cancel</el-button>
-                        <el-button type="primary" @click="dialogVisible2 = false">Confirm</el-button>
-                    </span>
-                </el-dialog>
+                    <!--<span slot="footer" class="dialog-footer">-->
+                        <!--<el-button @click="dialogVisible2 = false">Cancel</el-button>-->
+                        <!--<el-button type="primary" @click="dialogVisible2 = false">Confirm</el-button>-->
+                    <!--</span>-->
+                <!--</el-dialog>-->
                 <!--控制theme审核未通过部分的显示-->
-                <el-dialog
-                        title="View"
-                        :visible.sync="dialogVisible3"
-                        width="70%"
-                        top="40px"
-                        :before-close="handleClose">
+                <!--<el-dialog-->
+                        <!--title="View"-->
+                        <!--:visible.sync="dialogVisible3"-->
+                        <!--width="70%"-->
+                        <!--top="40px"-->
+                        <!--:before-close="handleClose">-->
 
-                    <el-card>
-                        <el-card>
-                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <el-card v-if="info_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
-                                    </h3>
-                                </div>
-                                <div id="detailinfo_unappro" class="detailIntroducePanel" v-html="info_past_dialog"></div>
-                            </el-card>
-                            <!--model的渲染，加v-if控制-->
-                            <el-card v-if="model_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Model</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">
+                    <!--<el-card>-->
+                        <!--<el-card>-->
+                            <!--<div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Original</div><br>-->
+                            <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="info_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Theme Info</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div id="detailinfo_unappro" class="detailIntroducePanel" v-html="info_past_dialog"></div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;model的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="model_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Model</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in classinfo" :key="item.mcname" class="sub_data_card">-->
 
-                                <div class="x_content model_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+                                <!--<div class="x_content model_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>-->
 
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--data的渲染，加v-if控制-->
-                            <el-card v-if="data_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Data</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/modelItem/'+ item2.oid ">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;data的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="data_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Data</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in dataClassInfo" :key="item.dcname" class="sub_data_card">-->
+                                <!--<div class="x_content data_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>-->
 
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--application的渲染，加v-if控制-->
-                            <el-card v-if="application_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Application</span>
-                                    </h3>
-                                </div>
-                            <div id="sub_applications_unappro">
-                                <div class="x_content application_item" id="sub_application_unappro">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image_unappro">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/dataItem/' +item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="data_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;application的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="application_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Application</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div id="sub_applications_unappro">-->
+                                <!--<div class="x_content application_item" id="sub_application_unappro">-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content2">-->
+                                        <!--<el-col :span="4"v-for="(item,index) in application" :key="item.id" style="margin-top:20px;" id="model_col3">-->
+                                            <!--<a :href="item.applicationlink">-->
+                                                <!--<el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">-->
+                                                    <!--<img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image_unappro">-->
+                                                    <!--<div style="padding: 14px">-->
+                                                        <!--<span class="application_name" v-text="item.applicationname"></span>-->
+                                                    <!--</div>-->
+                                                <!--</el-card>-->
+                                            <!--</a>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
 
-                        </el-card>
-                        <el-card>
-                            <div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>
-                            <!--Info的渲染，加v-if控制-->
-                            <el-card v-if="info_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Theme Info</span>
-                                    </h3>
-                                </div>
-                                <div id="myText1_unappro" v-html="info_edited_dialog"></div>
-                            </el-card>
+                        <!--</el-card>-->
+                        <!--<el-card>-->
+                            <!--<div style="text-align: center; padding-top: 20px; font-size: 30px;font-weight: bold;">Revised</div><br>-->
+                            <!--&lt;!&ndash;Info的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="info_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Theme Info</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                                <!--<div id="myText1_unappro" v-html="info_edited_dialog"></div>-->
+                            <!--</el-card>-->
 
-                            <!--model的渲染，加v-if控制-->
-                            <el-card v-if="model_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Model</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">
-                                <div class="x_content model_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>
+                            <!--&lt;!&ndash;model的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="model_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Model</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in sub_classinfo" :key="item.mcname" class="sub_data_card">-->
+                                <!--<div class="x_content model_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.mcname}}</label>-->
 
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/modelItem/' + item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="model_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--data的渲染，加v-if控制-->
-                            <el-card v-if="data_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Data</span>
-                                    </h3>
-                                </div>
-                            <div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">
-                                <div class="x_content data_item">
-                                    <label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.modelsoid" :key="item2.oid" style="margin-top:20px;" id="model_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="model_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/modelItem/' + item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="model_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;data的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="data_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Data</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div v-for="(item, index) in sub_dataClassInfos" :key="item.dcname" class="sub_data_card">-->
+                                <!--<div class="x_content data_item">-->
+                                    <!--<label style="width: 100%;font-weight: bold;font-size: 1.5rem;">Category Name:{{item.dcname}}</label>-->
 
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content">
-                                        <el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">
-                                                <a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">
-                                                    <avatar :username = "item2.name" :size="140" :rounded="false"></avatar>
-                                                </a>
-                                                <div style="padding: 14px;">
-                                                    <span class="data_name" v-text="item2.name"></span>
-                                                </div>
-                                            </el-card>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                            <!--application的渲染，加v-if控制-->
-                            <el-card v-if="application_seen">
-                                <div class="title text-center" style="margin-bottom:40px;">
-                                    <h3>
-                                        <span style="border-bottom:2px solid #1890ff">Application</span>
-                                    </h3>
-                                </div>
-                            <div id="sub_applications1_unappro">
-                                <div class="x_content application_item" id="sub_application1_unappro">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">
-                                            <a :href="item.applicationlink">
-                                                <el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">
-                                                    <img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image1_unappro">
-                                                    <div style="padding: 14px">
-                                                        <span class="application_name" v-text="item.applicationname"></span>
-                                                    </div>
-                                                </el-card>
-                                            </a>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </div>
-                            </el-card>
-                        </el-card>
-                    </el-card>
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content">-->
+                                        <!--<el-col :span="4" v-for="item2 in item.datasoid" :key="item2.oid" style="margin-top:20px;" id="data_col">-->
+                                            <!--<el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:auto;" id="data_card">-->
+                                                <!--<a :href="'https://geomodeling.njnu.edu.cn/dataItem/'+item2.oid">-->
+                                                    <!--<avatar :username = "item2.name" :size="140" :rounded="false"></avatar>-->
+                                                <!--</a>-->
+                                                <!--<div style="padding: 14px;">-->
+                                                    <!--<span class="data_name" v-text="item2.name"></span>-->
+                                                <!--</div>-->
+                                            <!--</el-card>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                            <!--&lt;!&ndash;application的渲染，加v-if控制&ndash;&gt;-->
+                            <!--<el-card v-if="application_seen">-->
+                                <!--<div class="title text-center" style="margin-bottom:40px;">-->
+                                    <!--<h3>-->
+                                        <!--<span style="border-bottom:2px solid #1890ff">Application</span>-->
+                                    <!--</h3>-->
+                                <!--</div>-->
+                            <!--<div id="sub_applications1_unappro">-->
+                                <!--<div class="x_content application_item" id="sub_application1_unappro">-->
+                                    <!--<el-row :gutter="20" type="center" class="row-bg" id="content2">-->
+                                        <!--<el-col :span="4"v-for="(item,index) in sub_applications" :key="item.id" style="margin-top:20px;" id="model_col3">-->
+                                            <!--<a :href="item.applicationlink">-->
+                                                <!--<el-card :body-style="{padding:'0px'}" shadow="hover" style="width: auto">-->
+                                                    <!--<img :src="'/static/upload' + item.applicationname" class="image" id="sub_application_image1_unappro">-->
+                                                    <!--<div style="padding: 14px">-->
+                                                        <!--<span class="application_name" v-text="item.applicationname"></span>-->
+                                                    <!--</div>-->
+                                                <!--</el-card>-->
+                                            <!--</a>-->
+                                        <!--</el-col>-->
+                                    <!--</el-row>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--</el-card>-->
+                        <!--</el-card>-->
+                    <!--</el-card>-->
 
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogVisible3 = false">Cancel</el-button>
-                        <el-button type="primary" @click="dialogVisible3 = false">Confirm</el-button>
-                    </span>
-                </el-dialog>
+                    <!--<span slot="footer" class="dialog-footer">-->
+                        <!--<el-button @click="dialogVisible3 = false">Cancel</el-button>-->
+                        <!--<el-button type="primary" @click="dialogVisible3 = false">Confirm</el-button>-->
+                    <!--</span>-->
+                <!--</el-dialog>-->
             </div>
         </div>
         </div>

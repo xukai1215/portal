@@ -73,6 +73,9 @@ public class UserService {
     FeedbackDao feedbackDao;
 
     @Autowired
+    ArticleService articleService;
+
+    @Autowired
     CommonService commonService;
 
     //远程数据容器地址
@@ -745,6 +748,12 @@ public class UserService {
         userDao.save(user);
     }
 
+    public void messageNumPlusPlus(String username){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        user.setMessageNum(++count);
+        userDao.save(user);
+    }
     //--
     public void modelItemMinusMinus(String userName){
         User user = userDao.findFirstByUserName(userName);
@@ -800,10 +809,18 @@ public class UserService {
         user.setUnits(--count);
         userDao.save(user);
     }
-    public void articleMinusMinus(String userName){
-        User user = userDao.findFirstByUserName(userName);
+
+    public void articleMinusMinus(String userOid,String articleOid){
+        User user = userDao.findFirstByOid(userOid);
         int count=user.getArticlesCount();
         user.setArticlesCount(--count);
+        List<String> articles = user.getArticles();
+        Iterator ite = articles.iterator();
+        while (ite.hasNext()) {
+            if (ite.next().equals(articleOid))
+                ite.remove();
+        }
+        user.setArticles(articles);
         userDao.save(user);
     }
 
@@ -827,7 +844,23 @@ public class UserService {
         user.setThemes(--count);
         userDao.save(user);
     }
-
+    public void messageNumMinusMinus(String username){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        user.setMessageNum(--count);
+        userDao.save(user);
+    }
+//    public String getAuthorUserName(String authorName){
+//        String authorUserName = "";
+//        List<User> users = userDao.findAll();
+//        for (int i=0;i<users.size();i++){
+//            if (authorName.equals(users.get(i).getName())){
+//                authorUserName = users.get(i).getUserName();
+//                break;
+//            }
+//        }
+//        return authorUserName;
+//    }
     public User getByUid(String userName){
         try {
             return userDao.findFirstByUserName(userName);
@@ -1667,4 +1700,29 @@ public class UserService {
         return "success";
     }
 
+    public JSONObject listUserArticle(int page, String oid) {
+        JSONObject result = new JSONObject();
+
+        User user = userDao.findFirstByOid(oid);
+        if (user == null)
+        {
+            result.put("user","no user");
+            return result;
+        }
+
+        List<String> articleIds = user.getArticles();
+        int total = articleIds.size();
+        List<Article> articles = new ArrayList<>();
+
+        int i=total-page*6-1;
+        while (i>=0&&i>=total-(page+1)*6){
+            Article article =  articleService.listByOid(articleIds.get(i));
+            articles.add(article);
+            i--;
+        }
+        result.put("total",total);
+        result.put("list",articles);
+        return result;
+
+    }
 }

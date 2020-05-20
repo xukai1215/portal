@@ -7,12 +7,20 @@
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
 
-
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link  rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link  rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
 
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/axios.min.js"></script>
     <script th:inline="javascript">
         var computableModelList =  [[${computableModelList}]];
         var graphXml = [[${graphXml}]];
@@ -42,6 +50,7 @@
                 </h1>
                 <el-button :disabled="executeDisabled" style="float: right;margin: 2% 7% 5px;font-weight: 700;color: #009900;" @click="executeVisible=true">Execution</el-button>
                 <el-button style="float: right;margin: 2% -6% 5px;font-weight: 700;color: #009900;" @click="configuration">Input Data Configuration</el-button>
+                <el-button style="float: right;margin: 2% -6% 5px;font-weight: 700;color: #009900;" @click="userDataSpaceVisible=true">aaa</el-button>
             </div>
 
             <div id="MxGraph">
@@ -136,24 +145,33 @@
             </el-dialog>
 
             <input id="uploadInputData" type="file" style="display:none" />
+
+
+
         </div>
+        <el-dialog append-to-body :visible.sync="userDataSpaceVisible" width="90%" class="noScroll">
+            <user-data></user-data>
+        </el-dialog>
+
 
         <div th:replace="fragments/footer :: footer"></div>
     </div>
+    <template th:replace="fragments/userDataSpaceOut :: userDataSpace"></template>
+    <script src="/static/js/page/userDataSpaceOut.js"></script>
 </body>
 
 
-<script src="/static/js/common/vue.min.js"></script>
+
 <script src="/static/element-ui/index.js"></script>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-
 
 <script src="/static/js/page/integratedModeling.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <!--<script src="/static/js/common/navbarJquery.js/"></script>-->
-
 <script>
 
 

@@ -6,6 +6,7 @@ import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.version.VersionDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.service.VersionService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -340,9 +341,11 @@ public class VersionRestController {
 
     @RequestMapping(value = "/accept", method = RequestMethod.POST)
     public JsonResult accept(@RequestBody VersionDTO versionDTO) {
+        String authorUserName;
         Date curDate = new Date();
         if (versionDTO.getType().equals("modelItem")) {
             ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = modelItem.getAuthor();
             if (modelItem.getVersions() == null || modelItem.getVersions().size() == 0) {
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
                 BeanUtils.copyProperties(modelItem, modelItemVersion, "id");
@@ -388,10 +391,12 @@ public class VersionRestController {
             modelItemDao.save(modelItem);
 
             modelItemVersion.setStatus(1);//
+            userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setAcceptTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
         } else if (versionDTO.getType().equals("conceptualModel")) {
             ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = conceptualModel.getAuthor();
             if (conceptualModel.getVersions() == null || conceptualModel.getVersions().size() == 0) {
                 ConceptualModelVersion conceptualModelVersion = new ConceptualModelVersion();
                 BeanUtils.copyProperties(conceptualModel, conceptualModelVersion, "id");
@@ -437,10 +442,12 @@ public class VersionRestController {
             conceptualModelDao.save(conceptualModel);
 
             conceptualModelVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             conceptualModelVersion.setAcceptTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
         } else if (versionDTO.getType().equals("logicalModel")) {
             LogicalModel logicalModel = logicalModelDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = logicalModel.getAuthor();
             if (logicalModel.getVersions() == null || logicalModel.getVersions().size() == 0) {
                 LogicalModelVersion logicalModelVersion = new LogicalModelVersion();
                 BeanUtils.copyProperties(logicalModel, logicalModelVersion, "id");
@@ -486,10 +493,12 @@ public class VersionRestController {
             logicalModelDao.save(logicalModel);
 
             logicalModelVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             logicalModelVersion.setAcceptTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
         } else if (versionDTO.getType().equals("computableModel")) {
             ComputableModel computableModel = computableModelDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = computableModel.getAuthor();
             if (computableModel.getVersions() == null || computableModel.getVersions().size() == 0) {
                 ComputableModelVersion computableModelVersion = new ComputableModelVersion();
                 BeanUtils.copyProperties(computableModel, computableModelVersion, "id");
@@ -535,10 +544,12 @@ public class VersionRestController {
             computableModelDao.save(computableModel);
 
             computableModelVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             computableModelVersion.setAcceptTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
         } else if (versionDTO.getType().equals("concept")) {
             Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = concept.getAuthor();
             if (concept.getVersions() == null || concept.getVersions().size() == 0) {
                 ConceptVersion conceptVersion = new ConceptVersion();
                 BeanUtils.copyProperties(concept, conceptVersion, "id");
@@ -584,10 +595,12 @@ public class VersionRestController {
             conceptDao.save(concept);
 
             conceptVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             conceptVersion.setAcceptTime(curDate);
             conceptVersionDao.save(conceptVersion);
         } else if (versionDTO.getType().equals("template")) {
             Template template = templateDao.findByOid(versionDTO.getOriginOid());
+            authorUserName = template.getAuthor();
             if (template.getVersions() == null || template.getVersions().size() == 0) {
                 TemplateVersion templateVersion = new TemplateVersion();
                 BeanUtils.copyProperties(template, templateVersion, "id");
@@ -633,10 +646,12 @@ public class VersionRestController {
             templateDao.save(template);
 
             templateVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             templateVersion.setAcceptTime(curDate);
             templateVersionDao.save(templateVersion);
         } else if (versionDTO.getType().equals("spatialReference")) {
             SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
+            authorUserName = spatialReference.getAuthor();
             if (spatialReference.getVersions() == null || spatialReference.getVersions().size() == 0) {
                 SpatialReferenceVersion spatialReferenceVersion = new SpatialReferenceVersion();
                 BeanUtils.copyProperties(spatialReference, spatialReferenceVersion, "id");
@@ -682,10 +697,12 @@ public class VersionRestController {
             spatialReferenceDao.save(spatialReference);
 
             spatialReferenceVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             spatialReferenceVersion.setAcceptTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
         } else if (versionDTO.getType().equals("unit")) {
             Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
+            authorUserName = unit.getAuthor();
             if (unit.getVersions() == null || unit.getVersions().size() == 0) {
                 UnitVersion unitVersion = new UnitVersion();
                 BeanUtils.copyProperties(unit, unitVersion, "id");
@@ -731,6 +748,7 @@ public class VersionRestController {
             unitDao.save(unit);
 
             unitVersion.setVerStatus(1);
+            userService.messageNumMinusMinus(authorUserName);
             unitVersion.setAcceptTime(curDate);
             unitVersionDao.save(unitVersion);
         }
@@ -740,84 +758,91 @@ public class VersionRestController {
 
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
     public JsonResult reject(@RequestBody VersionDTO versionDTO) {
+        String authorUserName;
         Date curDate = new Date();
-
+//        String authorUserName = userService.getAuthorUserName(model)
         if (versionDTO.getType().equals("modelItem")) {
+            ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = modelItem.getAuthor();
             ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(versionDTO.getOid());
             modelItemVersion.setStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setRejectTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
-
-            ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
             modelItem.setLock(false);
             modelItemDao.save(modelItem);
         } else if (versionDTO.getType().equals("conceptualModel")) {
+            ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = conceptualModel.getAuthor();
             ConceptualModelVersion conceptualModelVersion = conceptualModelVersionDao.findFirstByOid(versionDTO.getOid());
             conceptualModelVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             conceptualModelVersion.setRejectTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
-
-            ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(versionDTO.getOriginOid());
             conceptualModel.setLock(false);
             conceptualModelDao.save(conceptualModel);
         } else if (versionDTO.getType().equals("logicalModel")) {
+            LogicalModel logicalModel = logicalModelDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = logicalModel.getAuthor();
             LogicalModelVersion logicalModelVersion = logicalModelVersionDao.findFirstByOid(versionDTO.getOid());
             logicalModelVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             logicalModelVersion.setRejectTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
-
-            LogicalModel logicalModel = logicalModelDao.findFirstByOid(versionDTO.getOriginOid());
             logicalModel.setLock(false);
             logicalModelDao.save(logicalModel);
         } else if (versionDTO.getType().equals("computableModel")) {
+            ComputableModel computableModel = computableModelDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = computableModel.getAuthor();
             ComputableModelVersion computableModelVersion = computableModelVersionDao.findFirstByOid(versionDTO.getOid());
             computableModelVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             computableModelVersion.setRejectTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
-
-            ComputableModel computableModel = computableModelDao.findFirstByOid(versionDTO.getOriginOid());
             computableModel.setLock(false);
             computableModelDao.save(computableModel);
         } else if (versionDTO.getType().equals("concept")) {
+            Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
+            authorUserName = concept.getAuthor();
             ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(versionDTO.getOid());
             conceptVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             conceptVersion.setRejectTime(curDate);
             conceptVersionDao.save(conceptVersion);
-
-            Concept concept = conceptDao.findFirstByOid(versionDTO.getOriginOid());
             concept.setLock(false);
             conceptDao.save(concept);
         } else if (versionDTO.getType().equals("template")) {
+            Template template = templateDao.findByOid(versionDTO.getOriginOid());
+            authorUserName = template.getAuthor();
             TemplateVersion templateVersion = templateVersionDao.findFirstByOid(versionDTO.getOid());
             templateVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             templateVersion.setRejectTime(curDate);
             templateVersionDao.save(templateVersion);
-
-            Template template = templateDao.findByOid(versionDTO.getOriginOid());
             template.setLock(false);
             templateDao.save(template);
         } else if (versionDTO.getType().equals("spatialReference")) {
+            SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
+            authorUserName = spatialReference.getAuthor();
             SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(versionDTO.getOid());
             spatialReferenceVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             spatialReferenceVersion.setRejectTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
-
-            SpatialReference spatialReference = spatialReferenceDao.findByOid(versionDTO.getOriginOid());
             spatialReference.setLock(false);
             spatialReferenceDao.save(spatialReference);
         } else if (versionDTO.getType().equals("unit")) {
+            Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
+            authorUserName = unit.getAuthor();
             UnitVersion unitVersion = unitVersionDao.findFirstByOid(versionDTO.getOid());
             unitVersion.setVerStatus(-1);
+            userService.messageNumMinusMinus(authorUserName);
             unitVersion.setRejectTime(curDate);
             unitVersionDao.save(unitVersion);
-
-            Unit unit = unitDao.findByOid(versionDTO.getOriginOid());
             unit.setLock(false);
             unitDao.save(unit);
         }
-
         return ResultUtils.success();
-
     }
 
     @RequestMapping(value = "/getVersions", method = RequestMethod.GET)

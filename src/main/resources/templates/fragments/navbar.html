@@ -86,7 +86,7 @@
                             <img class="userIcon round_icon" th:src="${( userNavBar.image == null ||#strings.isEmpty(userNavBar.image)) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
                             <div class="el-badge item">
                                 <div id="userName" th:text="${userNavBar.name}" style="display: inline-block">Hello!!!!!!!!!</div>
-                                <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
+                                <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
                                 right: 0px !important;
                                 border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
                                 </sup>
@@ -99,7 +99,7 @@
                     <div style="padding: 10px 5px;cursor:pointer">
                         <div class="el-badge item">
                             <img class="userIcon round_icon" th:src="${(#strings.isEmpty(userNavBar.image) || userNavBar.image == null) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
-                            <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
+                            <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
                                 right: 0px !important;
                                 border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
                             </sup>
@@ -154,7 +154,7 @@
                     <!--</el-badge>-->
                     <div class="el-badge item">
                         <a id="userNoticeDir1" href="/user/userSpace#/notice">Notice</a>
-                        <sup class="el-badge__content is-fixed notice_num" style="top: 30%;right: 30% !important;padding-right: 6px;padding-left: 6px;"></sup>
+                        <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed" th:text="${userNavBar.messageNum}" style="top: 30%;right: 30% !important;padding-right: 6px;padding-left: 6px;"></sup>
                     </div>
                 </li>
                 <li><a href="/user/out">Log Out</a></li>
