@@ -20,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TemplateAddDTO {
 
+    String status;
     String name;
     String description;
     List<String> classifications;

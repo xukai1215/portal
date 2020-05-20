@@ -1,0 +1,7 @@
+User-agent: *
+Disallow:
+Sitemap: https://geomodeling.njnu.edu.cn/static/sitemap/sitemap.xml
+Sitemap: https://geomodeling.njnu.edu.cn/static/sitemap/sitemap_model.xml
+Sitemap: https://geomodeling.njnu.edu.cn/static/sitemap/sitemap_data.xml
+Sitemap: https://geomodeling.njnu.edu.cn/static/sitemap/sitemap_community.xml
+Sitemap: https://geomodeling.njnu.edu.cn/static/sitemap/sitemap_user.xml

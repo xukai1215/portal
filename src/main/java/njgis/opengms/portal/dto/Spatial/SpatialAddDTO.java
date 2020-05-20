@@ -19,6 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SpatialAddDTO {
+
+    String status;
     String name;
     String description;
     List<String> classifications;

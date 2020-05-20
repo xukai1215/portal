@@ -187,6 +187,7 @@ public class ConceptualModelService {
                 }
                 conceptualModel.setImage(images);
                 conceptualModel.setOid(UUID.randomUUID().toString());
+                conceptualModel.setStatus(jsonObject.getString("status"));
                 conceptualModel.setName(jsonObject.getString("name"));
                 conceptualModel.setDetail(jsonObject.getString("detail"));
                 JSONArray jsonArray = jsonObject.getJSONArray("authorship");
@@ -282,6 +283,7 @@ public class ConceptualModelService {
                 }
 
                 conceptualModel.setImage(images);
+                conceptualModel.setStatus(jsonObject.getString("status"));
                 conceptualModel.setName(jsonObject.getString("name"));
                 conceptualModel.setDetail(jsonObject.getString("detail"));
                 JSONArray jsonArray = jsonObject.getJSONArray("authorship");

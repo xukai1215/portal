@@ -6,6 +6,7 @@ var createConceptualModel = Vue.extend({
             curIndex: '2',
 
             conceptualModel: {
+                status: "Public",
                 bindModelItem: "",
                 bindOid: "",
                 name: "",
@@ -464,17 +465,13 @@ var createConceptualModel = Vue.extend({
                     var bindOid=this.getSession("bindOid");
                     this.conceptualModel.bindOid=bindOid;
                     $.ajax({
-                        data: "Get",
+                        type: "Get",
                         url: "/modelItem/getInfo/"+bindOid,
                         data: { },
                         cache: false,
                         async: true,
                         success: (json) => {
                             if(json.data!=null){
-                                $("#bind").html("unbind")
-                                $("#bind").removeClass("btn-success");
-                                $("#bind").addClass("btn-warning")
-                                document.getElementById("search-box").readOnly = true;
                                 this.conceptualModel.bindModelItem=json.data.name;
                                 this.clearSession();
                             }
@@ -581,10 +578,7 @@ var createConceptualModel = Vue.extend({
                     $("#search-box").val(basicInfo.relateModelItemName)
                     this.conceptualModel.bindModelItem=basicInfo.relateModelItemName;
                     this.conceptualModel.bindOid=basicInfo.relateModelItem;
-                    $("#bind").html("unbind")
-                    $("#bind").removeClass("btn-success");
-                    $("#bind").addClass("btn-warning")
-                    document.getElementById("search-box").readOnly = true;
+                    this.conceptualModel.status=basicInfo.status;
 
 
                     if(basicInfo.contentType=="MxGraph"){
@@ -822,7 +816,7 @@ var createConceptualModel = Vue.extend({
                     processData: false,
                     contentType: false,
                     async: true
-                }).done(function (res) {
+                }).done((res)=> {
                     loading.close();
                     switch (res.data.code) {
                         case 1:
@@ -860,8 +854,12 @@ var createConceptualModel = Vue.extend({
                             break;
                     }
                 }).fail(function (res) {
-                    alert("please login first");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first', 'Error', {
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
                 });
             }
             else{
@@ -879,7 +877,7 @@ var createConceptualModel = Vue.extend({
                     processData: false,
                     contentType: false,
                     async: true
-                }).done(function (res) {
+                }).done((res)=> {
                     loading.close();
                     if(res.code===0) {
                         switch (res.data.code) {
@@ -892,27 +890,64 @@ var createConceptualModel = Vue.extend({
                                 that.getMessageNum(that.conceptualModel_oid);
                                 let params = that.message_num_socket;
                                 that.send(params);
-                                alert("Success! Changes have been submitted, please wait for the author to review.");
-                                window.location.href = "/user/userSpace";
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
                                 break;
                             case 1:
-                                alert("update conceptual model successfully!");
-                                window.location.href = "/conceptualModel/" + res.data.id;
+                                this.$confirm('<div style=\'font-size: 18px\'>Update conceptual model successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    $("#editModal", parent.document).remove();
+                                    window.location.href = "/conceptualModel/" + res.data.oid;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/models/conceptualModel";
+                                });
                                 break;
                             case -1:
-                                alert("save files error");
+                                this.$alert('Save files error', 'Error', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+
+                                    }
+                                });
+
                                 break;
                             case -2:
-                                alert("create fail");
+                                this.$alert('Create failed!', 'Error', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+
+                                    }
+                                });
                                 break;
                         }
                     }
                     else{
-                        alert(res.msg);
+                        this.$alert(res.msg, 'Error', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+
+                            }
+                        });
                     }
                 }).fail(function (res) {
-                    alert("please login first");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first', 'Error', {
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
                 });
             }
         })

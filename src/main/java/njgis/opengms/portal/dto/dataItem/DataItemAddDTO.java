@@ -22,7 +22,7 @@ import java.util.List;
 public class DataItemAddDTO {
 
     String name;
-    String type;
+    String status;
     String contentType;
     String description;
     String detail;
@@ -33,7 +33,7 @@ public class DataItemAddDTO {
     List<String> keywords;
     List<String> classifications;
     List<String> displays;
-    List<String> contributers;
+//    List<String> contributers;
     List<AuthorInfo> authorship;
 
     List<DataMeta> dataList;

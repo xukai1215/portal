@@ -2,6 +2,8 @@ var createSpatialReference = Vue.extend({
     template: "#createSpatialReference",
     data() {
         return {
+            status:"Public",
+
             defaultActive: '4-2',
             curIndex: '6',
 
@@ -356,6 +358,7 @@ var createSpatialReference = Vue.extend({
 
                     //cls
                     this.cls = basicInfo.classifications;
+                    this.status = basicInfo.status;
                     let ids = [];
                     for (i = 0; i < this.cls.length; i++) {
                         for (j = 0; j < 1; j++) {
@@ -511,6 +514,7 @@ var createSpatialReference = Vue.extend({
             });
             spatialObj.classifications = this.cls;
             spatialObj.name = $("#nameInput").val();
+            spatialObj.status = this.status;
             spatialObj.wkname = $("#wknameInput").val();
             spatialObj.wkt = $("#wktInput").val();
             spatialObj.description = $("#descInput").val();
@@ -534,20 +538,39 @@ var createSpatialReference = Vue.extend({
                     contentType: false,
                     async: true,
                     data: formData,
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
                         if (result.code == "0") {
-                            alert("Create Success");
-
-                            window.location.href = "/repository/spatialReference/" + result.data;
-                            //window.location.reload();
+                            this.$confirm('<div style=\'font-size: 18px\'>Create spatial reference successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/repository/spatialReference/" + result.data;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/communities/spatialReference";
+                            });
                         }
                         else if(result.code==-1){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         }
                         else{
-                            alert("Create failed!")
+                            this.$alert('Created failed!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
                     }
                 })
@@ -567,15 +590,24 @@ var createSpatialReference = Vue.extend({
                     async: true,
                     data: formData,
 
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
                         if (result.code === 0) {
                             if (result.data.method === "update") {
-                                alert("Update Success");
-                                //$("#editModal",parent.document).remove();
-
-                                window.location.href = "/repository/spatialReference/" + result.data.oid;
-                                //window.location.reload();
+                                this.$confirm('<div style=\'font-size: 18px\'>Update spatial reference successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    window.location.href = "/repository/spatialReference/" + result.data.oid;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/communities/spatialReference";
+                                });
                             }
                             else
                                 {
@@ -587,18 +619,31 @@ var createSpatialReference = Vue.extend({
                                     that.getMessageNum(that.spatialReference_oid);
                                     let params = that.message_num_socket;
                                     that.send(params);
-                                    alert("Success! Changes have been submitted, please wait for the author to review.");
-                                    window.location.href = "/user/userSpace";
+                                    this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                        confirmButtonText: 'OK',
+                                        callback: action => {
+                                            window.location.href = "/user/userSpace";
+                                        }
+                                    });
 
                                 }
 
                         }
                         else if(result.code==-2){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         }
                         else {
-                            alert(result.msg);
+                            this.$alert(result.msg, 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
 
                     }

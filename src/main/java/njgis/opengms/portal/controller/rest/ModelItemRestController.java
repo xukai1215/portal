@@ -19,7 +19,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -145,7 +144,6 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItem);
     }
 
-    @Cacheable
     @RequestMapping (value="/list",method = RequestMethod.POST)
     public JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
         System.out.println("model item list");

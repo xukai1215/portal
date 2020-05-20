@@ -26,7 +26,7 @@ public class LogicalModelResultDTO {
     String svg;
     String author;
     String detail;
-//    String status;
+    String status;
     String relateModelItemName;
 
     Boolean isAuthor;

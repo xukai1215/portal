@@ -6,6 +6,7 @@ var createLogicalModel = Vue.extend({
             curIndex: '2',
 
             logicalModel: {
+                status:"Public",
                 bindModelItem: "",
                 bindOid: "",
                 name: "",
@@ -542,10 +543,7 @@ var createLogicalModel = Vue.extend({
                     $("#search-box").val(basicInfo.relateModelItemName)
                     this.logicalModel.bindModelItem=basicInfo.relateModelItemName;
                     this.logicalModel.bindOid=basicInfo.relateModelItem;
-                    $("#bind").html("unbind")
-                    $("#bind").removeClass("btn-success");
-                    $("#bind").addClass("btn-warning")
-                    document.getElementById("search-box").readOnly = true;
+                    this.logicalModel.status=basicInfo.status;
 
 
                     if(basicInfo.contentType=="MxGraph"){
@@ -776,7 +774,7 @@ var createLogicalModel = Vue.extend({
                     processData: false,
                     contentType: false,
                     async: true
-                }).done(function (res) {
+                }).done((res)=> {
                     loading.close();
                     switch (res.data.code) {
                         case 1:
@@ -814,8 +812,12 @@ var createLogicalModel = Vue.extend({
                             break;
                     }
                 }).fail(function (res) {
-                    alert("please login first");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first', 'Error', {
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
                 });
             }
             else{
@@ -835,7 +837,7 @@ var createLogicalModel = Vue.extend({
                     processData: false,
                     contentType: false,
                     async: true
-                }).done(function (res) {
+                }).done((res)=> {
                     loading.close();
                     console.log(res)
                     if(res.code===0) {
@@ -850,27 +852,63 @@ var createLogicalModel = Vue.extend({
                                 that.getMessageNum(that.logicalModel_oid);
                                 let params = that.message_num_socket;
                                 that.send(params);
-                                alert("Success! Changes have been submitted, please wait for the author to review.");
-                                window.location.href = "/user/userSpace";
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
                                 break;
                             case 1:
-                                alert("update logical model successfully!");
-                                window.location.href = "/logicalModel/" + res.data.id;
+                                this.$confirm('<div style=\'font-size: 18px\'>Update logical model successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    $("#editModal", parent.document).remove();
+                                    window.location.href = "/logicalModel/" + res.data.oid;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/models/logicalmodel";
+                                });
                                 break;
                             case -1:
-                                alert("save files error");
+                                this.$alert('Save files error', 'Error', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+
+                                    }
+                                });
                                 break;
                             case -2:
-                                alert("create fail");
+                                this.$alert('Create failed!', 'Error', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+
+                                    }
+                                });
                                 break;
                         }
                     }
                     else{
-                        alert(res.msg);
+                        this.$alert(res.msg, 'Error', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+
+                            }
+                        });
                     }
                 }).fail(function (res) {
-                    alert("please login first");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first', 'Error', {
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
                 });
             }
         })

@@ -1,6 +1,5 @@
 package njgis.opengms.portal.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DailyViewCount;
@@ -30,12 +29,12 @@ public class Item implements Serializable {
     String author;
     List<String> keywords;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")//是否有用待测试
-            Date createTime;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")//是否有用待测试
+    Date createTime;
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     Date lastModifyTime;
 
-    //public or private
+    //public, discoverable or private
     String status;
 
     //authorship

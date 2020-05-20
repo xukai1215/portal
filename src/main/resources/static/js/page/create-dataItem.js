@@ -2,6 +2,7 @@ var createDataItem = Vue.extend({
     template: "#createDataItem",
     data() {
         return {
+
             defaultActive: '2-1',
             curIndex: 3,
 
@@ -35,15 +36,14 @@ var createDataItem = Vue.extend({
 
             dataItemAddDTO: {
                 name: '',
+                status: 'Public',
                 description: '',
                 detail: '',
                 author: '',
-                type: '',
                 reference: '',
                 keywords: [],
                 classifications: [],
                 displays: [],
-                contributers: [],
                 authorship: [],
                 meta: {
                     coordinateSystem: '',
@@ -200,7 +200,6 @@ var createDataItem = Vue.extend({
         createdataitem() {
             this.dataItemAddDTO.name = $("#dataname").val();
 
-            this.dataItemAddDTO.type = $("input[name='imgradio']:checked").val();
             this.dataItemAddDTO.description = $("#description").val();
             // this.dataItemAddDTO.detail=$("#detail").val();
             var detail = tinyMCE.activeEditor.getContent();
@@ -219,9 +218,6 @@ var createDataItem = Vue.extend({
             //用户名
             // this.dataItemAddDTO.author=this.userId;
             this.dataItemAddDTO.author = this.userId;
-            this.dataItemAddDTO.contributers = $("#contributers").tagEditor('getTags')[0].tags;
-
-            this.dataItemAddDTO.comments = new Array();
 
             this.dataItemAddDTO.meta.coordinateSystem = $("#coordinateSystem").val();
             this.dataItemAddDTO.meta.geographicProjection = $("#geographicProjection").val();
@@ -253,13 +249,11 @@ var createDataItem = Vue.extend({
             var thedata = this.dataItemAddDTO;
 
             var that = this
-            if ($("#dataname").val().length == 0 || $("#description").val() == '' || this.dataItemAddDTO.detail == '' || this.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
-                alert("data not complete,please input required data")
-            } else {
+
                 axios.post("/dataItem/", thedata)
                     .then(res => {
                         if (res.status == 200) {
-                            alert("created data item successfully!!")
+
 
                             //创建静态页面
                             axios.get("/dataItem/adddataitembyuser", {
@@ -281,7 +275,6 @@ var createDataItem = Vue.extend({
 
                             $("#displays").val('');
                             $("#dataresoureurl").val("")
-                            $("#contributers").tagEditor('removeAll');
                             $("#coordinateSystem").val("");
                             $("#geographicProjection").val("")
                             $("#coordinateUnits").val("")
@@ -290,7 +283,7 @@ var createDataItem = Vue.extend({
                             $("#bottomrightx").val("")
                             $("#bottomrighty").val("");
                             $("#imgFile").val("");
-                            window.location.href = "/dataItem/" + res.data.data.id;
+
                             var categoryAddDTO = {
                                 id: res.data.data.id,
                                 cate: that.cls
@@ -305,13 +298,23 @@ var createDataItem = Vue.extend({
                             that.data_img = []
 
 
-
-
-
+                            this.$confirm('<div style=\'font-size: 18px\'>Create data item successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/dataItem/" + res.data.data.id;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/data/dataitem";
+                            });
 
                         }
                     })
-            }
 
         },
 
@@ -437,7 +440,11 @@ var createDataItem = Vue.extend({
                 if (currentIndex === 0) {
                     if (stepDirection === "forward") {
                         if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
-                            alert('Attention:Please complete data information!');
+                            new Vue().$message({
+                                message: 'Please complete data information!',
+                                type: 'warning',
+                                offset: 70,
+                            });
                             return false;
                         } else {
                             return true;
@@ -449,7 +456,11 @@ var createDataItem = Vue.extend({
                 if (currentIndex === 1) {
                     if (stepDirection === "forward") {
                         if ($("#description").val().length == 0) {
-                            alert('Attention:Please complete data information!');
+                            new Vue().$message({
+                                message: 'Please complete data\'s description!',
+                                type: 'warning',
+                                offset: 70,
+                            });
                             return false;
                         } else {
 

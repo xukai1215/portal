@@ -302,28 +302,28 @@ var info=new Vue({
                         this.setSession("bindOid", bindOid);
                         switch (this.relateType) {
                             case "modelItem":
-                                window.open("/user/createModelItem", "_blank")
+                                window.open("/user/userSpace#/model/createModelItem", "_blank")
                                 break;
                             case "conceptualModel":
-                                window.open("/user/createConceptualModel", "_blank")
+                                window.open("/user/userSpace#/model/createConceptualModel", "_blank")
                                 break;
                             case "logicalModel":
-                                window.open("/user/createLogicalModel", "_blank")
+                                window.open("/user/userSpace#/model/createLogicalModel", "_blank")
                                 break;
                             case "computableModel":
-                                window.open("/user/createComputableModel", "_blank")
+                                window.open("/user/userSpace#/model/createComputableModel", "_blank")
                                 break;
                             case "concept":
-                                window.open("/repository/createConcept", "_blank")
+                                window.open("/user/userSpace#/community/createConcept", "_blank")
                                 break;
                             case "spatialReference":
-                                window.open("/repository/createSpatialReference", "_blank")
+                                window.open("/user/userSpace#/community/createSpatialReference", "_blank")
                                 break;
                             case "template":
-                                window.open("/repository/createTemplate", "_blank")
+                                window.open("/user/userSpace#/community/createTemplate", "_blank")
                                 break;
                             case "unit":
-                                window.open("/repository/createUnit", "_blank")
+                                window.open("/user/userSpace#/community/createUnit", "_blank")
                                 break;
                         }
                     }

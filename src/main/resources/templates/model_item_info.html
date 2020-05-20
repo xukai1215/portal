@@ -77,7 +77,12 @@
                 <div class="detail_title">
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;word-wrap:break-word; word-break:break-all;margin-right:15px"></h2>
-                    <a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <!--<el-tooltip popper-class="fontsize-15" effect="dark" placement="left">-->
+                        <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
+                        <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
+                        <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
+                    <!--</el-tooltip>-->
+                    <a th:if="${modelInfo.status=='Public'}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">

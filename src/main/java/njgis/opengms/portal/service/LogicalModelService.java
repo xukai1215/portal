@@ -204,6 +204,7 @@ public class LogicalModelService {
 
                 logicalModel.setImage(images);
                 logicalModel.setOid(UUID.randomUUID().toString());
+                logicalModel.setStatus(jsonObject.getString("status"));
                 logicalModel.setName(jsonObject.getString("name"));
                 logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
                 logicalModel.setDescription(jsonObject.getString("description"));
@@ -310,6 +311,7 @@ public class LogicalModelService {
                 }
 
                 logicalModel.setImage(images);
+                logicalModel.setStatus(jsonObject.getString("status"));
                 logicalModel.setName(jsonObject.getString("name"));
                 logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
                 logicalModel.setDescription(jsonObject.getString("description"));

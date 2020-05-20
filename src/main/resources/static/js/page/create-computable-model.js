@@ -6,6 +6,7 @@ var createComputableModel = Vue.extend({
             curIndex: '2',
 
             computableModel: {
+                status:"Public",
                 bindModelItem: "",
                 bindOid: "",
                 name: "",
@@ -527,10 +528,7 @@ var createComputableModel = Vue.extend({
                         async: true,
                         success: (json) => {
                             if(json.data!=null){
-                                $("#bind").html("unbind")
-                                $("#bind").removeClass("btn-success");
-                                $("#bind").addClass("btn-warning")
-                                document.getElementById("search-box").readOnly = true;
+
                                 this.computableModel.bindModelItem=json.data.name;
                                 this.clearSession();
                             }
@@ -604,6 +602,7 @@ var createComputableModel = Vue.extend({
 
                     this.computableModel.bindModelItem=basicInfo.relateModelItemName;
                     this.computableModel.bindOid=basicInfo.relateModelItem;
+                    this.computableModel.status=basicInfo.status;
 
                     $(".providers").children(".panel").remove();
 
@@ -753,7 +752,7 @@ var createComputableModel = Vue.extend({
                 }
                 else if(currentIndex === 1 && stepDirection === "forward"){
                     if(this.computableModel.contentType=="Package"||this.computableModel.contentType=="Code"||this.computableModel.contentType=="Library"){
-                        if(this.fileArray.length==0){
+                        if(this.fileArray.length==0&&this.resources.length==0){
                             new Vue().$message({
                                 message: 'Please select at least one file!',
                                 type: 'warning',
@@ -912,33 +911,68 @@ var createComputableModel = Vue.extend({
                                 that.getMessageNum(that.computableModel_oid);
                                 let params = that.message_num_socket;
                                 that.send(params);
-                                alert("Success! Changes have been submitted, please wait for the author to review.");
-                                window.location.href="/user/userspace"
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
                             case 1:
-                                alert("update computable model successfully!");
-                                window.location.href = "/computableModel/" + res.data.id;
+                                this.$confirm('<div style=\'font-size: 18px\'>Update computable model successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    $("#editModal", parent.document).remove();
+                                    window.location.href = "/computableModel/" + res.data.id;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/models/computablemodel";
+                                });
                                 break;
                             case -1:
-                                alert("save files error");
-                                $("#step").css("display", "block");
-                                $(".uploading").css("display", "none");
+                                this.$alert('Save files error', 'Error', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        $("#step").css("display", "block");
+                                        $(".uploading").css("display", "none");
+                                    }
+                                });
+
                                 break;
                             case -2:
-                                alert("create fail");
-                                $("#step").css("display", "block");
-                                $(".uploading").css("display", "none");
+                                this.$alert('Create failed!', 'Error', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        $("#step").css("display", "block");
+                                        $(".uploading").css("display", "none");
+                                    }
+                                });
+
                                 break;
                         }
                     }
                     else{
-                        alert(res.msg);
-                        $("#step").css("display", "block");
-                        $(".uploading").css("display", "none");
+                        this.$alert(res.msg, 'Error', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                $("#step").css("display", "block");
+                                $(".uploading").css("display", "none");
+                            }
+                        });
+
                     }
                 }).fail((res) => {
-
-                    alert("please login first");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first', 'Error', {
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
                 });
             }
         })

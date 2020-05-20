@@ -172,6 +172,11 @@
 
                 </div>
                 <div class="content_w32 flexJustAround flexColCenter buttonZone">
+                    <el-tooltip popper-class="fontsize-15" effect="dark" :content="community.status" placement="left">
+                        <i v-if="community.status=='Public'" class="el-icon-unlock public fontsize-20 pull-right"></i>
+                        <i v-if="community.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-20 pull-right"></i>
+                        <i v-if="community.status=='Private'" class="el-icon-lock private fontsize-20 pull-right"></i>
+                    </el-tooltip>
                     <div class="lineButton flexJustStart flexColCenter" @click="comEditItem(1,community.oid)">
                         <i class="fa fa-edit" style="margin-right: 5px"></i>
                         <div class="lineButton flexCol">

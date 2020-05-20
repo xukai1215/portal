@@ -94,6 +94,10 @@
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(spatialReference,key) in pageOption.searchResult">
                             <div class="detail_title">
+                                <el-tooltip popper-class="fontsize-15" effect="dark" :content="spatialReference.status" placement="left">
+                                    <i v-if="spatialReference.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                    <i v-if="spatialReference.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                </el-tooltip>
                                 <a :class="spatialReference.viewCount>500?'hot':''" :href="'/repository/spatialReference/'+ spatialReference.oid" target="_blank">{{spatialReference.name}}&nbsp&nbsp</a>
                             </div>
                             <div class="detail_overview">

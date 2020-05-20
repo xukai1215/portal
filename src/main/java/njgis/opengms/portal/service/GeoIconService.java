@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.GeoIconDao;
 import njgis.opengms.portal.dao.IconRelationDao;
-import njgis.opengms.portal.dao.ModelDao;
 import njgis.opengms.portal.entity.GeoIcon;
 import njgis.opengms.portal.entity.IconRelation;
 import org.bson.types.Binary;
@@ -19,8 +18,6 @@ import java.util.List;
 
 @Service
 public class GeoIconService {
-
-    ModelDao modelDao = new ModelDao();
 
     @Autowired
     GeoIconDao geoIconDao;

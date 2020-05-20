@@ -12,6 +12,14 @@ body{
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
+.fontsize-2em{
+    font-size: 2em;
+}
+
+.fontsize-24{
+    font-size: 24px;
+}
+
 .fontsize-20{
     font-size: 20px;
 }
@@ -91,6 +99,21 @@ dt{
     float: left;
 }
 
+.el-icon-unlock{
+    /*font-weight: bold;*/
+}
+
+.public {
+    color: #00bd00;
+}
+
+.discoverable {
+    color: #ffbd43;
+}
+
+.private{
+    color:red;
+}
 
 .el-dialog{
     display: flex;

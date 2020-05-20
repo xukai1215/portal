@@ -26,7 +26,7 @@ public class DataItem extends Item{
 //   @Id
 //    String id;
 //    String name;
-    String type;
+
     String contentType;
     String userName;
     String reference;
@@ -35,7 +35,7 @@ public class DataItem extends Item{
     List<String> displays;
     List<String> relatedModels;
     List<DataMeta> dataList;
-    List<String> contributers;
+//    List<String> contributers;
 
     DataItemMeta meta;
 

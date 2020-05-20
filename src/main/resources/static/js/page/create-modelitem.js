@@ -312,6 +312,7 @@ var createModelItem = Vue.extend({
         },
         cls: [],
         clsStr: '',
+        status: 'Public',
 
         path:"ws://localhost:8080/websocket",
         socket:"",
@@ -603,13 +604,6 @@ var createModelItem = Vue.extend({
             //this.getModels();
         });
 
-        $("input[name='Status']").iCheck({
-            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
-            radioClass: 'iradio_flat-green',
-            increaseArea: '0%' // optional
-
-        });
-
         $.ajax({
             type: "GET",
             url: "/user/load",
@@ -697,15 +691,9 @@ var createModelItem = Vue.extend({
                     console.log(result);
                     var basicInfo = result.data;
 
-                    if(basicInfo.status=="public"){
-                        $("input[name='Status']").eq(0).iCheck('check');
-                    }
-                    else{
-                        $("input[name='Status']").eq(1).iCheck('check');
-                    }
-
                     //cls
                     this.cls = basicInfo.classifications;
+                    this.status = basicInfo.status;
                     let ids=[];
                     for(i=0;i<this.cls.length;i++){
                         for(j=0;j<2;j++){
@@ -1166,7 +1154,7 @@ var createModelItem = Vue.extend({
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            modelItemObj.status=$("input[name='Status']:checked").val();
+            modelItemObj.status=this.status;
             modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
             modelItemObj.keywords = $("#tagInput").val().split(",");
@@ -1220,9 +1208,9 @@ var createModelItem = Vue.extend({
                     contentType: false,
                     async: true,
                     data: formData,
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
-                        if (result.code == "0") {
+                        if (result.code == 0) {
 
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
@@ -1274,13 +1262,27 @@ var createModelItem = Vue.extend({
                     async: true,
                     data: formData,
 
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
                         if (result.code === 0) {
                             if(result.data.method==="update") {
-                                alert("Update Success");
-                                $("#editModal", parent.document).remove();
-                                window.location.href = "/modelItem/" + result.data.oid;
+                                this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    $("#editModal", parent.document).remove();
+                                    window.location.href = "/modelItem/" + result.data.oid;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/models/modelitem";
+                                });
+
+
                             }
                             else{
                                 //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
@@ -1292,17 +1294,29 @@ var createModelItem = Vue.extend({
                                 that.getMessageNum(that.modelitem_oid);
                                 let params = that.message_num_socket;
                                 that.send(params);
-
-                                alert("Success! Changes have been submitted, please wait for the author to review.");
-                                window.location.href = "/user/userSpace";
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
                             }
                         }
                         else if(result.code==-2){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         }
                         else{
-                            alert(result.msg);
+                            this.$alert(result.msg, 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
                     }
                 })

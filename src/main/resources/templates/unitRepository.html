@@ -96,6 +96,10 @@
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(unit,key) in pageOption.searchResult">
                             <div class="detail_title">
+                                <el-tooltip popper-class="fontsize-15" effect="dark" :content="unit.status" placement="left">
+                                    <i v-if="unit.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                    <i v-if="unit.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                </el-tooltip>
                                 <a :class="unit.viewCount>500?'hot':''" :href="'/repository/unit/'+ unit.oid" target="_blank">{{unit.name}}&nbsp&nbsp</a>
                             </div>
                             <div class="detail_overview">
