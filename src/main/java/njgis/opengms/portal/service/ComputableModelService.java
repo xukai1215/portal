@@ -1,5 +1,6 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
@@ -316,7 +317,19 @@ public class ComputableModelService {
         computableModel.setLastModifyTime(date);
         computableModel.setAuthor(userObj.getString("uid"));
         computableModel.setMdlJson(Utils.convertMdl(modelService.getMdl()));
+
+        //处理authorShip
+        List<AuthorInfo> authorships = modelService.getAuthorInfo();
+        computableModel.setAuthorship(authorships);
+
         computableModelDao.insert(computableModel);
+
+        //需要更改模型条目相关信息
+        ModelItem modelItem = modelItemDao.findFirstByOid(computableModel.getRelateModelItem());
+        ModelItemRelate modelItemRelate = modelItem.getRelate();
+        modelItemRelate.getComputableModels().add(computableModel.getOid());
+        modelItem.setRelate(modelItemRelate);
+        modelItemDao.save(modelItem);
 
         return ResultUtils.success();
 
@@ -509,6 +522,7 @@ public class ComputableModelService {
 
                     String mdlPath = null;
                     String testDataDirectoryPath = null;
+                    String envConfigPath = null;
                     String destDirPath = path + "/unZip/" + computableModel.getOid();
                     ZipUtils.unZip(new File(filePath), destDirPath);
                     File unZipDir = new File(destDirPath);
@@ -525,6 +539,11 @@ public class ComputableModelService {
                                 }
                             } else {
                                 String name = file2.getName();
+                                //判断环境配置文件是否存在
+                                if(name.equals("ModelEnvDes.xml")){
+                                    envConfigPath = file2.getAbsolutePath();
+                                    break;
+                                }
                                 if (name.substring(name.length() - 3, name.length()).equals("mdl")) {
                                     mdlPath = file2.getAbsolutePath();
                                     break;
@@ -561,6 +580,13 @@ public class ComputableModelService {
                         computableModel.setTestDataPath("");
                     }
 
+                    //add by wangming at 2020.05.19,解析环境配置文件信息
+                    if(envConfigPath != null){
+                        //TODO 说明是最新版本的，存在环境信息，进行解析
+                        JSONObject envJson = convertEnvConfigToJson(envConfigPath);
+                        computableModel.setRuntime(envJson.toJSONString());
+                    }
+                    //如果环境配置文件信息不存在，那么将在解析MDL文件的时候同时更新环境信息
                     String content = "";
                     if (mdlPath != null) {
                         try {
@@ -583,6 +609,12 @@ public class ComputableModelService {
                         //处理mdl格式错误
                         JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
                         JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
+
+                        //处理环境信息
+                        if(envConfigPath == null){
+                            JSONObject envJson = convertMDLRuntimeToJSON(runtime);
+                            computableModel.setRuntime(envJson.toJSONString());
+                        }
 
                         String type=modelClass.getString("type");
                         if(type!=null){
@@ -612,8 +644,8 @@ public class ComputableModelService {
 
                             JSONArray SCadd= new JSONArray();
 
-                            for(int j=0;j<HCinsert.size();j++){
-                                JSONObject obj=HCinsert.getJSONObject(j);
+                            for(int j=0;j<SCinsert.size();j++){
+                                JSONObject obj=SCinsert.getJSONObject(j);
                                 if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
                                     SCadd.add(obj);
                                 }
@@ -631,6 +663,8 @@ public class ComputableModelService {
                     } else {
                         System.out.println("mdl文件未找到!");
                     }
+
+
 
                     Utils.deleteDirectory(destDirPath);
                 }
@@ -715,6 +749,7 @@ public class ComputableModelService {
 
                         String mdlPath = null;
                         String testDataDirectoryPath = null;
+                        String envConfigPath = null;
                         String destDirPath = path + "/unZip/" + computableModel.getOid();
                         ZipUtils.unZip(new File(filePath), destDirPath);
                         File unZipDir = new File(destDirPath);
@@ -731,6 +766,11 @@ public class ComputableModelService {
                                     }
                                 } else {
                                     String name = file2.getName();
+                                    //判断环境配置文件是否存在
+                                    if(name.equals("ModelEnvDes.xml")){
+                                        envConfigPath = file2.getAbsolutePath();
+                                        break;
+                                    }
                                     if (name.substring(name.length() - 3, name.length()).equals("mdl")) {
                                         mdlPath = file2.getAbsolutePath();
                                         break;
@@ -767,6 +807,12 @@ public class ComputableModelService {
                             computableModel.setTestDataPath("");
                         }
 
+                        if(envConfigPath != null){
+                            //TODO 说明是最新版本的，存在环境信息，进行解析
+                            JSONObject envJson = convertEnvConfigToJson(envConfigPath);
+                            computableModel.setRuntime(envJson.toJSONString());
+                        }
+
                         String content = "";
                         if (mdlPath != null) {
                             try {
@@ -786,6 +832,12 @@ public class ComputableModelService {
 
                             computableModel.setMdl(content);
                             JSONObject mdlJson = XmlTool.documentToJSONObject(content);
+                            if(envConfigPath == null){
+                                JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+                                JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
+                                JSONObject envJson = convertMDLRuntimeToJSON(runtime);
+                                computableModel.setRuntime(envJson.toJSONString());
+                            }
                             computableModel.setMdlJson(mdlJson);
                         } else {
                             System.out.println("mdl文件未找到!");
@@ -1316,5 +1368,209 @@ public class ComputableModelService {
                 break;
         }
         return name;
+    }
+
+    //add by wangming at 2020.05.19 转换环境配置信息为json
+    private JSONObject convertEnvConfigToJson(String envPath) throws Exception {
+        JSONObject result = new JSONObject();
+        //1. 创建Reader对象
+        SAXReader reader = new SAXReader();
+        //2. 加载xml
+        org.dom4j.Document document = reader.read(new File(envPath));
+        //获取根节点
+        Element rootElement = document.getRootElement();
+        //填充基本属性
+        result.put("name", rootElement.attributeValue("name"));
+        result.put("version",rootElement.attributeValue("version"));
+        result.put("baseDir", rootElement.attributeValue("baseDir"));
+        result.put("entry",rootElement.attributeValue("entry"));
+        result.put("platform", rootElement.attributeValue("platform"));
+        //获取到所有的子元素
+        List<Element> childElements = rootElement.elements();
+        //处理节点
+        for(Element child: childElements){
+            //判断是硬件还是软件
+            if(child.getName().equals("HardwareDependencies")){
+                JSONArray hardware = handelHardware(child);
+                result.put("hardware",hardware);
+            }else if(child.getName().equals("SoftwareDependencies")){
+                JSONArray software = handleSoftware(child);
+                result.put("software",software);
+            }else if(child.getName().equals("Assemblies")){
+                JSONArray assembly = handleAssembly(child);
+                result.put("assemblies", assembly);
+            }else if(child.getName().equals("Validate")){
+                JSONArray validate = handleValidate(child);
+                result.put("validate", validate);
+            }else{
+                System.out.println("content error");
+            }
+        }
+        return result;
+    }
+
+    //add by wangming at 2020.05.19 从mdl中解析环境配置信息为json
+    private JSONObject convertMDLRuntimeToJSON(JSONObject runtime){
+        JSONObject result = new JSONObject();
+        //填充基本信息
+        result.put("name",runtime.getString("name"));
+        result.put("version", runtime.getString("version"));
+        result.put("baseDir",  runtime.getString("baseDir"));
+        result.put("entry", runtime.getString("entry"));
+
+        //处理HardwareConfigures节点（不兼容老版本了）
+        if(runtime.getJSONArray("HardwareConfigures").getJSONObject(0) != null){
+            JSONArray hardware = new JSONArray();
+            JSONArray hardware_info = runtime.getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("Add");
+            if(hardware_info != null) {
+                for (int j = 0; j < hardware_info.size(); j++) {
+                    JSONObject obj = hardware_info.getJSONObject(j);
+                    JSONObject temp = new JSONObject();
+                    temp.put("name", obj.getString("key"));
+                    temp.put("value", obj.getString("value"));
+                    hardware.add(temp);
+                }
+            }
+            result.put("hardware",hardware);
+        }
+        else{
+            result.put("hardware",new JSONArray());
+        }
+
+        //处理SoftwareConfigures节点
+        if(runtime.getJSONArray("SoftwareConfigures").getJSONObject(0) != null){
+            JSONArray software = new JSONArray();
+            JSONArray software_info = runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("Add");
+            if(software_info != null){
+                for(int i = 0; i< software_info.size(); i++){
+                    JSONObject obj = software_info.getJSONObject(i);
+                    JSONObject temp = new JSONObject();
+                    temp.put("name", obj.getString("key"));
+                    temp.put("platform",obj.getString("platform") != null ? obj.getString("platform"):"null");
+                    temp.put("value", obj.getString("value"));
+                    software.add(temp);
+                }
+            }
+            result.put("software", software);
+        }else{
+            result.put("software", new JSONArray());
+        }
+
+        //处理Assemblies节点
+        if(runtime.getJSONArray("Assemblies").getJSONObject(0) != null){
+            JSONArray assembly = new JSONArray();
+            JSONArray assembly_info = runtime.getJSONArray("Assemblies").getJSONObject(0).getJSONArray("Assembly");
+            if(assembly_info != null) {
+                for (int i = 0; i < assembly_info.size(); i++) {
+                    JSONObject obj = assembly_info.getJSONObject(i);
+                    JSONObject temp = new JSONObject();
+                    temp.put("name", obj.getString("name"));
+                    temp.put("path", obj.getString("path"));
+                    assembly.add(temp);
+                }
+                result.put("assemblies", assembly);
+            }
+        }else {
+            result.put("assemblies", new JSONArray());
+        }
+
+        //处理supportive
+        if(runtime.getJSONArray("SupportiveResources").getJSONObject(0) != null){
+            JSONArray supportive = new JSONArray();
+            JSONArray supportive_info = runtime.getJSONArray("SupportiveResources").getJSONObject(0).getJSONArray("Add");
+            if(supportive_info != null) {
+                for (int i = 0; i < supportive_info.size(); i++) {
+                    JSONObject obj = supportive_info.getJSONObject(i);
+                    JSONObject temp = new JSONObject();
+                    temp.put("name", obj.getString("name"));
+                    temp.put("type", obj.getString("type"));
+                    supportive.add(temp);
+                }
+                result.put("support", supportive);
+            }
+        }else {
+            result.put("support", new JSONArray());
+        }
+        return result;
+    }
+
+    //遍历当前元素节点下面的所有子节点
+    public static JSONArray handelHardware(Element node){
+        JSONArray result = new JSONArray();
+        //获取其下面所有子节点
+        List<Element> adds = node.elements();
+        if(adds.size() != 0){
+            for(Element element: adds){
+                JSONObject temp = new JSONObject();
+                temp.put("name", element.attributeValue("name"));
+                temp.put("value", element.attributeValue("value"));
+                result.add(temp);
+            }
+            return result;
+        }else {
+            return result;
+        }
+    }
+
+    public static JSONArray handleSoftware(Element node){
+        JSONArray result = new JSONArray();
+        List<Element> elementList = node.elements();
+        if(elementList.size() > 0){
+            //处理数组
+            for(Element element: elementList){
+                JSONObject temp = new JSONObject();
+                temp.put("name", element.attributeValue("name"));
+                temp.put("value", element.attributeValue("value"));
+                temp.put("platform", element.attributeValue("platform"));
+                if(element.attribute("minVersion") != null){
+                    temp.put("minVersion",element.attributeValue("minVersion"));
+                }else {
+                    temp.put("minVersion","null");
+                }
+                if(element.attribute("maxVersion") != null){
+                    temp.put("maxVersion",element.attributeValue("maxVersion"));
+                }else {
+                    temp.put("maxVersion","null");
+                }
+                //处理Command节点
+                if(node.element("Command") != null){
+                    Element command = node.element("Command");
+                    JSONObject commandObject = new JSONObject();
+                    commandObject.put("input", command.element("Input").getText());
+                    commandObject.put("error", command.element("Error").getText());
+                    temp.put("command",commandObject);
+                }
+                result.add(temp);
+            }
+        }
+        return result;
+    }
+
+    public static JSONArray handleAssembly(Element node){
+        JSONArray result = new JSONArray();
+        List<Element> elementList = node.elements();
+        if(elementList.size() > 0){
+            for(Element element: elementList){
+                JSONObject temp = new JSONObject();
+                temp.put("name", element.attributeValue("name"));
+                temp.put("path", element.attributeValue("path"));
+                result.add(temp);
+            }
+        }
+        return result;
+    }
+
+    public static JSONArray handleValidate(Element node){
+        JSONArray result = new JSONArray();
+        List<Element> commands = node.elements();
+        if(commands.size() > 0){
+            for(Element command: commands){
+                JSONObject commandObject = new JSONObject();
+                commandObject.put("input", command.element("Input").getText());
+                commandObject.put("Error", command.element("Error").getText());
+                result.add(commandObject);
+            }
+        }
+        return result;
     }
 }

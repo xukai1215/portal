@@ -152,7 +152,7 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping(value="/addService",method = RequestMethod.POST)
-    public JsonResult addService(ModelService modelService){
+    public JsonResult addService(@RequestBody ModelService modelService){
 
         return computableModelService.addService(modelService);
 
