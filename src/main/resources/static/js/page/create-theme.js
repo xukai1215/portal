@@ -584,60 +584,6 @@ var createTheme = Vue.extend({
                 }
             })
         },
-        jump() {
-            $.ajax({
-                type: "GET",
-                url: "/user/load",
-                data: {},
-                cache: false,
-                async: false,
-                xhrFields: {
-                    withCredentials: true
-                },
-                crossDomain: true,
-                success: (data) => {
-                    data = JSON.parse(data);
-                    if (data.oid == "") {
-                        alert("Please login first");
-                        window.location.href = "/user/login";
-                    }
-                    else {
-                        let arr = window.location.href.split("/");
-                        let bindOid = arr[arr.length - 1].split("#")[0];
-                        this.setSession("bindOid", bindOid);
-
-                        this.sendUserToParent(this.userId)
-
-                        switch (this.relateType) {
-                            case "modelItem":
-                                window.open("/user/createModelItem", "_blank")
-                                break;
-                            case "conceptualModel":
-                                window.open("/user/createConceptualModel", "_blank")
-                                break;
-                            case "logicalModel":
-                                window.open("/user/createLogicalModel", "_blank")
-                                break;
-                            case "computableModel":
-                                window.open("/user/createComputableModel", "_blank")
-                                break;
-                            case "concept":
-                                window.open("/repository/createConcept", "_blank")
-                                break;
-                            case "spatialReference":
-                                window.open("/repository/createSpatialReference", "_blank")
-                                break;
-                            case "template":
-                                window.open("/repository/createTemplate", "_blank")
-                                break;
-                            case "unit":
-                                window.open("/repository/createUnit", "_blank")
-                                break;
-                        }
-                    }
-                }
-            })
-        },
 
         handleEdit(index, row) {
             // let tablist = $(".el-tabs__nav").eq(0);//取出model的tablist

@@ -2,6 +2,8 @@ var createTemplate = Vue.extend({
     template:"#createTemplate",
     data() {
         return {
+            status:"Public",
+
             defaultActive: '4-3',
             curIndex: '6',
 
@@ -367,6 +369,7 @@ var createTemplate = Vue.extend({
 
                     //cls
                     this.cls = basicInfo.classifications;
+                    this.status = basicInfo.status;
                     let ids=[];
                     for(i=0;i<this.cls.length;i++){
                         for(j=0;j<1;j++){
@@ -522,6 +525,7 @@ var createTemplate = Vue.extend({
             templateObj.uploadImage = $('#imgShow').get(0).currentSrc;
             templateObj.description = $("#descInput").val();
             templateObj.xml = $("#xml").val();
+            templateObj.status = this.status;
 
             var detail = tinyMCE.activeEditor.getContent();
             templateObj.detail = detail.trim();
@@ -541,21 +545,39 @@ var createTemplate = Vue.extend({
                     contentType: false,
                     async: true,
                     data: formData,
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
                         if (result.code == "0") {
-                            alert("Create Success");
-                            //$("#editModal",parent.document).remove();
-
-                            window.location.href = "/repository/template/" + result.data;
-                            //window.location.reload();
+                            this.$confirm('<div style=\'font-size: 18px\'>Create data template successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/repository/template/" + result.data;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/communities/dataTemplate";
+                            });
                         }
                         else if(result.code==-1){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         }
                         else{
-                            alert("Create failed!")
+                            this.$alert('Created failed!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
 
                     }
@@ -574,13 +596,24 @@ var createTemplate = Vue.extend({
                     contentType: false,
                     async: false,
                     data: formData,
-                    success: function (result) {
+                    success: (result)=> {
+                        loading.close();
                         if (result.code === 0) {
                             if (result.data.method === "update") {
-                                alert("Update Success");
-
-                                window.location.href = "/repository/template/" + result.data.oid;
-                                //window.location.reload();
+                                this.$confirm('<div style=\'font-size: 18px\'>Update data template successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    window.location.href = "/repository/template/" + result.data.oid;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/communities/dataTemplate";
+                                });
                             }
                             else {
                                 let currentUrl = window.location.href;
@@ -592,16 +625,29 @@ var createTemplate = Vue.extend({
                                 let params = that.message_num_socket;
                                 that.send(params);
 
-                                alert("Success! Changes have been submitted, please wait for the author to review.");
-                                window.location.href = "/user/userSpace";
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
                             }
                         }
                         else if(result.code==-2){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         }
                         else{
-                            alert(result.msg);
+                            this.$alert(result.msg, 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
                     }
                 })

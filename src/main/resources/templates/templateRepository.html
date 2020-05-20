@@ -96,6 +96,10 @@
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(template,key) in pageOption.searchResult">
                             <div class="detail_title">
+                                <el-tooltip popper-class="fontsize-15" effect="dark" :content="template.status" placement="left">
+                                    <i v-if="template.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                    <i v-if="template.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                </el-tooltip>
                                 <a :class="template.viewCount>500?'hot':''" :href="'/repository/template/'+ template.oid" target="_blank">{{template.name}}&nbsp&nbsp</a>
                             </div>
                             <div class="detail_overview">

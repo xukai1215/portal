@@ -18,6 +18,7 @@ public class ConceptualModelResultDTO {
     String id;
     String oid;
     String name;
+    String status;
     //    String image;
     String relateModelItem;
     String description;

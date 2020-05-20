@@ -23,5 +23,6 @@ public class ThemeResultDTO {
     String detail;
     String author;
     Date createTime;
+    String status;
 
 }

@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
@@ -15,12 +16,10 @@ import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.ModelService;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.Utils;
-import njgis.opengms.portal.utils.XmlTool;
-import njgis.opengms.portal.utils.ZipUtils;
-import njgis.opengms.portal.utils.deCode;
+import njgis.opengms.portal.utils.*;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.dom4j.DocumentException;
@@ -300,6 +299,29 @@ public class ComputableModelService {
         }
     }
 
+    public JsonResult addService(ModelService modelService){
+
+        JSONObject userObj = userService.validPassword(modelService.getUserName(),modelService.getPassword(),null);
+        if(userObj==null){
+            return ResultUtils.error(-1,"userName or password is wrong!");
+        }
+
+        ComputableModel computableModel = new ComputableModel();
+        BeanUtils.copyProperties(modelService,computableModel);
+        computableModel.setOid(UUID.randomUUID().toString());
+        computableModel.setContentType("Service");
+        computableModel.setDeploy(true);
+        Date date = new Date();
+        computableModel.setCreateTime(date);
+        computableModel.setLastModifyTime(date);
+        computableModel.setAuthor(userObj.getString("uid"));
+        computableModel.setMdlJson(Utils.convertMdl(modelService.getMdl()));
+        computableModelDao.insert(computableModel);
+
+        return ResultUtils.success();
+
+    }
+
     public JSONObject getRelatedDataByPage(ComputableModelFindDTO computableModelFindDTO,String oid){
         ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
         JSONObject jsonObject = new JSONObject();
@@ -472,6 +494,7 @@ public class ComputableModelService {
             try {
                 computableModel.setResources(resources);
                 computableModel.setOid(UUID.randomUUID().toString());
+                computableModel.setStatus(jsonObject.getString("status"));
                 computableModel.setName(jsonObject.getString("name"));
                 computableModel.setDetail(jsonObject.getString("detail"));
                 computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
@@ -559,52 +582,52 @@ public class ComputableModelService {
                         computableModel.setMdl(content);
                         JSONObject mdlJson = XmlTool.documentToJSONObject(content);
                         //处理mdl格式错误
-                        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
-                        JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
-
-                        String type=modelClass.getString("type");
-                        if(type!=null){
-                            modelClass.put("style",type);
-                        }
-                        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
-                            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
-                        }
-
-                        JSONArray HCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
-                        if(HCinsert!=null){
-
-                            JSONArray HCadd= new JSONArray();
-
-                            for(int j=0;j<HCinsert.size();j++){
-                                JSONObject obj=HCinsert.getJSONObject(j);
-                                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
-                                    HCadd.add(obj);
-                                }
-                            }
-
-                            runtime.getJSONArray("HardwareConfigures").getJSONObject(0).put("Add",HCadd);
-                        }
-
-                        JSONArray SCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
-                        if(SCinsert!=null){
-
-                            JSONArray SCadd= new JSONArray();
-
-                            for(int j=0;j<HCinsert.size();j++){
-                                JSONObject obj=HCinsert.getJSONObject(j);
-                                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
-                                    SCadd.add(obj);
-                                }
-                            }
-
-                            runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).put("Add",SCadd);
-                        }
-
-                        modelClass.getJSONArray("Runtime").remove(0);
-                        modelClass.getJSONArray("Runtime").add(runtime);
-                        mdlJson.getJSONArray("ModelClass").remove(0);
-                        mdlJson.getJSONArray("ModelClass").add(modelClass);
-                        //End
+//                        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+//                        JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
+//
+//                        String type=modelClass.getString("type");
+//                        if(type!=null){
+//                            modelClass.put("style",type);
+//                        }
+//                        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+//                            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+//                        }
+//
+//                        JSONArray HCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+//                        if(HCinsert!=null){
+//
+//                            JSONArray HCadd= new JSONArray();
+//
+//                            for(int j=0;j<HCinsert.size();j++){
+//                                JSONObject obj=HCinsert.getJSONObject(j);
+//                                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+//                                    HCadd.add(obj);
+//                                }
+//                            }
+//
+//                            runtime.getJSONArray("HardwareConfigures").getJSONObject(0).put("Add",HCadd);
+//                        }
+//
+//                        JSONArray SCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SoftwareConfigures").getJSONObject(0).getJSONArray("INSERT");
+//                        if(SCinsert!=null){
+//
+//                            JSONArray SCadd= new JSONArray();
+//
+//                            for(int j=0;j<HCinsert.size();j++){
+//                                JSONObject obj=HCinsert.getJSONObject(j);
+//                                if (obj.getJSONObject("key")!=null&&obj.getJSONObject("name")!=null){
+//                                    SCadd.add(obj);
+//                                }
+//                            }
+//
+//                            runtime.getJSONArray("SoftwareConfigures").getJSONObject(0).put("Add",SCadd);
+//                        }
+//
+//                        modelClass.getJSONArray("Runtime").remove(0);
+//                        modelClass.getJSONArray("Runtime").add(runtime);
+//                        mdlJson.getJSONArray("ModelClass").remove(0);
+//                        mdlJson.getJSONArray("ModelClass").add(modelClass);
+//                        //End
                         computableModel.setMdlJson(mdlJson);
                     } else {
                         System.out.println("mdl文件未找到!");
@@ -780,6 +803,7 @@ public class ComputableModelService {
             }
 
             computableModel.setName(jsonObject.getString("name"));
+            computableModel.setStatus(jsonObject.getString("status"));
             computableModel.setDetail(jsonObject.getString("detail"));
             computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
             computableModel.setDescription(jsonObject.getString("description"));

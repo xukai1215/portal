@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Email</title>
+
+    <style>
+        body{
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<p th:text="'Dear '+${userName}"></p>
+<p>It has been <span th:text="${days}"></span> days since you register as a member of <a href='https://geomodeling.njnu.edu.cn'>OpenGMS</a>. You have shared some resources about geographic model in the platform, including
+
+<span th:if="${modelItemCount>0}" th:text="${modelItemCount}+' model item'"></span><span th:if="${modelItemCount>1}">s</span><span th:if="${modelItemCount>0}">, </span>
+<span th:if="${conceptualItemCount>0}" th:text="${conceptualItemCount}+' conceptual model'"></span><span th:if="${conceptualItemCount>1}">s</span><span th:if="${conceptualItemCount>0}">, </span>
+<span th:if="${logicalModelCount>0}" th:text="${logicalModelCount}+' logical model'"></span><span th:if="${logicalModelCount>1}">s</span><span th:if="${logicalModelCount>0}">, </span>
+<span th:if="${computableModelCount>0}" th:text="${computableModelCount}+' computable model'"></span><span th:if="${computableModelCount>1}">s</span><span th:if="${computableModelCount>0}">, </span>
+<span th:if="${dataItemCount>0}" th:text="${dataItemCount}+' data item'"></span><span th:if="${dataItemCount>1}">s</span><span th:if="${dataItemCount>0}">, </span>
+<span th:if="${conceptCount>0}" th:text="${conceptCount}+' concept'"></span><span th:if="${conceptCount>1}">s</span><span th:if="${conceptCount>0}">, </span>
+<span th:if="${spatialReferenceCount>0}" th:text="${spatialReferenceCount}+' spatial reference'"></span><span th:if="${spatialReferenceCount>1}">s</span><span th:if="${spatialReferenceCount>0}">, </span>
+<span th:if="${templateCount>0}" th:text="${templateCount}+' data template'"></span><span th:if="${templateCount>1}">s</span><span th:if="${templateCount>0}">, </span>
+<span th:if="${unitCount>0}" th:text="${unitCount}+' unit'"></span><span th:if="${unitCount>1}">s</span><span th:if="${unitCount>0}">. </span>
+</p>
+
+
+</body>
+</html>

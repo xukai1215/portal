@@ -976,39 +976,39 @@ public class RepositoryService {
         }
         System.out.println(classResult);
 
-        if(template.getXml()!=null)
-        {
-            org.dom4j.Document d = null;
-            JSONArray localizationArray = new JSONArray();
-            try {
-                d = DocumentHelper.parseText(template.getXml());
-                org.dom4j.Element root = d.getRootElement();
-//            org.dom4j.Element Localizations = root.element("Localizations");
-                List<org.dom4j.Element> LocalizationList = root.elements("Localization");
-                for (org.dom4j.Element Localization : LocalizationList) {
-                    String language = Localization.attributeValue("Local");
-                    String name = Localization.attributeValue("Name");
-                    String desc = Localization.attributeValue("Description");
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("language", language);
-                    jsonObject.put("name", name);
-                    jsonObject.put("desc", desc);
-                    localizationArray.add(jsonObject);
-                }
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
-
-            localizationArray.sort(new Comparator<Object>() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    JSONObject a = (JSONObject) o1;
-                    JSONObject b = (JSONObject) o2;
-                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
-                }
-            });
-            modelAndView.addObject("localizations",localizationArray);
-        }
+//        if(template.getXml()!=null)
+//        {
+//            org.dom4j.Document d = null;
+//            JSONArray localizationArray = new JSONArray();
+//            try {
+//                d = DocumentHelper.parseText(template.getXml());
+//                org.dom4j.Element root = d.getRootElement();
+////            org.dom4j.Element Localizations = root.element("Localizations");
+//                List<org.dom4j.Element> LocalizationList = root.elements("Localization");
+//                for (org.dom4j.Element Localization : LocalizationList) {
+//                    String language = Localization.attributeValue("Local");
+//                    String name = Localization.attributeValue("Name");
+//                    String desc = Localization.attributeValue("Description");
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("language", language);
+//                    jsonObject.put("name", name);
+//                    jsonObject.put("desc", desc);
+//                    localizationArray.add(jsonObject);
+//                }
+//            } catch (DocumentException e) {
+//                e.printStackTrace();
+//            }
+//
+//            localizationArray.sort(new Comparator<Object>() {
+//                @Override
+//                public int compare(Object o1, Object o2) {
+//                    JSONObject a = (JSONObject) o1;
+//                    JSONObject b = (JSONObject) o2;
+//                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+//                }
+//            });
+//            modelAndView.addObject("localizations",localizationArray);
+//        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String lastModifyTime=sdf.format(template.getLastModifyTime());

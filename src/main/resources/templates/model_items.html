@@ -212,6 +212,10 @@
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
                             <div class="detail_title">
+                                <el-tooltip popper-class="fontsize-15" effect="dark" :content="modelItem.status" placement="left">
+                                    <i v-if="modelItem.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                    <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                </el-tooltip>
                                 <a :class="modelItem.viewCount>500?'hot':''" :href="'/modelItem/'+ modelItem.oid"
                                    target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
                             </div>

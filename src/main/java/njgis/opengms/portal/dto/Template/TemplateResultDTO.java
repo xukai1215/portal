@@ -18,7 +18,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TemplateResultDTO {
+
     String oid;
+    String status;
     String name;
     String image;
     String description;

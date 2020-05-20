@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Data Item Info | OpenGMS</title>
+    <title th:text="${datainfo.data.name}+' | Data Item Info | OpenGMS'"></title>
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
@@ -58,6 +58,11 @@
         <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title" th:object="${datainfo}">
+                    <!--<el-tooltip popper-class="fontsize-15" effect="dark" placement="left">-->
+                    <i th:if="${datainfo.data.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
+                    <i th:if="${datainfo.data.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
+                    <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
+                    <!--</el-tooltip>-->
                     <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>
                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'></a>-->
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
@@ -190,7 +195,7 @@
 
             </div>
             <!--description-->
-            <div id="description" class="detail_block">
+            <div th:if="${datainfo.data.detail!=''&&datainfo.data.detail!=null}" id="description" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>

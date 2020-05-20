@@ -214,7 +214,6 @@ public class RepositoryRestController {
 
         System.out.println("add concept & semantic");
 
-
         Concept concept = repositoryService.insertConcept(conceptAddDTO,uid);
         userService.conceptPlusPlus(uid);
         return ResultUtils.success(concept.getOid());

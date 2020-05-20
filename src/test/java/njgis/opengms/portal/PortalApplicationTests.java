@@ -8,6 +8,7 @@ import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.service.CommonService;
 import njgis.opengms.portal.service.UserService;
+import njgis.opengms.portal.utils.ChartUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.io.FileUtils;
@@ -86,6 +87,13 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void Emap(){
+        List<String> countries = Arrays.asList("China","India","Australia");
+        List<Integer> counts = Arrays.asList(20,10,5);
+        System.out.println(ChartUtils.generateMap(countries,counts));
+    }
 
     @Test
     public void authorships(){
@@ -175,6 +183,163 @@ public class PortalApplicationTests {
 
     @Test
     public void GenerateSitemap() {
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+            File file=new File("D:/sitemap.xml");
+            file.createNewFile();
+            Writer writer = new FileWriter(file);
+
+            int count=0;
+
+            String content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            content+="\t<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.9\">\n";
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>1.0</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/modelItem/repository</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/repository</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/concept</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/spatialReference</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/template</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/repository/unit</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/hydro-model-integration/main</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/FGM-theme/</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/TrafficNoiseTheme/</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/app/geodetector.html</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/app/B-SHADE_Sampling.html</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+
+
+            content+="\t\t<url>\n";
+            content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html</loc>\n";
+            content+="\t\t\t<lastmod>"+sdf.format(new Date())+"</lastmod>\n";
+            content+="\t\t\t<changefreq>weekly</changefreq>\n";
+            content+="\t\t\t<priority>0.9</priority>\n";
+            content+="\t\t</url>\n";
+
+            content+="\t</urlset>\n";
+            writer.write(content);
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+
+        }
+
+    }
+
+    @Test
+    public void GenerateSitemapCommunity() {
         try {
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
@@ -321,40 +486,10 @@ public class PortalApplicationTests {
 //            content+="\t\t</url>\n";
 
 
-//            List<ModelItem> modelItemList=modelItemDao.findAll();
-//            for(ModelItem modelItem:modelItemList){
-//
-//                content+="\t\t<url>\n";
-//                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/modelItem/"+modelItem.getOid()+"</loc>\n";
-//                content+="\t\t\t<lastmod>"+sdf.format(modelItem.getLastModifyTime())+"</lastmod>\n";
-//                content+="\t\t\t<changefreq>monthly</changefreq>\n";
-//                content+="\t\t\t<priority>0.8</priority>\n";
-//                content+="\t\t</url>\n";
-//
-//                count++;
-//                writer.write(content);
-//                content="";
-//                System.out.println("model item:"+count);
-//            }
-//
-//            List<DataItem> dataItemList=dataItemDao.findAll();
-//            for(DataItem dataItem:dataItemList){
-//
-//                content+="\t\t<url>\n";
-//                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/"+dataItem.getId()+"</loc>\n";
-//                content+="\t\t\t<lastmod>"+sdf.format(dataItem.getLastModifyTime())+"</lastmod>\n";
-//                content+="\t\t\t<changefreq>monthly</changefreq>\n";
-//                content+="\t\t\t<priority>0.8</priority>\n";
-//                content+="\t\t</url>\n";
-//
-//                count++;
-//                writer.write(content);
-//                content="";
-//                System.out.println("data item:"+count);
-//            }
 
 
 
+//            community
             List<Concept> conceptList=conceptDao.findAll();
             for(Concept concept:conceptList){
 
@@ -430,6 +565,138 @@ public class PortalApplicationTests {
             }
 
             writer.flush();
+
+            content+="\t</urlset>\n";
+            writer.write(content);
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+
+        }
+
+    }
+
+    @Test
+    public void GenerateSitemapData() {
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+            File file=new File("D:/sitemap_data.xml");
+            file.createNewFile();
+            Writer writer = new FileWriter(file);
+
+            int count=0;
+
+            String content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            content+="\t<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.9\">\n";
+
+            List<DataItem> dataItemList=dataItemDao.findAll();
+            for(DataItem dataItem:dataItemList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/"+dataItem.getId()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(dataItem.getLastModifyTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>0.8</priority>\n";
+                content+="\t\t</url>\n";
+
+                count++;
+                writer.write(content);
+                content="";
+                System.out.println("data item:"+count);
+            }
+
+            content+="\t</urlset>\n";
+            writer.write(content);
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+
+        }
+
+    }
+
+    @Test
+    public void GenerateSitemapModel() {
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+            File file=new File("D:/sitemap_model.xml");
+            file.createNewFile();
+            Writer writer = new FileWriter(file);
+
+            int count=0;
+
+            String content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            content+="\t<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.9\">\n";
+
+
+            List<ModelItem> modelItemList=modelItemDao.findAll();
+            for(ModelItem modelItem:modelItemList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/modelItem/"+modelItem.getOid()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(modelItem.getLastModifyTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>0.8</priority>\n";
+                content+="\t\t</url>\n";
+
+                count++;
+                writer.write(content);
+                content="";
+                System.out.println("model item:"+count);
+            }
+
+            content+="\t</urlset>\n";
+            writer.write(content);
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+
+        }
+
+    }
+
+    @Test
+    public void setPublic(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(int i=0;i<modelItemList.size();i++){
+            ModelItem modelItem = modelItemList.get(i);
+            modelItem.setStatus("Public");
+            modelItemDao.save(modelItem);
+        }
+    }
+
+    @Test
+    public void GenerateSitemapUser() {
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+            File file=new File("D:/sitemap_user.xml");
+            file.createNewFile();
+            Writer writer = new FileWriter(file);
+
+            int count=0;
+
+            String content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            content+="\t<urlset xmlns=\"http://www.google.com/schemas/sitemap/0.9\">\n";
+
+
+            List<User> userList=userDao.findAll();
+            for(User user:userList){
+
+                content+="\t\t<url>\n";
+                content+="\t\t\t<loc>https://geomodeling.njnu.edu.cn/modelItem/"+user.getOid()+"</loc>\n";
+                content+="\t\t\t<lastmod>"+sdf.format(user.getUpdateTime())+"</lastmod>\n";
+                content+="\t\t\t<changefreq>monthly</changefreq>\n";
+                content+="\t\t\t<priority>1</priority>\n";
+                content+="\t\t</url>\n";
+
+                count++;
+                writer.write(content);
+                content="";
+                System.out.println("user:"+count);
+            }
 
             content+="\t</urlset>\n";
             writer.write(content);
@@ -763,36 +1030,72 @@ public class PortalApplicationTests {
 
     @Test
     public void setViewCount(){
-//        List<ModelItem> modelItemList=modelItemDao.findAll();
-//        for(ModelItem modelItem:modelItemList){
-//            modelItemDao.save(modelItem);
+        List<ModelItem> modelItemList=modelItemDao.findAll();
+        for(ModelItem modelItem:modelItemList){
+            modelItem.setStatus("Public");
+            modelItemDao.save(modelItem);
 //            Utils.count();
-//        }
+        }
+
+        List<ConceptualModel> conceptualModelList = conceptualModelDao.findAll();
+        for(ConceptualModel conceptualModel:conceptualModelList){
+            conceptualModel.setStatus("Public");
+            conceptualModelDao.save(conceptualModel);
+        }
+
+        List<LogicalModel> logicalModelList = logicalModelDao.findAll();
+        for(LogicalModel logicalModel:logicalModelList){
+            logicalModel.setStatus("Public");
+            logicalModelDao.save(logicalModel);
+        }
+
+        List<ComputableModel> computableModelList = computableModelDao.findAll();
+        for(ComputableModel computableModel:computableModelList){
+            computableModel.setStatus("Public");
+            computableModelDao.save(computableModel);
+        }
+
+        List<DataItem> dataItemList = dataItemDao.findAll();
+        for(DataItem dataItem:dataItemList){
+            dataItem.setStatus("Public");
+            dataItemDao.save(dataItem);
+        }
 
         List<Concept> conceptList=conceptDao.findAll();
         for(Concept concept:conceptList){
             //concept.setViewCount(concept.getLoadCount());
+            concept.setStatus("Public");
             conceptDao.save(concept);
         }
 
         List<SpatialReference> spatialReferenceList=spatialReferenceDao.findAll();
         for(SpatialReference spatialReference:spatialReferenceList){
-
+            spatialReference.setStatus("Public");
             //spatialReference.setViewCount(spatialReference.getLoadCount());
             spatialReferenceDao.save(spatialReference);
         }
 
         List<Template> templateList=templateDao.findAll();
         for(Template template:templateList){
+            template.setStatus("Public");
             //template.setViewCount(template.getLoadCount());
             templateDao.save(template);
         }
 
         List<Unit> unitList=unitDao.findAll();
         for(Unit unit:unitList){
+            unit.setStatus("Public");
             //unit.setViewCount(unit.getLoadCount());
             unitDao.save(unit);
         }
+
+        List<Theme> themeList = themeDao.findAll();
+        for(Theme theme:themeList){
+            theme.setStatus("Public");
+            themeDao.save(theme);
+        }
+
+
 
     }
 

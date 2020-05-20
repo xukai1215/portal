@@ -48,6 +48,11 @@
                     <a th:if="${history!=true}"
                        th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
+                    <!--<el-tooltip popper-class="fontsize-15" effect="dark" placement="left">-->
+                    <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
+                    <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
+                    <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
+                    <!--</el-tooltip>-->
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
 
@@ -87,7 +92,7 @@
                     <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
-                        <span th:if="${modelInfo.contentType=='Package'}">
+                        <span th:if="${modelInfo.contentType=='Package'||modelInfo.contentType=='Service'}">
                             <button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"
                                     @click="dialogVisible = true">Deploy
                             </button>
@@ -242,7 +247,7 @@
             </div>
 
             <div id="link" class="detail_block"
-                 th:if="${modelInfo.contentType=='Link'||modelInfo.contentType=='Service'}">
+                 th:if="${modelInfo.contentType=='Link'||(modelInfo.contentType=='Service' && modelInfo.mdl == null)}">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Link</h4>
@@ -257,7 +262,7 @@
                 </div>
             </div>
 
-            <div v-cloak id="MDL" class="detail_block" th:if="${mdlJson}!=null">
+            <div id="MDL" class="detail_block" th:if="${mdlJson}!=null">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>MDL</h4>

@@ -26,6 +26,7 @@ public class ConceptResultDTO {
     String description_ZH;
     String description_EN;
     String author;
+    String status;
 
     Date createTime;
 

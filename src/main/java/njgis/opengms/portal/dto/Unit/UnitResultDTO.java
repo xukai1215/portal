@@ -20,6 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class UnitResultDTO {
     String oid;
+    String status;
     String name;
     String image;
     String description;

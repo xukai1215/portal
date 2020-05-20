@@ -9,6 +9,7 @@ import com.github.abel533.echarts.code.Trigger;
 import com.github.abel533.echarts.feature.MagicType;
 import com.github.abel533.echarts.json.GsonOption;
 import com.github.abel533.echarts.series.Bar;
+import com.github.abel533.echarts.series.EMap;
 import com.github.abel533.echarts.series.Line;
 import com.github.abel533.echarts.series.Pie;
 import com.github.abel533.echarts.style.ItemStyle;
@@ -20,9 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -192,6 +191,36 @@ public class ChartUtils {
 //            option.yAxis(category);// y轴
 //        }
 
+    }
+
+    public static String generateMap(List<String> countries, List<Integer> counts){
+
+        GsonOption option = new GsonOption();
+        option.backgroundColor("transparent");
+        option.title().text("Locations of Viewers").x("center").y("bottom").textStyle().fontSize(30);
+        option.dataRange().show(true).y(300).calculable(true).min(0).max(20).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList("High","Low"));
+//        option.legend().show(true);
+
+        EMap eMap = new EMap();
+//        eMap.setName("Viewers' Location");
+        eMap.setRoam(false);
+        eMap.setMapType("world");
+        ItemStyle itemStyle =new ItemStyle();
+        itemStyle.normal().label().setShow(false);
+        eMap.setItemStyle(itemStyle);
+
+
+        for(int i=0;i<countries.size();i++){
+            Map<String, Object> map = new HashMap<String, Object>(2);
+            map.put("name",countries.get(i));
+            map.put("value",counts.get(i));
+            eMap.data(map);
+        }
+
+        option.series(eMap);
+
+
+        return generateEChart(new Gson().toJson(option));
     }
 
     /**

@@ -130,13 +130,13 @@ new Vue({
                         this.setSession("bindOid",window.location.pathname.substring(11));
                         switch (num){
                             case 1:
-                                window.open("/user/createConceptualModel","_blank")
+                                window.open("/user/userSpace#/model/createConceptualModel","_blank")
                                 break;
                             case 2:
-                                window.open("/user/createLogicalModel","_blank")
+                                window.open("/user/userSpace#/model/createLogicalModel","_blank")
                                 break;
                             case 3:
-                                window.open("/user/createComputableModel","_blank")
+                                window.open("/user/userSpace#/model/createComputableModel","_blank")
                                 break;
                         }
 

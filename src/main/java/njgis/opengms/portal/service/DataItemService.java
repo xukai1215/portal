@@ -588,6 +588,7 @@ public class DataItemService {
             everyData.put("keywords", it.getKeywords());
             everyData.put("createTime", it.getCreateTime());
             everyData.put("viewCount", it.getViewCount());
+            everyData.put("status",it.getStatus());
 
             User user = userDao.findFirstByOid(getById(category.get(i)).getAuthor());
             JSONObject userJson = new JSONObject();

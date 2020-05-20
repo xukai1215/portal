@@ -1,6 +1,5 @@
 package njgis.opengms.portal.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DailyViewCount;
@@ -19,6 +18,7 @@ public class Item implements Serializable {
     private static final long serialVersionUID = 1L;
 
     //Basic Info
+
     @Id
     String id;
     String oid;
@@ -29,12 +29,12 @@ public class Item implements Serializable {
     String author;
     List<String> keywords;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")//是否有用待测试
+//    @JsonFormat(pattern = "yyyy-MM-dd")//是否有用待测试
     Date createTime;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     Date lastModifyTime;
 
-    //public or private
+    //public, discoverable or private
     String status;
 
     //authorship
@@ -45,15 +45,14 @@ public class Item implements Serializable {
     List<String> contributors;
     List<String> versions;
 
-    boolean lock=false;
+    boolean lock = false;
 
     //statistic
-    int shareCount=0;
-    int viewCount=0;
-    int thumbsUpCount=0;
+    int shareCount = 0;
+    int viewCount = 0;
+    int thumbsUpCount = 0;
 
-    List<DailyViewCount> dailyViewCount=new ArrayList<>();
-
+    List<DailyViewCount> dailyViewCount = new ArrayList<>();
 
 
 }

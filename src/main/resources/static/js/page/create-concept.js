@@ -5,6 +5,8 @@ var createConcept = Vue.extend({
     },
     data() {
         return {
+            status:"Public",
+
             defaultActive: '4-1',
             curIndex: '6',
 
@@ -1257,6 +1259,7 @@ var createConcept = Vue.extend({
 
                     //cls
                     this.cls = basicInfo.classifications;
+                    this.status = basicInfo.status;
                     let ids = [];
                     for (i = 0; i < this.cls.length; i++) {
                         for (j = 0; j < 2; j++) {
@@ -1440,6 +1443,7 @@ var createConcept = Vue.extend({
             conceptObj.uploadImage = $('#imgShow').get(0).currentSrc;
             conceptObj.description = $("#descInput").val();
             conceptObj.related = this.relatedOid;
+            conceptObj.status = this.status;
 
             var detail = tinyMCE.activeEditor.getContent();
             conceptObj.detail = detail.trim();
@@ -1459,18 +1463,38 @@ var createConcept = Vue.extend({
                     contentType: false,
                     async: true,
                     data: formData,
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
                         if (result.code == "0") {
-                            alert("Create Success");
+                            this.$confirm('<div style=\'font-size: 18px\'>Create concept successfully!</div>', 'Tip', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'View',
+                                cancelButtonText: 'Go Back',
+                                cancelButtonClass: 'fontsize-15',
+                                confirmButtonClass: 'fontsize-15',
+                                type: 'success',
+                                center: true,
+                                showClose: false,
+                            }).then(() => {
+                                window.location.href = "/repository/concept/" + result.data;
+                            }).catch(() => {
+                                window.location.href = "/user/userSpace#/communities/concept&semantic";
+                            });
 
-                            window.location.href = "/repository/concept/" + result.data;
-                            //window.location.reload();
                         } else if (result.code == -1) {
-                            alert("Please login first!");
-                            window.location.href = "/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         } else {
-                            alert("Create failed!")
+                            this.$alert('Created failed!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
                     }
                 })
@@ -1488,12 +1512,24 @@ var createConcept = Vue.extend({
                     contentType: false,
                     async: true,
                     data: formData,
-                    success: function (result) {
+                    success: (result)=> {
                         loading.close();
                         if (result.code === 0) {
                             if (result.data.method === "update") {
-                                alert("Update Success");
-                                window.location.href = "/repository/concept/" + result.data.oid;
+                                this.$confirm('<div style=\'font-size: 18px\'>Update concept successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    window.location.href = "/repository/concept/" + result.data.oid;
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/communities/concept&semantic";
+                                });
                             } else {
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
@@ -1504,15 +1540,28 @@ var createConcept = Vue.extend({
                                 let params = that.message_num_socket;
                                 that.send(params);
 
-                                alert("Success! Changes have been submitted, please wait for the author to review.");
-                                window.location.href = "/user/userSpace";
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
 
                             }
                         } else if (result.code == -2) {
-                            alert("Please login first!");
-                            window.location.href = "/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href="/user/login";
+                                }
+                            });
                         } else {
-                            alert(result.msg);
+                            this.$alert(result.msg, 'Error', {
+                                confirmButtonText: 'OK',
+                                callback: action => {
+
+                                }
+                            });
                         }
                     }
                 })
