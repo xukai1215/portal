@@ -89,7 +89,7 @@
                                        <i class="el-icon-info"></i>
                                        <span slot="title">Theme Info</span>
                                    </el-menu-item>
-                                   <el-submenu index="2" class="model">
+                                   <el-submenu index="2" th:if="${#arrays.length(modelClassInfos)}" class="model">
                                        <template slot="title">
                                            <i class="el-icon-menu"></i>
                                            <span slot="title">Models</span>
@@ -105,7 +105,7 @@
                                            </el-menu-item>
                                        </div>
                                    </el-submenu>
-                                    <el-submenu index="3">
+                                    <el-submenu index="3" th:if="${#arrays.length(dataClassInfos)}">
                                         <template slot="title">
                                             <i class="el-icon-coin"></i>
                                             <span slot="title">Data</span>
@@ -121,7 +121,7 @@
                                             </el-menu-item>
                                         </div>
                                     </el-submenu>
-                                    <el-menu-item index="4" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
+                                    <el-menu-item index="4"  th:if="${#arrays.length(applications)}" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
                                         <i class="el-icon-bangzhu"></i>
                                         <span slot="title"  id="applications1">Applications</span>
                                     </el-menu-item>
@@ -138,7 +138,7 @@
                                 <h3>
                                     <span>Theme Info</span>
                                     <!--<el-button class="editicon" type="primary" @click="edit_theme_info" icon="el-icon-edit" circle style="display: none"></el-button>-->
-                                    <el-button class="editicon" type="primary" @click="edit_theme" icon="el-icon-edit"></el-button>
+                                    <!--<el-button class="editicon" type="primary" @click="edit_theme" icon="el-icon-edit"></el-button>-->
                                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit_theme_info"></a>-->
                                 </h3>
                             </div>

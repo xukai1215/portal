@@ -226,12 +226,12 @@
                         <div class="el-card__body">
                             <div class="filebrowser el-row">
                                 <div class="el-col">
-                                    <button type="button" class="el-button dwload el-button--default"><!----><i
-                                            class="el-icon-download"></i><span>
-                                    Download
-                                </span></button>
-                                    <button type="button" class="el-button shareData el-button--default" @click="shareData()"><!----><i
-                                            class="el-icon-share"></i><span>Share</span></button>
+                                    <!--<button type="button" class="el-button dwload el-button&#45;&#45;default">&lt;!&ndash;&ndash;&gt;<i-->
+                                            <!--class="el-icon-download"></i><span>-->
+                                    <!--Download-->
+                                <!--</span></button>-->
+                                    <!--<button type="button" class="el-button shareData el-button&#45;&#45;default" @click="shareData()">&lt;!&ndash;&ndash;&gt;<i-->
+                                            <!--class="el-icon-share"></i><span>Share</span></button>-->
 
                                     <!--<button type="button" class="el-button downloadAll el-button&#45;&#45;default">&lt;!&ndash;&ndash;&gt;<i-->
                                             <!--class="el-icon-sold-out"></i><span>Download all files-->
@@ -638,8 +638,8 @@
                                         <dt>Email：</dt>
                                         <dd th:text="${author.email}">njgis@163.com</dd>
                                     </div>
-                                    <dt>Home Page：</dt>
-                                    <dd><a th:href="${author.homepage}">View</a></dd>
+                                    <dt th:if="${author.homepage!=''}">Home Page：</dt>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}">View</a></dd>
                                 </dl>
                             </div>
                         </div>

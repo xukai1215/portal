@@ -475,10 +475,16 @@ var createUnit =Vue.extend({
                             offset: 70,
                         });
                         return false;
-                    }
-                    else if ($("#nameInput").val().trim() == "") {
+                    }else if ($("#nameInput").val().trim() == "") {
                         new Vue().$message({
                             message: 'Please enter name!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    }else if ($("#descInput").val().trim() == ""){
+                        new Vue().$message({
+                            message: 'Please enter overview!',
                             type: 'warning',
                             offset: 70,
                         });
