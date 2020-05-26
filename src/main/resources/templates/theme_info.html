@@ -158,8 +158,8 @@
                                             <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="model_card">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
-                                                 <div th:unless="${item.image}!=''">
-                                                    <avatar th:username="${item.name}" :size="180" :rounded="false" ></avatar>
+                                                 <div th:unless="${item.image}!=''" style="padding: 10px">
+                                                     <img src="/static/img/model/model.png" style="width:160px;height: 160px;">
                                                  </div>
                                                 <div th:if="${item.image!=''}">
                                                     <img th:src="'/static'+${item.image}" class="image" style="height: 180px!important;width: 180px!important;">
@@ -187,7 +187,10 @@
                                         <el-col :span="8" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
-                                                 <avatar th:username="${item.name}" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
+                                                <div style="padding: 10px">
+                                                    <img src="/static/img/model/myData.png" style="width:160px;height: 160px;">
+                                                </div>
+
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}" class="data_name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>
