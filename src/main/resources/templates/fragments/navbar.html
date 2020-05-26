@@ -170,7 +170,7 @@
                 <li><a id="phoneUserPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
                 <li class="el-badge item">
                     <a id="userNoticeDir2" href="/user/userSpace#/notice">Notice</a>
-                    <sup class="el-badge__content is-fixed notice_num" style="right: 45%!important;"></sup>
+                    <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed notice_num" th:text="${userNavBar.messageNum}" style="right: 45%!important;"></sup>
                 </li>
                 <li style="background-color: rgb(0,192,255)"><a href="/user/out">Log Out</a></li>
                 <!--                        <li><a href="">Thematic Center</a></li>-->

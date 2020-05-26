@@ -614,14 +614,14 @@ zhtml,body{
     height: 180px;
 }
 
-#model_col3{
-    width:161px;
-    height: 161px;
-}
-#model_col2{
-    width:161px;
+/*#model_col3{*/
+    /*width:161px;*/
     /*height: 161px;*/
-}
+/*}*/
+/*#model_col2{*/
+    /*width:161px;*/
+    /*!*height: 161px;*!*/
+/*}*/
 #data_image{
     width:161px;
     height: 161px;
@@ -632,7 +632,7 @@ zhtml,body{
 }
 #model_col{
     margin-top: 50px;
-    width:161px;
+    /*width:161px;*/
     /*height: 161px;*/
 }
 .wrap{
@@ -677,3 +677,7 @@ span.model_name {
 span.data_name {
     overflow: hidden;
 }
+
+/*.el-col-8{*/
+    /*!*width: ;*!*/
+/*}*/

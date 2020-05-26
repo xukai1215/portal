@@ -111,20 +111,20 @@
                                                 <!--model与community模型链接不同，故要进行判断-->
                                                 <!--model-->
                                                     <el-card v-else-if = "item.content!=null&&item.replier!=null&&(item.itemInfo.type=='modelItem'||item.itemInfo.type=='conceptualModel'||item.itemInfo.type=='logicalModel'||item.itemInfo.type=='computableModel')">
-                                                        <h4><a :href="'/user/'+item.author.oid" target="_blank">{{item.author.name}}</a> replied to you "{{item.content}}" under the <a :href="'/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
+                                                        <h4><a :href="'/user/'+item.author.oid" target="_blank">{{item.author.name}}</a> replied to you "{{item.content}}" in the <a :href="'/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
                                                         <p>{{item.author.name}} replyed at {{item.date}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.content!=null&&item.replier==null&&(item.itemInfo.type=='modelItem'||item.itemInfo.type=='conceptualModel'||item.itemInfo.type=='logicalModel'||item.itemInfo.type=='computableModel')">
-                                                        <h4>You commented "{{item.content}}" under the <a :href="'/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
+                                                        <h4>You commented "{{item.content}}" in the <a :href="'/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
                                                         <p>You commented at {{item.date}}</p>
                                                     </el-card>
                                                 <!--community-->
                                                     <el-card v-else-if = "item.content!=null&&item.replier!=null&&(item.itemInfo.type=='concept'||item.itemInfo.type=='spatialReference'||item.itemInfo.type=='unit'||item.itemInfo.type=='template')">
-                                                        <h4><a :href="'/user/'+item.replier.oid" target="_blank">{{item.author.name}}</a> replied to you "{{item.content}}" under the <a :href="'/repository/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
+                                                        <h4><a :href="'/user/'+item.replier.oid" target="_blank">{{item.author.name}}</a> replied to you "{{item.content}}" in the <a :href="'/repository/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
                                                         <p>{{item.author.name}} replyed at {{item.date}}</p>
                                                     </el-card>
                                                     <el-card v-else-if = "item.content!=null&&item.replier==null&&(item.itemInfo.type=='concept'||item.itemInfo.type=='spatialReference'||item.itemInfo.type=='unit'||item.itemInfo.type=='template')">
-                                                        <h4>You commented "{{item.content}}" under the <a :href="'/repository/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
+                                                        <h4>You commented "{{item.content}}" in the <a :href="'/repository/'+item.itemInfo.type+'/'+item.itemInfo.oid+'#comments'" target="_blank">{{item.itemInfo.name}}</a></h4>
                                                         <p>You commented at {{item.date}}</p>
                                                     </el-card>
                                             </el-timeline-item>
@@ -169,40 +169,36 @@
                                                             <el-table-column
                                                                     prop="name"
                                                                     label="Name"
-                                                                    width="200"
+                                                                    width="170"
                                                             >
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="type"
                                                                     label="Type"
-                                                                    width="150">
+                                                                    width="100">
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="modifierName"
                                                                     label="Modifier"
-                                                                    width="120">
+                                                                    width="100">
                                                                 <template slot-scope ="scope">
                                                                     <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="150">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewBtn"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="view($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                            <!--<el-table-column-->
+                                                                    <!--label="View"-->
+                                                                    <!--width="150">-->
+                                                                <!--<template slot-scope="scope">-->
+                                                                    <!--<el-button class="viewBtn" size="middle" type="primary" @click="view($event)">View</el-button>-->
+                                                                <!--</template>-->
+                                                            <!--</el-table-column>-->
 
                                                             <el-table-column
                                                                     label="Operations"
-                                                                    width="200">
+                                                                    width="300">
                                                                 <template slot-scope="scope">
+                                                                    <el-button class="viewBtn" size="middle" type="primary" @click="view($event)">View</el-button>
                                                                     <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
                                                                     <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
                                                                 </template>
@@ -342,40 +338,36 @@
                                                             <el-table-column
                                                                     prop="name"
                                                                     label="Name"
-                                                                    width="200"
+                                                                    width="170"
                                                             >
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="type"
                                                                     label="Type"
-                                                                    width="150">
+                                                                    width="100">
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="modifierName"
                                                                     label="Modifier"
-                                                                    width="120">
+                                                                    width="100">
                                                                 <template slot-scope ="scope">
                                                                     <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="150">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewBtn1"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="view1($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                            <!--<el-table-column-->
+                                                                    <!--label="View"-->
+                                                                    <!--width="150">-->
+                                                                <!--<template slot-scope="scope">-->
+                                                                    <!--<el-button class="viewBtn1" size="middle" type="primary" @click="view1($event)">View</el-button>-->
+                                                                <!--</template>-->
+                                                            <!--</el-table-column>-->
 
                                                             <el-table-column
                                                                     label="Operations"
-                                                                    width="200">
+                                                                    width="300">
                                                                 <template slot-scope="scope">
+                                                                    <el-button class="viewBtn1" size="middle" type="primary" @click="view1($event)">View</el-button>
                                                                     <el-button class="accept1" type="success" size="middle" @click="accept1($event)">Accept</el-button>
                                                                     <el-button class="reject1" type="danger" size="middle" @click="reject1($event)">Reject</el-button>
                                                                 </template>
@@ -513,38 +505,34 @@
                                                             <el-table-column
                                                                     prop="name"
                                                                     label="Name"
-                                                                    width="200"
+                                                                    width="170"
                                                             >
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="type"
                                                                     label="Type"
-                                                                    width="150">
+                                                                    width="100">
                                                             </el-table-column>
                                                             <el-table-column
                                                                     prop="modifierName"
                                                                     label="Modifier"
-                                                                    width="120">
+                                                                    width="100">
                                                                 <template slot-scope ="scope">
                                                                     <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                 </template>
                                                             </el-table-column>
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="150">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewBtn_theme"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="view_theme($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                            <!--<el-table-column-->
+                                                                    <!--label="View"-->
+                                                                    <!--width="150">-->
+                                                                <!--<template slot-scope="scope">-->
+                                                                    <!--<el-button class="viewBtn_theme" size="middle" type="primary" @click="view_theme($event)">View</el-button>-->
+                                                                <!--</template>-->
+                                                            <!--</el-table-column>-->
                                                             <el-table-column
                                                                     label="Operations"
-                                                                    width="200">
+                                                                    width="300">
                                                                 <template slot-scope="scope">
+                                                                    <el-button class="viewBtn_theme" size="middle" type="primary" @click="view_theme($event)">View</el-button>
                                                                     <el-button class="accept_theme" type="success" size="middle" @click="accept_theme($event)">Accept</el-button>
                                                                     <el-button class="reject_theme" type="danger" size="middle" @click="reject_theme($event)">Reject</el-button>
                                                                 </template>
