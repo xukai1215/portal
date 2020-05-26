@@ -288,7 +288,7 @@ public class ThemeRestController {
             themeDao.save(theme);
 
             themeVersion.setStatus(1);//
-            userService.themeItemMinusMinus(authorUserName);
+            userService.messageNumMinusMinus(authorUserName);
             themeVersion.setAcceptTime(curDate);
             themeVersionDao.save(themeVersion);
             return ResultUtils.success();
@@ -300,7 +300,7 @@ public class ThemeRestController {
             String authorUserName = theme.getAuthor();
             ThemeVersion themeVersion = themeVersionDao.findFirstByOid(themeVersionDTO.getOid());
             themeVersion.setStatus(-1);
-            userService.themeItemMinusMinus(authorUserName);
+            userService.messageNumMinusMinus(authorUserName);
             themeVersion.setRejectTime(curDate);
             themeVersionDao.save(themeVersion);
             theme.setLock(false);
