@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -169,17 +170,19 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/out", method = RequestMethod.GET)
-    public ModelAndView logout(HttpServletRequest request) {
+    public RedirectView logout(HttpServletRequest request) {
         System.out.println("out");
         HttpSession session = request.getSession();
         session.removeAttribute("oid");
         session.removeAttribute("uid");
         session.removeAttribute("name");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/home");
+        RedirectView redirectView = new RedirectView("/home", false /*是否使用相对路径*/, false/* 兼容http1.0*/ , false/* 是否暴露查询参数*/);
 
-        return modelAndView;
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("redirect:/home");
+
+        return redirectView;
     }
 
     @RequestMapping(value = "/load", method = RequestMethod.GET)

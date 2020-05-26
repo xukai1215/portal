@@ -328,34 +328,36 @@ public class ComputableModelService {
         if(computableModel.getRelateModelItem()!=null) {
             ModelItem modelItem=modelItemDao.findFirstByOid(computableModel.getRelateModelItem());
             List<String> relatedDataItem = modelItem.getRelatedData();
-            int page = computableModelFindDTO.getPage();
-            int pageSize = computableModelFindDTO.getPageSize();
+            if(relatedDataItem!=null) {
+                int page = computableModelFindDTO.getPage();
+                int pageSize = computableModelFindDTO.getPageSize();
 
-            JSONArray jsonArray = new JSONArray();
-            for (int i = page * pageSize; i < relatedDataItem.size(); i++) {
-                DataItem dataItem = dataItemDao.findFirstById(relatedDataItem.get(i));
+                JSONArray jsonArray = new JSONArray();
+                for (int i = page * pageSize; i < relatedDataItem.size(); i++) {
+                    DataItem dataItem = dataItemDao.findFirstById(relatedDataItem.get(i));
 
-                JSONObject obj=new JSONObject();
-                obj.put("name",dataItem.getName());
-                obj.put("id",dataItem.getId());
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-                obj.put("createTime",simpleDateFormat.format(dataItem.getCreateTime()));
-                obj.put("description",dataItem.getDescription());
-                obj.put("contentType",dataItem.getContentType());
-                obj.put("url",dataItem.getReference());
-                obj.put("dataList",dataItem.getDataList());
-                JSONObject author=new JSONObject();
-                User user=userDao.findFirstByOid(dataItem.getAuthor());
-                author.put("name",user.getName());
-                author.put("oid",user.getOid());
-                obj.put("author",author);
+                    JSONObject obj = new JSONObject();
+                    obj.put("name", dataItem.getName());
+                    obj.put("id", dataItem.getId());
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    obj.put("createTime", simpleDateFormat.format(dataItem.getCreateTime()));
+                    obj.put("description", dataItem.getDescription());
+                    obj.put("contentType", dataItem.getContentType());
+                    obj.put("url", dataItem.getReference());
+                    obj.put("dataList", dataItem.getDataList());
+                    JSONObject author = new JSONObject();
+                    User user = userDao.findFirstByOid(dataItem.getAuthor());
+                    author.put("name", user.getName());
+                    author.put("oid", user.getOid());
+                    obj.put("author", author);
 
-                jsonArray.add(obj);
-                if (jsonArray.size() == pageSize)
-                    break;
+                    jsonArray.add(obj);
+                    if (jsonArray.size() == pageSize)
+                        break;
+                }
+                jsonObject.put("list", jsonArray);
+                jsonObject.put("total", relatedDataItem.size());
             }
-            jsonObject.put("list", jsonArray);
-            jsonObject.put("total", relatedDataItem.size());
         }
         return jsonObject;
     }
@@ -581,17 +583,17 @@ public class ComputableModelService {
 
                         computableModel.setMdl(content);
                         JSONObject mdlJson = XmlTool.documentToJSONObject(content);
-                        //处理mdl格式错误
-//                        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+//                        处理mdl格式错误
+                        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
 //                        JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
-//
-//                        String type=modelClass.getString("type");
-//                        if(type!=null){
-//                            modelClass.put("style",type);
-//                        }
-//                        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
-//                            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
-//                        }
+
+                        String type=modelClass.getString("type");
+                        if(type!=null){
+                            modelClass.put("style",type);
+                        }
+                        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+                            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+                        }
 //
 //                        JSONArray HCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
 //                        if(HCinsert!=null){
@@ -625,9 +627,9 @@ public class ComputableModelService {
 //
 //                        modelClass.getJSONArray("Runtime").remove(0);
 //                        modelClass.getJSONArray("Runtime").add(runtime);
-//                        mdlJson.getJSONArray("ModelClass").remove(0);
-//                        mdlJson.getJSONArray("ModelClass").add(modelClass);
-//                        //End
+                        mdlJson.getJSONArray("ModelClass").remove(0);
+                        mdlJson.getJSONArray("ModelClass").add(modelClass);
+                        //End
                         computableModel.setMdlJson(mdlJson);
                     } else {
                         System.out.println("mdl文件未找到!");
@@ -796,6 +798,7 @@ public class ComputableModelService {
                     }
 
                     computableModel.setMd5(md5);
+                    computableModel.setDeploy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
                     result.put("code", -2);

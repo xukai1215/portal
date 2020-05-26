@@ -3,8 +3,8 @@ new Vue({
     data: function () {
         var validateAccount = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter email address or username'));
-            } else {
+                callback(new Error('Please enter email address'));
+            }else {
                 callback();
             }
         };
@@ -89,7 +89,7 @@ new Vue({
                         });
                         setTimeout(()=>{
 
-                            if(preUrl!=null){
+                            if(preUrl!=null && preUrl.indexOf("user/register") == -1){
                                 window.location.href=preUrl;
                             }
                             else {

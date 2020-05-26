@@ -49,6 +49,10 @@
             word-break: break-all;
             overflow: hidden;
         }
+
+        font {
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -100,7 +104,7 @@
                                                     <!--<div class="col-md-3 col-sm-4 tree" id="tree">-->
                                                     <!--</div>-->
                                                     <div class="col-md-3 col-sm-4"
-                                                         style="overflow-y: scroll;height: 450px;">
+                                                         style="overflow-y: auto;height: 450px;">
                                                         <el-card>
                                                             <div slot="header" class="clearfix text-center">
                                                                 <span style="font-size: 20px;color:#444">Model Classifications</span>
@@ -121,15 +125,13 @@
                                                     <div class="col-md-9 col-sm-8">
                                                         <div class="form-group">
                                                             <!--classificaation-->
-                                                            <label for="classification"><font
-                                                                    color="red">*</font>Category:</label>
+                                                            <label for="classification"><span class="xing">* </span>Category:</label>
                                                             <input type="text" class="form-control" v-model="clsStr"
                                                                    placeholder="Please choose the catgory of the data which you are ready to upload"
                                                                    id="classification" required="required" readonly/>
                                                             <!--<small id="catgoryHelp" class="form-text text-muted">Please choose the catgory of the data which you are ready to upload.</small>-->
 
-                                                            <label for="classification"><font
-                                                                    color="red">*</font>Status:</label><br/>
+                                                            <label for="classification"><span class="xing">* </span>Status:</label><br/>
                                                             <el-radio-group v-model="dataItemAddDTO.status" size="medium" >
                                                                 <el-tooltip popper-class="fontsize-15" effect="dark" content="Can be retrieved, shared and edited." placement="top">
                                                                     <el-radio-button label="Public"></el-radio-button>
@@ -144,7 +146,7 @@
                                                             </el-radio-group><br/>
 
                                                             <!--name-->
-                                                            <label for="dataname"><font color="red">*</font>Name:</label>
+                                                            <label for="dataname"><span class="xing">* </span>Name:</label>
                                                             <input type="text" class="form-control" id="dataname"
                                                                    aria-describedby="emailHelp"
                                                                    placeholder="Please input the name of the data which you are ready to upload."
@@ -152,8 +154,7 @@
                                                             <!--<small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
 
                                                             <!--keywords-->
-                                                            <label for="keywords"><font
-                                                                    color="red">*</font>Keywords:</label><br>
+                                                            <label for="keywords"><span class="xing">* </span>Keywords:</label><br>
                                                             <!--<div class="bootstrap-tagsinput" >-->
                                                             <input type="text"  id="keywords" placeholder="input key words.."
                                                                    required="required" style="border-radius: 4px;"/>
@@ -206,8 +207,7 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <!--description-->
-                                                            <label for="description"><font
-                                                                    color="red">*</font>Overview:</label>
+                                                            <label for="description"><span class="xing">* </span>Overview:</label>
                                                             <!--<small id="descriptionHelp" class="form-text text-muted">Please input the brief description of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
 
                                                             <textarea class="form-control" id="description"

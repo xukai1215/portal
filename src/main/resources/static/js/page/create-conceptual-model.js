@@ -737,6 +737,13 @@ var createConceptualModel = Vue.extend({
                             offset: 70,
                         });
                         return false;
+                    }else if (this.conceptualModel.description.trim() == "") {
+                        new Vue().$message({
+                            message: 'Please enter overview!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
                     }
                     else {
                         return true;
