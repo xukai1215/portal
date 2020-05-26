@@ -1061,16 +1061,19 @@ var vue = new Vue({
                         // loading.close();
                         if (result.code === 0) {
                             if(result.data.method==="update") {
-                                alert("Update Success");
+                                // alert("Update Success");
+                                that.$message('Update Success');
                                 $("#editModal", parent.document).remove();
-                                window.location.href = "/repository/theme/" + result.data.oid;
+                                that.dialogVisible3 = false;
+                                // window.location.href = "/repository/theme/" + result.data.oid;
                             }
                             else{
                                 that.$message('Success! Changes have been submitted, please wait for the author to review.');
+                                that.dialogVisible3 = false;
                                 // window.location.href = "/repository/theme/" + result.data.oid;
                                 // alert("Success! Changes have been submitted, please wait for the author to review.");
                                 //产生信号调用计数，启用websocket
-                                window.location.href = "/user/userSpace";
+                                // window.location.href = "/user/userSpace";
                             }
                         }
                         else if(result.code==-2){
