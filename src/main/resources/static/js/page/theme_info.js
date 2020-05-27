@@ -210,7 +210,9 @@ var vue = new Vue({
                 desc: ''
             },
             editThemeActive: 0,
-            isCollapse: false
+            isCollapse: false,
+            // drawer: false,
+            // direction: 'rtl',
         }
     },
     methods: {
@@ -1203,6 +1205,13 @@ var vue = new Vue({
             that.relateSearch = "";
             that.getRelation();
             that.search2();
+            console.log($(window).width());
+            let winWidth = $(window).width();
+            if (winWidth<750){
+                that.isCollapse = true;
+            }else {
+                that.isCollapse = false;
+            }
         });
         //拿到当前页面的themeoid
         $.ajax({
@@ -1221,6 +1230,16 @@ var vue = new Vue({
                 let hrefs = href.split('/');
                 that.themeoid = hrefs[hrefs.length - 1].split("#")[0];
             }
+        });
+        $(window).resize(function () {
+            console.log($(window).width());
+            let winWidth = $(window).width();
+            if (winWidth<750){
+                that.isCollapse = true;
+            }else {
+                that.isCollapse = false;
+            }
+
         });
     }
 });
