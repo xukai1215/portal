@@ -580,6 +580,7 @@ zhtml,body{
 
 #subcard{
     width: 280px;
+    /*width: 20%;*/
     height: 100%;
     margin-top: 62px;
     position: fixed;
@@ -588,6 +589,7 @@ zhtml,body{
 #right_content{
     left: 280px;
     padding-left: 0px;
+    margin-left: 5%;
 }
 
 #header_image{
@@ -678,6 +680,11 @@ span.data_name {
     overflow: hidden;
 }
 
-/*.el-col-8{*/
-    /*!*width: ;*!*/
-/*}*/
+@media only screen and (max-width: 750px){
+    #subcard{
+       display:none;
+    }
+    #right_content{
+        left: 0px;
+    }
+}
