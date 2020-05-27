@@ -67,7 +67,7 @@
             <div class="col-sm-12">
                 <div class="row">
                     <!--左侧菜单栏-->
-                    <el-card id="subcard">
+                    <el-card id="subcard" style="min-width: 60px">
                                 <div class="logoPanel">
                                 </div>
                                 <div slot="header" class="clearfix text-center headerImg">
@@ -88,7 +88,8 @@
                                         class="el-menu-vertical-demo"
                                         @select=""
                                         active-text-color="#409EFF"
-                                        :collapse="isCollapse">
+                                        :collapse="isCollapse"
+                                        :collapse-transition = "false">
                                    <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
                                        <i class="el-icon-info"></i>
                                        <span slot="title">Theme Info</span>
@@ -135,13 +136,17 @@
                                     </el-menu-item>
                                </el-menu>
                             </el-card>
-                    <!--唤醒抽屉-->
-                    <div class="site-tree-mobile layui-hide" style="cursor: pointer">
-                        <i class="layui-icon"></i>
-                    </div>
                     <!--左侧菜单栏 END-->
                     <div class="col-sm-10" style="overflow: auto;padding:10px 10px;" id="right_content">
                         <div class="infoPanel container-fluid" id="BasicInfoPanel">
+                            <div slot="header" class="clearfix text-center themeInfoImge" style="display: none">
+                                <img th:src="'/static'+${info.image}" id="header_image1" style="width: 200px; height: 180px;">
+                                <div>
+                                    <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
+                                    <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
+                                    <!--<el-button class="edit_themename_button editicon" type="primary"  @click="edit_theme_name" icon="el-icon-edit" circle  style="display: none"></el-button>-->
+                                </div>
+                            </div>
                             <div class="title text-center" style="margin-bottom:40px;">
                                 <h3>
                                     <span>Theme Info</span>

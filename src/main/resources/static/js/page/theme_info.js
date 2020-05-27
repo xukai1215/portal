@@ -1209,8 +1209,10 @@ var vue = new Vue({
             let winWidth = $(window).width();
             if (winWidth<750){
                 that.isCollapse = true;
+                $(".themeInfoImge").show();
             }else {
                 that.isCollapse = false;
+                $(".themeInfoImge").hide();
             }
         });
         //拿到当前页面的themeoid
@@ -1236,8 +1238,10 @@ var vue = new Vue({
             let winWidth = $(window).width();
             if (winWidth<750){
                 that.isCollapse = true;
+                $(".themeInfoImge").show();
             }else {
                 that.isCollapse = false;
+                $(".themeInfoImge").hide();
             }
 
         });
