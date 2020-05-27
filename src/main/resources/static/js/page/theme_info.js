@@ -209,7 +209,8 @@ var vue = new Vue({
                 resource: '',
                 desc: ''
             },
-            editThemeActive: 0
+            editThemeActive: 0,
+            isCollapse: false
         }
     },
     methods: {
@@ -1133,7 +1134,7 @@ var vue = new Vue({
                     $('#imgShowApplication'+log).show();
                 }
             });
-        }
+        },
     },
     mounted() {
         let that = this;
