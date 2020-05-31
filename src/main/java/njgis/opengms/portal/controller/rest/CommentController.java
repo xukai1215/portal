@@ -10,6 +10,7 @@ import njgis.opengms.portal.entity.Comment;
 import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.enums.ItemTypeEnum;
+import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
@@ -68,6 +69,9 @@ public class CommentController {
     @Autowired
     ThemeDao themeDao;
 
+    @Autowired
+    UserService userService;
+
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
@@ -93,6 +97,15 @@ public class CommentController {
             comment.setDate(new Date());
             comment.setAuthorId(session.getAttribute("oid").toString());
             comment.setRelateItemType(ItemTypeEnum.getItemTypeByName(commentDTO.getRelateItemTypeName()));
+
+            //这里设置增加messageNum
+            if (comment.getReplyToUserId()!=null){
+                String UserId = comment.getReplyToUserId();
+                User user = userDao.findFirstByOid(UserId);
+                String UserUserName = user.getUserName();
+                userService.messageNumPlusPlus(UserUserName);
+            }
+
 
             commentDao.insert(comment);
 
@@ -230,7 +243,9 @@ public class CommentController {
                 jsonObject.put("author",getUser(comment.getAuthorId()));
                 jsonObject.put("replier",getUser(comment.getReplyToUserId()));
                 jsonObject.put("date",simpleDateFormat.format(comment.getDate()));
-
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay", sdf.format(comment.getDate()));//与message的其他时间名称统一
+                jsonObject.put("status","comment");
                 String id = comment.getRelateItemId();
                 JSONObject itemInfo = getItemInfoByTypeAndId(comment.getRelateItemType(),comment.getRelateItemId());
                 jsonObject.put("itemInfo",itemInfo);

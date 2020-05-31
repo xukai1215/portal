@@ -105,10 +105,22 @@ var notice = Vue.extend({
             reverse: true,
 
             comments:[],
+            comments1:[],
+            comments2:[],
+            comments2Length:0,
 
             loading: true,
 
-            tabPosition: 'left'
+            tabPosition: 'left',
+            // sumDateTableData用于存储以时间为主键的数据,主要用于展示时间线，date为时间，tableData用来存储sumtabledata里的数据
+            sumDateTableData:[{
+                date:"",
+                tableData:[{
+
+                }]
+            }],
+            timeLineColor:'#409EFF',
+            timeLineColor1:'#F56C6C'
         };
     },
     methods:{
@@ -120,6 +132,14 @@ var notice = Vue.extend({
                     window.location.href="/user/login";
                 }
                 this.comments = result.data;
+                for (let i=0;i<this.comments.length;i++){
+                    if (this.comments[i].replier==null){
+                        this.comments1.push(this.comments[i]);
+                    } else {
+                        this.comments2.push(this.comments[i]);
+                    }
+                }
+                this.comments2Length = this.comments2.length;
 
                 if (this.comments.length == 0){
                     $(".comment").show();
@@ -144,6 +164,36 @@ var notice = Vue.extend({
         handleClick(row) {
             console.log(row);
         },
+        // formatDate(value,callback) {
+        //     const date = new Date(value);
+        //     y = date.getFullYear();
+        //     M = date.getMonth() + 1;
+        //     d = date.getDate();
+        //     H = date.getHours();
+        //     m = date.getMinutes();
+        //     s = date.getSeconds();
+        //     if (M < 10) {
+        //         M = '0' + M;
+        //     }
+        //     if (d < 10) {
+        //         d = '0' + d;
+        //     }
+        //     if (H < 10) {
+        //         H = '0' + H;
+        //     }
+        //     if (m < 10) {
+        //         m = '0' + m;
+        //     }
+        //     if (s < 10) {
+        //         s = '0' + s;
+        //     }
+        //
+        //     const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+        //     if(callback == null||callback == undefined)
+        //         return t;
+        //     else
+        //         callback(t);
+        // },
         getVersions(){
             $.ajax({
                 type: "GET",
@@ -185,12 +235,23 @@ var notice = Vue.extend({
                             this.message_num++;
                         }else if (json.data.uncheck[i].type == "concept" || json.data.uncheck[i].type == "spatialReference"||json.data.uncheck[i].type == "unit"||json.data.uncheck[i].type == "template"){
                             this.community_tableData1.push(json.data.uncheck[i]);
-                            this.sum_tableData.push(json.data.uncheck[i]);
+                            // this.sum_tableData.push(json.data.uncheck[i]);
                             this.message_num++;
                         }else if (json.data.uncheck[i].type == "theme") {
                             this.theme_tableData1.push(json.data.uncheck[i]);
-                            this.sum_tableData.push(json.data.uncheck[i]);
+                            // this.sum_tableData.push(json.data.uncheck[i]);
                             this.message_num++;
+                        }
+                    }
+                    for (let i=0;i<json.data.edit.length;i++){
+                        if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"||json.data.edit[i].type == "computableModel"){
+                            json.data.edit[i].status = "unchecked";
+                            this.edit_model_tableData.push(json.data.edit[i]);
+                            this.sum_tableData.push(json.data.edit[i]);
+                        }else {
+                            json.data.edit[i].status = "unchecked";
+                            this.edit_community_tableData.push(json.data.edit[i]);
+                            this.sum_tableData.push(json.data.edit[i]);
                         }
                     }
 
@@ -209,6 +270,7 @@ var notice = Vue.extend({
 
                     //将sum_tableData的数据按照时间排序(冒泡排序)
                     for (let i=0;i<this.sum_tableData.length;i++){
+
                         for (let j=this.sum_tableData.length-1;j>i;j--){
                             if ((this.sum_tableData[j].modifyTime||this.sum_tableData[j].date)<(this.sum_tableData[j-1].modifyTime||this.sum_tableData[j-1].date)){
                                 let temp = this.sum_tableData[j];
@@ -218,15 +280,408 @@ var notice = Vue.extend({
                         }
                     }
 
+                    //将this.sum_tableData通过只传值不传地址赋值给sum_tableData
+                    var sum_tableData = JSON.parse(JSON.stringify(this.sum_tableData));
+                    // console.log(sum_tableData);
+
+                    //将排序后的数据存储到sumDateTableData中
+                    let k=0;
+                    for (let i=0;i<sum_tableData.length;i++){
+                        if (sum_tableData[i].modifyTime!=null) {
+                            sum_tableData[i].modifyTime = sum_tableData[i].modifyTime.slice(11, 19);
+                        }else {
+                            sum_tableData[i].date = sum_tableData[i].date.slice(11, 19);
+                        }
+                        switch (sum_tableData[i].status) {
+                            case "unchecked":{
+                                if(i==0){
+                                    this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                    this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                    if (this.sumDateTableData[k].tableData[0].oid == null){
+                                        this.sumDateTableData[k].tableData.shift();
+                                    }
+                                }
+                                else if (sum_tableData[i-1].status=="unchecked"){
+                                    if  (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content) ){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="confirmed"){
+                                    if (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].acceptTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="reject"){
+                                    if (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].rejectTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="comment"){
+                                    if (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            case "confirmed":{
+                                if(i==0){
+                                    this.sumDateTableData[k].date = sum_tableData[i].acceptTimeDay;
+                                    this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                    if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                        this.sumDateTableData[k].tableData.shift();
+                                    }
+                                }
+                                else if (sum_tableData[i-1].status=="unchecked"){
+                                    if  (sum_tableData[i].acceptTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].acceptTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="confirmed"){
+                                    if (sum_tableData[i].acceptTimeDay==sum_tableData[i-1].acceptTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].acceptTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="reject"){
+                                    if (sum_tableData[i].acceptTimeDay==sum_tableData[i-1].rejectTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].acceptTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="comment"){
+                                    if (sum_tableData[i].acceptTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].acceptTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            case "reject":{
+                                if(i==0){
+                                    this.sumDateTableData[k].date = sum_tableData[i].rejectTimeDay;
+                                    this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                    if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                        this.sumDateTableData[k].tableData.shift();
+                                    }
+                                }
+                                else if (sum_tableData[i-1].status=="unchecked"){
+                                    if  (sum_tableData[i].rejectTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].rejectTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="confirmed"){
+                                    if (sum_tableData[i].rejectTimeDay==sum_tableData[i-1].acceptTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].rejectTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="reject"){
+                                    if (sum_tableData[i].rejectTimeDay==sum_tableData[i-1].rejectTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].rejectTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="comment"){
+                                    if (sum_tableData[i].rejectTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].rejectTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            case "comment":{
+                                if(i==0){
+                                    this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                    this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                    if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                        this.sumDateTableData[k].tableData.shift();
+                                    }
+                                }
+                                else if (sum_tableData[i-1].status=="unchecked"){
+                                    if  (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="confirmed"){
+                                    if (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].acceptTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="reject"){
+                                    if (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].rejectTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                else if(sum_tableData[i-1].status=="comment"){
+                                    if (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].modifyTimeDay) {
+                                        // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content)  == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    } else{
+                                        k++;
+                                        //sumDateTableData增加
+                                        this.sumDateTableData.push({
+                                            date:"",
+                                            tableData:[{}]
+                                        })
+                                        this.sumDateTableData[k].date = sum_tableData[i].modifyTimeDay;
+                                        this.sumDateTableData[k].tableData.push(sum_tableData[i]);
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content) == null){
+                                            this.sumDateTableData[k].tableData.shift();
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+
                     //为时间线涂色
                     for (let i=0;i<this.sum_tableData.length;i++){
-                        if (this.sum_tableData[i].status == "confirmed") {
-                            this.sum_tableData[i].color = '#0bbd87';
-                        }else if (this.sum_tableData[i].status == "reject") {
-                            this.sum_tableData[i].color = '#CF2018';
-                        }else {
-                            this.sum_tableData[i].color = '#20D1D4';
-                        }
+                        // if (this.sum_tableData[i].status == "confirmed") {
+                        //     this.sum_tableData[i].color = '#0bbd87';
+                        // }else if (this.sum_tableData[i].status == "reject") {
+                        //     this.sum_tableData[i].color = '#CF2018';
+                        // }else {
+                        //     this.sum_tableData[i].color = '#20D1D4';
+                        // }
                         // 将type字母分开存到ex_type中
                         if (this.sum_tableData[i].type == "modelItem"){
                             this.sum_tableData[i].ex_type = "Model Item";

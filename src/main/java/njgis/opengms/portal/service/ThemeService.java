@@ -523,7 +523,7 @@ public class ThemeService {
             JSONArray uncheck = new JSONArray();
             JSONArray accept = new JSONArray();
             JSONArray reject = new JSONArray();
-            JSONArray edit = new JSONArray();
+            JSONArray edit = new JSONArray();//用于存储edit（存储包括accept、reject、unchecked在内的所有的edit）
             //下面是匹配当前的项目的创建者与当前登陆者
             HttpSession session = request.getSession();
             String uid = session.getAttribute("uid").toString();
@@ -545,11 +545,15 @@ public class ThemeService {
                 jsonObject.put("originOid", modelItemVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(modelItemVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(modelItemVersion.getModifyTime()));
                 if (modelItemVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(modelItemVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(modelItemVersion.getAcceptTime()));
                 }
                 if (modelItemVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(modelItemVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(modelItemVersion.getRejectTime()));
                 }
                 JSONObject modifier = new JSONObject();
 
@@ -605,11 +609,15 @@ public class ThemeService {
                 jsonObject.put("originOid", conceptualModelVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(conceptualModelVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(conceptualModelVersion.getModifyTime()));
                 if (conceptualModelVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(conceptualModelVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(conceptualModelVersion.getAcceptTime()));
                 }
                 if (conceptualModelVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(conceptualModelVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(conceptualModelVersion.getRejectTime()));
                 }
 
                 JSONObject modifier = new JSONObject();
@@ -681,11 +689,15 @@ public class ThemeService {
                 jsonObject.put("originOid", logicalModelVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(logicalModelVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(logicalModelVersion.getModifyTime()));
                 if (logicalModelVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(logicalModelVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(logicalModelVersion.getAcceptTime()));
                 }
                 if (logicalModelVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(logicalModelVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(logicalModelVersion.getRejectTime()));
                 }
 
                 JSONObject modifier = new JSONObject();
@@ -758,11 +770,15 @@ public class ThemeService {
                 jsonObject.put("originOid", computableModelVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(computableModelVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(computableModelVersion.getModifyTime()));
                 if (computableModelVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(computableModelVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(computableModelVersion.getAcceptTime()));
                 }
                 if (computableModelVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(computableModelVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf.format(computableModelVersion.getRejectTime()));
                 }
                 JSONObject modifier = new JSONObject();
 
@@ -834,11 +850,15 @@ public class ThemeService {
                 jsonObject.put("originOid", conceptVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(conceptVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(conceptVersion.getModifyTime()));
                 if (conceptVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(conceptVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(conceptVersion.getAcceptTime()));
                 }
                 if (conceptVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(conceptVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(conceptVersion.getRejectTime()));
                 }
 
                 JSONObject modifier = new JSONObject();
@@ -911,11 +931,15 @@ public class ThemeService {
                 jsonObject.put("originOid", templateVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(templateVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(templateVersion.getModifyTime()));
                 if (templateVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(templateVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(templateVersion.getAcceptTime()));
                 }
                 if (templateVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(templateVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(templateVersion.getRejectTime()));
                 }
 
                 JSONObject modifier = new JSONObject();
@@ -988,11 +1012,15 @@ public class ThemeService {
                 jsonObject.put("originOid", spatialReferenceVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(spatialReferenceVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(spatialReferenceVersion.getModifyTime()));
                 if (spatialReferenceVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(spatialReferenceVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(spatialReferenceVersion.getAcceptTime()));
                 }
                 if (spatialReferenceVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(spatialReferenceVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(spatialReferenceVersion.getRejectTime()));
                 }
 
                 JSONObject modifier = new JSONObject();
@@ -1065,11 +1093,15 @@ public class ThemeService {
                 jsonObject.put("originOid", unitVersion.getOriginOid());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(unitVersion.getModifyTime()));
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                jsonObject.put("modifyTimeDay",sdf1.format(unitVersion.getModifyTime()));
                 if (unitVersion.getAcceptTime()!=null){
                     jsonObject.put("acceptTime",sdf.format(unitVersion.getAcceptTime()));
+                    jsonObject.put("acceptTimeDay",sdf1.format(unitVersion.getAcceptTime()));
                 }
                 if (unitVersion.getRejectTime()!=null){
                     jsonObject.put("rejectTime",sdf.format(unitVersion.getRejectTime()));
+                    jsonObject.put("rejectTimeDay",sdf1.format(unitVersion.getRejectTime()));
                 }
                 JSONObject modifier = new JSONObject();
 
@@ -1143,11 +1175,15 @@ public class ThemeService {
             jsonObject.put("themeOid", themeVersion.getThemeOid());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(themeVersion.getModifyTime()));
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            jsonObject.put("modifyTimeDay",sdf1.format(themeVersion.getModifyTime()));
             if (themeVersion.getAcceptTime()!=null){
                 jsonObject.put("acceptTime",sdf.format(themeVersion.getAcceptTime()));
+                jsonObject.put("acceptTimeDay",sdf1.format(themeVersion.getAcceptTime()));
             }
             if (themeVersion.getRejectTime()!=null){
                 jsonObject.put("rejectTime",sdf.format(themeVersion.getRejectTime()));
+                jsonObject.put("rejectTimeDay",sdf1.format(themeVersion.getRejectTime()));
             }
             JSONObject modifier = new JSONObject();
 
