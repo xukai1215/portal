@@ -213,7 +213,7 @@
                             <el-tab-pane label="Version" name="Second">
                                 <div slot="label">
                                     Version
-                                    <span class="el-badge__content el-badge__content--undefined">
+                                    <span v-if="table_length_sum" class="el-badge__content el-badge__content--undefined">
                                                     {{table_length_sum}}
                                     </span>
                                 </div>
@@ -744,10 +744,18 @@
                                                 <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                             </div>
                                             <el-card>
-                                                <el-timeline>
+                                                <div class="radio">
+                                                    Sort：
+                                                    <el-radio-group v-model="reverse">
+                                                        <el-radio :label="true">Reverse order</el-radio>
+                                                        <el-radio :label="false">Positive order</el-radio>
+                                                    </el-radio-group>
+                                                </div>
+                                                <el-timeline :reverse="reverse">
                                                     <el-timeline-item v-for="(comment, index) in comments1"
                                                                       :timestamp="comment.date"
                                                                       :color="timeLineColor"
+
                                                                       placement="top">
                                                         <el-card>
                                                             <div style="font-size: 20px">{{comment.content}}</div>
@@ -781,7 +789,14 @@
                                                 <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                             </div>
                                             <el-card>
-                                                <el-timeline>
+                                                <div class="radio">
+                                                    Sort：
+                                                    <el-radio-group v-model="reverse">
+                                                        <el-radio :label="true">Reverse order</el-radio>
+                                                        <el-radio :label="false">Positive order</el-radio>
+                                                    </el-radio-group>
+                                                </div>
+                                                <el-timeline :reverse="reverse">
                                                     <el-timeline-item v-for="(comment, index) in comments2"
                                                                       :timestamp="comment.date"
                                                                       :color="timeLineColor1"
