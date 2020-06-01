@@ -150,7 +150,7 @@ var info=new Vue({
                     oid:oid,
                 },
                 success: (result) => {
-                    console.log(result);
+                    console.log(result)
                     if(result.code==-1){
                         window.location.href="/user/login"
                     }else if (result.code == 0) {
@@ -188,8 +188,8 @@ var info=new Vue({
         },
         replyComment(comment){
             this.commentParentId=comment.oid;
-            // this.replyToUserId=subComment.author.oid;
-            // this.replyTo="Reply to "+comment.author.name;
+            this.replyToUserId=comment.author.oid;
+            this.replyTo="Reply to "+comment.author.name;
             setTimeout(function () { $("#commentTextArea").focus();}, 1);
         },
         replySubComment(comment,subComment){

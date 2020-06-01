@@ -99,7 +99,7 @@ public class CommentController {
             comment.setRelateItemType(ItemTypeEnum.getItemTypeByName(commentDTO.getRelateItemTypeName()));
 
             //这里设置增加messageNum
-            if (comment.getReplyToUserId()!=null){
+            if (comment.getReplyToUserId()!=""){
                 String UserId = comment.getReplyToUserId();
                 User user = userDao.findFirstByOid(UserId);
                 String UserUserName = user.getUserName();
