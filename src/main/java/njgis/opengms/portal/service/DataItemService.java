@@ -71,10 +71,13 @@ public class DataItemService {
         dataItemDao.save(dataItem);
     }
 
-    public void delete(String id) {
+    public int delete(String id,String userOid) {
         //需要在catagory中删除此data item记录,以及在data item集合中删除本身
         DataItem data = new DataItem();
         data = getById(id);
+
+        if(!data.getAuthor().equals(userOid))
+            return 2;
 
         List<String> cate = new ArrayList<>();
 
@@ -125,6 +128,7 @@ public class DataItemService {
             categoryDao.save(categorys);
 
 
+
         }
 
         List<String> relatedModels = data.getRelatedModels();
@@ -137,6 +141,7 @@ public class DataItemService {
 
 
         dataItemDao.deleteById(id);
+        return 1;
     }
 
     public List<String> delOneOfArrayList(List<String> arr, String str) {

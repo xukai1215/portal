@@ -400,10 +400,22 @@ var userDataSpace = Vue.extend(
 
             },
 
-            refreshPackage(event,index){
+
+            // findFileFolder(file, fileId){//找到则返回那一层所有文件
+            //
+            //     if(fileList!=[]){
+            //         for(let i=0;i<fileList.length;i++){
+            //             if(fileList)
+            //                 }
+            //     }
+            //
+            //
+            // },
+
+            refreshPackage(index,pathList){
 
                 let paths = []
-                if(index==1){
+                if(index==1){//刷新所显示的文件
                     let i = this.pathShown.length - 1;
                     while (i >= 0) {
                         paths.push(this.pathShown[i].id);
@@ -411,17 +423,17 @@ var userDataSpace = Vue.extend(
                     }
                     if (paths.length==0) paths = ['0']
 
-                }else{
-                    let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                }else{//指定路径刷新
+                    let i=pathList.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
                     while (i>=1) {
-                        paths.push(this.selectedPath[i].key);
+                        paths.push(pathList[i].key);
                         i--;
                     }
                     if (paths.length==0) paths=['0']
 
                     this.pathShown=[]
-                    for(i=1;i<this.selectedPath.length;i++){
-                        this.pathShown.push(this.selectedPath[i].data)
+                    for(i=1;i<pathList.length;i++){
+                        this.pathShown.push(pathList[i].data)
                     }
                 }
 
@@ -1290,12 +1302,17 @@ var userDataSpace = Vue.extend(
             },
 
             renameConfirm(){
-                let folderName=[];
+                let fileName=[];
                 for(let i=0;i<this.myFileShown.length;i++){
                     if(this.myFileShown[i].package===true)
-                        folderName.push(this.myFileShown[i].label+'.'+this.myFileShown[i].suffix)
+                        fileName.push(this.myFileShown[i].label)
+                    else
+                        fileName.push(this.myFileShown[i].label+'.'+this.myFileShown[i].suffix)
                 }
-                if(a)
+                let newName = $('.renameFileInput').eq(this.rightTargetItem.index).val()
+                if(this.rightTargetItem.package!=true)
+                    newName = newName+this.rightTargetItem.suffix
+                if(fileName.indexOf(newName)!=-1)
                     this.$alert('This name is existing in this path, please input a new one.', 'Tip', {
                         type:'warning',
                         confirmButtonText: 'comfirm',
@@ -1661,6 +1678,9 @@ var userDataSpace = Vue.extend(
                     if(paths.length==0)paths=['0']
                 }
                 let that = this;
+
+                let pathList = this.selectedPath
+
                 $.ajax({
                     type: "POST",
                     url: "/user/addFile",
@@ -1710,16 +1730,22 @@ var userDataSpace = Vue.extend(
                                     }
                                 } else {
                                     setTimeout(()=>{
-                                        this.refreshPackage(0)},300);
+                                        this.refreshPackage(0,pathList)},300);
                                     //要写一个前台按路径查找的函数
+
+
                                 }
                             }else{
-                                let obj=item
-                                obj.id=idList[0].id
-                                obj.url=idList[0].url
+
                                 if (this.myFileShown.length === 0)
                                     this.addChild(this.myFile, paths[0], item)
-                                this.myFileShown.push(item);
+                                // this.myFileShown.push(item);
+                                this.managerloading = true
+                                setTimeout(()=>{
+                                    this.refreshPackage(0,pathList)
+                                    this.managerloading = false
+                                },400);//pathList为所选的文件上传路径
+                                // this.fatherIndex =
                             }
 
                             this.addFolderIndex = false;

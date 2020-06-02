@@ -173,12 +173,12 @@ public class TaskService {
         User user = userDao.findFirstByUserName(modelInfo.getAuthor());
 
         JSONObject userJson = new JSONObject();
-        userJson.put("compute_model_user_name", user.getUserName());
+        userJson.put("compute_model_user_name", user.getName());
         userJson.put("compute_model_user_oid", user.getOid());
 
         user = userDao.findFirstByUserName(userName);
 
-        userJson.put("userName", user.getUserName());
+        userJson.put("name", user.getName());
         userJson.put("userOid", user.getOid());
 
         JSONObject result = new JSONObject();
@@ -322,7 +322,7 @@ public class TaskService {
         //用户信息
         User user = userDao.findFirstByUserName(modelInfo.getAuthor());
         JSONObject userJson = new JSONObject();
-        userJson.put("compute_model_user_name", user.getUserName());
+        userJson.put("compute_model_user_name", user.getName());
         userJson.put("compute_model_user_oid", user.getOid());
         userJson.put("userName", userName);
         JSONObject taskInfo = new JSONObject();

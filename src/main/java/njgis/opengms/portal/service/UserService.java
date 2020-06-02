@@ -939,7 +939,7 @@ public class UserService {
         BeanUtils.copyProperties(userUpdateDTO,user);
         //判断是否为新图片
         String uploadImage=userUpdateDTO.getUploadImage();
-        if(!uploadImage.contains("base64")) {
+        if(uploadImage.contains("base64")) {
             //删除旧图片
             File file=new File(resourcePath+user.getImage());
             if(file.exists()&&file.isFile())
