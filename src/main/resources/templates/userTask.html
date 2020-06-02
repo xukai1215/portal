@@ -172,20 +172,22 @@
                                             <h5 v-if="task.status==0||task.status==1">
                                                 Calculating
                                             </h5>
-                                            <ul v-if="task.status==1">
+                                            <ul>
                                                 <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
-                                                <li class="flagcontent clearfix" v-for="(input,key) in task.inputs">
+                                                <li class="flagcontent flexRowSpaceBetween" v-for="(input,key) in task.inputs">
                                                 <span style="margin-top: 5px; display: inline-block;">
                                                     {{input.event}}
                                                 </span>
+                                                    <div class="flex">
                                                     <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                             style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
                                                             @click="downloadSingle(input.url)">Download File
                                                     </button>
-                                                    <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                    <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
                                                             style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
                                                             @click="addOutputToMyData(input,index)">Add to My Data
                                                     </button>
+                                                    </div>
                                                 </li>
                                             </ul>
 
@@ -194,18 +196,19 @@
                                             </h5>
                                             <ul v-if="task.status==2">
                                                 <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
-                                                <li class="flagcontent clearfix" v-for="(output,key) in task.outputs">
-                                                <span style="margin-top: 5px; displaay: inline-block;">
-                                                    {{output.event}}
-                                                </span>
-                                                    <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
-                                                            style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
-                                                            @click="downloadSingle(output.url)">Download File
-                                                    </button>
-                                                    <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
-                                                            style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                            @click="addOutputToMyData(output,index)">Add to My Data
-                                                    </button>
+                                                <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.outputs">
+                                                    <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
+                                                    <div class="flex">
+                                                        <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                                style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                                @click="downloadSingle(output.url)">Download File
+                                                        </button>
+                                                        <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                                style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                @click="addOutputToMyData(output,index)">Add to My Data
+                                                        </button>
+                                                    </div>
+
                                                 </li>
                                             </ul>
                                         </div>
@@ -232,7 +235,7 @@
                                     calculation tasks</h4>
                             </div>
                             <div class="flexRowCenter">
-                                <nav v-if="searchResult.length!=0&&resourceLoad!=false" aria-label="Page navigation example">
+                                <nav v-if="searchResult.length!=0&&resourceLoad==false" aria-label="Page navigation example">
                                     <ul class="pagination pagination-circle pg-blue wzhPageControl">
                                         <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
                                                 class="page-link"

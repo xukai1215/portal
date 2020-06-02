@@ -472,10 +472,11 @@ var userModels = Vue.extend(
                                 alert("Please log in first!")
                             } else {
                                 if (json.data == 1) {
-                                    alert("delete successfully!")
-                                } else {
-                                    alert("delete failed!")
-                                }
+                                    this.$alert("delete successfully!")
+                                } else if(json.data == -1) {
+                                    this.$alert("delete failed!")
+                                }else
+                                    this.$alert("please refresh the page!")
                             }
                             if (this.searchText.trim() != "") {
                                 this.searchModels();

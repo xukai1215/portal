@@ -388,6 +388,8 @@ public class LogicalModelService {
 
     public int delete(String oid, String userName) {
         LogicalModel logicalModel = logicalModelDao.findFirstByOid(oid);
+        if(!logicalModel.getAuthor().equals(userName))
+            return 2;
         if (logicalModel != null) {
             //图片删除
             List<String> images = logicalModel.getImage();

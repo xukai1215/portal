@@ -2084,6 +2084,11 @@ body {
     justify-content: space-between;
 }
 
+.flexRowSpaceAround {
+    display: flex;
+    justify-content: space-around;
+}
+
 .flexRowCenter {
     display: flex;
     justify-content: center;

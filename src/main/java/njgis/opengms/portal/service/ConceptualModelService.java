@@ -367,6 +367,8 @@ public class ConceptualModelService {
 
     public int delete(String oid, String userName) {
         ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(oid);
+        if(!conceptualModel.getAuthor().equals(userName))
+            return 2;
         if (conceptualModel != null) {
             //图片删除
             List<String> images = conceptualModel.getImage();

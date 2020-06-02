@@ -224,8 +224,13 @@ var userDataItems = Vue.extend(
                         }
                     }).then(res => {
                         if (res.status == 200) {
-                            alert("delete success!");
-                            this.getDataItems();
+                            if(res.data.data == 1){
+                                this.$alert("delete success!");
+                                this.getDataItems();
+                            }else
+                                this.$alert("please refresh the page!")
+
+
                         }
                     })
                 }

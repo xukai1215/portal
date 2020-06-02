@@ -491,9 +491,14 @@ public class DataItemRestController {
      * @return
      */
     @RequestMapping (value = "/del", method = RequestMethod.GET)
-    JsonResult delete(@RequestParam(value="id") String id) {
-        dataItemService.delete(id);
-        return ResultUtils.success();
+    JsonResult delete(@RequestParam(value="id") String id ,HttpServletRequest request) {
+        HttpSession session=request.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userOid=session.getAttribute("oid").toString();
+        return ResultUtils.success(dataItemService.delete(id,userOid));
     }
 
     /**

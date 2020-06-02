@@ -434,7 +434,9 @@ public class ModelItemService {
 
     public int delete(String oid,String userName){
         ModelItem modelItem=modelItemDao.findFirstByOid(oid);
-        if(modelItem!=null){
+        if(!modelItem.getAuthor().equals(userName))
+            return 2;
+        else if(modelItem!=null){
             //删除图片
             String image=modelItem.getImage();
             if(image.contains("/modelItem/")) {

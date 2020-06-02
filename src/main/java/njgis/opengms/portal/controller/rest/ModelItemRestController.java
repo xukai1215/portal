@@ -105,6 +105,7 @@ public class ModelItemRestController {
         }
         String userName=session.getAttribute("uid").toString();
         return ResultUtils.success(modelItemService.delete(oid,userName));
+
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)

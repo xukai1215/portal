@@ -174,7 +174,7 @@
                                                                     <i class="fa fa-arrow-left" style="margin-right:2px "></i>
                                                                 </div>
                                                                 <div class="squareButton" id="refreshPackageBtn"
-                                                                     @click="refreshPackage($event,1)">
+                                                                     @click="refreshPackage(1)">
                                                                     <i class="fa fa-refresh" style="font-weight: 600"></i>
                                                                 </div>
                                                                 <div class="showPathContainer" style="margin-left: 10px">
@@ -938,7 +938,7 @@
                         </el-button>
                         <el-button type="success" v-if="taskSharingActive>=3" style="min-width: 90px"
                                    @click="taskSharingFinish()">
-                            conform
+                            confirm
                         </el-button>
 
                     </div>

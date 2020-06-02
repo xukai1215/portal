@@ -45,6 +45,15 @@
                                                 <el-radio :label="false">Positive order</el-radio>
                                             </el-radio-group>
                                         </div>
+                                        <div v-if="await" class="progress-cover progress-cover-primary" style="margin: 40px 0;">
+                                            <div class="progress progress-medium fluent-position">
+                                                <span class="progress-span"></span>
+                                                <span class="progress-span"></span>
+                                                <span class="progress-span"></span>
+                                                <span class="progress-span"></span>
+                                                <span class="progress-span"></span>
+                                            </div>
+                                        </div>
                                         <div class="no-mess icon-th-list overview" style="    color: #ccc;    display: block;    font-size: 16px;    margin: 20px;    text-align: center;display: none">
                                             <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                         </div>

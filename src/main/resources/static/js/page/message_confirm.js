@@ -108,7 +108,9 @@ var notice = Vue.extend({
 
             loading: true,
 
-            tabPosition: 'left'
+            tabPosition: 'left',
+
+            await:false,
         };
     },
     methods:{
@@ -145,6 +147,7 @@ var notice = Vue.extend({
             console.log(row);
         },
         getVersions(){
+            this.await = true
             $.ajax({
                 type: "GET",
                 url: "/theme/getMessageData",
@@ -264,6 +267,7 @@ var notice = Vue.extend({
                     } else {
                         $(".overview").hide();
                     }
+                    this.await= false
                 }
             })
 

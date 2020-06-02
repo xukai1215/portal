@@ -942,7 +942,8 @@ public class ComputableModelService {
 
     public int delete(String oid, String userName) {
         ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
-
+        if(!computableModel.getAuthor().equals(userName))
+            return 2;
         if (computableModel != null) {
             //删除资源
             String path = resourcePath + "/computableModel/" + computableModel.getContentType();
