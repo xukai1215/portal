@@ -223,8 +223,8 @@
 
                                 <div class="detail_overview">
                                     <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                        <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
-                                                :rounded="false"></avatar>
+
+                                        <img v-if="modelItem.image==''" src="/static/img/model/model.png" style="width:90px;height: 90px;">
                                         <img v-if="modelItem.image!=''" :src="modelItem.image"
                                              style="width:90px;height: 90px;">
 

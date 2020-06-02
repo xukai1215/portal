@@ -1714,14 +1714,28 @@ var vue = new Vue({
                             tid = data;
 
                             if (code == -1) {
-                                this.$message.error(msg);
-                                window.location.href="/user/login";
+                                this.$alert(msg, 'Error', {
+                                    type: 'error',
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href="/user/login";
+                                    }
+                                });
+
                                 return;
                             }
 
                             if (code == -2) {
-                                this.$message.error(msg);
                                 loading.close();
+                                this.$alert(msg, 'Error', {
+                                    type: 'error',
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+
+                                    }
+                                });
+
+
                                 return;
                             }
 
@@ -1738,16 +1752,34 @@ var vue = new Vue({
                                     })
                                 })).json();
                                 if (code === -1) {
-                                    this.$message.error(msg);
+                                    this.$alert(msg, 'Error', {
+                                        type: 'error',
+                                        confirmButtonText: 'OK',
+                                        callback: action => {
+
+                                        }
+                                    });
                                     clearInterval(interval);
                                     loading.close();
                                 }
                                 if (data.status === -1) {
-                                    this.$message.error("Some error occured when this model is running!");
+                                    this.$alert("Some error occured when the model running!", 'Error', {
+                                        type: 'error',
+                                        confirmButtonText: 'OK',
+                                        callback: action => {
+
+                                        }
+                                    });
                                     clearInterval(interval);
                                     loading.close();
                                 } else if (data.status === 2) {
-                                    this.$message.success("The model has run successfully!");
+                                    this.$alert("The model has run successfully!", 'Success', {
+                                        type: 'success',
+                                        confirmButtonText: 'OK',
+                                        callback: action => {
+
+                                        }
+                                    });
                                     clearInterval(interval);
                                     let outputs = data.outputdata;
 

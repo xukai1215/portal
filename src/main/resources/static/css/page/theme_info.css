@@ -580,6 +580,7 @@ zhtml,body{
 
 #subcard{
     width: 280px;
+    /*width: 20%;*/
     height: 100%;
     margin-top: 62px;
     position: fixed;
@@ -588,6 +589,7 @@ zhtml,body{
 #right_content{
     left: 280px;
     padding-left: 0px;
+    margin-left: 5%;
 }
 
 #header_image{
@@ -614,14 +616,14 @@ zhtml,body{
     height: 180px;
 }
 
-#model_col3{
-    width:161px;
-    height: 161px;
-}
-#model_col2{
-    width:161px;
+/*#model_col3{*/
+    /*width:161px;*/
     /*height: 161px;*/
-}
+/*}*/
+/*#model_col2{*/
+    /*width:161px;*/
+    /*!*height: 161px;*!*/
+/*}*/
 #data_image{
     width:161px;
     height: 161px;
@@ -632,7 +634,7 @@ zhtml,body{
 }
 #model_col{
     margin-top: 50px;
-    width:161px;
+    /*width:161px;*/
     /*height: 161px;*/
 }
 .wrap{
@@ -677,3 +679,20 @@ span.model_name {
 span.data_name {
     overflow: hidden;
 }
+
+@media only screen and (max-width: 750px){
+    .headerImg{
+       display:none;
+    }
+    #right_content{
+        left: 60px;
+    }
+    #subcard{
+        width: 8%;
+    }
+    .el-card__header{
+        display: none;
+    }
+
+}
+

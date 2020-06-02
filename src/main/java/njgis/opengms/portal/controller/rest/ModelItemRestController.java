@@ -9,9 +9,9 @@ import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
-import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
+import njgis.opengms.portal.service.StatisticsService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
@@ -28,10 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -293,131 +290,9 @@ public class ModelItemRestController {
             ComputableModel computableModel = computableModelService.getByOid(computableModelIds.get(i));
             computableModelList.add(computableModel);
         }
-        List<DailyViewCount> dailyViewCountList=modelItem.getDailyViewCount();
-        JSONArray dateList = new JSONArray();
-        dateList.add("Timeline");
-        JSONArray viewArray=new JSONArray();
-        viewArray.add("View Times");
-        JSONArray invokeArray = new JSONArray();
-        invokeArray.add("Invoke Times");
-        JSONArray resultList = new JSONArray();
-        Date now = new Date();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();//动态时间
-        c.setTime(now);
-        String startTime;//chart起始时间
-        int max=0;
-        if(dailyViewCountList==null||dailyViewCountList.size()==0){
 
-
-            c.add(Calendar.DATE,-6);
-            startTime=sdf.format(c.getTime());
-            for(int i=0;i<6;i++){
-                dateList.add(sdf.format(c.getTime()));
-                viewArray.add(0);
-                invokeArray.add(0);
-                c.add(Calendar.DATE,1);
-            }
-
-        }else{
-            DailyViewCount dailyViewCount=dailyViewCountList.get(0);
-            Date firstDate = dailyViewCount.getDate();
-            c.add(Calendar.MONTH,-1);
-
-            if(dailyViewCountList.get(dailyViewCountList.size()-1).getDate().before(c.getTime())){
-                c.setTime(now);
-                c.add(Calendar.DATE,-6);
-            }
-
-            int index=0;
-            if(c.getTime().before(firstDate)){
-                c.setTime(firstDate);
-            }
-            else{
-                while(index<dailyViewCountList.size()&&c.getTime().after(dailyViewCountList.get(index).getDate())){
-                    index++;
-                }
-            }
-
-            startTime=sdf.format(c.getTime());
-
-            Calendar nowCalendar = Calendar.getInstance();
-            nowCalendar.setTime(now);
-            nowCalendar.add(Calendar.DATE, 1);
-
-            while (!Utils.isSameDay(c.getTime(),nowCalendar.getTime())){
-                dateList.add(sdf.format(c.getTime()));
-                if(index<dailyViewCountList.size()) {
-                    DailyViewCount daily = dailyViewCountList.get(index);
-
-                    if (Utils.isSameDay(daily.getDate(), c.getTime())) {
-                        int count=daily.getCount();
-                        if(count>max){
-                            max=count;
-                        }
-                        viewArray.add(count);
-                        index++;
-                    } else {
-                        viewArray.add(0);
-                    }
-                }
-                else{
-                    viewArray.add(0);
-                }
-
-                c.add(Calendar.DATE,1);
-                invokeArray.add(0);
-            }
-
-        }
-
-
-
-        for(int i=0;i<computableModelList.size();i++){
-            Calendar calendar=Calendar.getInstance();
-            try {
-                Date date=sdf.parse(startTime);
-                calendar.setTime(date);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            ComputableModel computableModel = computableModelList.get(i);
-            List<DailyViewCount> dailyInvokeCounts = computableModel.getDailyInvokeCount();
-
-            int index=0;
-            while (index<dailyInvokeCounts.size()&&calendar.getTime().after(dailyInvokeCounts.get(index).getDate())){
-                index++;
-            }
-
-            Calendar nowCalendar = Calendar.getInstance();
-            nowCalendar.setTime(now);
-            nowCalendar.add(Calendar.DATE, 1);
-
-            int count=1;
-            while (!Utils.isSameDay(calendar.getTime(),nowCalendar.getTime())){
-                if(index<dailyInvokeCounts.size()) {
-                    DailyViewCount dailyInvokeCount = dailyInvokeCounts.get(index);
-                    if (Utils.isSameDay(calendar.getTime(), dailyInvokeCount.getDate())) {
-                        int times=invokeArray.getInteger(count);
-                        times+=dailyInvokeCount.getCount();
-                        invokeArray.set(count,times);
-                        index++;
-                    }
-                }
-
-                calendar.add(Calendar.DATE,1);
-                count++;
-            }
-
-        }
-
-        resultList.add(dateList);
-        resultList.add(viewArray);
-        resultList.add(invokeArray);
-
-        JSONObject result=new JSONObject();
-
-        result.put("valueList",resultList);
+        StatisticsService statisticsService = new StatisticsService();
+        JSONObject result = statisticsService.getDailyViewAndInvokeTimes(modelItem,computableModelList);
 
         return ResultUtils.success(result);
     }

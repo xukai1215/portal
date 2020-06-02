@@ -209,7 +209,10 @@ var vue = new Vue({
                 resource: '',
                 desc: ''
             },
-            editThemeActive: 0
+            editThemeActive: 0,
+            isCollapse: false,
+            // drawer: false,
+            // direction: 'rtl',
         }
     },
     methods: {
@@ -1061,16 +1064,19 @@ var vue = new Vue({
                         // loading.close();
                         if (result.code === 0) {
                             if(result.data.method==="update") {
-                                alert("Update Success");
+                                // alert("Update Success");
+                                that.$message('Update Success');
                                 $("#editModal", parent.document).remove();
-                                window.location.href = "/repository/theme/" + result.data.oid;
+                                that.dialogVisible3 = false;
+                                // window.location.href = "/repository/theme/" + result.data.oid;
                             }
                             else{
                                 that.$message('Success! Changes have been submitted, please wait for the author to review.');
+                                that.dialogVisible3 = false;
                                 // window.location.href = "/repository/theme/" + result.data.oid;
                                 // alert("Success! Changes have been submitted, please wait for the author to review.");
                                 //产生信号调用计数，启用websocket
-                                window.location.href = "/user/userSpace";
+                                // window.location.href = "/user/userSpace";
                             }
                         }
                         else if(result.code==-2){
@@ -1130,7 +1136,7 @@ var vue = new Vue({
                     $('#imgShowApplication'+log).show();
                 }
             });
-        }
+        },
     },
     mounted() {
         let that = this;
@@ -1199,6 +1205,15 @@ var vue = new Vue({
             that.relateSearch = "";
             that.getRelation();
             that.search2();
+            console.log($(window).width());
+            let winWidth = $(window).width();
+            if (winWidth<750){
+                that.isCollapse = true;
+                $(".themeInfoImge").show();
+            }else {
+                that.isCollapse = false;
+                $(".themeInfoImge").hide();
+            }
         });
         //拿到当前页面的themeoid
         $.ajax({
@@ -1217,6 +1232,18 @@ var vue = new Vue({
                 let hrefs = href.split('/');
                 that.themeoid = hrefs[hrefs.length - 1].split("#")[0];
             }
+        });
+        $(window).resize(function () {
+            console.log($(window).width());
+            let winWidth = $(window).width();
+            if (winWidth<750){
+                that.isCollapse = true;
+                $(".themeInfoImge").show();
+            }else {
+                that.isCollapse = false;
+                $(".themeInfoImge").hide();
+            }
+
         });
     }
 });

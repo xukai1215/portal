@@ -62,15 +62,15 @@
 <body class="scrollbar">
 <div id="app">
     <div th:replace="fragments/navbar :: unlog" class="head"></div>
-    <div class="container-fluid">
+    <div class="container-fluid" v-cloak>
         <div class="row">
             <div class="col-sm-12">
                 <div class="row">
                     <!--左侧菜单栏-->
-                    <el-card id="subcard">
+                    <el-card id="subcard" style="min-width: 60px">
                                 <div class="logoPanel">
                                 </div>
-                                <div slot="header" class="clearfix text-center">
+                                <div slot="header" class="clearfix text-center headerImg">
                                     <img th:src="'/static'+${info.image}" id="header_image">
                                     <div>
                                         <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
@@ -78,18 +78,23 @@
                                         <!--<el-button class="edit_themename_button editicon" type="primary"  @click="edit_theme_name" icon="el-icon-edit" circle  style="display: none"></el-button>-->
                                     </div>
                                 </div>
+                                <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
+                                    <!--<el-radio-button :label="false">展开</el-radio-button>-->
+                                    <!--<el-radio-button :label="true">收起</el-radio-button>-->
+                                <!--</el-radio-group>-->
                                 <el-menu
                                         :default-active="defaultActive"
                                         ref="menu"
                                         class="el-menu-vertical-demo"
                                         @select=""
                                         active-text-color="#409EFF"
-                                        :collapse="false">
+                                        :collapse="isCollapse"
+                                        :collapse-transition = "false">
                                    <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
                                        <i class="el-icon-info"></i>
                                        <span slot="title">Theme Info</span>
                                    </el-menu-item>
-                                   <el-submenu index="2" class="model">
+                                   <el-submenu th:if="${#arrays.length(modelClassInfos)}" index="2" class="model">
                                        <template slot="title">
                                            <i class="el-icon-menu"></i>
                                            <span slot="title">Models</span>
@@ -105,7 +110,7 @@
                                            </el-menu-item>
                                        </div>
                                    </el-submenu>
-                                    <el-submenu index="3">
+                                    <el-submenu th:if="${#arrays.length(dataClassInfos)}" index="3">
                                         <template slot="title">
                                             <i class="el-icon-coin"></i>
                                             <span slot="title">Data</span>
@@ -121,7 +126,7 @@
                                             </el-menu-item>
                                         </div>
                                     </el-submenu>
-                                    <el-menu-item index="4" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
+                                    <el-menu-item th:if="${#arrays.length(applications)}" index="4" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
                                         <i class="el-icon-bangzhu"></i>
                                         <span slot="title"  id="applications1">Applications</span>
                                     </el-menu-item>
@@ -132,8 +137,16 @@
                                </el-menu>
                             </el-card>
                     <!--左侧菜单栏 END-->
-                    <div class="col-sm-10" style="overflow: auto;padding:10px 20px;" id="right_content">
+                    <div class="col-sm-10" style="overflow: auto;padding:10px 10px;" id="right_content">
                         <div class="infoPanel container-fluid" id="BasicInfoPanel">
+                            <div slot="header" class="clearfix text-center themeInfoImge" style="display: none">
+                                <img th:src="'/static'+${info.image}" id="header_image1" style="width: 200px; height: 180px;">
+                                <div>
+                                    <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
+                                    <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
+                                    <!--<el-button class="edit_themename_button editicon" type="primary"  @click="edit_theme_name" icon="el-icon-edit" circle  style="display: none"></el-button>-->
+                                </div>
+                            </div>
                             <div class="title text-center" style="margin-bottom:40px;">
                                 <h3>
                                     <span>Theme Info</span>
@@ -152,14 +165,14 @@
                                 </h3>
                             </div>
                             <div th:each="modelClass,index:${modelClassInfos}" class="model_card">
-                                <div class="x_content model_item" th:id="'modelClass'+${index.index}" style="width: 80%">
-                                    <el-row :gutter="200" type="center" class="row-bg" id="content">
-                                        <el-col :span="8" th:each="item:${modelClass.content}" style="margin-top:20px;" id="model_col">
-                                            <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}">
+                                <div class="x_content model_item" th:id="'modelClass'+${index.index}">
+                                    <el-row type="center" class="row-bg" id="content">
+                                        <div th:each="item:${modelClass.content}" style="margin:20px 18px 0 0;float: left" id="model_col">
+                                            <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}" target = "_blank">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="model_card">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
-                                                 <div th:unless="${item.image}!=''">
-                                                    <avatar th:username="${item.name}" :size="180" :rounded="false" ></avatar>
+                                                 <div th:unless="${item.image}!=''" style="padding: 10px">
+                                                     <img src="/static/img/model/model.png" style="width:160px;height: 160px;">
                                                  </div>
                                                 <div th:if="${item.image!=''}">
                                                     <img th:src="'/static'+${item.image}" class="image" style="height: 180px!important;width: 180px!important;">
@@ -169,7 +182,7 @@
                                                 </div>
                                             </el-card>
                                             </a>
-                                        </el-col>
+                                        </div>
                                     </el-row>
                                 </div>
                             </div>
@@ -182,18 +195,21 @@
                                 </h3>
                             </div>
                             <div th:each="dataClass,index:${dataClassInfos}">
-                                <div class="x_content data_item" th:id="'dataClass'+${index.index}" style="width: 80%">
-                                    <el-row :gutter="200" type="center" class="row-bg" id="content1">
-                                        <el-col :span="8" th:each="item:${dataClass.content}" style="margin-top:20px;" id="model_col2">
-                                            <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}">
+                                <div class="x_content data_item" th:id="'dataClass'+${index.index}">
+                                    <el-row type="center" class="row-bg" id="content1">
+                                        <div th:each="item:${dataClass.content}" style="margin:20px 20px 0 0;float: left" id="model_col2">
+                                            <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}" target = "_blank">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
-                                                 <avatar th:username="${item.name}" :size="140" :rounded="false" style="height: 180px!important;width: 180px!important;"></avatar>
+                                                <div style="padding: 10px">
+                                                    <img src="/static/img/model/myData.png" style="width:160px;height: 160px;">
+                                                </div>
+
                                                 <div style="padding: 14px;">
                                                     <span th:text="${item.name}" class="data_name" style="-webkit-line-clamp: 2;"></span>
                                                 </div>
                                             </el-card>
                                             </a>
-                                        </el-col>
+                                        </div>
                                     </el-row>
                                 </div>
                             </div>
@@ -208,9 +224,9 @@
                             </div>
                             <div id="applications">
                                 <div class="x_content application_item"  id="application">
-                                    <el-row :gutter="200" type="center" class="row-bg" id="content2">
-                                        <el-col :span="8" th:each="item:${applications}" style="margin-top:20px;" id="model_col3">
-                                            <a th:href="${item.link}">
+                                    <el-row type="center" class="row-bg" id="content2">
+                                        <div th:each="item:${applications}" style="margin:20px 20px 0 0;float: left" id="model_col3">
+                                            <a th:href="${item.link}" target = "_blank">
                                                 <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
                                                     <img th:src="'/static'+${item.image}" class="image" id="application_image">
                                                     <div style="padding: 14px;">
@@ -218,7 +234,7 @@
                                                     </div>
                                                 </el-card>
                                             </a>
-                                        </el-col>
+                                        </div>
                                     </el-row>
                                 </div>
                             </div>
@@ -230,11 +246,11 @@
                                 </h3>
                             </div>
                             <div id="maintainers">
-                                <div class="x_content"  id="maintainers1">
-                                    <el-row :gutter="20" type="center" class="row-bg" id="content2">
-                                        <el-col  th:each="item:${maintainer}" style="margin-top:20px;">
+                                <div class="x_content"  id="maintainers1" style="display: contents;">
+                                    <!--<el-row type="center" class="row-bg" id="content2">-->
+                                        <el-col th:each="item:${maintainer}" style="margin:20px 20px 0 0;float: left">
                                             <el-card>
-                                            <a th:href="'/user/'+${item.id}">
+                                            <a th:href="'/user/'+${item.id}" target = "_blank">
                                                     <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;align-items: center;padding: 10px;">
                                                         <div class="el-col ">
                                                             <img src="/static/img/icon/default.png"
@@ -242,15 +258,14 @@
                                                         </div>
                                                         <div class="el-col">
                                                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                                                <a ><h4  th:text="${item.name}" style="padding: 0;"></h4></a>
+                                                                <h4  th:text="${item.name}" style="padding: 0;"></h4>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </a>
                                             </el-card>
                                         </el-col>
-                                    </el-row>
-
+                                    <!--</el-row>-->
                                 </div>
                             </div>
                         </div>
@@ -260,6 +275,7 @@
     </div>
 </div>
     <el-dialog
+            v-cloak
             title="Edit Theme"
             :visible.sync="dialogVisible3"
             width="90%"
@@ -751,6 +767,6 @@
 <script src="/static/socket/jquery.min.js"></script>
 <script src="/static/socket/sockjs.min.js"></script>
 <script src="/static/js/page/create-theme.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/jutils-src"></script>
 
 </html>

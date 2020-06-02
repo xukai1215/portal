@@ -883,16 +883,23 @@ var createModelItem = Vue.extend({
             },
             onChange: (currentIndex, newIndex, stepDirection) => {
                 if (currentIndex === 0 && stepDirection === "forward") {
-                    if ($("#nameInput").val().trim() == "") {
+                    if (this.cls.length == 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
+                    } else if ($("#nameInput").val().trim() == "") {
                         new Vue().$message({
                             message: 'Please enter name!',
                             type: 'warning',
                             offset: 70,
                         });
                         return false;
-                    } else if (this.cls.length == 0) {
+                    }else if ($("#descInput").val().trim() == ""){
                         new Vue().$message({
-                            message: 'Please select at least one classification!',
+                            message: 'Please enter overview!',
                             type: 'warning',
                             offset: 70,
                         });

@@ -56,24 +56,23 @@
                             {{comment.date}}
                         </div>
                         <div class="com-content" style="margin-top:10px;font-size:20px;">{{comment.content}}</div>
-                        <div class="com-operate flexRowSpaceBetween" style="margin-top:10px; font-size:18px;font-family: sans-serif; "  >
+                        <div class="com-operate flexRowSpaceBetween" style="margin-top:10px; font-size:18px;font-family: sans-serif; ">
                             <div>
-                                <!--<span>-->
-                                <!--<i class="thumbs-up">Like</i>-->
-                                <!--</span>-->
-                                <a href="#comments" class="reply hover" @click="replyComment(comment)">
-                                                <i class="el-icon-s-comment"></i>
-                                                Reply
-                                            </a>
+                                    <!--<span>-->
+                                    <!--<i class="thumbs-up">Like</i>-->
+                                    <!--</span>-->
+                                    <a href="#comments" class="reply hover" @click="replyComment(comment)">
+                                                    <i class="el-icon-s-comment"></i>
+                                                    Reply
+                                    </a>
                             </div>
                             <div v-if="useroid==comment.author.oid" >
-                                            <a class="delete hover" style="display: none;" @click="deleteComment(comment.oid)">
-                                                <i class="el-icon-delete-solid"></i>
-                                                Delete
-                                            </a>
+                                                <a class="delete hover" style="display: none;" @click="deleteComment(comment.oid)">
+                                                    <i class="el-icon-delete-solid"></i>
+                                                    Delete
+                                                </a>
                             </div>
                         </div>
-
                         <div class="com-sub-list">
                             <div class="com-sub" v-for="(subComm,j) in comment.subCommentList" style="border-top: 1px solid #eee;margin-top:15px;padding-top: 15px;">
                                 <div class="com-sub-author flex">

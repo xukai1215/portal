@@ -188,6 +188,7 @@ var info=new Vue({
         },
         replyComment(comment){
             this.commentParentId=comment.oid;
+            this.replyToUserId=comment.author.oid;
             this.replyTo="Reply to "+comment.author.name;
             setTimeout(function () { $("#commentTextArea").focus();}, 1);
         },

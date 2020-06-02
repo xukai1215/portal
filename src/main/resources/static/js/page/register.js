@@ -2,9 +2,13 @@ new Vue({
     el: '#app',
     data: function() {
         var validateEmail = (rule, value, callback) => {
+            let reg = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+            let flag = value.match(reg);
             if (value === '') {
                 callback(new Error('Please enter email address'));
-            } else {
+            } else if (flag==null){
+                callback(new Error('Please enter the correct email address'));
+            }else {
                 callback();
             }
         };
@@ -102,7 +106,7 @@ new Vue({
                 } else {
                     this.$notify.error({
                         title: 'Error',
-                        message: 'Please check your information.',
+                        message: 'Please check your registration information.',
                         offset: 70
                     });
                     return false;
