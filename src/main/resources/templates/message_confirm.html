@@ -57,7 +57,7 @@
                                         <div class="no-mess icon-th-list overview" style="    color: #ccc;    display: block;    font-size: 16px;    margin: 20px;    text-align: center;display: none">
                                             <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                         </div>
-                                        <el-timeline :reverse="reverse">
+                                        <el-timeline :reverse="reverse" v-if="!await">
                                             <el-timeline-item
                                                     v-for = "(item,index) in sumDateTableData"
                                                     :key="index"

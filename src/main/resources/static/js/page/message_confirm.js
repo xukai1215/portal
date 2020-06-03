@@ -111,6 +111,8 @@ var notice = Vue.extend({
 
             loading: true,
 
+            await:false,
+
             tabPosition: 'left',
             // sumDateTableData用于存储以时间为主键的数据,主要用于展示时间线，date为时间，tableData用来存储sumtabledata里的数据
             sumDateTableData:[{
@@ -195,6 +197,7 @@ var notice = Vue.extend({
         //         callback(t);
         // },
         getVersions(){
+            this.await = true;
             $.ajax({
                 type: "GET",
                 url: "/theme/getMessageData",
@@ -204,6 +207,7 @@ var notice = Vue.extend({
                     //下面将type分到model、community中
                     //model：modelItem、conceptualModel、logicalModel、computableModel
                     // community：concept、spatialReference	、unit、template
+
                     for (let i=0;i<json.data.accept.length;i++){
                         if (json.data.accept[i].type == "modelItem" || json.data.accept[i].type == "conceptualModel"||json.data.accept[i].type == "logicalModel"||json.data.accept[i].type == "computableModel"){
                             this.model_tableData2.push(json.data.accept[i]);
@@ -719,6 +723,8 @@ var notice = Vue.extend({
                     } else {
                         $(".overview").hide();
                     }
+
+                    this.await = false;
                 }
             })
 
