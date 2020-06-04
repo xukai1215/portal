@@ -88,8 +88,6 @@ public class CommentController {
         if(Utils.checkLoginStatus(session)==null){
             return ResultUtils.error(-1,"no login");
         }else {
-
-
             Comment comment = new Comment();
             BeanUtils.copyProperties(commentDTO, comment);
 
@@ -97,9 +95,10 @@ public class CommentController {
             comment.setDate(new Date());
             comment.setAuthorId(session.getAttribute("oid").toString());
             comment.setRelateItemType(ItemTypeEnum.getItemTypeByName(commentDTO.getRelateItemTypeName()));
+            comment.setReadStatus(0);
 
             //这里设置增加messageNum
-            if (comment.getReplyToUserId()!=""){
+            if (comment.getReplyToUserId()!=""&&!(comment.getReplyToUserId()).equals(session.getAttribute("oid").toString())){
                 String UserId = comment.getReplyToUserId();
                 User user = userDao.findFirstByOid(UserId);
                 String UserUserName = user.getUserName();
@@ -115,10 +114,8 @@ public class CommentController {
                 parentComment.getSubComments().add(comment.getOid());
                 commentDao.save(parentComment);
             }
-
             return ResultUtils.success();
         }
-
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -246,6 +243,7 @@ public class CommentController {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 jsonObject.put("modifyTimeDay", sdf.format(comment.getDate()));//与message的其他时间名称统一
                 jsonObject.put("status","comment");
+                jsonObject.put("readStatus",comment.getReadStatus());
                 String id = comment.getRelateItemId();
                 JSONObject itemInfo = getItemInfoByTypeAndId(comment.getRelateItemType(),comment.getRelateItemId());
                 jsonObject.put("itemInfo",itemInfo);
@@ -253,6 +251,7 @@ public class CommentController {
                 jsonArray.add(jsonObject);
 
             }
+            jsonArray.add(oid);
 
             return ResultUtils.success(jsonArray);
         }
@@ -303,6 +302,27 @@ public class CommentController {
         itemInfo.put("type",itemTypeStr.substring(0,1).toLowerCase()+itemTypeStr.substring(1));
 
         return itemInfo;
+    }
+
+    @RequestMapping(value="/commentReaded",method = RequestMethod.POST)
+    public String commentReaded(HttpServletRequest request,@RequestParam(value="comment_num") int comment_num){
+        HttpSession session = request.getSession();
+        String user = session.getAttribute("uid").toString();
+        String userOid = session.getAttribute("oid").toString();
+        //调用函数，减去该用户的comment_num数目
+        userService.commentNumMinus(user,comment_num);
+        List<Comment>comments=commentDao.findAll();
+        for (int i=0;i<comments.size();i++){
+            if (comments.get(i).getReplyToUserId()!=""){
+                if (comments.get(i).getReadStatus() == 0 && comments.get(i).getReplyToUserId().equals(userOid)){
+                    Comment comment = new Comment();
+                    comment = comments.get(i);
+                    comment.setReadStatus(1);
+                    commentDao.save(comment);
+                }
+            }
+        }
+        return "ok";
     }
 
 }

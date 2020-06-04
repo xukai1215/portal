@@ -18,6 +18,7 @@ Vue.component('headSideBar', {
             userInfo:{
 
             },
+            message_num:0
         }
     },
 
@@ -124,17 +125,6 @@ Vue.component('headSideBar', {
             )
         },
 
-        getThemeMessage(){
-            $.ajax({
-                url: "/theme/getoid",
-                async: false,
-                success:(data)=>{
-                    this.oid = data;
-                }
-            })
-            this.changeRter(10);
-        },
-
         subMenuDropDpwn(target,timerDrop,timerFold){
             let childrenCount=target.children('ul').children('li').length;
             // console.log(childrenCount);
@@ -162,15 +152,15 @@ Vue.component('headSideBar', {
             target.children('ul').children('#phoneLogin').css('height','0')
         },
         //
-        // getMessageNum(){
-        //     $.ajax({
-        //         url:"/theme/getMessageNum",
-        //         type:"GET",
-        //         success:(data)=>{
-        //             this.message_num = data;
-        //         }
-        //     })
-        // }
+        getMessageNum(){
+            $.ajax({
+                url:"/theme/getMessageNum",
+                type:"GET",
+                success:(data)=>{
+                    this.message_num = data;
+                }
+            })
+        }
     },
 
     created(){
