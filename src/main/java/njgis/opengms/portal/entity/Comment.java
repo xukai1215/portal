@@ -27,6 +27,7 @@ public class Comment {
     ItemTypeEnum relateItemType;
 
     int thumbsUpNumber=0;
+    int readStatus;//标记是否已读
     Date date;
 
     List<String> subComments=new ArrayList<>();

@@ -107,7 +107,15 @@ var notice = Vue.extend({
             comments:[],
             comments1:[],
             comments2:[],
-            comments2Length:0,
+            sumComment1:[{
+                date:"",
+                comment:[{}]
+            }],
+            sumComment2:[{
+                date:"",
+                comment:[{}]
+            }],
+            unread:0,
 
             loading: true,
 
@@ -117,12 +125,14 @@ var notice = Vue.extend({
             // sumDateTableData用于存储以时间为主键的数据,主要用于展示时间线，date为时间，tableData用来存储sumtabledata里的数据
             sumDateTableData:[{
                 date:"",
+                color:"",
                 tableData:[{
-
                 }]
             }],
             timeLineColor:'#409EFF',
-            timeLineColor1:'#F56C6C'
+            timeLineColor1:'#fe7708',
+            stretch:true,
+            userOid:""
         };
     },
     methods:{
@@ -134,14 +144,80 @@ var notice = Vue.extend({
                     window.location.href="/user/login";
                 }
                 this.comments = result.data;
+                this.userOid = this.comments.pop();
+                let num=0;
                 for (let i=0;i<this.comments.length;i++){
-                    if (this.comments[i].replier==null){
+                    if (this.comments[i].replier==null||this.comments[i].author.oid == this.userOid){
                         this.comments1.push(this.comments[i]);
                     } else {
+                        if (this.comments[i].readStatus==0) {
+                            this.comments[i].color = '#fe7708';
+                            num++;
+                        }else {
+                            this.comments[i].color = '#409EFF';
+                        }
                         this.comments2.push(this.comments[i]);
                     }
                 }
-                this.comments2Length = this.comments2.length;
+                this.unread = num;
+                // this.comments2Length = this.comments2.length;
+
+                //将comment内容纳入以时间为主键的sumComment中
+                let k=0;
+                for (let i=0;i<this.comments1.length;i++){
+                    if (i==0){
+                        this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
+                        this.sumComment1[k].comment.push(this.comments1[i]);
+                        if (this.sumComment1[k].comment[0].content == null){
+                            this.sumComment1[k].comment.shift();
+                        }
+                    } else if (this.comments1[i].modifyTimeDay == this.comments1[i-1].modifyTimeDay){
+                        this.sumComment1[k].comment.push(this.comments1[i]);
+                        if (this.sumComment1[k].comment[0].content == null) {
+                            this.sumComment1[k].comment.shift();
+                        }
+                    } else {
+                        k++;
+                        this.sumComment1.push({
+                            date:"",
+                            comment:[{}]
+                        })
+                        this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
+                        this.sumComment1[k].comment.push(this.comments1[i]);
+                        if (this.sumComment1[k].comment[0].content == null) {
+                            this.sumComment1[k].comment.shift();
+                        }
+                    }
+                }
+                let k1=0;
+                for (let i=0;i<this.comments2.length;i++){
+                    if (i==0){
+                        this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
+                        this.sumComment2[k1].color = this.comments2[i].color;
+                        this.sumComment2[k1].comment.push(this.comments2[i]);
+                        if (this.sumComment2[k1].comment[0].content == null){
+                            this.sumComment2[k1].comment.shift();
+                        }
+                    } else if (this.comments2[i].modifyTimeDay == this.comments2[i-1].modifyTimeDay){
+                        this.sumComment2[k1].comment.push(this.comments2[i]);
+                        this.sumComment2[k1].color = this.comments2[i].color;//更新为最新评论所代表的color
+                        if (this.sumComment2[k1].comment[0].content == null) {
+                            this.sumComment2[k1].comment.shift();
+                        }
+                    } else {
+                        k1++;
+                        this.sumComment2.push({
+                            date:"",
+                            comment:[{}]
+                        })
+                        this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
+                        this.sumComment2[k1].color = this.comments2[i].color;
+                        this.sumComment2[k1].comment.push(this.comments2[i]);
+                        if (this.sumComment2[k1].comment[0].content == null) {
+                            this.sumComment2[k1].comment.shift();
+                        }
+                    }
+                }
 
                 if (this.comments.length == 0){
                     $(".comment").show();
@@ -149,9 +225,6 @@ var notice = Vue.extend({
                     $(".comment").hide();
                 }
             })
-        },
-        handleClick(tab, event){
-            console.log(tab, event);
         },
         handleClose(done) {
             this.$confirm('Confirm closing？')
@@ -166,36 +239,6 @@ var notice = Vue.extend({
         handleClick(row) {
             console.log(row);
         },
-        // formatDate(value,callback) {
-        //     const date = new Date(value);
-        //     y = date.getFullYear();
-        //     M = date.getMonth() + 1;
-        //     d = date.getDate();
-        //     H = date.getHours();
-        //     m = date.getMinutes();
-        //     s = date.getSeconds();
-        //     if (M < 10) {
-        //         M = '0' + M;
-        //     }
-        //     if (d < 10) {
-        //         d = '0' + d;
-        //     }
-        //     if (H < 10) {
-        //         H = '0' + H;
-        //     }
-        //     if (m < 10) {
-        //         m = '0' + m;
-        //     }
-        //     if (s < 10) {
-        //         s = '0' + s;
-        //     }
-        //
-        //     const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
-        //     if(callback == null||callback == undefined)
-        //         return t;
-        //     else
-        //         callback(t);
-        // },
         getVersions(){
             this.await = true;
             $.ajax({
@@ -258,7 +301,7 @@ var notice = Vue.extend({
                             this.sum_tableData.push(json.data.edit[i]);
                         }
                     }
-
+                    
                     for (let i = 0;i<this.sum_tableData.length;i++) {
                         if (this.sum_tableData[i].status!="unchecked"){
                             if (this.sum_tableData[i].acceptTime!=null) {
@@ -269,20 +312,31 @@ var notice = Vue.extend({
                         }
                     }
 
+                    //对version中表格进行排序
+                    this.bubbleSort(this.model_tableData1);
+                    this.bubbleSort(this.model_tableData2);
+                    this.bubbleSort(this.model_tableData3);
+                    this.bubbleSort(this.community_tableData1);
+                    this.bubbleSort(this.community_tableData2);
+                    this.bubbleSort(this.community_tableData3);
+                    this.bubbleSort(this.theme_tableData1);
+                    this.bubbleSort(this.theme_tableData2);
+                    this.bubbleSort(this.theme_tableData3);
+
+                    this.model_tableData1.reverse();
+                    this.model_tableData2.reverse();
+                    this.model_tableData3.reverse();
+                    this.community_tableData1.reverse();
+                    this.community_tableData2.reverse();
+                    this.community_tableData3.reverse();
+                    this.theme_tableData1.reverse();
+                    this.theme_tableData2.reverse();
+                    this.theme_tableData3.reverse();
+
+
                     this.sum_tableData = this.sum_tableData.concat(this.comments);
-
-
-                    //将sum_tableData的数据按照时间排序(冒泡排序)
-                    for (let i=0;i<this.sum_tableData.length;i++){
-
-                        for (let j=this.sum_tableData.length-1;j>i;j--){
-                            if ((this.sum_tableData[j].modifyTime||this.sum_tableData[j].date)<(this.sum_tableData[j-1].modifyTime||this.sum_tableData[j-1].date)){
-                                let temp = this.sum_tableData[j];
-                                this.sum_tableData[j] = this.sum_tableData[j-1];
-                                this.sum_tableData[j-1] = temp;
-                            }
-                        }
-                    }
+                    //对sum_tableData进行冒泡排序
+                    this.bubbleSort(this.sum_tableData);
 
                     //将this.sum_tableData通过只传值不传地址赋值给sum_tableData
                     var sum_tableData = JSON.parse(JSON.stringify(this.sum_tableData));
@@ -676,7 +730,6 @@ var notice = Vue.extend({
                         }
                     }
 
-
                     //为时间线涂色
                     for (let i=0;i<this.sum_tableData.length;i++){
                         // if (this.sum_tableData[i].status == "confirmed") {
@@ -727,8 +780,6 @@ var notice = Vue.extend({
                     this.await = false;
                 }
             })
-
-            // this.loading = false;
         },
         view(event){
             let refLink=$(".viewBtn");
@@ -959,6 +1010,41 @@ var notice = Vue.extend({
                 }
             }
         },
+        //冒泡排序
+        bubbleSort(table){
+            for (let i=0;i<table.length;i++){
+                for (let j = table.length-1;j>i;j--){
+                    if ((table[j].modifyTime||table[j].date)<(table[j-1].modifyTime||table[j-1].date)){
+                        let temp = table[j];
+                        table[j] = table[j-1];
+                        table[j-1] = temp;
+                    }
+                } 
+            } 
+        },
+        //comment已阅效果实现
+        commentReaded(tab, event){
+            if (tab.label == "Reply") {
+                //首先判断reply的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.unread != 0){
+                    $.ajax({
+                        url:"/comment/commentReaded",
+                        type:"POST",
+                        data:{
+                          comment_num:this.unread
+                        },
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.unread = 0;
+                                $("#headBar .el-badge__content").text(this.table_length_sum);
+                                // this.timeLineColor1 = '#409EFF';
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }
+        }
     },
     mounted(){
         this.sendcurIndexToParent();
