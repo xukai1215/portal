@@ -195,9 +195,12 @@ public class ComputableModelRestController {
                 resourceArray.add(jsonObject);
 
             }
-
         }
 
+        //add by wangming at 2020.05.20 处理用户名和用户id
+        User user = userService.getByUid(computableModel.getAuthor());
+        computableModelResultDTO.setAuthor_name(user.getName());
+        computableModelResultDTO.setAuthor_oid(user.getOid());
         computableModelResultDTO.setResourceJson(resourceArray);
 
         return ResultUtils.success(computableModelResultDTO);
@@ -214,6 +217,12 @@ public class ComputableModelRestController {
         }
     }
 
+    @RequestMapping(value = "/updateDeployStatus/{id}", method = RequestMethod.GET)
+    JsonResult updateDeployStatus(@PathVariable("id") String id){
+        boolean result = computableModelService.updateDeployStatus(id);
+        return ResultUtils.success(result);
+    }
+
 
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
@@ -225,6 +234,19 @@ public class ComputableModelRestController {
     JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
         return ResultUtils.success(computableModelService.list(modelItemFindDTO,classes));
     }
+
+    // add by wangming at 2020.05.20 根据类型获取相应的计算模型资源
+    @RequestMapping (value="/listWithType",method = RequestMethod.POST)
+    JsonResult listByResourceType(ModelItemFindDTO modelItemFindDTO, @RequestParam(value = "type") String type){
+        return ResultUtils.success(computableModelService.listByResourceType(modelItemFindDTO,type));
+    }
+
+    //add by wangming at 2020.05.26 获取到所有可用的计算模型服务资源,分页和搜索文本功能全包含
+    @RequestMapping(value = "/listDeployed", method = RequestMethod.POST)
+    JsonResult listDeployedResource(ModelItemFindDTO modelItemFindDTO){
+        return ResultUtils.success(computableModelService.listDeployedResource(modelItemFindDTO));
+    }
+
 
     @RequestMapping (value="/listByAuthor",method = RequestMethod.POST)
     JsonResult listByAuthor(ModelItemFindDTO modelItemFindDTO,
@@ -383,6 +405,7 @@ public class ComputableModelRestController {
         boolean result = computableModelService.judgeComputerModelByUserNameAndPid(userName, pid);
         return ResultUtils.success(result);
     }
+
 
 
 }

@@ -492,6 +492,13 @@ public class ComputableModelService {
         return null;
     }
 
+    public boolean updateDeployStatus(String id){
+        ComputableModel computableModel = computableModelDao.findFirstByOid(id);
+        computableModel.setDeploy(true);
+        computableModelDao.save(computableModel);
+        return true;
+    }
+
     public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String uid) {
 
         JSONObject result = new JSONObject();
@@ -1131,6 +1138,75 @@ public class ComputableModelService {
         obj.put("pages", computableModelPage.getTotalPages());
 
         return obj;
+    }
+
+    //add by wangming at 2020.05.20
+    public JSONObject listByResourceType(ModelItemFindDTO modelItemFindDTO, String type){
+        JSONObject result = new JSONObject();
+        int page = modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String searchText = modelItemFindDTO.getSearchText();
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        //根据类型和查询内容进行查询
+        Page<ComputableModel> computableModelPage;
+        if(searchText.equals("")){
+            computableModelPage = computableModelDao.findAllByContentType(type,pageable);
+        }else{
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndContentType(searchText,type,pageable);
+        }
+
+        //添加用户信息
+        List<ComputableModel> computableModels = computableModelPage.getContent();
+        JSONArray users = new JSONArray();
+        for(int i =0; i < computableModels.size(); i++) {
+            JSONObject userObj = new JSONObject();
+            User user = userDao.findFirstByUserName(computableModels.get(i).getAuthor());
+            userObj.put("oid", user.getOid());
+            userObj.put("name", user.getName());
+            users.add(userObj);
+            computableModels.get(i).setAuthor_name(user.getName());
+            computableModels.get(i).setAuthor_oid(user.getOid());
+        }
+
+        result.put("list", computableModelPage.getContent());
+        result.put("total", computableModelPage.getTotalElements());
+        result.put("pages", computableModelPage.getTotalPages());
+        result.put("users", users);
+
+        return result;
+    }
+
+    //add by wangming at 2020.05.26
+    public JSONObject listDeployedResource(ModelItemFindDTO modelItemFindDTO){
+        JSONObject result = new JSONObject();
+        int page = modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String searchText = modelItemFindDTO.getSearchText();
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        //根据查询内容和deploy状态查询
+        Page<ComputableModel> computableModelPage;
+        if(searchText.equals("")){
+            computableModelPage = computableModelDao.findAllByDeploy(true,pageable);
+        }else {
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndDeploy(searchText,true,pageable);
+        }
+
+        //添加用户信息
+        List<ComputableModel> computableModels = computableModelPage.getContent();
+        for(int i =0; i < computableModels.size(); i++) {
+            JSONObject userObj = new JSONObject();
+            User user = userDao.findFirstByUserName(computableModels.get(i).getAuthor());
+            computableModels.get(i).setAuthor_name(user.getName());
+            computableModels.get(i).setAuthor_oid(user.getOid());
+        }
+
+        result.put("list", computableModelPage.getContent());
+        result.put("total", computableModelPage.getTotalElements());
+        result.put("pages", computableModelPage.getTotalPages());
+
+        return result;
     }
 
     public String query(ModelItemFindDTO modelItemFindDTO, List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {

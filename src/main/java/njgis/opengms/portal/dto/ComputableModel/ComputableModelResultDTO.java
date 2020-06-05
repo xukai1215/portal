@@ -25,6 +25,8 @@ public class ComputableModelResultDTO {
     String author;
     String status;
     String detail;
+    String author_name;
+    String author_oid;
 
     JSONArray resourceJson;
 
@@ -58,6 +60,7 @@ public class ComputableModelResultDTO {
 
     String mdl;
     String testDataPath;
+    String runtime;
 
     Object mdlJson;
 }
