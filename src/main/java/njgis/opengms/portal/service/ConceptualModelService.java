@@ -75,6 +75,9 @@ public class ConceptualModelService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
     public ModelAndView getPage(String id , HttpServletRequest request) {
         //条目信息
         ConceptualModel modelInfo = getByOid(id);
@@ -400,14 +403,21 @@ public class ConceptualModelService {
         }
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid) {
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid ,String loadUser) {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user = userDao.findFirstByOid(oid);
-        Page<ConceptualModel> modelItemPage = conceptualModelDao.findByAuthor(user.getUserName(), pageable);
+        Page<ConceptualModel> modelItemPage = Page.empty();
+        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemPage = conceptualModelDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible, pageable);
+        }else{
+            modelItemPage = conceptualModelDao.findByAuthor(user.getUserName(), pageable);
+        }
+
+
 
         JSONObject result = new JSONObject();
 
@@ -633,7 +643,7 @@ public class ConceptualModelService {
 
     }
 
-    public JSONObject searchByTitleByOid(ConceptualModelFindDTO conceptualModelFindDTO, String oid){
+    public JSONObject searchByTitleByOid(ConceptualModelFindDTO conceptualModelFindDTO, String oid,String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=conceptualModelFindDTO.getPage();
         int pageSize = conceptualModelFindDTO.getPageSize();
@@ -643,8 +653,12 @@ public class ConceptualModelService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<ConceptualModelResultDTO> articleResultDTOPage=conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthor(title,userName,pageable);
-
+        Page<ConceptualModelResultDTO> articleResultDTOPage = Page.empty();
+        if(loadUser == null||!loadUser.equals(oid)){
+            articleResultDTOPage = conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(title, userName,itemStatusVisible, pageable);
+        }else {
+            articleResultDTOPage = conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthor(title, userName, pageable);
+        }
         JSONObject result=new JSONObject();
         result.put("list",articleResultDTOPage.getContent());
         result.put("total",articleResultDTOPage.getTotalElements());

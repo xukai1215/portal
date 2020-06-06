@@ -6,11 +6,14 @@ import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.Spatial.SpatialFindDTO;
 import njgis.opengms.portal.dto.Spatial.SpatialResultDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SpatialService {
@@ -21,7 +24,40 @@ public class SpatialService {
     @Autowired
     UserDao userDao;
 
-    public JSONObject searchByTitleByOid(SpatialFindDTO spatialFindDTO, String oid){
+    @Autowired
+    UserService userService;
+
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
+    public JSONObject getSpatialsByUserId(String oid, SpatialFindDTO spatialFIndDTO,String loadUser) {
+
+        String uid=userService.getByOid(oid).getUserName();
+        boolean asc=spatialFIndDTO.getAsc();
+        String sortElement=spatialFIndDTO.getSortElement();
+        int page=spatialFIndDTO.getPage();
+        int pageSize=spatialFIndDTO.getPageSize();
+
+        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<SpatialResultDTO> spatials = Page.empty();
+        if(loadUser == null||!loadUser.equals(oid)) {
+            spatials = spatialReferenceDao.findByAuthor(uid, pageable);
+        }else{
+            spatials = spatialReferenceDao.findByAuthor(uid, pageable);
+        }
+
+        JSONObject SpatialObject = new JSONObject();
+        SpatialObject.put("count", spatials.getTotalElements());
+        SpatialObject.put("spatials", spatials.getContent());
+
+        return SpatialObject;
+
+    }
+
+    public JSONObject searchByTitleByOid(SpatialFindDTO spatialFindDTO, String oid, String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=spatialFindDTO.getPage();
         int pageSize = spatialFindDTO.getPageSize();
@@ -31,8 +67,14 @@ public class SpatialService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
-        Page<SpatialResultDTO> conceptResultDTOPage=spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
 
+        Page<SpatialResultDTO> conceptResultDTOPage = Page.empty();
+
+        if(loadUser==null||!loadUser.equals(oid)) {
+            conceptResultDTOPage = spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName,itemStatusVisible, pageable);
+        }else{
+            conceptResultDTOPage = spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+        }
         JSONObject result=new JSONObject();
         result.put("list",conceptResultDTOPage.getContent());
         result.put("total",conceptResultDTOPage.getTotalElements());

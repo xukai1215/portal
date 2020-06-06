@@ -28,9 +28,13 @@ public interface TemplateDao extends MongoRepository<Template,String> {
 
     Page<TemplateResultDTO> findByAuthor(String author,Pageable pageable);
 
+    Page<TemplateResultDTO> findByAuthorAndStatusIn(String author,List<String> status,Pageable pageable);
+
     List<Item> findByAuthor(String author);
 
     Page<TemplateResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    Page<TemplateResultDTO> findByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author,List<String> status, Pageable pageable);
 
     List<Item> findAllByAuthorshipIsNotNull();
 }

@@ -101,6 +101,10 @@ public class ModelItemService {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
         //getpage函数通过id获取需要的页面
     public ModelAndView getPage(String id, HttpServletRequest request){
         //条目信息
@@ -826,7 +830,7 @@ public class ModelItemService {
         return result;
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO,String oid){
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO,String oid,String loadUser){
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
@@ -834,7 +838,16 @@ public class ModelItemService {
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user=userDao.findFirstByOid(oid);
-        Page<ModelItemResultDTO> modelItemPage=modelItemDao.findByAuthor(user.getUserName(),pageable);
+        Page<ModelItemResultDTO> modelItemPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemPage=modelItemDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible,pageable);
+        }
+
+        else {
+            modelItemPage=modelItemDao.findByAuthor(user.getUserName(),pageable);
+        }
+
 
         JSONObject result=new JSONObject();
 
@@ -878,11 +891,11 @@ public class ModelItemService {
         Page<ModelItemResultDTO> modelItemPage = null;
         if(userName==null){
             if (searchText.equals("")&&classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContains("",pageable);
+                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("",itemStatusVisible,pageable);
             } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCase(searchText, pageable);
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
             } else if(searchText.equals("")&&!classes.get(0).equals("all")){
-                modelItemPage = modelItemDao.findByClassificationsIn(classes, pageable);
+                modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
             }else{
                 modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText,classes, pageable);
             }
@@ -1233,7 +1246,7 @@ public class ModelItemService {
 
     }
 
-    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid){
+    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid ,String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
@@ -1243,7 +1256,15 @@ public class ModelItemService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<ModelItemResultDTO> modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        Page<ModelItemResultDTO> modelItemResultDTOPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name,userName,itemStatusVisible,pageable);
+        }else{
+            modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        }
+
+
 
         JSONObject result=new JSONObject();
         result.put("list",modelItemResultDTOPage.getContent());

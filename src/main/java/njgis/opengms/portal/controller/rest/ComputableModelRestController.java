@@ -217,8 +217,12 @@ public class ComputableModelRestController {
 
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
-    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid){
-        return ResultUtils.success(computableModelService.listByUserOid(modelItemFindDTO,oid));
+    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(computableModelService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/list",method = RequestMethod.POST)
@@ -303,8 +307,12 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
-    JsonResult searchByTitle(ComputableModelFindDTO computableModelFindDTO, String oid){
-        return ResultUtils.success(computableModelService.searchByTitleByOid(computableModelFindDTO,oid));
+    JsonResult searchByTitle(ComputableModelFindDTO computableModelFindDTO, String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(computableModelService.searchByTitleByOid(computableModelFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/searchComputableModelsByUserId",method = RequestMethod.GET)

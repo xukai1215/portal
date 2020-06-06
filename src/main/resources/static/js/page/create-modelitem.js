@@ -1229,7 +1229,7 @@ var createModelItem = Vue.extend({
                                 center: true,
                                 showClose: false,
                             }).then(() => {
-                                window.location.href = "/modelItem/" + res.data.id;
+                                window.location.href = "/modelItem/" + result.data.id;
                             }).catch(() => {
                                 window.location.href = "/user/userSpace#/models/modelitem";
                             });

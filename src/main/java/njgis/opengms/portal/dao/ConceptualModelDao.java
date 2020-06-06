@@ -36,11 +36,15 @@ public interface ConceptualModelDao extends MongoRepository<ConceptualModel,Stri
 
     Page<ConceptualModel> findByAuthor(String author, Pageable pageable);
 
+    Page<ConceptualModel> findByAuthorAndStatusIn(String author, List<String> status,Pageable pageable);
+
     List<Item> findAllByAuthor(String author);
 
     Page<ConceptualModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 
     Page<ConceptualModelResultDTO> findConModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    Page<ConceptualModelResultDTO> findConModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author, List<String> status,Pageable pageable);
 
     List<Item> findAllByAuthorshipIsNotNull();
 }

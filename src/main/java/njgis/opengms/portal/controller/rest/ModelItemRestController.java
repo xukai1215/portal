@@ -163,8 +163,13 @@ public class ModelItemRestController {
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
-    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid){
-        return ResultUtils.success(modelItemService.listByUserOid(modelItemFindDTO,oid));
+    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+
+        return ResultUtils.success(modelItemService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
     @RequestMapping(value="/getRelation",method = RequestMethod.GET)
@@ -259,9 +264,13 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
-    JsonResult searchByTitle(ModelItemFindDTO modelItemFindDTO, String oid){
-        System.out.println("/searchModelByOid"+modelItemFindDTO);
-        return ResultUtils.success(modelItemService.searchByTitleByOid(modelItemFindDTO,oid));
+    JsonResult searchByTitle(ModelItemFindDTO modelItemFindDTO, String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+
+        return ResultUtils.success(modelItemService.searchByTitleByOid(modelItemFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/DOISearch",method = RequestMethod.GET)

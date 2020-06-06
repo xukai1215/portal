@@ -26,6 +26,8 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     Page<DataItem> findByAuthorAndNameContains(Pageable pageable, String author, String name);
 
+    Page<DataItem> findByAuthorAndNameContainsAndStatusIn(Pageable pageable, String author, String name, List<String> status);
+
     Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
 
     //test

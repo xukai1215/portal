@@ -138,9 +138,12 @@ public class DataItemRestController {
     }
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
-    JsonResult searchByTitle(DataItemFindDTO dataItemFindDTO, String oid){
-        System.out.println("data"+dataItemFindDTO);
-        return ResultUtils.success(dataItemService.searchByTitleByOid(dataItemFindDTO,oid));
+    JsonResult searchByTitle(DataItemFindDTO dataItemFindDTO, String oid, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(dataItemService.searchByTitleByOid(dataItemFindDTO,oid,loadUser));
     }
 
 
@@ -155,11 +158,14 @@ public class DataItemRestController {
     @RequestMapping(value = "/items/{categorysId}&{page}",method = RequestMethod.GET)
     JsonResult listByClassification(
             @PathVariable  String categorysId,
-            @PathVariable Integer page
+            @PathVariable Integer page,
 
-
-    ){
-        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10));
+              HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10,loadUser));
 
     }
 

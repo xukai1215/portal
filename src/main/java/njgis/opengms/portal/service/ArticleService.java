@@ -248,7 +248,8 @@ public class ArticleService {
                 result.put("find",1);
                 result.put("article",article);
             }
-
+            doc = null;
+            System.gc();
 //            //user中加入这个字段
 //            User user = userDao.findFirstByUserName(contributor);
 //            List<String>articles = user.getArticles();

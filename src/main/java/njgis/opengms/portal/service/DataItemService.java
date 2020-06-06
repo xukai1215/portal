@@ -57,6 +57,8 @@ public class DataItemService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
 
     public void update(String id, DataItemUpdateDTO dataItemUpdateDTO) {
         DataItem dataItem = dataItemDao.findById(id).orElseGet(() -> {
@@ -487,7 +489,7 @@ public class DataItemService {
 
 
     //search
-    public JSONObject searchByTitleByOid(DataItemFindDTO dataItemFindDTO, String oid) {
+    public JSONObject searchByTitleByOid(DataItemFindDTO dataItemFindDTO, String oid,String loadUser) {
 //        String userName = userDao.findFirstByOid(oid).getUserName();
         int page = dataItemFindDTO.getPage();
         int pageSize = dataItemFindDTO.getPageSize();
@@ -497,8 +499,12 @@ public class DataItemService {
 
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataItem> dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
-
+        Page<DataItem> dataItemResultDTOPage = Page.empty();
+        if(loadUser==null||!loadUser.equals(oid)) {
+            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContainsAndStatusIn(pageable, oid, name, itemStatusVisible);
+        }else{
+            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
+        }
         JSONObject result = new JSONObject();
         result.put("list", dataItemResultDTOPage.getContent());
         result.put("total", dataItemResultDTOPage.getTotalElements());
@@ -539,7 +545,7 @@ public class DataItemService {
     }
 
 
-    public JSONObject findByCateg(String categorysId, Integer page, boolean asc, Integer pageSize) {
+    public JSONObject findByCateg(String categorysId, Integer page, boolean asc, Integer pageSize,String loadUser) {
 
 
         List<String> category = new ArrayList<>();
@@ -587,6 +593,8 @@ public class DataItemService {
 
             everyData = new HashMap<>();
             it = getById(category.get(i));
+            if(it.getStatus()!=null&&it.getStatus().equals("Private"))
+                continue;
             everyData.put("name", it.getName());
             everyData.put("id", it.getId());
             everyData.put("description", it.getDescription());
