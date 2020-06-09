@@ -779,6 +779,15 @@ public class UserService {
         user.setMessageNum(++count);
         userDao.save(user);
     }
+    public void commentNumMinus(String username,int comment_num){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        count = count - comment_num;
+        user.setMessageNum(count);
+        userDao.save(user);
+    }
+
+
     //--
     public void modelItemMinusMinus(String userName){
         User user = userDao.findFirstByUserName(userName);

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VersionDTO {
-
+    String modifier;
     String type;
     String oid;
     String originOid;

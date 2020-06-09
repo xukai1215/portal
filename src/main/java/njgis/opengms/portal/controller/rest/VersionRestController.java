@@ -391,6 +391,7 @@ public class VersionRestController {
             modelItemDao.save(modelItem);
 
             modelItemVersion.setStatus(1);//
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setAcceptTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
@@ -442,6 +443,7 @@ public class VersionRestController {
             conceptualModelDao.save(conceptualModel);
 
             conceptualModelVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptualModelVersion.setAcceptTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
@@ -493,6 +495,7 @@ public class VersionRestController {
             logicalModelDao.save(logicalModel);
 
             logicalModelVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             logicalModelVersion.setAcceptTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
@@ -544,6 +547,7 @@ public class VersionRestController {
             computableModelDao.save(computableModel);
 
             computableModelVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             computableModelVersion.setAcceptTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
@@ -595,6 +599,7 @@ public class VersionRestController {
             conceptDao.save(concept);
 
             conceptVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptVersion.setAcceptTime(curDate);
             conceptVersionDao.save(conceptVersion);
@@ -646,6 +651,7 @@ public class VersionRestController {
             templateDao.save(template);
 
             templateVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             templateVersion.setAcceptTime(curDate);
             templateVersionDao.save(templateVersion);
@@ -697,6 +703,7 @@ public class VersionRestController {
             spatialReferenceDao.save(spatialReference);
 
             spatialReferenceVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             spatialReferenceVersion.setAcceptTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
@@ -748,6 +755,7 @@ public class VersionRestController {
             unitDao.save(unit);
 
             unitVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             unitVersion.setAcceptTime(curDate);
             unitVersionDao.save(unitVersion);
@@ -766,6 +774,7 @@ public class VersionRestController {
             authorUserName = modelItem.getAuthor();
             ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(versionDTO.getOid());
             modelItemVersion.setStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setRejectTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
@@ -776,6 +785,7 @@ public class VersionRestController {
             authorUserName = conceptualModel.getAuthor();
             ConceptualModelVersion conceptualModelVersion = conceptualModelVersionDao.findFirstByOid(versionDTO.getOid());
             conceptualModelVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptualModelVersion.setRejectTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
@@ -786,6 +796,7 @@ public class VersionRestController {
             authorUserName = logicalModel.getAuthor();
             LogicalModelVersion logicalModelVersion = logicalModelVersionDao.findFirstByOid(versionDTO.getOid());
             logicalModelVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             logicalModelVersion.setRejectTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
@@ -796,6 +807,7 @@ public class VersionRestController {
             authorUserName = computableModel.getAuthor();
             ComputableModelVersion computableModelVersion = computableModelVersionDao.findFirstByOid(versionDTO.getOid());
             computableModelVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             computableModelVersion.setRejectTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
@@ -806,6 +818,7 @@ public class VersionRestController {
             authorUserName = concept.getAuthor();
             ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(versionDTO.getOid());
             conceptVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptVersion.setRejectTime(curDate);
             conceptVersionDao.save(conceptVersion);
@@ -816,6 +829,7 @@ public class VersionRestController {
             authorUserName = template.getAuthor();
             TemplateVersion templateVersion = templateVersionDao.findFirstByOid(versionDTO.getOid());
             templateVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             templateVersion.setRejectTime(curDate);
             templateVersionDao.save(templateVersion);
@@ -826,6 +840,7 @@ public class VersionRestController {
             authorUserName = spatialReference.getAuthor();
             SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(versionDTO.getOid());
             spatialReferenceVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             spatialReferenceVersion.setRejectTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
@@ -836,6 +851,7 @@ public class VersionRestController {
             authorUserName = unit.getAuthor();
             UnitVersion unitVersion = unitVersionDao.findFirstByOid(versionDTO.getOid());
             unitVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             unitVersion.setRejectTime(curDate);
             unitVersionDao.save(unitVersion);

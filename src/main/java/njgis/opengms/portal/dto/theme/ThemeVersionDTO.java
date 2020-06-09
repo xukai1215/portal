@@ -20,6 +20,7 @@ import java.util.Date;
 public class ThemeVersionDTO {
     String oid;
     String themeOid;
+    String modifier;
 
     Date time;
     String themename;

@@ -288,6 +288,8 @@ public class ThemeRestController {
             themeDao.save(theme);
 
             themeVersion.setStatus(1);//
+
+            userService.messageNumPlusPlus(themeVersionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             themeVersion.setAcceptTime(curDate);
             themeVersionDao.save(themeVersion);
@@ -295,11 +297,13 @@ public class ThemeRestController {
     }
     @RequestMapping(value = "/reject",method = RequestMethod.POST)
     public JsonResult  reject(@RequestBody ThemeVersionDTO themeVersionDTO){
+
             Date curDate = new Date();
             Theme theme = themeDao.findFirstByOid(themeVersionDTO.getThemeOid());
             String authorUserName = theme.getAuthor();
             ThemeVersion themeVersion = themeVersionDao.findFirstByOid(themeVersionDTO.getOid());
             themeVersion.setStatus(-1);
+            userService.messageNumPlusPlus(themeVersionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             themeVersion.setRejectTime(curDate);
             themeVersionDao.save(themeVersion);

@@ -58,9 +58,15 @@ var notice = Vue.extend({
             model_tableData1:[],
             model_tableData2: [],
             model_tableData3:[],
+            model_tableData1_self:[],
+            model_tableData2_self:[],
+            model_tableData3_self:[],
             model_tableData1_length:0,
             model_tableData2_length:0,
             model_tableData3_length:0,
+            model_tableData1_length_self:0,
+            model_tableData2_length_self:0,
+            model_tableData3_length_self:0,
 
             edit_model_tableData:[],//用于获取model的version数据，用于显示谁编辑了什么
             community_tableData1:[],
@@ -69,6 +75,12 @@ var notice = Vue.extend({
             community_tableData1_length:0,
             community_tableData2_length:0,
             community_tableData3_length:0,
+            community_tableData1_self:[],
+            community_tableData2_self:[],
+            community_tableData3_self:[],
+            community_tableData1_length_self:0,
+            community_tableData2_length_self:0,
+            community_tableData3_length_self:0,
             edit_community_tableData:[],//用于获取community的version数据，用于显示谁编辑了什么
             edit_theme_tableData:[],
 
@@ -79,8 +91,20 @@ var notice = Vue.extend({
             theme_tableData2_length:0,
             theme_tableData3_length:0,
 
+            theme_tableData1_self:[],
+            theme_tableData2_self:[],
+            theme_tableData3_self:[],
+            theme_tableData1_length_self:0,
+            theme_tableData2_length_self:0,
+            theme_tableData3_length_self:0,
+
 
             table_length_sum:0,
+            table_length_sum_self:0,
+            version_sum:0,
+            model_self:0,
+            community_self:0,
+            theme_self:0,
             sum_tableData:[],//为了解决时间线多个v-for无法将多个表格数据时间正序排列的问题，将所有表格数据放到一个表格中
             //存放Info临时点击数据
             info_past_dialog:"",
@@ -107,20 +131,32 @@ var notice = Vue.extend({
             comments:[],
             comments1:[],
             comments2:[],
-            comments2Length:0,
+            sumComment1:[{
+                date:"",
+                comment:[{}]
+            }],
+            sumComment2:[{
+                date:"",
+                comment:[{}]
+            }],
+            unread:0,
 
             loading: true,
+
+            await:false,
 
             tabPosition: 'left',
             // sumDateTableData用于存储以时间为主键的数据,主要用于展示时间线，date为时间，tableData用来存储sumtabledata里的数据
             sumDateTableData:[{
                 date:"",
+                color:"",
                 tableData:[{
-
                 }]
             }],
             timeLineColor:'#409EFF',
-            timeLineColor1:'#F56C6C'
+            timeLineColor1:'#fe7708',
+            stretch:true,
+            userOid:""
         };
     },
     methods:{
@@ -132,14 +168,80 @@ var notice = Vue.extend({
                     window.location.href="/user/login";
                 }
                 this.comments = result.data;
+                this.userOid = this.comments.pop();
+                let num=0;
                 for (let i=0;i<this.comments.length;i++){
-                    if (this.comments[i].replier==null){
+                    if (this.comments[i].replier==null||this.comments[i].author.oid == this.userOid){
                         this.comments1.push(this.comments[i]);
                     } else {
+                        if (this.comments[i].readStatus==0) {
+                            this.comments[i].color = '#fe7708';
+                            num++;
+                        }else {
+                            this.comments[i].color = '#409EFF';
+                        }
                         this.comments2.push(this.comments[i]);
                     }
                 }
-                this.comments2Length = this.comments2.length;
+                this.unread = num;
+                // this.comments2Length = this.comments2.length;
+
+                //将comment内容纳入以时间为主键的sumComment中
+                let k=0;
+                for (let i=0;i<this.comments1.length;i++){
+                    if (i==0){
+                        this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
+                        this.sumComment1[k].comment.push(this.comments1[i]);
+                        if (this.sumComment1[k].comment[0].content == null){
+                            this.sumComment1[k].comment.shift();
+                        }
+                    } else if (this.comments1[i].modifyTimeDay == this.comments1[i-1].modifyTimeDay){
+                        this.sumComment1[k].comment.push(this.comments1[i]);
+                        if (this.sumComment1[k].comment[0].content == null) {
+                            this.sumComment1[k].comment.shift();
+                        }
+                    } else {
+                        k++;
+                        this.sumComment1.push({
+                            date:"",
+                            comment:[{}]
+                        })
+                        this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
+                        this.sumComment1[k].comment.push(this.comments1[i]);
+                        if (this.sumComment1[k].comment[0].content == null) {
+                            this.sumComment1[k].comment.shift();
+                        }
+                    }
+                }
+                let k1=0;
+                for (let i=0;i<this.comments2.length;i++){
+                    if (i==0){
+                        this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
+                        this.sumComment2[k1].color = this.comments2[i].color;
+                        this.sumComment2[k1].comment.push(this.comments2[i]);
+                        if (this.sumComment2[k1].comment[0].content == null){
+                            this.sumComment2[k1].comment.shift();
+                        }
+                    } else if (this.comments2[i].modifyTimeDay == this.comments2[i-1].modifyTimeDay){
+                        this.sumComment2[k1].comment.push(this.comments2[i]);
+                        this.sumComment2[k1].color = this.comments2[i].color;//更新为最新评论所代表的color
+                        if (this.sumComment2[k1].comment[0].content == null) {
+                            this.sumComment2[k1].comment.shift();
+                        }
+                    } else {
+                        k1++;
+                        this.sumComment2.push({
+                            date:"",
+                            comment:[{}]
+                        })
+                        this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
+                        this.sumComment2[k1].color = this.comments2[i].color;
+                        this.sumComment2[k1].comment.push(this.comments2[i]);
+                        if (this.sumComment2[k1].comment[0].content == null) {
+                            this.sumComment2[k1].comment.shift();
+                        }
+                    }
+                }
 
                 if (this.comments.length == 0){
                     $(".comment").show();
@@ -147,9 +249,6 @@ var notice = Vue.extend({
                     $(".comment").hide();
                 }
             })
-        },
-        handleClick(tab, event){
-            console.log(tab, event);
         },
         handleClose(done) {
             this.$confirm('Confirm closing？')
@@ -164,37 +263,8 @@ var notice = Vue.extend({
         handleClick(row) {
             console.log(row);
         },
-        // formatDate(value,callback) {
-        //     const date = new Date(value);
-        //     y = date.getFullYear();
-        //     M = date.getMonth() + 1;
-        //     d = date.getDate();
-        //     H = date.getHours();
-        //     m = date.getMinutes();
-        //     s = date.getSeconds();
-        //     if (M < 10) {
-        //         M = '0' + M;
-        //     }
-        //     if (d < 10) {
-        //         d = '0' + d;
-        //     }
-        //     if (H < 10) {
-        //         H = '0' + H;
-        //     }
-        //     if (m < 10) {
-        //         m = '0' + m;
-        //     }
-        //     if (s < 10) {
-        //         s = '0' + s;
-        //     }
-        //
-        //     const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
-        //     if(callback == null||callback == undefined)
-        //         return t;
-        //     else
-        //         callback(t);
-        // },
         getVersions(){
+            this.await = true;
             $.ajax({
                 type: "GET",
                 url: "/theme/getMessageData",
@@ -204,6 +274,7 @@ var notice = Vue.extend({
                     //下面将type分到model、community中
                     //model：modelItem、conceptualModel、logicalModel、computableModel
                     // community：concept、spatialReference	、unit、template
+
                     for (let i=0;i<json.data.accept.length;i++){
                         if (json.data.accept[i].type == "modelItem" || json.data.accept[i].type == "conceptualModel"||json.data.accept[i].type == "logicalModel"||json.data.accept[i].type == "computableModel"){
                             this.model_tableData2.push(json.data.accept[i]);
@@ -243,6 +314,48 @@ var notice = Vue.extend({
                             this.message_num++;
                         }
                     }
+
+                    //self
+                    for (let i=0;i<json.data.accept_self.length;i++){
+                        if (json.data.accept_self[i].type == "modelItem" || json.data.accept_self[i].type == "conceptualModel"||json.data.accept_self[i].type == "logicalModel"||json.data.accept_self[i].type == "computableModel"){
+                            this.model_tableData2_self.push(json.data.accept_self[i]);
+                            //this.sum_tableData.push(json.data.accept_self[i]);
+                        }else if (json.data.accept_self[i].type == "concept" || json.data.accept_self[i].type == "spatialReference"||json.data.accept_self[i].type == "unit"||json.data.accept_self[i].type == "template") {
+                            this.community_tableData2_self.push(json.data.accept_self[i]);
+                            //this.sum_tableData.push(json.data.accept[i]);
+                        }else if (json.data.accept_self[i].type == "theme") {
+                            this.theme_tableData2_self.push(json.data.accept_self[i]);
+                            //this.sum_tableData.push(json.data.accept[i]);
+                        }
+                    }
+                    for (let i=0;i<json.data.reject_self.length;i++){
+                        if (json.data.reject_self[i].type == "modelItem" || json.data.reject_self[i].type == "conceptualModel"||json.data.reject_self[i].type == "logicalModel"||json.data.reject_self[i].type == "computableModel"){
+                            this.model_tableData3_self.push(json.data.reject_self[i]);
+                            //this.sum_tableData.push(json.data.reject[i]);
+                        }else if (json.data.reject_self[i].type == "concept" || json.data.reject_self[i].type == "spatialReference"||json.data.reject_self[i].type == "unit"||json.data.reject_self[i].type == "template"){
+                            this.community_tableData3_self.push(json.data.reject_self[i]);
+                            //this.sum_tableData.push(json.data.reject[i]);
+                        }else if (json.data.reject_self[i].type == "theme") {
+                            this.theme_tableData3_self.push(json.data.reject_self[i]);
+                            //this.sum_tableData.push(json.data.reject[i]);
+                        }
+                    }
+                    for (let i=0;i<json.data.uncheck_self.length;i++){
+                        if (json.data.uncheck_self[i].type == "modelItem" || json.data.uncheck_self[i].type == "conceptualModel"||json.data.uncheck_self[i].type == "logicalModel"||json.data.uncheck_self[i].type == "computableModel"){
+                            this.model_tableData1_self.push(json.data.uncheck_self[i]);
+                            //this.sum_tableData.push(json.data.uncheck[i]);
+                           // this.message_num++;
+                        }else if (json.data.uncheck_self[i].type == "concept" || json.data.uncheck_self[i].type == "spatialReference"||json.data.uncheck_self[i].type == "unit"||json.data.uncheck_self[i].type == "template"){
+                            this.community_tableData1_self.push(json.data.uncheck_self[i]);
+                            // this.sum_tableData.push(json.data.uncheck[i]);
+                            //this.message_num++;
+                        }else if (json.data.uncheck_self[i].type == "theme") {
+                            this.theme_tableData1_self.push(json.data.uncheck_self[i]);
+                            // this.sum_tableData.push(json.data.uncheck[i]);
+                            //this.message_num++;
+                        }
+                    }
+
                     for (let i=0;i<json.data.edit.length;i++){
                         if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"||json.data.edit[i].type == "computableModel"){
                             json.data.edit[i].status = "unchecked";
@@ -254,7 +367,7 @@ var notice = Vue.extend({
                             this.sum_tableData.push(json.data.edit[i]);
                         }
                     }
-
+                    
                     for (let i = 0;i<this.sum_tableData.length;i++) {
                         if (this.sum_tableData[i].status!="unchecked"){
                             if (this.sum_tableData[i].acceptTime!=null) {
@@ -265,20 +378,51 @@ var notice = Vue.extend({
                         }
                     }
 
+                    //对version中表格进行排序
+                    this.bubbleSort(this.model_tableData1);
+                    this.bubbleSort(this.model_tableData2);
+                    this.bubbleSort(this.model_tableData3);
+                    this.bubbleSort(this.community_tableData1);
+                    this.bubbleSort(this.community_tableData2);
+                    this.bubbleSort(this.community_tableData3);
+                    this.bubbleSort(this.theme_tableData1);
+                    this.bubbleSort(this.theme_tableData2);
+                    this.bubbleSort(this.theme_tableData3);
+
+                    this.bubbleSort(this.model_tableData1_self);
+                    this.bubbleSort(this.model_tableData2_self);
+                    this.bubbleSort(this.model_tableData3_self);
+                    this.bubbleSort(this.community_tableData1_self);
+                    this.bubbleSort(this.community_tableData2_self);
+                    this.bubbleSort(this.community_tableData3_self);
+                    this.bubbleSort(this.theme_tableData1_self);
+                    this.bubbleSort(this.theme_tableData2_self);
+                    this.bubbleSort(this.theme_tableData3_self);
+
+                    this.model_tableData1.reverse();
+                    this.model_tableData2.reverse();
+                    this.model_tableData3.reverse();
+                    this.community_tableData1.reverse();
+                    this.community_tableData2.reverse();
+                    this.community_tableData3.reverse();
+                    this.theme_tableData1.reverse();
+                    this.theme_tableData2.reverse();
+                    this.theme_tableData3.reverse();
+
+                    this.model_tableData1_self.reverse();
+                    this.model_tableData2_self.reverse();
+                    this.model_tableData3_self.reverse();
+                    this.community_tableData1_self.reverse();
+                    this.community_tableData2_self.reverse();
+                    this.community_tableData3_self.reverse();
+                    this.theme_tableData1_self.reverse();
+                    this.theme_tableData2_self.reverse();
+                    this.theme_tableData3_self.reverse();
+
+
                     this.sum_tableData = this.sum_tableData.concat(this.comments);
-
-
-                    //将sum_tableData的数据按照时间排序(冒泡排序)
-                    for (let i=0;i<this.sum_tableData.length;i++){
-
-                        for (let j=this.sum_tableData.length-1;j>i;j--){
-                            if ((this.sum_tableData[j].modifyTime||this.sum_tableData[j].date)<(this.sum_tableData[j-1].modifyTime||this.sum_tableData[j-1].date)){
-                                let temp = this.sum_tableData[j];
-                                this.sum_tableData[j] = this.sum_tableData[j-1];
-                                this.sum_tableData[j-1] = temp;
-                            }
-                        }
-                    }
+                    //对sum_tableData进行冒泡排序
+                    this.bubbleSort(this.sum_tableData);
 
                     //将this.sum_tableData通过只传值不传地址赋值给sum_tableData
                     var sum_tableData = JSON.parse(JSON.stringify(this.sum_tableData));
@@ -672,7 +816,6 @@ var notice = Vue.extend({
                         }
                     }
 
-
                     //为时间线涂色
                     for (let i=0;i<this.sum_tableData.length;i++){
                         // if (this.sum_tableData[i].status == "confirmed") {
@@ -709,8 +852,25 @@ var notice = Vue.extend({
                     this.theme_tableData2_length = this.theme_tableData2.length;
                     this.theme_tableData3_length = this.theme_tableData3.length;
 
+                    this.model_tableData1_length_self = this.model_tableData1_self.length;
+                    this.model_tableData2_length_self = this.model_tableData2_self.length;
+                    this.model_tableData3_length_self = this.model_tableData3_self.length;
+                    this.community_tableData1_length_self = this.community_tableData1_self.length;
+                    this.community_tableData2_length_self = this.community_tableData2_self.length;
+                    this.community_tableData3_length_self = this.community_tableData3_self.length;
+                    this.theme_tableData1_length_self = this.theme_tableData1_self.length;
+                    this.theme_tableData2_length_self = this.theme_tableData2_self.length;
+                    this.theme_tableData3_length_self = this.theme_tableData3_self.length;
+
 
                     this.table_length_sum += (this.model_tableData1_length+this.community_tableData1_length+this.theme_tableData1_length);
+                    this.table_length_sum_self += (this.model_tableData2_length_self+this.model_tableData3_length_self+this.community_tableData2_length_self+this.community_tableData3_length_self+this.theme_tableData2_length_self+this.theme_tableData3_length_self);
+                    this.model_self += (this.model_tableData2_length_self+this.model_tableData3_length_self);
+                    this.community_self += (this.community_tableData2_length_self+this.community_tableData3_length_self);
+                    this.theme_self += (this.theme_tableData2_length_self+this.theme_tableData3_length_self);
+                    this.version_sum = this.table_length_sum + this.table_length_sum_self;
+
+
                     console.log(this.sum_tableData);
 
 
@@ -719,10 +879,10 @@ var notice = Vue.extend({
                     } else {
                         $(".overview").hide();
                     }
+
+                    this.await = false;
                 }
             })
-
-            // this.loading = false;
         },
         view(event){
             let refLink=$(".viewBtn");
@@ -739,11 +899,35 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        view_self(event){
+            let refLink=$(".viewBtn_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    if(this.model_tableData1_self[i].type=="modelItem"){
+                        window.open("/version/"+this.model_tableData1_self[i].type+"/"+this.model_tableData1_self[i].originOid);
+                    }
+                    else{
+                        window.open("/version/"+this.model_tableData1_self[i].type+"/"+this.model_tableData1_self[i].oid);
+                    }
+
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         view1(event){
             let refLink=$(".viewBtn1");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
                    window.open("/version/"+this.community_tableData1[i].type+"/"+this.community_tableData1[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        view1_self(event){
+            let refLink=$(".viewBtn1_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                   window.open("/version/"+this.community_tableData1_self[i].type+"/"+this.community_tableData1_self[i].oid);
                 }
             }
             //console.log(event.currentTarget);
@@ -757,11 +941,29 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        view_theme_self(event){
+            let refLink=$(".viewBtn_theme_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                   window.open("/theme/uncheck/"+this.theme_tableData1_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         viewAccept(event){
             let refLink=$(".viewAcceptBtn");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
                     window.open("/version/history/"+this.model_tableData2[i].type+"/"+this.model_tableData2[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        viewAccept_self(event){
+            let refLink=$(".viewAcceptBtn_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.model_tableData2_self[i].type+"/"+this.model_tableData2_self[i].oid);
                 }
             }
             //console.log(event.currentTarget);
@@ -775,11 +977,29 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        viewAccept1_self(event){
+            let refLink=$(".viewAcceptBtn1_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.community_tableData2_self[i].type+"/"+this.community_tableData2_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         view_theme_accept(event){
             let refLink=$(".viewAcceptBtn_theme");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
                     window.open("/theme/accept/"+this.theme_tableData2[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        view_theme_accept_self(event){
+            let refLink=$(".viewAcceptBtn_theme_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/theme/accept/"+this.theme_tableData2_self[i].oid);
                 }
             }
             //console.log(event.currentTarget);
@@ -793,11 +1013,29 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        viewReject_self(event){
+            let refLink=$(".viewRejectBtn_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.model_tableData3_self[i].type+"/"+this.model_tableData3_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         viewReject1(event){
             let refLink=$(".viewRejectBtn1");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
                     window.open("/version/history/"+this.community_tableData3[i].type+"/"+this.community_tableData3[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        viewReject1_self(event){
+            let refLink=$(".viewRejectBtn1_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.community_tableData3_self[i].type+"/"+this.community_tableData3_self[i].oid);
                 }
             }
             //console.log(event.currentTarget);
@@ -811,6 +1049,15 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        view_theme_reject_self(event){
+            let refLink=$(".viewRejectBtn_theme_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/theme/reject/"+this.theme_tableData3_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         accept(event){
             let accepts=$(".accept");
 
@@ -818,6 +1065,7 @@ var notice = Vue.extend({
                 if(event.currentTarget===accepts[i]){
                     let tableItem=this.model_tableData1[i];
                     let data={
+                        modifier:tableItem.modifier.modifier,
                         type:tableItem.type,
                         oid:tableItem.oid,
                         originOid:tableItem.originOid
@@ -842,6 +1090,7 @@ var notice = Vue.extend({
                 if(event.currentTarget===accepts[i]){
                     let tableItem=this.community_tableData1[i];
                     let data={
+                        modifier:tableItem.modifier.modifier,
                         type:tableItem.type,
                         oid:tableItem.oid,
                         originOid:tableItem.originOid
@@ -866,8 +1115,10 @@ var notice = Vue.extend({
                 if(event.currentTarget===accepts[i]){
                     let tableItem=this.theme_tableData1[i];
                     let data={
+                        modifier:tableItem.modifier.modifier,
                         oid:tableItem.oid,
                         themeOid:tableItem.themeOid,
+                        modifierOid:tableItem.modifierOid,
                     };
                     $.ajax({
                         type:"POST",
@@ -953,6 +1204,41 @@ var notice = Vue.extend({
                 }
             }
         },
+        //冒泡排序
+        bubbleSort(table){
+            for (let i=0;i<table.length;i++){
+                for (let j = table.length-1;j>i;j--){
+                    if ((table[j].modifyTime||table[j].date)<(table[j-1].modifyTime||table[j-1].date)){
+                        let temp = table[j];
+                        table[j] = table[j-1];
+                        table[j-1] = temp;
+                    }
+                } 
+            } 
+        },
+        //comment已阅效果实现
+        commentReaded(tab, event){
+            if (tab.label == "Reply") {
+                //首先判断reply的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.unread != 0){
+                    $.ajax({
+                        url:"/comment/commentReaded",
+                        type:"POST",
+                        data:{
+                          comment_num:this.unread
+                        },
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.unread = 0;
+                                $("#headBar .el-badge__content").text(this.version_sum);
+                                // this.timeLineColor1 = '#409EFF';
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }
+        }
     },
     mounted(){
         this.sendcurIndexToParent();
