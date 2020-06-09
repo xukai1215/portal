@@ -7,6 +7,7 @@ import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.FileMeta;
+import njgis.opengms.portal.entity.support.SubscribeItem;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.ArticleService;
 import njgis.opengms.portal.service.DataItemService;
@@ -72,6 +73,29 @@ public class UserRestController {
             return ResultUtils.error(-1, "no login");
         } else {
             userService.setSubscribe(session.getAttribute("oid").toString(), subs);
+            return ResultUtils.success();
+
+        }
+    }
+
+    @RequestMapping(value = "/getSubscribedList", method = RequestMethod.GET)
+    public JsonResult getSubscribedList(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (Utils.checkLoginStatus(session) == null) {
+            return ResultUtils.error(-1, "no login");
+        } else {
+            return ResultUtils.success(userService.getSubscribedList(session.getAttribute("oid").toString()));
+
+        }
+    }
+
+    @RequestMapping(value = "/setSubscribedList", method = RequestMethod.POST)
+    public JsonResult setSubscribedList(@RequestBody List<SubscribeItem> list, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (Utils.checkLoginStatus(session) == null) {
+            return ResultUtils.error(-1, "no login");
+        } else {
+            userService.setSubscribedList(session.getAttribute("oid").toString(),list);
             return ResultUtils.success();
 
         }

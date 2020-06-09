@@ -98,6 +98,31 @@ public class UserService {
         userDao.save(user);
     }
 
+    public JSONArray getSubscribedList(String oid){
+        User user = getByOid(oid);
+        List<SubscribeItem> subscribeItemList = user.getSubscribeItemList();
+        JSONArray array = new JSONArray();
+        for(int i=0;i<subscribeItemList.size();i++){
+            ComputableModel computableModel = computableModelDao.findFirstByOid(subscribeItemList.get(i).getOid());
+
+            JSONObject subscribe = new JSONObject();
+            subscribe.put("name", computableModel.getName());
+            subscribe.put("type", computableModel.getContentType());
+            subscribe.put("oid", computableModel.getOid());
+
+            array.add(subscribe);
+        }
+
+        return array;
+
+    }
+
+    public void setSubscribedList(String oid, List<SubscribeItem> subscribeItemList){
+        User user = getByOid(oid);
+        user.setSubscribeItemList(subscribeItemList);
+        userDao.save(user);
+    }
+
     public Item findItemByItemTypeEnum(ItemTypeEnum itemTypeEnum, String oid){
         Item item = null;
         switch (itemTypeEnum){

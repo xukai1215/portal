@@ -925,7 +925,7 @@ var userTask = Vue.extend(
             },
 
             downloadSingle(url) {
-                window.open("/dispatchRequest/download?url=" + url);
+                window.open(url);
 
             },
 
