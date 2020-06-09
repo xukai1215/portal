@@ -1,8 +1,12 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSONObject;
+import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.service.StatisticsService;
 import njgis.opengms.portal.service.UserService;
+import njgis.opengms.portal.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,16 +26,33 @@ public class StatisticsRestController {
     @RequestMapping(value="",method= RequestMethod.GET)
     ModelAndView serverIndex(){
         ModelAndView modelAndView=new ModelAndView();
-        modelAndView.setViewName("Statistics");
+        modelAndView.setViewName("statistics");
 
         return modelAndView;
     }
 
-    @RequestMapping(value="/show",method= RequestMethod.GET)
-    ModelAndView show(){
+    @RequestMapping(value="/computableModel/{oid}",method= RequestMethod.GET)
+    ModelAndView show(@PathVariable("oid") String oid){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("modelStatistics");
+        JSONObject statistics = statisticsService.getComputableModelStatisticsInfo(oid, 30);
+        modelAndView.addObject("statistics",statistics);
 
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/getStats/computableModel/{oid}/{days}",method= RequestMethod.GET)
+    JsonResult getStats(@PathVariable("oid") String oid, @PathVariable("days") int days){
+
+        JSONObject statistics = statisticsService.getComputableModelStatisticsInfo(oid, days);
+
+        return ResultUtils.success(statistics);
+    }
+
+    @RequestMapping(value="/email",method = RequestMethod.GET)
+    ModelAndView email(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("modelStatisticsEmail");
         return modelAndView;
     }
 

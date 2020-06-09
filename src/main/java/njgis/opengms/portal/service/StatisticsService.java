@@ -3,21 +3,19 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.ComputableModelDao;
+import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
-import njgis.opengms.portal.entity.ComputableModel;
-import njgis.opengms.portal.entity.Item;
-import njgis.opengms.portal.entity.User;
-import njgis.opengms.portal.entity.ViewRecord;
+import njgis.opengms.portal.dao.ViewRecordDao;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.entity.support.GeoInfoMeta;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class StatisticsService {
@@ -28,17 +26,50 @@ public class StatisticsService {
     @Autowired
     ComputableModelDao computableModelDao;
 
-    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+    @Autowired
+    ViewRecordDao viewRecordDao;
 
-    public void getComputableModelStatisticsInfo(String oid) {
+    @Autowired
+    TaskDao taskDao;
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    List<String> userIds = new ArrayList<>();
+    List<String> userIps = new ArrayList<>();
+
+    public JSONObject getComputableModelStatisticsInfo(String oid, int days) {
         JSONObject result = new JSONObject();
         ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
         result.put("invokeCount", computableModel.getInvokeCount());
         result.put("viewCount", computableModel.getViewCount());
+        result.put("name", computableModel.getName());
+        result.put("image", computableModel.getImage());
+        result.put("oid", oid);
 
+        Calendar c = Calendar.getInstance();//动态时间
+        c.setTime(new Date());
+        c.add(Calendar.DATE,-days);
+        Date startTime = c.getTime();
+
+        List<ComputableModel> computableModelList = new ArrayList<>();
+        computableModelList.add(computableModel);
+
+        JSONObject daily = getDailyViewAndInvokeTimes(computableModel, computableModelList, days);
+        result.put("dayViewAndInvoke", daily);
+
+        List<ViewRecord> viewRecordList = viewRecordDao.findAllByItemTypeAndItemOidAndDateGreaterThanEqual("ComputableModel", oid, startTime);
+        result.put("locationsView",locationsOfViewers(viewRecordList));
+        result.put("hourView",viewTimesByHour(viewRecordList));
+
+        List<Task> taskList = taskDao.findAllByComputableIdAndRunTimeGreaterThanEqual(oid, startTime);
+        result.put("locationsInvoke",locationsOfInvokers(taskList));
+        result.put("hourInvoke", invokeTimesByHour(taskList));
+
+        return result;
     }
 
-    public JSONObject getDailyViewAndInvokeTimes(Item item, List<ComputableModel> computableModelList){
+
+    public JSONObject getDailyViewAndInvokeTimes(Item item, List<ComputableModel> computableModelList, int days){
         List<DailyViewCount> dailyViewCountList=item.getDailyViewCount();
         JSONArray dateList = new JSONArray();
         dateList.add("Timeline");
@@ -68,7 +99,7 @@ public class StatisticsService {
         }else{
             DailyViewCount dailyViewCount=dailyViewCountList.get(0);
             Date firstDate = dailyViewCount.getDate();
-            c.add(Calendar.MONTH,-1);
+            c.add(Calendar.DATE,-days);
 
             if(dailyViewCountList.get(dailyViewCountList.size()-1).getDate().before(c.getTime())){
                 c.setTime(now);
@@ -172,8 +203,8 @@ public class StatisticsService {
         }
     }
 
-    public Integer[] viewTimesByHour(List<ViewRecord> viewRecordList) {
-        Integer[] integers = new Integer[24];
+    public int[] viewTimesByHour(List<ViewRecord> viewRecordList) {
+        int[] integers = new int[24];
 
         for (int i = 0; i < viewRecordList.size(); i++) {
             ViewRecord viewRecord = viewRecordList.get(i);
@@ -188,50 +219,146 @@ public class StatisticsService {
 
     public JSONArray locationsOfViewers(List<ViewRecord> viewRecordList) {
         JSONArray mapData = new JSONArray();
+        userIds = new ArrayList<>();
+        userIps = new ArrayList<>();
 
         for (int i = 0; i < viewRecordList.size(); i++) {
             ViewRecord viewRecord = viewRecordList.get(i);
             String userOid = viewRecord.getUserOid();
-            GeoInfoMeta geoInfoMeta;
+
+            boolean userExist = false;
             if(userOid!=null) {
-                User user = userDao.findFirstByOid(userOid);
-                geoInfoMeta = user.getGeoInfo();
-            }else{
-                try {
-                    geoInfoMeta = Utils.getGeoInfoMeta(viewRecord.getIp());
-                }catch (Exception e){
-                    throw new RuntimeException(e.getMessage());
+                for (String userid : userIds) {
+                    if (userid.equals(userOid)) {
+                        userExist = true;
+                        break;
+                    }
+                }
+            }else {
+                for (String ip : userIps) {
+                    if (ip.equals(viewRecord.getIp())) {
+                        userExist = true;
+                        break;
+                    }
                 }
             }
 
-            String countryName;
-            if (geoInfoMeta == null || geoInfoMeta.getCountryName() == null || geoInfoMeta.getCountryName().trim().equals("")) {
-                countryName = "China";
-            } else {
-                countryName = geoInfoMeta.getCountryName();
-            }
-            Boolean exist = false;
-            for (int j = 0; j < mapData.size(); j++) {
-                JSONObject data = mapData.getJSONObject(j);
-                if (data.getString("name").equals(countryName)) {
-                    int value = data.getInteger("value");
-                    data.put("value", value++);
-                    exist = true;
-                    break;
+            if(!userExist) {
+                if(userOid!=null){
+                    userIds.add(userOid);
+                }else{
+                    userIps.add(viewRecord.getIp());
                 }
-            }
-            if (!exist) {
-                JSONObject data = new JSONObject();
-                data.put("name", countryName);
-                data.put("value", 1);
-                mapData.add(data);
-            }
 
+                GeoInfoMeta geoInfoMeta = getGeoInfoMeta(userOid, viewRecord.getIp());
 
+                String countryName;
+                if (geoInfoMeta == null || geoInfoMeta.getCountryName() == null || geoInfoMeta.getCountryName().trim().equals("")) {
+                    countryName = "China";
+                } else {
+                    countryName = geoInfoMeta.getCountryName();
+                }
+                Boolean exist = false;
+                exist = justifyCountryIfExist(mapData, countryName, exist);
+                ifCountyNotExist(mapData, countryName, exist);
+            }
 
         }
 
         return mapData;
+    }
+
+    public int[] invokeTimesByHour(List<Task> taskList){
+        int[] integers = new int[24];
+
+        for (int i = 0; i < taskList.size(); i++) {
+            Task task = taskList.get(i);
+            Date date = task.getRunTime();
+            int hour = date.getHours();
+            integers[hour]++;
+        }
+
+        return integers;
+
+    }
+
+    public JSONArray locationsOfInvokers(List<Task> taskList) {
+        JSONArray mapData = new JSONArray();
+        userIds = new ArrayList<>();
+
+        for (int i = 0; i < taskList.size(); i++) {
+
+            Task task = taskList.get(i);
+            String userOid = task.getUserId();
+
+            boolean userExist = false;
+            for (String userid : userIds) {
+                if (userid.equals(userOid)) {
+                    userExist = true;
+                    break;
+                }
+            }
+
+            if(!userExist) {
+                userIds.add(userOid);
+
+                GeoInfoMeta geoInfoMeta;
+                geoInfoMeta = getGeoInfoMeta(userOid, "127.0.0.1");
+
+                String countryName;
+                if (geoInfoMeta == null || geoInfoMeta.getCountryName() == null || geoInfoMeta.getCountryName().trim().equals("")) {
+                    countryName = "China";
+                } else {
+                    countryName = geoInfoMeta.getCountryName();
+                }
+                Boolean exist = false;
+                exist = justifyCountryIfExist(mapData, countryName, exist);
+                ifCountyNotExist(mapData, countryName, exist);
+            }
+
+        }
+
+        return mapData;
+    }
+
+    private void ifCountyNotExist(JSONArray mapData, String countryName, Boolean exist) {
+        if (!exist) {
+            JSONObject data = new JSONObject();
+            data.put("name", countryName);
+            data.put("value", 1);
+            mapData.add(data);
+        }
+    }
+
+    private Boolean justifyCountryIfExist(@NotNull JSONArray mapData, String countryName, Boolean exist) {
+        for (int j = 0; j < mapData.size(); j++) {
+            JSONObject data = mapData.getJSONObject(j);
+            if (data.getString("name").equals(countryName)) {
+                int value = data.getInteger("value");
+                data.put("value", ++value);
+                exist = true;
+                break;
+            }
+        }
+        return exist;
+    }
+
+    private GeoInfoMeta getGeoInfoMeta(String userOid, String ip) {
+        GeoInfoMeta geoInfoMeta;
+        try {
+            geoInfoMeta = Utils.getGeoInfoMeta(ip);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if(userOid!=null) {
+            User user = userDao.findFirstByOid(userOid);
+            if(user != null){
+                geoInfoMeta = user.getGeoInfo();
+            }
+        }
+
+        return geoInfoMeta;
     }
 
 }

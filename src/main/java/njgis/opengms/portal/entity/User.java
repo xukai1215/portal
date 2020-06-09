@@ -39,7 +39,7 @@ public class User {
     String lastLoginIp;
 
     Boolean subscribe=true;
-    List<SubscribeItem> subscribeItemList;
+    List<SubscribeItem> subscribeItemList = new ArrayList<>();
 
     Introduction introduction;
 

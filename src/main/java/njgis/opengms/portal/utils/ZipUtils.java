@@ -54,7 +54,7 @@ public class ZipUtils {
         List<String> fileNames = new ArrayList<String>();
 
         try {
-            is = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipFile), 1024));
+            is = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipFile), 1024),"GBK");
             ZipArchiveEntry entry = null;
 
             while ((entry = is.getNextZipEntry()) != null) {

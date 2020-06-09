@@ -452,7 +452,7 @@ var vue = new Vue({
             //下载接口
             if(event.url!=undefined) {
                 this.eventChoosing = event;
-                window.open("/dispatchRequest/download?url=" + this.eventChoosing.url);
+                window.open(this.eventChoosing.url);
             }
             else{
                 this.$message.error("No data can be downloaded.");

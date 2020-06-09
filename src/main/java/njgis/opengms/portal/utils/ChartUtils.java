@@ -197,7 +197,7 @@ public class ChartUtils {
 
         GsonOption option = new GsonOption();
         option.backgroundColor("transparent");
-        option.title().text("Locations of Viewers").x("center").y("bottom").textStyle().fontSize(30);
+        option.title().text("Locations of Viewers and Invokes").x("center").y("bottom").textStyle().fontSize(30);
         option.dataRange().show(true).y(300).calculable(true).min(0).max(20).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList("High","Low"));
 //        option.legend().show(true);
 

@@ -34,31 +34,53 @@
 
             <div class="el-row" style="padding-bottom:20px;margin-bottom: 20px;border-bottom: 1px solid #aaa">
                 <div class="el-col-lg-12 text-center" style="display: inline-block;border-right: 1px solid #aaa">
+
                     <h3>Computable Model</h3>
-                    <h3>
-                        <a href="/">
-                        <avatar username="SWAT_Model" :size="30"
-                                :rounded="false" style="display: inline-block;vertical-align: text-top;"></avatar>
-                        SWAT_Model</a>
-                    </h3>
+                    <a th:href="'/computableModel/'+${statistics.oid}">
+                        <h3 th:text="${statistics.name}"></h3>
+                    </a>
+
                 </div>
-                <div class="el-col-lg-6 text-center" style="display: inline-block;border-right: 1px solid #ccc;height: 106px">
+                <div class="el-col-lg-6 text-center"
+                     style="display: inline-block;border-right: 1px solid #ccc;height: 106px">
                     <h3>Total View Times</h3>
-                    <h3>2153</h3>
+                    <h3 th:text="${statistics.viewCount}">2153</h3>
                 </div>
                 <div class="el-col-lg-6 text-center" style="display: inline-block">
                     <h3>Total Invoke Times</h3>
-                    <h3>137</h3>
+                    <h3 th:text="${statistics.invokeCount}">137</h3>
                 </div>
                 <hr>
             </div>
-            <div class="el-row" style="margin-top:30px;font-size: 20px">
+            <div class="el-row" style="font-size: 20px">
+                <div style="margin-bottom:20px;position:absolute;right:0 ">
+                    <span>Visitor Type: </span>
+                    <el-select v-model="type" placeholder="Please select" style="margin-right:20px" @change="visitorChange">
+                        <el-option
+                                v-for="item in visitorType"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
 
-                <div id="chart_left" style="width:45%;height: 700px;display: inline-block">
-                    <div id="chart_leftTop" style="height:350px"></div>
-                    <div id="chart_leftBottom" style="height:350px"></div>
+                    <span>Time Range: </span>
+                    <el-select v-model="range" placeholder="Please select" @change="rangeChange">
+                        <el-option
+                                v-for="item in timeRange"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
                 </div>
-                <div id="chart_right" style="width:54%;height: 700px;display: inline-block"></div>
+                <div id="chartPanel" style="margin-top:50px;">
+                    <div id="chart_left" style="width:45%;height: 700px;display: inline-block">
+                        <div id="chart_leftTop" style="height:350px"></div>
+                        <div id="chart_leftBottom" style="height:350px"></div>
+                    </div>
+                    <div id="chart_right" style="width:54%;height: 700px;display: inline-block"></div>
+                </div>
 
             </div>
 
@@ -76,31 +98,134 @@
 <script src="/static/js/common/echarts.min.js"></script>
 <script src="/static/js/common/world.js"></script>
 
-<script>
+<script th:inline="javascript">
+    let sta = [[${statistics}]];
+
     new Vue({
         el: "#app",
         components: {
             'avatar': VueAvatar.Avatar
         },
         data: {
+            stats:sta,
+
             activeName: 'overview',
+
+            type:3,
+            visitorType: [{
+                value: 3,
+                label: 'Viewer and Invoker'
+            }, {
+                value: 1,
+                label: 'Viewer'
+            }, {
+                value: 2,
+                label: 'Invoker'
+            }],
+
+            range:30,
+            timeRange: [{
+                value: 7,
+                label: 'A week'
+            }, {
+                value: 30,
+                label: 'A month'
+            }, {
+                value: 180,
+                label: 'Half a year'
+            }, {
+                value: 365,
+                label: 'A year'
+            }],
+
+            lineChart:null,
+            barChart:null,
+            selected:{},
         },
         methods: {
 
-            userMap(){
+            visitorChange(type) {
+                this.selected = {};
 
-                let data = [
-                    {name:'China',value: 107},
-                    {name:'India',value: 2},
-                    {name:'Australia',value: 3},
-                    {name:'United States',value: 2},
-                    {name:'South Africa',value: 1},
-                    {name:'Switzerland',value: 1},
-                    {name:'Canada',value: 1},
-                    {name:'United Kingdom',value: 1},
-                    {name:'Germany',value: 1},
-                    {name:'Spain',value: 1},
-                ];
+                switch(this.type){
+                    case 1:
+                        this.selected["View Times"] = true;
+                        this.selected["Invoke Times"] = false;
+                        break;
+                    case 2:
+                        this.selected["View Times"] = false;
+                        this.selected["Invoke Times"] = true;
+                        break;
+                    case 3:
+                        this.selected["View Times"] = true;
+                        this.selected["Invoke Times"] = true;
+                        break;
+                }
+
+                this.lineChartCreate();
+                this.barChartCreate();
+                this.userMap();
+
+            },
+
+            rangeChange(days) {
+                $.get("/statistics/getStats/computableModel/"+this.stats.oid+"/"+days,{},(result)=>{
+                    this.stats = result.data;
+                    this.userMap();
+                    this.lineChartCreate();
+                    this.barChartCreate();
+
+                })
+            },
+
+            userMap() {
+
+                let data;
+                switch (this.type){
+                    case 1:
+                        data = this.stats.locationsView;
+                        break;
+                    case 2:
+                        data = this.stats.locationsInvoke;
+                        break;
+                    case 3:
+                        data = JSON.parse(JSON.stringify(this.stats.locationsInvoke));;
+
+                        for(i=0;i<this.stats.locationsView.length;i++){
+                            let view = this.stats.locationsView[i];
+                            let flag = false;
+                            for(j=0;j<this.stats.locationsInvoke.length;j++){
+                                let invoke = this.stats.locationsInvoke[j];
+                                if(invoke.name == view.name){
+                                    flag = true;
+                                    data[j].value += view.value;
+                                    break;
+                                }
+                            }
+                            if(!flag){
+                                data.push(view);
+                            }
+                        }
+                        break;
+                }
+
+                // let data = [
+                //     {name:'China',value: 107},
+                //     {name:'India',value: 2},
+                //     {name:'Australia',value: 3},
+                //     {name:'United States',value: 2},
+                //     {name:'South Africa',value: 1},
+                //     {name:'Switzerland',value: 1},
+                //     {name:'Canada',value: 1},
+                //     {name:'United Kingdom',value: 1},
+                //     {name:'Germany',value: 1},
+                //     {name:'Spain',value: 1},
+                // ];
+                let max = 0;
+                for (i = 0; i < data.length; i++) {
+                    let country = data[i];
+                    if (country.value > max) max = country.value;
+                }
 
                 var MapOptions = {
                     title: {
@@ -114,13 +239,13 @@
                     backgroundColor: "transparent",
                     tooltip: {
                         trigger: 'item',
-                        formatter: function(params){
+                        formatter: function (params) {
 
-                            if(params.name && params.value) {
+                            if (params.name && params.value) {
                                 return params.name + ": " + params.value;
-                            } else if(params.name){
+                            } else if (params.name) {
                                 return params.name;
-                            } else{
+                            } else {
                                 return params.value;
                             }
                         }
@@ -128,11 +253,11 @@
                     visualMap: {
                         left: 'right',
                         min: 0,
-                        max: 107,
+                        max: max,
                         inRange: {
-                            color: ["#f3b1ab","#e42515"]
+                            color: ["#f3b1ab", "#e42515"]
                         },
-                        text:['High','Low'],           // 文本，默认为数值文本
+                        text: ['High', 'Low'],           // 文本，默认为数值文本
                         calculable: true
                     },
                     series: [
@@ -140,32 +265,32 @@
                             name: '点',
                             type: 'map',
                             roam: false,
-                            map:'world',
-                            top:'50%',
-                            itemStyle:{
-                                emphasis:{label:{show:true}}
+                            map: 'world',
+                            top: '50%',
+                            itemStyle: {
+                                emphasis: {label: {show: true}}
                             },
                             // 文本位置修正
                             textFixed: {
                                 Alaska: [20, -20]
                             },
-                            data:data
-                        },{
+                            data: data
+                        }, {
                             type: 'pie',
-                            radius : '30%',
+                            radius: '30%',
                             center: ['50%', '25%'],//饼图位置控制
                             label: {
                                 formatter: '{b}: {@[1]} ({d}%)'
                             },
-                            data:data
+                            data: data
                         }
                     ]
                 };
 
-                let myChart = echarts.init(document.getElementById('chart_right'),'light');
+                let myChart = echarts.init(document.getElementById('chart_right'), 'light');
                 myChart.setOption(MapOptions);
 
-                myChart.on("mouseover",function(params){
+                myChart.on("mouseover", function (params) {
                     console.log(params);
                     myChart.dispatchAction({
                         type: 'highlight',
@@ -173,112 +298,125 @@
                     });
                 })
 
-                myChart.on('mouseout',function(){
+                myChart.on('mouseout', function () {
                     myChart.dispatchAction({
                         type: 'downplay',
-                        seriesIndex: [0,1]
+                        seriesIndex: [0, 1]
                     });
                 });
 
 
             },
-            lineChart(){
-                $.get("/modelItem/getDailyViewCount",{oid:"29c36489-6039-467d-9561-6d0b600d7d05"},(result)=> {
-                    let valueList = result.data.valueList;
+            lineChartCreate() {
+                let valueList = this.stats.dayViewAndInvoke.valueList;
 
-                    let myChart = echarts.init(document.getElementById('chart_leftTop'));
-                    let option = {
-                        title: {
-                            text: 'View and invoke times in recent days (UTC +08:00)',
+                console.log(valueList)
 
-                            left: '50%',
-                            top: '90%',
-                            itemGap: 5,
-                            textAlign: 'center',
-                            textVerticalAlign: 'bottom'
-                        },
-                        legend: {
+                this.lineChart = echarts.init(document.getElementById('chart_leftTop'));
+                let option = {
+                    title: {
+                        text: 'View and invoke times (UTC +08:00)',
 
-                        },
-                        tooltip: [{
-                            trigger: 'axis',
-                            showContent: true
-                        }],
-                        dataset: [{
-                            source: valueList,
-                        }],
-                        xAxis: [
-                            {type: 'category',axisTick:{show:false}},
+                        left: '50%',
+                        top: '90%',
+                        itemGap: 5,
+                        textAlign: 'center',
+                        textVerticalAlign: 'bottom'
+                    },
+                    legend: {
+                        selected:this.selected,
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: true
+                    },
+                    dataset: {
+                        source: valueList,
+                    },
+                    xAxis: [
+                        {type: 'category', axisTick: {show: false}},
 
-                        ],
-                        yAxis: [
-                            {gridIndex: 0},
-                        ],
-                        grid: [
-                            {x: '7%', y: '7%', width: '85%', height: '70%'},
-                        ],
-                        series: [
-                            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-                            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-                        ]
-                    };
-                    myChart.setOption(option);
+                    ],
+                    yAxis: [
+                        {gridIndex: 0},
+                    ],
+                    grid: [
+                        {x: '7%', y: '7%', width: '85%', height: '70%'},
+                    ],
+                    series: [
+                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                    ]
+                };
 
-                });
+                option.legend.selected = this.selected;
+
+                this.lineChart.setOption(option);
+
             },
-            barChart(){
-                $.get("/modelItem/getDailyViewCount",{oid:"29c36489-6039-467d-9561-6d0b600d7d05"},(result)=> {
-                    let valueList = result.data.valueList;
+            barChartCreate() {
 
-                    let myChart = echarts.init(document.getElementById('chart_leftBottom'));
-                    let option = {
-                        title: {
-                            text: 'View and invoke times at different hours (UTC +08:00)',
-                            left: '50%',
-                            top: '98%',
-                            itemGap: 5,
-                            textAlign: 'center',
-                            textVerticalAlign: 'bottom'
+                let valueList = [
+                    ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]
+                ];
+
+                valueList.push(this.stats.hourView);
+                valueList.push(this.stats.hourInvoke);
+
+                this.barChart = echarts.init(document.getElementById('chart_leftBottom'));
+                let option = {
+                    title: {
+                        text: 'View and invoke times at different hours in total(UTC +08:00)',
+                        left: '50%',
+                        top: '98%',
+                        itemGap: 5,
+                        textAlign: 'center',
+                        textVerticalAlign: 'bottom'
+                    },
+                    legend: {
+                        selected:this.selected,
+                    },
+                    tooltip: [{
+                        trigger: 'axis',
+                        showContent: true
+                    }],
+                    xAxis: [
+                        {
+                            gridIndex: 0,
+                            type: 'category',
+                            axisTick: {show: false},
+
                         },
-                        legend: {
 
-                        },
-                        tooltip: [{
-                            trigger: 'axis',
-                            showContent: true
-                        }],
-                        xAxis: [
-                            {gridIndex: 0,type: 'category',axisTick:{show:false},data: ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]},
+                    ],
+                    yAxis: [
+                        {gridIndex: 0},
+                    ],
+                    dataset: {
+                        source: valueList,
+                    },
+                    grid: [
+                        {x: '10%', y: '7%', width: '85%', height: '77%'},
+                    ],
+                    series: [
+                        {type: 'bar',seriesLayoutBy: 'row'},
+                        {type: 'bar',seriesLayoutBy: 'row'},
+                    ]
+                };
 
-                        ],
-                        yAxis: [
-                            {gridIndex: 0},
-                        ],
-                        grid: [
-                            {x: '10%', y: '7%', width: '85%', height: '77%'},
-                        ],
-                        series: [
-                            {
-                                name: 'View Times',
-                                type: 'bar',
-                                data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3, 2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
-                            },
-                            {
-                                name: 'Invoke Times',
-                                type: 'bar',
-                                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3, 2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-                            }
-                        ]
-                    };
-                    myChart.setOption(option);
+                option.legend.selected = this.selected;
 
-                });
+                this.barChart.setOption(option);
+
             },
         },
         mounted() {
 
-            this.lineChart();
-            this.barChart();
+            this.stats.hourInvoke.unshift("Invoke Times");
+            this.stats.hourView.unshift("View Times");
+
+            this.lineChartCreate();
+            this.barChartCreate();
             this.userMap();
 
 

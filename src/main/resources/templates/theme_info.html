@@ -167,7 +167,7 @@
                             <div th:each="modelClass,index:${modelClassInfos}" class="model_card">
                                 <div class="x_content model_item" th:id="'modelClass'+${index.index}">
                                     <el-row type="center" class="row-bg" id="content">
-                                        <div th:each="item:${modelClass.content}" style="margin:20px 18px 0 0;float: left" id="model_col">
+                                        <div th:each="item:${modelClass.content}" style="margin:20px 10px 0 10px;float: left" id="model_col">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}" target = "_blank">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px" id="model_card">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
@@ -197,7 +197,7 @@
                             <div th:each="dataClass,index:${dataClassInfos}">
                                 <div class="x_content data_item" th:id="'dataClass'+${index.index}">
                                     <el-row type="center" class="row-bg" id="content1">
-                                        <div th:each="item:${dataClass.content}" style="margin:20px 20px 0 0;float: left" id="model_col2">
+                                        <div th:each="item:${dataClass.content}" style="margin:20px 10px 0 10px;float: left" id="model_col2">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}" target = "_blank">
                                             <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
                                                 <div style="padding: 10px">
@@ -225,7 +225,7 @@
                             <div id="applications">
                                 <div class="x_content application_item"  id="application">
                                     <el-row type="center" class="row-bg" id="content2">
-                                        <div th:each="item:${applications}" style="margin:20px 20px 0 0;float: left" id="model_col3">
+                                        <div th:each="item:${applications}" style="margin:20px 10px 0 10px;float: left" id="model_col3">
                                             <a th:href="${item.link}" target = "_blank">
                                                 <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
                                                     <img th:src="'/static'+${item.image}" class="image" id="application_image">

@@ -20,15 +20,20 @@ var userAccount = Vue.extend(
 
                 subscribe:false,
 
-                subscribeList:[{
-                    type: "Computable Model",
-                    name: "SWAT_Model",
-                    oid: "",
-                },{
-                    type: "Computable Model",
-                    name: "TaiHu_Fvcom",
-                    oid: "",
-                }],
+                subscribeList:[],
+
+                dialogTableVisible:false,
+                tableMaxHeight: 400,
+                pageOption: {
+                    paginationShow: false,
+                    progressBar: true,
+                    sortAsc: false,
+                    currentPage: 1,
+                    pageSize: 5,
+                    total: 0,
+                    searchText: "",
+                    searchResult: [],
+                },
 
             }
         },
@@ -75,6 +80,129 @@ var userAccount = Vue.extend(
 
                     }
 
+                })
+            },
+
+            getSubscribedList(){
+                $.get("/user/getSubscribedList",{},(result)=>{
+                    this.subscribeList = result.data;
+                })
+            },
+
+            submitSubscribedList(){
+                $.ajax({
+                    url:"/user/setSubscribedList",
+                    data:JSON.stringify(this.subscribeList),
+                    type:"post",
+                    cache:false,
+                    dataType: "json",
+                    contentType:"application/json",
+                    success: (res)=> {
+                        this.$alert('Set subscribed list successfully!', 'Success', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.dialogTableVisible = false;
+                            }
+                        });
+                    },
+                    error: (res)=> {
+                        this.$alert('Submit failed!', 'Error', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+
+                            }
+                        });
+                    }
+                });  
+
+                $.post("/user/setSubscribedList",JSON.stringify(this.subscribeList),(result)=>{
+                    this.$alert('Set subscribed list successfully!', 'Error', {
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                        }
+                    });
+                })
+            },
+
+            editSubscribedList(){
+                // this.getSubscribedList();
+                this.search();
+                this.dialogTableVisible = true;
+            },
+
+            handleDelete(index, row) {
+                console.log(index, row);
+                let table = new Array();
+                for (i = 0; i < this.subscribeList.length; i++) {
+                    table.push(this.subscribeList[i]);
+                }
+                table.splice(index, 1);
+                this.subscribeList = table;
+
+            },
+
+            handleEdit(index, row) {
+                console.log(row);
+                let flag = false;
+                for (i = 0; i < this.subscribeList.length; i++) {
+                    let tableRow = this.subscribeList[i];
+                    if (tableRow.oid == row.oid) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+
+                    let subscribe = {};
+                    subscribe.name = row.name;
+                    subscribe.oid = row.oid;
+                    subscribe.type = row.contentType;
+
+                    this.subscribeList.push(subscribe);
+                }
+            },
+
+            handlePageChange(val) {
+
+                this.pageOption.currentPage = val;
+
+                this.search();
+            },
+
+            search(){
+                let data = {
+                    asc: this.pageOption.sortAsc,
+                    page: this.pageOption.currentPage-1,
+                    pageSize: this.pageOption.pageSize,
+                    searchText: this.pageOption.searchText,
+                    sortType: "default",
+                    classifications: ["all"],
+                };
+                // data = JSON.stringify(data);
+                $.ajax({
+                    type: "POST",
+                    url: "/computableModel/listByAuthor",
+                    data: data,
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == 0) {
+                            let data = json.data;
+                            console.log(data)
+
+                            this.pageOption.total = data.total;
+                            this.pageOption.pages = data.pages;
+                            this.pageOption.searchResult = data.list;
+                            this.pageOption.users = data.users;
+                            this.pageOption.progressBar = false;
+                            this.pageOption.paginationShow = true;
+
+                        }
+                        else {
+                            console.log("query error!")
+                        }
+                    }
                 })
             },
 
@@ -378,6 +506,8 @@ var userAccount = Vue.extend(
 
                 }
             });
+
+            this.getSubscribedList();
 
             $('#inputOrganizations').tagEditor({
                 forceLowercase: false

@@ -589,7 +589,6 @@ zhtml,body{
 #right_content{
     left: 280px;
     padding-left: 0px;
-    margin-left: 5%;
 }
 
 #header_image{
@@ -625,11 +624,11 @@ zhtml,body{
     /*!*height: 161px;*!*/
 /*}*/
 #data_image{
-    width:161px;
+    width:180px;
     height: 161px;
 }
 #model_image{
-    width:161px;
+    width:180px;
     height: 161px;
 }
 #model_col{
@@ -692,6 +691,11 @@ span.data_name {
     }
     .el-card__header{
         display: none;
+    }
+    .row-bg{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
 }
