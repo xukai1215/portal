@@ -193,7 +193,6 @@ var createTheme = Vue.extend({
             window.location.href=urls[index]
 
         },
-
         modelClass_add(){
             this.mcnum++;
             this.tableflag1++;
@@ -398,7 +397,6 @@ var createTheme = Vue.extend({
                 this.themeObj.application.splice(num,1);
             }
         },
-
         handleClose(done) {
             this.$confirm('Are you sure to close？')
                 .then(_ => {
@@ -407,7 +405,6 @@ var createTheme = Vue.extend({
                 .catch(_ => {
                 });
         },
-
         handlePageChange1(val) {
             // val--;
             this.pageOption1.currentPage = val;
@@ -418,8 +415,6 @@ var createTheme = Vue.extend({
             this.pageOption2.currentPage = val;
             this.search2();
         },
-
-
         search1() {
             this.relateType = "modelItem";
             if(this.pageOption1.currentPage==0){
@@ -584,7 +579,6 @@ var createTheme = Vue.extend({
                 }
             })
         },
-
         handleEdit(index, row) {
             // let tablist = $(".el-tabs__nav").eq(0);//取出model的tablist
             // let tab_id = tablist.find('.is-active');//过滤出active的tab
@@ -700,7 +694,6 @@ var createTheme = Vue.extend({
             table1.splice(index, 1);
             this.themeObj.dataClassInfo[num].datasoid = table1;
         },
-
         getRelation() {
             //从地址栏拿到oid
             let arr = window.location.href.split("/");
@@ -791,7 +784,6 @@ var createTheme = Vue.extend({
 
             }
         },
-
         sendUserToParent(userId){
             this.$emit('com-senduserinfo',userId)
         },

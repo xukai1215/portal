@@ -531,6 +531,7 @@ public class ThemeService {
             //下面是匹配当前的项目的创建者与当前登陆者
             HttpSession session = request.getSession();
             String uid = session.getAttribute("uid").toString();
+            String oid = session.getAttribute("oid").toString();
 
             List<ModelItemVersion> modelItemVersions = modelItemVersionDao.findAll();
             List<ModelItemVersion> modelItemVersions1 = new ArrayList<>();
@@ -614,6 +615,7 @@ public class ThemeService {
                 jsonObject.put("name", modelItemVersion.getName());
                 jsonObject.put("oid", modelItemVersion.getOid());
                 jsonObject.put("originOid", modelItemVersion.getOriginOid());
+                jsonObject.put("readStatus",modelItemVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(modelItemVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -755,6 +757,7 @@ public class ThemeService {
                 jsonObject.put("name", conceptualModelVersion.getName());
                 jsonObject.put("oid", conceptualModelVersion.getOid());
                 jsonObject.put("originOid", conceptualModelVersion.getOriginOid());
+                jsonObject.put("readStatus",conceptualModelVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(conceptualModelVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -909,6 +912,7 @@ public class ThemeService {
                 jsonObject.put("name", logicalModelVersion.getName());
                 jsonObject.put("oid", logicalModelVersion.getOid());
                 jsonObject.put("originOid", logicalModelVersion.getOriginOid());
+                jsonObject.put("readStatus",logicalModelVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(logicalModelVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1065,6 +1069,7 @@ public class ThemeService {
                 jsonObject.put("name", computableModelVersion.getName());
                 jsonObject.put("oid", computableModelVersion.getOid());
                 jsonObject.put("originOid", computableModelVersion.getOriginOid());
+                jsonObject.put("readStatus",computableModelVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(computableModelVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1221,6 +1226,7 @@ public class ThemeService {
                 jsonObject.put("name", conceptVersion.getName());
                 jsonObject.put("oid", conceptVersion.getOid());
                 jsonObject.put("originOid", conceptVersion.getOriginOid());
+                jsonObject.put("readStatus",conceptVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(conceptVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1378,6 +1384,7 @@ public class ThemeService {
                 jsonObject.put("name", templateVersion.getName());
                 jsonObject.put("oid", templateVersion.getOid());
                 jsonObject.put("originOid", templateVersion.getOriginOid());
+                jsonObject.put("readStatus",templateVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(templateVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1537,6 +1544,7 @@ public class ThemeService {
                 jsonObject.put("name", spatialReferenceVersion.getName());
                 jsonObject.put("oid", spatialReferenceVersion.getOid());
                 jsonObject.put("originOid", spatialReferenceVersion.getOriginOid());
+                jsonObject.put("readStatus",spatialReferenceVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(spatialReferenceVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1699,6 +1707,7 @@ public class ThemeService {
                 jsonObject.put("name", unitVersion.getName());
                 jsonObject.put("oid", unitVersion.getOid());
                 jsonObject.put("originOid", unitVersion.getOriginOid());
+                jsonObject.put("readStatus",unitVersion.getReadStatus());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 jsonObject.put("modifyTime", sdf.format(unitVersion.getModifyTime()));
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1844,7 +1853,7 @@ public class ThemeService {
         List<ThemeVersion> themeVersions_self = themeVersionDao.findAll();
         List<ThemeVersion> themeVersions1_self = new ArrayList<>();
         for (int i=0;i<themeVersions_self.size();i++){
-            if (uid.equals(themeVersions_self.get(i).getModifierOid())){
+            if (oid.equals(themeVersions_self.get(i).getModifierOid())){
                 themeVersions1_self.add(themeVersions_self.get(i));
             }
         }
@@ -1856,6 +1865,8 @@ public class ThemeService {
             jsonObject.put("name", themeVersion.getThemename());
             jsonObject.put("oid", themeVersion.getOid());//
             jsonObject.put("themeOid", themeVersion.getThemeOid());
+            jsonObject.put("readStatus",themeVersion.getReadStatus());
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             jsonObject.put("modifyTime", sdf.format(themeVersion.getModifyTime()));
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");

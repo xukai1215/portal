@@ -22,6 +22,7 @@ public class TemplateVersion {
     Date acceptTime;
     Date rejectTime;
     String creator;
+    int readStatus;
 
     int loadCount;
 

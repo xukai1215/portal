@@ -84,6 +84,9 @@ public class VersionRestController {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    ThemeVersionDao themeVersionDao;
+
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public ModelAndView getRegister() {
         System.out.println("versionCheck");
@@ -1488,4 +1491,73 @@ public class VersionRestController {
         return versionService.getUnitHistoryPage(id);
     }
 
+    @RequestMapping(value = "/MyEditionReaded",method = RequestMethod.POST)
+    public String MyEditionReaded(HttpServletRequest request,@RequestBody MyEdition myEditions){
+        //消息数减去已读数
+        int my_edition_num = myEditions.getMy_edition_num();
+        HttpSession session = request.getSession();
+        String userName = session.getAttribute("uid").toString();
+        userService.myEditionNumMinus(userName,my_edition_num);//先测试，稳定了解开
+
+        //将未读的readStatus置为1，标为已读
+        for (int i=0;i<myEditions.getOids().size();i++){
+            switch (myEditions.getOids().get(i).getType()){
+                case "modelItem":{
+                    ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    modelItemVersion.setReadStatus(1);
+                    modelItemVersionDao.save(modelItemVersion);
+                    break;
+                }
+                case "conceptualModel":{
+                    ConceptualModelVersion conceptualModelVersion = conceptualModelVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    conceptualModelVersion.setReadStatus(1);
+                    conceptualModelVersionDao.save(conceptualModelVersion);
+                    break;
+                }
+                case "logicalModel":{
+                    LogicalModelVersion logicalModelVersion = logicalModelVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    logicalModelVersion.setReadStatus(1);
+                    logicalModelVersionDao.save(logicalModelVersion);
+                    break;
+                }
+                case "computableModel":{
+                    ComputableModelVersion computableModelVersion = computableModelVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    computableModelVersion.setReadStatus(1);
+                    computableModelVersionDao.save(computableModelVersion);
+                    break;
+                }
+                case "concept":{
+                    ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    conceptVersion.setReadStatus(1);
+                    conceptVersionDao.save(conceptVersion);
+                    break;
+                }
+                case "spatialReference":{
+                    SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    spatialReferenceVersion.setReadStatus(1);
+                    spatialReferenceVersionDao.save(spatialReferenceVersion);
+                    break;
+                }
+                case "unit":{
+                    UnitVersion unitVersion = unitVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    unitVersion.setReadStatus(1);
+                    unitVersionDao.save(unitVersion);
+                    break;
+                }
+                case "template":{
+                    TemplateVersion templateVersion = templateVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    templateVersion.setReadStatus(1);
+                    templateVersionDao.save(templateVersion);
+                    break;
+                }
+                case "theme":{
+                    ThemeVersion themeVersion = themeVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    themeVersion.setReadStatus(1);
+                    themeVersionDao.save(themeVersion);
+                    break;
+                }
+            }
+        }
+        return "ok";
+    }
 }
