@@ -1045,6 +1045,14 @@ public class UserService {
         userDao.save(user);
     }
 
+    public void myEditionNumMinus(String username,int my_edition_num){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        count = count - my_edition_num;
+        user.setMessageNum(count);
+        userDao.save(user);
+    }
+
 
     //--
     public void modelItemMinusMinus(String userName){

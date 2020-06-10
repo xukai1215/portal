@@ -21,6 +21,7 @@ public class ConceptualModelVersion {
     String svg;
     String detail;
     String creator;
+    int readStatus;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;

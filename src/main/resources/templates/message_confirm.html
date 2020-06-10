@@ -248,7 +248,7 @@
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <el-tabs type="border-card" stretch="stretch">
+                                                        <el-tabs type="border-card" @tab-click="MyEditionModelReaded" stretch="stretch">
                                                             <el-tab-pane label="Unapproved version">
                                                                 <div slot="label">
                                                                     Unapproved version
@@ -263,18 +263,18 @@
                                                                             fixed
                                                                             prop="modifyTime"
                                                                             label="Date"
-                                                                            width="200">
+                                                                            width="230">
                                                                     </el-table-column>
                                                                     <el-table-column
                                                                             prop="name"
                                                                             label="Name"
-                                                                            width="170"
+                                                                            width="200"
                                                                     >
                                                                     </el-table-column>
                                                                     <el-table-column
                                                                             prop="ex_type"
                                                                             label="Type"
-                                                                            width="100">
+                                                                            width="250">
                                                                     </el-table-column>
 
                                                                     <!--<el-table-column-->
@@ -287,7 +287,7 @@
 
                                                                     <el-table-column
                                                                             label="Operations"
-                                                                            width="300">
+                                                                            width="180">
                                                                         <template slot-scope="scope">
                                                                             <el-button class="viewBtn_self" size="middle" type="primary" @click="view_self($event)">View</el-button>
                                                                         </template>
@@ -297,14 +297,14 @@
                                                             <el-tab-pane label="Accepted version">
                                                                 <div slot="label">
                                                                     Accepted version
-                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
-                                                                        {{model_tableData2_length_self}}
+                                                                    <span v-if="model_accept_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{model_accept_unread}}
                                                                     </span>
-
                                                                 </div>
                                                                 <el-table
                                                                         :data="model_tableData2_self"
-                                                                        style="width: 100%">
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
                                                                     <el-table-column
                                                                             fixed
                                                                             prop="modifyTime"
@@ -340,14 +340,15 @@
                                                             <el-tab-pane label="Rejected version">
                                                                 <div slot="label">
                                                                     Rejected version
-                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
-                                                                        {{model_tableData3_length_self}}
+                                                                    <span v-if="model_reject_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{model_reject_unread}}
                                                                     </span>
 
                                                                 </div>
                                                                 <el-table
                                                                         :data="model_tableData3_self"
-                                                                        style="width: 100%">
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
                                                                     <el-table-column
                                                                             fixed
                                                                             prop="modifyTime"
@@ -391,7 +392,7 @@
                                                 </span>
                                                     </div>
                                                     <div>
-                                                        <el-tabs type="border-card" stretch="stretch" >
+                                                        <el-tabs type="border-card" @tab-click="MyEditionCommunityReaded" stretch="stretch" >
                                                             <el-tab-pane label="Unapproved version">
                                                                 <div slot="label">
                                                                     Unapproved version
@@ -406,18 +407,18 @@
                                                                             fixed
                                                                             prop="modifyTime"
                                                                             label="Date"
-                                                                            width="200">
+                                                                            width="230">
                                                                     </el-table-column>
                                                                     <el-table-column
                                                                             prop="name"
                                                                             label="Name"
-                                                                            width="170"
+                                                                            width="200"
                                                                     >
                                                                     </el-table-column>
                                                                     <el-table-column
                                                                             prop="ex_type"
                                                                             label="Type"
-                                                                            width="100">
+                                                                            width="250">
                                                                     </el-table-column>
 
                                                                     <!--<el-table-column-->
@@ -430,7 +431,7 @@
 
                                                                     <el-table-column
                                                                             label="Operations"
-                                                                            width="300">
+                                                                            width="180">
                                                                         <template slot-scope="scope">
                                                                             <el-button class="viewBtn1_self" size="middle" type="primary" @click="view1_self($event)">View</el-button>
                                                                         </template>
@@ -440,13 +441,14 @@
                                                             <el-tab-pane label="Accepted version">
                                                                 <div slot="label">
                                                                     Accepted version
-                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
-                                                                        {{community_tableData2_length_self}}
+                                                                    <span v-if="community_accept_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{community_accept_unread}}
                                                                     </span>
                                                                 </div>
                                                                 <el-table
                                                                         :data="community_tableData2_self"
-                                                                        style="width: 100%">
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
                                                                     <el-table-column
                                                                             fixed
                                                                             prop="modifyTime"
@@ -481,13 +483,14 @@
                                                             <el-tab-pane label="Rejected version">
                                                                 <div slot="label">
                                                                     Rejected version
-                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
-                                                                        {{community_tableData3_length_self}}
+                                                                    <span v-if="community_reject_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{community_reject_unread}}
                                                                     </span>
                                                                 </div>
                                                                 <el-table
                                                                         :data="community_tableData3_self"
-                                                                        style="width: 100%">
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
                                                                     <el-table-column
                                                                             fixed
                                                                             prop="modifyTime"
@@ -530,7 +533,7 @@
                                                 </span>
                                                     </div>
                                                     <div>
-                                                        <el-tabs type="border-card" stretch="stretch" >
+                                                        <el-tabs type="border-card" @tab-click="MyEditionThemeReaded" stretch="stretch" >
                                                             <el-tab-pane label="Unapproved version">
                                                                 <div slot="label">
                                                                     Unapproved version
@@ -545,18 +548,18 @@
                                                                             fixed
                                                                             prop="modifyTime"
                                                                             label="Date"
-                                                                            width="200">
+                                                                            width="230">
                                                                     </el-table-column>
                                                                     <el-table-column
                                                                             prop="name"
                                                                             label="Name"
-                                                                            width="170"
+                                                                            width="200"
                                                                     >
                                                                     </el-table-column>
                                                                     <el-table-column
                                                                             prop="type"
                                                                             label="Type"
-                                                                            width="100">
+                                                                            width="250">
                                                                     </el-table-column>
                                                                     <!--<el-table-column-->
                                                                     <!--label="View"-->
@@ -567,7 +570,7 @@
                                                                     <!--</el-table-column>-->
                                                                     <el-table-column
                                                                             label="Operations"
-                                                                            width="300">
+                                                                            width="180">
                                                                         <template slot-scope="scope">
                                                                             <el-button class="viewBtn_theme_self" size="middle" type="primary" @click="view_theme_self($event)">View</el-button>
                                                                         </template>
@@ -577,13 +580,14 @@
                                                             <el-tab-pane label="Accepted version">
                                                                 <div slot="label">
                                                                     Accepted version
-                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
-                                                                        {{theme_tableData2_length_self}}
+                                                                    <span v-if="theme_accept_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{theme_accept_unread}}
                                                                     </span>
                                                                 </div>
                                                                 <el-table
                                                                         :data="theme_tableData2_self"
-                                                                        style="width: 100%">
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
                                                                     <el-table-column
                                                                             fixed
                                                                             prop="modifyTime"
@@ -618,13 +622,14 @@
                                                             <el-tab-pane label="Rejected version">
                                                                 <div slot="label">
                                                                     Rejected version
-                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
-                                                                        {{theme_tableData3_length_self}}
+                                                                    <span v-if="theme_reject_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{theme_reject_unread}}
                                                                     </span>
                                                                 </div>
                                                                 <el-table
                                                                         :data="theme_tableData3_self"
-                                                                        style="width: 100%">
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
                                                                     <el-table-column
 
                                                                             fixed
@@ -1314,10 +1319,11 @@
                                                         <el-card
                                                                 v-for="(comment,index) in item.comment"
                                                                 :key = "index"
-                                                                style="margin-bottom: 5px"
+                                                                style = "margin-bottom: 5px"
+                                                                :style="{ backgroundColor: comment.color }"
                                                         >
                                                         <div>
-                                                                <div class="com-author-name" style="font-weight: bold">
+                                                                <div class="com-author-name" style="font-weight: bold ">
                                                                     <span>
                                                                         <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
                                                                     </span>

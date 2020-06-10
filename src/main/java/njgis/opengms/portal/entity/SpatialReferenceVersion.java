@@ -25,6 +25,7 @@ public class SpatialReferenceVersion {
     Date rejectTime;
     int loadCount;
     String creator;
+    int readStatus;
 
     String type;
     String parentId;

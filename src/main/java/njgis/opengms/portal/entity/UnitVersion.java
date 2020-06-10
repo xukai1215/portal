@@ -22,6 +22,7 @@ public class UnitVersion {
     Date acceptTime;
     Date rejectTime;
     String creator;
+    int readStatus;
 
     int loadCount;
 
