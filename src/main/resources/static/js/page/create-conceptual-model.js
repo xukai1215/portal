@@ -845,6 +845,7 @@ var createConceptualModel = Vue.extend({
                             break;
                         case -1:
                             this.$alert('Save files error!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 
@@ -853,6 +854,7 @@ var createConceptualModel = Vue.extend({
                             break;
                         case -2:
                             this.$alert('Created failed!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 
@@ -862,6 +864,7 @@ var createConceptualModel = Vue.extend({
                     }
                 }).fail(function (res) {
                     this.$alert('Please login first', 'Error', {
+                        type:"error",
                         confirmButtonText: 'OK',
                         callback: action => {
                             window.location.href = "/user/login";
@@ -898,6 +901,7 @@ var createConceptualModel = Vue.extend({
                                 let params = that.message_num_socket;
                                 that.send(params);
                                 this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    type:"success",
                                     confirmButtonText: 'OK',
                                     callback: action => {
                                         window.location.href = "/user/userSpace";
@@ -923,6 +927,7 @@ var createConceptualModel = Vue.extend({
                                 break;
                             case -1:
                                 this.$alert('Save files error', 'Error', {
+                                    type:"error",
                                     confirmButtonText: 'OK',
                                     callback: action => {
 
@@ -932,6 +937,7 @@ var createConceptualModel = Vue.extend({
                                 break;
                             case -2:
                                 this.$alert('Create failed!', 'Error', {
+                                    type:"error",
                                     confirmButtonText: 'OK',
                                     callback: action => {
 
@@ -942,6 +948,7 @@ var createConceptualModel = Vue.extend({
                     }
                     else{
                         this.$alert(res.msg, 'Error', {
+                            type:"error",
                             confirmButtonText: 'OK',
                             callback: action => {
 
@@ -950,6 +957,7 @@ var createConceptualModel = Vue.extend({
                     }
                 }).fail(function (res) {
                     this.$alert('Please login first', 'Error', {
+                        type:"error",
                         confirmButtonText: 'OK',
                         callback: action => {
                             window.location.href = "/user/login";

@@ -192,12 +192,13 @@ var vue = new Vue({
                                             console.log(status);
                                             clearInterval(interval);
                                             this.$alert('Integrated model run failed!', 'Error', {
+                                                type:"error",
                                                 confirmButtonText: 'OK',
                                                 callback: action => {
-                                                    this.$message({
-                                                        type: 'danger',
-                                                        message: `action: ${ action }`
-                                                    });
+                                                    // this.$message({
+                                                    //     type: 'danger',
+                                                    //     message: `action: ${ action }`
+                                                    // });
                                                 }
                                             });
                                         }
@@ -205,12 +206,13 @@ var vue = new Vue({
                                             console.log(status);
                                             clearInterval(interval);
                                             this.$alert('Integrated model run Success', 'Success', {
+                                                type:"success",
                                                 confirmButtonText: 'OK',
                                                 callback: action => {
-                                                    this.$message({
-                                                        type: 'success',
-                                                        message: `action: ${ action }`
-                                                    });
+                                                    // this.$message({
+                                                    //     type: 'success',
+                                                    //     message: `action: ${ action }`
+                                                    // });
                                                 }
                                             });
 

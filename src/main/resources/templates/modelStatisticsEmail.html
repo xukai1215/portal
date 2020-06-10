@@ -10,20 +10,83 @@
 <body>
 <div id="app" style="font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif;">
 
-    <div style="height:70px;background-color:#080a0e;border-radius: 5px;display: flex;align-items: center;justify-content: center">
-        <img src="https://geomodeling.njnu.edu.cn/static/img/logo.png" style="height: 60px;">
-        <span style="color: white;font-size: 30px;margin:15px 0 0 20px">Statistics</span>
-    </div>
-    <div class="header" style="margin-top:20px;">
-        <div style="display: inline-block; border-right: 1px solid rgb(170, 170, 170);display: flex;flex-wrap:wrap;align-items: center;justify-content: center;width:50%">
-            <h3 style="width:100%;text-align: center;font-size: 24px;font-weight: 400">Computable Model</h3><br/>
-            <a style="width:100%;text-align: center;" href="https://geomodeling.njnu.edu.cn/computableModel/16e31602-bd05-4da4-bd01-cb7582c21ae8">
-                <h3 style="font-size: 24px;font-weight: 400">SWAT_Model</h3>
+
+        <div id="opengmsStats" style="height:60px;background-color:#080a0e;border-radius: 5px;display: flex;align-items: center;justify-content: center;min-width:600px">
+            <a href="https://geomodeling.njnu.edu.cn">
+                <img src="https://geomodeling.njnu.edu.cn/static/img/logo.png" style="height: 50px;">
             </a>
+            <span style="color: white;font-size: 26px;margin:20px 0 0 20px;font-weight: bold;">Review</span>
         </div>
-        <div></div>
-        <div></div>
-        <div></div>
+
+    <div class="content" style="width:600px;margin: auto;font-size: 18px;">
+        <div style="background-color: #ecf5ff;
+    padding: 15px;
+    margin: 30px 0 10px 0;
+    line-height: 25px;
+    font-size: 16px;
+    color: #409eff;
+    border: 1px solid #d9ecff;
+    border-radius: 4px;
+    box-sizing: border-box;
+   ">
+            <b>Open Geographic Modeling and Simulation Platform (OpenGMS)</b> supports sharing geographic resources and provides a community for collaboration works among researchers in various disciplines.
+            There are more than 3500 geographic models in our platform.
+            We are the founder of Open Modeling Alliance, and have been added to the Trusted Digital Repositories for Software of CoMSES Net.
+
+        </div>
+        <p style="margin-top:30px">
+            <span th:text="'Dear '+${name}+':'">Dear XXX:</span><br/><br/>
+            The statistics of your model(s) in OpenGMS is as follows.
+        </p>
+        <div th:if="${#lists.size(modelList)>1}"
+                style="background-color: #f4f4f5;
+                padding: 15px;
+                margin: 35px 0 10px 0;
+                line-height: 25px;
+                font-size: 16px;
+                color: #909399;
+                border: 1px solid #e9e9eb;
+                border-radius: 4px;
+                box-sizing: border-box;
+               ">
+           <h3 style="margin-top:10px;margin:auto">Subscribed Model List</h3>
+            <ul>
+                <li th:each="model,index:${modelList}"><a th:href="'#'+${model.oid}" th:text="${model.name}">computable model</a></li>
+            </ul>
+        </div>
+        <div th:each="model,index:${modelList}" th:id="${model.oid}">
+            <div style="padding:20px 0;flex-wrap:nowrap;border-bottom: 1px solid rgb(170, 170, 170);">
+                <div style="display: inline-block; display: flex;flex-wrap:wrap;align-items: center;justify-content: center;width:100%;padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid rgb(170, 170, 170)">
+                    <a style="width:100%;text-align: center;" th:href="'https://geomodeling.njnu.edu.cn/computableModel/'+${model.oid}">
+                        <li><h3 style="margin:10px 0;" th:text="${model.name}">SWAT_Model</h3></li>
+                    </a>
+                </div>
+                <div style="display: flex;">
+                    <div style="display: inline-block; border-right: 1px solid rgb(170, 170, 170);display: flex;flex-wrap:wrap;align-items: center;justify-content: center;width:50%">
+                        <h3 style="width:100%;text-align: center;font-weight: 500;margin:10px 0;">Total View Times</h3><br/>
+                        <h3 style="margin:10px 0;" th:text="${model.viewCount}">4251</h3>
+                    </div>
+                    <div style="display: inline-block; display: flex;flex-wrap:wrap;align-items: center;justify-content: center;width:50%">
+                        <h3 style="width:100%;text-align: center;font-weight: 500;margin:10px 0;">Total Invoke Times</h3><br/>
+                        <h3 style="margin:10px 0;" th:text="${model.invokeCount}">254</h3>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <img style='height:360px;margin:20px auto 25px' th:if="${model.lineChart!=null}" th:src="'cid:'+${model.lineChart}" >
+                <img style='height:360px;margin:20px auto 25px' th:if="${model.barChart!=null}" th:src="'cid:'+${model.barChart}" >
+                <img style='height:360px;margin:5px auto 0px' th:if="${model.pieChart!=null}" th:src="'cid:'+${model.pieChart}" >
+                <img style='height:360px;margin:0 auto 25px' th:if="${model.mapChart!=null}" th:src="'cid:'+${model.mapChart}" >
+            </div>
+            <div style="display:flex;justify-content: space-between;margin-top:20px">
+                <a href="#opengmsStats">← Back To Top</a>
+                <a th:href="'https://geomodeling.njnu.edu.cn/statistics/computableModel/'+${model.oid}">Learn More →</a>
+            </div>
+            <br/>
+            <br/>
+        </div>
+        <hr/>
+        <p>To unsubscribe from this notice, go to <a th:href="'https://geomodeling.njnu.edu.cn/user/unsubscribe?id='+${id}" target="_blank">Unsubscribe</a>. </p>
     </div>
 
 </div>

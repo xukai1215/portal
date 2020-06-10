@@ -72,6 +72,7 @@ var userAccount = Vue.extend(
                     let data = result.data;
                     if(result.code==-1){
                         this.$alert('Please login first', 'Tip', {
+                            type:"success",
                             confirmButtonText: 'OK',
                             callback: action => {
                                 window.location.href="/user/login";
@@ -99,6 +100,7 @@ var userAccount = Vue.extend(
                     contentType:"application/json",
                     success: (res)=> {
                         this.$alert('Set subscribed list successfully!', 'Success', {
+                            type:"success",
                             confirmButtonText: 'OK',
                             callback: action => {
                                 this.dialogTableVisible = false;
@@ -107,6 +109,7 @@ var userAccount = Vue.extend(
                     },
                     error: (res)=> {
                         this.$alert('Submit failed!', 'Error', {
+                            type:"error",
                             confirmButtonText: 'OK',
                             callback: action => {
 
@@ -115,14 +118,6 @@ var userAccount = Vue.extend(
                     }
                 });  
 
-                $.post("/user/setSubscribedList",JSON.stringify(this.subscribeList),(result)=>{
-                    this.$alert('Set subscribed list successfully!', 'Error', {
-                        confirmButtonText: 'OK',
-                        callback: action => {
-
-                        }
-                    });
-                })
             },
 
             editSubscribedList(){
