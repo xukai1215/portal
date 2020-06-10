@@ -28,7 +28,7 @@
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
         <div class="el-col el-col-20 el-col-offset-2">
-            <div class="el-card text-center" style="margin-bottom:20px;border-color:#aaa">
+            <div class="el-card text-center" style="margin-bottom:20px;border:none;background: #dbf0ff;">
                 <h2><i class="el-icon-data-analysis" style="margin-right:10px"></i>Statistics</h2>
             </div>
 
@@ -123,7 +123,7 @@
                 label: 'Invoker'
             }],
 
-            range:30,
+            range:365,
             timeRange: [{
                 value: 7,
                 label: 'A week'
@@ -344,8 +344,8 @@
                         {x: '7%', y: '7%', width: '85%', height: '70%'},
                     ],
                     series: [
-                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        {type: 'line', smooth: false, seriesLayoutBy: 'row'},
+                        {type: 'line', smooth: false, seriesLayoutBy: 'row'},
                     ]
                 };
 
@@ -366,7 +366,7 @@
                 this.barChart = echarts.init(document.getElementById('chart_leftBottom'));
                 let option = {
                     title: {
-                        text: 'View and invoke times at different hours in total(UTC +08:00)',
+                        text: 'View and invoke times at different hours in total (UTC +08:00)',
                         left: '50%',
                         top: '98%',
                         itemGap: 5,

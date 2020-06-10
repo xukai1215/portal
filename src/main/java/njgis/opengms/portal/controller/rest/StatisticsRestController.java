@@ -35,7 +35,7 @@ public class StatisticsRestController {
     ModelAndView show(@PathVariable("oid") String oid){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("modelStatistics");
-        JSONObject statistics = statisticsService.getComputableModelStatisticsInfo(oid, 30);
+        JSONObject statistics = statisticsService.getComputableModelStatisticsInfo(oid, 365);
         modelAndView.addObject("statistics",statistics);
 
         return modelAndView;

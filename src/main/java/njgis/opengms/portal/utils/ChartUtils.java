@@ -13,7 +13,6 @@ import com.github.abel533.echarts.series.EMap;
 import com.github.abel533.echarts.series.Line;
 import com.github.abel533.echarts.series.Pie;
 import com.github.abel533.echarts.style.ItemStyle;
-import com.github.abel533.echarts.style.itemstyle.Normal;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.utils.Object.ChartOption;
@@ -105,7 +104,7 @@ public class ChartUtils {
 
         GsonOption option = new GsonOption();
 
-        option.title().text(chartOption.getTitle()).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition()); // 标题
+        option.title().text(chartOption.getTitle()).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition()).y("90%").textStyle().fontSize(24); // 标题
         // 工具栏
         option.toolbox().show(false).feature(Tool.mark, // 辅助线
                 Tool.dataView, // 数据视图
@@ -114,24 +113,33 @@ public class ChartUtils {
                 Tool.saveAsImage);// 保存为图片
 
         option.tooltip().show(true).formatter("{a} <br/>{b} : {c}");//显示工具提示,设置提示格式
+        option.grid().height("75%").width("96%").x("2%");
+        option.legend().data(types).textStyle().fontSize(20);// 图例
 
-        option.legend(types);// 图例
-
-        Bar bar = new Bar(title);// 图类别(柱状图)
-        bar.barWidth(100);
+//        Bar bar = new Bar(title);// 图类别(柱状图)
+//        bar.barWidth(100);
         CategoryAxis category = new CategoryAxis();// 轴分类
         category.data(chartOption.getValXis());// 轴数据类别
         category.setBoundaryGap(true);
         category.axisLabel().setInterval(0);
         // 循环数据
-        for (int i = 0; i < types.length; i++) {
-            int data = datas[0][i];
-            String color = colors[i];
-            // 类目对应的柱状图
-            Map<String, Object> map = new HashMap<String, Object>(2);
-            map.put("value", data);
-            map.put("itemStyle", new ItemStyle().normal(new Normal().color(color)));
-            bar.data(map);
+        for (int i = 0; i < datas.length; i++) {
+            Bar bar = new Bar();
+            String type = types[i];
+            bar.name(type);//.stack("总量");
+            for (int j = 0; j < datas[0].length; j++)
+                bar.data(datas[i][j]);
+            option.series().add(bar);
+
+//            for (int j = 0; j < datas[0].length; j++) {
+//                int data = datas[i][j];
+//                String color = colors[i];
+//                // 类目对应的柱状图
+//                Map<String, Object> map = new HashMap<String, Object>(2);
+//                map.put("value", data);
+//                map.put("itemStyle", new ItemStyle().normal(new Normal().color(color)));
+//                bar.data(map);
+//            }
         }
 
 
@@ -139,7 +147,7 @@ public class ChartUtils {
         option.yAxis(new ValueAxis());// y轴
 
 
-        option.series(bar);
+//        option.series(bar);
 
         return generateEChart(new Gson().toJson(option));
     }
@@ -155,27 +163,27 @@ public class ChartUtils {
 
         GsonOption option = new GsonOption();
 
-        option.title().text(chartOption.getTitle()).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition());// 大标题、小标题、位置
+        option.title().text(chartOption.getTitle()).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition()).y("90%").textStyle().fontSize(24);// 大标题、小标题、位置
 
         // 提示工具
         option.tooltip().trigger(Trigger.axis);// 在轴上触发提示数据
         // 工具栏
 //        option.toolbox().show(true).feature(Tool.saveAsImage);// 显示保存为图片
-
-        option.legend(types);// 图例
+        option.grid().height("75%").width("95%").x("2.5%");
+        option.legend().data(types).textStyle().fontSize(20);// 图例
 
         CategoryAxis category = new CategoryAxis();// 轴分类
         category.data(chartOption.getValXis());
         category.boundaryGap(true);// 起始和结束两端空白策略
 
         // 循环数据
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < datas.length; i++) {
             Line line = new Line();// 三条线，三个对象
             String type = types[i];
-            line.name(type).stack("总量");
+            line.name(type);//.stack("总量");
             for (int j = 0; j < datas[0].length; j++)
                 line.data(datas[i][j]);
-            option.series(line);
+            option.series().add(line);
         }
 
         option.xAxis(category);// x轴
@@ -197,9 +205,10 @@ public class ChartUtils {
 
         GsonOption option = new GsonOption();
         option.backgroundColor("transparent");
-        option.title().text("Locations of Viewers and Invokes").x("center").y("bottom").textStyle().fontSize(30);
+        option.title().text("Locations of Viewers and Invokes").x("center").y("90%").textStyle().fontSize(30);
         option.dataRange().show(true).y(300).calculable(true).min(0).max(20).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList("High","Low"));
 //        option.legend().show(true);
+        option.grid().y(0);
 
         EMap eMap = new EMap();
 //        eMap.setName("Viewers' Location");
@@ -226,13 +235,13 @@ public class ChartUtils {
     /**
      *  饼图
      */
-    public static String generatePie(ChartOption chartOption) {
+    public static String generatePie(ChartOption chartOption,String radius,String center_x,String center_y,String legend_y) {
         String[] types = chartOption.getTypes();//{ "邮件营销", "联盟广告", "视频广告" };
         int[] datas = chartOption.getData()[0];//{ 120, 132, 101 };
         String title = chartOption.getTitle();//"广告数据";
         GsonOption option = new GsonOption();
 
-        option.title().text(title).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition());// 大标题、小标题、标题位置
+        option.title().text(title).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition()).y("90%").textStyle().fontSize(24);// 大标题、小标题、标题位置
 
         // 提示工具 鼠标在每一个数据项上，触发显示提示数据
         option.tooltip().trigger(Trigger.item).formatter("{a} <br/>{b} : {c} ({d}%)");
@@ -245,14 +254,14 @@ public class ChartUtils {
 //                Tool.restore,// 还原
 //                Tool.saveAsImage);// 保存为图片
 
-        option.legend().orient(Orient.vertical).x("left").data(types);// 图例及位置
+        option.legend().orient(Orient.vertical).x("left").y(legend_y).data(types).textStyle().fontSize(20);// 图例及位置
 
         option.calculable(true);// 拖动进行计算
 
         Pie pie = new Pie();
 
         // 标题、半径、位置
-        pie.name(title).radius("55%").center("50%", "50%");
+        pie.name(title).radius(radius).center(center_x, center_y);
 
         // 循环数据
         for (int i = 0; i < types.length; i++) {

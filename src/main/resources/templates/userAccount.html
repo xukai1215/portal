@@ -143,35 +143,37 @@
                                                                 @change="setSubscribe()">
                                                         </el-switch>
                                                     </div>
-                                                    <el-tag type="info" style="margin-top: 10px">Whether receive reviews
+                                                    <el-tag type="info" style="margin-top: 10px">Whether receive reports of your resources
                                                         from OpenGMS.
                                                     </el-tag>
 
-                                                    <div style="margin-top:30px">
-                                                        <h5 style="display: inline;margin-right:20px">Subscribed
-                                                            Computable Model</h5>
-                                                        <el-button type="primary" size="mini"
-                                                                   @click="editSubscribedList" round>Edit
-                                                        </el-button>
+                                                    <div v-if="subscribe">
+                                                        <div style="margin-top:30px">
+                                                            <h5 style="display: inline;margin-right:20px">Subscribed
+                                                                Computable Model</h5>
+                                                            <el-button type="primary" size="mini"
+                                                                       @click="editSubscribedList" round>Edit
+                                                            </el-button>
+                                                        </div>
+                                                        <el-table
+
+                                                                :data="subscribeList"
+                                                                style="width: 100%">
+                                                            <el-table-column
+                                                                    align="center"
+                                                                    header-align="center"
+                                                                    prop="type"
+                                                                    label="Type">
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                    align="center"
+                                                                    header-align="center"
+                                                                    prop="name"
+                                                                    label="Name">
+                                                            </el-table-column>
+
+                                                        </el-table>
                                                     </div>
-                                                    <el-table
-
-                                                            :data="subscribeList"
-                                                            style="width: 100%">
-                                                        <el-table-column
-                                                                align="center"
-                                                                header-align="center"
-                                                                prop="type"
-                                                                label="Type">
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                                align="center"
-                                                                header-align="center"
-                                                                prop="name"
-                                                                label="Name">
-                                                        </el-table-column>
-
-                                                    </el-table>
                                                 </li>
                                             </ul>
                                         </div>
@@ -427,7 +429,7 @@
                             <el-table-column
                                     label="Name">
                                 <template slot-scope="props">
-                                    <a :href="'/computableModel'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                    <a :href="'/computableModel/'+props.row.oid" target="_blank">{{props.row.name}}</a>
                                 </template>
                             </el-table-column>
 
@@ -468,7 +470,7 @@
                             <el-table-column
                                     label="Name">
                                 <template slot-scope="props">
-                                    <a :href="'/computableModel'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                                    <a :href="'/computableModel/'+props.row.oid" target="_blank">{{props.row.name}}</a>
                                 </template>
                             </el-table-column>
                             <!--<el-table-column-->
