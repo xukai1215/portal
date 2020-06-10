@@ -65,8 +65,8 @@ var notice = Vue.extend({
             model_tableData2_length:0,
             model_tableData3_length:0,
             model_tableData1_length_self:0,
-            model_tableData2_length_self:0,
-            model_tableData3_length_self:0,
+            // model_tableData2_length_self:0,
+            // model_tableData3_length_self:0,
 
             edit_model_tableData:[],//用于获取model的version数据，用于显示谁编辑了什么
             community_tableData1:[],
@@ -79,8 +79,8 @@ var notice = Vue.extend({
             community_tableData2_self:[],
             community_tableData3_self:[],
             community_tableData1_length_self:0,
-            community_tableData2_length_self:0,
-            community_tableData3_length_self:0,
+            // community_tableData2_length_self:0,
+            // community_tableData3_length_self:0,
             edit_community_tableData:[],//用于获取community的version数据，用于显示谁编辑了什么
             edit_theme_tableData:[],
 
@@ -95,8 +95,8 @@ var notice = Vue.extend({
             theme_tableData2_self:[],
             theme_tableData3_self:[],
             theme_tableData1_length_self:0,
-            theme_tableData2_length_self:0,
-            theme_tableData3_length_self:0,
+            // theme_tableData2_length_self:0,
+            // theme_tableData3_length_self:0,
 
 
             table_length_sum:0,
@@ -140,6 +140,12 @@ var notice = Vue.extend({
                 comment:[{}]
             }],
             unread:0,
+            model_accept_unread:0,
+            model_reject_unread:0,
+            community_accept_unread:0,
+            community_reject_unread:0,
+            theme_accept_unread:0,
+            theme_reject_unread:0,
 
             loading: true,
 
@@ -156,7 +162,8 @@ var notice = Vue.extend({
             timeLineColor:'#409EFF',
             timeLineColor1:'#fe7708',
             stretch:true,
-            userOid:""
+            userOid:"",
+            activeColor: '#f5f5dc',
         };
     },
     methods:{
@@ -175,10 +182,10 @@ var notice = Vue.extend({
                         this.comments1.push(this.comments[i]);
                     } else {
                         if (this.comments[i].readStatus==0) {
-                            this.comments[i].color = '#fe7708';
+                            this.comments[i].color = '#f5f5dc';
                             num++;
                         }else {
-                            this.comments[i].color = '#409EFF';
+                            this.comments[i].color = '#ffffff';
                         }
                         this.comments2.push(this.comments[i]);
                     }
@@ -303,43 +310,77 @@ var notice = Vue.extend({
                         if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
                             this.model_tableData1.push(json.data.uncheck[i]);
                             this.sum_tableData.push(json.data.uncheck[i]);
-                            this.message_num++;
+                            // this.message_num++;
                         }else if (json.data.uncheck[i].type == "concept" || json.data.uncheck[i].type == "spatialReference"||json.data.uncheck[i].type == "unit"||json.data.uncheck[i].type == "template"){
                             this.community_tableData1.push(json.data.uncheck[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
-                            this.message_num++;
+                            // this.message_num++;
                         }else if (json.data.uncheck[i].type == "theme") {
                             this.theme_tableData1.push(json.data.uncheck[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
-                            this.message_num++;
+                            // this.message_num++;
                         }
                     }
 
                     //self
+                    let model_accept_num = 0;
+                    let community_accept_num = 0;
+                    let theme_accept_num = 0;
                     for (let i=0;i<json.data.accept_self.length;i++){
                         if (json.data.accept_self[i].type == "modelItem" || json.data.accept_self[i].type == "conceptualModel"||json.data.accept_self[i].type == "logicalModel"||json.data.accept_self[i].type == "computableModel"){
+                            //涂色
                             this.model_tableData2_self.push(json.data.accept_self[i]);
+                            if (json.data.accept_self[i].readStatus == 0){
+                                model_accept_num++;
+                            }
                             //this.sum_tableData.push(json.data.accept_self[i]);
                         }else if (json.data.accept_self[i].type == "concept" || json.data.accept_self[i].type == "spatialReference"||json.data.accept_self[i].type == "unit"||json.data.accept_self[i].type == "template") {
                             this.community_tableData2_self.push(json.data.accept_self[i]);
+                            if (json.data.accept_self[i].readStatus == 0){
+                                community_accept_num ++;
+                            }
                             //this.sum_tableData.push(json.data.accept[i]);
                         }else if (json.data.accept_self[i].type == "theme") {
                             this.theme_tableData2_self.push(json.data.accept_self[i]);
+                            if (json.data.accept_self[i].readStatus == 0){
+                                theme_accept_num ++;
+                            }
                             //this.sum_tableData.push(json.data.accept[i]);
                         }
                     }
+                    this.model_accept_unread = model_accept_num;
+                    this.community_accept_unread = community_accept_num;
+                    this.theme_accept_unread = theme_accept_num;
+
+
+                    let model_reject_num = 0;
+                    let community_reject_num = 0;
+                    let theme_reject_num = 0;
                     for (let i=0;i<json.data.reject_self.length;i++){
                         if (json.data.reject_self[i].type == "modelItem" || json.data.reject_self[i].type == "conceptualModel"||json.data.reject_self[i].type == "logicalModel"||json.data.reject_self[i].type == "computableModel"){
                             this.model_tableData3_self.push(json.data.reject_self[i]);
+                            if (json.data.reject_self[i].readStatus == 0) {
+                                model_reject_num++;
+                            }
                             //this.sum_tableData.push(json.data.reject[i]);
                         }else if (json.data.reject_self[i].type == "concept" || json.data.reject_self[i].type == "spatialReference"||json.data.reject_self[i].type == "unit"||json.data.reject_self[i].type == "template"){
                             this.community_tableData3_self.push(json.data.reject_self[i]);
+                            if (json.data.reject_self[i].readStatus == 0){
+                                community_reject_num++;
+                            }
                             //this.sum_tableData.push(json.data.reject[i]);
                         }else if (json.data.reject_self[i].type == "theme") {
                             this.theme_tableData3_self.push(json.data.reject_self[i]);
+                            if (json.data.reject_self[i].readStatus == 0){
+                                theme_reject_num++;
+                            }
                             //this.sum_tableData.push(json.data.reject[i]);
                         }
                     }
+                    this.model_reject_unread = model_reject_num;
+                    this.community_reject_unread = community_reject_num;
+                    this.theme_reject_unread = theme_reject_num;
+
                     for (let i=0;i<json.data.uncheck_self.length;i++){
                         if (json.data.uncheck_self[i].type == "modelItem" || json.data.uncheck_self[i].type == "conceptualModel"||json.data.uncheck_self[i].type == "logicalModel"||json.data.uncheck_self[i].type == "computableModel"){
                             this.model_tableData1_self.push(json.data.uncheck_self[i]);
@@ -853,21 +894,21 @@ var notice = Vue.extend({
                     this.theme_tableData3_length = this.theme_tableData3.length;
 
                     this.model_tableData1_length_self = this.model_tableData1_self.length;
-                    this.model_tableData2_length_self = this.model_tableData2_self.length;
-                    this.model_tableData3_length_self = this.model_tableData3_self.length;
+                    // this.model_tableData2_length_self = this.model_tableData2_self.length;
+                    // this.model_tableData3_length_self = this.model_tableData3_self.length;
                     this.community_tableData1_length_self = this.community_tableData1_self.length;
-                    this.community_tableData2_length_self = this.community_tableData2_self.length;
-                    this.community_tableData3_length_self = this.community_tableData3_self.length;
+                    // this.community_tableData2_length_self = this.community_tableData2_self.length;
+                    // this.community_tableData3_length_self = this.community_tableData3_self.length;
                     this.theme_tableData1_length_self = this.theme_tableData1_self.length;
-                    this.theme_tableData2_length_self = this.theme_tableData2_self.length;
-                    this.theme_tableData3_length_self = this.theme_tableData3_self.length;
+                    // this.theme_tableData2_length_self = this.theme_tableData2_self.length;
+                    // this.theme_tableData3_length_self = this.theme_tableData3_self.length;
 
 
-                    this.table_length_sum += (this.model_tableData1_length+this.community_tableData1_length+this.theme_tableData1_length);
-                    this.table_length_sum_self += (this.model_tableData2_length_self+this.model_tableData3_length_self+this.community_tableData2_length_self+this.community_tableData3_length_self+this.theme_tableData2_length_self+this.theme_tableData3_length_self);
-                    this.model_self += (this.model_tableData2_length_self+this.model_tableData3_length_self);
-                    this.community_self += (this.community_tableData2_length_self+this.community_tableData3_length_self);
-                    this.theme_self += (this.theme_tableData2_length_self+this.theme_tableData3_length_self);
+                    this.table_length_sum = (this.model_tableData1_length+this.community_tableData1_length+this.theme_tableData1_length);
+                    this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                    this.model_self = (this.model_accept_unread+this.model_reject_unread);
+                    this.community_self = (this.community_accept_unread+this.community_reject_unread);
+                    this.theme_self = (this.theme_accept_unread+this.theme_reject_unread);
                     this.version_sum = this.table_length_sum + this.table_length_sum_self;
 
 
@@ -883,6 +924,14 @@ var notice = Vue.extend({
                     this.await = false;
                 }
             })
+        },
+        tableRowClassName({row, rowIndex}) {
+            if (row.readStatus === 1) {
+                return 'readed';
+            } else if (row.readStatus === 0) {
+                return 'unread';
+            }
+            return '';
         },
         view(event){
             let refLink=$(".viewBtn");
@@ -1230,7 +1279,8 @@ var notice = Vue.extend({
                         success: (json) => {
                             if (json=="ok"){
                                 this.unread = 0;
-                                $("#headBar .el-badge__content").text(this.version_sum);
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
                                 // this.timeLineColor1 = '#409EFF';
                                 console.log("success");
                             }
@@ -1238,7 +1288,241 @@ var notice = Vue.extend({
                     })
                 }
             }
-        }
+        },
+        MyEditionModelReaded(tab, event){
+            if (tab.label == "Accepted version") {
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.model_tableData2_self.length;i++){
+                    if (this.model_tableData2_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.model_tableData2_self[i].oid;
+                        object.type = this.model_tableData2_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.model_accept_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            // type:"accept",
+                            my_edition_num:this.model_accept_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.model_accept_unread = 0;
+                                this.model_self = (this.model_accept_unread+this.model_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }else if (tab.label == "Rejected version"){
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.model_tableData3_self.length;i++){
+                    if (this.model_tableData3_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.model_tableData3_self[i].oid;
+                        object.type = this.model_tableData3_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.model_reject_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            my_edition_num:this.model_reject_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.model_reject_unread = 0;
+                                this.model_self = (this.model_accept_unread+this.model_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }
+        },
+        MyEditionCommunityReaded(tab, event){
+            if (tab.label == "Accepted version") {
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.community_tableData2_self.length;i++){
+                    if (this.community_tableData2_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.community_tableData2_self[i].oid;
+                        object.type = this.community_tableData2_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.community_accept_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            // type:"accept",
+                            my_edition_num:this.community_accept_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.community_accept_unread = 0;
+                                this.community_self = (this.community_accept_unread+this.community_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }else if (tab.label == "Rejected version"){
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.community_tableData3_self.length;i++){
+                    if (this.model_tableData3_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.community_tableData3_self[i].oid;
+                        object.type = this.community_tableData3_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.community_reject_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            my_edition_num:this.community_reject_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.community_reject_unread = 0;
+                                this.community_self = (this.community_accept_unread+this.community_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }
+        },
+        MyEditionThemeReaded(tab, event){
+            if (tab.label == "Accepted version") {
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.theme_tableData2_self.length;i++){
+                    if (this.theme_tableData2_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.theme_tableData2_self[i].oid;
+                        object.type = this.theme_tableData2_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.theme_accept_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            // type:"accept",
+                            my_edition_num:this.theme_accept_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.theme_accept_unread = 0;
+                                this.theme_self = (this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }else if (tab.label == "Rejected version"){
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.theme_tableData3_self.length;i++){
+                    if (this.theme_tableData3_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.theme_tableData3_self[i].oid;
+                        object.type = this.theme_tableData3_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.theme_reject_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            my_edition_num:this.theme_reject_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json == "ok"){
+                                this.theme_reject_unread = 0;
+                                this.theme_self = (this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }
+        },
     },
     mounted(){
         this.sendcurIndexToParent();

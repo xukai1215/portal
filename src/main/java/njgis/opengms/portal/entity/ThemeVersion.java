@@ -30,6 +30,8 @@ public class ThemeVersion{
     String image;
     String modifierOid;
     String creator;
+    int readStatus;
+
     String detail;
     List<ClassInfo> classinfo;
     List<DataClassInfo> dataClassInfo;
