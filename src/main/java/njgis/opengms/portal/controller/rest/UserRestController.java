@@ -57,6 +57,21 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/changeSubscribedModelList", method = RequestMethod.GET)
+    public ModelAndView changeSubscribedModelList(@RequestParam("id") String id, HttpServletRequest request){
+
+        User user = userService.getById(id);
+        HttpSession session = request.getSession();
+        session.setMaxInactiveInterval(60*60);//设置session过期时间 为60分钟
+        session.setAttribute("oid", user.getOid());
+        session.setAttribute("uid", user.getUserName());
+        session.setAttribute("name", user.getName());
+
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/user/userSpace#/account");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/unsubscribe", method = RequestMethod.GET)
     public ModelAndView unsubscribe(@RequestParam("id") String id) {
         User user = userService.getById(id);
@@ -155,7 +170,7 @@ public class UserRestController {
         if (result != null) {
             // 密码验证成功，将用户数据放入到Session中
             HttpSession session = request.getSession();
-            //session.setMaxInactiveInterval(30*60);//设置session过期时间 为30分钟
+            session.setMaxInactiveInterval(60*60);//设置session过期时间 为60分钟
             session.setAttribute("oid", result.get("oid"));
             session.setAttribute("uid", result.get("uid"));
             session.setAttribute("name", result.get("name"));

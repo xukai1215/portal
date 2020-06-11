@@ -74,7 +74,7 @@
             </div>
             <div>
                 <img style='height:360px;margin:20px auto 25px' th:if="${model.lineChart!=null}" th:src="'cid:'+${model.lineChart}" >
-                <img style='height:360px;margin:20px auto 25px' th:if="${model.barChart!=null}" th:src="'cid:'+${model.barChart}" >
+                <img style='height:360px;margin:20px auto 15px' th:if="${model.barChart!=null}" th:src="'cid:'+${model.barChart}" >
                 <img style='height:360px;margin:5px auto 0px' th:if="${model.pieChart!=null}" th:src="'cid:'+${model.pieChart}" >
                 <img style='height:360px;margin:0 auto 25px' th:if="${model.mapChart!=null}" th:src="'cid:'+${model.mapChart}" >
             </div>
@@ -85,9 +85,14 @@
             <br/>
             <br/>
         </div>
-        <hr/>
-        <p>To unsubscribe from this notice, go to <a th:href="'https://geomodeling.njnu.edu.cn/user/unsubscribe?id='+${id}" target="_blank">Unsubscribe</a>. </p>
     </div>
+    <div style="height:220px;background-color:#2e3033;color:white;border-radius: 5px;min-width:600px;text-align: center">
+        <h2 style="margin:0;padding: 2.2em 0 0.3em;font-style: italic">Open Geographic Modeling and Simulation</h2>
+        <span>Copyright © 2013 - 2020 OpenGMS. All Rights Reserved.</span>
+        <hr style="width:600px;margin:15px auto"/>
+        <h4 style="margin:0;padding-bottom:0.3em">You can <a style="color:#0097e2;" th:href="'https://geomodeling.njnu.edu.cn/changeSubscribedModelList?id='+${id}">change subscribed model list</a>, or <a style="color:#0097e2;" th:href="'https://geomodeling.njnu.edu.cn/user/unsubscribe?id='+${id}" target="_blank">unsubscribe</a> this notice. </h4>
+    </div>
+
 
 </div>
 

@@ -15,6 +15,7 @@ public class DataItemResultDTO {
     String id;
     String oid;
     String name;
+    String status;
 
     String description;
 

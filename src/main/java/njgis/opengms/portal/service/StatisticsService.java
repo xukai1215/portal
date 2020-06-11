@@ -40,11 +40,13 @@ public class StatisticsService {
     public JSONObject getComputableModelStatisticsInfo(String oid, int days) {
         JSONObject result = new JSONObject();
         ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
-        result.put("invokeCount", computableModel.getInvokeCount());
+        List<Task> invokeTimes = taskDao.findAllByComputableId(oid);
+        result.put("invokeCount", invokeTimes.size());
         result.put("viewCount", computableModel.getViewCount());
         result.put("name", computableModel.getName());
         result.put("image", computableModel.getImage());
         result.put("oid", oid);
+        result.put("contentType", computableModel.getContentType());
 
         Calendar c = Calendar.getInstance();//动态时间
         c.setTime(new Date());

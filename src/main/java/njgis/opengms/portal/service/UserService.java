@@ -273,7 +273,7 @@ public class UserService {
 
 
                     if(!barChartHidden) {
-                        String barChartPath = ChartUtils.generateBar(chartOption);
+                        String barChartPath = ChartUtils.generateBar(chartOption, 1);
                         JSONObject ChartInfo = new JSONObject();
                         ChartInfo.put("name", "barChart" + j);
                         ChartInfo.put("path", barChartPath);
@@ -283,23 +283,6 @@ public class UserService {
                     statistics.remove("hourInvoke");
                     statistics.remove("hourView");
                     statistics.put("barChart",barChartHidden?null:"barChart" + j);
-
-                    //饼图
-//                    ChartOption pieOption = new ChartOption();
-//                    String[] pieTypes = new String[countList.size()];
-//                    int[][] ints = new int[1][countList.size()];
-//                    for (int i = 0; i < countList.size(); i++) {
-//                        pieTypes[i] = nameList.get(i);
-//                        ints[0][i] = countList.get(i);
-//                    }
-//                    pieOption.setTitle("Resource Type Statistics");
-//                    pieOption.setSubTitle("");
-//                    pieOption.setData(ints);
-//                    pieOption.setTypes(pieTypes);
-//                    pieOption.setValXis(pieTypes);
-//                    pieOption.setTitlePosition("center");
-//
-//                    String piePath = ChartUtils.generatePie(pieOption);
 
                     //地图
                     JSONArray locationsView = statistics.getJSONArray("locationsView");
@@ -322,6 +305,7 @@ public class UserService {
                         imageList.add(ChartInfo);
                     }
 
+                    //饼图
                     Boolean pieChartHidden = countries.size()<=1;
 
                     if(!pieChartHidden){
@@ -363,12 +347,12 @@ public class UserService {
 
             }else {
                 String message = "";
-                message +=
+                message +="<div style=\"font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif;\">" +
                         "        <div style=\"height:60px;background-color:#080a0e;border-radius: 5px;display: flex;align-items: center;justify-content: center;min-width:600px\">\n" +
                                 "<a class=\"header\"  href=\"https://geomodeling.njnu.edu.cn\">\n" +
                                 "            <img src=\"https://geomodeling.njnu.edu.cn/static/img/logo.png\" style=\"height: 50px;\">\n" +
                                 "    </a>" +
-                                "            <span style=\"color: white;font-size: 26px;margin:20px 0 0 20px;font-weight: bold;\">Statistics</span>\n" +
+                                "            <span style=\"color: white;font-size: 26px;margin:20px 0 0 20px;font-weight: bold;\">Review</span>\n" +
                                 "        </div>\n";
 
                 message += "<div style='width:600px; margin:auto'>";
@@ -394,11 +378,11 @@ public class UserService {
                 int rangeDay = (int) Math.ceil((now.getTime() - registerTime.getTime()) / (1000 * 3600 * 24));
                 int total = 0;
                 JSONArray imageList = new JSONArray();
-                message += "It has been " + rangeDay + " days since you register as a user of <a href='https://geomodeling.njnu.edu.cn'>OpenGMS</a>. ";
+                message += "It has been " + rangeDay + " days since you registered as a user of OpenGMS. ";
                 if (user.getModelItems() > 0 || user.getDataItems() > 0 || user.getConceptualModels() > 0 || user.getLogicalModels() > 0 ||
                         user.getComputableModels() > 0 || user.getConcepts() > 0 || user.getSpatials() > 0 || user.getTemplates() > 0 ||
                         user.getUnits() > 0 || user.getThemes() > 0) {
-                    message += "You have shared some resources about geographic model in the platform, including ";
+                    message += "You have shared some resources about geographic models in the platform, including ";
                     List<String> stringList = new ArrayList<>();
                     JSONArray items = new JSONArray();
 
@@ -481,7 +465,7 @@ public class UserService {
 
                     //柱状图
                     ChartOption chartOption = new ChartOption();
-                    chartOption.setTitle("Page View Statistics");
+                    chartOption.setTitle("Resource View Times Statistics (UTC +08:00)");
                     chartOption.setSubTitle("");
                     chartOption.setTitlePosition("center");
                     int size = 0;
@@ -500,11 +484,11 @@ public class UserService {
                     chartOption.setTypes(types);
                     chartOption.setData(data);
                     chartOption.setValXis(types);
-                    String chartPath = ChartUtils.generateBar(chartOption);
+                    String chartPath = ChartUtils.generateBar(chartOption, 2);
 
                     //折线图
                     ChartOption lineChart = new ChartOption();
-                    lineChart.setTitle("Daily page views in the last 7 days");
+                    lineChart.setTitle("Daily view times in the last 7 days (UTC +08:00)");
                     lineChart.setSubTitle("");
                     lineChart.setTitlePosition("center");
                     String[] dates = new String[7];
@@ -521,7 +505,7 @@ public class UserService {
                         viewCounts[0][i] = dailyViewCount.getCount();
                     }
 
-                    lineChart.setTypes(new String[]{"Daily page view"});
+                    lineChart.setTypes(new String[]{"Daily view times"});
                     lineChart.setData(viewCounts);
                     lineChart.setValXis(dates);
                     String lineChartPath = ChartUtils.generateLine(lineChart);
@@ -592,9 +576,14 @@ public class UserService {
                 message += "Sincerely,<br/>";
                 message += "OpenGMS Team<br/>";
                 message += "https://geomodeling.njnu.edu.cn</p>";
-                message += "<hr/>";
-                message += "<p>To unsubscribe from this notice, go to <a href=\"https://geomodeling.njnu.edu.cn/user/unsubscribe?id=" + user.getId() + "\" target=\"_blank\">Unsubscribe</a>. </p>";
+                message += "<br/>";
                 message += "</div>";
+                message += "<div style=\"height:220px;background-color:#2e3033;color:white;border-radius: 5px;min-width:600px;text-align: center\">\n" +
+                        "        <h2 style=\"margin:0;padding: 2.2em 0 0.3em;font-style: italic\">Open Geographic Modeling and Simulation</h2>\n" +
+                        "        <span>Copyright © 2013 - 2020 OpenGMS. All Rights Reserved.</span>\n" +
+                        "        <hr style=\"width:600px;margin:15px auto\"/>\n" +
+                        "        <h4 style=\"margin:0;padding-bottom:0.3em\">You can <a style=\"color:#0097e2;\" href=\"https://geomodeling.njnu.edu.cn/user/changeSubscribedModelList?id="+user.getId()+"\">change subscribed model list</a>, or <a style=\"color:#0097e2;\" href=\"https://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">unsubscribe</a> this notice. </h4>\n" +
+                        "    </div></div>";
                 commonService.sendEmailWithImg("OpenGMS Team", "921485453@qq.com", "OpenGMS Review", message, imageList);
             }
 //        }
@@ -762,7 +751,7 @@ public class UserService {
             chartOption.setTypes(types);
             chartOption.setData(barData);
             chartOption.setValXis(types);
-            String chartPath = ChartUtils.generateBar(chartOption);
+            String chartPath = ChartUtils.generateBar(chartOption, 2);
 
             //折线图
             ChartOption lineChart = new ChartOption();

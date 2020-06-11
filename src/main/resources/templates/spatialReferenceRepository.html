@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin-bottom: 40px;">
@@ -90,11 +90,11 @@
                     <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
                 </div>
 
-                <div class="modelPanel">
+                <div class="modelPanel" v-loading="pageOption.progressBar">
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(spatialReference,key) in pageOption.searchResult">
                             <div class="detail_title">
-                                <el-tooltip popper-class="fontsize-15" effect="dark" :content="spatialReference.status" placement="left">
+                                <el-tooltip popper-class="fontsize-15" effect="light" :content="spatialReference.status" placement="left">
                                     <i v-if="spatialReference.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
                                     <i v-if="spatialReference.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
                                 </el-tooltip>
@@ -131,9 +131,19 @@
                                 <br>
                             </div>
                         </div>
-
+                        <div v-if="pageOption.searchResult.length==0" class="list-item" style="
+                                font-size: 26px;
+                                font-style: italic;
+                                text-align: center;
+                                font-weight: 100;
+                                padding-top: 60px;
+                                padding-bottom: 61px;
+                            ">
+                            <span v-if="pageOption.progressBar">&nbsp;</span>
+                            <span v-if="!pageOption.progressBar">No Result</span>
+                        </div>
                     </div>
-                    <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow"
+                    <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
                                    @current-change="handlePageChange"
                                    :current-page="pageOption.currentPage"
                                    layout="total, prev, pager, next, jumper"
