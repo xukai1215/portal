@@ -2,6 +2,8 @@ package njgis.opengms.portal;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ip2location.IP2Location;
+import com.ip2location.IPResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -87,6 +90,97 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void changeAuthor(){
+        int count = 0;
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(int i=0;i<modelItemList.size();i++){
+            ModelItem modelItem = modelItemList.get(i);
+            List<AuthorInfo> authorInfoList = modelItem.getAuthorship();
+            if(authorInfoList!=null&&authorInfoList.size()>0) {
+                if (authorInfoList.get(0).getName().equals("《资源环境数学模型手册》")) {
+                    modelItem.setAuthor("yue@lreis.ac.cn");
+                    modelItemDao.save(modelItem);
+                    System.out.println(++count);
+                }
+            }
+        }
+
+//        count = 0;
+//        List<ComputableModel> computableModelList = computableModelDao.findAll();
+//        for(int i=0;i<computableModelList.size();i++){
+//            ComputableModel computableModel = computableModelList.get(i);
+//            List<AuthorInfo> authorInfoList = computableModel.getAuthorship();
+//            if(authorInfoList!=null&&authorInfoList.size()>0) {
+//                if (authorInfoList.get(0).getName().equals("《资源环境数学模型手册》")) {
+//                    computableModel.setAuthor("yue@lreis.ac.cn");
+//                    computableModelDao.save(computableModel);
+//                    System.out.println(++count);
+//                }
+//            }
+//        }
+    }
+
+    @Test
+    public void ip2location(){
+        IP2Location location = new IP2Location();
+        location.IPDatabasePath = ClassUtils.getDefaultClassLoader().getResource("static/").getPath()+"IP2LOCATION-LITE-DB5.BIN";
+        try {
+            IPResult rec = location.IPQuery("158.51.96.59");
+            if ("OK".equals(rec.getStatus())) {
+                System.out.println(rec);
+            } else if ("EMPTY_IP_ADDRESS".equals(rec.getStatus())) {
+                System.out.println("IP address cannot be blank.");
+            } else if ("INVALID_IP_ADDRESS".equals(rec.getStatus())) {
+                System.out.println("Invalid IP address.");
+            } else if ("MISSING_FILE".equals(rec.getStatus())) {
+                System.out.println("Invalid database path.");
+            } else if ("IPV6_NOT_SUPPORTED".equals(rec.getStatus())) {
+                System.out.println("This BIN does not contain IPv6 data.");
+            } else {
+                System.out.println("Unknown error." + rec.getStatus());
+            }
+            if (rec.getDelay() == true) {
+                System.out.println("The last query was delayed for 5 seconds because this is an evaluation copy.");
+            }
+            System.out.println("Java Component: " + rec.getVersion());
+        }catch (IOException e){
+            System.out.println(e.fillInStackTrace());
+        }
+    }
+
+    @Test
+    public void userItemCount(){
+        List<User> userList = userDao.findAll();
+        for(int i=0;i<userList.size();i++){
+            User user = userList.get(i);
+            List<Item> modelItemList = modelItemDao.findAllByAuthor(user.getUserName());
+            List<Item> dataItemList = dataItemDao.findAllByAuthor(user.getOid());
+            List<Item> conceptualModelList = conceptualModelDao.findAllByAuthor(user.getUserName());
+            List<Item> logicalModelList = logicalModelDao.findByAuthor(user.getUserName());
+            List<Item> computableModelList = computableModelDao.findAllByAuthor(user.getUserName());
+            List<Item> conceptList = conceptDao.findByAuthor(user.getUserName());
+            List<Item> spatialReferenceList = spatialReferenceDao.findByAuthor(user.getUserName());
+            List<Item> unitList = unitDao.findByAuthor(user.getUserName());
+            List<Item> templateList = templateDao.findByAuthor(user.getUserName());
+            List<Theme> themeList = themeDao.findByAuthor(user.getUserName());
+
+            user.setModelItems(modelItemList.size());
+            user.setDataItems(dataItemList.size());
+            user.setConceptualModels(conceptualModelList.size());
+            user.setLogicalModels(logicalModelList.size());
+            user.setComputableModels(computableModelList.size());
+            user.setConcepts(conceptList.size());
+            user.setSpatials(spatialReferenceList.size());
+            user.setUnits(unitList.size());
+            user.setTemplates(templateList.size());
+            user.setThemes(themeList.size());
+
+            userDao.save(user);
+
+        }
+    }
 
     @Test
     public void Emap(){
@@ -658,16 +752,6 @@ public class PortalApplicationTests {
     }
 
     @Test
-    public void setPublic(){
-        List<ModelItem> modelItemList = modelItemDao.findAll();
-        for(int i=0;i<modelItemList.size();i++){
-            ModelItem modelItem = modelItemList.get(i);
-            modelItem.setStatus("Public");
-            modelItemDao.save(modelItem);
-        }
-    }
-
-    @Test
     public void GenerateSitemapUser() {
         try {
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -1029,7 +1113,7 @@ public class PortalApplicationTests {
     }
 
     @Test
-    public void setViewCount(){
+    public void setPublic(){
         List<ModelItem> modelItemList=modelItemDao.findAll();
         for(ModelItem modelItem:modelItemList){
             modelItem.setStatus("Public");

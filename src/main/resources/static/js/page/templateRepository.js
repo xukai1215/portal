@@ -112,7 +112,7 @@ new Vue({
             this.getModels();
         },
         handleCurrentChange(data, checked, indeterminate) {
-            this.pageOption.searchResult=[];
+            // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
             this.currentClass=data.label;
@@ -133,7 +133,7 @@ new Vue({
             }
         },
         handleCheckChange(data, checked, indeterminate) {
-            this.pageOption.searchResult=[];
+            // this.pageOption.searchResult=[];
             this.pageOption.paginationShow=false;
             let checkedNodes = this.$refs.tree2.getCheckedNodes()
             let classes = [];

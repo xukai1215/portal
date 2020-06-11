@@ -36,7 +36,7 @@
                 <div class="el-col-lg-12 text-center" style="display: inline-block;border-right: 1px solid #aaa">
 
                     <h3>Computable Model</h3>
-                    <a th:href="'/computableModel/'+${statistics.oid}">
+                    <a th:href="'/computableModel/'+${statistics.oid}" target="_blank">
                         <h3 th:text="${statistics.name}"></h3>
                     </a>
 
@@ -75,11 +75,11 @@
                     </el-select>
                 </div>
                 <div id="chartPanel" style="margin-top:50px;">
-                    <div id="chart_left" style="width:45%;height: 700px;display: inline-block">
+                    <div id="chart_left" style="width:50%;height: 700px;display: inline-block">
                         <div id="chart_leftTop" style="height:350px"></div>
                         <div id="chart_leftBottom" style="height:350px"></div>
                     </div>
-                    <div id="chart_right" style="width:54%;height: 700px;display: inline-block"></div>
+                    <div id="chart_right" style="width:49%;height: 700px;display: inline-block"></div>
                 </div>
 
             </div>
@@ -357,7 +357,7 @@
             barChartCreate() {
 
                 let valueList = [
-                    ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]
+                    ["Time","00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]
                 ];
 
                 valueList.push(this.stats.hourView);
@@ -396,7 +396,7 @@
                         source: valueList,
                     },
                     grid: [
-                        {x: '10%', y: '7%', width: '85%', height: '77%'},
+                        {x: '7%', y: '7%', width: '85%', height: '77%'},
                     ],
                     series: [
                         {type: 'bar',seriesLayoutBy: 'row'},
@@ -411,6 +411,13 @@
             },
         },
         mounted() {
+
+            if(this.stats.contentType!="Package"){
+                this.visitorType= [{
+                    value: 1,
+                    label: 'Viewer'
+                }]
+            }
 
             this.stats.hourInvoke.unshift("Invoke Times");
             this.stats.hourView.unshift("View Times");

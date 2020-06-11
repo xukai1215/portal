@@ -48,6 +48,10 @@ var modelItem = Vue.extend({
             this.$emit('com-edit',index,oid)
         },
 
+        statistics(oid){
+            window.open("/statistics/computableModel/"+oid)
+        },
+
         comDeleteItem(index,oid){
             this.$emit('com-delete',index,oid)
         },

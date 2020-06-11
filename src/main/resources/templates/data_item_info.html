@@ -58,11 +58,11 @@
         <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title" th:object="${datainfo}">
-                    <!--<el-tooltip popper-class="fontsize-15" effect="dark" placement="left">-->
-                    <i th:if="${datainfo.data.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
-                    <i th:if="${datainfo.data.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
-                    <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
-                    <!--</el-tooltip>-->
+                    <el-tooltip popper-class="fontsize-15" th:content="${datainfo.data.status}" effect="light" placement="left">
+                        <i th:if="${datainfo.data.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
+                        <i th:if="${datainfo.data.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
+                        <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
+                    </el-tooltip>
                     <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>
                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'></a>-->
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->

@@ -13,6 +13,7 @@ import com.github.abel533.echarts.series.EMap;
 import com.github.abel533.echarts.series.Line;
 import com.github.abel533.echarts.series.Pie;
 import com.github.abel533.echarts.style.ItemStyle;
+import com.github.abel533.echarts.style.itemstyle.Normal;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.utils.Object.ChartOption;
@@ -96,7 +97,7 @@ public class ChartUtils {
      * 柱状图
      *
      */
-    public static String generateBar(ChartOption chartOption) {
+    public static String generateBar(ChartOption chartOption, int barType) {
         String[] types = chartOption.getTypes();//{ "广州", "深圳", "珠海", "汕头", "韶关", "佛山" };
         int[][] datas = chartOption.getData();//{ 6030, 7800, 5200, 3444, 2666, 5708 };
         String[] colors = { "#ff7c7c", "#feb64d", "#5bc49f", "#32d3eb", "#60acfc"};
@@ -113,41 +114,47 @@ public class ChartUtils {
                 Tool.saveAsImage);// 保存为图片
 
         option.tooltip().show(true).formatter("{a} <br/>{b} : {c}");//显示工具提示,设置提示格式
-        option.grid().height("75%").width("96%").x("2%");
+        option.grid().height("75%").width("96%").x("2%").y("8%");
         option.legend().data(types).textStyle().fontSize(20);// 图例
 
-//        Bar bar = new Bar(title);// 图类别(柱状图)
-//        bar.barWidth(100);
+
         CategoryAxis category = new CategoryAxis();// 轴分类
         category.data(chartOption.getValXis());// 轴数据类别
         category.setBoundaryGap(true);
         category.axisLabel().setInterval(0);
-        // 循环数据
-        for (int i = 0; i < datas.length; i++) {
-            Bar bar = new Bar();
-            String type = types[i];
-            bar.name(type);//.stack("总量");
-            for (int j = 0; j < datas[0].length; j++)
-                bar.data(datas[i][j]);
-            option.series().add(bar);
 
-//            for (int j = 0; j < datas[0].length; j++) {
-//                int data = datas[i][j];
-//                String color = colors[i];
-//                // 类目对应的柱状图
-//                Map<String, Object> map = new HashMap<String, Object>(2);
-//                map.put("value", data);
-//                map.put("itemStyle", new ItemStyle().normal(new Normal().color(color)));
-//                bar.data(map);
-//            }
+        if(barType == 1) {
+            // 循环数据
+            for (int i = 0; i < datas.length; i++) {
+                Bar bar = new Bar();
+                String type = types[i];
+                bar.name(type);//.stack("总量");
+                for (int j = 0; j < datas[0].length; j++)
+                    bar.data(datas[i][j]);
+                option.series().add(bar);
+
+            }
+        }else {
+
+            // 循环数据
+            Bar bar = new Bar(title);// 图类别(柱状图)
+            bar.barWidth(100);
+            for (int i = 0; i < types.length; i++) {
+                int data = datas[0][i];
+                String color = colors[i];
+                // 类目对应的柱状图
+                Map<String, Object> map = new HashMap<String, Object>(2);
+                map.put("value", data);
+                map.put("itemStyle", new ItemStyle().normal(new Normal().color(color)));
+                bar.data(map);
+            }
+            option.series(bar);
         }
 
 
         option.xAxis(category);// x轴
         option.yAxis(new ValueAxis());// y轴
 
-
-//        option.series(bar);
 
         return generateEChart(new Gson().toJson(option));
     }
@@ -169,7 +176,7 @@ public class ChartUtils {
         option.tooltip().trigger(Trigger.axis);// 在轴上触发提示数据
         // 工具栏
 //        option.toolbox().show(true).feature(Tool.saveAsImage);// 显示保存为图片
-        option.grid().height("75%").width("95%").x("2.5%");
+        option.grid().height("75%").width("95%").x("2.5%").y("8%");
         option.legend().data(types).textStyle().fontSize(20);// 图例
 
         CategoryAxis category = new CategoryAxis();// 轴分类
@@ -208,7 +215,6 @@ public class ChartUtils {
         option.title().text("Locations of Viewers and Invokes").x("center").y("90%").textStyle().fontSize(30);
         option.dataRange().show(true).y(300).calculable(true).min(0).max(20).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList("High","Low"));
 //        option.legend().show(true);
-        option.grid().y(0);
 
         EMap eMap = new EMap();
 //        eMap.setName("Viewers' Location");
