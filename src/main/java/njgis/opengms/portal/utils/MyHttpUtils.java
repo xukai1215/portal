@@ -11,6 +11,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -192,6 +193,39 @@ public class MyHttpUtils {
             body = EntityUtils.toString(entityOut, encode);
         }
         EntityUtils.consume(entityOut);
+        //释放链接
+        response.close();
+        client.close();
+        return body;
+    }
+
+    public static String DELETE(String url, String encode, Map<String, String> headers, String ...m)throws IOException{
+        String body = "";
+        CloseableHttpClient client = checkAuth(m);
+        if (client == null){
+            return "Input Auth parameter error";
+        }
+        HttpDelete httpDelete = new HttpDelete(url);
+
+        //设置连接超时时间
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
+        httpDelete.setConfig(requestConfig);
+
+        //设置header
+        if (headers != null && headers.size() > 0){
+            for (Map.Entry<String, String> entry : headers.entrySet()){
+                httpDelete.setHeader(entry.getKey(), entry.getValue());
+            }
+        }
+
+        CloseableHttpResponse response = client.execute(httpDelete);
+        HttpEntity entity = response.getEntity();
+
+        if(entity != null){
+            body = EntityUtils.toString(entity, encode);
+        }
+        EntityUtils.consume(entity);
+
         //释放链接
         response.close();
         client.close();

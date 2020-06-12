@@ -87,10 +87,10 @@
                             <i class="glyphicon glyphicon-download"></i><span
                                   style="font-size: 15px">Paste</span>
                           </button>
-                          <button class="dwload btn btn-secondary btn-round"
-                                  @click="allFileShareAsDataItem()">
-                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Share as Data Item</span>
-                          </button>
+<!--                          <button class="dwload btn btn-secondary btn-round"-->
+<!--                                  @click="allFileShareAsDataItem()">-->
+<!--                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Share as Data Item</span>-->
+<!--                          </button>-->
                           <button class="dwload btn btn-danger btn-round" v-if="downloadDataSet.length>0"
                                   @click="deleteAll()">
                             <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
@@ -479,12 +479,12 @@
 
         <div class="uploaded" v-loading="uploadLoading">
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;font-size: 1.4rem">Name :</label>
+            <label style="margin-right:5px;">Name :</label>
             <el-input v-model="uploadName" placeholder="Dataset name"></el-input>
           </div>
 
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;font-size: 1.4rem">Data template :</label>
+            <label style="margin-right:5px;">Data template :</label>
             <el-select
                     v-model="selectValue"
                     filterable
@@ -503,7 +503,7 @@
           </div>
 
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;font-size: 1.4rem">Storage path :</label>
+            <label style="margin-right:5px;">Storage path :</label>
             <el-button type="primary" plain size="mini" @click="selectFolder"
                        v-if="selectedPath.length==0&&uploadInPath==0">Select Folder
             </el-button>
@@ -522,7 +522,7 @@
             <!--                                                    </el-button>-->
           </div>
           <div class="form-group flexColContainer" style="margin-bottom: -15px">
-            <label style="margin-right:5px;font-size: 1.4rem">Upload files :</label>
+            <label style="margin-right:5px;">Upload files :</label>
             <el-button size="mini" @click="selectFile()">Select File</el-button>
           </div>
           <el-upload

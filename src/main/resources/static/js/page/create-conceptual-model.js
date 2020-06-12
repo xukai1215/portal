@@ -706,9 +706,6 @@ var createConceptualModel = Vue.extend({
                     // $("#descInput").val(basicInfo.description)
 
 
-
-
-
                 }
             })
 

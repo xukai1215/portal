@@ -195,7 +195,25 @@ public class DispatchingRequestController {
         return ResultUtils.success(responseEntity.getBody().getJSONObject("data"));
     }
 
+    @RequestMapping (value="/delete",method = RequestMethod.DELETE)
+    JsonResult deleteFile(@RequestParam("uid") String uid){
+        String url="http://"+ dataContainerIpAndPort +"/del"+"?uid="+uid;
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String,String> a=new HashMap<>();
 
+        MyHttpUtils myHttpUtils = new MyHttpUtils();
+        String delete = null;
+        try{
+            delete = myHttpUtils.DELETE(url, "UTF-8", a);
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResultUtils.error(-1,"delete failed");
+        }
+
+        return ResultUtils.error(-1,delete);
+
+
+    }
 
 
     @RequestMapping (value="/download",method = RequestMethod.GET)
