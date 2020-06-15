@@ -480,7 +480,7 @@ new Vue({
         handleCurrentChange(data, checked, indeterminate) {
             this.switchInit();
             this.setUrl("/modelItem/repository?category="+data.oid);
-            this.pageOption.searchResult=[];
+            // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
             this.currentClass=data.label;
@@ -503,7 +503,7 @@ new Vue({
         },
         handleCheckChange(data, checked, indeterminate) {
             this.switchInit();
-            this.pageOption.searchResult=[];
+            // this.pageOption.searchResult=[];
             this.pageOption.paginationShow=false;
             let checkedNodes = this.$refs.tree2.getCheckedNodes()
             let classes = [];

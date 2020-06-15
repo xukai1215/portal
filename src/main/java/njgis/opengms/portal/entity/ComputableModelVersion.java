@@ -31,6 +31,7 @@ public class ComputableModelVersion {
     String status;
     String detail;
     String creator;
+    int readStatus;
 
     Boolean isAuthor;
     AuthorInfo realAuthor;

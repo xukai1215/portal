@@ -84,6 +84,9 @@ public class VersionRestController {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    ThemeVersionDao themeVersionDao;
+
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public ModelAndView getRegister() {
         System.out.println("versionCheck");
@@ -391,6 +394,7 @@ public class VersionRestController {
             modelItemDao.save(modelItem);
 
             modelItemVersion.setStatus(1);//
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setAcceptTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
@@ -442,6 +446,7 @@ public class VersionRestController {
             conceptualModelDao.save(conceptualModel);
 
             conceptualModelVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptualModelVersion.setAcceptTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
@@ -493,6 +498,7 @@ public class VersionRestController {
             logicalModelDao.save(logicalModel);
 
             logicalModelVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             logicalModelVersion.setAcceptTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
@@ -544,6 +550,7 @@ public class VersionRestController {
             computableModelDao.save(computableModel);
 
             computableModelVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             computableModelVersion.setAcceptTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
@@ -595,6 +602,7 @@ public class VersionRestController {
             conceptDao.save(concept);
 
             conceptVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptVersion.setAcceptTime(curDate);
             conceptVersionDao.save(conceptVersion);
@@ -646,6 +654,7 @@ public class VersionRestController {
             templateDao.save(template);
 
             templateVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             templateVersion.setAcceptTime(curDate);
             templateVersionDao.save(templateVersion);
@@ -697,6 +706,7 @@ public class VersionRestController {
             spatialReferenceDao.save(spatialReference);
 
             spatialReferenceVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             spatialReferenceVersion.setAcceptTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
@@ -748,6 +758,7 @@ public class VersionRestController {
             unitDao.save(unit);
 
             unitVersion.setVerStatus(1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             unitVersion.setAcceptTime(curDate);
             unitVersionDao.save(unitVersion);
@@ -766,6 +777,7 @@ public class VersionRestController {
             authorUserName = modelItem.getAuthor();
             ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(versionDTO.getOid());
             modelItemVersion.setStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setRejectTime(curDate);
             modelItemVersionDao.save(modelItemVersion);
@@ -776,6 +788,7 @@ public class VersionRestController {
             authorUserName = conceptualModel.getAuthor();
             ConceptualModelVersion conceptualModelVersion = conceptualModelVersionDao.findFirstByOid(versionDTO.getOid());
             conceptualModelVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptualModelVersion.setRejectTime(curDate);
             conceptualModelVersionDao.save(conceptualModelVersion);
@@ -786,6 +799,7 @@ public class VersionRestController {
             authorUserName = logicalModel.getAuthor();
             LogicalModelVersion logicalModelVersion = logicalModelVersionDao.findFirstByOid(versionDTO.getOid());
             logicalModelVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             logicalModelVersion.setRejectTime(curDate);
             logicalModelVersionDao.save(logicalModelVersion);
@@ -796,6 +810,7 @@ public class VersionRestController {
             authorUserName = computableModel.getAuthor();
             ComputableModelVersion computableModelVersion = computableModelVersionDao.findFirstByOid(versionDTO.getOid());
             computableModelVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             computableModelVersion.setRejectTime(curDate);
             computableModelVersionDao.save(computableModelVersion);
@@ -806,6 +821,7 @@ public class VersionRestController {
             authorUserName = concept.getAuthor();
             ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(versionDTO.getOid());
             conceptVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             conceptVersion.setRejectTime(curDate);
             conceptVersionDao.save(conceptVersion);
@@ -816,6 +832,7 @@ public class VersionRestController {
             authorUserName = template.getAuthor();
             TemplateVersion templateVersion = templateVersionDao.findFirstByOid(versionDTO.getOid());
             templateVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             templateVersion.setRejectTime(curDate);
             templateVersionDao.save(templateVersion);
@@ -826,6 +843,7 @@ public class VersionRestController {
             authorUserName = spatialReference.getAuthor();
             SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(versionDTO.getOid());
             spatialReferenceVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             spatialReferenceVersion.setRejectTime(curDate);
             spatialReferenceVersionDao.save(spatialReferenceVersion);
@@ -836,6 +854,7 @@ public class VersionRestController {
             authorUserName = unit.getAuthor();
             UnitVersion unitVersion = unitVersionDao.findFirstByOid(versionDTO.getOid());
             unitVersion.setVerStatus(-1);
+            userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             unitVersion.setRejectTime(curDate);
             unitVersionDao.save(unitVersion);
@@ -1472,4 +1491,73 @@ public class VersionRestController {
         return versionService.getUnitHistoryPage(id);
     }
 
+    @RequestMapping(value = "/MyEditionReaded",method = RequestMethod.POST)
+    public String MyEditionReaded(HttpServletRequest request,@RequestBody MyEdition myEditions){
+        //消息数减去已读数
+        int my_edition_num = myEditions.getMy_edition_num();
+        HttpSession session = request.getSession();
+        String userName = session.getAttribute("uid").toString();
+        userService.myEditionNumMinus(userName,my_edition_num);//先测试，稳定了解开
+
+        //将未读的readStatus置为1，标为已读
+        for (int i=0;i<myEditions.getOids().size();i++){
+            switch (myEditions.getOids().get(i).getType()){
+                case "modelItem":{
+                    ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    modelItemVersion.setReadStatus(1);
+                    modelItemVersionDao.save(modelItemVersion);
+                    break;
+                }
+                case "conceptualModel":{
+                    ConceptualModelVersion conceptualModelVersion = conceptualModelVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    conceptualModelVersion.setReadStatus(1);
+                    conceptualModelVersionDao.save(conceptualModelVersion);
+                    break;
+                }
+                case "logicalModel":{
+                    LogicalModelVersion logicalModelVersion = logicalModelVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    logicalModelVersion.setReadStatus(1);
+                    logicalModelVersionDao.save(logicalModelVersion);
+                    break;
+                }
+                case "computableModel":{
+                    ComputableModelVersion computableModelVersion = computableModelVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    computableModelVersion.setReadStatus(1);
+                    computableModelVersionDao.save(computableModelVersion);
+                    break;
+                }
+                case "concept":{
+                    ConceptVersion conceptVersion = conceptVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    conceptVersion.setReadStatus(1);
+                    conceptVersionDao.save(conceptVersion);
+                    break;
+                }
+                case "spatialReference":{
+                    SpatialReferenceVersion spatialReferenceVersion = spatialReferenceVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    spatialReferenceVersion.setReadStatus(1);
+                    spatialReferenceVersionDao.save(spatialReferenceVersion);
+                    break;
+                }
+                case "unit":{
+                    UnitVersion unitVersion = unitVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    unitVersion.setReadStatus(1);
+                    unitVersionDao.save(unitVersion);
+                    break;
+                }
+                case "template":{
+                    TemplateVersion templateVersion = templateVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    templateVersion.setReadStatus(1);
+                    templateVersionDao.save(templateVersion);
+                    break;
+                }
+                case "theme":{
+                    ThemeVersion themeVersion = themeVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    themeVersion.setReadStatus(1);
+                    themeVersionDao.save(themeVersion);
+                    break;
+                }
+            }
+        }
+        return "ok";
+    }
 }

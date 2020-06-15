@@ -237,7 +237,7 @@
                             <div  class="content-body">
                                 <div class="list-item" v-for="(item,index) in list" :key="index">
                                     <div class="detail_title">
-                                        <el-tooltip popper-class="fontsize-15" effect="dark" :content="item.status" placement="left">
+                                        <el-tooltip popper-class="fontsize-15" effect="light" :content="item.status" placement="left">
                                             <i v-if="item.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
                                             <i v-if="item.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
                                         </el-tooltip>

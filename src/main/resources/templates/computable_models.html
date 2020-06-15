@@ -36,29 +36,29 @@
                 <hr>
             </el-row>
 
-            <el-col :span="8" style="margin-top:29px;">
-                <el-card class="box-card" style="margin-right:20px">
-                    <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Classification</span>
-                    </div>
-                    <el-tree
-                            ref="tree"
-                            :data="treeData"
-                            show-checkbox
-                            node-key="id"
-                            :default-expanded-keys="[1, 2, 3]"
-                            @check-change="handleCheckChange"
-                            :props="defaultProps">
-                    </el-tree>
-                </el-card>
-            </el-col>
+            <!--<el-col :span="8" style="margin-top:29px;">-->
+                <!--<el-card class="box-card" style="margin-right:20px">-->
+                    <!--<div slot="header" class="clearfix text-center">-->
+                        <!--<span style="font-size: 20px;color:#444">Classification</span>-->
+                    <!--</div>-->
+                    <!--<el-tree-->
+                            <!--ref="tree"-->
+                            <!--:data="treeData"-->
+                            <!--show-checkbox-->
+                            <!--node-key="id"-->
+                            <!--:default-expanded-keys="[1, 2, 3]"-->
+                            <!--@check-change="handleCheckChange"-->
+                            <!--:props="defaultProps">-->
+                    <!--</el-tree>-->
+                <!--</el-card>-->
+            <!--</el-col>-->
 
-            <el-col :span="16">
+            <el-col :span="24">
                 <div class="searcherPanel">
                     <div class="searcherInputPanel" @keydown.enter="search()">
                         <input id="searchBox" type="text" placeholder="Computabel Model Name..." v-model="searchText">
                         <button @click="search()">Search</button>
-                        <a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x" aria-hidden="true"></a>
+                        <a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x hidden" aria-hidden="true"></a>
                     </div>
                 </div>
 
@@ -184,7 +184,7 @@
 
 
                                     <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.viewCount}}
-                                    <a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.thumbsUpCount}}
+                                    <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.thumbsUpCount}}-->
                                 </div>
                                 <br>
                             </div>

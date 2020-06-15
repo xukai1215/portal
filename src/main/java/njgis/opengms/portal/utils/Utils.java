@@ -1,10 +1,9 @@
 package njgis.opengms.portal.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.model.CityResponse;
+import com.ip2location.IP2Location;
+import com.ip2location.IPResult;
 import njgis.opengms.portal.entity.support.GeoInfoMeta;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -12,7 +11,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.MappedByteBuffer;
@@ -47,57 +45,58 @@ public class Utils {
     }
 
     public static GeoInfoMeta getGeoInfoMeta(String host) throws Exception {
-        String filePath = "/static/GeoLite2-City.mmdb";
-        DatabaseReader reader;
-        GeoInfoMeta geoInfoMeat = new GeoInfoMeta();
+        IP2Location location = new IP2Location();
+        location.IPDatabasePath = ClassUtils.getDefaultClassLoader().getResource("static/").getPath()+"IP2LOCATION-LITE-DB5.BIN";
+        GeoInfoMeta geoInfoMeta = new GeoInfoMeta();
         try {
-            File file = new ClassPathResource(filePath).getFile();
-            reader = new DatabaseReader.Builder(file).build();
-            InetAddress address = InetAddress.getByName(host);
-            CityResponse city = reader.city(address);
-            JSONObject res = JSON.parseObject(city.toJson());
+            IPResult rec = location.IPQuery(host);
+            if ("OK".equals(rec.getStatus())) {
+                if(!rec.getCountryLong().equals("-")) {
+                    geoInfoMeta.setCity(rec.getCity());
+                    geoInfoMeta.setRegion(rec.getRegion());
+                    geoInfoMeta.setCountryCode(rec.getCountryShort());
+                    String countryName = rec.getCountryLong();
+                    if (countryName.equals("United States of America")) {
+                        countryName="United States";
+                    }
+                    geoInfoMeta.setCountryName(countryName);
+                    geoInfoMeta.setLatitude(String.valueOf(rec.getLatitude()));
+                    geoInfoMeta.setLongitude(String.valueOf(rec.getLongitude()));
+                }else{
+                    geoInfoMeta.setCity("Nanjing");
+                    geoInfoMeta.setRegion("Jiangsu");
+                    geoInfoMeta.setCountryCode("CN");
+                    geoInfoMeta.setCountryName("China");
+                    geoInfoMeta.setLatitude("32.0617");
+                    geoInfoMeta.setLongitude("118.7778");
 
-            geoInfoMeat.setCity(res.getJSONObject("city").getJSONObject("names").getString("en"));
-            geoInfoMeat.setRegion(res.getJSONArray("subdivisions").getJSONObject(0).getJSONObject("names").getString("en"));
-            geoInfoMeat.setCountryCode(res.getJSONObject("country").getString("iso_code"));
-            geoInfoMeat.setCountryName(res.getJSONObject("country").getJSONObject("names").getString("en"));
-            geoInfoMeat.setLatitude(res.getJSONObject("location").getFloat("latitude").toString());
-            geoInfoMeat.setLongitude(res.getJSONObject("location").getFloat("longitude").toString());
-
-        } catch (Exception e) {
-//            log.error("Plan 1 failed: " + e.getMessage(), e);
-
-//            String url = "http://ip-api.com/json/" + host;
-//            String result = MyHttpUtils.GET(url, "UTF-8", null);
-//            JSONObject res = JSONObject.parseObject(result);
-//            //judge
-//            if (res.getString("status").equals("fail")) {
-//                //后面移除该部分，说明该要注册的任务服务器不是公网服务器，直接抛出错误
-//                geoInfoMeat.setCity("Nanjing");
-//                geoInfoMeat.setRegion("Jiangsu");
-//                geoInfoMeat.setCountryCode("CN");
-//                geoInfoMeat.setCountryName("China");
-//                geoInfoMeat.setLatitude("32.0617");
-//                geoInfoMeat.setLongitude("118.7778");
-//            } else {
-//                geoInfoMeat.setCity(res.getString("city").replace(" ", "_"));
-//                geoInfoMeat.setRegion(res.getString("region"));
-//                geoInfoMeat.setCountryCode(res.getString("countryCode"));
-//                geoInfoMeat.setCountryName(res.getString("country"));
-//                geoInfoMeat.setLatitude(res.getString("lat"));
-//                geoInfoMeat.setLongitude(res.getString("lon"));
+                }
+            } else if ("EMPTY_IP_ADDRESS".equals(rec.getStatus())) {
+                System.out.println("IP address cannot be blank.");
+            } else if ("INVALID_IP_ADDRESS".equals(rec.getStatus())) {
+                System.out.println("Invalid IP address.");
+            } else if ("MISSING_FILE".equals(rec.getStatus())) {
+                System.out.println("Invalid database path.");
+            } else if ("IPV6_NOT_SUPPORTED".equals(rec.getStatus())) {
+                System.out.println("This BIN does not contain IPv6 data.");
+            } else {
+                System.out.println("Unknown error." + rec.getStatus());
+            }
+//            if (rec.getDelay() == true) {
+//                System.out.println("The last query was delayed for 5 seconds because this is an evaluation copy.");
 //            }
-
-            geoInfoMeat.setCity("Nanjing");
-            geoInfoMeat.setRegion("Jiangsu");
-            geoInfoMeat.setCountryCode("CN");
-            geoInfoMeat.setCountryName("China");
-            geoInfoMeat.setLatitude("32.0617");
-            geoInfoMeat.setLongitude("118.7778");
-
+//            System.out.println("Java Component: " + rec.getVersion());
+        }catch (Exception e){
+            System.out.println(e.fillInStackTrace());
+            geoInfoMeta.setCity("Nanjing");
+            geoInfoMeta.setRegion("Jiangsu");
+            geoInfoMeta.setCountryCode("CN");
+            geoInfoMeta.setCountryName("China");
+            geoInfoMeta.setLatitude("32.0617");
+            geoInfoMeta.setLongitude("118.7778");
         }
 
-        return geoInfoMeat;
+        return geoInfoMeta;
     }
 
 

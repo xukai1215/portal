@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.*;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelSimpleDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
@@ -15,9 +16,15 @@ import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -78,6 +85,12 @@ public class UserService {
     @Autowired
     CommonService commonService;
 
+    @Autowired
+    StatisticsService statisticsService;
+
+    @Autowired
+    TemplateEngine templateEngine;
+
     //远程数据容器地址
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
@@ -95,6 +108,31 @@ public class UserService {
     public void setSubscribe(String oid, Boolean subscribe){
         User user = getByOid(oid);
         user.setSubscribe(subscribe);
+        userDao.save(user);
+    }
+
+    public JSONArray getSubscribedList(String oid){
+        User user = getByOid(oid);
+        List<SubscribeItem> subscribeItemList = user.getSubscribeItemList();
+        JSONArray array = new JSONArray();
+        for(int i=0;i<subscribeItemList.size();i++){
+            ComputableModel computableModel = computableModelDao.findFirstByOid(subscribeItemList.get(i).getOid());
+
+            JSONObject subscribe = new JSONObject();
+            subscribe.put("name", computableModel.getName());
+            subscribe.put("type", computableModel.getContentType());
+            subscribe.put("oid", computableModel.getOid());
+
+            array.add(subscribe);
+        }
+
+        return array;
+
+    }
+
+    public void setSubscribedList(String oid, List<SubscribeItem> subscribeItemList){
+        User user = getByOid(oid);
+        user.setSubscribeItemList(subscribeItemList);
         userDao.save(user);
     }
 
@@ -145,195 +183,429 @@ public class UserService {
 
     public void sendEmail(){
 
-        sendEmailToAuthor();
+//        sendEmailToAuthor();
         sendEmailToUser();
 
     }
     public void sendEmailToUser(){
         List<User> userList = userDao.findAll();
-        for(int u=0;u<userList.size();u++) {
+//        for(int u=0;u<userList.size();u++) {
 
-            User user = userList.get(u);//userDao.findFirstByOid("24");
-            if(!user.getSubscribe()){
-                continue;
-            }
-            String message = "<p style='font-family: sans-serif;'>Dear ";
-            message += user.getName() + ":<br/><br/>";
-            Date now = new Date();
-            Date registerTime = user.getCreateTime();
-            int rangeDay = (int) Math.ceil((now.getTime() - registerTime.getTime()) / (1000 * 3600 * 24));
-            int total = 0;
-            JSONArray imageList = new JSONArray();
-            message += "It has been " + rangeDay + " days since you register as a member of <a href='https://geomodeling.njnu.edu.cn'>OpenGMS</a>. ";
-            if (user.getModelItems() > 0 || user.getDataItems() > 0 || user.getConceptualModels() > 0 || user.getLogicalModels() > 0 ||
-                    user.getComputableModels() > 0 || user.getConcepts() > 0 || user.getSpatials() > 0 || user.getTemplates() > 0 ||
-                    user.getUnits() > 0 || user.getThemes() > 0) {
-                message += "You have shared some resources about geographic model in the platform, including ";
-                List<String> stringList = new ArrayList<>();
-                JSONArray items = new JSONArray();
+            User user = userDao.findFirstByOid("24");
+//            if(!user.getSubscribe()){
+//                continue;
+//            }
+            if(user.getSubscribeItemList().size()>0){
+                Context ctx = new Context();
+                ctx.setVariable("name",user.getName());
+                ctx.setVariable("id",user.getId());
 
-                List<DailyViewCount> sevenDayViewCountList = new ArrayList<>();
-                Calendar calendar = Calendar.getInstance();
-                for (int i = -6; i <= 0; i++) {
-                    calendar.setTime(now);
-                    calendar.add(Calendar.DATE, i);
-                    DailyViewCount dailyViewCount = new DailyViewCount(calendar.getTime(), 0);
-                    sevenDayViewCountList.add(dailyViewCount);
-                }
+                JSONArray imageList = new JSONArray();
 
+                JSONArray result = new JSONArray();
+                List<SubscribeItem> subscribeItemList = user.getSubscribeItemList();
+                for(int j=0;j<subscribeItemList.size();j++) {
+                    SubscribeItem subscribeItem = subscribeItemList.get(j);
+                    JSONObject statistics = statisticsService.getComputableModelStatisticsInfo(subscribeItem.getOid(), 30);
+                    JSONObject dayViewAndInvoke = statistics.getJSONObject("dayViewAndInvoke");
+                    JSONArray valueList = dayViewAndInvoke.getJSONArray("valueList");
 
-                List<Integer> countList = new ArrayList<>();
-                List<String> nameList = new ArrayList<>();
+                    //折线图
+                    Boolean lineChartHidden = true;
 
-                addItem(countList, nameList, sevenDayViewCountList, user.getModelItems(), "model item", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getConceptualModels(), "conceptual model", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getLogicalModels(), "logical model", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getComputableModels(), "computable model", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getDataItems(), "data item", user.getOid(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getConcepts(), "concept", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getSpatials(), "spatial reference", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getTemplates(), "data template", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getUnits(), "unit & metric", user.getUserName(), stringList, items);
-                addItem(countList, nameList, sevenDayViewCountList, user.getThemes(), "theme", user.getUserName(), stringList, items);
-                for (int i = 0; i < stringList.size(); i++) {
-                    message += stringList.get(i);
-                    if (i < stringList.size() - 2) {
-                        message += ", ";
-                    } else if (i == stringList.size() - 2) {
-                        message += " and ";
-                    } else {
-                        message += ". ";
-                    }
-                }
-                message += "Thank you for your contribution to geographic modeling and simulation!<br/><br/>";
+                    JSONArray date_jarray = valueList.getJSONArray(0);
+                    JSONArray data1 = valueList.getJSONArray(1);
+                    JSONArray data2 = valueList.getJSONArray(2);
 
+                    String[] dates = new String[date_jarray.size()-1];
+                    int[][] counts = new int[2][dates.length];
 
-                for (int i = 0; i < items.size(); i++) {
-                    for (int j = 0; j < items.size() - 1 - i; j++) {
-                        JSONObject item = new JSONObject();
-                        JSONObject item1 = new JSONObject();
-
-                        item.put("name", items.getJSONObject(j).getString("name"));
-                        item.put("view count", items.getJSONObject(j).getString("view count"));
-                        item.put("type", items.getJSONObject(j).getString("type"));
-
-                        item1.put("name", items.getJSONObject(j + 1).getString("name"));
-                        item1.put("view count", items.getJSONObject(j + 1).getString("view count"));
-                        item1.put("type", items.getJSONObject(j + 1).getString("type"));
-
-
-                        if (item1.getInteger("view count") > item.getInteger("view count")) {
-                            items.set(j, item1);
-                            items.set(j + 1, item);
+                    for(int i=1;i<data1.size();i++){
+                        dates[i-1] = date_jarray.getString(i);
+                        counts[0][i-1] = data1.getInteger(i);
+                        counts[1][i-1] = data2.getInteger(i);
+                        if(data1.getInteger(i)>0||data2.getInteger(i)>0){
+                            lineChartHidden = false;
                         }
                     }
 
-                    total += items.getJSONObject(items.size() - 1 - i).getInteger("view count");
-                }
-
-                //饼图
-                ChartOption pieOption = new ChartOption();
-                String[] pieTypes = new String[countList.size()];
-                int[][] ints = new int[1][countList.size()];
-                for (int i = 0; i < countList.size(); i++) {
-                    pieTypes[i] = nameList.get(i);
-                    ints[0][i] = countList.get(i);
-                }
-                pieOption.setTitle("Type Statistics");
-                pieOption.setSubTitle("");
-                pieOption.setData(ints);
-                pieOption.setTypes(pieTypes);
-                pieOption.setValXis(pieTypes);
-                pieOption.setTitlePosition("center");
-
-                String piePath = ChartUtils.generatePie(pieOption);
+                    ChartOption lineChart = new ChartOption();
+                    lineChart.setTypes(new String[]{"View Times","Invoke Times"});
+                    lineChart.setData(counts);
+                    lineChart.setValXis(dates);
+                    lineChart.setTitle("View and invoke times in a month (UTC +08:00)");
+                    lineChart.setSubTitle("");
 
 
-                //柱状图
-                ChartOption chartOption = new ChartOption();
-                chartOption.setTitle("Page View Statistics");
-                chartOption.setSubTitle("Go to OpenGMS to check more daily page view of your contributions");
-                chartOption.setTitlePosition("center");
-                int size = 0;
-                if (items.size() >= 5) {
-                    size = 5;
-                } else {
-                    size = items.size();
-                }
-                String[] types = new String[size];
-                int[][] data = new int[1][size];
-                for (int i = 0; i < types.length; i++) {
-                    String itemName = items.getJSONObject(i).getString("name");
-                    types[i] = itemName.length() > 16 ? (itemName.substring(0, 14) + "...") : itemName;
-                    data[0][i] = items.getJSONObject(i).getInteger("view count");
-                }
-                chartOption.setTypes(types);
-                chartOption.setData(data);
-                chartOption.setValXis(types);
-                String chartPath = ChartUtils.generateBar(chartOption);
-
-                //折线图
-                ChartOption lineChart = new ChartOption();
-                lineChart.setTitle("Daily page views in the last 7 days");
-                lineChart.setSubTitle("");
-                lineChart.setTitlePosition("left");
-                String[] dates = new String[7];
-                int[][] viewCounts = new int[1][7];
-
-                Boolean lineChartHidden = true;
-                for (int i = 0; i < sevenDayViewCountList.size(); i++) {
-                    DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
-                    if(dailyViewCount.getCount()>0){
-                        lineChartHidden=false;
+                    if(!lineChartHidden) {
+                        String lineChartPath = ChartUtils.generateLine(lineChart);
+                        JSONObject ChartInfo = new JSONObject();
+                        ChartInfo.put("name", "lineChart" + j);
+                        ChartInfo.put("path", lineChartPath);
+                        imageList.add(ChartInfo);
                     }
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    dates[i] = sdf.format(dailyViewCount.getDate());
-                    viewCounts[0][i] = dailyViewCount.getCount();
+
+                    statistics.remove("dayViewAndInvoke");
+                    statistics.put("lineChart",lineChartHidden?null:"lineChart" + j);
+
+                    //柱状图
+                    JSONArray hourInvoke = statistics.getJSONArray("hourInvoke");
+                    JSONArray hourView = statistics.getJSONArray("hourView");
+
+                    ChartOption chartOption = new ChartOption();
+                    chartOption.setTitle("View and invoke times at different hours in a month (UTC +08:00)");
+                    chartOption.setSubTitle("");
+                    chartOption.setTitlePosition("center");
+
+                    String[] types = new String[]{"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
+                    int[][] data = new int[2][24];
+                    Boolean barChartHidden = true;
+                    for (int i = 0; i < 24; i++) {
+                        data[0][i] = hourView.getInteger(i);
+                        data[1][i] = hourInvoke.getInteger(i);
+                        if(hourView.getInteger(i)>0||hourInvoke.getInteger(i)>0){
+                            barChartHidden = false;
+                        }
+                    }
+                    chartOption.setTypes(new String[]{"View Times","Invoke Times"});
+                    chartOption.setData(data);
+                    chartOption.setValXis(types);
+
+
+                    if(!barChartHidden) {
+                        String barChartPath = ChartUtils.generateBar(chartOption, 1);
+                        JSONObject ChartInfo = new JSONObject();
+                        ChartInfo.put("name", "barChart" + j);
+                        ChartInfo.put("path", barChartPath);
+                        imageList.add(ChartInfo);
+                    }
+
+                    statistics.remove("hourInvoke");
+                    statistics.remove("hourView");
+                    statistics.put("barChart",barChartHidden?null:"barChart" + j);
+
+                    //地图
+                    JSONArray locationsView = statistics.getJSONArray("locationsView");
+                    JSONArray locationsInvoke = statistics.getJSONArray("locationsInvoke");
+
+                    List<String> countries = new ArrayList<>();
+                    List<Integer> userCounts = new ArrayList<>();
+
+                    addLocations(locationsView, countries, userCounts);
+
+                    addLocations(locationsInvoke, countries, userCounts);
+
+                    Boolean mapChartHidden = countries.size()<=0;
+
+                    if(!mapChartHidden) {
+                        String mapChartPath = ChartUtils.generateMap(countries, userCounts);
+                        JSONObject ChartInfo = new JSONObject();
+                        ChartInfo.put("name", "mapChart" + j);
+                        ChartInfo.put("path", mapChartPath);
+                        imageList.add(ChartInfo);
+                    }
+
+                    //饼图
+                    Boolean pieChartHidden = countries.size()<=1;
+
+                    if(!pieChartHidden){
+                        String[] pieTypes = new String[countries.size()];
+                        countries.toArray(pieTypes);
+
+                        int[] ints = userCounts.stream().mapToInt(Integer::intValue).toArray();
+                        int[][] pieData = new int[1][ints.length];
+                        pieData[0] = ints;
+
+                        ChartOption pieOption = new ChartOption();
+                        pieOption.setTitle("");
+                        pieOption.setSubTitle("");
+                        pieOption.setData(pieData);
+                        pieOption.setTypes(pieTypes);
+                        pieOption.setValXis(pieTypes);
+                        pieOption.setTitlePosition("center");
+
+                        String pieChartPath = ChartUtils.generatePie(pieOption,"55%","50%","65%","15%");
+
+                        JSONObject pieChartInfo = new JSONObject();
+                        pieChartInfo.put("name", "pieChart" + j);
+                        pieChartInfo.put("path", pieChartPath);
+                        imageList.add(pieChartInfo);
+                    }
+
+                    statistics.remove("locationsView");
+                    statistics.remove("locationsInvoke");
+                    statistics.put("pieChart",pieChartHidden?null:"pieChart" + j);
+                    statistics.put("mapChart",mapChartHidden?null:"mapChart" + j);
+
+                    result.add(statistics);
                 }
 
-                lineChart.setTypes(new String[]{"Daily page view"});
-                lineChart.setData(viewCounts);
-                lineChart.setValXis(dates);
-                String lineChartPath = ChartUtils.generateLine(lineChart);
+                ctx.setVariable("modelList",result);
 
-                //图片列表
-                imageList = new JSONArray();
+                String mail = templateEngine.process("modelStatisticsEmail.html",ctx);
+                commonService.sendEmailWithImg("OpenGMS Team", "921485453@qq.com", "OpenGMS Review", mail, imageList);
 
-                if(nameList.size()>1) {
-                    JSONObject pieChartInfo = new JSONObject();
-                    pieChartInfo.put("name", "pieChart");
-                    pieChartInfo.put("path", piePath);
-                    imageList.add(pieChartInfo);
-                    message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
+            }else {
+                String message = "";
+                message +="<div style=\"font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif;\">" +
+                        "        <div style=\"height:60px;background-color:#080a0e;border-radius: 5px;display: flex;align-items: center;justify-content: center;min-width:600px\">\n" +
+                                "<a class=\"header\"  href=\"https://geomodeling.njnu.edu.cn\">\n" +
+                                "            <img src=\"https://geomodeling.njnu.edu.cn/static/img/logo.png\" style=\"height: 50px;\">\n" +
+                                "    </a>" +
+                                "            <span style=\"color: white;font-size: 26px;margin:20px 0 0 20px;font-weight: bold;\">Review</span>\n" +
+                                "        </div>\n";
+
+                message += "<div style='width:600px; margin:auto'>";
+                message += "<div style=\"background-color: #ecf5ff;\n" +
+                        "    padding: 15px;\n" +
+                        "    margin: 30px 0 25px 0;\n" +
+                        "    line-height: 25px;\n" +
+                        "    font-size: 16px;\n" +
+                        "    color: #409eff;\n" +
+                        "    border: 1px solid #d9ecff;\n" +
+                        "    border-radius: 4px;\n" +
+                        "    box-sizing: border-box;\n" +
+                        "   \">\n" +
+                        "            <b>Open Geographic Modeling and Simulation Platform (OpenGMS)</b> supports sharing geographic resources and provides a community for collaboration works among researchers in various disciplines.\n" +
+                        "            There are more than 3500 geographic models in our platform.\n" +
+                        "            We are the founder of Open Modeling Alliance, and have been added to the Trusted Digital Repositories for Software of CoMSES Net.\n" +
+                        "\n" +
+                        "        </div>";
+                message += "<p>Dear ";
+                message += user.getName() + ":<br/><br/>";
+                Date now = new Date();
+                Date registerTime = user.getCreateTime();
+                int rangeDay = (int) Math.ceil((now.getTime() - registerTime.getTime()) / (1000 * 3600 * 24));
+                int total = 0;
+                JSONArray imageList = new JSONArray();
+                message += "It has been " + rangeDay + " days since you registered as a user of OpenGMS. ";
+                if (user.getModelItems() > 0 || user.getDataItems() > 0 || user.getConceptualModels() > 0 || user.getLogicalModels() > 0 ||
+                        user.getComputableModels() > 0 || user.getConcepts() > 0 || user.getSpatials() > 0 || user.getTemplates() > 0 ||
+                        user.getUnits() > 0 || user.getThemes() > 0) {
+                    message += "You have shared some resources about geographic models in the platform, including ";
+                    List<String> stringList = new ArrayList<>();
+                    JSONArray items = new JSONArray();
+
+                    List<DailyViewCount> sevenDayViewCountList = new ArrayList<>();
+                    Calendar calendar = Calendar.getInstance();
+                    for (int i = -6; i <= 0; i++) {
+                        calendar.setTime(now);
+                        calendar.add(Calendar.DATE, i);
+                        DailyViewCount dailyViewCount = new DailyViewCount(calendar.getTime(), 0);
+                        sevenDayViewCountList.add(dailyViewCount);
+                    }
+
+
+                    List<Integer> countList = new ArrayList<>();
+                    List<String> nameList = new ArrayList<>();
+
+                    addItem(countList, nameList, sevenDayViewCountList, user.getModelItems(), "model item", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getConceptualModels(), "conceptual model", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getLogicalModels(), "logical model", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getComputableModels(), "computable model", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getDataItems(), "data item", user.getOid(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getConcepts(), "concept", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getSpatials(), "spatial reference", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getTemplates(), "data template", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getUnits(), "unit & metric", user.getUserName(), stringList, items);
+                    addItem(countList, nameList, sevenDayViewCountList, user.getThemes(), "theme", user.getUserName(), stringList, items);
+                    for (int i = 0; i < stringList.size(); i++) {
+                        message += stringList.get(i);
+                        if (i < stringList.size() - 2) {
+                            message += ", ";
+                        } else if (i == stringList.size() - 2) {
+                            message += " and ";
+                        } else {
+                            message += ". ";
+                        }
+                    }
+                    message += "Thank you for your contribution to geographic modeling and simulation!<br/><br/>";
+
+
+                    for (int i = 0; i < items.size(); i++) {
+                        for (int j = 0; j < items.size() - 1 - i; j++) {
+                            JSONObject item = new JSONObject();
+                            JSONObject item1 = new JSONObject();
+
+                            item.put("name", items.getJSONObject(j).getString("name"));
+                            item.put("view count", items.getJSONObject(j).getString("view count"));
+                            item.put("type", items.getJSONObject(j).getString("type"));
+
+                            item1.put("name", items.getJSONObject(j + 1).getString("name"));
+                            item1.put("view count", items.getJSONObject(j + 1).getString("view count"));
+                            item1.put("type", items.getJSONObject(j + 1).getString("type"));
+
+
+                            if (item1.getInteger("view count") > item.getInteger("view count")) {
+                                items.set(j, item1);
+                                items.set(j + 1, item);
+                            }
+                        }
+
+                        total += items.getJSONObject(items.size() - 1 - i).getInteger("view count");
+                    }
+
+                    //饼图
+                    ChartOption pieOption = new ChartOption();
+                    String[] pieTypes = new String[countList.size()];
+                    int[][] ints = new int[1][countList.size()];
+                    for (int i = 0; i < countList.size(); i++) {
+                        pieTypes[i] = nameList.get(i);
+                        ints[0][i] = countList.get(i);
+                    }
+                    pieOption.setTitle("Resource Type Statistics");
+                    pieOption.setSubTitle("");
+                    pieOption.setData(ints);
+                    pieOption.setTypes(pieTypes);
+                    pieOption.setValXis(pieTypes);
+                    pieOption.setTitlePosition("center");
+
+                    String piePath = ChartUtils.generatePie(pieOption,"55%","50%","50%","top");
+
+
+                    //柱状图
+                    ChartOption chartOption = new ChartOption();
+                    chartOption.setTitle("Resource View Times Statistics (UTC +08:00)");
+                    chartOption.setSubTitle("");
+                    chartOption.setTitlePosition("center");
+                    int size = 0;
+                    if (items.size() >= 5) {
+                        size = 5;
+                    } else {
+                        size = items.size();
+                    }
+                    String[] types = new String[size];
+                    int[][] data = new int[1][size];
+                    for (int i = 0; i < types.length; i++) {
+                        String itemName = items.getJSONObject(i).getString("name");
+                        types[i] = itemName.length() > 16 ? (itemName.substring(0, 14) + "...") : itemName;
+                        data[0][i] = items.getJSONObject(i).getInteger("view count");
+                    }
+                    chartOption.setTypes(types);
+                    chartOption.setData(data);
+                    chartOption.setValXis(types);
+                    String chartPath = ChartUtils.generateBar(chartOption, 2);
+
+                    //折线图
+                    ChartOption lineChart = new ChartOption();
+                    lineChart.setTitle("Daily view times in the last 7 days (UTC +08:00)");
+                    lineChart.setSubTitle("");
+                    lineChart.setTitlePosition("center");
+                    String[] dates = new String[7];
+                    int[][] viewCounts = new int[1][7];
+
+                    Boolean lineChartHidden = true;
+                    for (int i = 0; i < sevenDayViewCountList.size(); i++) {
+                        DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
+                        if (dailyViewCount.getCount() > 0) {
+                            lineChartHidden = false;
+                        }
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        dates[i] = sdf.format(dailyViewCount.getDate());
+                        viewCounts[0][i] = dailyViewCount.getCount();
+                    }
+
+                    lineChart.setTypes(new String[]{"Daily view times"});
+                    lineChart.setData(viewCounts);
+                    lineChart.setValXis(dates);
+                    String lineChartPath = ChartUtils.generateLine(lineChart);
+
+                    //图片列表
+                    imageList = new JSONArray();
+
+                    if (nameList.size() > 1) {
+                        JSONObject pieChartInfo = new JSONObject();
+                        pieChartInfo.put("name", "pieChart");
+                        pieChartInfo.put("path", piePath);
+                        imageList.add(pieChartInfo);
+                        message += "<center><img style='height:360px' src=\"cid:pieChart\" ></center><br/>";
+                    }
+                    message += "Many people have noticed what you shared in OpenGMS, your contributions have been viewed and invoked " + total + " times. " +
+                            "The most influential item that you contributed is " + items.getJSONObject(0).getString("name") + ", it has been viewed " + items.getJSONObject(0).getInteger("view count") + " times. " +
+                            "The page view of your contributions are shown in the figure below:<br/><br/>";
+
+                    JSONObject imageInfo = new JSONObject();
+                    imageInfo.put("name", "chart1");
+                    imageInfo.put("path", chartPath);
+                    imageList.add(imageInfo);
+                    message += "<center><img style='height:360px' src=\"cid:chart1\" ></center><br/>";
+
+                    if (!lineChartHidden) {
+                        JSONObject lineChartInfo = new JSONObject();
+                        lineChartInfo.put("name", "lineChart");
+                        lineChartInfo.put("path", lineChartPath);
+                        imageList.add(lineChartInfo);
+                        message += "<center><img style='height:360px' src=\"cid:lineChart\" ></center><br/>";
+                    }
                 }
-                message += "Many people have noticed what you shared in OpenGMS, your contributions have been viewed and invoked " + total + " times. " +
-                        "The most influential item that you contributed is " + items.getJSONObject(0).getString("name") + ", it has been viewed " + items.getJSONObject(0).getInteger("view count") + " times. " +
-                        "The page view of your contributions are shown in the figure below:<br/><br/>";
 
-                JSONObject imageInfo = new JSONObject();
-                imageInfo.put("name", "chart1");
-                imageInfo.put("path", chartPath);
-                imageList.add(imageInfo);
-                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+                message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
 
-                if(!lineChartHidden){
-                    JSONObject lineChartInfo = new JSONObject();
-                    lineChartInfo.put("name", "lineChart");
-                    lineChartInfo.put("path", lineChartPath);
-                    imageList.add(lineChartInfo);
-                    message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
+                Sort sort = new Sort(Sort.Direction.DESC, "viewCount");
+                Pageable pageable = PageRequest.of(0, 999, sort);
+                Page<ComputableModelSimpleDTO> computableModelPage = computableModelDao.findAllByAuthorAndContentType(user.getUserName(), "Package", pageable);
+
+                List<ComputableModelSimpleDTO> computableModelList = new ArrayList<>();
+                for (ComputableModelSimpleDTO computableModel : computableModelPage) {
+                    if (computableModel.getDailyViewCount() != null && computableModel.getDailyViewCount().size() > 0) {
+                        computableModelList.add(computableModel);
+                        if (computableModelList.size() == 5) break;
+                    }
+                }
+
+                if (computableModelList.size() > 0) {
+                    message += "        <div style=\"background-color: #f4f4f5;\n" +
+                            "    padding: 15px;\n" +
+                            "    margin-bottom: 20px;\n" +
+                            "    line-height: 25px;\n" +
+                            "    font-size: 14px;\n" +
+                            "    color: #909399;\n" +
+                            "    border: 1px solid #e9e9eb;\n" +
+                            "    border-radius: 4px;\n" +
+                            "    box-sizing: border-box;\n" +
+                            "   \">\n" +
+                            "           <h3 style=\"margin-top:10px;margin:auto\">More Computable Model Statistics</h3>\n" +
+                            "            <ul>\n";
+                    for (ComputableModelSimpleDTO computableModel : computableModelList) {
+                        message += "<li><a href=\"https://geomodeling.njnu.edu.cn/statistics/computableModel/" + computableModel.getOid() + "\">" + computableModel.getName() + "</a></li>\n";
+                    }
+                    message += "            </ul>\n" +
+                            "        </div>";
+                }
+
+                message += "Sincerely,<br/>";
+                message += "OpenGMS Team<br/>";
+                message += "https://geomodeling.njnu.edu.cn</p>";
+                message += "<br/>";
+                message += "</div>";
+                message += "<div style=\"height:220px;background-color:#2e3033;color:white;border-radius: 5px;min-width:600px;text-align: center\">\n" +
+                        "        <h2 style=\"margin:0;padding: 2.2em 0 0.3em;font-style: italic\">Open Geographic Modeling and Simulation</h2>\n" +
+                        "        <span>Copyright © 2013 - 2020 OpenGMS. All Rights Reserved.</span>\n" +
+                        "        <hr style=\"width:600px;margin:15px auto\"/>\n" +
+                        "        <h4 style=\"margin:0;padding-bottom:0.3em\">You can <a style=\"color:#0097e2;\" href=\"https://geomodeling.njnu.edu.cn/user/changeSubscribedModelList?id="+user.getId()+"\">change subscribed model list</a>, or <a style=\"color:#0097e2;\" href=\"https://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">unsubscribe</a> this notice. </h4>\n" +
+                        "    </div></div>";
+                commonService.sendEmailWithImg("OpenGMS Team", "921485453@qq.com", "OpenGMS Review", message, imageList);
+            }
+//        }
+    }
+
+    private void addLocations(JSONArray locationsInvoke, List<String> countries, List<Integer> userCounts) {
+        for(int i=0;i<locationsInvoke.size();i++){
+            JSONObject view = locationsInvoke.getJSONObject(i);
+            String country = view.getString("name");
+            int count = view.getInteger("value");
+
+            Boolean countryExist = false;
+            for(int k=0;k<countries.size();k++){
+                if(countries.get(k).equals(country)){
+                    userCounts.set(k,userCounts.get(k)+count);
+                    countryExist = true;
                 }
             }
-
-            message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
-            message += "Sincerely,<br/>";
-            message += "OpenGMS Team<br/>";
-            message += "https://geomodeling.njnu.edu.cn</p>";
-            message+="<hr/>";
-            message+="<p>To unsubscribe from this notice, go to <a href=\"https://geomodeling.njnu.edu.cn/user/unsubscribe?id="+user.getId()+"\" target=\"_blank\">Unsubscribe</a>. </p>";
-
-            commonService.sendEmailWithImg("OpenGMS Team", user.getEmail(), "Open Geographic Modeling and Simulation Review", message, imageList);
-
+            if(!countryExist){
+                countries.add(country);
+                userCounts.add(count);
+            }
         }
     }
 
@@ -453,7 +725,7 @@ public class UserService {
             pieOption.setValXis(pieTypes);
             pieOption.setTitlePosition("center");
 
-            String piePath = ChartUtils.generatePie(pieOption);
+            String piePath = ChartUtils.generatePie(pieOption,"55%","50%","50%","top");
 
             //柱状图
             ChartOption chartOption = new ChartOption();
@@ -479,7 +751,7 @@ public class UserService {
             chartOption.setTypes(types);
             chartOption.setData(barData);
             chartOption.setValXis(types);
-            String chartPath = ChartUtils.generateBar(chartOption);
+            String chartPath = ChartUtils.generateBar(chartOption, 2);
 
             //折线图
             ChartOption lineChart = new ChartOption();
@@ -517,7 +789,7 @@ public class UserService {
                 pieChartInfo.put("name", "pieChart");
                 pieChartInfo.put("path", piePath);
                 imageList.add(pieChartInfo);
-                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:pieChart\" ></a></center><br/>";
+                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:360px' src=\"cid:pieChart\" ></a></center><br/>";
             }
             message += "Many people have noticed your works in OpenGMS, your works have been viewed and invoked " + totalViewCount + " times. " +
                     "The most influential work of you in our platform is " + top5Items[0].getName() + ", it has been viewed " + top5Items[0].getViewCount() + " times. " +
@@ -526,14 +798,14 @@ public class UserService {
             imageInfo.put("name", "chart1");
             imageInfo.put("path", chartPath);
             imageList.add(imageInfo);
-            message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:chart1\" ></a></center><br/>";
+            message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:360px' src=\"cid:chart1\" ></a></center><br/>";
 
             if(!lineChartHidden) {
                 JSONObject lineChartInfo = new JSONObject();
                 lineChartInfo.put("name", "lineChart");
                 lineChartInfo.put("path", lineChartPath);
                 imageList.add(lineChartInfo);
-                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:400px' src=\"cid:lineChart\" ></a></center><br/>";
+                message += "<center><a href='https://geomodeling.njnu.edu.cn'><img style='height:360px' src=\"cid:lineChart\" ></a></center><br/>";
             }
 
             message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
@@ -758,6 +1030,14 @@ public class UserService {
         User user = userDao.findFirstByUserName(username);
         int count = user.getMessageNum();
         count = count - comment_num;
+        user.setMessageNum(count);
+        userDao.save(user);
+    }
+
+    public void myEditionNumMinus(String username,int my_edition_num){
+        User user = userDao.findFirstByUserName(username);
+        int count = user.getMessageNum();
+        count = count - my_edition_num;
         user.setMessageNum(count);
         userDao.save(user);
     }

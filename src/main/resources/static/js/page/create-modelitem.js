@@ -1236,6 +1236,7 @@ var createModelItem = Vue.extend({
                         }
                         else if(result.code==-1){
                             this.$alert('Please login first!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
                                     window.location.href="/user/login";
@@ -1245,6 +1246,7 @@ var createModelItem = Vue.extend({
                         }
                         else{
                             this.$alert('Created failed!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 
@@ -1302,6 +1304,7 @@ var createModelItem = Vue.extend({
                                 let params = that.message_num_socket;
                                 that.send(params);
                                 this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    type:"success",
                                     confirmButtonText: 'OK',
                                     callback: action => {
                                         window.location.href = "/user/userSpace";
@@ -1311,6 +1314,7 @@ var createModelItem = Vue.extend({
                         }
                         else if(result.code==-2){
                             this.$alert('Please login first!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
                                     window.location.href="/user/login";
@@ -1319,6 +1323,7 @@ var createModelItem = Vue.extend({
                         }
                         else{
                             this.$alert(result.msg, 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 

@@ -24,6 +24,7 @@ public class ConceptVersion {
     List<String> related;
     int loadCount;
     String creator;
+    int readStatus;
 
     String alias;
     String parentId;

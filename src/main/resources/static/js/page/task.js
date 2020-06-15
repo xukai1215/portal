@@ -1304,7 +1304,7 @@ var vue = new Vue({
             //下载接口
             if (event.url != undefined) {
                 this.eventChoosing = event;
-                window.open("/dispatchRequest/download?url=" + this.eventChoosing.url);
+                window.open(this.eventChoosing.url);
             }
             else {
                 this.$message.error("No data can be downloaded.");
@@ -1752,6 +1752,7 @@ var vue = new Vue({
                                     })
                                 })).json();
                                 if (code === -1) {
+                                    clearInterval(interval);
                                     this.$alert(msg, 'Error', {
                                         type: 'error',
                                         confirmButtonText: 'OK',
@@ -1759,10 +1760,11 @@ var vue = new Vue({
 
                                         }
                                     });
-                                    clearInterval(interval);
+
                                     loading.close();
                                 }
                                 if (data.status === -1) {
+                                    clearInterval(interval);
                                     this.$alert("Some error occured when the model running!", 'Error', {
                                         type: 'error',
                                         confirmButtonText: 'OK',
@@ -1770,9 +1772,10 @@ var vue = new Vue({
 
                                         }
                                     });
-                                    clearInterval(interval);
+
                                     loading.close();
                                 } else if (data.status === 2) {
+                                    clearInterval(interval);
                                     this.$alert("The model has run successfully!", 'Success', {
                                         type: 'success',
                                         confirmButtonText: 'OK',
@@ -1780,7 +1783,7 @@ var vue = new Vue({
 
                                         }
                                     });
-                                    clearInterval(interval);
+
                                     let outputs = data.outputdata;
 
                                     outputs.forEach(el => {
@@ -2410,6 +2413,7 @@ var vue = new Vue({
         let {data} = await (await fetch("/task/TaskInit/" + id)).json();
         if (data == null || data == undefined) {
             this.$alert('Initialization failure: an error occured on the server.<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Error', {
+                type:"warning",
                 confirmButtonText: 'Try again',
                 dangerouslyUseHTMLString: true,
                 callback: action => {

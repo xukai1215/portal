@@ -290,6 +290,22 @@
             <version>2.9.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.ip2location</groupId>
+            <artifactId>ip2location</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/ip2location.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mxgraph</groupId>
+            <artifactId>mxgraph-all</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</systemPath>
+        </dependency>
+
 
         <!--<dependency>-->
         <!--<groupId>org.apache.tomcat.embed</groupId>-->
@@ -327,31 +343,58 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <fork>true</fork>
+                    <includeSystemScope>true</includeSystemScope>
                 </configuration>
             </plugin>
 
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-install-plugin</artifactId>-->
+                <!--<version>2.5.2</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>install-external</id>-->
+                        <!--<phase>clean</phase>-->
+                        <!--<configuration>-->
+                            <!--<file>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</file>-->
+                            <!--<repositoryLayout>default</repositoryLayout>-->
+                            <!--<groupId>abc</groupId>-->
+                            <!--<artifactId>abc</artifactId>-->
+                            <!--<version>1.0</version>-->
+                            <!--<packaging>jar</packaging>-->
+                            <!--<generatePom>true</generatePom>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>install-file</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <executions>
-                    <execution>
-                        <id>install-external</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <file>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>abc</groupId>
-                            <artifactId>abc</artifactId>
-                            <version>1.0</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-war-plugin</artifactId>
+
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/resources/lib/</directory>
+                            <targetPath>WEB-INF/lib/</targetPath>
+                            <includes>
+                                <include>ip2location.jar</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <directory>src/main/resources/lib/</directory>
+                            <targetPath>WEB-INF/lib/</targetPath>
+                            <includes>
+                                <include>mxgraph-all.jar</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
             </plugin>
 
             <plugin>

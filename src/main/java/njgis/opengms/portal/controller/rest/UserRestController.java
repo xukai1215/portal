@@ -7,6 +7,7 @@ import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dto.*;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.FileMeta;
+import njgis.opengms.portal.entity.support.SubscribeItem;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
 import njgis.opengms.portal.service.ArticleService;
 import njgis.opengms.portal.service.DataItemService;
@@ -56,6 +57,21 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/changeSubscribedModelList", method = RequestMethod.GET)
+    public ModelAndView changeSubscribedModelList(@RequestParam("id") String id, HttpServletRequest request){
+
+        User user = userService.getById(id);
+        HttpSession session = request.getSession();
+        session.setMaxInactiveInterval(60*60);//设置session过期时间 为60分钟
+        session.setAttribute("oid", user.getOid());
+        session.setAttribute("uid", user.getUserName());
+        session.setAttribute("name", user.getName());
+
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("redirect:/user/userSpace#/account");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/unsubscribe", method = RequestMethod.GET)
     public ModelAndView unsubscribe(@RequestParam("id") String id) {
         User user = userService.getById(id);
@@ -72,6 +88,29 @@ public class UserRestController {
             return ResultUtils.error(-1, "no login");
         } else {
             userService.setSubscribe(session.getAttribute("oid").toString(), subs);
+            return ResultUtils.success();
+
+        }
+    }
+
+    @RequestMapping(value = "/getSubscribedList", method = RequestMethod.GET)
+    public JsonResult getSubscribedList(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (Utils.checkLoginStatus(session) == null) {
+            return ResultUtils.error(-1, "no login");
+        } else {
+            return ResultUtils.success(userService.getSubscribedList(session.getAttribute("oid").toString()));
+
+        }
+    }
+
+    @RequestMapping(value = "/setSubscribedList", method = RequestMethod.POST)
+    public JsonResult setSubscribedList(@RequestBody List<SubscribeItem> list, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if (Utils.checkLoginStatus(session) == null) {
+            return ResultUtils.error(-1, "no login");
+        } else {
+            userService.setSubscribedList(session.getAttribute("oid").toString(),list);
             return ResultUtils.success();
 
         }
@@ -131,7 +170,7 @@ public class UserRestController {
         if (result != null) {
             // 密码验证成功，将用户数据放入到Session中
             HttpSession session = request.getSession();
-            //session.setMaxInactiveInterval(30*60);//设置session过期时间 为30分钟
+            session.setMaxInactiveInterval(60*60);//设置session过期时间 为60分钟
             session.setAttribute("oid", result.get("oid"));
             session.setAttribute("uid", result.get("uid"));
             session.setAttribute("name", result.get("name"));

@@ -49,7 +49,7 @@
                 <div class="detail_title">
                     <a th:if="${history!=true}" th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
-                    <!--<el-tooltip popper-class="fontsize-15" effect="dark" placement="left">-->
+                    <!--<el-tooltip popper-class="fontsize-15" effect="light" placement="left">-->
                     <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
                     <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
                     <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>

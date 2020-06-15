@@ -2009,6 +2009,7 @@ new Vue({
                     success: (json) => {
                         if(json.code==-1) {
                             this.$alert('Please login first!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
                                     window.location.href = "/user/login";
@@ -2062,6 +2063,7 @@ new Vue({
                     success: (json) => {
                         if(json.code==-1) {
                             this.$alert('Please login first!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
                                     window.location.href = "/user/login";
@@ -2110,6 +2112,7 @@ new Vue({
                     success: (json) => {
                         if(json.code==-1) {
                             this.$alert('Please login first!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
                                     window.location.href = "/user/login";
@@ -2639,6 +2642,7 @@ new Vue({
         searchDoi(){
             if(this.doi == ''){
                 this.$alert('Please input the DOI', 'Tip', {
+                    type:"warning",
                     confirmButtonText: 'Confirm',
                     callback: ()=>{
                         return
@@ -2658,6 +2662,7 @@ new Vue({
                     success: (res) => {
                         if(res.code==-1) {
                             this.$alert('Please login first!', 'Error', {
+                                type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
                                     window.location.href = "/user/login";
@@ -2668,6 +2673,7 @@ new Vue({
                         this.doiLoading = false;
                         if (data.find == -1) {
                             this.$alert('Failed to connect, please try again!', 'Tip', {
+                                type:"warning",
                                     confirmButtonText: 'Confirm',
                                     callback: ()=>{
                                         return
@@ -2676,6 +2682,7 @@ new Vue({
                             );
                         }else if(data.find==0){
                             this.$alert('Find no result, check the DOI you have input.', 'Tip', {
+                                type:"warning",
                                     confirmButtonText: 'Confirm',
                                     callback: ()=>{
                                         return
@@ -2723,6 +2730,7 @@ new Vue({
                         this.doiLoading = false;
                         $("#doi_searchBox").removeClass("spinner")
                         this.$alert('Failed to connect, please try again!', 'Tip', {
+                            type:"warning",
                                 confirmButtonText: 'Confirm',
                                 callback: ()=>{
                                     return

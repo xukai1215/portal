@@ -226,513 +226,958 @@
                             <el-tab-pane label="Version" name="Second">
                                 <div slot="label">
                                     Version
-                                    <span v-if="table_length_sum" class="el-badge__content el-badge__content--undefined">
-                                                    {{table_length_sum}}
+                                    <span v-if="version_sum" class="el-badge__content el-badge__content--undefined">
+                                                    {{version_sum}}
                                     </span>
                                 </div>
                                 <el-card>
-                                    <el-tabs :tab-position="tabPosition">
-                                        <el-tab-pane label="Model">
+                                    <el-tabs type="border-card"  stretch="stretch">
+                                        <el-tab-pane label="My Edition">
                                             <div slot="label">
-                                                Model
-                                                <span v-if="model_tableData1_length" class="el-badge__content el-badge__content--undefined">
-                                                    {{model_tableData1_length}}
+                                                My Edition
+                                                <span v-if="table_length_sum_self" class="el-badge__content el-badge__content--undefined">
+                                                    {{table_length_sum_self}}
                                                 </span>
                                             </div>
-                                            <div>
-                                                <el-tabs type="border-card" stretch="stretch" >
-                                                    <el-tab-pane label="Unapproved version">
-                                                        <div slot="label">
-                                                            Unapproved version
-                                                            <span class="el-badge__content el-badge__content--undefined">
-                                                                {{model_tableData1_length}}
-                                                            </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="model_tableData1"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                                    width="170"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="ex_type"
-                                                                    label="Type"
-                                                                    width="100">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="100">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                            <el-tabs :tab-position="tabPosition">
+                                                <el-tab-pane label="Model">
+                                                    <div slot="label">
+                                                        Model
+                                                        <span v-if="model_self" class="el-badge__content el-badge__content--undefined">
+                                                            {{model_self}}
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <el-tabs type="border-card" @tab-click="MyEditionModelReaded" stretch="stretch">
+                                                            <el-tab-pane label="Unapproved version">
+                                                                <div slot="label">
+                                                                    Unapproved version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
+                                                                        {{model_tableData1_length_self}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="model_tableData1_self"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="230">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                            width="200"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="250">
+                                                                    </el-table-column>
 
-                                                            <!--<el-table-column-->
+                                                                    <!--<el-table-column-->
                                                                     <!--label="View"-->
                                                                     <!--width="150">-->
-                                                                <!--<template slot-scope="scope">-->
+                                                                    <!--<template slot-scope="scope">-->
                                                                     <!--<el-button class="viewBtn" size="middle" type="primary" @click="view($event)">View</el-button>-->
-                                                                <!--</template>-->
-                                                            <!--</el-table-column>-->
+                                                                    <!--</template>-->
+                                                                    <!--</el-table-column>-->
 
-                                                            <el-table-column
-                                                                    label="Operations"
-                                                                    width="300">
-                                                                <template slot-scope="scope">
-                                                                    <el-button class="viewBtn" size="middle" type="primary" @click="view($event)">View</el-button>
-                                                                    <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
-                                                                    <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
-                                                                </template>
-                                                            </el-table-column>
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                    <el-tab-pane label="Accepted version">
-                                                        <div slot="label">
-                                                            Accepted version
-                                                            <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
+                                                                    <el-table-column
+                                                                            label="Operations"
+                                                                            width="180">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button class="viewBtn_self" size="middle" type="primary" @click="view_self($event)">View</el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Accepted version">
+                                                                <div slot="label">
+                                                                    Accepted version
+                                                                    <span v-if="model_accept_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{model_accept_unread}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="model_tableData2_self"
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewAcceptBtn_self"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewAccept_self($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Rejected version">
+                                                                <div slot="label">
+                                                                    Rejected version
+                                                                    <span v-if="model_reject_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{model_reject_unread}}
+                                                                    </span>
+
+                                                                </div>
+                                                                <el-table
+                                                                        :data="model_tableData3_self"
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewRejectBtn_self"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewReject_self($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                        </el-tabs>
+                                                    </div>
+                                                </el-tab-pane>
+                                                <el-tab-pane label="Community">
+                                                    <div slot="label">
+                                                        Community
+                                                        <span v-if="community_self" class="el-badge__content el-badge__content--undefined">
+                                                    {{community_self}}
+                                                </span>
+                                                    </div>
+                                                    <div>
+                                                        <el-tabs type="border-card" @tab-click="MyEditionCommunityReaded" stretch="stretch" >
+                                                            <el-tab-pane label="Unapproved version">
+                                                                <div slot="label">
+                                                                    Unapproved version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
+                                                                        {{community_tableData1_length_self}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="community_tableData1_self"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="230">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                            width="200"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="250">
+                                                                    </el-table-column>
+
+                                                                    <!--<el-table-column-->
+                                                                    <!--label="View"-->
+                                                                    <!--width="150">-->
+                                                                    <!--<template slot-scope="scope">-->
+                                                                    <!--<el-button class="viewBtn1" size="middle" type="primary" @click="view1($event)">View</el-button>-->
+                                                                    <!--</template>-->
+                                                                    <!--</el-table-column>-->
+
+                                                                    <el-table-column
+                                                                            label="Operations"
+                                                                            width="180">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button class="viewBtn1_self" size="middle" type="primary" @click="view1_self($event)">View</el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Accepted version">
+                                                                <div slot="label">
+                                                                    Accepted version
+                                                                    <span v-if="community_accept_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{community_accept_unread}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="community_tableData2_self"
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewAcceptBtn1_self"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewAccept1_self($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Rejected version">
+                                                                <div slot="label">
+                                                                    Rejected version
+                                                                    <span v-if="community_reject_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{community_reject_unread}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="community_tableData3_self"
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewRejectBtn1_self"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewReject1_self($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                        </el-tabs>
+                                                    </div>
+                                                </el-tab-pane>
+                                                <el-tab-pane label="Theme">
+                                                    <div slot="label">
+                                                        Theme
+                                                        <span v-if="theme_self" class="el-badge__content el-badge__content--undefined">
+                                                    {{theme_self}}
+                                                </span>
+                                                    </div>
+                                                    <div>
+                                                        <el-tabs type="border-card" @tab-click="MyEditionThemeReaded" stretch="stretch" >
+                                                            <el-tab-pane label="Unapproved version">
+                                                                <div slot="label">
+                                                                    Unapproved version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
+                                                            {{theme_tableData1_length_self}}
+                                                            </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="theme_tableData1_self"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="230">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                            width="200"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="type"
+                                                                            label="Type"
+                                                                            width="250">
+                                                                    </el-table-column>
+                                                                    <!--<el-table-column-->
+                                                                    <!--label="View"-->
+                                                                    <!--width="150">-->
+                                                                    <!--<template slot-scope="scope">-->
+                                                                    <!--<el-button class="viewBtn_theme" size="middle" type="primary" @click="view_theme($event)">View</el-button>-->
+                                                                    <!--</template>-->
+                                                                    <!--</el-table-column>-->
+                                                                    <el-table-column
+                                                                            label="Operations"
+                                                                            width="180">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button class="viewBtn_theme_self" size="middle" type="primary" @click="view_theme_self($event)">View</el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Accepted version">
+                                                                <div slot="label">
+                                                                    Accepted version
+                                                                    <span v-if="theme_accept_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{theme_accept_unread}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="theme_tableData2_self"
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewAcceptBtn_theme_self"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="view_theme_accept_self($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Rejected version">
+                                                                <div slot="label">
+                                                                    Rejected version
+                                                                    <span v-if="theme_reject_unread" class="el-badge__content el-badge__content--undefined" style="background-color: #F56C6C;">
+                                                                        {{theme_reject_unread}}
+                                                                    </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="theme_tableData3_self"
+                                                                        style="width: 100%"
+                                                                        :row-class-name="tableRowClassName">
+                                                                    <el-table-column
+
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewRejectBtn_theme_self"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="view_theme_reject_self($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                        </el-tabs>
+                                                    </div>
+                                                </el-tab-pane>
+                                            </el-tabs>
+                                        </el-tab-pane>
+                                        <el-tab-pane label="Others Edition">
+                                            <div slot="label">
+                                                Others Edition
+                                                <span v-if="table_length_sum" class="el-badge__content el-badge__content--undefined">
+                                                    {{table_length_sum}}
+                                                </span>
+                                            </div>
+                                            <el-tabs :tab-position="tabPosition">
+                                                <el-tab-pane label="Model">
+                                                    <div slot="label">
+                                                        Model
+                                                        <span v-if="model_tableData1_length" class="el-badge__content el-badge__content--undefined">
+                                                    {{model_tableData1_length}}
+                                                </span>
+                                                    </div>
+                                                    <div>
+                                                        <el-tabs type="border-card" stretch="stretch" >
+                                                            <el-tab-pane label="Unapproved version">
+                                                                <div slot="label">
+                                                                    Unapproved version
+                                                                    <span class="el-badge__content el-badge__content--undefined">
+                                                                {{model_tableData1_length}}
+                                                            </span>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="model_tableData1"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                            width="170"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="100">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="100">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
+
+                                                                    <!--<el-table-column-->
+                                                                    <!--label="View"-->
+                                                                    <!--width="150">-->
+                                                                    <!--<template slot-scope="scope">-->
+                                                                    <!--<el-button class="viewBtn" size="middle" type="primary" @click="view($event)">View</el-button>-->
+                                                                    <!--</template>-->
+                                                                    <!--</el-table-column>-->
+
+                                                                    <el-table-column
+                                                                            label="Operations"
+                                                                            width="300">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button class="viewBtn" size="middle" type="primary" @click="view($event)">View</el-button>
+                                                                            <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
+                                                                            <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Accepted version">
+                                                                <div slot="label">
+                                                                    Accepted version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
                                                     {{model_tableData2_length}}
                                                 </span>
 
-                                                        </div>
-                                                        <el-table
-                                                                :data="model_tableData2"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="ex_type"
-                                                                    label="Type"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="200">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="model_tableData2"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="200">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="100">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewAcceptBtn"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="viewAccept($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewAcceptBtn"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewAccept($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                    <el-tab-pane label="Rejected version">
-                                                        <div slot="label">
-                                                            Rejected version
-                                                            <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Rejected version">
+                                                                <div slot="label">
+                                                                    Rejected version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
                                                     {{model_tableData3_length}}
                                                 </span>
 
-                                                        </div>
-                                                        <el-table
-                                                                :data="model_tableData3"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="ex_type"
-                                                                    label="Type"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="200">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="model_tableData3"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="200">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="100">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewRejectBtn"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="viewReject($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewRejectBtn"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewReject($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                </el-tabs>
-                                            </div>
-                                        </el-tab-pane>
-                                        <el-tab-pane label="Community">
-                                            <div slot="label">
-                                                Community
-                                                <span v-if="community_tableData1_length" class="el-badge__content el-badge__content--undefined">
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                        </el-tabs>
+                                                    </div>
+                                                </el-tab-pane>
+                                                <el-tab-pane label="Community">
+                                                    <div slot="label">
+                                                        Community
+                                                        <span v-if="community_tableData1_length" class="el-badge__content el-badge__content--undefined">
                                                     {{community_tableData1_length}}
                                                 </span>
-                                            </div>
-                                            <div>
-                                                <el-tabs type="border-card" stretch="stretch" >
-                                                    <el-tab-pane label="Unapproved version">
-                                                        <div slot="label">
-                                                            Unapproved version
-                                                            <span class="el-badge__content el-badge__content--undefined">
+                                                    </div>
+                                                    <div>
+                                                        <el-tabs type="border-card" stretch="stretch" >
+                                                            <el-tab-pane label="Unapproved version">
+                                                                <div slot="label">
+                                                                    Unapproved version
+                                                                    <span class="el-badge__content el-badge__content--undefined">
                                                                 {{community_tableData1_length}}
                                                             </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="community_tableData1"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                                    width="170"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="ex_type"
-                                                                    label="Type"
-                                                                    width="100">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="100">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="community_tableData1"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                            width="170"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="100">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="100">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <!--<el-table-column-->
+                                                                    <!--<el-table-column-->
                                                                     <!--label="View"-->
                                                                     <!--width="150">-->
-                                                                <!--<template slot-scope="scope">-->
+                                                                    <!--<template slot-scope="scope">-->
                                                                     <!--<el-button class="viewBtn1" size="middle" type="primary" @click="view1($event)">View</el-button>-->
-                                                                <!--</template>-->
-                                                            <!--</el-table-column>-->
+                                                                    <!--</template>-->
+                                                                    <!--</el-table-column>-->
 
-                                                            <el-table-column
-                                                                    label="Operations"
-                                                                    width="300">
-                                                                <template slot-scope="scope">
-                                                                    <el-button class="viewBtn1" size="middle" type="primary" @click="view1($event)">View</el-button>
-                                                                    <el-button class="accept1" type="success" size="middle" @click="accept1($event)">Accept</el-button>
-                                                                    <el-button class="reject1" type="danger" size="middle" @click="reject1($event)">Reject</el-button>
-                                                                </template>
-                                                            </el-table-column>
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                    <el-tab-pane label="Accepted version">
-                                                        <div slot="label">
-                                                            Accepted version
-                                                            <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
+                                                                    <el-table-column
+                                                                            label="Operations"
+                                                                            width="300">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button class="viewBtn1" size="middle" type="primary" @click="view1($event)">View</el-button>
+                                                                            <el-button class="accept1" type="success" size="middle" @click="accept1($event)">Accept</el-button>
+                                                                            <el-button class="reject1" type="danger" size="middle" @click="reject1($event)">Reject</el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Accepted version">
+                                                                <div slot="label">
+                                                                    Accepted version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
                                                     {{community_tableData2_length}}
                                                 </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="community_tableData2"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="ex_type"
-                                                                    label="Type"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="200">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="community_tableData2"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="200">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="100">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewAcceptBtn1"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="viewAccept1($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewAcceptBtn1"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewAccept1($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                    <el-tab-pane label="Rejected version">
-                                                        <div slot="label">
-                                                            Rejected version
-                                                            <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Rejected version">
+                                                                <div slot="label">
+                                                                    Rejected version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
                                                     {{community_tableData3_length}}
                                                 </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="community_tableData3"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="ex_type"
-                                                                    label="Type"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="200">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="community_tableData3"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="ex_type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="200">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="100">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewRejectBtn1"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="viewReject1($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewRejectBtn1"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="viewReject1($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                </el-tabs>
-                                            </div>
-                                        </el-tab-pane>
-                                        <el-tab-pane label="Theme">
-                                            <div slot="label">
-                                                Theme
-                                                <span v-if="theme_tableData1_length" class="el-badge__content el-badge__content--undefined">
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                        </el-tabs>
+                                                    </div>
+                                                </el-tab-pane>
+                                                <el-tab-pane label="Theme">
+                                                    <div slot="label">
+                                                        Theme
+                                                        <span v-if="theme_tableData1_length" class="el-badge__content el-badge__content--undefined">
                                                     {{theme_tableData1_length}}
                                                 </span>
-                                            </div>
-                                            <div>
-                                                <el-tabs type="border-card" stretch="stretch" >
-                                                    <el-tab-pane label="Unapproved version">
-                                                        <div slot="label">
-                                                            Unapproved version
-                                                            <span class="el-badge__content el-badge__content--undefined">
+                                                    </div>
+                                                    <div>
+                                                        <el-tabs type="border-card" stretch="stretch" >
+                                                            <el-tab-pane label="Unapproved version">
+                                                                <div slot="label">
+                                                                    Unapproved version
+                                                                    <span class="el-badge__content el-badge__content--undefined">
                                                             {{theme_tableData1_length}}
                                                             </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="theme_tableData1"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                                    width="170"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="type"
-                                                                    label="Type"
-                                                                    width="100">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="100">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
-                                                            <!--<el-table-column-->
+                                                                </div>
+                                                                <el-table
+                                                                        :data="theme_tableData1"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                            width="170"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="type"
+                                                                            label="Type"
+                                                                            width="100">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="100">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                    <!--<el-table-column-->
                                                                     <!--label="View"-->
                                                                     <!--width="150">-->
-                                                                <!--<template slot-scope="scope">-->
+                                                                    <!--<template slot-scope="scope">-->
                                                                     <!--<el-button class="viewBtn_theme" size="middle" type="primary" @click="view_theme($event)">View</el-button>-->
-                                                                <!--</template>-->
-                                                            <!--</el-table-column>-->
-                                                            <el-table-column
-                                                                    label="Operations"
-                                                                    width="300">
-                                                                <template slot-scope="scope">
-                                                                    <el-button class="viewBtn_theme" size="middle" type="primary" @click="view_theme($event)">View</el-button>
-                                                                    <el-button class="accept_theme" type="success" size="middle" @click="accept_theme($event)">Accept</el-button>
-                                                                    <el-button class="reject_theme" type="danger" size="middle" @click="reject_theme($event)">Reject</el-button>
-                                                                </template>
-                                                            </el-table-column>
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                    <el-tab-pane label="Accepted version">
-                                                        <div slot="label">
-                                                            Accepted version
-                                                            <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
+                                                                    <!--</template>-->
+                                                                    <!--</el-table-column>-->
+                                                                    <el-table-column
+                                                                            label="Operations"
+                                                                            width="300">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button class="viewBtn_theme" size="middle" type="primary" @click="view_theme($event)">View</el-button>
+                                                                            <el-button class="accept_theme" type="success" size="middle" @click="accept_theme($event)">Accept</el-button>
+                                                                            <el-button class="reject_theme" type="danger" size="middle" @click="reject_theme($event)">Reject</el-button>
+                                                                        </template>
+                                                                    </el-table-column>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Accepted version">
+                                                                <div slot="label">
+                                                                    Accepted version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #0e93d7;">
                                                     {{theme_tableData2_length}}
                                                 </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="theme_tableData2"
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="type"
-                                                                    label="Type"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="200">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                </div>
+                                                                <el-table
+                                                                        :data="theme_tableData2"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="200">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="100">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewAcceptBtn_theme"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="view_theme_accept($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewAcceptBtn_theme"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="view_theme_accept($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                    <el-tab-pane label="Rejected version">
-                                                        <div slot="label">
-                                                            Rejected version
-                                                            <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                            <el-tab-pane label="Rejected version">
+                                                                <div slot="label">
+                                                                    Rejected version
+                                                                    <span class="el-badge__content el-badge__content--undefined" style="background-color: #9E9E9E;">
                                                     {{theme_tableData3_length}}
                                                 </span>
-                                                        </div>
-                                                        <el-table
-                                                                :data="theme_tableData3"
-                                                                style="width: 100%">
-                                                            <el-table-column
+                                                                </div>
+                                                                <el-table
+                                                                        :data="theme_tableData3"
+                                                                        style="width: 100%">
+                                                                    <el-table-column
 
-                                                                    fixed
-                                                                    prop="modifyTime"
-                                                                    label="Date"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="name"
-                                                                    label="Name"
-                                                            >
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="type"
-                                                                    label="Type"
-                                                                    width="200">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="modifierName"
-                                                                    label="Modifier"
-                                                                    width="200">
-                                                                <template slot-scope ="scope">
-                                                                    <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
-                                                                </template>
-                                                            </el-table-column>
+                                                                            fixed
+                                                                            prop="modifyTime"
+                                                                            label="Date"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="name"
+                                                                            label="Name"
+                                                                    >
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="type"
+                                                                            label="Type"
+                                                                            width="200">
+                                                                    </el-table-column>
+                                                                    <el-table-column
+                                                                            prop="modifierName"
+                                                                            label="Modifier"
+                                                                            width="200">
+                                                                        <template slot-scope ="scope">
+                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                            <el-table-column
-                                                                    label="View"
-                                                                    width="100">
-                                                                <template slot-scope="scope">
-                                                                    <el-button
-                                                                            class="viewRejectBtn_theme"
-                                                                            size="middle"
-                                                                            type="primary"
-                                                                            @click="view_theme_reject($event)">View
-                                                                    </el-button>
-                                                                </template>
-                                                            </el-table-column>
+                                                                    <el-table-column
+                                                                            label="View"
+                                                                            width="100">
+                                                                        <template slot-scope="scope">
+                                                                            <el-button
+                                                                                    class="viewRejectBtn_theme"
+                                                                                    size="middle"
+                                                                                    type="primary"
+                                                                                    @click="view_theme_reject($event)">View
+                                                                            </el-button>
+                                                                        </template>
+                                                                    </el-table-column>
 
-                                                        </el-table>
-                                                    </el-tab-pane>
-                                                </el-tabs>
-                                            </div>
+                                                                </el-table>
+                                                            </el-tab-pane>
+                                                        </el-tabs>
+                                                    </div>
+                                                </el-tab-pane>
+                                            </el-tabs>
                                         </el-tab-pane>
                                     </el-tabs>
                                 </el-card>
@@ -874,17 +1319,18 @@
                                                         <el-card
                                                                 v-for="(comment,index) in item.comment"
                                                                 :key = "index"
-                                                                style="margin-bottom: 5px"
+                                                                style = "margin-bottom: 5px"
+                                                                :style="{ backgroundColor: comment.color }"
                                                         >
                                                         <div>
-                                                            <div class="com-author-name" style="font-weight: bold">
-                                                            <span>
-                                                                <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
-                                                            </span>
-                                                                <span v-if="comment.replier!=null" style="font-size: 18px;margin:0 5px;">reply you</span>
-                                                            </div>
-                                                            <div style="font-size: 20px">{{comment.content}}</div>
-                                                            <div style="float:right;display: inline-flex;padding: 5px;">
+                                                                <div class="com-author-name" style="font-weight: bold ">
+                                                                    <span>
+                                                                        <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
+                                                                    </span>
+                                                                    <span v-if="comment.replier!=null" style="font-size: 18px;margin:0 5px;">reply you</span>
+                                                                </div>
+                                                                <div style="font-size: 20px">{{comment.content}}</div>
+                                                                <div style="float:right;display: inline-flex;padding: 5px;">
                                                                 <div v-if="comment.itemInfo.type=='modelItem'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">

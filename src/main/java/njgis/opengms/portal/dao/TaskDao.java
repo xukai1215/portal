@@ -6,10 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Date;
 import java.util.List;
 
 
 public interface TaskDao extends MongoRepository<Task,String> {
+
+    List<Task> findAllByComputableId(String oid);
+
+    List<Task> findAllByComputableIdAndRunTimeGreaterThanEqual(String oid, Date date);
 
     Task findFirstByTaskId(String taskId);
 

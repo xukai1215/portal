@@ -291,7 +291,7 @@ public class ModelItemRestController {
     }
 
     @RequestMapping (value="/getDailyViewCount",method = RequestMethod.GET)
-    public JsonResult getDailyViewCount(@RequestParam(value="oid") String oid){
+    public JsonResult getDailyViewCount(@RequestParam(value="oid") String oid) {
         ModelItem modelItem=modelItemService.getByOid(oid);
         List<String> computableModelIds = modelItem.getRelate().getComputableModels();
         List<ComputableModel> computableModelList=new ArrayList<>();
@@ -301,7 +301,7 @@ public class ModelItemRestController {
         }
 
         StatisticsService statisticsService = new StatisticsService();
-        JSONObject result = statisticsService.getDailyViewAndInvokeTimes(modelItem,computableModelList);
+        JSONObject result = statisticsService.getDailyViewAndInvokeTimes(modelItem,computableModelList,30);
 
         return ResultUtils.success(result);
     }
