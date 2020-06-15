@@ -36,11 +36,15 @@ public interface LogicalModelDao extends MongoRepository<LogicalModel,String> {
 
     Page<LogicalModel> findByAuthor(String author,Pageable pageable);
 
+    Page<LogicalModel> findByAuthorAndStatusIn(String author,List<String> status,Pageable pageable);
+
     List<Item> findByAuthor(String author);
 
     Page<LogicalModel> findByNameContainsIgnoreCaseAndAuthor(String name, String author,Pageable pageable);
 
     Page<LogicalModelResultDTO> findLoModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
+
+    Page<LogicalModelResultDTO> findLoModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author,List<String> status, Pageable pageable);
 
     List<Item> findAllByAuthorshipIsNotNull();
 

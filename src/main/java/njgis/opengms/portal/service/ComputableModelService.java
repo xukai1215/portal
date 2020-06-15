@@ -96,6 +96,8 @@ public class ComputableModelService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
 
     public List<ComputableModel> findAllByMd5(String md5){
         return computableModelDao.findAllByMd5(md5);
@@ -1010,14 +1012,20 @@ public class ComputableModelService {
 
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid) {
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid,String loadUser) {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user = userDao.findFirstByOid(oid);
-        Page<ComputableModel> modelItemPage = computableModelDao.findByAuthor(user.getUserName(), pageable);
+        Page<ComputableModel> modelItemPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)) {
+            modelItemPage = computableModelDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible, pageable);
+        }else{
+            modelItemPage = computableModelDao.findByAuthor(user.getUserName(), pageable);
+        }
 
         JSONObject result = new JSONObject();
 
@@ -1245,7 +1253,7 @@ public class ComputableModelService {
     }
 
 
-    public JSONObject searchByTitleByOid(ComputableModelFindDTO computableModelFindDTO, String oid){
+    public JSONObject searchByTitleByOid(ComputableModelFindDTO computableModelFindDTO, String oid,String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=computableModelFindDTO.getPage();
         int pageSize = computableModelFindDTO.getPageSize();
@@ -1255,7 +1263,15 @@ public class ComputableModelService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<ComputableModelResultDTO> computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        Page<ComputableModelResultDTO> computableModelResultDTOPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)) {
+            computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(name,userName,itemStatusVisible,pageable);
+        }else{
+            computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        }
+
+
 
         JSONObject result=new JSONObject();
         result.put("list",computableModelResultDTOPage.getContent());

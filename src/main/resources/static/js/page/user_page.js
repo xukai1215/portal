@@ -980,7 +980,7 @@ new Vue({
             let name='concepts';
             $.ajax({
                 type: "Get",
-                url: "/repository/listConceptsByUserOid",
+                url: "/concept/listConceptsByUserOid",
                 data: {
                     page: this.pageOption.currentPage - 1,
                     asc: this.pageOption.sortAsc,
@@ -1021,7 +1021,7 @@ new Vue({
         spatialHandleCurrentChange(val){
             this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
-            var url = "/repository/listSpatialsByOid";
+            var url = "/spatial/listSpatialsByOid";
             var name = "spatials";
 
             $.ajax({
@@ -1067,7 +1067,7 @@ new Vue({
         templateHandleCurrentChange(val){
             this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
-            var url = "/repository/listTemplatesByOid";
+            var url = "/template/listTemplatesByOid";
             var name = "templates";
 
             $.ajax({
@@ -1113,7 +1113,7 @@ new Vue({
         unitHandleCurrentChange(val){
             this.pageOption.currentPage = val;
             const hrefs = window.location.href.split("/");
-            var url = "/repository/listUnitsByOid";
+            var url = "/unit/listUnitsByOid";
             var name = "units";
 
             $.ajax({

@@ -1093,30 +1093,24 @@ var userDataSpace = Vue.extend(
             //删除数据容器中的记录
             delete_data_dataManager(id) {
                 console.log(id)
-                if (confirm("Are you sure to delete?")) {
-                    let tha = this
-                    axios.delete("/dataManager/delete", {
-                        params: {
-                            id:id
-                        }
-                    }).then((res) => {
+
+                axios.delete("/dispatchRequest/delete", {
+                    params: {
+                        uid: id
+                    }
+                }).then((res) => {
 
 
-                        if (res.data.msg === "成功") {
-                            //删除双向绑定的数组
-                            tha.rightMenuShow = false
-                            tha.databrowser = []
-                            tha.addAllData()
-                            // alert("delete successful")
+                    // if (res.data.msg === "成功") {
+                    //     //删除双向绑定的数组
+                    //     tha.rightMenuShow = false
+                    //     tha.databrowser = []
+                    //     tha.addAllData()
+                    //     // alert("delete successful")
+                    //
+                    // }
 
-                        }
-
-                    })
-                } else {
-                    // alert("ok")
-                }
-
-
+                })
             },
 
             deleteAll(){
@@ -1220,8 +1214,7 @@ var userDataSpace = Vue.extend(
                     beforeClose: (action, instance, done) => {
 
                         if (action === 'confirm') {
-                            if(this.rightTargetItem.package==false)
-                                this.delete_data_dataManager(sourceId)
+
                             instance.confirmButtonLoading = true;
                             instance.confirmButtonText = 'deleting...';
                             setTimeout(() => {
@@ -1239,7 +1232,8 @@ var userDataSpace = Vue.extend(
                                         } else {
                                             this.myFileShown.splice(this.rightTargetItem.index, 1);
                                             // this.rightTargetItem=null;
-
+                                            if(this.rightTargetItem.package==false)
+                                                this.delete_data_dataManager(sourceId)
                                         }
 
                                     }

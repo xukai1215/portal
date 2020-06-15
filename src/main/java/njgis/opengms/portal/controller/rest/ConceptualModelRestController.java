@@ -101,8 +101,13 @@ public class ConceptualModelRestController {
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
-    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid){
-        return ResultUtils.success(conceptualModelService.listByUserOid(modelItemFindDTO,oid));
+    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+
+        return ResultUtils.success(conceptualModelService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/list",method = RequestMethod.POST)
@@ -156,9 +161,12 @@ public class ConceptualModelRestController {
     }
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
-    JsonResult searchByTitle(ConceptualModelFindDTO conceptualModelFindDTO, String oid){
-        System.out.println("222000");
-        return ResultUtils.success(conceptualModelService.searchByTitleByOid(conceptualModelFindDTO,oid));
+    JsonResult searchByTitle(ConceptualModelFindDTO conceptualModelFindDTO, String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(conceptualModelService.searchByTitleByOid(conceptualModelFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/getConceptualModelsByUserId",method = RequestMethod.GET)

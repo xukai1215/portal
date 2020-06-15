@@ -108,8 +108,12 @@ public class LogicalModelRestController {
     }
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
-    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid){
-        return ResultUtils.success(logicalModelService.listByUserOid(modelItemFindDTO,oid));
+    JsonResult listByUserOid(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="oid") String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(logicalModelService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/list",method = RequestMethod.POST)
@@ -180,9 +184,12 @@ public class LogicalModelRestController {
     }
 
     @RequestMapping(value="/searchByNameByOid",method= RequestMethod.GET)
-    JsonResult searchByTitle(LogicalModelFindDTO logicalModelFindDTO, String oid){
-        System.out.println("/searchModelByOid");
-        return ResultUtils.success(logicalModelService.searchByTitleByOid(logicalModelFindDTO,oid));
+    JsonResult searchByTitle(LogicalModelFindDTO logicalModelFindDTO, String oid,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String loadUser = null;
+        if(session.getAttribute("oid")!=null)
+            loadUser =  session.getAttribute("oid").toString() ;
+        return ResultUtils.success(logicalModelService.searchByTitleByOid(logicalModelFindDTO,oid,loadUser));
     }
 
     @RequestMapping (value="/add",method = RequestMethod.POST)

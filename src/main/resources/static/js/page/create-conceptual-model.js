@@ -706,9 +706,6 @@ var createConceptualModel = Vue.extend({
                     // $("#descInput").val(basicInfo.description)
 
 
-
-
-
                 }
             })
 
@@ -920,7 +917,7 @@ var createConceptualModel = Vue.extend({
                                     showClose: false,
                                 }).then(() => {
                                     $("#editModal", parent.document).remove();
-                                    window.location.href = "/conceptualModel/" + res.data.oid;
+                                    window.location.href = "/conceptualModel/" + res.data.id;
                                 }).catch(() => {
                                     window.location.href = "/user/userSpace#/models/conceptualModel";
                                 });

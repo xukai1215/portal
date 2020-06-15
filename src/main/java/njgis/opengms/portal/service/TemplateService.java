@@ -7,11 +7,14 @@ import njgis.opengms.portal.dto.Template.TemplateFindDTO;
 import njgis.opengms.portal.dto.Template.TemplateResultDTO;
 import njgis.opengms.portal.entity.Template;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TemplateService {
@@ -19,9 +22,40 @@ public class TemplateService {
     TemplateDao templateDao;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     UserDao userDao;
 
-    public JSONObject searchByTitleByOid(TemplateFindDTO templateFindDTO, String oid){
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
+    public JSONObject getTemplatesByUserId(String oid, TemplateFindDTO templateFindDTO, String loadUser) {
+
+        String userId = userService.getByOid(oid).getUserName();
+        boolean asc=templateFindDTO.getAsc();
+        String sortElement=templateFindDTO.getSortElement();
+        int page=templateFindDTO.getPage();
+        int pageSize=templateFindDTO.getPageSize();
+
+        Sort sort = new Sort(asc  ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<TemplateResultDTO> templates = Page.empty();
+        if(loadUser == null||!loadUser.equals(oid)) {
+            templates = templateDao.findByAuthorAndStatusIn(userId, itemStatusVisible,pageable);
+        }else{
+            templates = templateDao.findByAuthor(userId, pageable);
+        }
+        JSONObject TemplateObject = new JSONObject();
+        TemplateObject.put("count", templates.getTotalElements());
+        TemplateObject.put("templates", templates.getContent());
+
+        return TemplateObject;
+
+    }
+
+    public JSONObject searchByTitleByOid(TemplateFindDTO templateFindDTO, String oid,String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=templateFindDTO.getPage();
         int pageSize = templateFindDTO.getPageSize();
@@ -31,7 +65,14 @@ public class TemplateService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
-        Page<TemplateResultDTO> templateResultDTOPage=templateDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+
+        Page<TemplateResultDTO> templateResultDTOPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)) {
+            templateResultDTOPage = templateDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName, itemStatusVisible,pageable);
+        }else{
+            templateResultDTOPage = templateDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+        }
 
         JSONObject result=new JSONObject();
         result.put("list",templateResultDTOPage.getContent());

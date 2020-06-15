@@ -101,6 +101,10 @@ public class ModelItemService {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
         //getpage函数通过id获取需要的页面
     public ModelAndView getPage(String id, HttpServletRequest request){
         //条目信息
@@ -161,6 +165,9 @@ public class ModelItemService {
         for(int i=0;i<conceptual.size();i++){
             String oid=conceptual.get(i);
             ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+            if(conceptualModel.getStatus().equals("Private")){
+                continue;
+            }
             JSONObject conceptualJson = new JSONObject();
             conceptualJson.put("name",conceptualModel.getName());
             conceptualJson.put("oid",conceptualModel.getOid());
@@ -173,6 +180,9 @@ public class ModelItemService {
         for(int i=0;i<logical.size();i++){
             String oid=logical.get(i);
             LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+            if(logicalModel.getStatus().equals("Private")){
+                continue;
+            }
             JSONObject logicalJson = new JSONObject();
             logicalJson.put("name",logicalModel.getName());
             logicalJson.put("oid",logicalModel.getOid());
@@ -185,6 +195,9 @@ public class ModelItemService {
         for(int i=0;i<computable.size();i++){
             String oid=computable.get(i);
             ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+            if(computableModel.getStatus().equals("Private")){
+                continue;
+            }
             JSONObject computableJson = new JSONObject();
             computableJson.put("name",computableModel.getName());
             computableJson.put("oid",computableModel.getOid());
@@ -198,6 +211,9 @@ public class ModelItemService {
             for (int i = 0; i < concepts.size(); i++) {
                 String oid = concepts.get(i);
                 Concept concept = conceptDao.findFirstByOid(oid);
+                if(concept.getStatus().equals("Private")){
+                    continue;
+                }
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("name", concept.getName());
                 jsonObj.put("oid", concept.getOid());
@@ -214,6 +230,9 @@ public class ModelItemService {
             for (int i = 0; i < spatialReferences.size(); i++) {
                 String oid = spatialReferences.get(i);
                 SpatialReference spatialReference = spatialReferenceDao.findByOid(oid);
+                if(spatialReference.getStatus().equals("Private")){
+                    continue;
+                }
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("name", spatialReference.getName());
                 jsonObj.put("oid", spatialReference.getOid());
@@ -228,6 +247,9 @@ public class ModelItemService {
             for (int i = 0; i < templates.size(); i++) {
                 String oid = templates.get(i);
                 Template template = templateDao.findByOid(oid);
+                if(template.getStatus().equals("Private")){
+                    continue;
+                }
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("name", template.getName());
                 jsonObj.put("oid", template.getOid());
@@ -242,6 +264,9 @@ public class ModelItemService {
             for (int i = 0; i < units.size(); i++) {
                 String oid = units.get(i);
                 Unit unit = unitDao.findByOid(oid);
+                if(unit.getStatus().equals("Private")){
+                    continue;
+                }
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("name", unit.getName());
                 jsonObj.put("oid", unit.getOid());
@@ -257,6 +282,9 @@ public class ModelItemService {
         if(dataItems!=null){
             for(String dataId:dataItems){
                 DataItem dataItem=dataItemDao.findFirstById(dataId);
+                if(dataItem.getStatus().equals("Private")){
+                    continue;
+                }
                 JSONObject dataJson=new JSONObject();
                 dataJson.put("name",dataItem.getName());
                 dataJson.put("id",dataItem.getId());
@@ -553,6 +581,9 @@ public class ModelItemService {
                 if(list!=null){
                     for(String id:list){
                         DataItem dataItem=dataItemDao.findFirstById(id);
+                        if(dataItem.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item=new JSONObject();
                         item.put("oid",dataItem.getId());
                         item.put("name",dataItem.getName());
@@ -568,6 +599,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
+                        if(modelItem1.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", modelItem1.getOid());
                         item.put("name", modelItem1.getName());
@@ -582,6 +616,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(id);
+                        if(conceptualModel.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", conceptualModel.getOid());
                         item.put("name", conceptualModel.getName());
@@ -596,6 +633,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         LogicalModel logicalModel = logicalModelDao.findFirstByOid(id);
+                        if(logicalModel.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", logicalModel.getOid());
                         item.put("name", logicalModel.getName());
@@ -610,6 +650,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         ComputableModel computableModel = computableModelDao.findFirstByOid(id);
+                        if(computableModel.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", computableModel.getOid());
                         item.put("name", computableModel.getName());
@@ -624,6 +667,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         Concept concept = conceptDao.findByOid(id);
+                        if(concept.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", concept.getOid());
                         item.put("name", concept.getName());
@@ -638,6 +684,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
+                        if(spatialReference.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", spatialReference.getOid());
                         item.put("name", spatialReference.getName());
@@ -652,6 +701,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         Template template = templateDao.findByOid(id);
+                        if(template.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", template.getOid());
                         item.put("name", template.getName());
@@ -666,6 +718,9 @@ public class ModelItemService {
                 if(list!=null) {
                     for (String id : list) {
                         Unit unit = unitDao.findByOid(id);
+                        if(unit.getStatus().equals("Private")){
+                            continue;
+                        }
                         JSONObject item = new JSONObject();
                         item.put("oid", unit.getOid());
                         item.put("name", unit.getName());
@@ -826,7 +881,7 @@ public class ModelItemService {
         return result;
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO,String oid){
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO,String oid,String loadUser){
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
@@ -834,7 +889,16 @@ public class ModelItemService {
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user=userDao.findFirstByOid(oid);
-        Page<ModelItemResultDTO> modelItemPage=modelItemDao.findByAuthor(user.getUserName(),pageable);
+        Page<ModelItemResultDTO> modelItemPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemPage=modelItemDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible,pageable);
+        }
+
+        else {
+            modelItemPage=modelItemDao.findByAuthor(user.getUserName(),pageable);
+        }
+
 
         JSONObject result=new JSONObject();
 
@@ -878,11 +942,11 @@ public class ModelItemService {
         Page<ModelItemResultDTO> modelItemPage = null;
         if(userName==null){
             if (searchText.equals("")&&classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContains("",pageable);
+                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("",itemStatusVisible,pageable);
             } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCase(searchText, pageable);
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
             } else if(searchText.equals("")&&!classes.get(0).equals("all")){
-                modelItemPage = modelItemDao.findByClassificationsIn(classes, pageable);
+                modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
             }else{
                 modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText,classes, pageable);
             }
@@ -1233,7 +1297,7 @@ public class ModelItemService {
 
     }
 
-    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid){
+    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid ,String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
@@ -1243,7 +1307,15 @@ public class ModelItemService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<ModelItemResultDTO> modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        Page<ModelItemResultDTO> modelItemResultDTOPage = Page.empty();
+
+        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name,userName,itemStatusVisible,pageable);
+        }else{
+            modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        }
+
+
 
         JSONObject result=new JSONObject();
         result.put("list",modelItemResultDTOPage.getContent());

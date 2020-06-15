@@ -72,6 +72,9 @@ public class LogicalModelService {
     @Autowired
     UserService userService;
 
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -421,15 +424,20 @@ public class LogicalModelService {
         }
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid) {
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid,String loadUser) {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user = userDao.findFirstByOid(oid);
-        Page<LogicalModel> modelItemPage = logicalModelDao.findByAuthor(user.getUserName(), pageable);
 
+        Page<LogicalModel> modelItemPage =Page.empty();
+        if(loadUser == null||!loadUser.equals(oid)) {
+            modelItemPage = logicalModelDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible, pageable);
+        }else{
+            modelItemPage = logicalModelDao.findByAuthor(user.getUserName(), pageable);
+        }
         JSONObject result = new JSONObject();
 
         result.put("list", modelItemPage.getContent());
@@ -688,7 +696,7 @@ public class LogicalModelService {
 
     }
 
-    public JSONObject searchByTitleByOid(LogicalModelFindDTO logicalModelFindDTO, String oid){
+    public JSONObject searchByTitleByOid(LogicalModelFindDTO logicalModelFindDTO, String oid,String loadUser){
         String userName=userDao.findFirstByOid(oid).getUserName();
         int page=logicalModelFindDTO.getPage();
         int pageSize = logicalModelFindDTO.getPageSize();
@@ -698,8 +706,12 @@ public class LogicalModelService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
-        Page<LogicalModelResultDTO> logicalModelResultDTOPage=logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
-
+        Page<LogicalModelResultDTO> logicalModelResultDTOPage =Page.empty();
+        if(loadUser == null||!loadUser.equals(oid)) {
+            logicalModelResultDTOPage = logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName,itemStatusVisible, pageable);
+        }else {
+            logicalModelResultDTOPage = logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+        }
         JSONObject result=new JSONObject();
         result.put("list",logicalModelResultDTOPage.getContent());
         result.put("total",logicalModelResultDTOPage.getTotalElements());
