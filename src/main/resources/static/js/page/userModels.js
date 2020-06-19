@@ -63,8 +63,6 @@ var modelItem = Vue.extend({
     }
 
 })
-
-
 // Vue.component('myComponent',modelItem)
 
 //该组件的子组件通过router控制，每次重拿this.$route.params.modelitemKind避免回退出现混乱

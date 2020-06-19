@@ -1,6 +1,6 @@
 Vue.component("user-data",
     {
-        template: "#userDataSpace",
+        template: "#userDataSpaceModule",
         data(){
             return{
                 //页面样式控制

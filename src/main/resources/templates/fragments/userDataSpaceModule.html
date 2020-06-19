@@ -40,7 +40,7 @@
 
 <body>
 <div id="app">
-  <template id="userDataSpace" th:fragment="userDataSpace">
+  <template id="userDataSpaceModule" th:fragment="userDataSpaceModule">
     <div>
 
       <!--el-dialog放在这一层-->
@@ -55,11 +55,6 @@
               <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==1}"
                    style="height: 100%">
                 <div class="panel panel-success" style="border: none;height: 100%;overflow: hidden">
-                  <!--<div class="panel-heading">-->
-                  <!--<h3 class="panel-title">-->
-                  <!--Manager my data below.-->
-                  <!--</h3>-->
-                  <!--</div>-->
                   <div style="height: 100%">
                     <el-card class="filebrowserfunction" shadow="never">
 
