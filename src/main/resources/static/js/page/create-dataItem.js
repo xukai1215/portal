@@ -77,7 +77,6 @@ var createDataItem = Vue.extend({
             cls: [],//分类的id队列
             clsStr: '',//分类的label队列
 
-
         }
     },
     methods: {
