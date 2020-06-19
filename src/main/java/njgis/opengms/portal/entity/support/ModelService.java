@@ -21,6 +21,4 @@ public class ModelService {
     List<AuthorInfo> authorInfo;
     String mdl;
     String runtime;
-
-
 }
