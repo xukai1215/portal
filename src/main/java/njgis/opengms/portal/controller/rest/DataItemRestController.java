@@ -307,6 +307,7 @@ public class DataItemRestController {
         view.addObject("classifications",classifications);
         view.addObject("relatedModels",modelItemArray);
         view.addObject("authorship",authorshipString);
+        view.addObject("userDataList", dataItem.getUserDataList());
 
         return view;
     }

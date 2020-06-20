@@ -94,17 +94,12 @@
                                     <div class="step2">
                                         <div class="step-app">
                                             <ul class="step-steps text-center">
-                                                <li><a href="#step24">Your Data</a></li>
                                                 <li><a id="start_step" href="#step21">Basic Info</a></li>
-                                                <li><a href="#step22">Overview & Detail</a></li>
-                                                <li><a href="#step23">Authorship</a></li>
+                                                <li><a href="#step22">Your Data</a></li>
+                                                <li><a href="#step23">Overview & Detail</a></li>
+                                                <li><a href="#step24">Authorship</a></li>
                                             </ul>
                                             <div class="step-content">
-                                                <div class="step-tab-panel" id="step24">
-                                                    <!--<el-card class="dataSpace">-->
-                                                    <user-data @com-selectfile="selectDataspaceFile"></user-data>
-                                                    <!--</el-card>-->
-                                                </div>
                                                 <div class="step-tab-panel" id="step21">
                                                     <!--<div class="col-md-3 col-sm-4 tree" id="tree">-->
                                                     <!--</div>-->
@@ -208,6 +203,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="step-tab-panel" id="step22">
+                                                    <!--<el-card class="dataSpace">-->
+                                                    <user-data @com-selectfile="selectDataspaceFile"></user-data>
+                                                    <!--</el-card>-->
+                                                </div>
+                                                <div class="step-tab-panel" id="step23">
 
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -274,8 +274,7 @@
                                                     <!--</div>-->
                                                     <!--</div>-->
                                                 </div>
-
-                                                <div class="step-tab-panel" id="step23">
+                                                <div class="step-tab-panel" id="step24">
                                                     <!--detail-->
                                                     <div class="panel panel-success" style="border:none">
 
@@ -370,8 +369,6 @@
                                                     </div>
 
                                                 </div>
-
-
                                             </div>
                                             <div class="step-footer">
                                                 <!--data-direction="next"-->
