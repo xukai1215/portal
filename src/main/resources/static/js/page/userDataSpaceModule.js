@@ -879,12 +879,17 @@ Vue.component("user-data",
 
                     }
                     this.downloadDataSetName.push(obj)
-                }
 
+                }
+                this.addFileToFatherModule(eval)
                 if (eval.taskId != null) {
                     this.detailsIndex = 2
                     this.getOneOfUserTasks(eval.taskId);
                 }
+            },
+
+            addFileToFatherModule(eval){//将选中文件加入父组件数据中
+                this.$emit('com-selectfile',eval)
             },
 
             getOneOfUserTasks(taskId) {
