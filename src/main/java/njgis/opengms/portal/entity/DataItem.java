@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.DataItemMeta;
 import njgis.opengms.portal.entity.support.DataMeta;
+import njgis.opengms.portal.entity.support.FileMeta;
+import njgis.opengms.portal.entity.support.FileMetaUser;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -35,6 +37,9 @@ public class DataItem extends Item{
     List<String> displays;
     List<String> relatedModels;
     List<DataMeta> dataList;
+
+//    List<String> userDataOid;
+    List<FileMetaUser> userDataList;
 //    List<String> contributers;
 
     DataItemMeta meta;

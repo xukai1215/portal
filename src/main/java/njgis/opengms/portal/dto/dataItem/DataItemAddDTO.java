@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DataItemMeta;
 import njgis.opengms.portal.entity.support.DataMeta;
+import njgis.opengms.portal.entity.support.FileMetaUser;
 
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class DataItemAddDTO {
     List<String> displays;
 //    List<String> contributers;
     List<AuthorInfo> authorship;
+//    List<String> userDataOid;
+    List<FileMetaUser> userDataList;
+
 
     List<DataMeta> dataList;
 

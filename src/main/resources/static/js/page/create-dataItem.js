@@ -78,6 +78,8 @@ var createDataItem = Vue.extend({
             clsStr: '',//分类的label队列
 
             selectedFile:[],
+            userDataList:[],
+
         }
     },
     methods: {
@@ -198,6 +200,21 @@ var createDataItem = Vue.extend({
 
         //add data item
         createdataitem() {
+            for (i=0;i<this.selectedFile.length;i++){
+                let fileMetaUser = {
+                    id:"",
+                    label:"",
+                    suffix:"",
+                    url:""
+                }
+                fileMetaUser.id = this.selectedFile[i].id;
+                fileMetaUser.label = this.selectedFile[i].label;
+                fileMetaUser.suffix = this.selectedFile[i].suffix;
+                fileMetaUser.url = this.selectedFile[i].url;
+                this.userDataList.push(fileMetaUser);
+            }
+
+
             this.dataItemAddDTO.name = $("#dataname").val();
 
             this.dataItemAddDTO.description = $("#description").val();
@@ -243,7 +260,8 @@ var createDataItem = Vue.extend({
                 authorship.push(authorInfo)
 
             }
-            this.dataItemAddDTO.authorship = authorship
+            this.dataItemAddDTO.authorship = authorship;
+            this.dataItemAddDTO.userDataList = this.userDataList;
 
 
             var thedata = this.dataItemAddDTO;
@@ -470,8 +488,10 @@ var createDataItem = Vue.extend({
 
                     }
                 }
-
                 if (currentIndex === 1) {
+                    return true;
+                }
+                if (currentIndex === 2) {
                     if (stepDirection === "forward") {
                         if ($("#description").val().length == 0) {
                             new Vue().$message({
