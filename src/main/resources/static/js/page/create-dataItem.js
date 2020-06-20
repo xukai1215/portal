@@ -77,6 +77,7 @@ var createDataItem = Vue.extend({
             cls: [],//分类的id队列
             clsStr: '',//分类的label队列
 
+            selectedFile:[],
         }
     },
     methods: {
@@ -334,6 +335,24 @@ var createDataItem = Vue.extend({
         },
         change(currentIndex, newIndex, stepDirection) {
             console.log(currentIndex, newIndex, stepDirection)
+        },
+
+        selectDataspaceFile(file){
+            if (this.selectedFile.indexOf(file) > -1) {
+                for (var i = 0; i < this.selectedFile.length; i++) {
+                    if (this.selectedFile[i] === file) {
+                        //删除
+                        this.selectedFile.splice(i, 1)
+                        // this.downloadDataSetName.splice(i, 1)
+                        break
+                    }
+                }
+
+
+            } else {
+                this.selectedFile.push(file);
+            }
+
         },
 
         sendcurIndexToParent(){
