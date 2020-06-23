@@ -6,15 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create Data Item | OpenGMS</title>
-
-
-
     <link rel="stylesheet" type="text/css" media="screen"
           href="/static/css/font-awesome/css/font-awesome.min.css"
     />
-
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-modelitem.css"/>
-
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/modelItemEditor.css"/>
@@ -42,14 +37,11 @@
         .tag-editor{
             border-radius: 4px  ;
         }
-
-
         tbody tr td {
             word-wrap: break-word;
             word-break: break-all;
             overflow: hidden;
         }
-
         font {
             vertical-align: middle;
         }
@@ -85,17 +77,15 @@
                     </section>
 
                     <div class="page-content-wrap container-fluid">
-
                         <div class="col-md-12 col-sm-12">
                             <div class="panel panel-success" style="border: none;height: 680px;">
-
                                 <div class="panel-body">
                                     <!--                                    以下使用step步骤插件-->
                                     <div class="step2">
                                         <div class="step-app">
                                             <ul class="step-steps text-center">
                                                 <li><a id="start_step" href="#step21">Basic Info</a></li>
-                                                <li><a href="#step22">Your Data</a></li>
+                                                <li><a href="#step22">Data</a></li>
                                                 <li><a href="#step23">Overview & Detail</a></li>
                                                 <li><a href="#step24">Authorship</a></li>
                                             </ul>
@@ -107,7 +97,7 @@
                                                          style="overflow-y: auto;height: 450px;">
                                                         <el-card>
                                                             <div slot="header" class="clearfix text-center">
-                                                                <span style="font-size: 20px;color:#444">Model Classifications</span>
+                                                                <span style="font-size: 20px;color:#444">Data Classifications</span>
                                                             </div>
                                                             <el-tree style="height: 320px;overflow: auto"
                                                                      id="tree2"
@@ -125,13 +115,13 @@
                                                     <div class="col-md-9 col-sm-8">
                                                         <div class="form-group">
                                                             <!--classificaation-->
-                                                            <label for="classification"><span class="xing">* </span>Category:</label>
+                                                            <label for="classification"><span class="star">* </span>Category:</label><br>
                                                             <input type="text" class="form-control" v-model="clsStr"
                                                                    placeholder="Please choose the catgory of the data which you are ready to upload"
-                                                                   id="classification" required="required" readonly/>
+                                                                   id="classification" required="required" readonly/><br>
                                                             <!--<small id="catgoryHelp" class="form-text text-muted">Please choose the catgory of the data which you are ready to upload.</small>-->
 
-                                                            <label for="classification"><span class="xing">* </span>Status:</label><br/>
+                                                            <label for="classification"><span class="star">* </span>Status:</label><br>
                                                             <el-radio-group v-model="dataItemAddDTO.status" size="medium" >
                                                                 <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
                                                                     <el-radio-button label="Public"></el-radio-button>
@@ -143,21 +133,21 @@
                                                                     <el-radio-button label="Private"></el-radio-button>
                                                                 </el-tooltip>
 
-                                                            </el-radio-group><br/>
+                                                            </el-radio-group><br><br>
 
                                                             <!--name-->
-                                                            <label for="dataname"><span class="xing">* </span>Name:</label>
+                                                            <label for="dataname"><span class="star">* </span>Name:</label><br>
                                                             <input type="text" class="form-control" id="dataname"
                                                                    aria-describedby="emailHelp"
                                                                    placeholder="Please input the name of the data which you are ready to upload."
-                                                                   required="required"/>
+                                                                   required="required"/><br>
                                                             <!--<small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
 
                                                             <!--keywords-->
-                                                            <label for="keywords"><span class="xing">* </span>Keywords:</label><br>
+                                                            <label for="keywords"><span class="star">* </span>Keywords:</label><br>
                                                             <!--<div class="bootstrap-tagsinput" >-->
                                                             <input type="text"  id="keywords" placeholder="input key words.."
-                                                                   required="required" style="border-radius: 4px;"/>
+                                                                   required="required" style="border-radius: 4px;"/><br>
                                                             <!--<small id="keywordsHelp" class="form-text text-muted">Please input  keywords of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
 
                                                             <!--img type-->
@@ -167,8 +157,20 @@
 
 
                                                             <!--data resources url-->
-                                                            <label for="dataresoureurl">Data Resource Url:</label>
-                                                            <input type="text" class="form-control" id="dataresoureurl"/>
+                                                            <label><span class="star">* </span>Data Type:</label><br>
+                                                            <div class="input-group col-md-5">
+                                                                <label style="margin-right: 20px; font-size: 20px">
+                                                                    <input type="radio" name="ContentType"
+                                                                           value="Resources Url" checked="checked"/>
+                                                                    <label style="float:left; margin-left: 5px;">Resources Url</label>
+                                                                </label>
+                                                                <label style="margin-right: 20px; font-size: 20px">
+                                                                    <input type="radio" name="ContentType"
+                                                                           value="Resource"/>
+                                                                    <label style="float:left; margin-left: 5px;">Resource</label>
+                                                                </label>
+                                                            </div><br>
+                                                            <!--<input type="text" class="form-control" id="dataresoureurl"/><br>-->
                                                             <!--<small   class="form-text text-muted">Please input the url of online data.</small>-->
 
 
@@ -203,76 +205,76 @@
                                                     </div>
                                                 </div>
                                                 <div class="step-tab-panel" id="step22">
-                                                    <!--<el-card class="dataSpace">-->
-                                                    <user-data @com-selectfile="selectDataspaceFile"></user-data>
-                                                    <!--</el-card>-->
+                                                    <!--非作者用户编辑，展示作者选择的data，当前用户不是作者时此div可见-->
+                                                    <div id="ResourcesUrl">
+                                                        <label>Please Input Your Resource Url:</label><br><br><br>
+                                                        <input type="text" style="width: 100%;height: 100px">
+                                                    </div>
+                                                    <div id="Resource" style="display: none">
+                                                        <label for="classification">You can select some data from you
+                                                            data space:</label><br><br>
+                                                        <el-button type="primary" @click="dialogVisible = true">+ Add
+                                                        </el-button>
+                                                        <el-button type="danger" @click="removeFile()">- Remove
+                                                        </el-button>
+                                                        <!--<el-button type="success" @click="replaceFile()">Replace</el-button>-->
+
+                                                        <el-card :body-style="{ padding:'9px'}"
+                                                                 style="margin-top: 10px">
+                                                            <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>
+                                                        </el-card>
+
+
+                                                        <el-card style="height: 300px;overflow-y:auto"
+                                                                 id="browsercont" class="filecontent">
+
+                                                            <div @click="resClick"
+                                                                 v-for="(resource, index) in selectedFile">
+                                                                <!--</el-row>-->
+                                                                <el-card style="width:10%" :key="index"
+                                                                         :align="index"
+                                                                         :title="resource.label" class="dataitemisol"
+                                                                         shadow="never">
+
+                                                                    <el-row>
+                                                                        <el-col :span="6">&nbsp</el-col>
+                                                                        <el-col :span="12"><a><img :src="'/static/img/filebrowser/'+resource.suffix+'.svg'" style="height: 60%;width:100%"></a>
+                                                                        </el-col>
+                                                                        <el-col :span="6">&nbsp</el-col>
+                                                                    </el-row>
+                                                                    <el-row>
+                                                                        <el-col :span="2">&nbsp</el-col>
+                                                                        <el-col :span="20">
+
+                                                                            <p style="word-wrap: break-word;word-break: break-all;text-align: center">{{resource.label}}.{{resource.suffix}}</p>
+                                                                        </el-col>
+                                                                        <el-col :span="2">&nbsp</el-col>
+
+                                                                    </el-row>
+
+                                                                    <!--menu item -->
+
+
+                                                                </el-card>
+
+                                                            </div>
+                                                        </el-card>
+                                                    </div>
                                                 </div>
                                                 <div class="step-tab-panel" id="step23">
-
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <!--description-->
-                                                            <label for="description"><span class="xing">* </span>Overview:</label>
-                                                            <!--<small id="descriptionHelp" class="form-text text-muted">Please input the brief description of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
-
+                                                            <label for="description"><span class="star">* </span>Overview:</label>
                                                             <textarea class="form-control" id="description"
                                                                       placeholder="Input description about the data here."
-                                                                      required="required"></textarea>
-
-                                                            <!--<div class="form-group">--><br/>
+                                                                      required="required"></textarea><br/>
                                                             <label for="detail">Detail Description:</label>
-                                                            <!--<small id="detailHelp" class="form-text text-muted">Please input the detail of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
-
-                                                            <!--<textarea class="form-control"    id="detail"  placeholder="Input detail about the data here."></textarea>-->
                                                             <textarea id="detail"
                                                                       placeholder="Input detail about the data here."></textarea>
-
-
                                                         </div>
-
                                                     </div>
                                                     <br/>
-                                                    <!--<div class="col-md-12">-->
-                                                    <!--<div class="form-group">-->
-                                                    <!--<label for="upperleftx">Upper left X:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded."  id="upperleftx" />-->
-
-
-                                                    <!--<label for="upperlefty">Upper left Y:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="upperlefty" />-->
-
-
-                                                    <!--<label for="bottomrightx">Bottom right  X:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrightx" />-->
-
-
-                                                    <!--<label for="bottomrighty">Bottom right  Y:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrighty" />-->
-
-
-                                                    <!--</div><br>-->
-                                                    <!--</div>-->
-
-                                                    <!--<div class="col-md-6">-->
-                                                    <!--<div class="form-group">-->
-                                                    <!--<label for="upperleftx">Upper left X:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded."  id="upperleftx" />-->
-
-                                                    <!--<label for="upperlefty">Upper left Y:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="upperlefty" />-->
-                                                    <!--</div>-->
-                                                    <!--</div>-->
-                                                    <!--<div class="col-md-6">-->
-
-                                                    <!--<div class="form-group">-->
-                                                    <!--<label for="bottomrightx">Bottom right  X:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrightx" />-->
-
-                                                    <!--<label for="bottomrighty">Bottom right  Y:</label>-->
-                                                    <!--<input type="text" class="form-control"  placeholder="Please input coordinate data of the data to be uploaded." id="bottomrighty" />-->
-
-                                                    <!--</div>-->
-                                                    <!--</div>-->
                                                 </div>
                                                 <div class="step-tab-panel" id="step24">
                                                     <!--detail-->
@@ -371,39 +373,38 @@
                                                 </div>
                                             </div>
                                             <div class="step-footer">
-                                                <!--data-direction="next"-->
                                                 <button id="next" class="btn btn-primary next pull-right"
                                                         data-direction="next">
                                                     Next
                                                 </button>
-
                                                 <button class="btn btn-warning prev pull-left" data-direction="prev">
                                                     Previous
                                                 </button>
                                                 <button class="btn btn-info finish pull-right" data-direction="finish"
-                                                        @click="createdataitem()"><strong>Create DataItem</strong></button>
-
+                                                        @click="createDataItem()"><strong>Finish</strong></button>
                                             </div>
-                                            <!--<button type="button" class="btn btn-success btn-primary pull-right" @click="createdataitem()">Create DataItem</button>-->
-
-
                                         </div>
-
-
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
                 </div>
-
-
+                <el-dialog
+                        title="Data Select"
+                        :visible.sync="dialogVisible"
+                        width="80%"
+                        :before-close="handleClose">
+                    <user-data @com-selectfile="selectDataspaceFile"></user-data>
+                    <span slot="footer" class="dialog-footer">
+                      <el-button @click="dialogVisible = false">Cancel</el-button>
+                      <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+                </span>
+                </el-dialog>
             </div>
-        </template>
+            <!--user-data模块-->
 
+        </template>
         </div>
     </div>
 </div>

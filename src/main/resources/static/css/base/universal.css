@@ -99,6 +99,16 @@ dt{
     float: left;
 }
 
+.star {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 22px;
+    font-size: 14px;
+    color: #f00;
+}
 .xing {
     width: 20px;
     height: 20px;
