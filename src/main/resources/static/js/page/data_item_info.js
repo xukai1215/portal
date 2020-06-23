@@ -1238,7 +1238,34 @@ var  data_item_info= new Vue({
             else{
                 alert('please select file first!!');
             }
-        }
+        },
+        edit() {
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    data = JSON.parse(data);
+                    if (data.oid == "") {
+                        this.confirmLogin()
+
+                    }
+                    else {
+                        let href = window.location.href;
+                        let hrefs = href.split('/');
+                        let oid = hrefs[hrefs.length - 1].split("#")[0];
+                        window.location.href = '/user/userSpace#/data/manageDataItem/'+oid
+                    }
+                }
+            })
+        },
+
 
     },
 

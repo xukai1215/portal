@@ -63,9 +63,8 @@
                         <i th:if="${datainfo.data.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
                         <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
                     </el-tooltip>
-                    <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>
-                    <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true'></a>-->
-                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                    <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>&nbsp&nbsp&nbsp&nbsp
+                    <a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                 </div>
 
                 <div class="detail_overview">
@@ -196,7 +195,7 @@
             </div>
 
             <!--User Data-->
-            <div th:if="${#arrays.length(userDataList)}" id="userDataList" class="detail_block">
+            <div th:if="(${userDataList}) and (${#arrays.length(userDataList)})" id="userDataList" class="detail_block">
 
                 <div class="block_head">
                     <div class="head_text">

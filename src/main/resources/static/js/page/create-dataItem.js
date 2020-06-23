@@ -79,6 +79,9 @@ var createDataItem = Vue.extend({
 
             selectedFile:[],
             userDataList:[],
+            authorDataList:[],
+            dialogVisible: false,
+            fileSelect:"",
 
         }
     },
@@ -199,7 +202,7 @@ var createDataItem = Vue.extend({
         },
 
         //add data item
-        createdataitem() {
+        createDataItem() {
             for (i=0;i<this.selectedFile.length;i++){
                 let fileMetaUser = {
                     id:"",
@@ -227,9 +230,9 @@ var createDataItem = Vue.extend({
 
             this.dataItemAddDTO.classifications = this.cls;
             // this.dataItemAddDTO.displays.push($("#displays").val())
-            this.dataItemAddDTO.displays = this.data_img
+            this.dataItemAddDTO.displays = this.data_img;
 
-            this.dataItemAddDTO.reference = $("#dataresoureurl").val()
+            this.dataItemAddDTO.reference = $("#ResoureUrl").val();
 
 
             //用户名
@@ -243,7 +246,7 @@ var createDataItem = Vue.extend({
             this.dataItemAddDTO.meta.boundingRectangle = [];
 
 
-            var authorship = []
+            var authorship = [];
             var author_lenth = $(".user-attr").length;
             for (var i = 0; i < author_lenth; i++) {
 
@@ -266,7 +269,7 @@ var createDataItem = Vue.extend({
 
             var thedata = this.dataItemAddDTO;
 
-            var that = this
+            var that = this;
 
                 axios.post("/dataItem/", thedata)
                     .then(res => {
@@ -336,23 +339,40 @@ var createDataItem = Vue.extend({
 
         },
 
-        // chooseCate(item, e) {
-        //     if ($("#classification").val() != null) {
-        //         $("#classification").val('')
-        //     }
-        //     // this.classif.push(e.target.innerText);
-        //
-        //     $("#classification").val(this.classif);
-        //
-        //     this.ctegorys.push(item.id)
-        //
-        // },
-
         next() {
 
         },
         change(currentIndex, newIndex, stepDirection) {
             console.log(currentIndex, newIndex, stepDirection)
+        },
+
+        sendcurIndexToParent(){
+            this.$emit('com-sendcurindex',this.curIndex)
+        },
+
+        sendUserToParent(userId){
+            this.$emit('com-senduserinfo',userId)
+        },
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {
+                });
+        },
+        resClick(e){
+
+            let path=e.path;
+            for(i=0;i<path.length;i++){
+                let obj=path[i];
+                if(obj.className.indexOf("dataitemisol")!=-1){
+                    $(".dataitemisol").css("border","1px solid #ebeef5");
+                    this.fileSelect=obj.align;
+                    obj.style.border='2px solid #60b0e8';
+                    break;
+                }
+            }
         },
 
         selectDataspaceFile(file){
@@ -365,22 +385,21 @@ var createDataItem = Vue.extend({
                         break
                     }
                 }
-
-
             } else {
                 this.selectedFile.push(file);
             }
-
         },
 
-        sendcurIndexToParent(){
-            this.$emit('com-sendcurindex',this.curIndex)
-        },
+        removeFile(){
+            if(this.fileSelect!="") {
+                $(".dataitemisol").css("border","1px solid #ebeef5");
+                var file = this.selectedFile[this.fileSelect];
+                this.selectDataspaceFile(file);
 
-        sendUserToParent(userId){
-            this.$emit('com-senduserinfo',userId)
+                // this.selectedFile.splice(Number(this.fileSelect), 1);
+                this.fileSelect = "";
+            }
         },
-
     },
     mounted() {
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
@@ -421,57 +440,12 @@ var createDataItem = Vue.extend({
             })
         var that = this
 
-        // tinymce.init({
-        //     selector: "textarea#detail",
-        //     height: 205,
-        //     theme: 'modern',
-        //     plugins: ['link', 'table', 'image', 'media'],
-        //     image_title: true,
-        //     // enable automatic uploads of images represented by blob or data URIs
-        //     automatic_uploads: true,
-        //     // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-        //     // images_upload_url: 'postAcceptor.php',
-        //     // here we add custom filepicker only to Image dialog
-        //     file_picker_types: 'image',
-        //
-        //     file_picker_callback: function (cb, value, meta) {
-        //         var input = document.createElement('input');
-        //         input.setAttribute('type', 'file');
-        //         input.setAttribute('accept', 'image/*');
-        //         input.onchange = function () {
-        //             var file = input.files[0];
-        //
-        //             var reader = new FileReader();
-        //             reader.readAsDataURL(file);
-        //             reader.onload = function () {
-        //                 var img = reader.result.toString();
-        //                 cb(img, {title: file.name});
-        //             }
-        //         };
-        //         input.click();
-        //     },
-        //     images_dataimg_filter: function (img) {
-        //         return img.hasAttribute('internal-blob');
-        //     }
-        // });
-
         $(".step2").steps({
 
             onFinish: function () {
                 alert('complete');
             },
             onChange: function (currentIndex, newIndex, stepDirection) {
-
-
-                // console.log(currentIndex, newIndex, stepDirection)
-                // if((that.indexStep==0&&that.newStep==1)||(that.indexStep==1&&that.newStep==2)){
-                //     that.indexStep=-1;
-                //     that.newStep-=1;
-                //     return true
-                // }else {
-                //
-                //     return false
-                // }
 
                 if (currentIndex === 0) {
                     if (stepDirection === "forward") {
@@ -549,15 +523,6 @@ var createDataItem = Vue.extend({
                         console.log(this.userId)
 
                         this.sendUserToParent(this.userId)
-                        // this.addAllData()
-
-                        // axios.get("/dataItem/amountofuserdata",{
-                        //     params:{
-                        //         userOid:this.userId
-                        //     }
-                        // }).then(res=>{
-                        //     that.dcount=res.data
-                        // });
 
                         $("#author").val(this.userName);
 
@@ -608,11 +573,6 @@ var createDataItem = Vue.extend({
                 else {
                     this.userId = data.oid;
                     this.userName = data.name;
-                    //$("#provider_body .providers h4 a").eq(0).text(data.name);
-                    // $.get("http://localhost:8081/GeoModelingNew/UserInfoServlet",{"userId":this.userId},(result)=> {
-                    //     this.userInfo=eval('('+result+')');
-                    //     console.log(this.userInfo)
-                    // })
                 }
             }
         })
@@ -709,6 +669,7 @@ var createDataItem = Vue.extend({
                     });
 
                     $("#detail").html(data.detail);
+                    this.authorDataList = data.userDataList;
 
                     $('#imgShow').get(0).src = data.displays[0];
                     $('#imgShow').show();
@@ -720,8 +681,8 @@ var createDataItem = Vue.extend({
                     $("#coordinateUnits").val(data.meta.coordinateUnits)
 
 
-                    tinymce.remove("textarea#detail");//先销毁已有tinyMCE实例
-                    $("#modelItemText").html(data.detail);
+                    $("#detail").html(data.detail);
+                    //tinymce.remove('textarea#detail');//先销毁已有tinyMCE实例
                     tinymce.init({
                         selector: "textarea#detail",
                         height: 205,
@@ -817,7 +778,6 @@ var createDataItem = Vue.extend({
                     $("#bottomrighty").val("");
                     $("#imgFile").val("");
                 }
-
                 }
             )
             // window.sessionStorage.setItem("editModelItem_id", "");
@@ -828,14 +788,6 @@ var createDataItem = Vue.extend({
                 alert('Wizard Completed');
             }
         });
-
-
-        // $('#keywords').tagEditor({
-        //     forceLowercase: false
-        // });
-        // $("#contributers").tagEditor({
-        //     forceLowercase: false
-        // })
 
         $("#imgChange").click(function () {
             $("#imgFile").click();
@@ -974,175 +926,6 @@ var createDataItem = Vue.extend({
 
 
         })
-        //table end
-
-        // $(document).on("click", ".refClose", function () {
-        //     table.row($(this).parents("tr")).remove().draw();
-        //     //$(this).parents("tr").eq(0).remove();
-        //     console.log($("tbody tr"));
-        //     if ($("tbody tr").eq(0)[0].innerText == "No data available in table") {
-        //         $("#dynamic-table").css("display", "none")
-        //     }
-        // });
-        //
-        // let height = document.documentElement.clientHeight;
-        // this.ScreenMaxHeight = (height) + "px";
-        // this.IframeHeight = (height - 20) + "px";
-        //
-        // window.onresize = () => {
-        //     console.log('come on ..');
-        //     height = document.documentElement.clientHeight;
-        //     this.ScreenMaxHeight = (height) + "px";
-        //     this.IframeHeight = (height - 20) + "px";
-        // }
-        //
-        //
-        // var modelItemObj = {};
-        // $(".next").click(()=> {
-        //     modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
-        //     modelItemObj.name = $("#nameInput").val();
-        //     modelItemObj.keywords = $("#tagInput").val().split(",");
-        //     modelItemObj.description = $("#descInput").val();
-        //     modelItemObj.image = $('#imgShow').get(0).src;
-        //     modelItemObj.authorship=[];
-        //
-        //     if (this.cls.length == 0) {
-        //         alert("Please select parent node");
-        //         return false;
-        //     }
-        //     if ($("#nameInput").val() === "") {
-        //         alert("Please enter model item name");
-        //         return false;
-        //     }
-        // });
-        //
-        // $(".finish").click(()=> {
-        //     let loading = this.$loading({
-        //         lock: true,
-        //         text: "Uploading...",
-        //         spinner: "el-icon-loading",
-        //         background: "rgba(0, 0, 0, 0.7)"
-        //     });
-        //     modelItemObj.status=$("input[name='Status']:checked").val();
-        //     modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
-        //     modelItemObj.name = $("#nameInput").val();
-        //     modelItemObj.keywords = $("#tagInput").val().split(",");
-        //     modelItemObj.description = $("#descInput").val();
-        //     modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
-        //     modelItemObj.authorship=[];
-        //     this.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
-        //
-        //     if(modelItemObj.name.trim()=="")
-        //     {
-        //         alert("please enter name");
-        //         return;
-        //     }
-        //     else if(modelItemObj.classifications.length==0){
-        //         alert("please select classification");
-        //         return;
-        //     }
-        //     // modelItemObj.Providers = [];
-        //     // getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.Providers)
-        //
-        //     modelItemObj.references = new Array();
-        //     var ref_lines = $("#dynamic-table tr");
-        //     for (i = 1; i < ref_lines.length; i++) {
-        //         var ref_prop = ref_lines.eq(i).children("td");
-        //         if (ref_prop != 0) {
-        //             var ref = {};
-        //             ref.title = ref_prop.eq(0).text();
-        //             if (ref.title == "No data available in table")
-        //                 break;
-        //             ref.author = ref_prop.eq(1).text().split(",");
-        //             ref.date = ref_prop.eq(2).text();
-        //             ref.journal = ref_prop.eq(3).text();
-        //             ref.pages = ref_prop.eq(4).text();
-        //             ref.links = ref_prop.eq(5).text();
-        //             modelItemObj.references.push(ref);
-        //         }
-        //     }
-        //
-        //     var detail = tinyMCE.activeEditor.getContent();
-        //     modelItemObj.detail = detail.trim();
-        //     console.log(modelItemObj);
-        //
-        //     let formData=new FormData();
-        //
-        //     if ((oid === "0") || (oid === "") || (oid == null)) {
-        //         let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
-        //             type: 'text/plain',
-        //         });
-        //         formData.append("info",file);
-        //         $.ajax({
-        //             url: "/modelItem/add",
-        //             type: "POST",
-        //             processData: false,
-        //             contentType: false,
-        //             async: true,
-        //             data: formData,
-        //             success: function (result) {
-        //                 loading.close();
-        //                 if (result.code == "0") {
-        //                     alert("Create successful!");
-        //
-        //                     window.location.href = "/modelItem/" + result.data;
-        //                     //window.location.reload();
-        //                 }
-        //                 else if(result.code==-1){
-        //                     alert("Please login first!");
-        //                     window.location.href="/user/login";
-        //                 }
-        //                 else{
-        //                     alert("Create failed!")
-        //                 }
-        //             }
-        //         })
-        //     } else {
-        //
-        //         modelItemObj["oid"] = oid;
-        //
-        //         let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
-        //             type: 'text/plain',
-        //         });
-        //         formData.append("info",file);
-        //         $.ajax({
-        //             url: "/modelItem/update",
-        //             type: "POST",
-        //             processData: false,
-        //             contentType: false,
-        //             async: true,
-        //             data: formData,
-        //
-        //             success: function (result) {
-        //                 loading.close();
-        //                 if (result.code === 0) {
-        //                     if(result.data.method==="update") {
-        //                         alert("Update Success");
-        //                         $("#editModal", parent.document).remove();
-        //                         window.location.href = "/modelItem/" + result.data.oid;
-        //                     }
-        //                     else{
-        //                         alert("Success! Changes have been submitted, please wait for the author to review.");
-        //                         window.location.href = "/user/userSpace";
-        //                     }
-        //
-        //
-        //                     // window.location.href = "/modelItem/" + result.data;
-        //                     //window.location.reload();
-        //                 }
-        //                 else if(result.code==-2){
-        //                     alert("Please login first!");
-        //                     window.location.href="/user/login";
-        //                 }
-        //                 else{
-        //                     alert(result.msg);
-        //                 }
-        //             }
-        //         })
-        //     }
-        // });
-
-
         $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
 
 
@@ -1202,12 +985,30 @@ var createDataItem = Vue.extend({
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
             }
         })
+        //激活jQuery的icheck插件
+        $("input[name='ContentType']").iCheck({
+            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-green',
+            increaseArea: '0%' // optional
 
-        //var mid = window.sessionStorage.getItem("editModelItem_id");
-        // if (mid === undefined || mid == null) {
-        //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html";
-        // } else {
-        //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html?mid=" + mid;
-        // }
+        });
+        $("input[name='author_confirm']").iCheck({
+            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-green',
+            increaseArea: '0%' // optional
+
+        });
+        $("input:radio[name='ContentType']").on('ifChecked', function(event){
+
+            if($(this).val()=="Resources Url"){
+                $("#ResourcesUrl").show();
+                $("#Resource").hide();
+            }
+            else{
+                $("#ResourcesUrl").hide();
+                $("#Resource").show();
+            }
+
+        });
     }
 })
