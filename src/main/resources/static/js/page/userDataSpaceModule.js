@@ -1,6 +1,12 @@
 Vue.component("user-data",
     {
         template: "#userDataSpaceModule",
+        props:{
+            deleteButton:{
+                type: Boolean,
+                default: false
+            }
+        },
         data(){
             return{
                 //页面样式控制

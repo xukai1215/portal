@@ -100,7 +100,7 @@
 <!--                                                        </button>-->
                                                         <button class="dwload btn btn-primary btn-round" v-if="pasteTargetItem.id"
                                                                 @click="pasteFile">
-                                                            <i class="glyphicon glyphicon-download"></i><span
+                                                            <i style="font-size: 16px" class="fa fa-clipboard">></i><span
                                                                 style="font-size: 15px">Paste</span>
                                                         </button>
                                                         <button class="dwload btn btn-secondary btn-round"
@@ -109,7 +109,7 @@
                                                         </button>
                                                         <button class="dwload btn btn-danger btn-round" v-if="downloadDataSet.length>0"
                                                                 @click="deleteAll()">
-                                                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
+                                                            <i style="font-size: 16px" class="fa fa-trash"></i><span style="font-size: 15px">Delete all</span>
                                                         </button>
                                                         <!--//todo share-->
                                                         <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->

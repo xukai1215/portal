@@ -74,7 +74,7 @@
                           <!--                                                        </button>-->
                           <button class="dwload btn btn-primary btn-round" v-if="pasteTargetItem.id"
                                   @click="pasteFile">
-                            <i class="glyphicon glyphicon-download"></i><span
+                            <i style="font-size: 16px" class="fa fa-clipboard"></i><span
                                   style="font-size: 15px">Paste</span>
                           </button>
 <!--                          <button class="dwload btn btn-secondary btn-round"-->
@@ -83,7 +83,7 @@
 <!--                          </button>-->
                           <button class="dwload btn btn-danger btn-round" v-if="downloadDataSet.length>0"
                                   @click="deleteAll()">
-                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
+                            <i style="font-size: 16px" class="fa fa-trash"></i><span style="font-size: 15px">Delete all</span>
                           </button>
                           <!--//todo share-->
                           <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
@@ -143,8 +143,8 @@
                               </div>
                             </div>
 
-                            <p style="font-style: italic;color: #999999;float: right;margin: 0">
-                              Left or right click can call out some function</p>
+<!--                            <p style="font-style: italic;color: #999999;float: right;margin: 0">-->
+<!--                              Left or right click can call out some function</p>-->
                           </div>
                           <div v-if="myFileShown.length!=0" :title="showtitle(item)"
                                class="el-card dataitemisol" shadow="never"
@@ -155,7 +155,7 @@
 
                                @mouseover="addDataClass($event,item)"
                                @mouseout="removeClass($event,item)"
-                               @click.right="rightMenu($event,item,key)">
+                               >
                             <el-row style="height: 80%"
                                     @dblclick.native="getPackageContent($event,item,key)">
                               <el-col :span="5">&nbsp
