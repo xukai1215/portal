@@ -256,11 +256,16 @@ var notice = Vue.extend({
                     this.sumComment2.shift();
                 }
 
-                if (this.comments.length == 0){
-                    $(".comment").show();
-                } else {
-                    $(".comment").hide();
-                }
+                // if (this.sumComment1.length == 0){
+                //     $(".commentOverView").show();
+                // } else {
+                //     $(".commentOverView").hide();
+                // }
+                // if (this.sumComment2.length == 0){
+                //     $(".replyOverView").show();
+                // } else {
+                //     $(".replyOverView").hide();
+                // }
             })
         },
         handleClose(done) {
@@ -926,6 +931,18 @@ var notice = Vue.extend({
                         $(".overview").show();
                     } else {
                         $(".overview").hide();
+                    }
+
+
+                    if (this.sumComment1.length == 0){
+                        $(".commentOverView").show();
+                    } else {
+                        $(".commentOverView").hide();
+                    }
+                    if (this.sumComment2.length == 0){
+                        $(".replyOverView").show();
+                    } else {
+                        $(".replyOverView").hide();
                     }
                     this.await = false;
                 }
