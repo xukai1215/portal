@@ -919,14 +919,14 @@ var notice = Vue.extend({
 
 
                     console.log(this.sum_tableData);
-
-
-                    if (this.sum_tableData.length == 0){
+                    if (this.sumDateTableData[0].date==""){
+                        this.sumDateTableData.shift();
+                    }
+                    if (this.sumDateTableData.length == 0){
                         $(".overview").show();
                     } else {
                         $(".overview").hide();
                     }
-
                     this.await = false;
                 }
             })
