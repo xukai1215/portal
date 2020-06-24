@@ -1469,10 +1469,11 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                    <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                                    <img v-if="modelItem.image==''" src="/static/img/model/model.png" style="width:120px;height: 120px;">
+                                                    <img v-if="modelItem.image!=''" :src="modelItem.image" onerror=src="/static/img/model/model.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1551,9 +1552,11 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"
-                                                            :rounded="false"></avatar>
-                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="dataItem.image"
+<!--                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
+                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="dataItem.image" onerror=src="../static/img/model/myData.png"
+                                                         style="width:120px;height: 120px;">
+                                                    <img v-else :src="dataItem.image" src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
@@ -1630,12 +1633,13 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
-                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/conceptual.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -1712,12 +1716,13 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
-                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="logicalModel.image" onerror=src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/logical.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -1792,12 +1797,13 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                    <avatar v-if="computableModel.image==''||computableModel.image==null" :username="computableModel.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="computableModel.image==''||computableModel.image==null" :username="computableModel.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="computableModel.image" onerror=src="../static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/calcModel.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -1872,12 +1878,13 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/repository/concept/'+ concept.oid" target="_blank">
-                                                    <avatar v-if="concept.image==''||concept.image==null" :username="concept.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="concept.image==''||concept.image==null" :username="concept.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="concept.image!=''&&concept.image!=null" :src="concept.image" onerror=src="../static/img/model/semantics.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/semantics.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -1954,13 +1961,14 @@
                                         </div>
                                         <div style="display: flex;">
                                             <div class="imgPallet">
-                                                <a class="img" :href="'/repository/spatial/'+ spatial.oid" target="_blank">
-                                                    <avatar v-if="spatial.image==''||spatial.img==null" :username="spatial.name" :size="120"
-                                                            :rounded="false"></avatar>
+                                                <a class="img" :href="'/repository/spatialReference/'+ spatial.oid" target="_blank">
+<!--                                                    <avatar v-if="spatial.image==''||spatial.img==null" :username="spatial.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="spatial.image!=''&&spatial.img!=null" :src="spatial.image" onerror=src="../static/img/model/spatialReference.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/spatialReference.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -2035,12 +2043,13 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/repository/template/'+ template.oid" target="_blank">
-                                                    <avatar v-if="template.image==''||template.image==null" :username="template.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="template.image==''||template.image==null" :username="template.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="template.image!=''&&template.image!=null" :src="template.image" onerror=src="../static/img/model/template.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/template.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">
@@ -2115,12 +2124,13 @@
                                         <div style="display: flex;">
                                             <div class="imgPallet">
                                                 <a class="img" :href="'/repository/unit/'+ unit.oid" target="_blank">
-                                                    <avatar v-if="unit.image==''||unit.image==null" :username="unit.name" :size="120"
-                                                            :rounded="false"></avatar>
+<!--                                                    <avatar v-if="unit.image==''||unit.image==null" :username="unit.name" :size="120"-->
+<!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="unit.image!=''&&unit.image!=null" :src="unit.image" onerror=src="../static/img/model/unit.png"
                                                          style="width:120px;height: 120px;">
-
+                                                    <img v-else src="../static/img/model/unit.png"
+                                                         style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
                                             <div style="flex: 1;">

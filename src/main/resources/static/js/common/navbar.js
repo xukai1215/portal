@@ -152,7 +152,7 @@ $('#drop1').mouseleave(()=>{
     let timerDrop,TimerFold;
     tFoldComm = setTimeout(()=>{
         subMenuFoldUp(target,timerFoldCom,timerFoldCom);
-        $('#drop1').css('borderBottomColor','#080a0e');
+        $('#drop1').css('borderBottomColor','transparent');
         $('#drop1').children().css('color','#f5f5f5');
     },150);
 
@@ -173,7 +173,7 @@ $('#subCommunity').mouseleave(()=>{
     t=Date.now();
     tFoldComm=setTimeout(()=>{
         subMenuFoldUp(target,timerFoldCom,timerFoldCom);
-        $('#drop1').css('borderBottomColor','#080a0e');
+        $('#drop1').css('borderBottomColor','transparent');
         $('#drop1').children().css('color','#f5f5f5');
     },150)
 
@@ -195,7 +195,7 @@ $('#drop2').mouseleave(()=>{
     let timerDrop,TimerFold;
     tFoldHelp=setTimeout(()=>{
         subMenuFoldUp(target);
-        $('#drop2').css('borderBottomColor','#080a0e');
+        $('#drop2').css('borderBottomColor','transparent');
         $('#drop2').children().css('color','#f5f5f5');
     },150);
 
@@ -215,7 +215,7 @@ $('#subHelp').mouseleave(()=>{
     let timerDrop,TimerFold;
     tFoldHelp=setTimeout(()=>{
         subMenuFoldUp(target);
-        $('#drop2').css('borderBottomColor','#080a0e');
+        $('#drop2').css('borderBottomColor','transparent');
         $('#drop2').children().css('color','#f5f5f5');
     },150)
 })
@@ -384,6 +384,7 @@ $('#dropstrip').click((e)=>{
         target.css('display','block');
         fullSubMenuFoldUp($('#phoneUserSub'));
         fullSubMenuDropDpwn(target);
+        $('.main').css('backGroundColor','transparent')
     }
 
     else{
@@ -393,6 +394,7 @@ $('#dropstrip').click((e)=>{
         fullSubMenuFoldUp(target);
         fullSubMenuFoldUp(target2);
         fullSubMenuFoldUp(target3);
+        $('.main').css('backGroundColor','#141414')
         $('#phoneHelp').css('margin-top','0px');
         $('#aboutUs').css('margin-top','0px');
     }
@@ -462,7 +464,7 @@ $('#phoneUserDrop').click((e)=>{
 
     if (display=='none'){
         target.css('display','block')
-        $('#mainBar').children('ul').css('background-color','#141414')
+        // $('#mainBar').children('ul').css('background-color','#141414')
         //所有打开的全部收起
         fullSubMenuFoldUp($('#phoneSubCom'));
         $('#phoneHelp').css('margin-top','0px');
@@ -474,7 +476,11 @@ $('#phoneUserDrop').click((e)=>{
 
     else{
         fullSubMenuFoldUp(target);
-        $('.main').css('backGroundColor','#0f0f0f')
+        // setTimeout(()=>{
+        //     $('#mainBar').children('ul').css('backgroundColor','transparent')
+        // },216)
+
+
     }
     if(e.stopPropagation){
         e.stopPropagation();
@@ -673,6 +679,8 @@ function watchWidth() {
     var reg=RegExp(/model/i);
     console.log(hrefElement)
     if(hrefElement.match(reg)){
+        $('#mainBar ul').css('backgroundColor','#080a0e')
+        $('.mainmenu a').css('fontWeight','500')
         for(let i=0;i<clickMenu.length;i++){
             if(i==1)
                 clickMenu[i].classList.add('clickBlue');
@@ -688,11 +696,15 @@ function watchWidth() {
                 else
                     clickMenu[i].classList.remove('clickBlue');
             }
+
             break;
+
         }
 
 
         case (hrefElement.match(reg)|| {}).input:{
+            // $('#mainBar ul').css('backgroundColor','#080a0e')
+            // $('.mainmenu a').css('fontWeight','500')
             for(let i=0;i<clickMenu.length;i++){
                 if(i==1)
                     clickMenu[i].classList.add('clickBlue');
@@ -703,6 +715,8 @@ function watchWidth() {
         }
 
         case hrefElement=='dataItem':{
+            $('#mainBar ul').css('backgroundColor','#080a0e')
+            $('.mainmenu a').css('fontWeight','500')
             for(let i=0;i<clickMenu.length;i++){
                 if(i==2)
                     clickMenu[i].classList.add('clickBlue');
@@ -713,6 +727,8 @@ function watchWidth() {
         }
 
         case hrefElement=='repository'||hrefElement=='server':{
+            $('#mainBar ul').css('backgroundColor','#080a0e')
+            $('.mainmenu a').css('fontWeight','500')
             for(let i=0;i<clickMenu.length;i++){
                 if(i==3)
                     clickMenu[i].classList.add('clickBlue');
@@ -724,6 +740,8 @@ function watchWidth() {
 
 
         case hrefElement=='help':{
+            $('#mainBar ul').css('backgroundColor','#080a0e')
+            $('.mainmenu a').css('fontWeight','500')
             for(let i=0;i<clickMenu.length;i++){
                 if(i==4)
                     clickMenu[i].classList.add('clickBlue');
@@ -734,6 +752,8 @@ function watchWidth() {
         }
 
         default:{
+            $('#mainBar ul').css('backgroundColor','#080a0e')
+            $('.mainmenu a').css('fontWeight','500')
             break;
         }
 

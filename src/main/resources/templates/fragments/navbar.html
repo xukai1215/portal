@@ -73,8 +73,11 @@
                     <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a class="fa fa-navicon " style="cursor: pointer;"></a></li>
                 </div>
                 <div th:unless="${logged}" class="login">
-                    <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
-                    <li><a class="login" href="/user/register">Sign Up</a></li>
+<!--                    <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>&ndash;&gt;-->
+<!--                    <li><a class="login" href="/user/register">Sign Up</a></li>-->
+                    <div class="nutButton flexCenter" style="float: right;width: 158px;margin-top: 15px;margin-right: 20px; ">
+                        <a href="/user/login" class="login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log in/Sign up</a>
+                    </div>
                 </div>
                 <div th:unless="${logged}" class="login2">
                     <li id="dropls"><a style="cursor:pointer"><p style="font-size: 13px">Log in</p><div class="innerBorder"></div><p style="font-size: 13px">Sign up</p></a></li>
@@ -82,7 +85,8 @@
                 <!--/*@thymesVar id="logged" type=""*/-->
                 <div th:if="${logged}" class="loged" >
                     <li id="userLoged" style="float: right">
-                        <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
+                        <a class="" style="display: flex; align-items: center;">
+                            <div role="innerBorder" class="userBorder" style="margin-right: 12px"></div>
                             <img class="userIcon round_icon" th:src="${( userNavBar.image == null ||#strings.isEmpty(userNavBar.image)) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
                             <div class="el-badge item">
                                 <div id="userName" th:text="${userNavBar.name}" style="display: inline-block">Hello!!!!!!!!!</div>
