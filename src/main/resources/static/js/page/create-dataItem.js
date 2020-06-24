@@ -396,6 +396,7 @@ var createDataItem = Vue.extend({
                 var file = this.selectedFile[this.fileSelect];
                 this.selectDataspaceFile(file);
 
+                this.$refs.userDataSpace.cancelSelect(file);
                 // this.selectedFile.splice(Number(this.fileSelect), 1);
                 this.fileSelect = "";
             }
@@ -448,19 +449,19 @@ var createDataItem = Vue.extend({
             onChange: function (currentIndex, newIndex, stepDirection) {
 
                 if (currentIndex === 0) {
-                    if (stepDirection === "forward") {
-                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
-                            new Vue().$message({
-                                message: 'Please complete data information!',
-                                type: 'warning',
-                                offset: 70,
-                            });
-                            return false;
-                        } else {
+                    // if (stepDirection === "forward") {
+                    //     if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
+                    //         new Vue().$message({
+                    //             message: 'Please complete data information!',
+                    //             type: 'warning',
+                    //             offset: 70,
+                    //         });
+                    //         return false;
+                    //     } else {
                             return true;
-                        }
+                        // }
 
-                    }
+                    // }
                 }
                 if (currentIndex === 1) {
                     return true;

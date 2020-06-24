@@ -2467,6 +2467,34 @@ ul.flexLi {
     margin-left: 1500px;
 }
 
+.fileContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fileContainer::-webkit-scrollbar-thumb {
+    width: 6px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 3.5px;
+    background-color: #cccccc;
+}
+
+.fileContainer::-webkit-scrollbar-thumb:focus {
+    background-color: #999999;
+}
+
+.fileContainer::-webkit-scrollbar-track {
+    width: 6px;
+
+    /*background-color: #a8a8a8;*/
+}
+
+.fileContainer::-webkit-scrollbar-track:hover {
+    width: 6px;
+    background-color: #ededed;
+    transition: .4s;
+}
+
 .circle {
     display: flex;
     justify-content: center;

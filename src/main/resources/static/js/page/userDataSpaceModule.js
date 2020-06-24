@@ -1,6 +1,12 @@
 Vue.component("user-data",
     {
         template: "#userDataSpaceModule",
+        props:{
+            deleteButton:{
+                type: Boolean,
+                default: false
+            }
+        },
         data(){
             return{
                 //页面样式控制
@@ -852,14 +858,7 @@ Vue.component("user-data",
 
                 //再次点击取消选择
                 if (this.downloadDataSet.indexOf(eval) > -1) {
-                    for (var i = 0; i < this.downloadDataSet.length; i++) {
-                        if (this.downloadDataSet[i] === eval) {
-                            //删除
-                            this.downloadDataSet.splice(i, 1)
-                            this.downloadDataSetName.splice(i, 1)
-                            break
-                        }
-                    }
+                    this.cancelSelect(eval)
 
                     // for (var i = 0; i < this.downloadDataSetName.length; i++) {
                     //     if (this.downloadDataSetName[i].name === eval.label&&this.downloadDataSetName[i].suffix === eval.suffix) {
@@ -881,14 +880,25 @@ Vue.component("user-data",
                     this.downloadDataSetName.push(obj)
 
                 }
-                this.addFileToFatherModule(eval)
+                this.selectFileToFatherModule(eval)
                 if (eval.taskId != null) {
                     this.detailsIndex = 2
                     this.getOneOfUserTasks(eval.taskId);
                 }
             },
 
-            addFileToFatherModule(eval){//将选中文件加入父组件数据中
+            cancelSelect(eval){
+                for (var i = 0; i < this.downloadDataSet.length; i++) {
+                    if (this.downloadDataSet[i] === eval) {
+                        //删除
+                        this.downloadDataSet.splice(i, 1)
+                        this.downloadDataSetName.splice(i, 1)
+                        break
+                    }
+                }
+            },
+
+            selectFileToFatherModule(eval){//将选中文件加入父组件数据中,或者取消选择文件
                 this.$emit('com-selectfile',eval)
             },
 
@@ -2278,6 +2288,7 @@ Vue.component("user-data",
 
         created() {
             this.getTasks();
+            console.log(this.deleteButton)
         },
 
         mounted() {
