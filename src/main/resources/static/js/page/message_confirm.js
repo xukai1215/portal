@@ -249,6 +249,12 @@ var notice = Vue.extend({
                         }
                     }
                 }
+                if (this.sumComment1[0].date == "") {
+                    this.sumComment1.shift();
+                }
+                if (this.sumComment2[0].date == "") {
+                    this.sumComment2.shift();
+                }
 
                 if (this.comments.length == 0){
                     $(".comment").show();
