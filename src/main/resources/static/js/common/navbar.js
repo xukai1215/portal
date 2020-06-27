@@ -19,6 +19,7 @@ var dropm1 = document.getElementById('drop1'), dropm2 = document.getElementById(
     phoneUserDrop= document.getElementById('phoneUserDrop'),
 
     submenu1 = document.getElementById('subCommunity'), submenu2 = document.getElementById('subHelp'),
+    submenu3 = document.getElementById('subData'),
     submenuls = document.getElementById('subls'), submenumu = document.getElementById('submenu'),
     subleftc = document.getElementById('leftCommunitySub'), sublefth = document.getElementById('leftHelpSub'),
     logedSub = document.getElementById('logedSub'),
@@ -136,6 +137,51 @@ function fullSubMenuFoldUp(target){
 // 悬浮一级菜单
 var tFoldComm, tFoldHelp,tFoldLog,tFoldls, tFoldLmu,tFoldleftC,tDropleftC,tFoldleftH,tDropleftH,t,a,
     timerDropCom,timerFoldCom;
+
+
+//data drop down and fold up
+// $('#menuData').mouseenter(()=>{
+//     clearTimeout(tFoldComm);
+//     //clearTimeout(tFoldHelp);
+//     $('#menuData').css('borderBottomColor','#00c0ff');
+//     $('#menuData').children().css('color','#00c0ff');
+//     let target=$('.sub:eq(0)');
+//
+//     subMenuDropDpwn(target,timerDropCom,timerFoldCom);
+// })
+//
+// $('#menuData').mouseleave(()=>{
+//     let target=$('.sub:eq(0)');
+//     let timerDrop,TimerFold;
+//     tFoldComm = setTimeout(()=>{
+//         subMenuFoldUp(target,timerFoldCom,timerFoldCom);
+//         $('#menuData').css('borderBottomColor','#080a0e');
+//         $('#menuData').children().css('color','#f5f5f5');
+//     },150);
+//
+// })
+//
+// $('#subData').mouseenter(()=>{
+//     clearTimeout(tFoldComm);
+//     let timerDrop,TimerFold;
+//     $('#menuData').css('borderBottomColor','#00c0ff');
+//     $('#menuData').children().css('color','#00c0ff');
+//     let target=$('#subData');
+//     subMenuDropDpwn(target,timerFoldCom,timerFoldCom);
+// })
+//
+// $('#subData').mouseleave(()=>{
+//     let target=$('#subData');
+//     let timerDrop,TimerFold;
+//     t=Date.now();
+//     tFoldComm=setTimeout(()=>{
+//         subMenuFoldUp(target,timerFoldCom,timerFoldCom);
+//         $('#menuData').css('borderBottomColor','#080a0e');
+//         $('#menuData').children().css('color','#f5f5f5');
+//     },150)
+//
+// })
+
 //community drop down and fold up
 $('#drop1').mouseenter(()=>{
     clearTimeout(tFoldComm);

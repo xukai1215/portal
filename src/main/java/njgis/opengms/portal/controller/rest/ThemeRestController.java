@@ -110,6 +110,9 @@ public class ThemeRestController {
     @Autowired
     ThemeVersionDao themeVersionDao;
 
+    @Autowired
+    CommentDao commentDao;
+
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
     @RequestMapping(value = "/addTheme", method = RequestMethod.POST)

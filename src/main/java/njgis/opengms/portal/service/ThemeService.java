@@ -51,8 +51,6 @@ public class ThemeService {
 
     @Autowired
     UserDao userDao;
-//    @Autowired
-//    ThemeAddDTO themeAddDTO;
 
     @Autowired
     ModelItemDao modelItemDao;

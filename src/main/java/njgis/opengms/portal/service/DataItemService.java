@@ -6,10 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
-import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
-import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
-import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
-import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
+import njgis.opengms.portal.dto.dataItem.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -303,6 +300,35 @@ public class DataItemService {
 //        dataItem.getComments().setCommentDate(now);
 
         dataItem.setLastModifyTime(now);
+        return dataItemDao.insert(dataItem);
+    }
+
+    public DataItem insertDistributeData(String id,String oid,String name,String date,String type,Boolean authority,String token,JSONObject meta){
+        DataItem dataItem = new DataItem();
+        Date now = new Date();
+        //将dto中的数据转换到dataItem里
+        dataItem.setDistributedNodeDataId(id);
+        dataItem.setAuthor(oid);
+        dataItem.setDate(date);
+        dataItem.setName(name);
+//        dataItem.setSize(size);
+        dataItem.setType(type);
+        dataItem.setAuthority(authority);
+        dataItem.setToken(token);
+        dataItem.setCreateTime(now);
+        dataItem.setWorkSpace(meta.getString("workSpace"));
+        dataItem.setDescription(meta.getString("description"));
+        dataItem.setDetail(meta.getString("detail"));
+        dataItem.setDataPath(meta.getString("dataPath"));
+        dataItem.setDataType("DistributedNode");
+        JSONArray tags = new JSONArray();
+        tags = meta.getJSONArray("tags");
+        List<String> list = new ArrayList<>();
+        for (int i=0;i<tags.size();i++){
+            list.add(tags.getString(i));
+        }
+        dataItem.setClassifications(list);
+
         return dataItemDao.insert(dataItem);
     }
 

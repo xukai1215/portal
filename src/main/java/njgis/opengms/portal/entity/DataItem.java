@@ -37,11 +37,22 @@ public class DataItem extends Item{
     List<String> displays;
     List<String> relatedModels;
     List<DataMeta> dataList;
-
-//    List<String> userDataOid;
     List<FileMetaUser> userDataList;
 //    List<String> contributers;
 
     DataItemMeta meta;
+    String token;
+    String dataType;//标识Url、File、DistributedNode
+
+    //Share in place
+    String distributedNodeDataId;
+//    String size;
+    String type;
+    Boolean authority;
+    String workSpace;
+    List<String> tags;
+    String dataPath;
+    String date;
+    String dataUrl;
 
 }

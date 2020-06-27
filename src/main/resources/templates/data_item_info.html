@@ -134,14 +134,15 @@
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
-
                     <div style="text-align: left;" th:each="author,key:${datainfo.data.authorship}">
-                        <span role="button" tabindex="0" class="ab" style="float: right;"><a
-                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
-                                aria-expanded="true" ><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                        <span role="button" tabindex="0" class="ab" style="float: right;">
+                            <a data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle" aria-expanded="true" >
+                                <i class="fa fa-caret-up" style="font-size: 21px"></i>
+                            </a>
+                        </span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
                         <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
-                             style="">
+                             style="">6
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
                                     <dt th:if="${author.ins!=''&&author.ins!=null}">Affiliation：</dt>
@@ -176,7 +177,7 @@
             </div>
 
             <!--data resource url-->
-            <div id="data_url" class="detail_block" th:if="${datainfo.data.reference!=''}">
+            <div th:if="(${datainfo.data.reference!=null}) and (${datainfo.data.reference!=''})" id="data_url" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Data Resource Url</h4>
@@ -184,7 +185,7 @@
                 </div>
                 <div class="block_content flex">
                     <div id="data-url" class="">
-                        <a th:href="${datainfo.data.reference}" id="" target="_blank="><span
+                        <a th:href="${datainfo.data.reference}"  target="_blank="><span
                                 style="font-size: 17px;color: #67c23a;"
                                 th:text="${datainfo.data.reference}">current</span>
                         </a>
@@ -194,12 +195,12 @@
 
             </div>
 
-            <!--User Data-->
+            <!--Data Resource-->
             <div th:if="(${userDataList}) and (${#arrays.length(userDataList)})" id="userDataList" class="detail_block">
 
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>User Data</h4>
+                        <h4>Data Resource</h4>
                     </div>
                 </div>&nbsp;&nbsp;
                 <el-card>
@@ -232,6 +233,52 @@
                     </a>
                 </div>
                 </el-card>
+            </div>&nbsp;&nbsp;
+
+            <!--Distributed Node Data-->
+            <div th:if="${#arrays.length(fileName)}" id="distributedNodeData" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Distributed Node Data</h4>
+                    </div>
+                </div>&nbsp;&nbsp;
+                <div>
+                    <el-card>
+                        <div class="el-card dataitemisol is-never-shadow"
+                             th:each="data,key:${fileName}"
+                             th:title="${data}" shadow="never"
+                             style="width: 150px;"><!---->
+                            <!--<a target="_blank"-->
+                               <!--th:href="${data.url}"-->
+                               <!--style="color:black">-->
+                                <div class="el-card__body">
+                                    <div class="el-row">
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                        <div class="el-col el-col-12">
+                                            <img
+                                                    src="/static/img/filebrowser/undefine.svg"
+                                                    onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
+                                                    style="width: 100%;">
+                                        </div>
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                    </div>
+                                    <div class="el-row" style="height: 45px;">
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                        <div class="el-col el-col-20"><p th:text="${data}"
+                                                                         style="overflow: hidden;overflow-wrap: break-word; word-break: break-all; text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5">
+                                        </p></div>
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                    </div>
+                                </div>
+                            <!--</a>-->
+                        </div>
+                    </el-card>
+
+                </div>&nbsp;&nbsp;
+                <div>
+                    <p style="display: inline-block">You can apply to download this data:</p>
+                    <button class="value"  style="display: inline-block">DownLoad</button>
+                </div>
             </div>&nbsp;&nbsp;
 
             <!--description-->
