@@ -33,8 +33,8 @@ var dropm1 = document.getElementById('drop1'), dropm2 = document.getElementById(
     subLoged = document.getElementsByClassName('subLog')[0],
     phoneSubSub1 = document.getElementsByClassName('lsubComm')[0], phoneSubSub2 = document.getElementsByClassName('lsubHelp')[0],
     logedIcon = document.getElementsByClassName('loged')[0],
-        mainBarMenu = document.getElementsByClassName('mainmenu')[0],
-        indentMenu = document.getElementsByClassName('indentmenu')[0],
+    mainBarMenu = document.getElementsByClassName('mainmenu')[0],
+    indentMenu = document.getElementsByClassName('indentmenu')[0],
 
     communityArrow1=document.getElementsByClassName("arrow")[0],helpArrow1=document.getElementsByClassName("arrow")[1],
     communityArrow2=document.getElementsByClassName("arrow")[2],helpArrow1=document.getElementsByClassName("arrow")[3],
@@ -47,7 +47,7 @@ var dropm1 = document.getElementById('drop1'), dropm2 = document.getElementById(
     clickMenu=document.getElementsByClassName('clickMenu'),clickSubMenu=document.getElementsByClassName('clickSubMenu'),
 
     e = e || window.event;
-    // var timerFold,timerDrop;
+// var timerFold,timerDrop;
 // 判断鼠标在元素上，返回元素ID
 function getMouseClass(e){
     var mouseClass=e.target.getAttribute("class");
@@ -79,7 +79,7 @@ function fullSubMenuDropDpwn(target){
     let childrenCount=target.children('ul').children('li').length;
     // console.log(childrenCount);
     let timeLength=childrenCount*60+5;
-    let height=(childrenCount-1)*50+2;
+    let height=(childrenCount-1)*50-1;
     target.children().animate({height:height},timeLength,'swing');
     // target.children('ul').children().css('display','block')
     let li=target.children('ul').children('li');
@@ -98,8 +98,8 @@ function subMenuFoldUp(target,timerDrop,timerFold){
     let childrenCount=target.children('ul').children('li').length;
     let timeLength=childrenCount*40;
 
-        // target.animate({height:0},timeLength,'linear');
-    target.children('ul').animate({height:0},timeLength,'linear');
+    // target.animate({height:0},timeLength,'linear');
+    target.children('ul').animate({height:0},timeLength,'linear',{ queue: false });
     let li=target.children('ul').children('li');
     // target.children('ul').children().css('display','none')
     clearTimeout(timerDrop);
@@ -117,12 +117,12 @@ function subMenuFoldUp(target,timerDrop,timerFold){
     target.children('ul').children('#phoneLogin').css('height','0')
 }
 
-function fullSubMenuFoldUp(target){
+function fullSubMenuFoldUp(target,callback){
     let childrenCount=target.children('ul').children('li').length;
     let timeLength=childrenCount*40;
 
     // target.animate({height:0},timeLength,'linear');
-    target.children().animate({height:0},timeLength,'linear');
+    target.children().animate({height:0},timeLength,'linear',callback);
     let li=target.children('ul').children('li');
     // clearTimeout(timerDrop);
     for (let i=childrenCount-1,t=1;i>=0;i--,t++){
@@ -206,10 +206,12 @@ $('#drop1').mouseleave(()=>{
 
 $('#subCommunity').mouseenter(()=>{
     clearTimeout(tFoldComm);
+    let target=$('#subCommunity');
+    target.children('ul').stop(true,false);//jq动画清除已有动画，参数( [clearQueue ] [, jumpToEnd ] )清除队列/当前执行的动画跳到最后
     let timerDrop,TimerFold;
     $('#drop1').css('borderBottomColor','#00c0ff');
     $('#drop1').children().css('color','#00c0ff');
-    let target=$('#subCommunity');
+
     subMenuDropDpwn(target,timerFoldCom,timerFoldCom);
 })
 
@@ -249,10 +251,11 @@ $('#drop2').mouseleave(()=>{
 
 $('#subHelp').mouseenter(()=>{
     clearTimeout(tFoldHelp);
+    let target=$('#subHelp');
+    target.children('ul').stop(true,false);
     let timerDrop,TimerFold;
     $('#drop2').css('borderBottomColor','#00c0ff');
     $('#drop2').children().css('color','#00c0ff');
-    let target=$('#subHelp');
     subMenuDropDpwn(target);
 })
 
@@ -285,6 +288,7 @@ $('.loged').mouseleave(()=>{
 $('#logedSub').mouseenter(()=>{
     clearTimeout(tFoldLog);
     let target=$('#logedSub');
+    target.children('ul').stop(true,false);
     subMenuDropDpwn(target);
 })
 
@@ -437,10 +441,10 @@ $('#dropstrip').click((e)=>{
         let target2=$('#phoneSubCom');
         let target3=$('#phoneSubHelp');
         fullSubMenuFoldUp(target);
-        fullSubMenuFoldUp(target2);
-        fullSubMenuFoldUp(target3);
-        $('#phoneHelp').css('margin-top','0px');
-        $('#aboutUs').css('margin-top','0px');
+        fullSubMenuFoldUp(target2,()=>{ $('#phoneHelp').css('margin-top','0px');});
+        fullSubMenuFoldUp(target3,()=>{ $('#aboutUs').css('margin-top','0px');});
+
+
     }
     if(e.stopPropagation){
         e.stopPropagation();
@@ -461,12 +465,11 @@ $('#phoneCommunity').click((e)=>{
     }
 
     else{
-        $('#phoneHelp').animate({marginTop:0},80);
         var timeout1=setTimeout(()=>{
             fullSubMenuFoldUp(target);
         },180);
 
-
+        $('#phoneHelp').animate({marginTop:0},110,'linear',{ queue: false });
 
     }
 
@@ -489,10 +492,10 @@ $('#phoneHelp').click((e)=>{
     }
 
     else{
-        $('#aboutUs').css('margin-top','0px');
         var timeout2=setTimeout(()=>{
             fullSubMenuFoldUp(target);
         },255);
+        $('#aboutUs').animate({marginTop:0},50);
     }
     if(e.stopPropagation){
         e.stopPropagation();
@@ -745,7 +748,7 @@ function watchWidth() {
                 else
                     clickMenu[i].classList.remove('clickBlue');
             }
-        break;
+            break;
         }
 
         case hrefElement=='dataItem':{
@@ -837,7 +840,7 @@ websocket.onmessage = function(event) {
     // setMessageInnerHTML(event.data);
 };
 function setMessage(data) {
-   // alert(data);
+    // alert(data);
     message_num = data;
     $(".notice_num").text(message_num);
     //判断message_num是否为0，控制导航栏红点显示

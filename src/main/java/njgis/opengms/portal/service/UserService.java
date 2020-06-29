@@ -1251,7 +1251,7 @@ public class UserService {
             user = userDao.findFirstByUserName(account);
         }
         if (user != null) {
-            if(!ip.equals(null)&&!ip.trim().equals("")){
+            if(ip != null && !ip.trim().equals("")){
                 SetLastLoginIp(user,ip);
             }
             if (user.getPassword().equals(password)) {

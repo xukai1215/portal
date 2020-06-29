@@ -267,7 +267,7 @@ new Vue({
 
             const hrefs=href.split("/");
             console.log(hrefs);
-            window.open("/task/"+hrefs[hrefs.length-1]);
+            window.location.href="/task/"+hrefs[hrefs.length-1];
         },
 
 
@@ -519,16 +519,6 @@ new Vue({
 
         });
 
-        $(document).on("click", ".detail-toggle", function () {
-            if ($(this).text() == "[Collapse]") {
-                $(this).text("[Expand]");
-            }
-            else {
-                $(this).text("[Collapse]")
-            }
-
-        })
-
         let qrcodes = document.getElementsByClassName("qrcode");
         for(i=0;i<qrcodes.length;i++) {
             new QRCode(document.getElementsByClassName("qrcode")[i], {
@@ -541,6 +531,14 @@ new Vue({
             });
         }
 
+        $(".ab").click(function () {
+
+                if (!$(this).hasClass('transform180'))
+                    $(this).addClass('transform180')
+                else
+                    $(this).removeClass('transform180')
+            }
+        );
 
         diagram = new OGMSDiagram();
         diagram.init($('#mxGraphContainer'),

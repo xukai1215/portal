@@ -28,6 +28,13 @@
         [v-cloak] {
             display: none;
         }
+
+        .el-input.is-disabled .el-input__inner{
+            background-color: #ecf5ff;
+            color: #8d8d8d;
+            cursor: default;
+        }
+
     </style>
 </head>
 <body>
@@ -125,7 +132,7 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1" v-for="input in info.taskInfo.inputs">
-                                                        <el-input id="dataNameInput" type="textarea" v-if="input.event==modelInEvent.eventName" class="model-input"
+                                                        <el-input id="dataNameInput" disabled v-if="input.event==modelInEvent.eventName" class="model-input"
                                                                   :value="input.tag==undefined?'':(input.tag+'.'+input.suffix)" readonly>
                                                         </el-input>
                                                     </el-col>
@@ -166,7 +173,7 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col  v-if="info.taskInfo.status==2" :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
-                                                        <el-input id="dataNameInput" type="textarea" v-if="output.event==modelOutEvent.eventName" class="model-input"
+                                                        <el-input id="dataNameInput" disabled v-if="output.event==modelOutEvent.eventName" class="model-input"
                                                                   :value="output.tag==undefined?'':(output.tag+'.'+output.suffix)" readonly>
                                                         </el-input>
                                                     </el-col>

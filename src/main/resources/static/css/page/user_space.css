@@ -2480,7 +2480,7 @@ ul.flexLi {
 }
 
 .fileContainer::-webkit-scrollbar-thumb:focus {
-    background-color: #999999;
+    background-color: #a8a8a8;
 }
 
 .fileContainer::-webkit-scrollbar-track {

@@ -827,6 +827,11 @@ var info=new Vue({
             })
 
         },
+
+        collapse(){
+            console.log('aa')
+            $('#authorship0').collapse()
+        }
     },
     mounted() {
 

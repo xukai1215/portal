@@ -293,6 +293,8 @@ new Vue({
 
                 doi:'',
 
+                lastDoi:'',
+
                 doiLoading:false,
 
 
@@ -1509,6 +1511,7 @@ new Vue({
                 forceLowercase: false,
             });
             $("#articleJournal").val('');
+            $("#volumeIssue").val('');
             $("#articlePageRange").val('');
             $("#articleDate").val('');
             $("#articleLink").val('');
@@ -1528,6 +1531,7 @@ new Vue({
             Vue.nextTick(()=>{
                 $("#articleTitle").val(this.articles.result[key].title);
                 $("#articleJournal").val(this.articles.result[key].journal);
+                $("#volumeIssue").val(this.articles.result[key].volume);
                 $("#articlePageRange").val(this.articles.result[key].pageRange);
                 $("#articleDate").val(this.articles.result[key].date);
                 $("#articleLink").val(this.articles.result[key].link);
@@ -2189,10 +2193,11 @@ new Vue({
             for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
             this.articleToBack.authors=tags;
             this.articleToBack.journal=$("#articleJournal").val();
+            this.articleToBack.volume=$("#volumeIssue").val();
             this.articleToBack.pageRange=$("#articlePageRange").val();
             this.articleToBack.date=$("#articleDate").val();
             this.articleToBack.link=$("#articleLink").val();
-            this.articleToBack.doi='';
+            this.articleToBack.doi=this.doi;
             if(this.articleToBack.title.trim()==""||this.articleToBack.authors.length==0)
                 alert("Please enter the Title and at least one Author.");
             else
@@ -2246,10 +2251,11 @@ new Vue({
             for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
             this.articleToBack.authors=tags;
             this.articleToBack.journal=$("#articleJournal").val();
+            this.articleToBack.volume=$("#volumeIssue").val();
             this.articleToBack.pageRange=$("#articlePageRange").val();
             this.articleToBack.date=$("#articleDate").val();
             this.articleToBack.link=$("#articleLink").val();
-            this.articleToBack.doi='';
+            this.articleToBack.doi=this.doi;
             if(this.articleToBack.title.trim()==""||this.articleToBack.authors.length==0)
                 alert("Please enter the Title and at least one Author.");
             else {
@@ -2262,6 +2268,7 @@ new Vue({
                         date:this.articleToBack.date,
                         link:this.articleToBack.link,
                         oid:this.editOid,
+                        doi:this.articleToBack.doi
                         // status:this.articleToBack.status,
                     }
                 $.ajax({
@@ -2651,6 +2658,13 @@ new Vue({
                 );
             }else{
                 this.doiLoading = true
+                // if(this.doi===this.lastDoi)
+                //     setTimeout(()=>{
+                //         this.showUploadedArticleDialog=true;
+                //         this.doiLoading = false;
+                //     },200)
+                // this.lastDoi=this.doi;
+
                 $.ajax({
                     type: "POST",
                     url: "/article/searchByDOI",
@@ -2681,7 +2695,7 @@ new Vue({
                                 }
                             );
                         }else if(data.find==0){
-                            this.$alert('Find no result, check the DOI you have input.', 'Tip', {
+                            this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
                                 type:"warning",
                                     confirmButtonText: 'Confirm',
                                     callback: ()=>{
@@ -2697,7 +2711,7 @@ new Vue({
 
                         }else if(data.find==2){
                             this.showUploadedArticleDialog=true;
-                            this.articleUploading = data.article;
+                            // this.articleUploading = data.article;
                             // this.$confirm('This article has been uploaded yet, do you want to be one of the contrbutors?', 'Tip', {
                             //     confirmButtonText: 'Yes',
                             //     cancelButtonText: 'Cancel',
@@ -2746,6 +2760,35 @@ new Vue({
 
         articleDoiUploadConfirm(status){
             this.articleToBack = this.articleUploading;
+
+            Vue.nextTick(()=>{
+                $("#articleTitle").val(this.articleToBack.title);
+                $("#articleJournal").val(this.articleToBack.journal);
+                $("#volumeIssue").val(this.articleToBack.volume);
+                $("#articlePageRange").val(this.articleToBack.pageRange);
+                $("#articleDate").val(this.articleToBack.date);
+                $("#articleLink").val(this.articleToBack.link);
+                if ($("#articleAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
+                    Vue.nextTick(() => {
+                        $("#articleAuthor").tagEditor({
+                            forceLowercase: false
+                        })
+                        $('#articleAuthor').tagEditor('destroy');
+                        $('#articleAuthor').tagEditor({
+                            initialTags: this.articleToBack.authors,
+                            forceLowercase: false,
+                        });
+
+                    })
+                }else{
+                    $('#articleAuthor').tagEditor('destroy');
+                    $('#articleAuthor').tagEditor({
+                        initialTags: this.articleToBack.authors,
+                        forceLowercase: false,
+                    });
+                }
+
+            })
             this.showUploadArticleDialog = false;
             // this.articleToBack.status = status;
         },
@@ -2770,6 +2813,11 @@ new Vue({
 
                 }
             })
+        },
+
+        cancelSearch(){
+            this.editArticleDialog = false;
+            this.doiLoading=false
         }
 
     },

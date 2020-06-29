@@ -1400,6 +1400,7 @@ Vue.component("user-data",
                     processData: false,
                     contentType: false,
                     async: true,
+                    timeout:20000
                 }).done((res)=> {
                     if(res.code==0){
                         let data=res.data;

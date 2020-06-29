@@ -26,6 +26,7 @@ public class Article {
     List<String> contributors = new ArrayList<>();
 //    List<String> userAuthors = new ArrayList<>();
     String journal;
+    String volume="";
     String pageRange="";
     String link;
     String date;

@@ -148,15 +148,15 @@
                         <h4>Authorship</h4>
                     </div>
                 </div>
-                <div class="block_content text-center" style="padding-left:10px">
+                <div class="block_content text-center" style="padding-left:10px" >
 
                     <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"
                               th:class="${key.index==0?'ab':'ab transform180'}"><a
-                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
-                                aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                                data-toggle="collapse" th:href="'#authorshipPhone'+${key.index}" class="detail-toggle"
+                                aria-expanded="true" ><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
-                        <div th:id="'authorship'+${key.index}" class="panel-collapse" name="authorshipContent"
+                        <div th:id="'authorshipPhone'+${key.index}" class="panel-collapse" name="authorshipContent"
                              th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
                              style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
@@ -236,7 +236,7 @@
                                 </a>
 
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/computableModel/'+${model.oid}" target="_blank"
+                                    <a th:href="'/computableModel/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <div style="display: inline-block;margin-left:5px">
                                         <span class="label label-success" th:if="${model.contentType == 'Package'}">
@@ -294,7 +294,7 @@
                                     <img th:case="*" th:src="${model.image}">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/conceptualModel/'+${model.oid}" target="_blank"
+                                    <a th:href="'/conceptualModel/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -333,7 +333,7 @@
                                     <img th:case="*" th:src="${model.image}">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/logicalModel/'+${model.oid}" target="_blank" th:text="${model.name}">Ground
+                                    <a th:href="'/logicalModel/'+${model.oid}"  th:text="${model.name}">Ground
                                         Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -385,7 +385,7 @@
                                     <img th:case="*" th:src="${model.image}">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/modelItem/'+${model.oid}" target="_blank"
+                                    <a th:href="'/modelItem/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -423,7 +423,7 @@
                                     <img src="/static/img/model/data.png">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/dataItem/'+${model.id}" target="_blank"
+                                    <a th:href="'/dataItem/'+${model.id}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -470,7 +470,7 @@
                                     <img src="/static/img/model/semantics.png">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/concept/'+${model.oid}" target="_blank"
+                                    <a th:href="'/repository/concept/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px"
                                        th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">
@@ -509,7 +509,7 @@
                                     <img src="/static/img/model/spatialreference.png">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/spatialReference/'+${model.oid}" target="_blank"
+                                    <a th:href="'/repository/spatialReference/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px"
                                        th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
@@ -548,7 +548,7 @@
                                     <img src="/static/img/model/template.png">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/template/'+${model.oid}" target="_blank"
+                                    <a th:href="'/repository/template/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.type}+' | '+${model.description}">ANN-CA
                                         uses the artificial
@@ -586,7 +586,7 @@
                                     <img src="/static/img/model/unit.png">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/unit/'+${model.oid}" target="_blank"
+                                    <a th:href="'/repository/unit/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px"
                                        th:text="${model.description_EN!=''?model.description_EN:model.description_ZH}">
@@ -749,7 +749,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+                    <div class="qrcode"  style="width:200px;height:200px;margin:0 auto"></div>
 
 
                 </div>
