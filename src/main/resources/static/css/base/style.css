@@ -12,6 +12,11 @@ body {
   color: #444;
 
 }
+
+input:focus{
+  outline: 0;
+}
+
 .loading{
   position: fixed;
   width: 100%;
@@ -240,7 +245,7 @@ h3 {
 .item>.content {
   text-align: center;
   padding: 20px;
-  width: 25%;
+  /*width: 25%;*/
 }
 
 .item>.content .el-card {

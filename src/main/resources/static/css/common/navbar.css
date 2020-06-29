@@ -12,7 +12,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    /*background-color: #080a0e;*/
+    background-color: #080a0e;
 }
 
 /*.logo li{*/
@@ -68,9 +68,9 @@
     /*background-color: #080a0e;*/
 }
 
-.mainmenu a{
-    font-weight: 600;
-}
+/*.mainmenu a{*/
+/*    font-weight: 600;*/
+/*}*/
 
 .mainmenu{
     display: block;
@@ -132,7 +132,7 @@
     display: block;
     color: whitesmoke;
     text-align: left;
-    width: 170px;
+    /*width: 170px;*/
     padding:14px 0px;
     margin-left:30px;
     text-decoration: none;
@@ -238,6 +238,11 @@
 
 .phoneSubSUb{
     height: 0;
+}
+
+.phoneSubSUb ul{
+    z-index: -1;
+    backdrop-filter: blur(10px);
 }
 
 .phoneSubSUb li{
@@ -457,6 +462,13 @@
     border-left: 4px dotted #dcd6d6;
 }
 
+#subCommunityUl{
+    width: 100%;
+}
+
+#subCommunityUl li{
+    width: 100%;
+}
 /* .fullsub a:hover{
     color: rgb(0,192,255);
 } */
@@ -536,7 +548,7 @@
     }
 
     .mainNav{
-        background-color: transparent;
+        /*background-color: transparent;*/
     }
 }
 

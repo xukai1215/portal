@@ -244,7 +244,7 @@ public class ComputableModelService {
             List<AuthorInfo> authorshipList=modelInfo.getAuthorship();
             if(authorshipList!=null){
                 for (AuthorInfo author:authorshipList
-                        ) {
+                ) {
                     if(authorshipString.equals("")){
                         authorshipString+=author.getName();
                     }
@@ -256,32 +256,32 @@ public class ComputableModelService {
             }
 
 
-                ModelAndView modelAndView = new ModelAndView();
+            ModelAndView modelAndView = new ModelAndView();
 
-                modelAndView.setViewName("computable_model");
+            modelAndView.setViewName("computable_model");
 
-                modelAndView.addObject("modelInfo", modelInfo);
-                modelAndView.addObject("classifications", classResult);
-                modelAndView.addObject("date", dateResult);
-                modelAndView.addObject("year", calendar.get(Calendar.YEAR));
-                modelAndView.addObject("user", userJson);
-                modelAndView.addObject("authorship", authorshipString);
-                modelAndView.addObject("resources", resourceArray);
-                if(modelInfo.getMdl()!=null) {
-                    modelAndView.addObject("mdlJson", Utils.convertMdl(modelInfo.getMdl()).getJSONObject("mdl"));
-                }
-                JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
-                if (mdlJson != null) {
-                    JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
-                    JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
-                    modelAndView.addObject("behavior", behavior);
-                }
-                modelAndView.addObject("loadPath", htmlLoadPath);
-                modelAndView.addObject("lastModifier", modifierJson);
-                modelAndView.addObject("lastModifyTime", lastModifyTime);
+            modelAndView.addObject("modelInfo", modelInfo);
+            modelAndView.addObject("classifications", classResult);
+            modelAndView.addObject("date", dateResult);
+            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+            modelAndView.addObject("user", userJson);
+            modelAndView.addObject("authorship", authorshipString);
+            modelAndView.addObject("resources", resourceArray);
+            if(modelInfo.getMdl()!=null) {
+                modelAndView.addObject("mdlJson", Utils.convertMdl(modelInfo.getMdl()).getJSONObject("mdl"));
+            }
+            JSONObject mdlJson = (JSONObject) JSONObject.toJSON(modelInfo.getMdlJson());
+            if (mdlJson != null) {
+                JSONObject modelClass = (JSONObject) mdlJson.getJSONArray("ModelClass").get(0);
+                JSONObject behavior = (JSONObject) modelClass.getJSONArray("Behavior").get(0);
+                modelAndView.addObject("behavior", behavior);
+            }
+            modelAndView.addObject("loadPath", htmlLoadPath);
+            modelAndView.addObject("lastModifier", modifierJson);
+            modelAndView.addObject("lastModifyTime", lastModifyTime);
 
 
-                return modelAndView;
+            return modelAndView;
 
 
 
@@ -965,7 +965,7 @@ public class ComputableModelService {
             ModelItem modelItem = modelItemDao.findFirstByOid(modelItemId);
             List<String> computableIds = modelItem.getRelate().getComputableModels();
             for (String id : computableIds
-                    ) {
+            ) {
                 if (id.equals(computableModel.getOid())) {
                     computableIds.remove(id);
                     break;

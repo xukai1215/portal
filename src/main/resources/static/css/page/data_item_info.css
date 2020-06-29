@@ -135,7 +135,10 @@ p{
 }
 
 .ab{
-    transition:transform .3s ;
+    transition: transform .3s;
+    height: 20px;
+    display: flex;
+    align-items: center;
 }
 
 /*.filebrowserfunction{*/

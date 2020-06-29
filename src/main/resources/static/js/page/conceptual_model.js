@@ -319,15 +319,14 @@ new Vue({
             }
         }
 
-        $(document).on("click", ".detail-toggle", function () {
-            if ($(this).text() == "[Collapse]") {
-                $(this).text("[Expand]");
-            }
-            else {
-                $(this).text("[Collapse]")
-            }
+        $(".ab").click(function () {
 
-        })
+                if (!$(this).hasClass('transform180'))
+                    $(this).addClass('transform180')
+                else
+                    $(this).removeClass('transform180')
+            }
+        );
 
         $("[data-toggle='tooltip']").tooltip();
 

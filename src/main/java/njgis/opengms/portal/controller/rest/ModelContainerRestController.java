@@ -38,6 +38,7 @@ public class ModelContainerRestController {
             Date now=new Date();
             modelContainer_add.setDate(now);
             modelContainer_add.setUpdateDate(now);
+            modelContainer_add.setStatus(true);
             try {
                 modelContainer_add.setGeoInfo(Utils.getGeoInfoMeta(modelContainerDTO.getIp()));
             } catch (Exception e) {
@@ -53,6 +54,7 @@ public class ModelContainerRestController {
             modelContainer.setIp(modelContainerDTO.getIp());
             Date now=new Date();
             modelContainer.setUpdateDate(now);
+            modelContainer.setStatus(true);
             try {
                 modelContainer.setGeoInfo(Utils.getGeoInfoMeta(modelContainerDTO.getIp()));
             } catch (Exception e) {
@@ -96,69 +98,21 @@ public class ModelContainerRestController {
         return ResultUtils.success(modelContainerDao.findAllByUser(userName));
     }
 
-//    @RequestMapping(value = "/register/{ip}", method = RequestMethod.POST)
-//    JsonResult register(@PathVariable("ip") String ip, HttpServletRequest request) {
-//        HttpSession session = request.getSession();
-//        if(session.getAttribute("uid") == null){
-//            return ResultUtils.error(-1, "no login");
-//        }else {
-//            String userName = request.getSession().getAttribute("uid").toString();
-//
-//            RestTemplate restTemplate = new RestTemplate();
-//            String result = restTemplate.getForObject("http://" + ip + ":8060/settings", String.class);
-//            JSONObject obj=JSONObject.parseObject(result);
-//            if (obj.getString("result").equals("suc")) {
-//                JSONObject registerResult = JSONObject.parseObject(restTemplate.getForObject("http://" + ip + ":8060/task/register?type=2", String.class));
-//                if (registerResult.getInteger("code") == 1) {
-//                    JSONObject statusResult = JSONObject.parseObject(restTemplate.getForObject("http://" + ip + ":8060/json/status", String.class));
-//                    ModelContainer modelContainer = new ModelContainer();
-//                    modelContainer.setOid(UUID.randomUUID().toString());
-//                    modelContainer.setIp(ip);
-//                    modelContainer.setName(statusResult.getString("hostname"));
-//                    modelContainer.setOwner(userName);
-//                    try {
-//                        modelContainer.setGeoInfo(getGeoInfoMeta(ip));
-//                    }catch (Exception e){
-//                        throw new RuntimeException(e.getMessage());
-//                    }
-//
-//                    modelContainerDao.save(modelContainer);
-//
-//                    return ResultUtils.success();
-//
-//                } else {
-//                    return ResultUtils.error(-3, registerResult.getString("message"));
-//                }
-//            } else {
-//                return ResultUtils.error(-2, "Model Container is not running!");
-//            }
-//        }
-//
-//    }
 
-//    @RequestMapping(value = "/unregister/{ip}", method = RequestMethod.POST)
-//    JsonResult unregister(@PathVariable("ip") String ip, HttpServletRequest request) {
-//        HttpSession session = request.getSession();
-//        if(session.getAttribute("uid") == null){
-//            return ResultUtils.error(-1, "no login");
-//        }else {
-//            String userName = request.getSession().getAttribute("uid").toString();
-//
-//            RestTemplate restTemplate = new RestTemplate();
-//            JSONObject result = JSONObject.parseObject(restTemplate.getForObject("http://" + ip + ":8060/task/unregister", String.class));
-//
-//            if(result.getInteger("code")==1){
-//                return ResultUtils.success(result.getString("message"));
-//            }
-//            else{
-//                return ResultUtils.error(-1,result.getString("message"));
-//            }
-//
-//        }
-//
-//    }
-
-
-
-
+    @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+    JsonResult updateModelContainerStatus(@RequestParam("user") String userName,
+                                          @RequestParam("mac") String mac,
+                                          @RequestParam("status") boolean status){
+        ModelContainer modelContainer = modelContainerDao.findFirstByUserAndMac(userName, mac);
+        if(modelContainer == null) {
+            return ResultUtils.error(-1, "No model container matches this userName and mac!");
+        }else {
+            //更新状态
+            modelContainer.setStatus(status);
+            modelContainerDao.save(modelContainer);
+            JsonResult jsonResult = ResultUtils.success("Update suc!");
+            jsonResult.setCode(1);
+            return jsonResult;
+        }
+    }
 }

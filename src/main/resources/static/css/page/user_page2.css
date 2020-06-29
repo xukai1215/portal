@@ -1024,6 +1024,39 @@ input::placeholder{
     transition: .4s;
 }
 
+.wzhScrollbar{
+    overflow-y: overlay;
+    overflow-y: auto;
+}
+
+.wzhScrollbar::-webkit-scrollbar{
+    width: 6px;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb{
+    width: 6px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 3.5px;
+    background-color: #cccccc;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb:focus{
+    background-color: #a8a8a8;
+}
+
+.wzhScrollbar::-webkit-scrollbar-track{
+    width: 6px;
+
+    /*background-color: #a8a8a8;*/
+}
+
+.wzhScrollbar::-webkit-scrollbar-track:hover{
+    width: 6px;
+    background-color: #ededed;
+    transition: .4s;
+}
+
 .flexActive{
     display: flex;
 }
@@ -1208,6 +1241,12 @@ input::placeholder{
     margin-top: 5px;
     margin-left: 25px;
     font-size: 1.6rem;
+}
+
+.articleCard{
+    max-height: 108px;
+    margin-bottom: 2px;
+    min-height: 80px;
 }
 
 .viewCount{
@@ -1756,6 +1795,10 @@ input[type="radio"]:checked + span {
 
 #modelStats{
     width: 290px;
+}
+
+.articleInfo label{
+    margin-left: 13px;
 }
 
 @media only screen and (max-width: 685px){

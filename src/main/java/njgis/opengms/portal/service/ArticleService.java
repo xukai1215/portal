@@ -58,6 +58,19 @@ public class ArticleService {
         else return true;
     }
 
+    public Boolean findDoiExistedInUserOwn(String doi,String userOid){
+        User user = userDao.findFirstByOid(userOid);
+        List<String> ids = user.getArticles();
+        List<Article> articles = new ArrayList<>();
+        for(String id : ids){
+            Article article =  articleDao.findFirstByOid(id);
+            if(!article.getDoi().equals("")&&article.getDoi().equals(doi)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public JSONObject findNewestArticle(ArticleFindDTO articleFindDTO ,String oid ){
 //        int page=articleFindDTO.getPage();
 //        int pageSize = articleFindDTO.getPageSize();
@@ -220,6 +233,7 @@ public class ArticleService {
 
             String pageRange = coredata.elementTextTrim("pageRange");
             String coverDate = coredata.elementTextTrim("coverDate");
+            String volume = coredata.elementTextTrim("volume");
             List links = coredata.elements("link");
             String link = ((Element)links.get(1)).attribute("href").getValue();
 
@@ -234,6 +248,7 @@ public class ArticleService {
             Article article = new Article();
             article.setTitle(title);
             article.setJournal(journal);
+            article.setVolume(volume);
             article.setPageRange(pageRange);
             article.setDate(coverDate);
             article.setAuthors(authors);
@@ -241,7 +256,7 @@ public class ArticleService {
             article.setDoi(doi);
 
 
-            if(findDoiExisted(doi)) {//有重复上传
+            if(findDoiExistedInUserOwn(doi,contributor)) {//有重复上传
                 result.put("find",2);
                 result.put("article",article);
             }else{
@@ -250,7 +265,7 @@ public class ArticleService {
             }
             doc = null;
             System.gc();
-//            //user中加入这个字段
+//            user中加入这个字段
 //            User user = userDao.findFirstByUserName(contributor);
 //            List<String>articles = user.getArticles();
 //            articles.add(article.getOid());
@@ -278,7 +293,9 @@ public class ArticleService {
             article.setDate(articleAddDTO.getDate());
             article.setPageRange(articleAddDTO.getPageRange());
             article.setLink(articleAddDTO.getLink());
-            article.setDoi(articleAddDTO.getDOI());
+            String[] eles= articleAddDTO.getDOI().split("/");
+            String doi = eles[eles.length-2]+"/"+eles[eles.length-1];
+            article.setDoi(doi);
             Date now=new Date();
             article.setCreatDate(now);
 //            if(articleAddDTO.getStatus().equals("Author")){
@@ -306,28 +323,30 @@ public class ArticleService {
 
     }
 
-    public int addNewManual(ArticleAddDTO articleAddDTO, String contributor){
-        if (findExisted(articleAddDTO.getTitle(),articleAddDTO.getJournal())) {
-            List<Article> articles = articleDao.findFirstByTitleAndJournalAndDoi(articleAddDTO.getTitle(),articleAddDTO.getJournal(),"");
-
-            for(Article article : articles){
-                Iterator ite = article.getContributors().iterator();
-                while(ite.hasNext()){
-                    if(ite.next().equals(contributor))
-                        return 2;
-                }
-            }
-
-        }
-        else{
-            Article article=new Article();
-            article.setTitle(articleAddDTO.getTitle());
-            article.setAuthors(articleAddDTO.getAuthors());
-            article.setJournal(articleAddDTO.getJournal());
-            article.setDate(articleAddDTO.getDate());
-            article.setPageRange(articleAddDTO.getPageRange());
-            article.setLink(articleAddDTO.getLink());
-            article.setDoi(articleAddDTO.getDOI());
+    public int addNewManual(ArticleAddDTO articleAddDTO, String contributor) {
+//        if (findExisted(articleAddDTO.getTitle(),articleAddDTO.getJournal())) {
+//            List<Article> articles = articleDao.findFirstByTitleAndJournalAndDoi(articleAddDTO.getTitle(),articleAddDTO.getJournal(),"");
+//
+//            for(Article article : articles){
+//                Iterator ite = article.getContributors().iterator();
+//                while(ite.hasNext()){
+//                    if(ite.next().equals(contributor))
+//                        return 2;
+//                }
+//            }
+//
+//        }
+//        else{
+        Article article = new Article();
+        article.setTitle(articleAddDTO.getTitle());
+        article.setAuthors(articleAddDTO.getAuthors());
+        article.setJournal(articleAddDTO.getJournal());
+        article.setDate(articleAddDTO.getDate());
+        article.setPageRange(articleAddDTO.getPageRange());
+        article.setLink(articleAddDTO.getLink());
+        String[] eles = articleAddDTO.getDOI().split("/");
+        String doi =eles.length<=1?"":eles[eles.length - 2] + "/" + eles[eles.length - 1];
+        article.setDoi(doi);
             Date now=new Date();
             article.setCreatDate(now);
 //            if(articleAddDTO.getStatus().equals("Author")){
@@ -350,7 +369,7 @@ public class ArticleService {
             userDao.save(user);
 
 
-        }
+//        }
         return 1;
 
     }

@@ -399,12 +399,6 @@ public class TaskRestController {
                         } else if (dataType.equals("internal")) {
                             JSONArray nodes = data.getJSONArray("nodes");
                             if (nodes != null) {
-//                                String schema = "<UdxDeclaration><UdxNode>";
-//                                for (int k = 0; k < nodes.size(); k++) {
-//                                    JSONObject node = nodes.getJSONObject(k);
-//                                    schema += "<UdxNode name=\"" + node.getString("text") + "\" type=\"" + node.getString("dataType") + "\" description=\"" + node.getString("desc") + "\" />";
-//                                }
-//                                schema += "</UdxNode></UdxDeclaration>";
                                 if(data.getString("schema")!=null) {
                                     template.put("type", "schema");
                                     template.put("value", data.getString("schema"));

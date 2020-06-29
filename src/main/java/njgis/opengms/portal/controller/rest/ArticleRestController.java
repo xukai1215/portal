@@ -72,11 +72,11 @@ public class ArticleRestController {
     public JsonResult searchNewArticleByDOI(@RequestParam(value="doi") String DOI, HttpServletRequest httpServletRequest) throws IOException, DocumentException {
         HttpSession session=httpServletRequest.getSession();
 
-        if(session.getAttribute("uid")==null){
+        if(session.getAttribute("oid")==null){
             return ResultUtils.error(-1,"no login");
         }
-        String userName=session.getAttribute("uid").toString();
-        return ResultUtils.success(articleService.getArticleByDOI(DOI,userName));
+        String userOid=session.getAttribute("oid").toString();
+        return ResultUtils.success(articleService.getArticleByDOI(DOI,userOid));
     }
 
     @RequestMapping(value="/addManually",method=RequestMethod.POST)

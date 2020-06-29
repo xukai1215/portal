@@ -4,7 +4,10 @@
 }
 
 .ab{
-    transition:transform .3s ;
+    transition: transform .3s;
+    height: 20px;
+    display: flex;
+    align-items: center;
 }
 
 /*!*每一项related model 的card*!*/
