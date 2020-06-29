@@ -1265,6 +1265,9 @@ var  data_item_info= new Vue({
                 }
             })
         },
+        // open() {
+        //     this.$message('Application has been sent');
+        // },
 
 
     },
@@ -1300,72 +1303,10 @@ var  data_item_info= new Vue({
         var currenturl=window.location.href;
         var url=currenturl.split("/")
         this.currentDataId=url[url.length-1]
-
-        // var cite=document.getElementById("citeurl");
-        // cite.src='https://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1];
-        // cite.innerText='<https://geomodeling.njnu.edu.cn/'+url[url.length-2]+'/'+url[url.length-1]+'>';
-
         var dataitemid=currenturl.split("/");
         var alldata=new Array();
 
-        // axios.get("/dataItem/viewcount",{
-        //     params:{
-        //             id:dataitemid[dataitemid.length-1]
-        //             }
-        // }).then(res=>{
-        //     that.viewCount=res.data
-        // })
-
-
         var that=this;
-
-        // axios.get("/dataItem/getRemoteDataSource?dataItemId="+dataitemid[dataitemid.length-1])
-        //     .then(function (res) {
-        //         if(res.status==200){
-        //              for(var i=0;i<res.data.data.data.length;i++){
-        //
-        //                  that.databrowser.push(res.data.data.data[i])
-        //              }
-        //
-        //         }else{
-        //             console.log("error")
-        //             that.$message("datamanager get data error!")
-        //         }
-        //
-        //         //when browser get no data,the element hidden
-        //         // if(that.databrowser.length==0){
-        //         //     $('#resources').css('display','none');
-        //         // }
-        //
-        //
-        //
-        //     } );
-        //
-        // axios.get("/dataItem/getcomment/"+dataitemid[dataitemid.length-1])
-        //     .then(res=>{
-        //         that.allcomments=res.data.data.comments;
-        //
-        //         // console.log(res.data.data.comments)
-        //
-        //     });
-
-
-        // axios.get("/dataItem/briefrelatedmodels",{
-        //     params:{
-        //         id:dataitemid[dataitemid.length-1]
-        //     }
-        // })
-        //     .then((res)=>{
-        //         that.related3Models=res.data.data
-        //
-        //         if(that.related3Models.length===0){
-        //             that.relatedModelIsNull =true;
-        //             that.relatedModelNotNull=false
-        //         }else {
-        //             that.relatedModelNotNull=true
-        //             that.relatedModelIsNull=false;
-        //         }
-        //     })
 
         let qrcodes = document.getElementsByClassName("qrcode");
         for(i=0;i<qrcodes.length;i++) {
@@ -1378,20 +1319,6 @@ var  data_item_info= new Vue({
                 correctLevel: QRCode.CorrectLevel.H
             });
         }
-
-
-
-
-        //full-text
-        // $(document).on("click", ".detail-toggle", function () {
-        //     if ($(this).text() == "[Collapse]") {
-        //         $(this).text("[Expand]");
-        //     }
-        //     else {
-        //         $(this).text("[Collapse]")
-        //     }
-        //
-        // })
 
         $('html, body').animate({scrollTop:0}, 'slow');
 
@@ -1440,22 +1367,6 @@ $(function () {
             }
 
         });
-
-
-        // //数据项右键菜单事件
-        // $(".filecontent .el-card").contextmenu(function (e) {
-        //
-        //     e.preventDefault();
-        //
-        //
-        //
-        //     $(".browsermenu").css({
-        //         "left":e.pageX,
-        //         "top":e.pageY
-        //     }).show();
-        //
-        //
-        // });
 
 
         //contents白板右键点击菜单事件，是否添加有待进一步思考
@@ -1525,39 +1436,6 @@ $(function () {
 
         });
 
-        // $(".shareData").click(function () {
-        //
-        //     let downloadAllZipUrl="/dataManager/downloadSomeRemote";
-        //     if(dataSelection.length!=0) {
-        //         for(i=0;i<dataSelection.length;i++){
-        //
-        //             let id=getUrlParam(dataSelection[i]);
-        //
-        //             downloadAllZipUrl+=i==0?'?':'&';
-        //             downloadAllZipUrl+=id;
-        //
-        //         }
-        //         this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+downloadAllZipUrl+">",{
-        //             dangerouslyUseHTMLString: true
-        //         })
-        //     }
-        //     else{
-        //         alert('please select file first!!');
-        //     }
-        //
-        //     // if(currentData!=''){
-        //     //     let url ="/dispatchRequest/download?url=" + currentData;
-        //     //     this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+url+">",{
-        //     //         dangerouslyUseHTMLString: true
-        //     //     })
-        //     //     // this.dataid='';
-        //     //
-        //     // }else {
-        //     //     // console.log("从后台获取数据条目数组有误")
-        //     //     alert('please select file first!!');
-        //     // }
-        // });
-
 
         //搜索结果样式效果和菜单事件
         $("#browsercont").on('click',function (e) {
@@ -1625,19 +1503,154 @@ $(function () {
 });
 
 
+var mess = document.getElementById("mess");
+if(window.WebSocket){
+    var ws = new WebSocket('ws://111.229.14.128:1708');
+
+ws.onopen = function(e){
+    // let sube = e;
+
+        let obj={
+            msg:'regist',
+            token:'portal',
+
+        }
+        ws.send(JSON.stringify(obj));
+    }
+    ws.onclose = function(e){
+        console.log("服务器关闭");
+    }
+    ws.onerror = function(){
+        console.log("连接出错");
+    }
+
+    ws.onmessage = function(e){
+
+        var local_url = window.location.href;
+        var index = local_url.lastIndexOf("\/");
+        dataOid = local_url.substring(index + 1,local_url.length);
+        if(e.data==='no data in service node!'){
+            alert('no data in service node!')
+        }else
+        if(e.data==='no authority'){
+            alert('no authority')
+        }else
+        //服务结点离线
+        if(e.data=='node offline'){
+            alert('service node offline')
+        }else
+        //注册门户到中转服务器成功
+        if(e.data==='success'){
+            // alert("连接成功")
+        }else{
+            //心跳检测
+            if(e.data==='beat'){
+                ws.send('online')
+
+            }else{}
+            let r=JSON.parse(e.data);
+            if(r.msg=='insitudata'){
+                let dataUrl = "http://111.229.14.128:8899/data?uid="+ r.id;
+                let data = {
+                    dataOid:dataOid,
+                    dataUrl: dataUrl,
+                };
+
+                $.ajax({
+                    url:"/dataItem/saveUrl",
+                    data:data,
+                    type:"POST",
+                    async:false,
+                    success:(json)=>{
+                        if (json.code == "0") {
+                            console.log("success");
+                        }
+                    }
+
+                })
+
+
+                window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+
+                // alert(e.data);
+                return
+            }
+        }
+        //得到数据下载id,门户用这个id去数据容器下载就可以
+
+        // var local_url = window.location.href;
+        // var index = local_url.lastIndexOf("\/");
+        // dataOid = local_url.substring(index + 1,local_url.length);
+        // let obj;
+        // let data = {
+        //     dataOid: dataOid,
+        // };
+        //
+        let sube = e;
+        document.querySelector(".value").onclick = function(e){
+            if(sube.data==='no data in service node!'){
+                alert('no data in service node!')
+            }else
+            if(sube.data==='no authority'){
+                alert('no authority')
+            }else
+            //服务结点离线
+            if(sube.data=='node offline'){
+                alert('service node offline')
+            }else
+            //注册门户到中转服务器成功
+            if(sube.data==='success'){
+                // alert("连接成功")
+            }else{
+                //心跳检测
+                if(sube.data==='beat'){
+                    ws.send('online')
+
+                }else{}
+                let r=JSON.parse(sube.data);
+                if(r.msg=='insitudata'){
+                    window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+                    // alert(e.data);
+                    return
+                }
+            }
+            //得到数据下载id,门户用这个id去数据容器下载就可以
+
+            // var local_url = window.location.href;
+            // var index = local_url.lastIndexOf("\/");
+            // dataOid = local_url.substring(index + 1,local_url.length);
+            let obj;
+            let data = {
+                dataOid: dataOid,
+            };
+
+
+
+            console.log('sd')
+            var time = new Date();
+            $.ajax({
+                url:"/dataItem/getDistributedObj",
+                type:"GET",
+                data:data,
+                async:false,
+                success:(json)=>{
+                    if (json.code == "0") {
+                        obj = json.data;
+                    }else if(json.code==-1){
+                        alert("'Please login first!");
+                        window.location.href="/user/login";
+                    }
+                }
+            })
+            // obj={
+            //     msg:'req',
+            //     name:'name',
+            //     token:'Ka3TsrKQGvgEikobDs8+PBcFg621lTGddu7oL0M/rZk=',//数据上传者token
+            //     reqUsrOid:'oid',
+            //     id:'bd9d66b4-117c-4752-a114-1aae34153b11'//查找数据的id
+            // };
+            ws.send(JSON.stringify(obj));
+        }
+    }
+}
 //todo 文件管理器已经阉割 CUT
-// //文件管理器输入框获取焦点是改变颜色事件，focus,blur事件
-// document.getElementById("searchinput").addEventListener("focus",(e)=>{
-//     e.srcElement.style.border="solid 2px #19bd5b";
-// });
-// document.getElementById("searchinput").addEventListener("blur",(e)=>{
-//     e.srcElement.style.border="solid  .5px black";
-// });
-
-
-
-
-
-
-
-

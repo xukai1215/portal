@@ -6,10 +6,12 @@ import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.CategoryDao;
 import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.ModelItemDao;
+import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
+import njgis.opengms.portal.dto.dataItem.DistributedDataItemDTO;
 import njgis.opengms.portal.entity.Categorys;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
@@ -21,6 +23,7 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -30,10 +33,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
 
@@ -65,6 +71,9 @@ public class DataItemRestController {
 
     @Autowired
     CategoryDao categoryDao;
+
+    @Autowired
+    UserDao userDao;
 
     @Autowired
     UserService userService;
@@ -210,9 +219,6 @@ public class DataItemRestController {
         else
             return ResultUtils.success(dataItemService.getDataItemByDataId(dataId));
     }
-
-
-
 //data item end
 
 
@@ -282,25 +288,32 @@ public class DataItemRestController {
                 catch (Exception e){
                     e.printStackTrace();
                 }
-
             }
         }
-
-        //category
         List<String> classifications=new ArrayList<>();
-        List<String> categories=dataItem.getClassifications();
-        for(String category:categories){
-            Categorys categorys=categoryDao.findFirstById(category);
-            String name=categorys.getCategory();
-            if(name.equals("...All")){
-                Categorys categorysParent=categoryDao.findFirstById(categorys.getParentCategory());
-                classifications.add(categorysParent.getCategory());
-            }
-            else{
-                classifications.add(name);
+        if (dataItem.getDataType()!=null&&dataItem.getDataType().equals("DistributedNode")){
+            classifications = dataItem.getClassifications();
+        }else {
+            //category
+//            List<String> classifications = new ArrayList<>();
+            List<String> categories = dataItem.getClassifications();
+            for (String category : categories) {
+                Categorys categorys = categoryDao.findFirstById(category);
+                String name = categorys.getCategory();
+                if (name.equals("...All")) {
+                    Categorys categorysParent = categoryDao.findFirstById(categorys.getParentCategory());
+                    classifications.add(categorysParent.getCategory());
+                } else {
+                    classifications.add(name);
+                }
             }
         }
 
+
+        ArrayList<String> fileName = new ArrayList<>();
+        if (dataItem.getDataType().equals("DistributedNode")){
+            fileName.add(dataItem.getName());
+        }
         view.setViewName("data_item_info");
         view.addObject("datainfo",ResultUtils.success(dataItem));
         view.addObject("user",userJson);
@@ -308,6 +321,7 @@ public class DataItemRestController {
         view.addObject("relatedModels",modelItemArray);
         view.addObject("authorship",authorshipString);
         view.addObject("userDataList", dataItem.getUserDataList());
+        view.addObject("fileName",fileName);//后期应该是放该name下的所有数据
 
         return view;
     }
@@ -690,6 +704,72 @@ public class DataItemRestController {
     @RequestMapping(value="/test",method = RequestMethod.POST)
     JsonResult test(@RequestBody DataItemFindDTO dataItemFindDTO){
         return ResultUtils.success(dataItemService.test(dataItemFindDTO));
+    }
+
+
+    /**
+     * 分布式节点数据接口
+     */
+
+
+    //  分布式节点接口   先对接收到的数据进行处理，处理接口
+    @RequestMapping(value = "/getDistributedData", method = RequestMethod.POST)
+    JsonResult getDistributedData(@RequestParam("id")String id,
+                                  @RequestParam("oid")String oid,
+                                  @RequestParam("name")String name,
+                                  @RequestParam("date")String date,
+//                                  @RequestParam("size")String size,
+                                  @RequestParam("type")String type,
+                                  @RequestParam("authority")Boolean authority,
+                                  @RequestParam("token")String token,
+                                  @RequestParam("meta") String  meta1) throws IOException {
+        JsonResult jsonResult = new JsonResult();
+        JSONObject meta = JSONObject.parseObject(meta1);
+        //检查作者信息
+        if (userDao.findFirstByOid(oid)==null){
+            jsonResult.setCode(-1);
+            jsonResult.setMsg("user information error");
+            return jsonResult;
+        }
+        DataItem dataItem = dataItemService.insertDistributeData(id,oid,name,date,type,authority,token,meta);
+        jsonResult.setData("/dataItem/"+dataItem.getId());
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/getDistributedObj",method = RequestMethod.GET)
+    JsonResult getDistributedObj(@RequestParam(value = "dataOid") String  dataOid,HttpServletRequest request){
+        JsonResult jsonResult = new JsonResult();
+        HttpSession session = request.getSession();
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("msg","req");
+        DataItem dataItem = dataItemDao.findFirstById(dataOid);
+        if(session.getAttribute("oid")==null){
+            jsonResult.setCode(-1);
+            jsonResult.setMsg("User not logged in");
+            return jsonResult;
+        }else{
+            jsonObject.put("reqUsrOid",session.getAttribute("oid").toString());
+        }
+        jsonObject.put("name", dataItem.getName());
+        jsonObject.put("token",dataItem.getToken());
+        jsonObject.put("id",dataItem.getDistributedNodeDataId());
+
+        jsonResult.setCode(0);
+        jsonResult.setMsg("Success");
+        jsonResult.setData(jsonObject);
+        return jsonResult;
+    }
+    @RequestMapping(value = "/saveUrl",method = RequestMethod.POST)
+    JsonResult saveUrl(@RequestParam(value = "dataOid") String  dataOid,
+                       @RequestParam(value = "dataUrl") String  dataUrl,
+                       HttpServletRequest request){
+        JsonResult jsonResult = new JsonResult();
+        DataItem dataItem = dataItemDao.findFirstById(dataOid);
+        dataItem.setDataUrl(dataUrl);
+        dataItemDao.save(dataItem);
+
+        return jsonResult;
     }
 
 

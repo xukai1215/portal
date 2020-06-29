@@ -166,7 +166,7 @@
                                                                 </label>
                                                                 <label style="margin-right: 20px; font-size: 20px">
                                                                     <input type="radio" name="ContentType"
-                                                                           value="Resource"/>
+                                                                           value="Resource"/>crea
                                                                     <label style="float:left; margin-left: 5px;">Resource</label>
                                                                 </label>
                                                             </div><br>
@@ -208,7 +208,10 @@
                                                     <!--非作者用户编辑，展示作者选择的data，当前用户不是作者时此div可见-->
                                                     <div id="ResourcesUrl">
                                                         <label>Please Input Your Resource Url:</label><br><br><br>
-                                                        <input type="text" style="width: 100%;height: 100px">
+                                                        <input type="text" class="form-control" id="ResourcesUrlText"
+                                                               aria-describedby="emailHelp"
+                                                               placeholder="Please input the url of the data which you are ready to select."
+                                                               required="required"/>
                                                     </div>
                                                     <div id="Resource" style="display: none">
                                                         <label for="classification">You can select some data from you

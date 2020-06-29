@@ -44,6 +44,9 @@
                                                 <el-radio :label="false">Positive order</el-radio>
                                             </el-radio-group>
                                         </div>
+                                        <div class="no-mess icon-th-list overview" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: none;">
+                                            <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
+                                        </div>
                                         <div v-if="await" class="progress-cover progress-cover-primary" style="margin: 40px 0;">
                                             <div class="progress progress-medium fluent-position">
                                                 <span class="progress-span"></span>
@@ -52,9 +55,6 @@
                                                 <span class="progress-span"></span>
                                                 <span class="progress-span"></span>
                                             </div>
-                                        </div>
-                                        <div class="no-mess icon-th-list overview" style="    color: #ccc;    display: block;    font-size: 16px;    margin: 20px;    text-align: center;display: none">
-                                            <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                         </div>
                                         <el-timeline :reverse="reverse" v-if="!await">
                                             <el-timeline-item
@@ -1197,9 +1197,9 @@
                                                 <!--{{comments.length}}-->
                                                 <!--</span>-->
                                             </div>
-                                            <div class="no-mess icon-th-list comment" style="    color: #ccc;    display: block;    font-size: 16px;    margin: 20px;    text-align: center;display: none">
-                                                <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
-                                            </div>
+                                            <!--<div class="no-mess icon-th-list commentOverView" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: none;">-->
+                                                <!--<span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>-->
+                                            <!--</div>-->
                                             <div>
                                                 <div class="radio">
                                                     Sort：
@@ -1207,6 +1207,9 @@
                                                         <el-radio :label="true">Reverse order</el-radio>
                                                         <el-radio :label="false">Positive order</el-radio>
                                                     </el-radio-group>
+                                                </div>
+                                                <div class="no-mess icon-th-list commentOverView" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: block;">
+                                                    <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                                 </div>
                                                 <el-timeline :reverse="reverse">
                                                     <el-timeline-item v-for="(item, index) in sumComment1"
@@ -1299,9 +1302,6 @@
                                                     {{unread}}
                                                 </span>
                                             </div>
-                                            <div class="no-mess icon-th-list comment" style="    color: #ccc;    display: block;    font-size: 16px;    margin: 20px;    text-align: center;display: none">
-                                                <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
-                                            </div>
                                             <div>
                                                 <div class="radio">
                                                     Sort：
@@ -1309,6 +1309,9 @@
                                                         <el-radio :label="true">Reverse order</el-radio>
                                                         <el-radio :label="false">Positive order</el-radio>
                                                     </el-radio-group>
+                                                </div>
+                                                <div class="no-mess icon-th-list replyOverView" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: block;">
+                                                    <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
                                                 </div>
                                                 <el-timeline :reverse="reverse">
                                                     <el-timeline-item v-for="(item, index) in sumComment2"

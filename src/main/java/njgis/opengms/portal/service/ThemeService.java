@@ -51,8 +51,6 @@ public class ThemeService {
 
     @Autowired
     UserDao userDao;
-//    @Autowired
-//    ThemeAddDTO themeAddDTO;
 
     @Autowired
     ModelItemDao modelItemDao;
@@ -91,10 +89,10 @@ public class ThemeService {
     ThemeVersionDao themeVersionDao;
 
 
-    @Value("E:/portal/target/classes/static/upload")
+    @Value("${resourcePath}")
     private String resourcePath;
 
-    @Value("E:/static/upload")
+    @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
     public Theme insertTheme(ThemeAddDTO themeAddDTO, String uid){

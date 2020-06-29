@@ -38,6 +38,7 @@ public class DataItemAddDTO {
     List<AuthorInfo> authorship;
 //    List<String> userDataOid;
     List<FileMetaUser> userDataList;
+    String dataType;
 
 
     List<DataMeta> dataList;

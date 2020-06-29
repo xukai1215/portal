@@ -82,6 +82,7 @@ var createDataItem = Vue.extend({
             authorDataList:[],
             dialogVisible: false,
             fileSelect:"",
+            dataType:"Url",//默认Url
 
         }
     },
@@ -232,7 +233,7 @@ var createDataItem = Vue.extend({
             // this.dataItemAddDTO.displays.push($("#displays").val())
             this.dataItemAddDTO.displays = this.data_img;
 
-            this.dataItemAddDTO.reference = $("#ResoureUrl").val();
+            this.dataItemAddDTO.reference = $("#ResourcesUrlText").val();
 
 
             //用户名
@@ -244,6 +245,7 @@ var createDataItem = Vue.extend({
             this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
 
             this.dataItemAddDTO.meta.boundingRectangle = [];
+            this.dataItemAddDTO.dataType = this.dataType;
 
 
             var authorship = [];
@@ -354,7 +356,7 @@ var createDataItem = Vue.extend({
             this.$emit('com-senduserinfo',userId)
         },
         handleClose(done) {
-            this.$confirm('确认关闭？')
+            this.$confirm('Confirm to close?')
                 .then(_ => {
                     done();
                 })
@@ -439,7 +441,7 @@ var createDataItem = Vue.extend({
 
 
             })
-        var that = this
+        var that = this;
 
         $(".step2").steps({
 
@@ -449,19 +451,19 @@ var createDataItem = Vue.extend({
             onChange: function (currentIndex, newIndex, stepDirection) {
 
                 if (currentIndex === 0) {
-                    // if (stepDirection === "forward") {
-                    //     if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
-                    //         new Vue().$message({
-                    //             message: 'Please complete data information!',
-                    //             type: 'warning',
-                    //             offset: 70,
-                    //         });
-                    //         return false;
-                    //     } else {
+                    if (stepDirection === "forward") {
+                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
+                            new Vue().$message({
+                                message: 'Please complete data information!',
+                                type: 'warning',
+                                offset: 70,
+                            });
+                            return false;
+                        } else {
                             return true;
-                        // }
+                        }
 
-                    // }
+                    }
                 }
                 if (currentIndex === 1) {
                     return true;
@@ -1002,10 +1004,12 @@ var createDataItem = Vue.extend({
         $("input:radio[name='ContentType']").on('ifChecked', function(event){
 
             if($(this).val()=="Resources Url"){
+                that.dataType = "Url";
                 $("#ResourcesUrl").show();
                 $("#Resource").hide();
             }
             else{
+                that.dataType = "File";
                 $("#ResourcesUrl").hide();
                 $("#Resource").show();
             }

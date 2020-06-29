@@ -658,6 +658,7 @@ var userTask = Vue.extend(
                 this.getUserData($("#providersPanel .user-contents .form-control"), authorship);
                 this.taskDataForm.authorship = authorship;
                 console.log(this.taskDataForm)
+                this.taskDataForm.dataType = "File";
 
                 axios.post("/dataItem/", this.taskDataForm)
                     .then(res => {
