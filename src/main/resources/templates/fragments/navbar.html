@@ -59,13 +59,13 @@
                 <!--        </div>-->
                 <div class="mainmenu">
                     <li id="menuHome" class="clickMenu" style="width: 77px" ><a href="/home">Home</a></li>
-                    <li id="menuModel" class="clickMenu" style="width: 78px"><a href="/modelItem/repository">Model</a></li>
-                    <li id="menuData" class="clickMenu" style="width: 70px"><a href="/dataItem/repository">Data</a></li>
+                    <li id="menuModel" class="clickMenu" style="width: 80px"><a>Model<div class="fa fa-angle-down" style="margin-left:5px"></div></a></li>
+                    <li id="menuData" class="clickMenu" style="width: 72px"><a>Data<div class="fa fa-angle-down" style="margin-left:5px"></div></a></li>
                     <li id="drop1" class="clickMenu" style="width: 130px">
-                        <a style="text-align: left; padding-left: 17px;cursor: pointer;display: flex;align-items: center">Community <div id="arrow1" class="fa fa-angle-down" style="margin-left:10px"></div></a>
+                        <a style="text-align: left; padding-left: 17px;cursor: pointer;display: flex;align-items: center">Community <div id="arrow1" class="fa fa-angle-down" style="margin-left:8px"></div></a>
                     </li>
                     <li id="drop2" class="clickMenu" style="width: 77px">
-                        <a style="text-align: left; padding-left: 15px;cursor: pointer;display: flex;align-items: center">Help <div class="fa fa-angle-down" style="margin-left:10px"></div></a>
+                        <a style="text-align: left; padding-left: 15px;cursor: pointer;display: flex;align-items: center">Help <div class="fa fa-angle-down" style="margin-left:5px"></div></a>
                     </li>
                     <li id="menuAbout" class="clickMenu" style="width: 90px"><a href="http://opengmsteam.com">About us</a></li>
                 </div>
@@ -117,6 +117,20 @@
         </div>
 
         <!--    各种下拉菜单-->
+        <div class="sub zmax" id="subModel" style="left: 290px;">
+          <ul style="width: 170px">
+              <li><a href="/modelItem/repository" class="clickSubMenu">Repository</a></li>
+              <li><a href="#" class="clickSubMenu">Application</a></li>
+          </ul>
+      </div>
+        <div class="sub zmax" id="subData" style="left: 381px;">
+          <ul>
+              <li><a href="/dataItem/repository" class="clickSubMenu">Hubs</a></li>
+              <li><a href="#" class="clickSubMenu">Repository</a></li>
+              <li><a href="#" class="clickSubMenu">Network</a></li>
+              <li><a href="#" class="clickSubMenu">Application</a></li>
+          </ul>
+      </div>
         <div class="sub zmax" id="subCommunity" style="left: 453px;width: 235px">
             <ul id="subCommunityUl">
                 <li><a href="/repository/concept" class="clickSubMenu">Concept & Semantic</a></li>
@@ -140,13 +154,13 @@
                 <li><a href="/user/register">Sign Up</a></li>
             </ul>
         </div>
-        <div class="sub zmax" id="subData" style="left: 453px">
-            <ul>
-                <li><a href="/repository/concept" class="clickSubMenu">Data Center</a></li>
-                <li><a href="/repository/spatialReference" class="clickSubMenu">Data Resource</a></li>
-                <li><a href="/repository/template" class="clickSubMenu">Distributed Node Data</a></li>
-            </ul>
-        </div>
+<!--        <div class="sub zmax" id="subData" style="left: 453px">-->
+<!--            <ul>-->
+<!--                <li><a href="/repository/concept" class="clickSubMenu">Data Center</a></li>-->
+<!--                <li><a href="/repository/spatialReference" class="clickSubMenu">Data Resource</a></li>-->
+<!--                <li><a href="/repository/template" class="clickSubMenu">Distributed Node Data</a></li>-->
+<!--            </ul>-->
+<!--        </div>-->
 
 
         <!--        用户登录后的下拉-->
@@ -189,8 +203,8 @@
         <div id="submenu" class="sub zmax" style="left:0px">
             <ul id="leftUl" style="width:220px">
                 <li><a href="/home">Home</a></li>
-                <li><a href="/modelItem/repository">Model</a></li>
-                <li><a href="/dataItem/repository">Data</a></li>
+                <li id="leftModel"><a class="show" style="width: 190px;padding-right:18px;cursor: pointer">Model<span class="fa fa-angle-right" style="float: right;"></span></a></li>
+                <li id="leftData"><a class="show" style="width: 190px;padding-right:18px;cursor: pointer">Data<span class="fa fa-angle-right" style="float: right;"></span></a></li>
                 <li id="leftcommunity"><a class="show" style="width: 190px;padding-right:18px;cursor: pointer">Community<span class="fa fa-angle-right" style="float: right;"></span></a></li>
                 <!-- <div class="lsub" id="leftsubc">
                     <li><a href="/repository/concept">Concept & Semantic</a></li>
@@ -208,7 +222,21 @@
             </ul>
         </div>
         <!-- 左侧边栏的子菜单 -->
-        <div class="sub zmax" id="leftCommunitySub" style="top: 215px;left: 218px;">
+        <div class="sub zmax" id="leftModelSub" style="top: 125px;left: 218px;">
+            <ul style="margin-left: 4px;">
+                <li><a href="/modelItem/repository">Repository</a></li>
+                <li><a href="#" class="clickSubMenu">Application</a></li>
+            </ul>
+        </div>
+        <div class="sub zmax" id="leftDataSub" style="top: 168px;left: 218px;">
+            <ul style="margin-left: 4px;">
+                <li><a href="/dataItem/repository" class="clickSubMenu">Hubs</a></li>
+                <li><a href="#">Repository</a></li>
+                <li><a href="#">Network</a></li>
+                <li><a href="#">Application</a></li>
+            </ul>
+        </div>
+        <div class="sub zmax" id="leftCommunitySub" style="top: 213px;left: 218px;">
             <ul style="margin-left: 4px;">
                 <li><a href="/repository/concept" class="subsub">Concept & Semantic</a></li>
                 <li><a href="/repository/spatialReference">Spatiotemporal Reference</a></li>
@@ -227,10 +255,24 @@
         </div>
 
         <!-- 小屏适配下拉菜单-- -->
-        <div class="fullSub zmax" id="phonesub" style="display: none; left:0px" >
+        <div class="fullSub zmax" id="phonesub" style="left:0px" >
             <ul style="width: 100%;" >
-                <li><a href="/modelItem/repository">Model</a></li>
-                <li><a href="/dataItem/repository">Data</a></li>
+                <li id="phoneModel"><a style="cursor: pointer">Model  <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
+                <div id="phoneSubModel" class="phoneSubSUb">
+                    <ul>
+                        <li><a href="/modelItem/repository">Repository</a></li>
+                        <li><a href="#" class="clickSubMenu">Application</a></li>
+                    </ul>
+                </div>
+                <li id="phoneData"><a style="cursor: pointer">Data  <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
+                <div id="phoneSubData" class="phoneSubSUb">
+                    <ul>
+                        <li><a href="/dataItem/repository" class="clickSubMenu">Hubs</a></li>
+                        <li><a href="#">Repository</a></li>
+                        <li><a href="#">Network</a></li>
+                        <li><a href="#">Application</a></li>
+                    </ul>
+                </div>
                 <li id="phoneCommunity"><a type="button" data-toggle="collapse" data-target="#phoneSubCom" style="cursor: pointer">Community <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
                 <div id="phoneSubCom" class="phoneSubSUb" >
                     <ul>
@@ -244,7 +286,7 @@
                 </div>
                 <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" style="cursor: pointer">Help <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
                 <div id="phoneSubHelp" class="phoneSubSUb">
-                    <ul>
+                    <ul id="phoneSubHelp1">
                         <li><a href="/help/demo" class="subsub">Demo</a></li>
                         <li><a href="/help/manual">Manual</a></li>
                         <li><a href="/help/document">Document</a></li>

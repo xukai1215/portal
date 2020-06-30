@@ -79,7 +79,7 @@ function fullSubMenuDropDpwn(target){
     let childrenCount=target.children('ul').children('li').length;
     // console.log(childrenCount);
     let timeLength=childrenCount*60+5;
-    let height=(childrenCount-1)*50-1;
+    let height=(childrenCount)*50;
     target.children().animate({height:height},timeLength,'swing');
     // target.children('ul').children().css('display','block')
     let li=target.children('ul').children('li');
@@ -125,6 +125,23 @@ function fullSubMenuFoldUp(target,callback){
     target.children().animate({height:0},timeLength,'linear',callback);
     let li=target.children('ul').children('li');
     // clearTimeout(timerDrop);
+    // for (let i=childrenCount-1,t=1;i>=0;i--,t++){
+    //     timerFold=setTimeout(()=>{
+    //         // console.log('fold'+li.eq(i).children('a').text())
+    //         li.eq(i).css('display','none');
+    //     },t*45) ;
+    // }
+    target.children('ul').children('#phoneLogin').css('height','0')
+}
+
+function fullFirstSubMenuFoldUp(target,callback){
+    let childrenCount=target.children('ul').children('li').length;
+    let timeLength=childrenCount*40;
+
+    // target.animate({height:0},timeLength,'linear');
+    target.children().animate({height:0},timeLength,'linear',callback);
+    let li=target.children('ul').children('li');
+    // clearTimeout(timerDrop);
     for (let i=childrenCount-1,t=1;i>=0;i--,t++){
         timerFold=setTimeout(()=>{
             // console.log('fold'+li.eq(i).children('a').text())
@@ -135,7 +152,7 @@ function fullSubMenuFoldUp(target,callback){
 }
 
 // 悬浮一级菜单
-var tFoldComm, tFoldHelp,tFoldLog,tFoldls, tFoldLmu,tFoldleftC,tDropleftC,tFoldleftH,tDropleftH,t,a,
+var tFoldModel,tFoldData, tFoldComm, tFoldHelp,tFoldLog,tFoldls, tFoldLmu,tFoldleftMd,tFoldleftData,tFoldleftC,tDropleftC,tFoldleftH,tDropleftH,t,a,
     timerDropCom,timerFoldCom;
 
 
@@ -182,19 +199,113 @@ var tFoldComm, tFoldHelp,tFoldLog,tFoldls, tFoldLmu,tFoldleftC,tDropleftC,tFoldl
 //
 // })
 
+//model drop down and fold up
+$('#menuModel').mouseenter(()=>{
+    clearTimeout(tFoldModel);
+    let target=$('#subModel');
+    target.children('ul').stop(true,false)
+    //clearTimeout(tFoldHelp);
+    $('#menuModel').css('borderBottomColor','#00c0ff');
+    $('#menuModel').children().css('color','#00c0ff');
+
+    subMenuDropDpwn(target,timerDropCom,timerFoldCom);
+})
+
+$('#menuModel').mouseleave(()=>{
+    let target=$('#subModel');
+    let timerDrop,TimerFold;
+    tFoldModel = setTimeout(()=>{
+        subMenuFoldUp(target,timerFoldCom,timerFoldCom);
+        $('#menuModel').css('borderBottomColor','#080a0e');
+        $('#menuModel').children().css('color','#f5f5f5');
+    },150);
+
+})
+
+$('#subModel').mouseenter(()=>{
+    clearTimeout(tFoldModel);
+    let target=$('#subModel');
+    target.children('ul').stop(true,false);//jq动画清除已有动画，参数( [clearQueue ] [, jumpToEnd ] )清除队列/当前执行的动画跳到最后
+    let timerDrop,TimerFold;
+    $('#menuModel').css('borderBottomColor','#00c0ff');
+    $('#menuModel').children().css('color','#00c0ff');
+
+    subMenuDropDpwn(target,timerFoldCom,timerFoldCom);
+})
+
+$('#subModel').mouseleave(()=>{
+    let target=$('#subModel');
+    let timerDrop,TimerFold;
+    t=Date.now();
+    tFoldModel=setTimeout(()=>{
+        subMenuFoldUp(target,timerFoldCom,timerFoldCom);
+        $('#menuModel').css('borderBottomColor','#080a0e');
+        $('#menuModel').children().css('color','#f5f5f5');
+    },150)
+
+})
+
+//data drop down and fold up
+$('#menuData').mouseenter(()=>{
+    clearTimeout(tFoldData);
+    let target=$('#subData');
+    target.children('ul').stop(true,false)
+    //clearTimeout(tFoldHelp);
+    $('#menuData').css('borderBottomColor','#00c0ff');
+    $('#menuData').children().css('color','#00c0ff');
+
+    subMenuDropDpwn(target,timerDropCom,timerFoldCom);
+})
+
+$('#menuData').mouseleave(()=>{
+    let target=$('#subData');
+    let timerDrop,TimerFold;
+    tFoldData = setTimeout(()=>{
+        subMenuFoldUp(target,timerFoldCom,timerFoldCom);
+        $('#menuData').css('borderBottomColor','#080a0e');
+        $('#menuData').children().css('color','#f5f5f5');
+    },150);
+
+})
+
+$('#subData').mouseenter(()=>{
+    clearTimeout(tFoldData);
+    let target=$('#subData');
+    target.children('ul').stop(true,false);//jq动画清除已有动画，参数( [clearQueue ] [, jumpToEnd ] )清除队列/当前执行的动画跳到最后
+    let timerDrop,TimerFold;
+    $('#menuData').css('borderBottomColor','#00c0ff');
+    $('#menuData').children().css('color','#00c0ff');
+
+    subMenuDropDpwn(target,timerFoldCom,timerFoldCom);
+})
+
+$('#subData').mouseleave(()=>{
+    let target=$('#subData');
+    let timerDrop,TimerFold;
+    t=Date.now();
+    tFoldData=setTimeout(()=>{
+        subMenuFoldUp(target,timerFoldCom,timerFoldCom);
+        $('#menuData').css('borderBottomColor','#080a0e');
+        $('#menuData').children().css('color','#f5f5f5');
+    },150)
+
+})
+
+
 //community drop down and fold up
 $('#drop1').mouseenter(()=>{
     clearTimeout(tFoldComm);
+    let target=$('.sub:eq(2)');
+    target.children('ul').stop(true,false)
     //clearTimeout(tFoldHelp);
     $('#drop1').css('borderBottomColor','#00c0ff');
     $('#drop1').children().css('color','#00c0ff');
-    let target=$('.sub:eq(0)');
 
     subMenuDropDpwn(target,timerDropCom,timerFoldCom);
 })
 
 $('#drop1').mouseleave(()=>{
-    let target=$('.sub:eq(0)');
+    let target=$('.sub:eq(2)');
     let timerDrop,TimerFold;
     tFoldComm = setTimeout(()=>{
         subMenuFoldUp(target,timerFoldCom,timerFoldCom);
@@ -232,14 +343,15 @@ $('#drop2').mouseenter(()=>{
     //clearTimeout(tFoldComm);
     let timerDrop,TimerFold;
     clearTimeout(tFoldHelp);
-    let target=$('.sub:eq(1)');
+    let target=$('#subHelp');
+    target.children('ul').stop(true,false)
     $('#drop2').css('borderBottomColor','#00c0ff');
     $('#drop2').children().css('color','#00c0ff');
     subMenuDropDpwn(target);
 })
 
 $('#drop2').mouseleave(()=>{
-    let target= $('.sub:eq(1)');
+    let target= $('#subHelp');
     let timerDrop,TimerFold;
     tFoldHelp=setTimeout(()=>{
         subMenuFoldUp(target);
@@ -329,7 +441,7 @@ $('#subls').mouseleave(()=>{
 //left sub menu drop down and fold up
 $('#dropmu').click((e)=>{
     clearTimeout(tFoldLmu);
-    let target=$('.sub:eq(3)');
+    let target=$('#submenu');
     let height=target.children('ul').css('height');
     if (height=='0px'){
         target.css('display','block')
@@ -348,9 +460,79 @@ $('#dropmu').click((e)=>{
 $('html').click((e)=>{
     if($(e.target).closest("#leftUl").length == 0){
         clearTimeout(tFoldLmu);
-        let target=$('.sub:eq(3)');
+        let target=$('#submenu');
         subMenuFoldUp(target);
     }
+})
+
+//model in left sub menu  drop down and fold up
+$('#leftModel').mouseenter(()=>{
+    clearTimeout(tFoldleftMd);
+    let target= $('#leftModelSub');
+    tFoldleftMd=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120);
+})
+
+$('#leftModel').mouseleave(()=>{
+    clearTimeout(tDropleftC)
+    let target= $('#leftModelSub');
+    tFoldleftMd=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },100);
+})
+
+$('#leftModelSub').mouseenter(()=>{
+    clearTimeout(tFoldleftMd);
+    $('#leftcommunity').children('a').css('color','#00C0FF');
+    let target= $('#leftModelSub')
+    tFoldleftMd=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120);
+})
+
+$('#leftModelSub').mouseleave(()=>{
+    clearTimeout(tFoldleftMd);
+    let target=$('#leftModelSub');
+    tFoldleftMd=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#leftModel').children('a').css('color','#f5f5f5');
+    },100)
+})
+
+//data in left sub menu  drop down and fold up
+$('#leftData').mouseenter(()=>{
+    clearTimeout(tFoldleftData);
+    let target= $('#leftDataSub');
+    tFoldleftData=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120);
+})
+
+$('#leftData').mouseleave(()=>{
+    clearTimeout(tFoldleftData)
+    let target= $('#leftDataSub');
+    tFoldleftData=setTimeout(()=>{
+        subMenuFoldUp(target);
+    },100);
+})
+
+$('#leftDataSub').mouseenter(()=>{
+    clearTimeout(tFoldleftData);
+    $('#leftData').children('a').css('color','#00C0FF');
+    let target= $('#leftDataSub')
+    tFoldleftData=setTimeout(()=>{
+        subMenuDropDpwn(target);
+    },120);
+})
+
+$('#leftDataSub').mouseleave(()=>{
+    clearTimeout(tFoldleftData);
+    let target=$('#leftDataSub');
+    tFoldleftData=setTimeout(()=>{
+        subMenuFoldUp(target);
+        $('#leftData').children('a').css('color','#f5f5f5');
+    },100)
 })
 
 //community in left sub menu  drop down and fold up
@@ -432,17 +614,21 @@ $('#dropstrip').click((e)=>{
 
     if (display=='none'){
         target.css('display','block');
-        fullSubMenuFoldUp($('#phoneUserSub'));
+        fullFirstSubMenuFoldUp($('#phoneUserSub'));
         fullSubMenuDropDpwn(target);
     }
 
     else{
+        fullFirstSubMenuFoldUp(target);
+        let target2=$('#phoneSubModel');
+        let target3=$('#phoneSubData');
+        let target4=$('#phoneSubCom');
+        let target5=$('#phoneSubHelp');
         fullSubMenuFoldUp(target);
-        let target2=$('#phoneSubCom');
-        let target3=$('#phoneSubHelp');
-        fullSubMenuFoldUp(target);
-        fullSubMenuFoldUp(target2,()=>{ $('#phoneHelp').css('margin-top','0px');});
-        fullSubMenuFoldUp(target3,()=>{ $('#aboutUs').css('margin-top','0px');});
+        fullSubMenuFoldUp(target2,()=>{ $('#phoneData').css('margin-top','0px');});
+        fullSubMenuFoldUp(target3,()=>{ $('#phoneCommunity').css('margin-top','0px');});
+        fullSubMenuFoldUp(target4,()=>{ $('#phoneHelp').css('margin-top','0px');});
+        fullSubMenuFoldUp(target5,()=>{ $('#aboutUs').css('margin-top','0px');});
 
 
     }
@@ -453,23 +639,68 @@ $('#dropstrip').click((e)=>{
     }
 })
 
-$('#phoneCommunity').click((e)=>{
-    let target=$('#phoneSubCom');
-    let display=target.children('ul').children().css('display');
-
-    if (display=='none'){
+$('#phoneModel').click((e)=>{
+    let target=$('#phoneSubModel');
+    let height=target.children('ul').height();
+    let timeout1
+    if (height==0){
         clearTimeout(timeout1);
         target.css('display','block')
         fullSubMenuDropDpwn(target);
-        $('#phoneHelp').animate({marginTop:300},150);
+        $('#phoneData').animate({marginTop:100},150);
     }
 
     else{
-        var timeout1=setTimeout(()=>{
-            fullSubMenuFoldUp(target);
-        },180);
+        fullSubMenuFoldUp(target);
+        $('#phoneData').animate({marginTop:0},80,'linear',{ queue: false });
 
-        $('#phoneHelp').animate({marginTop:0},110,'linear',{ queue: false });
+    }
+
+    if(e.stopPropagation){
+        e.stopPropagation();
+    }else{
+        e.cancelBubble = true;
+    }
+})
+
+$('#phoneData').click((e)=>{
+    let target=$('#phoneSubData');
+    let timeout1
+    let height=target.children('ul').height();
+    if (height==0){
+        clearTimeout(timeout1);
+        target.css('display','block')
+        fullSubMenuDropDpwn(target);
+        $('#phoneCommunity').animate({marginTop:200},245);
+    }
+
+    else{
+        fullSubMenuFoldUp(target);
+        $('#phoneCommunity').animate({marginTop:0},160,'linear',{ queue: false });
+
+    }
+
+    if(e.stopPropagation){
+        e.stopPropagation();
+    }else{
+        e.cancelBubble = true;
+    }
+})
+
+$('#phoneCommunity').click((e)=>{
+    let target=$('#phoneSubCom');
+    let timeout1
+    let height=target.children('ul').height();
+    if (height==0){
+        clearTimeout(timeout1);
+        target.css('display','block')
+        fullSubMenuDropDpwn(target);
+        $('#phoneHelp').animate({marginTop:300},365);
+    }
+
+    else{
+        fullSubMenuFoldUp(target);
+        $('#phoneHelp').animate({marginTop:0},240,'linear',{ queue: false });
 
     }
 
@@ -482,20 +713,18 @@ $('#phoneCommunity').click((e)=>{
 
 $('#phoneHelp').click((e)=>{
     let target=$('#phoneSubHelp');
-    let display=target.children('ul').children().css('display');
-
-    if (display=='none'){
+    let timeout2
+    let height=target.children('ul').height();
+    if (height==0){
         clearTimeout(timeout2);
         target.css('display','block')
         fullSubMenuDropDpwn(target);
-        $('#aboutUs').animate({marginTop:150},115);
+        $('#aboutUs').animate({marginTop:150},185);
     }
 
     else{
-        var timeout2=setTimeout(()=>{
-            fullSubMenuFoldUp(target);
-        },255);
-        $('#aboutUs').animate({marginTop:0},50);
+        fullSubMenuFoldUp(target);
+        $('#aboutUs').animate({marginTop:0},120);
     }
     if(e.stopPropagation){
         e.stopPropagation();
@@ -517,12 +746,12 @@ $('#phoneUserDrop').click((e)=>{
         $('#phoneHelp').css('margin-top','0px');
         fullSubMenuFoldUp($('#phoneSubHelp'));
         $('#aboutUs').css('margin-top','0px');
-        fullSubMenuFoldUp($('#phonesub'));
+        fullFirstSubMenuFoldUp($('#phonesub'));
         fullSubMenuDropDpwn(target);
     }
 
     else{
-        fullSubMenuFoldUp(target);
+        fullFirstSubMenuFoldUp(target);
         $('.main').css('backGroundColor','#0f0f0f')
     }
     if(e.stopPropagation){
@@ -538,10 +767,11 @@ $('section').click(()=>{
     let target=$('#phonesub');
     let target2=$('#phoneSubCom');
     let target3=$('#phoneSubHelp');
-    fullSubMenuFoldUp(target);
+    let target4=$('#phoneUserSub');
+    fullFirstSubMenuFoldUp(target);
     fullSubMenuFoldUp(target2);
     fullSubMenuFoldUp(target3);
-    fullSubMenuFoldUp($('#phoneUserSub'));
+    fullFirstSubMenuFoldUp(target4);
     $('#phoneHelp').css('margin-top','0px');
     $('#aboutUs').css('margin-top','0px');
 })
