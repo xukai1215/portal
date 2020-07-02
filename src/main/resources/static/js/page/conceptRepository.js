@@ -697,7 +697,7 @@ new Vue({
                 success: function (result) {
                     var json = JSON.parse(result);
                     if (json.oid != '') {
-                        window.location.href="/repository/createConcept";
+                        window.location.href="/user/userSpace#/community/createConcept";
                     }
                     else{
                         window.location.href="/user/login";
@@ -811,7 +811,7 @@ new Vue({
                             this.pageOption.total = data.total;
                             // this.pageOption.pages = data.pages;
                             this.pageOption.searchResult = data.list;
-                            // this.pageOption.users = data.users;
+                            this.pageOption.users = data.users;
                             this.pageOption.progressBar = false;
                             this.pageOption.paginationShow=true;
                         }, timeoutTime);

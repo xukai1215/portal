@@ -21,7 +21,4 @@ public class ModelItem extends Item {
 
     ModelItemRelate relate;
 
-
-
-
 }

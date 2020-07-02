@@ -861,7 +861,7 @@ var vue = new Vue({
                                 tinymce.init({
                                     selector: "textarea#themeText",
                                     height: 300,
-                                    theme: 'modern',
+                                    theme: 'silver',
                                     plugins: ['link', 'table', 'image', 'media'],
                                     image_title: true,
                                     // enable automatic uploads of images represented by blob or data URIs

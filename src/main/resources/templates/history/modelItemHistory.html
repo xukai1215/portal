@@ -67,7 +67,8 @@
                 <div class="detail_overview">
 
                     <div th:switch="${modelInfo.image}" class="img">
-                        <avatar th:case="''" th:username="${modelInfo.name}" :size="90" :rounded="false"></avatar>
+                        <img th:case="''" src="/static/img/model/model.png">
+                        <img th:case="null" src="/static/img/model/model.png">
                         <img th:case="*" th:src="${modelInfo.image}">
                     </div>
 
@@ -133,7 +134,7 @@
                 </div>
                 <div class="block_content">
                     <el-table
-                            :data="tableData6"
+                            :data="refTableData"
                             border
                             stripe
                             style="width: 100%">

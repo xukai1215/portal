@@ -19,15 +19,19 @@ import java.util.List;
  */
 public interface ConceptDao extends MongoRepository<Concept,String> {
 
+    Page<ConceptResultDTO> findAllBy(Pageable pageable);
+
     Concept findByOid(String oid);
 
     Concept findFirstByOid(String oid);
 
     Page<Concept> findByParentId(String parentId, Pageable pageable);
 
-    Page<Concept> findByNameContainsIgnoreCase(String name, Pageable pageable);
+    Page<ConceptResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<Concept> findByParentIdIn(List<String> parentIds,Pageable pageable);
+    Page<ConceptResultDTO> findByParentIdIn(List<String> parentIds,Pageable pageable);
+
+    Page<ConceptResultDTO> findByClassificationsIn(List<String> parentIds,Pageable pageable);
 
     Page<ConceptResultDTO> findByAuthor(String author, Pageable pageable);
 

@@ -123,13 +123,16 @@
                 label: 'Invoker'
             }],
 
-            range:365,
+            range:90,
             timeRange: [{
                 value: 7,
                 label: 'A week'
             }, {
                 value: 30,
                 label: 'A month'
+            }, {
+                value: 90,
+                label: 'A quarter'
             }, {
                 value: 180,
                 label: 'Half a year'
@@ -417,6 +420,7 @@
                     value: 1,
                     label: 'Viewer'
                 }]
+                this.type=1;
             }
 
             this.stats.hourInvoke.unshift("Invoke Times");

@@ -251,6 +251,7 @@ new Vue({
                 success: (json) => {
                     if(json.code==-1){
                         this.$alert('Model item is not exist,please check the name.', 'Error', {
+                            type:'error',
                             confirmButtonText: 'OK',
                             callback: action => {
 
@@ -259,6 +260,7 @@ new Vue({
                     }
                     else{
                         this.$alert('Bind successfully!', 'Success', {
+                            type:'success',
                             confirmButtonText: 'OK',
                             callback: action => {
                                 window.location.href=window.location.href.substring(0,window.location.href.length-36)+json.data;

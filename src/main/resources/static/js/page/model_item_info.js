@@ -5,6 +5,15 @@ var info=new Vue({
     },
     data: function () {
         return {
+            authorshipFormVisible: false,
+            authorshipForm:{
+                name:'',
+                ins:'',
+                email:'',
+                homepage:'',
+                oid:'',
+            },
+            formLabelWidth: '120px',
             //comment
             commentText: "",
             commentParentId:null,
@@ -16,6 +25,7 @@ var info=new Vue({
             dialogTableVisible: false,
             relateSearch: "",
             relateType: "",
+            typeName: "",
             relateTitle: "",
             tableMaxHeight: 400,
             tableData: [],
@@ -79,6 +89,70 @@ var info=new Vue({
         }
     },
     methods: {
+        claim(){
+            $.get("/user/load",{},(result)=>{
+                let json = JSON.parse(result);
+                if (json.oid == "") {
+                    this.confirmLogin();
+                }
+                else {
+                    this.authorshipFormVisible = true;
+                }
+            })
+        },
+        useMyInfo(){
+            $.get("/user/getUserSimpleInfo",{},(result)=>{
+                if(result.code==-1){
+                    this.confirmLogin();
+                }else{
+                    let data = result.data;
+                    this.authorshipForm.name = data.name;
+                    this.authorshipForm.ins = data.org;
+                    this.authorshipForm.email = data.email;
+                    this.authorshipForm.homepage = data.homepage;
+                }
+            })
+        },
+        submitAuthorship(){
+            let urls = window.location.href.split('/');
+            let oid = urls[urls.length-1].substring(0,36);
+            this.authorshipForm.oid = oid;
+            axios.post("/modelItem/claimAuthorship",this.authorshipForm)
+                .then((result) => {
+                    result = result.data;
+                if(result.code==-1){
+                    this.confirmLogin();
+                }else if(result.code==-2){
+                    this.$alert(result.msg, 'Tip', {
+                        type:'info',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                        }
+                    });
+                }else{
+                    if(result.data.method=='update'){
+                        this.$alert("Added successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        });
+                    }else {
+                        this.$alert("Submitted successfully, please wait for review.", 'Tip', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.authorshipFormVisible = false
+                            }
+                        });
+                    }
+                }
+            })
+        },
+
+        //comment
         submitComment(){
             if(this.useroid==""||this.useroid==null||this.useroid==undefined){
                 this.$message({
@@ -780,41 +854,42 @@ var info=new Vue({
                         switch (order) {
                             case 1:
                                 this.relateType = "modelItem";
-                                this.relateTitle = "Add Related Model Item"
+                                this.typeName = "Model Item"
                                 break;
                             case 2:
                                 this.relateType = "conceptualModel";
-                                this.relateTitle = "Add Related Conceptual Model"
+                                this.typeName = "Conceptual Model"
                                 break;
                             case 3:
                                 this.relateType = "logicalModel";
-                                this.relateTitle = "Add Related Logical Model"
+                                this.typeName = "Logical Model"
                                 break;
                             case 4:
                                 this.relateType = "computableModel";
-                                this.relateTitle = "Add Related Computable Model"
+                                this.typeName = "Computable Model"
                                 break;
                             case 5:
                                 this.relateType = "concept";
-                                this.relateTitle = "Add Related Concept & Semantic"
+                                this.typeName = "Concept & Semantic"
                                 break;
                             case 6:
                                 this.relateType = "spatialReference";
-                                this.relateTitle = "Add Related Spatial Reference"
+                                this.typeName = "Spatiotemporal Reference"
                                 break;
                             case 7:
                                 this.relateType = "template";
-                                this.relateTitle = "Add Related Data Template"
+                                this.typeName = "Data Template"
                                 break;
                             case 8:
                                 this.relateType = "unit";
-                                this.relateTitle = "Add Related Unit & Metric"
+                                this.typeName = "Unit & Metric"
                                 break;
                             case 9:
                                 this.relateType = "dataItem";
-                                this.relateTitle = "Add Related Data Item";
+                                this.typeName = "Data Item";
                                 break;
                         }
+                        this.relateTitle = "Link Related "+this.typeName;
                         this.tableData = [];
                         this.pageOption.currentPage = 1;
                         this.pageOption.searchResult = [];

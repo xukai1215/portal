@@ -34,7 +34,7 @@ public class Item implements Serializable {
 //    @JsonFormat(pattern = "yyyy-MM-dd")
     Date lastModifyTime;
 
-    //public, discoverable or private
+    //Public, Discoverable or Private
     String status;
 
     //authorship

@@ -17,9 +17,7 @@ import njgis.opengms.portal.dto.Template.TemplateUpdateDTO;
 import njgis.opengms.portal.dto.Unit.UnitAddDTO;
 import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
-import njgis.opengms.portal.dto.theme.ThemeAddDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.RepositoryService;
 import njgis.opengms.portal.service.UserService;
@@ -35,7 +33,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -234,7 +231,7 @@ public class RepositoryRestController {
         }
         JSONObject result=repositoryService.updateConcept(conceptUpdateDTO,uid);
         if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
         }
         else {
             return ResultUtils.success(result);
@@ -399,7 +396,7 @@ public class RepositoryRestController {
         }
         JSONObject result=repositoryService.updateSpatial(spatialUpdateDTO,uid);
         if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
         }
         else {
             return ResultUtils.success(result);
@@ -557,7 +554,7 @@ public class RepositoryRestController {
         }
         JSONObject result=repositoryService.updateTemplate(templateUpdateDTO,uid);
         if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
         }
         else {
             return ResultUtils.success(result);
@@ -706,7 +703,7 @@ public class RepositoryRestController {
         }
         JSONObject result=repositoryService.updateUnit(unitUpdateDTO,uid);
         if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
         }
         else {
             return ResultUtils.success(result);

@@ -102,6 +102,8 @@
         var str = fs.read(dataPath);
         map['options']=str;
         map['outfile']=data.outfile;
+        map['width']=data.width;
+        map['height']=data.height;
         return map;
     };
 
@@ -139,7 +141,7 @@
                 if (images.length > 0) {  
                     counter = images.length;  
                     for (i = 0; i < images.length; i += 1) {  
-                        img = new Image();  
+                        img = new Image();
                         img.onload = img.onerror = decrementImgCounter;  
                         img.src = images[i].getAttribute('href');  
                     }  

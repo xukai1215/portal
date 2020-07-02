@@ -2413,7 +2413,8 @@ var vue = new Vue({
         let {data} = await (await fetch("/task/TaskInit/" + id)).json();
         if (data == null || data == undefined) {
             this.$alert('Initialization failure: an error occured on the server.<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Error', {
-                type:"warning",
+                type:"error",
+                showClose:false,
                 confirmButtonText: 'Try again',
                 dangerouslyUseHTMLString: true,
                 callback: action => {

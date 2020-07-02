@@ -55,5 +55,8 @@ public class ComputableModel extends Item {
     String runtime;
 
     int invokeCount = 0;
+    int downloadCount;
     List<DailyViewCount> dailyInvokeCount = new ArrayList<>();
+
+
 }

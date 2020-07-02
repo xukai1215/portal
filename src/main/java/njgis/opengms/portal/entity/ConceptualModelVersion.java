@@ -10,11 +10,12 @@ import java.util.List;
 
 @Document
 @Data
-public class ConceptualModelVersion {
+public class ConceptualModelVersion extends Version {
     @Id
     String id;
     String oid;
     String name;
+
     String relateModelItem;
     String description;
     String cXml;

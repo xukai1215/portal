@@ -34,7 +34,7 @@ var modelItem = Vue.extend({
         },
 
         seeDetailPage(oid){
-            let a=this.$route.params.modelitemKind
+            let a=this.$route.params.modelitemKind;
             let urls={
                 'modelitem':'modelItem',
                 'conceptualmodel':'conceptualModel',
@@ -42,6 +42,10 @@ var modelItem = Vue.extend({
                 'computablemodel':'computableModel'
             }
             window.location.href='/'+urls[a]+'/'+oid
+        },
+
+        getType(){
+            return this.$route.params.modelitemKind;
         },
 
         comEditItem(index,oid){

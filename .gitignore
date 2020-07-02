@@ -3,6 +3,7 @@
 
 /src/main/resources/application-dev.properties
 /src/main/resources/application-prod.properties
+/src/test/java/njgis/opengms/portal/PortalApplicationTests.java
 
 ### STS ###
 .apt_generated

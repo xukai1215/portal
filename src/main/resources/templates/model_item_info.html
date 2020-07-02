@@ -21,19 +21,19 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
     <style>
-        #description h1 {
+        #description .block_content h1 {
             font-size: 24px;
         }
 
-        #description h2 {
+        #description .block_content h2 {
             font-size: 22px;
         }
 
-        #description h3 {
+        #description .block_content h3 {
             font-size: 20px;
         }
 
-        #description h4 {
+        #description .block_content h4 {
             font-size: 18px;
         }
 
@@ -82,7 +82,10 @@
                         <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
                         <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
                     </el-tooltip>
-                    <a th:if="${modelInfo.status=='Public'}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <a th:if="${modelInfo.status=='Public'&&modelInfo.lock==false}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
+                        <li th:if="${modelInfo.status=='Public'&&modelInfo.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
+                    </el-tooltip>
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
@@ -116,8 +119,11 @@
 
             <div id="Contributor0" class="detail_block minScreen">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">
@@ -142,7 +148,7 @@
             </div>
 
             <div id="Authorship0" class="detail_block minScreen"
-                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+                 >
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -150,7 +156,7 @@
                 </div>
                 <div class="block_content text-center" style="padding-left:10px" >
 
-                    <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                    <div th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}" style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"
                               th:class="${key.index==0?'ab':'ab transform180'}"><a
                                 data-toggle="collapse" th:href="'#authorshipPhone'+${key.index}" class="detail-toggle"
@@ -171,6 +177,9 @@
                                 </dl>
                             </div>
                         </div>
+                    </div>
+                    <div th:if="${modelInfo.authorship==null||#lists.size(modelInfo.authorship)==0}">
+                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim" style="text-decoration: underline">claim</a> the item.</el-tag>
                     </div>
                 </div>
             </div>
@@ -269,7 +278,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can bind computable models.
+                                There is no related computable model. You can link computable models.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(4)">
@@ -310,7 +319,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(conceptualModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related conceptual model. You can bind conceptual models.
+                                There is no related conceptual model. You can link conceptual models.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(2)">
@@ -349,7 +358,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(logicalModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related logical model. You can bind logical models.
+                                There is no related logical model. You can link logical models.
                             </h5>
                             <button class="btn btn-default" type="button" style="display: inline-block;"
                                     @click="addRelation(3)">
@@ -358,7 +367,6 @@
                             </button>
                         </div>
                     </el-tab-pane>
-
 
                 </el-tabs>
             </div>
@@ -401,7 +409,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(modelItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related model item. You can bind model items.
+                                There is no related model item. You can link model items.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(1)">
@@ -439,7 +447,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(dataItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related data item. You can bind data items.
+                                There is no related data item. You can link data items.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(9)">
@@ -488,7 +496,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(concepts)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related concept & semantic. You can bind concepts or semantics.
+                                There is no related concept & semantic. You can link concepts or semantics.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(5)">
@@ -527,7 +535,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(spatialReferences)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related spatial reference. You can bind spatial references.
+                                There is no related spatial reference. You can link spatial references.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(6)">
@@ -565,7 +573,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(templates)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related data template. You can bind data templates.
+                                There is no related data template. You can link data templates.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(7)">
@@ -604,7 +612,7 @@
                         </div>
                         <div class="text-center" th:if="${#lists.size(units)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related Unit & Metric. You can bind units or metrics.
+                                There is no related Unit & Metric. You can link units or metrics.
                             </h5>
                             <button class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(8)">
@@ -763,8 +771,11 @@
         <div class="right-panel el-col">
             <div id="Contributor" class="detail_block">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributed the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">
@@ -789,7 +800,7 @@
             </div>
 
             <div id="Authorship" class="detail_block"
-                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+                 >
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -797,7 +808,7 @@
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
 
-                    <div style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                    <div style="text-align: left;" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"
                               th:class="${key.index==0?'ab':'ab transform180'}"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
@@ -818,6 +829,9 @@
                                 </dl>
                             </div>
                         </div>
+                    </div>
+                    <div th:if="${modelInfo.authorship==null||#lists.size(modelInfo.authorship)==0}">
+                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim" style="text-decoration: underline">claim</a> the item.</el-tag>
                     </div>
                 </div>
             </div>
@@ -887,7 +901,17 @@
     <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle"  width="70%"
                top="40px">
 
-        <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
+        <div style="padding: 8px 16px;
+                        background-color: #ecf8ff;
+                        border-radius: 4px;
+                        border-left: 5px solid #50bfff;
+                        margin: 0 0 10px;">
+            <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
+                You can link related <code style="background-color: #f9fafc;color: #5e6d82;">{{typeName}}</code> from your personal space to this model item, or you can <a style="cursor:pointer;text-decoration: underline" @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
+            </p>
+        </div>
+
+        <el-card shadow="never" class="box-card" style="width:40%;margin-right: 1%;float: left;">
             <div slot="header" class="clearfix">
                 <span>Model Content & Service</span>
 
@@ -936,8 +960,8 @@
         </el-card>
 
 
-        <el-card class="box-card" style="width:59%;">
-            <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
+        <el-card shadow="never" class="box-card" style="width:59%;">
+            <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
                 <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
             <el-table
@@ -986,6 +1010,30 @@
             <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
             <el-button @click="dialogTableVisible = false;">Cancel</el-button>
             <el-button type="primary" @click="confirm()">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- claim authorship-->
+    <el-dialog title="Add Authorship" :visible.sync="authorshipFormVisible">
+        <el-form :model="authorshipForm">
+            <el-form-item label="Name" :label-width="formLabelWidth">
+                <el-input v-model="authorshipForm.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Affiliation" :label-width="formLabelWidth">
+                <el-input v-model="authorshipForm.ins" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Email" :label-width="formLabelWidth">
+                <el-input v-model="authorshipForm.email" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Homepage" :label-width="formLabelWidth">
+                <el-input v-model="authorshipForm.homepage" autocomplete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="success" @click="useMyInfo" style="float:left">Use My Info</el-button>
+            <el-button @click="authorshipFormVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="submitAuthorship">Submit</el-button>
         </div>
     </el-dialog>
 

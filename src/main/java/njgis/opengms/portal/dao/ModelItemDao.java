@@ -34,7 +34,7 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     Page<ModelItemResultDTO> findAllByNameContains(@Param("name") String name,Pageable pageable);
 
-    Page<ModelItemResultDTO> findAllByNameContainsAndStatusIn(@Param("name") String name, List<String> status,Pageable pageable);
+    Page<ModelItemResultDTO> findAllByNameContainsAndStatusIn(String name, List<String> status,Pageable pageable);
 
     Page<ModelItemResultDTO> findAllByNameContainsAndAuthor(String name, String author, Pageable pageable);
 

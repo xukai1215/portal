@@ -16,14 +16,16 @@ var userAccount = Vue.extend(
                 userInfo:{
                     oid:'',
                     name:'',
+                    saStr:'',
                 },
 
                 subscribe:false,
-
+                subscribeComputableOwner:'my',
                 subscribeList:[],
 
                 dialogTableVisible:false,
                 tableMaxHeight: 400,
+                searchText: "",
                 pageOption: {
                     paginationShow: false,
                     progressBar: true,
@@ -31,9 +33,19 @@ var userAccount = Vue.extend(
                     currentPage: 1,
                     pageSize: 5,
                     total: 0,
-                    searchText: "",
                     searchResult: [],
                 },
+
+                pageOption2: {
+                    paginationShow: false,
+                    progressBar: true,
+                    sortAsc: false,
+                    currentPage: 1,
+                    pageSize: 5,
+                    total: 0,
+                    searchResult: [],
+                },
+
 
             }
         },
@@ -166,39 +178,43 @@ var userAccount = Vue.extend(
             },
 
             search(){
-                let data = {
-                    asc: this.pageOption.sortAsc,
-                    page: this.pageOption.currentPage-1,
-                    pageSize: this.pageOption.pageSize,
-                    searchText: this.pageOption.searchText,
-                    sortType: "default",
-                    classifications: ["all"],
-                };
-                // data = JSON.stringify(data);
-                $.ajax({
-                    type: "POST",
-                    url: "/computableModel/listByAuthor",
-                    data: data,
-                    async: true,
-                    contentType: "application/x-www-form-urlencoded",
-                    success: (json) => {
-                        if (json.code == 0) {
-                            let data = json.data;
-                            console.log(data)
+                if(this.subscribeComputableOwner == "my") {
+                    let data = {
+                        asc: this.pageOption.sortAsc,
+                        page: this.pageOption.currentPage - 1,
+                        pageSize: this.pageOption.pageSize,
+                        searchText: this.pageOption.searchText,
+                        sortType: "default",
+                        classifications: ["all"],
+                    };
+                    // data = JSON.stringify(data);
+                    $.ajax({
+                        type: "POST",
+                        url: "/computableModel/listByAuthor",
+                        data: data,
+                        async: true,
+                        contentType: "application/x-www-form-urlencoded",
+                        success: (json) => {
+                            if (json.code == 0) {
+                                let data = json.data;
+                                console.log(data)
 
-                            this.pageOption.total = data.total;
-                            this.pageOption.pages = data.pages;
-                            this.pageOption.searchResult = data.list;
-                            this.pageOption.users = data.users;
-                            this.pageOption.progressBar = false;
-                            this.pageOption.paginationShow = true;
+                                this.pageOption.total = data.total;
+                                this.pageOption.pages = data.pages;
+                                this.pageOption.searchResult = data.list;
+                                this.pageOption.users = data.users;
+                                this.pageOption.progressBar = false;
+                                this.pageOption.paginationShow = true;
 
+                            }
+                            else {
+                                console.log("query error!")
+                            }
                         }
-                        else {
-                            console.log("query error!")
-                        }
-                    }
-                })
+                    })
+                }else{
+
+                }
             },
 
 
@@ -218,6 +234,7 @@ var userAccount = Vue.extend(
                             }
 
                             let sas = this.userInfo.subjectAreas;
+                            this.userInfo.saStr = '';
                             if (sas != null && sas.length != 0) {
                                 this.userInfo.saStr = sas[0];
                                 for (i = 1; i < sas.length; i++) {

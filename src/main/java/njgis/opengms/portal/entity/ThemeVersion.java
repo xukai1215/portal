@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 //以编辑者为存储基准
-public class ThemeVersion{
+public class ThemeVersion {
     @Id
     String oid;
     String themename;

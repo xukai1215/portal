@@ -1945,7 +1945,7 @@ Vue.component("user-data",
                     tinymce.init({
                         selector: "textarea#taskDataDetailAll",
                         height: 205,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs
@@ -2506,7 +2506,7 @@ Vue.component("user-data",
             tinymce.init({
                 selector: "textarea#detail",
                 height: 205,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs

@@ -2,7 +2,7 @@ var createSpatialReference = Vue.extend({
     template: "#createSpatialReference",
     data() {
         return {
-            status:"Public",
+            status: "Public",
 
             defaultActive: '4-2',
             curIndex: '6',
@@ -29,32 +29,46 @@ var createSpatialReference = Vue.extend({
 
             treeData: [{
                 id: 1,
-                label: "SpatialReferenceRepository",
+                label: "Spatial Reference Repository",
                 oid: '58340c92-d74f-4d81-8a80-e4fcff286008',
                 children: [{
-                    id: 2,
+                    id: 100,
                     "oid": "da70ad83-de57-4fc3-a85d-c1dcf4961433",
                     "label": "Basic"
                 },
                     {
-                        id: 3,
+                        id: 101,
                         "oid": "c4642926-e797-4f61-92d6-7933df2413d2",
-                        "label": "Epsg"
+                        "label": "EPSG"
                     },
                     {
-                        id: 4,
+                        id: 102,
                         "oid": "e8562394-b55f-46d7-870e-ef5ad3aaf110",
-                        "label": "Esri"
+                        "label": "ESRI"
                     },
                     {
-                        id: 5,
+                        id: 103,
                         "oid": "ee830613-1603-4f38-a196-5028e4e10d39",
                         "label": "IAU"
                     },
                     {
-                        id: 6,
+                        id: 104,
                         "oid": "b2f2fbfd-f21a-47ac-9e1f-a96ac0218bf1",
-                        "label": "CustomizedWKT"
+                        "label": "Customized"
+                    }]
+            }, {
+                id: 2,
+                label: "Temporal Reference Repository",
+                oid: 'ce37e343-bf2c-4e7b-902e-46616604e184',
+                children: [{
+                    id: 3,
+                    label: "Global",
+                    oid: '295d2120-402b-4ee6-a0b5-308b67fe2c40',
+                },
+                    {
+                        id: 4,
+                        label: "Local",
+                        oid: '6883d3fb-8485-4771-9a3e-3276c759364e',
                     }]
             }],
 
@@ -68,29 +82,29 @@ var createSpatialReference = Vue.extend({
 
             referenceInfo: {},
 
-            path:"ws://localhost:8080/websocket",
-            socket:"",
+            path: "ws://localhost:8080/websocket",
+            socket: "",
 
-            spatialReference_oid:"",
+            spatialReference_oid: "",
         }
     },
     methods: {
-        changeRter(index){
+        changeRter(index) {
             this.curIndex = index;
-            var urls={
-                1:'/user/userSpace',
-                2:'/user/userSpace/model',
-                3:'/user/userSpace/data',
-                4:'/user/userSpace/server',
-                5:'/user/userSpace/task',
-                6:'/user/userSpace/community',
-                7:'/user/userSpace/theme',
-                8:'/user/userSpace/account',
-                9:'/user/userSpace/feedback',
+            var urls = {
+                1: '/user/userSpace',
+                2: '/user/userSpace/model',
+                3: '/user/userSpace/data',
+                4: '/user/userSpace/server',
+                5: '/user/userSpace/task',
+                6: '/user/userSpace/community',
+                7: '/user/userSpace/theme',
+                8: '/user/userSpace/account',
+                9: '/user/userSpace/feedback',
             }
 
-            this.setSession('curIndex',index)
-            window.location.href=urls[index]
+            this.setSession('curIndex', index)
+            window.location.href = urls[index]
 
         },
         handleSelect(index, indexPath) {
@@ -129,15 +143,15 @@ var createSpatialReference = Vue.extend({
                 prop.pop();
             }
             var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
+            for (index = 0; index < UsersInfo.length; index++) {
                 //
-                if(index%4==0){
+                if (index % 4 == 0) {
                     let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
+                    let value2 = UsersInfo.eq(index + 1)[0].value.trim();
+                    let value3 = UsersInfo.eq(index + 2)[0].value.trim();
+                    let value4 = UsersInfo.eq(index + 3)[0].value.trim();
+                    if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
+                        index += 4;
                         continue;
                     }
                 }
@@ -156,15 +170,15 @@ var createSpatialReference = Vue.extend({
 
             }
         },
-        sendcurIndexToParent(){
-            this.$emit('com-sendcurindex',this.curIndex)
+        sendcurIndexToParent() {
+            this.$emit('com-sendcurindex', this.curIndex)
         },
 
-        sendUserToParent(userId){
-            this.$emit('com-senduserinfo',userId)
+        sendUserToParent(userId) {
+            this.$emit('com-senduserinfo', userId)
         },
 
-        init:function () {
+        init: function () {
 
             if ('WebSocket' in window) {
                 // this.socket = new WebSocket("ws://localhost:8080/websocket");
@@ -197,35 +211,35 @@ var createSpatialReference = Vue.extend({
         close: function () {
             console.log("socket已经关闭")
         },
-        getMessageNum(spatialReference_oid){
+        getMessageNum(spatialReference_oid) {
             this.message_num_socket = 0;//初始化消息数目
             let data = {
                 type: 'spatialReference',
-                oid : spatialReference_oid,
+                oid: spatialReference_oid,
             };
 
             //根据oid去取该作者的被编辑的条目数量
             $.ajax({
-                url:"/theme/getAuthorMessageNum",
-                type:"GET",
-                data:data,
-                async:false,
-                success:(json)=>{
+                url: "/theme/getAuthorMessageNum",
+                type: "GET",
+                data: data,
+                async: false,
+                success: (json) => {
                     this.message_num_socket = json;
                 }
             });
             let data_theme = {
                 type: 'spatialReference',
-                oid : spatialReference_oid,
+                oid: spatialReference_oid,
             };
             $.ajax({
-                url:"/theme/getThemeMessageNum",
-                async:false,
-                type:"GET",
-                data:data_theme,
-                success:(json)=>{
+                url: "/theme/getThemeMessageNum",
+                async: false,
+                type: "GET",
+                data: data_theme,
+                success: (json) => {
                     console.log(json);
-                    for (let i=0;i<json.length;i++) {
+                    for (let i = 0; i < json.length; i++) {
                         for (let k = 0; k < 4; k++) {
                             let type;
                             switch (k) {
@@ -249,17 +263,17 @@ var createSpatialReference = Vue.extend({
                                             case "0":
                                                 this.message_num_socket++;
                                         }
-                                    }else if (k == 1){
+                                    } else if (k == 1) {
                                         switch (type[j].status) {
                                             case "0":
                                                 this.message_num_socket++;
                                         }
-                                    }else if (k == 2){
+                                    } else if (k == 2) {
                                         switch (type[j].status) {
                                             case "0":
                                                 this.message_num_socket++;
                                         }
-                                    } else if (k == 3){
+                                    } else if (k == 3) {
                                         switch (type[j].status) {
                                             case "0":
                                                 this.message_num_socket++;
@@ -297,19 +311,19 @@ var createSpatialReference = Vue.extend({
 
         var user_num = 0;
 
-        if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
+        if ((oid === "0") || (oid === "") || (oid === null) || (oid === undefined)) {
 
             // $("#title").text("Create Spatial Reference")
-            $("#subRteTitle").text("/Create Spatial Reference")
+            $("#subRteTitle").text("/Create Spatiotemporal Reference")
 
 
-            $("#spatialText").html("");
+            // $("#spatialText").html("");
 
             tinymce.remove('textarea#spatialText')
             tinymce.init({
                 selector: "textarea#spatialText",
                 height: 350,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -343,8 +357,8 @@ var createSpatialReference = Vue.extend({
         else {
 
             // $("#title").text("Modify Spatial Reference")
-            $("#subRteTitle").text("/Modify Spatial Reference")
-            document.title="Modify Spatial Reference | OpenGMS"
+            $("#subRteTitle").text("/Modify Spatiotemporal Reference")
+            document.title = "Modify Spatial Reference | OpenGMS"
 
             $.ajax({
                 url: "/repository/getSpatialInfo/" + oid,
@@ -395,7 +409,7 @@ var createSpatialReference = Vue.extend({
 
                     //detail
                     //tinymce.remove("textarea#spatialText");
-                    if(basicInfo.detail != null){
+                    if (basicInfo.detail != null) {
                         $("#spatialText").html(basicInfo.detail);
                     }
 
@@ -403,7 +417,7 @@ var createSpatialReference = Vue.extend({
                     tinymce.init({
                         selector: "textarea#spatialText",
                         height: 300,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs
@@ -460,7 +474,7 @@ var createSpatialReference = Vue.extend({
                             offset: 70,
                         });
                         return false;
-                    }else if ($("#descInput").val().trim() == ""){
+                    } else if ($("#descInput").val().trim() == "") {
                         new Vue().$message({
                             message: 'Please enter overview!',
                             type: 'warning',
@@ -531,9 +545,9 @@ var createSpatialReference = Vue.extend({
             console.log(spatialObj)
 
 
-            let formData=new FormData();
+            let formData = new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
-                let file = new File([JSON.stringify(spatialObj)],'ant.txt',{
+                let file = new File([JSON.stringify(spatialObj)], 'ant.txt', {
                     type: 'text/plain',
                 });
                 formData.append("info", file)
@@ -545,10 +559,10 @@ var createSpatialReference = Vue.extend({
                     contentType: false,
                     async: true,
                     data: formData,
-                    success: (result)=> {
+                    success: (result) => {
                         loading.close();
                         if (result.code == "0") {
-                            this.$confirm('<div style=\'font-size: 18px\'>Create spatial reference successfully!</div>', 'Tip', {
+                            this.$confirm('<div style=\'font-size: 18px\'>Create spatiotemporal reference successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
                                 cancelButtonText: 'Go Back',
@@ -563,18 +577,18 @@ var createSpatialReference = Vue.extend({
                                 window.location.href = "/user/userSpace#/communities/spatialReference";
                             });
                         }
-                        else if(result.code==-1){
+                        else if (result.code == -1) {
                             this.$alert('Please login first!', 'Error', {
-                                type:"error",
+                                type: "error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
-                                    window.location.href="/user/login";
+                                    window.location.href = "/user/login";
                                 }
                             });
                         }
-                        else{
+                        else {
                             this.$alert('Created failed!', 'Error', {
-                                type:"error",
+                                type: "error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 
@@ -586,7 +600,7 @@ var createSpatialReference = Vue.extend({
             }
             else {
                 spatialObj["oid"] = oid;
-                let file = new File([JSON.stringify(spatialObj)],'ant.txt',{
+                let file = new File([JSON.stringify(spatialObj)], 'ant.txt', {
                     type: 'text/plain',
                 });
                 formData.append("info", file)
@@ -599,11 +613,11 @@ var createSpatialReference = Vue.extend({
                     async: true,
                     data: formData,
 
-                    success: (result)=> {
+                    success: (result) => {
                         loading.close();
                         if (result.code === 0) {
                             if (result.data.method === "update") {
-                                this.$confirm('<div style=\'font-size: 18px\'>Update spatial reference successfully!</div>', 'Tip', {
+                                this.$confirm('<div style=\'font-size: 18px\'>Update spatiotemporal reference successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',
                                     cancelButtonText: 'Go Back',
@@ -618,39 +632,38 @@ var createSpatialReference = Vue.extend({
                                     window.location.href = "/user/userSpace#/communities/spatialReference";
                                 });
                             }
-                            else
-                                {
-                                    let currentUrl = window.location.href;
-                                    let index = currentUrl.lastIndexOf("\/");
-                                    that.spatialReference_oid = currentUrl.substring(index + 1,currentUrl.length);
-                                    console.log(that.spatialReference_oid);
-                                    //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
-                                    that.getMessageNum(that.spatialReference_oid);
-                                    let params = that.message_num_socket;
-                                    that.send(params);
-                                    this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
-                                        type:"success",
-                                        confirmButtonText: 'OK',
-                                        callback: action => {
-                                            window.location.href = "/user/userSpace";
-                                        }
-                                    });
+                            else {
+                                let currentUrl = window.location.href;
+                                let index = currentUrl.lastIndexOf("\/");
+                                that.spatialReference_oid = currentUrl.substring(index + 1, currentUrl.length);
+                                console.log(that.spatialReference_oid);
+                                //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
+                                that.getMessageNum(that.spatialReference_oid);
+                                let params = that.message_num_socket;
+                                that.send(params);
+                                this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
+                                    type: "success",
+                                    confirmButtonText: 'OK',
+                                    callback: action => {
+                                        window.location.href = "/user/userSpace";
+                                    }
+                                });
 
-                                }
+                            }
 
                         }
-                        else if(result.code==-2){
+                        else if (result.code == -2) {
                             this.$alert('Please login first!', 'Error', {
-                                type:"error",
+                                type: "error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
-                                    window.location.href="/user/login";
+                                    window.location.href = "/user/login";
                                 }
                             });
                         }
                         else {
                             this.$alert(result.msg, 'Error', {
-                                type:"error",
+                                type: "error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 

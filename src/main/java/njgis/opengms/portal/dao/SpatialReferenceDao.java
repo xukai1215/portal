@@ -18,13 +18,18 @@ import java.util.List;
  * TODO
  */
 public interface SpatialReferenceDao extends MongoRepository<SpatialReference,String> {
+
+    Page<SpatialResultDTO> findAllBy(Pageable pageable);
+
     SpatialReference findByOid(String oid);
 
     Page<SpatialReference> findByParentId(String parentId, Pageable pageable);
 
-    Page<SpatialReference> findByNameContainsIgnoreCase(String name, Pageable pageable);
+    Page<SpatialResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<SpatialReference> findByParentIdIn(List<String> parentIds, Pageable pageable);
+    Page<SpatialResultDTO> findByParentIdIn(List<String> parentIds, Pageable pageable);
+
+    Page<SpatialResultDTO> findByClassificationsIn(List<String> parentIds, Pageable pageable);
 
     Page<SpatialResultDTO> findByAuthor(String author, Pageable pageable);
 

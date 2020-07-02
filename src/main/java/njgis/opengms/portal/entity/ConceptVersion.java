@@ -9,7 +9,7 @@ import java.util.List;
 
 @Document
 @Data
-public class ConceptVersion {
+public class ConceptVersion extends Version {
     @Id
     String id;
     String oid;

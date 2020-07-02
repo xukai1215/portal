@@ -9,7 +9,7 @@ import java.util.List;
 
 @Document
 @Data
-public class SpatialReferenceVersion {
+public class SpatialReferenceVersion extends Version {
     @Id
     String id;
     String oid;
