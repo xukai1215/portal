@@ -492,7 +492,7 @@ var createLogicalModel = Vue.extend({
             tinymce.init({
                 selector: "textarea#logicalModelText",
                 height: 400,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -566,7 +566,7 @@ var createLogicalModel = Vue.extend({
                     tinymce.init({
                         selector: "textarea#logicalModelText",
                         height: 300,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs

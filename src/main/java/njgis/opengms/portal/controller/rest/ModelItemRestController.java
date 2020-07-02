@@ -3,12 +3,14 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dto.ClaimAuthorDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.StatisticsService;
@@ -105,6 +107,34 @@ public class ModelItemRestController {
 
     }
 
+    @RequestMapping(value = "/claimAuthorship", method = RequestMethod.POST)
+    public JsonResult claimAuthorship(@RequestBody ClaimAuthorDTO authorInfo, HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        ModelItem modelItem = modelItemService.getByOid(authorInfo.getOid());
+        if(modelItem.isLock()){
+            return ResultUtils.error(-2,"The item is being edited, please do it later or contact opengms@njnu.edu.cn");
+        }
+        ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+        modelItemUpdateDTO.setOid(modelItem.getOid());
+        modelItemUpdateDTO.setName(modelItem.getName());
+        modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+        modelItemUpdateDTO.setDescription(modelItem.getDescription());
+        modelItemUpdateDTO.setDetail(modelItem.getDetail());
+        modelItemUpdateDTO.setStatus(modelItem.getStatus());
+        modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+        modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+        modelItemUpdateDTO.setReferences(modelItem.getReferences());
+        List<AuthorInfo> authorInfoList = modelItem.getAuthorship()==null?new ArrayList<>():modelItem.getAuthorship();
+        AuthorInfo authorInfo1 = authorInfo;
+        authorInfoList.add(authorInfo1);
+        modelItemUpdateDTO.setAuthorship(authorInfoList);
+        return ResultUtils.success(modelItemService.update(modelItemUpdateDTO,session.getAttribute("uid").toString()));
+
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JsonResult updateModelItem(HttpServletRequest request) throws IOException{
 
@@ -123,7 +153,7 @@ public class ModelItemRestController {
 
         JSONObject result=modelItemService.update(modelItemUpdateDTO,uid);
         if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
         }
         else {
             return ResultUtils.success(result);
@@ -301,7 +331,7 @@ public class ModelItemRestController {
         }
 
         StatisticsService statisticsService = new StatisticsService();
-        JSONObject result = statisticsService.getDailyViewAndInvokeTimes(modelItem,computableModelList,30);
+        JSONObject result = statisticsService.getDailyViewAndInvokeTimes(modelItem,computableModelList,30,null);
 
         return ResultUtils.success(result);
     }

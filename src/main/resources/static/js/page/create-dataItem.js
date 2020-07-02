@@ -603,7 +603,7 @@ var createDataItem = Vue.extend({
             tinymce.init({
                 selector: "textarea#detail",
                 height: 205,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -689,7 +689,7 @@ var createDataItem = Vue.extend({
                     tinymce.init({
                         selector: "textarea#detail",
                         height: 205,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs

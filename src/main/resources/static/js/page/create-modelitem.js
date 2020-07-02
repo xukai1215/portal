@@ -30,33 +30,46 @@ var createModelItem = Vue.extend({
             id: 1,
             label: 'Earth System Subject',
             oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
-            children: [{
-                id: 2,
-                label: 'Hydrosphere',
-                oid: '652bf1f8-2f3e-4f93-b0dc-f66505090873'
+            children: [ {
+                id: 65,
+                label: 'Solar-terrestrial Physics',
+                oid: '1fd56a5d-1532-4ea6-ad0a-226e78a12861'
             }, {
-                id: 3,
-                label: 'Lithosphere',
-                oid: 'a621ea24-26d5-4027-a8de-d418509dacb2'
-            }, {
-                id: 4,
-                label: 'Atmosphere',
-                oid: '5e324fc8-93d1-40bb-a2e4-24d2dff68c4b'
-            }, {
-                id: 5,
-                label: 'Biosphere',
-                oid: '76cb072d-8f56-4e34-9ea6-1a95ea7f474b'
-            }, {
-                id: 6,
-                label: 'Anthroposphere',
-                oid: 'eccbe4e1-32f6-490e-9bf7-ae774be472ac'
+                id: 66,
+                label: 'Earth Surface System',
+                oid: '4f162f21-2375-468e-90af-d3267d0ba05f',
+                children: [{
+                    id: 2,
+                    label: 'Hydrosphere',
+                    oid: '652bf1f8-2f3e-4f93-b0dc-f66505090873'
+                }, {
+                    id: 3,
+                    label: 'Lithosphere',
+                    oid: 'a621ea24-26d5-4027-a8de-d418509dacb2'
+                }, {
+                    id: 4,
+                    label: 'Atmosphere',
+                    oid: '5e324fc8-93d1-40bb-a2e4-24d2dff68c4b'
+                }, {
+                    id: 5,
+                    label: 'Biosphere',
+                    oid: '76cb072d-8f56-4e34-9ea6-1a95ea7f474b'
+                }, {
+                    id: 6,
+                    label: 'Anthroposphere',
+                    oid: 'eccbe4e1-32f6-490e-9bf7-ae774be472ac'
 
-            }, {
-                id: 7,
-                label: 'Global',
-                oid: '1a59f012-0659-479d-a183-b74921c67a08'
-            }]
-        }, {
+                }, {
+                    id: 7,
+                    label: 'Synthesis',
+                    oid: '1a59f012-0659-479d-a183-b74921c67a08'
+                }]
+            },{
+                id: 67,
+                label: 'Solid Earth Geophysics',
+                oid: '52e69d15-cc83-43fb-a445-0c15e5f46878'
+            },]
+        },{
             id: 64,
             label: 'Geography Subject',
             oid: 'd7824a16-0f3a-4186-8cb7-41eb10028177',
@@ -261,11 +274,11 @@ var createModelItem = Vue.extend({
                         id: 55,
                         "label": "3D Analyst",
                         "oid": "340c275a-1ed4-495b-8415-a6a4bfe4eb18",
-                    }, {
+                    },{
                         id: 56,
                         "label": "Network Analysis",
                         "oid": "fa7d7d50-098e-4cd7-92c7-31755b3ca371",
-                    }, {
+                    },{
                         id: 57,
                         "label": "Geographic Simulation",
                         "oid": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
@@ -274,11 +287,11 @@ var createModelItem = Vue.extend({
                         id: 58,
                         "label": "Climate Tools",
                         "oid": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
-                    }, {
+                    },{
                         id: 59,
                         "label": "Generic Tools",
                         "oid": "77567bff-52b9-4833-885d-417bd3a6c0e9"
-                    }, {
+                    },{
                         id: 60,
                         label: 'Cartography',
                         oid: '854189a4-3811-441d-a9d1-7de58e57a37f'
@@ -296,15 +309,8 @@ var createModelItem = Vue.extend({
                         label: 'Others',/////
                         oid: '10bef187-00bf-4cea-b192-bf1465a265b1'
                     }]
-            }]
-        }
-            // , {
-            //     id: 3,
-            //     label: 'Others',
-            //     children: [{
-            //         label: 'Others'
-            //     }]
-            // }
+            }]}
+
         ],
         defaultProps: {
             children: 'children',
@@ -646,7 +652,7 @@ var createModelItem = Vue.extend({
             tinymce.init({
                 selector: "textarea#modelItemText",
                 height: 350,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -842,7 +848,7 @@ var createModelItem = Vue.extend({
                     tinymce.init({
                         selector: "textarea#modelItemText",
                         height: 300,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs
@@ -1229,7 +1235,7 @@ var createModelItem = Vue.extend({
                                 center: true,
                                 showClose: false,
                             }).then(() => {
-                                window.location.href = "/modelItem/" + result.data.id;
+                                window.location.href = "/modelItem/" + result.data;
                             }).catch(() => {
                                 window.location.href = "/user/userSpace#/models/modelitem";
                             });

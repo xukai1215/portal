@@ -38,6 +38,7 @@ public class ItemViewRecordInterceptor implements HandlerInterceptor {
 
         viewRecord.setUserOid(userOid);
         viewRecord.setIp(ip);
+        viewRecord.setUrl(servletPath);
 
         ItemTypeEnum itemType;
 
@@ -49,7 +50,6 @@ public class ItemViewRecordInterceptor implements HandlerInterceptor {
                     viewRecord.setItemOid(itemOid);
                     viewRecord.setItemType(itemType);
                     viewRecord.setDate(new Date());
-                    viewRecordDao.insert(viewRecord);
                 }
             }
         }else {
@@ -60,10 +60,10 @@ public class ItemViewRecordInterceptor implements HandlerInterceptor {
                     viewRecord.setItemOid(itemOid);
                     viewRecord.setItemType(itemType);
                     viewRecord.setDate(new Date());
-                    viewRecordDao.insert(viewRecord);
                 }
             }
         }
+        viewRecordDao.insert(viewRecord);
 
         return true;
     }

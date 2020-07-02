@@ -68,7 +68,7 @@ new Vue({
                 success: function (result) {
                     var json = JSON.parse(result);
                     if (json.oid != '') {
-                        window.location.href="/repository/createUnit";
+                        window.location.href="/user/userSpace#/community/createUnit";
                     }
                     else{
                         window.location.href="/user/login";
@@ -101,6 +101,7 @@ new Vue({
             this.classifications1 = classes;
             this.getChildren(data.children)
             this.pageOption.currentPage=1;
+            this.searchText="";
             this.getModels();
         },
         getChildren(children) {
@@ -121,7 +122,7 @@ new Vue({
                 classes.push(checkedNodes[i].oid);
             }
             this.classifications2 = classes;
-            console.log(this.classifications2)
+            console.log(this.classifications2);
             this.pageOption.currentPage=1;
             this.getModels();
         },
@@ -181,7 +182,7 @@ new Vue({
                             this.pageOption.total = data.total;
                             // this.pageOption.pages = data.pages;
                             this.pageOption.searchResult = data.list;
-                            // this.pageOption.users = data.users;
+                            this.pageOption.users = data.users;
                             this.pageOption.progressBar = false;
                             this.pageOption.paginationShow=true;
                         }, timeoutTime);

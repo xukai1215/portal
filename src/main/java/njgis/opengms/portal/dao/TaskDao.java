@@ -16,6 +16,8 @@ public interface TaskDao extends MongoRepository<Task,String> {
 
     List<Task> findAllByComputableIdAndRunTimeGreaterThanEqual(String oid, Date date);
 
+    List<Task> findAllByComputableIdInAndRunTimeGreaterThanEqual(List<String> oids, Date date);
+
     Task findFirstByTaskId(String taskId);
 
 //    Task findFirstByTaskId(String taskId);
@@ -53,4 +55,8 @@ public interface TaskDao extends MongoRepository<Task,String> {
     Page<Task> findByComputableIdAndPermissionAndStatusAndUserIdNot(String modelId,String permission,int status,String userId,Pageable pageable);
 
     Task findFirstByOid(String oid);
+
+    List<Task> findAllByComputableIdAndFlag(String oid, boolean flag);
+
+
 }

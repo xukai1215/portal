@@ -50,6 +50,14 @@ body{
     display: none;
 }
 
+.el-dialog{
+    min-width:355px;
+}
+
+label{
+    margin-bottom:0;
+}
+
 .flex{
     display: flex;
 }

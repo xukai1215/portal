@@ -180,7 +180,7 @@
                         <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-20 pull-right"></i>
                         <i v-if="modelItem.status=='Private'" class="el-icon-lock private fontsize-20 pull-right"></i>
                     </el-tooltip>
-                    <div class="lineButton flexJustStart flexColCenter" @click="statistics(modelItem.oid)">
+                    <div v-if="getType()=='computablemodel'" class="lineButton flexJustStart flexColCenter" @click="statistics(modelItem.oid)">
                         <i class="el-icon-data-analysis" style="margin-right: 5px;font-size: 20px"></i>
                         <!--<div class="lineButton flexCol">-->
                             <!--<p style="margin-block-end: 0">Statistics</p>-->

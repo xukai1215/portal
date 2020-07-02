@@ -56,9 +56,29 @@ public class Utils {
                     geoInfoMeta.setRegion(rec.getRegion());
                     geoInfoMeta.setCountryCode(rec.getCountryShort());
                     String countryName = rec.getCountryLong();
-                    if (countryName.equals("United States of America")) {
-                        countryName="United States";
+
+                    switch (countryName.trim()){
+                        case "United States of America":
+                            countryName="United States";
+                            break;
+                        case "United Kingdom of Great Britain and Northern Ireland":
+                            countryName="United Kingdom";
+                            break;
+                        case "Hong Kong":
+                            countryName="Hong Kong, China";
+                            break;
+                        case "Macao":
+                            countryName="Macao, China";
+                            break;
+                        case "Taiwan (Province of China)":
+                            countryName="Taiwan, China";
+                            break;
+                        case "Congo (Democratic Republic of the)":
+                            countryName="Congo";
+                        default:
+                            break;
                     }
+
                     geoInfoMeta.setCountryName(countryName);
                     geoInfoMeta.setLatitude(String.valueOf(rec.getLatitude()));
                     geoInfoMeta.setLongitude(String.valueOf(rec.getLongitude()));

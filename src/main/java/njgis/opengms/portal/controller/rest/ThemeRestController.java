@@ -1,6 +1,5 @@
 package njgis.opengms.portal.controller.rest;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
@@ -25,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -438,7 +436,7 @@ public class ThemeRestController {
         //并根据author取出所有unchecked消息数量
         List<ModelItemVersion> modelItemVersions = modelItemVersionDao.findAll();
         for (int i=0 ; i <modelItemVersions.size(); i++){
-            if (author.equals(modelItemVersions.get(i).getCreator())&&modelItemVersions.get(i).getStatus() == 0){
+            if (author.equals(modelItemVersions.get(i).getCreator())&&modelItemVersions.get(i).getVerStatus() == 0){
                 message_num ++ ;
             }
         }
@@ -656,7 +654,7 @@ public class ThemeRestController {
 
         JSONObject result=themeService.update(themeUpdateDTO,uid,oid);
         if(result==null){
-            return ResultUtils.error(-1,"There is another version have not been checked, please contact nj_gis@163.com if you want to modify this item.");
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
         }
         else {
             return ResultUtils.success(result);

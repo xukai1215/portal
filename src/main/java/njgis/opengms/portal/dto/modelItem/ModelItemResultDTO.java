@@ -33,6 +33,8 @@ public class ModelItemResultDTO implements Serializable {
     String author_name;
     String status;
 
+    boolean lock;
+
     List<String> keywords;
 
     Date createTime;

@@ -26,31 +26,48 @@ new Vue({
 
             treeData: [{
                 id: 1,
-                label: "SpatialReferenceRepository",
+                label: "Spatial Reference Repository",
                 oid: '58340c92-d74f-4d81-8a80-e4fcff286008',
                 children: [{
-                    id: 100,
-                    "oid": "da70ad83-de57-4fc3-a85d-c1dcf4961433",
-                    "label": "Basic"
-                },
+                        id: 100,
+                        "oid": "da70ad83-de57-4fc3-a85d-c1dcf4961433",
+                        "label": "Basic"
+                    },
                     {
+                        id: 101,
                         "oid": "c4642926-e797-4f61-92d6-7933df2413d2",
-                        "label": "Epsg"
+                        "label": "EPSG"
                     },
                     {
+                        id: 102,
                         "oid": "e8562394-b55f-46d7-870e-ef5ad3aaf110",
-                        "label": "Esri"
+                        "label": "ESRI"
                     },
                     {
-
+                        id: 103,
                         "oid": "ee830613-1603-4f38-a196-5028e4e10d39",
                         "label": "IAU"
                     },
                     {
+                        id: 104,
                         "oid": "b2f2fbfd-f21a-47ac-9e1f-a96ac0218bf1",
-                        "label": "CustomizedWKT"
+                        "label": "Customized"
                     }]
-                }],
+            }, {
+                id: 2,
+                label: "Temporal Reference Repository",
+                oid: 'ce37e343-bf2c-4e7b-902e-46616604e184',
+                children: [{
+                        id: 3,
+                        label: "Global",
+                        oid: '295d2120-402b-4ee6-a0b5-308b67fe2c40',
+                    },
+                    {
+                        id: 4,
+                        label: "Local",
+                        oid: '6883d3fb-8485-4771-9a3e-3276c759364e',
+                    }]
+            }],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -67,7 +84,7 @@ new Vue({
                 success: function (result) {
                     var json = JSON.parse(result);
                     if (json.oid != '') {
-                        window.location.href="/repository/createSpatialReference";
+                        window.location.href="/user/userSpace#/community/createSpatialReference";
                     }
                     else{
                         window.location.href="/user/login";
@@ -181,7 +198,7 @@ new Vue({
                             this.pageOption.total = data.total;
                             // this.pageOption.pages = data.pages;
                             this.pageOption.searchResult = data.list;
-                            // this.pageOption.users = data.users;
+                            this.pageOption.users = data.users;
                             this.pageOption.progressBar = false;
                             this.pageOption.paginationShow=true;
                         }, timeoutTime);

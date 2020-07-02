@@ -22,9 +22,13 @@ public interface UnitDao extends MongoRepository<Unit,String> {
 
     Page<Unit> findByParentId(String parentId, Pageable pageable);
 
-    Page<Unit> findByNameContainsIgnoreCase(String name, Pageable pageable);
+    Page<UnitResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<Unit> findByParentIdIn(List<String> parentIds, Pageable pageable);
+    Page<UnitResultDTO> findAllBy(Pageable pageable);
+
+    Page<UnitResultDTO> findByParentIdIn(List<String> parentIds, Pageable pageable);
+
+    Page<UnitResultDTO> findByClassificationsIn(List<String> parentIds, Pageable pageable);
 
     Page<UnitResultDTO> findByAuthor(String author, Pageable pageable);
 

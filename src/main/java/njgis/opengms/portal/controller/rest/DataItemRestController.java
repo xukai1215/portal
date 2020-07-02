@@ -11,7 +11,6 @@ import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
-import njgis.opengms.portal.dto.dataItem.DistributedDataItemDTO;
 import njgis.opengms.portal.entity.Categorys;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.ModelItem;
@@ -23,7 +22,6 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -33,13 +31,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
 
@@ -311,7 +306,7 @@ public class DataItemRestController {
 
 
         ArrayList<String> fileName = new ArrayList<>();
-        if (dataItem.getDataType().equals("DistributedNode")){
+        if (dataItem.getDataType()!=null&&dataItem.getDataType().equals("DistributedNode")){
             fileName.add(dataItem.getName());
         }
         view.setViewName("data_item_info");

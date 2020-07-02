@@ -11,7 +11,7 @@ import java.util.List;
 
 @Document
 @Data
-public class ModelItemVersion {
+public class ModelItemVersion extends Version {
     @Id
     String id;
     String originOid;//正式数据库对应条目的oid
@@ -25,7 +25,7 @@ public class ModelItemVersion {
     int readStatus;
 
     Long verNumber;//版本号
-    int status;//版本状态
+    int verStatus;//版本状态
 
     List<String> classifications;//
     List<String> keywords;//

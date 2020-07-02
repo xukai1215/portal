@@ -546,7 +546,7 @@ public class ModelItemService {
                 Date curDate = new Date();
                 modelItemVersion.setModifyTime(curDate);
                 modelItemVersion.setVerNumber(curDate.getTime());
-                modelItemVersion.setStatus(0);
+                modelItemVersion.setVerStatus(0);
                 userService.messageNumPlusPlus(authorUserName);
                 modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
                 modelItemVersion.setCreator(author);

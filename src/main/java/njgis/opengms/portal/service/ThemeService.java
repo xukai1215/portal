@@ -323,9 +323,9 @@ public class ThemeService {
 //                jsonObject.putAll(modifier);
                 jsonObject.put("modifier",modifier);
                 String statuss = new String();
-                if (modelItemVersion.getStatus() == 0){
+                if (modelItemVersion.getVerStatus() == 0){
                     statuss = "unchecked";
-                }else if (modelItemVersion.getStatus() == -1){
+                }else if (modelItemVersion.getVerStatus() == -1){
                     statuss = "reject";
                 }else {
                     statuss = "confirmed";
@@ -335,7 +335,7 @@ public class ThemeService {
                 jsonObject.put("type", "modelItem");
                 jsonObject.put("ex_type","Model Item");
 
-                int status = modelItemVersion.getStatus();
+                int status = modelItemVersion.getVerStatus();
                 if (status == 0) {
                     uncheck.add(jsonObject);
                     edit.add(jsonObject);
@@ -391,9 +391,9 @@ public class ThemeService {
 //                jsonObject.putAll(modifier);
                 jsonObject.put("modifier",modifier);
                 String statuss = new String();
-                if (modelItemVersion.getStatus() == 0){
+                if (modelItemVersion.getVerStatus() == 0){
                     statuss = "unchecked";
-                }else if (modelItemVersion.getStatus() == -1){
+                }else if (modelItemVersion.getVerStatus() == -1){
                     statuss = "reject";
                 }else {
                     statuss = "confirmed";
@@ -403,7 +403,7 @@ public class ThemeService {
                 jsonObject.put("type", "modelItem");
                 jsonObject.put("ex_type","Model Item");
 
-                int status = modelItemVersion.getStatus();
+                int status = modelItemVersion.getVerStatus();
                 if (status == 0) {
                     uncheck_self.add(jsonObject);
                 } else if (status == 1) {

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Document
 @Data
-public class TemplateVersion {
+public class TemplateVersion extends Version {
     @Id
     String id;
     String oid;

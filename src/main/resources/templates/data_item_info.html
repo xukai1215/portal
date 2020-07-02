@@ -457,7 +457,7 @@
                     </div>
                     <div class="text-center" style="width:100%" th:if="${#lists.size(relatedModels)}==0">
                         <h5 style="margin-bottom: 10px;display: inline-block;">
-                            There is no related model item. You can bind one.
+                            There is no related model item. You can link one.
                         </h5>
                         <button class="btn btn-default" type="button"
                                 style="display: inline-block;" @click="addRelation()">
@@ -750,10 +750,20 @@
         </div>
 
         <!--Relation 弹出框-->
-        <el-dialog :visible.sync="dialogTableVisible" title="Add Related Model Item"
+        <el-dialog style="float:left" :visible.sync="dialogTableVisible" title="Add Related Model Item"
                    width="70%" top="40px">
 
-            <el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">
+            <div style="padding: 8px 16px;
+                        background-color: #ecf8ff;
+                        border-radius: 4px;
+                        border-left: 5px solid #50bfff;
+                        margin: 0 0 10px;">
+                <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
+                    You can link related <code style="background-color: #f9fafc;color: #5e6d82;">Model Item</code> from your personal space to this model item, or you can <a style="cursor:pointer;text-decoration: underline" @click="jump">create</a> a new <span>model item</span>.
+                </p>
+            </div>
+
+            <el-card shadow="never" class="box-card" style="width:40%;margin-right: 1%;float: left;">
                 <div slot="header" class="clearfix">
                     <span>Related Items</span>
 
@@ -784,9 +794,8 @@
                 </el-table>
             </el-card>
 
-
-            <el-card class="box-card" style="width:59%;">
-                <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">
+            <el-card shadow="never" class="box-card" style="width:59%;">
+                <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
                     <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
                 </el-input>
                 <el-table

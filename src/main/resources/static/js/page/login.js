@@ -165,7 +165,7 @@ new Vue({
                         else{
                             this.$notify.error({
                                 title: 'Fail',
-                                message: 'Reset password failed, Please try again or contact nj_gis@163.com',
+                                message: 'Reset password failed, Please try again or contact opengms@njnu.edu.cn',
                                 offset: 70,
                                 duration: 0
                             });

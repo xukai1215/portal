@@ -1205,13 +1205,13 @@ var createConcept = Vue.extend({
             // $("#title").text("Create Concept & Semantic")
             $("#subRteTitle").text("/Create Concept & Semantic")
 
-            $("#comceptText").html("");
+            // $("#comceptText").html("");
 
             tinymce.remove('textarea#conceptText')
             tinymce.init({
                 selector: "textarea#conceptText",
                 height: 350,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -1321,7 +1321,7 @@ var createConcept = Vue.extend({
                     tinymce.init({
                         selector: "textarea#conceptText",
                         height: 300,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs

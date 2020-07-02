@@ -3,7 +3,6 @@ package njgis.opengms.portal.utils;
 import com.github.abel533.echarts.axis.CategoryAxis;
 import com.github.abel533.echarts.axis.ValueAxis;
 import com.github.abel533.echarts.code.Magic;
-import com.github.abel533.echarts.code.Orient;
 import com.github.abel533.echarts.code.Tool;
 import com.github.abel533.echarts.code.Trigger;
 import com.github.abel533.echarts.feature.MagicType;
@@ -42,7 +41,7 @@ public class ChartUtils {
 
     }
 
-    public static String generateEChart(String options) {
+    public static String generateEChart(String options, int width, int height) {
         String name=UUID.randomUUID().toString().substring(0, 8);
         String dataPath = writeFile(options,name);
         String fileName = name + ".png";
@@ -55,7 +54,7 @@ public class ChartUtils {
                 file.createNewFile();
             }
 
-            String cmd = phantomjs + " " + JSpath + " -infile " + dataPath + " -outfile " + path;
+            String cmd = phantomjs + " " + JSpath + " -infile " + dataPath + " -outfile " + path + " -width " + width + " -height " + height;
             System.out.println(cmd);
             Process process = Runtime.getRuntime().exec(cmd);
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -64,7 +63,7 @@ public class ChartUtils {
                 log.info(line);
             }
             input.close();
-            System.out.println(ClassUtils.getDefaultClassLoader().getResource("").getPath());
+//            System.out.println(ClassUtils.getDefaultClassLoader().getResource("").getPath());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,7 +113,7 @@ public class ChartUtils {
                 Tool.saveAsImage);// 保存为图片
 
         option.tooltip().show(true).formatter("{a} <br/>{b} : {c}");//显示工具提示,设置提示格式
-        option.grid().height("75%").width("96%").x("2%").y("8%");
+        option.grid().height("75%").width("92%").x("5%").y("8%");
         option.legend().data(types).textStyle().fontSize(20);// 图例
 
 
@@ -156,7 +155,7 @@ public class ChartUtils {
         option.yAxis(new ValueAxis());// y轴
 
 
-        return generateEChart(new Gson().toJson(option));
+        return generateEChart(new Gson().toJson(option),1000,600);
     }
 
     /**
@@ -176,7 +175,7 @@ public class ChartUtils {
         option.tooltip().trigger(Trigger.axis);// 在轴上触发提示数据
         // 工具栏
 //        option.toolbox().show(true).feature(Tool.saveAsImage);// 显示保存为图片
-        option.grid().height("75%").width("95%").x("2.5%").y("8%");
+        option.grid().height("75%").width("91%").x("5%").y("8%");
         option.legend().data(types).textStyle().fontSize(20);// 图例
 
         CategoryAxis category = new CategoryAxis();// 轴分类
@@ -196,7 +195,7 @@ public class ChartUtils {
         option.xAxis(category);// x轴
         option.yAxis(new ValueAxis());// y轴
 
-        return generateEChart(new Gson().toJson(option));
+        return generateEChart(new Gson().toJson(option),1000,600);
 
 //        if (isHorizontal) {// 横轴为类别、纵轴为值
 //            option.xAxis(category);// x轴
@@ -210,10 +209,17 @@ public class ChartUtils {
 
     public static String generateMap(List<String> countries, List<Integer> counts){
 
+        int max = 0;
+        for(int i=0;i<counts.size();i++){
+            if(counts.get(i)>max){
+                max = counts.get(i);
+            }
+        }
+
         GsonOption option = new GsonOption();
         option.backgroundColor("transparent");
         option.title().text("Locations of Viewers and Invokes").x("center").y("90%").textStyle().fontSize(30);
-        option.dataRange().show(true).y(300).calculable(true).min(0).max(20).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList("High","Low"));
+        option.dataRange().show(true).y(300).calculable(true).min(0).max(max).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList(" "," "));
 //        option.legend().show(true);
 
         EMap eMap = new EMap();
@@ -235,19 +241,19 @@ public class ChartUtils {
         option.series(eMap);
 
 
-        return generateEChart(new Gson().toJson(option));
+        return generateEChart(new Gson().toJson(option), 1000, 600);
     }
 
     /**
      *  饼图
      */
-    public static String generatePie(ChartOption chartOption,String radius,String center_x,String center_y,String legend_y) {
+    public static String generatePie(ChartOption chartOption,String radius,String center_x,String center_y,String legend_y,int width,int height, int titleFontSize, int legendFontSize) {
         String[] types = chartOption.getTypes();//{ "邮件营销", "联盟广告", "视频广告" };
         int[] datas = chartOption.getData()[0];//{ 120, 132, 101 };
         String title = chartOption.getTitle();//"广告数据";
         GsonOption option = new GsonOption();
 
-        option.title().text(title).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition()).y("90%").textStyle().fontSize(24);// 大标题、小标题、标题位置
+        option.title().text(title).subtext(chartOption.getSubTitle()).x(chartOption.getTitlePosition()).y("90%").textStyle().fontSize(titleFontSize);// 大标题、小标题、标题位置
 
         // 提示工具 鼠标在每一个数据项上，触发显示提示数据
         option.tooltip().trigger(Trigger.item).formatter("{a} <br/>{b} : {c} ({d}%)");
@@ -260,7 +266,7 @@ public class ChartUtils {
 //                Tool.restore,// 还原
 //                Tool.saveAsImage);// 保存为图片
 
-        option.legend().orient(Orient.vertical).x("left").y(legend_y).data(types).textStyle().fontSize(20);// 图例及位置
+//        option.legend().orient(Orient.vertical).x("left").y(legend_y).data(types).textStyle().fontSize(20);// 图例及位置
 
         option.calculable(true);// 拖动进行计算
 
@@ -269,6 +275,7 @@ public class ChartUtils {
         // 标题、半径、位置
         pie.name(title).radius(radius).center(center_x, center_y);
 
+
         // 循环数据
         for (int i = 0; i < types.length; i++) {
             Map<String, Object> map = new HashMap<String, Object>(2);
@@ -276,10 +283,10 @@ public class ChartUtils {
             map.put("name", types[i]);
             pie.data(map);
         }
-
+        pie.itemStyle().normal().label().formatter("{b}: {c} ({d}%)").textStyle().fontSize(legendFontSize);
         option.series(pie);
 
-        return generateEChart(new Gson().toJson(option));
+        return generateEChart(new Gson().toJson(option), width, height);
     }
 
 }

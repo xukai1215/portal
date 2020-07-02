@@ -13,4 +13,10 @@ public interface ViewRecordDao extends MongoRepository<ViewRecord,String> {
 
     List<ViewRecord> findAllByItemTypeAndItemOidAndDateGreaterThanEqual(String type,String oid,Date date);
 
+    List<ViewRecord> findAllByItemOidInAndDateGreaterThanEqual(List<String> oids,Date date);
+
+    List<ViewRecord> findAllByItemOidAndDateGreaterThanEqual(String oid,Date date);
+
+    List<ViewRecord> findAllByItemOidAndFlag(String oid, boolean flag);
+
 }

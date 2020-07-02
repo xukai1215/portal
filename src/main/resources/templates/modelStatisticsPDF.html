@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Statistics | OpenGMS</title>
+
+</head>
+<body>
+
+<div id="app"
+     style="font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;">
+
+    <div id="opengmsStats"
+         style="text-align:center;height:60px;background-color:#080a0e;border-radius: 5px;min-width:600px">
+        <a style="text-decoration: none" href="https://geomodeling.njnu.edu.cn">
+            <img th:src="@{http://geomodeling.njnu.edu.cn/static/img/logo.png}"
+                 style="height: 50px;margin-top: 5px;vertical-align: bottom;"/>
+        </a>
+        <span style="color: white;font-size: 26px;margin:0 0 20px 10px;font-weight: bold;">Statistic Report</span>
+    </div>
+
+    <div class="content" style="width:600px;margin: 25px 0 20px 78px;font-size: 18px;">
+        <div style="padding:15px 0;border-bottom: 1px solid rgb(170, 170, 170);">
+            <div style="display: inline-block;text-align: center;width:100%;margin-bottom:30px;">
+                <a th:href="'https://geomodeling.njnu.edu.cn/computableModel/'+${oid}" style="margin: 0 0 15px 0;font-size: 1.25em;"th:text="${name}">SWAT_Model</a>
+
+            </div>
+
+            <div style="border-top: 1px solid rgb(170, 170, 170);padding-top:15px;">
+                <div style="display: inline-block; border-right: 1px solid rgb(170, 170, 170);width:49%">
+                    <h4 style="margin:15px 0;width:100%;text-align: center;font-weight: 400">View Times</h4>
+                    <h4 style="margin:15px 0;text-align: center;" th:text="${quarterView}+' / '+${viewCount}">4251</h4>
+                    <h6 style="margin:15px 0;width:100%;text-align: center;font-weight: 400">( Latest quarter / Total )</h6>
+                </div>
+                <div style="display: inline-block; width:50%">
+                    <h4 style="margin:15px 0; text-align: center;font-weight: 400">Invoke Times</h4>
+                    <h4 style="margin:15px 0;text-align: center;" th:text="${quarterInvoke}+' / '+${invokeCount}">254</h4>
+                    <h6 style="margin:15px 0;width:100%;text-align: center;font-weight: 400">( Latest quarter / Total )</h6>
+                </div>
+                <!--<div style="display: inline-block; width:33%">-->
+                    <!--<h4 style="margin:15px 0;width:100%;text-align: center;font-weight: 400">Download Times</h4>-->
+                    <!--<h4 style="margin:15px 0;text-align: center;" th:text="${download}">254</h4>-->
+                    <!--<h6 style="margin:15px 0;width:100%;text-align: center;font-weight: 400">( Total )</h6>-->
+                <!--</div>-->
+            </div>
+            <h4 th:if="${download!=null&&download>0}" style="text-align: center;font-weight: normal;padding: 15px 0 0;margin-bottom: 0;border-top: 1px solid rgb(170, 170, 170);">Total Download Times: <b th:text="${download}"></b></h4>
+        </div>
+        <img style="height:600px;" src="/"/>
+        <div style="padding:10px 0;margin-top:-650px">
+            <img style='height:300px;margin:10px auto 10px' th:if="${lineChart!=null}" th:src="${'http://localhost:8080/static'+lineChartPath}" />
+            <img style='height:300px;margin:10px auto 0px' th:if="${barChart!=null}" th:src="${'http://localhost:8080/static'+barChartPath}" />
+            <img style='width:300px;margin:0 0 0 -50px;float:left' th:if="${pieChart!=null}" th:src="${'http://localhost:8080/static'+pieChartPath}" />
+            <img style='width:300px;margin:-2px 0 0 0px;' th:if="${pieChart2!=null}" th:src="${'http://localhost:8080/static'+pieChartPath2}" />
+
+        </div>
+    </div>
+
+    <div style="margin-top:30px;background-color:#2e3033;color:white;border-radius: 5px;min-width:600px;text-align: center">
+        <h5 style="margin:0 auto;padding: 2em 2.2em 0.3em 2.2em;font-style: italic;font-weight: 400;text-align: left;">OpenGMS is a platform that
+            <li style="margin:10px 0 0 20px;">supports open web-distributed integrated modelling and simulation;</li>
+            <li style="margin:0 0 0 20px;">supports sharing of 3500+ model resources and 20000+ data resources;</li>
+            <li style="margin:0 0 0 20px;">is recommended by well-known organizations and communities (e.g., CoMSES Net, CSDMS, OMF).</li></h5>
+        <hr style="width:680px;margin:15px 30px"/>
+        <h6 style="margin-bottom:10px;font-weight: 400;">Copyright © 2013-2020 OpenGMS. All Rights Reserved.</h6>
+        <h6 style="margin:0;padding-bottom:2em;font-weight: 400" th:text="'Report Time: '+${time}"></h6>
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
