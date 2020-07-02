@@ -21,7 +21,7 @@ import njgis.opengms.portal.dto.Unit.UnitAddDTO;
 import njgis.opengms.portal.dto.Unit.UnitFindDTO;
 import njgis.opengms.portal.dto.Unit.UnitResultDTO;
 import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
-import njgis.opengms.portal.dto.theme.ThemeAddDTO;
+import njgis.opengms.portal.dto.UserResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.Application;
@@ -69,6 +69,9 @@ public class RepositoryService {
 
     @Autowired
     ThemeDao themeDao;
+
+    @Autowired
+    UserDao userDao;
 
     @Autowired
     ConceptVersionDao conceptVersionDao;
@@ -395,11 +398,20 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<Concept> concepts = conceptDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<ConceptResultDTO> concepts = conceptDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+
+        List<ConceptResultDTO> conceptList = concepts.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<conceptList.size();i++){
+            ConceptResultDTO conceptResultDTO = conceptList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(conceptResultDTO.getAuthor());
+            userList.add(userResultDTO);
+        }
 
         JSONObject result = new JSONObject();
         result.put("list", concepts.getContent());
         result.put("total", concepts.getTotalElements());
+        result.put("users", userList);
         return result;
     }
 
@@ -407,24 +419,34 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<Concept> concepts;
+        Page<ConceptResultDTO> concepts;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            concepts = conceptDao.findAll(pageable);
+            concepts = conceptDao.findAllBy(pageable);
         } else {
             List<String> clas = new ArrayList<>();
-            clas.add(repositoryQueryDTO.getOid());
+            boolean add = clas.add(repositoryQueryDTO.getOid());
             Classification cla = conceptClassificationDao.findFirstByOid(clas.get(0));
             for (String c : cla.getChildrenId()
             ) {
                 clas.add(c);
             }
-            concepts = conceptDao.findByParentIdIn(clas, pageable);
+            concepts = conceptDao.findByClassificationsIn(clas, pageable);
         }
+
+        List<ConceptResultDTO> conceptList = concepts.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<conceptList.size();i++){
+            ConceptResultDTO conceptResultDTO = conceptList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(conceptResultDTO.getAuthor());
+            userList.add(userResultDTO);
+        }
+
 
         JSONObject result = new JSONObject();
         result.put("list", concepts.getContent());
         result.put("total", concepts.getTotalElements());
+        result.put("users", userList);
         return result;
     }
 
@@ -752,10 +774,20 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<SpatialReference> spatialReferences = spatialReferenceDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<SpatialResultDTO> spatialReferences = spatialReferenceDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+
+        List<SpatialResultDTO> SpatialList = spatialReferences.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<SpatialList.size();i++){
+            SpatialResultDTO SpatialResultDTO = SpatialList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(SpatialResultDTO.getAuthor());
+            userList.add(userResultDTO);
+        }
+
         JSONObject result = new JSONObject();
         result.put("list", spatialReferences.getContent());
         result.put("total", spatialReferences.getTotalElements());
+        result.put("users",userList);
         return result;
     }
 
@@ -763,10 +795,10 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<SpatialReference> spatialReferences;
+        Page<SpatialResultDTO> spatialReferences;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            spatialReferences = spatialReferenceDao.findAll(pageable);
+            spatialReferences = spatialReferenceDao.findAllBy(pageable);
         } else {
             List<String> clas = new ArrayList<>();
             clas.add(repositoryQueryDTO.getOid());
@@ -775,12 +807,21 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            spatialReferences = spatialReferenceDao.findByParentIdIn(clas, pageable);
+            spatialReferences = spatialReferenceDao.findByClassificationsIn(clas, pageable);
+        }
+
+        List<SpatialResultDTO> SpatialList = spatialReferences.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<SpatialList.size();i++){
+            SpatialResultDTO SpatialResultDTO = SpatialList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(SpatialResultDTO.getAuthor());
+            userList.add(userResultDTO);
         }
 
         JSONObject result = new JSONObject();
         result.put("list", spatialReferences.getContent());
         result.put("total", spatialReferences.getTotalElements());
+        result.put("users",userList);
         return result;
     }
 
@@ -1039,11 +1080,20 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<Template> templates = templateDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+
+        List<TemplateResultDTO> TemplateList = templates.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<TemplateList.size();i++){
+            TemplateResultDTO TemplateResultDTO = TemplateList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(TemplateResultDTO.getAuthor());
+            userList.add(userResultDTO);
+        }
 
         JSONObject result = new JSONObject();
         result.put("list", templates.getContent());
         result.put("total", templates.getTotalElements());
+        result.put("users", userList);
         return result;
     }
 
@@ -1051,10 +1101,10 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<Template> templates;
+        Page<TemplateResultDTO> templates;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            templates = templateDao.findAll(pageable);
+            templates = templateDao.findAllBy(pageable);
         } else {
             List<String> clas = new ArrayList<>();
             clas.add(repositoryQueryDTO.getOid());
@@ -1063,12 +1113,21 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            templates = templateDao.findByParentIdIn(clas, pageable);
+            templates = templateDao.findByClassificationsIn(clas, pageable);
+        }
+
+        List<TemplateResultDTO> TemplateList = templates.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<TemplateList.size();i++){
+            TemplateResultDTO TemplateResultDTO = TemplateList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(TemplateResultDTO.getAuthor());
+            userList.add(userResultDTO);
         }
 
         JSONObject result = new JSONObject();
         result.put("list", templates.getContent());
         result.put("total", templates.getTotalElements());
+        result.put("users", userList);
         return result;
     }
 
@@ -1329,11 +1388,20 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<Unit> units = unitDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<UnitResultDTO> units = unitDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+
+        List<UnitResultDTO> unitList = units.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<unitList.size();i++){
+            UnitResultDTO unitResultDTO = unitList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(unitResultDTO.getAuthor());
+            userList.add(userResultDTO);
+        }
 
         JSONObject result = new JSONObject();
         result.put("list", units.getContent());
         result.put("total", units.getTotalElements());
+        result.put("users", userList);
         return result;
     }
 
@@ -1341,10 +1409,10 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<Unit> units;
+        Page<UnitResultDTO> units;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            units = unitDao.findAll(pageable);
+            units = unitDao.findAllBy(pageable);
         } else {
             List<String> clas = new ArrayList<>();
             clas.add(repositoryQueryDTO.getOid());
@@ -1353,12 +1421,21 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            units = unitDao.findByParentIdIn(clas, pageable);
+            units = unitDao.findByClassificationsIn(clas, pageable);
+        }
+
+        List<UnitResultDTO> unitList = units.getContent();
+        List<UserResultDTO> userList = new ArrayList<>();
+        for(int i=0;i<unitList.size();i++){
+            UnitResultDTO unitResultDTO = unitList.get(i);
+            UserResultDTO userResultDTO = userDao.findByUserName(unitResultDTO.getAuthor());
+            userList.add(userResultDTO);
         }
 
         JSONObject result = new JSONObject();
         result.put("list", units.getContent());
         result.put("total", units.getTotalElements());
+        result.put("users", userList);
         return result;
     }
 

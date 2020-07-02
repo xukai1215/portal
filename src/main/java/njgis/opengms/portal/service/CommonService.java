@@ -60,6 +60,9 @@ public class CommonService {
     @Value("${local.port}")
     String port;
 
+    @Value("${spring.mail.username}")
+    String mailAddress;
+
 
     @Autowired
     private JavaMailSender mailSender;
@@ -157,10 +160,10 @@ public class CommonService {
         try {
             //true表示需要创建一个multipart message
             MimeMessageHelper helper=new MimeMessageHelper(message,true);
-            InternetAddress internetAddress=new InternetAddress("nj_gis@163.com","OpenGMS Team","UTF-8");
+            InternetAddress internetAddress=new InternetAddress(mailAddress,"OpenGMS Team","UTF-8");
             helper.setFrom(internetAddress);
             helper.setTo(to);
-            helper.setCc("nj_gis@163.com");
+            helper.setCc(mailAddress);
             helper.setSubject(subject);
             helper.setText(content,true);
             mailSender.send(message);
@@ -178,10 +181,10 @@ public class CommonService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            InternetAddress internetAddress=new InternetAddress("nj_gis@163.com",name,"UTF-8");
+            InternetAddress internetAddress=new InternetAddress(mailAddress,name,"UTF-8");
             helper.setFrom(internetAddress);
             helper.setTo(to);
-            helper.setCc("nj_gis@163.com");
+            helper.setCc(mailAddress);
             helper.setSubject(subject);
             helper.setText(content, true);
 

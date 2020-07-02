@@ -6,7 +6,6 @@ import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.version.VersionDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.service.VersionService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -355,7 +354,7 @@ public class VersionRestController {
                 modelItemVersion.setOid(UUID.randomUUID().toString());
                 modelItemVersion.setOriginOid(modelItem.getOid());
                 modelItemVersion.setVerNumber((long) 0);
-                modelItemVersion.setStatus(2);
+                modelItemVersion.setVerStatus(2);
                 modelItemVersion.setModifier(modelItem.getAuthor());
                 modelItemVersion.setModifyTime(modelItem.getCreateTime());
                 modelItemVersionDao.insert(modelItemVersion);
@@ -393,7 +392,7 @@ public class VersionRestController {
             modelItem.setLastModifyTime(modelItemVersion.getModifyTime());
             modelItemDao.save(modelItem);
 
-            modelItemVersion.setStatus(1);//
+            modelItemVersion.setVerStatus(1);//
             userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setAcceptTime(curDate);
@@ -776,7 +775,7 @@ public class VersionRestController {
             ModelItem modelItem = modelItemDao.findFirstByOid(versionDTO.getOriginOid());
             authorUserName = modelItem.getAuthor();
             ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(versionDTO.getOid());
-            modelItemVersion.setStatus(-1);
+            modelItemVersion.setVerStatus(-1);
             userService.messageNumPlusPlus(versionDTO.getModifier());
             userService.messageNumMinusMinus(authorUserName);
             modelItemVersion.setRejectTime(curDate);
@@ -900,9 +899,9 @@ public class VersionRestController {
             }
             jsonObject.put("modifier", modelItemVersion.getModifier());
             String statuss = new String();
-            if (modelItemVersion.getStatus() == 0){
+            if (modelItemVersion.getVerStatus() == 0){
                 statuss = "unchecked";
-            }else if (modelItemVersion.getStatus() == -1){
+            }else if (modelItemVersion.getVerStatus() == -1){
                 statuss = "reject";
             }else {
                 statuss = "confirmed";
@@ -925,7 +924,7 @@ public class VersionRestController {
             jsonObject.put("modifierName", name);
             jsonObject.put("type", "modelItem");
 
-            int status = modelItemVersion.getStatus();
+            int status = modelItemVersion.getVerStatus();
             if (status == 0) {
                 uncheck.add(jsonObject);
                 edit.add(jsonObject);
@@ -1395,7 +1394,7 @@ public class VersionRestController {
         for (ModelItemVersion modelItemVersion : modelItemVersions
                 ) {
 
-            if (modelItemVersion.getStatus() == 1) {
+            if (modelItemVersion.getVerStatus() == 1) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("name", modelItemVersion.getName());
                 jsonObject.put("oid", modelItemVersion.getOid());
@@ -1419,7 +1418,7 @@ public class VersionRestController {
         for (ModelItemVersion modelItemVersion : modelItemVersions
                 ) {
 
-            if (modelItemVersion.getStatus() == -1) {
+            if (modelItemVersion.getVerStatus() == -1) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("name", modelItemVersion.getName());
                 jsonObject.put("oid", modelItemVersion.getOid());

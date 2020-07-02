@@ -19,7 +19,7 @@ import java.util.List;
 
 @Document
 @Data
-public class LogicalModelVersion {
+public class LogicalModelVersion extends Version {
     @Id
     String id;
     String oid;

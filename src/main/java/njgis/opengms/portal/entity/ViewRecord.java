@@ -1,6 +1,7 @@
 package njgis.opengms.portal.entity;
 
 import lombok.Data;
+import njgis.opengms.portal.entity.support.GeoInfoMeta;
 import njgis.opengms.portal.enums.ItemTypeEnum;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +19,11 @@ public class ViewRecord {
     String itemOid;
     Date date;
     String userOid;
+    String url;
+
+    boolean flag = true;
+
+    GeoInfoMeta geoInfoMeta;
 
 
 }

@@ -110,7 +110,7 @@ public class VersionService {
 
         ModelItemVersion modelItemVersion=new ModelItemVersion();
         for(int i=0;i<modelItemVersionList.size();i++){
-            if(modelItemVersionList.get(i).getStatus()==0){
+            if(modelItemVersionList.get(i).getVerStatus()==0){
                 modelItemVersion=modelItemVersionList.get(i);
                 break;
             }

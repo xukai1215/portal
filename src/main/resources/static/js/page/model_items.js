@@ -14,7 +14,7 @@ new Vue({
             classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
             classifications2: [],
 
-            currentClass: "",
+            currentClass: "Hydrosphere",
 
             pageOption: {
                 paginationShow:false,
@@ -31,32 +31,45 @@ new Vue({
                 id: 1,
                 label: 'Earth System Subject',
                 oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
-                children: [{
-                    id: 2,
-                    label: 'Hydrosphere',
-                    oid: '652bf1f8-2f3e-4f93-b0dc-f66505090873'
+                children: [ {
+                    id: 65,
+                    label: 'Solar-terrestrial Physics',
+                    oid: '1fd56a5d-1532-4ea6-ad0a-226e78a12861'
                 }, {
-                    id: 3,
-                    label: 'Lithosphere',
-                    oid: 'a621ea24-26d5-4027-a8de-d418509dacb2'
-                }, {
-                    id: 4,
-                    label: 'Atmosphere',
-                    oid: '5e324fc8-93d1-40bb-a2e4-24d2dff68c4b'
-                }, {
-                    id: 5,
-                    label: 'Biosphere',
-                    oid: '76cb072d-8f56-4e34-9ea6-1a95ea7f474b'
-                }, {
-                    id: 6,
-                    label: 'Anthroposphere',
-                    oid: 'eccbe4e1-32f6-490e-9bf7-ae774be472ac'
+                    id: 66,
+                    label: 'Earth Surface System',
+                    oid: '4f162f21-2375-468e-90af-d3267d0ba05f',
+                    children: [{
+                        id: 2,
+                        label: 'Hydrosphere',
+                        oid: '652bf1f8-2f3e-4f93-b0dc-f66505090873'
+                    }, {
+                        id: 3,
+                        label: 'Lithosphere',
+                        oid: 'a621ea24-26d5-4027-a8de-d418509dacb2'
+                    }, {
+                        id: 4,
+                        label: 'Atmosphere',
+                        oid: '5e324fc8-93d1-40bb-a2e4-24d2dff68c4b'
+                    }, {
+                        id: 5,
+                        label: 'Biosphere',
+                        oid: '76cb072d-8f56-4e34-9ea6-1a95ea7f474b'
+                    }, {
+                        id: 6,
+                        label: 'Anthroposphere',
+                        oid: 'eccbe4e1-32f6-490e-9bf7-ae774be472ac'
 
-                }, {
-                    id: 7,
-                    label: 'Global',
-                    oid: '1a59f012-0659-479d-a183-b74921c67a08'
-                }]
+                    }, {
+                        id: 7,
+                        label: 'Synthesis',
+                        oid: '1a59f012-0659-479d-a183-b74921c67a08'
+                    }]
+                },{
+                    id: 67,
+                    label: 'Solid Earth Geophysics',
+                    oid: '52e69d15-cc83-43fb-a445-0c15e5f46878'
+                },]
             },{
                 id: 64,
                 label: 'Geography Subject',
@@ -298,13 +311,7 @@ new Vue({
                         oid: '10bef187-00bf-4cea-b192-bf1465a265b1'
                     }]
             }]}
-                // , {
-                //     id: 3,
-                //     label: 'Others',
-                //     children: [{
-                //         label: 'Others'
-                //     }]
-                // }
+
             ],
             defaultProps: {
                 children: 'children',
@@ -614,61 +621,61 @@ new Vue({
         let page=this.GetQueryString("page");
         console.log(category,page)
 
-        if(category!=null) {
-            this.classifications1=[];
-            this.classifications1.push(category);
-            for(i=0;i<this.treeData.length;i++){
-                if(category==this.treeData[i].oid){
-                    this.$refs.tree1.setCurrentKey(this.treeData[i].id);
-                    this.currentClass=this.treeData[i].label;
-                    break;
-                }
-                else{
-                    let children = this.treeData[i].children;
-                    let find=false;
-                    for(j=0;j<children.length;j++){
-                        if(category==children[j].oid){
-                            find=true;
-                            this.$refs.tree1.setCurrentKey(children[j].id);
-                            this.currentClass=children[j].label;
-                            $(".el-tree-node__expand-icon").eq(i).click();
-                            break;
-                        }
-                        else{
-                            let childrens=children[j].children;
-                            if(childrens!=undefined) {
-                                for (k = 0; k < childrens.length; k++) {
-                                    if (category == childrens[k].oid) {
-                                        find = true;
-                                        this.$refs.tree1.setCurrentKey(childrens[k].id);
-                                        this.currentClass = childrens[k].label;
-                                        $(".el-tree-node__expand-icon").eq(1).click();
-                                        var index=j+2;
-                                        setTimeout(function(){
-                                            console.log($(".el-tree-node__expand-icon"))
-                                            $(".el-tree-node__expand-icon").eq(index).click();
-                                        },200);
-
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    if(find){
-                        break;
-                    }
-                }
-
-            }
-        }
-        else{
-            this.$refs.tree1.setCurrentKey(2);
-            //展开分类树第一层
-            $(".el-tree-node__expand-icon").eq(0).click();
-            $(".el-tree-node__expand-icon").eq(1).click();
-        }
+        // if(category!=null) {
+        //     this.classifications1=[];
+        //     this.classifications1.push(category);
+        //     for(i=0;i<this.treeData.length;i++){
+        //         if(category==this.treeData[i].oid){
+        //             this.$refs.tree1.setCurrentKey(this.treeData[i].id);
+        //             this.currentClass=this.treeData[i].label;
+        //             break;
+        //         }
+        //         else{
+        //             let children = this.treeData[i].children;
+        //             let find=false;
+        //             for(j=0;j<children.length;j++){
+        //                 if(category==children[j].oid){
+        //                     find=true;
+        //                     this.$refs.tree1.setCurrentKey(children[j].id);
+        //                     this.currentClass=children[j].label;
+        //                     $(".el-tree-node__expand-icon").eq(i).click();
+        //                     break;
+        //                 }
+        //                 else{
+        //                     let childrens=children[j].children;
+        //                     if(childrens!=undefined) {
+        //                         for (k = 0; k < childrens.length; k++) {
+        //                             if (category == childrens[k].oid) {
+        //                                 find = true;
+        //                                 this.$refs.tree1.setCurrentKey(childrens[k].id);
+        //                                 this.currentClass = childrens[k].label;
+        //                                 $(".el-tree-node__expand-icon").eq(1).click();
+        //                                 var index=j+2;
+        //                                 setTimeout(function(){
+        //                                     console.log($(".el-tree-node__expand-icon"))
+        //                                     $(".el-tree-node__expand-icon").eq(index).click();
+        //                                 },200);
+        //
+        //                                 break;
+        //                             }
+        //                         }
+        //                     }
+        //
+        //                 }
+        //             }
+        //             if(find){
+        //                 break;
+        //             }
+        //         }
+        //
+        //     }
+        // }
+        // else{
+        //     this.$refs.tree1.setCurrentKey(2);
+        //     //展开分类树第一层
+        //     $(".el-tree-node__expand-icon").eq(0).click();
+        //     $(".el-tree-node__expand-icon").eq(1).click();
+        // }
         if(page!=null){
             this.pageOption.currentPage=page;
         }

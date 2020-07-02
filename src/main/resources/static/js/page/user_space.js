@@ -747,7 +747,7 @@ var vue = new Vue({
                 tinymce.init({
                     selector: "textarea#taskDataDetail",
                     height: 205,
-                    theme: 'modern',
+                    theme: 'silver',
                     plugins: ['link', 'table', 'image', 'media'],
                     image_title: true,
                     // enable automatic uploads of images represented by blob or data URIs
@@ -783,7 +783,7 @@ var vue = new Vue({
                 tinymce.init({
                     selector: "textarea#taskDataDetailAll",
                     height: 205,
-                    theme: 'modern',
+                    theme: 'silver',
                     plugins: ['link', 'table', 'image', 'media'],
                     image_title: true,
                     // enable automatic uploads of images represented by blob or data URIs
@@ -3704,7 +3704,7 @@ var vue = new Vue({
             }
         },
         deleteSpatial(oid) {
-            if (confirm("Are you sure to delete this spatial reference?")) {
+            if (confirm("Are you sure to delete this Spatiotemporal reference?")) {
                 var url = "/repository/deleteSpatialReference";
                 $.ajax({
                     type: "POST",
@@ -6110,7 +6110,7 @@ var vue = new Vue({
         tinymce.init({
             selector: "textarea#detail",
             height: 205,
-            theme: 'modern',
+            theme: 'silver',
             plugins: ['link', 'table', 'image', 'media'],
             image_title: true,
             // enable automatic uploads of images represented by blob or data URIs

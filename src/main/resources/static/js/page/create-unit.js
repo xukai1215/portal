@@ -288,13 +288,13 @@ var createUnit =Vue.extend({
             // $("#title").text("Create Unit & Metric")
             $("#subRteTitle").text("/Create Unit & Metric")
 
-            $("#unitText").html("");
+            // $("#unitText").html("");
 
             tinymce.remove('textarea#unitText')
             tinymce.init({
                 selector: "textarea#unitText",
                 height: 350,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -335,7 +335,7 @@ var createUnit =Vue.extend({
             tinymce.init({
                 selector: "textarea#unitText",
                 height: 350,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -426,7 +426,7 @@ var createUnit =Vue.extend({
                     tinymce.init({
                         selector: "textarea#unitText",
                         height: 300,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs

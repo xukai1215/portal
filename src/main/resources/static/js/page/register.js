@@ -4,6 +4,10 @@ new Vue({
         var validateEmail = (rule, value, callback) => {
             let reg = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
             let flag = value.match(reg);
+            let reg1 = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+            if(flag == null){
+                flag = value.match(reg1);
+            }
             if (value === '') {
                 callback(new Error('Please enter email address'));
             } else if (flag==null){

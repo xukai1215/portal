@@ -1212,6 +1212,7 @@ var notice = Vue.extend({
                 if(event.currentTarget===rejects[i]){
                     let tableItem=this.model_tableData1[i];
                     let data={
+                        modifier:tableItem.modifier.modifier,
                         type:tableItem.type,
                         oid:tableItem.oid,
                         originOid:tableItem.originOid
@@ -1236,6 +1237,7 @@ var notice = Vue.extend({
                 if(event.currentTarget===rejects[i]){
                     let tableItem=this.community_tableData1[i];
                     let data={
+                        modifier:tableItem.modifier.modifier,
                         type:tableItem.type,
                         oid:tableItem.oid,
                         originOid:tableItem.originOid

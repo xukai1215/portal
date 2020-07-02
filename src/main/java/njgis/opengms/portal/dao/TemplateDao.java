@@ -18,13 +18,18 @@ import java.util.List;
  * TODO
  */
 public interface TemplateDao extends MongoRepository<Template,String> {
+
+    Page<TemplateResultDTO> findAllBy(Pageable pageable);
+
     Template findByOid(String oid);
 
     Page<Template> findByParentId(String parentId, Pageable pageable);
 
-    Page<Template> findByNameContainsIgnoreCase(String name, Pageable pageable);
+    Page<TemplateResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<Template> findByParentIdIn(List<String> parentIds, Pageable pageable);
+    Page<TemplateResultDTO> findByParentIdIn(List<String> parentIds, Pageable pageable);
+
+    Page<TemplateResultDTO> findByClassificationsIn(List<String> parentIds, Pageable pageable);
 
     Page<TemplateResultDTO> findByAuthor(String author,Pageable pageable);
 

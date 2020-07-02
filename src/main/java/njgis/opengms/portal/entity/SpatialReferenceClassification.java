@@ -1,12 +1,8 @@
 package njgis.opengms.portal.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 /**
  * @ClassName Classification
@@ -19,14 +15,9 @@ import java.util.List;
 @Document
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class SpatialReferenceClassification {
 
-    String oid;
-    List<String> childrenId;
-    String nameCn;
-    String nameEn;
-    String parentId;
+
+public class SpatialReferenceClassification extends Classification {
+
 
 }

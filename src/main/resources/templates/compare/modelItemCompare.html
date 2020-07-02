@@ -72,7 +72,8 @@
                 <div class="detail_overview">
 
                     <div th:switch="${modelInfo.image}" class="img">
-                        <avatar th:case="''" th:username="${modelInfo.name}" :size="90" :rounded="false"></avatar>
+                        <img th:case="''" src="/static/img/model/model.png">
+                        <img th:case="null" src="/static/img/model/model.png">
                         <img th:case="*" th:src="${modelInfo.image}">
                     </div>
 
@@ -232,7 +233,8 @@
                 <div class="detail_overview">
 
                     <div th:switch="${modelInfo2.image}" class="img">
-                        <avatar th:case="''" th:username="${modelInfo2.name}" :size="90" :rounded="false"></avatar>
+                        <img th:case="''" src="/static/img/model/model.png">
+                        <img th:case="null" src="/static/img/model/model.png">
                         <img th:case="*" th:src="${modelInfo2.image}">
                     </div>
 
@@ -382,12 +384,12 @@
         </div>
 
     </div>
-    <div style="z-index:999;position: fixed;bottom: 0;width:100%;text-align: center;background: white;box-shadow: 0 -1px 2px 0 #e7e7e7;height:56px">
-        <div style="position: relative;line-height: 56px;">
-            <button id="accept" class="btn btn-success" @click="accept($event)">Accept</button>
-            <button id="reject" class="btn btn-danger" @click="reject($event)">Reject</button>
-        </div>
-    </div>
+    <!--<div style="z-index:999;position: fixed;bottom: 0;width:100%;text-align: center;background: white;box-shadow: 0 -1px 2px 0 #e7e7e7;height:56px">-->
+        <!--<div style="position: relative;line-height: 56px;">-->
+            <!--<button id="accept" class="btn btn-success" @click="accept($event)">Accept</button>-->
+            <!--<button id="reject" class="btn btn-danger" @click="reject($event)">Reject</button>-->
+        <!--</div>-->
+    <!--</div>-->
 
     <div th:replace="fragments/footer :: footer"></div>
 

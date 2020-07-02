@@ -20,7 +20,7 @@ import java.util.List;
 @Document
 @Data
 
-public class ComputableModelVersion {
+public class ComputableModelVersion extends Version {
     @Id
     String id;
     String oid;
@@ -28,7 +28,7 @@ public class ComputableModelVersion {
     String image;
     String relateModelItem;
     String description;
-    String status;
+
     String detail;
     String creator;
     int readStatus;

@@ -44,6 +44,7 @@
             overflow: hidden;
         }
     </style>
+
 </head>
 
 <body class="scrollbar">
@@ -114,8 +115,8 @@
                                                                                      :data="treeData"
                                                                                      show-checkbox
                                                                                      node-key="id"
-                                                                                     :default-expanded-keys="[]"
-                                                                                     :current-node-key="100"
+                                                                                     :default-expanded-keys="[1,64]"
+
                                                                                      @check-change="handleCheckChange"
                                                                                      :props="defaultProps">
                                                                             </el-tree>
@@ -639,7 +640,7 @@
 <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script type="text/javascript" src="/static/js/common/pageEn.js"></script>
-<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+<script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/static/data-tables/DT_bootstrap.js"></script>
 

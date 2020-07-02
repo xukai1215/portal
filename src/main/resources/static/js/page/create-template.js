@@ -313,13 +313,13 @@ var createTemplate = Vue.extend({
             // $("#title").text("Create Data Template")
             $("#subRteTitle").text("/Create Data Template")
 
-            $("#templateText").html("");
+            // $("#templateText").html("");
 
             tinymce.remove('textarea#templateText')
             tinymce.init({
                 selector: "textarea#templateText",
                 height: 350,
-                theme: 'modern',
+                theme: 'silver',
                 plugins: ['link', 'table', 'image', 'media'],
                 image_title: true,
                 // enable automatic uploads of images represented by blob or data URIs
@@ -412,7 +412,7 @@ var createTemplate = Vue.extend({
                     tinymce.init({
                         selector: "textarea#templateText",
                         height: 300,
-                        theme: 'modern',
+                        theme: 'silver',
                         plugins: ['link', 'table', 'image', 'media'],
                         image_title: true,
                         // enable automatic uploads of images represented by blob or data URIs

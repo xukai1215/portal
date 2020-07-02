@@ -57,6 +57,11 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/sendEmailTest", method = RequestMethod.POST)
+    public void sendEmailTest(@RequestParam("uid") String uid,@RequestParam("email") String email){
+        userService.sendEmailToUser(uid,email);
+    }
+
     @RequestMapping(value = "/changeSubscribedModelList", method = RequestMethod.GET)
     public ModelAndView changeSubscribedModelList(@RequestParam("id") String id, HttpServletRequest request){
 
@@ -243,6 +248,18 @@ public class UserRestController {
             user.put("name", session.getAttribute("name").toString());
             user.put("image", userService.getImage(session.getAttribute("oid").toString()));
             return user.toString();
+        }
+    }
+
+    @RequestMapping(value = "/getUserSimpleInfo", method = RequestMethod.GET)
+    public JsonResult getUserSimpleInfo(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        JSONObject jsonObject = new JSONObject();
+        if (session.getAttribute("uid") == null) {
+            return ResultUtils.error(-1, "no login");
+
+        } else {
+            return ResultUtils.success(userService.getUserSimpleInfo(session.getAttribute("uid").toString()));
         }
     }
 
