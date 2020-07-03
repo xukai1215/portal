@@ -174,12 +174,12 @@ var router = new VueRouter({
 
         ]
     });
-var vue = new Vue(
+window.userSpaceVue = new Vue(
     {
         el: "#app",
         data(){
             return{
-
+                fullscreenLoading:false,
                 message_num:0,
                 tableData: [{
                     info:[],
@@ -212,7 +212,11 @@ var vue = new Vue(
         },
 
         router:router,
-
+        watch:{
+            $route(to,from){
+                window.userSpaceVue.fullscreenLoading=false;
+            }
+        },
         methods:{
             // websocket
             initWebSkt:function () {
@@ -399,6 +403,15 @@ var vue = new Vue(
 
 
                 //this.getModels();
+
+                // window.loading = this.$loading({
+                //     lock: true,
+                //     text: "Uploading...",
+                //     spinner: "el-icon-loading",
+                //     target:document.getElementById('pageContent'),
+                //     background: "rgba(0, 0, 0, 0.7)"
+                // });
+                // window.loading.close();
             });
         },
 

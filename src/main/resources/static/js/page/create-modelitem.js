@@ -326,6 +326,27 @@ var createModelItem = Vue.extend({
         message_num_socket:0,
         message_num_socket_theme:0,
         modelitem_oid:"",
+
+        editArticleDialog:false,
+
+        showUploadArticleDialog:false,
+
+        showUploadedArticleDialog:false,
+
+        articleUploading:{
+            title:'',
+            authors:[],
+            journal:'',
+            pageRange:'',
+            date:2019,
+            doi:'',
+            status:'',
+            link:'',
+        },
+
+        doiLoading:false,
+
+        doi:'',
     }
     },
     methods: {
@@ -352,6 +373,174 @@ var createModelItem = Vue.extend({
             this.cls=classes;
             this.clsStr=str;
 
+        },
+
+        //reference
+        searchDoi(){
+            if(this.doi == ''){
+                this.$alert('Please input the DOI', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'Confirm',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+            }else{
+                this.doiLoading = true
+                // if(this.doi===this.lastDoi)
+                //     setTimeout(()=>{
+                //         this.showUploadedArticleDialog=true;
+                //         this.doiLoading = false;
+                //     },200)
+                // this.lastDoi=this.doi;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/modelItem/searchByDOI",
+                    data: {
+                        doi: this.doi
+                    },
+                    cache: false,
+                    async: true,
+                    success: (res) => {
+                        if(res.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                type:"error",
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
+                        }
+                        data=res.data;
+                        this.doiLoading = false;
+                        if (data.find == -1) {
+                            this.$alert('Failed to connect, please try again!', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'Confirm',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }else if(data.find==0){
+                            this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'Confirm',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }
+                        else if(data.find==1) {
+
+                            this.showUploadArticleDialog = true;
+                            this.articleUploading = data.article;
+
+                        }else if(data.find==2){
+                            this.showUploadedArticleDialog=true;
+
+                        }
+
+                    },
+                    error: (data) => {
+                        this.doiLoading = false;
+                        $("#doi_searchBox").removeClass("spinner")
+                        this.$alert('Failed to connect, please try again!', 'Tip', {
+                                type:"warning",
+                                confirmButtonText: 'Confirm',
+                                callback: ()=>{
+                                    return
+                                }
+                            }
+                        );
+                        $("#doiDetails").css("display", "none");
+                        $("#doiTitle").val("")
+                    }
+                })
+            }
+        },
+
+        updateArticleConfirmClick(){
+            // console.log(this.articleToBack);
+            var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            if(tags.length<1||$("#refTitle").val()==''){
+                this.$alert('Please enter the Title and at least one Author.', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'Confirm',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+            }
+            this.editArticleDialog = false
+           //调用$("#modal_save").click完成
+
+        },
+
+        articleDoiUploadConfirm(status){
+            this.articleToBack = this.articleUploading;
+
+            Vue.nextTick(()=>{
+                $("#refTitle").val(this.articleToBack.title);
+                $("#refJournal").val(this.articleToBack.journal);
+                $("#volumeIssue").val(this.articleToBack.volume);
+                $("#refPages").val(this.articleToBack.pageRange);
+                $("#refDate").val(this.articleToBack.date);
+                $("#refLink").val(this.articleToBack.link);
+                if ($("#refAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
+                    Vue.nextTick(() => {
+                        $("#refAuthor").tagEditor({
+                            forceLowercase: false
+                        })
+                        $('#refAuthor').tagEditor('destroy');
+                        $('#refAuthor').tagEditor({
+                            initialTags: this.articleToBack.authors,
+                            forceLowercase: false,
+                        });
+
+                    })
+                }else{
+                    $('#refAuthor').tagEditor('destroy');
+                    $('#refAuthor').tagEditor({
+                        initialTags: this.articleToBack.authors,
+                        forceLowercase: false,
+                    });
+                }
+
+            })
+            this.showUploadArticleDialog = false;
+            // this.articleToBack.status = status;
+        },
+
+        addArticleClick(){
+            this.editArticleDialog = true;
+            this.addorEdit='Add';
+            $("#refTitle").val('');
+
+            if ($("#refAuthor").nextAll().length == 0)//如果不存在tageditor,则创建一个
+                Vue.nextTick(() => {
+                    $("#refAuthor").tagEditor({
+                        forceLowercase: false
+                    })
+                })
+
+            $('#refAuthor').tagEditor('destroy');
+            $('#refAuthor').tagEditor({
+                initialTags:  [''],
+                forceLowercase: false,
+            });
+            $("#refJournal").val('');
+            $("#volumeIssue").val('');
+            $("#refPages").val('');
+            $("#refDate").val('');
+            $("#refLink").val('');
+
+            this.doi ='';
         },
 
         changeOpen(n) {
@@ -407,6 +596,7 @@ var createModelItem = Vue.extend({
         sendUserToParent(userId){
             this.$emit('com-senduserinfo',userId)
         },
+
 
         init:function () {
 
@@ -534,7 +724,7 @@ var createModelItem = Vue.extend({
     mounted() {
 
         let that = this;
-
+        var vthis = this;
         that.init();
 
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
@@ -824,8 +1014,10 @@ var createModelItem = Vue.extend({
                             ref.author,
                             ref.date,
                             ref.journal,
+                            ref.volume,
                             ref.pages,
                             ref.links,
+                            ref.doi,
                             "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
                     }
                     if (basicInfo.references.length > 0) {
@@ -962,51 +1154,10 @@ var createModelItem = Vue.extend({
         // $("#addref").click(function(){
         //     $("#refinfo").modal("show");
         // })
-        $("#doiSearch").click(function () {
-            $("#doi_searchBox").addClass("spinner")
-            $.ajax({
-                data: "Get",
-                url: "/modelItem/DOISearch",
-                data: {
-                    doi: $("#doi_searchBox").val()
-                },
-                cache: false,
-                async: true,
-                success: (data) => {
-                    data=data.data;
-                    $("#doi_searchBox").removeClass("spinner")
-                    if (data == "ERROR") {
-                        // alert(data);
-                    }
-                    // if(!json.doi){
-                    //     alert("ERROR")
-                    // }
-                    else {
-                        var json = eval('(' + data + ')');
-                        console.log(json)
-                        $("#doiTitle").val(json.title)
-                        $("#doiAuthor").val(json.author)
-                        $("#doiDate").val(json.month + " " + json.year)
-                        $("#doiJournal").val(json.journal)
-                        $("#doiPages").val(json.pages)
-                        $("#doiLink").val(json.adsurl)
-                        $("#doiDetails").css("display", "block");
 
-                    }
-                },
-                error: (data) => {
-                    $("#doi_searchBox").removeClass("spinner")
-                    alert("ERROR!")
-                    $("#doiDetails").css("display", "none");
-                    $("#doiTitle").val("")
-                }
-            })
-
-
-        });
         $("#modal_cancel").click(function () {
             $("#refTitle").val("")
-            var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+            let tags = $('#refAuthor').tagEditor('getTags')[0].tags;
             for (i = 0; i < tags.length; i++) { $('#refAuthor').tagEditor('removeTag', tags[i]); }
             $("#refDate").val("")
             $("#refJournal").val("")
@@ -1016,52 +1167,36 @@ var createModelItem = Vue.extend({
             $("#doiDetails").css("display", "none");
             $("#doiTitle").val("")
         })
+
         $("#modal_save").click(function () {
+            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
+            if (tags1.length>0&&$("#refTitle").val()!='') {
+                table.row.add([
+                    $("#refTitle").val(),
+                    tags1,
+                    $("#refDate").val(),
+                    $("#refJournal").val(),
+                    $("#volumeIssue").val(),
+                    $("#refPages").val(),
+                    $("#refLink").val(),
+                    $("#doiTitle").val(),
+                     "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
 
-            if ($(".nav-tabs li").eq(0)[0].className == "active") {
-                if ($("#refTitle").val().trim() == "") {
-                    alert("Please Enter Title");
+                $("#dynamic-table").css("display", "block")
+                $("#refinfo").modal("hide")
+                $("#refTitle").val("")
+                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+                for (i = 0; i < tags.length; i++) {
+                    $('#refAuthor').tagEditor('removeTag', tags[i]);
                 }
-                else {
-                    table.row.add([
-                        $("#refTitle").val(),
-                        $("#refAuthor").val(),
-                        $("#refDate").val(),
-                        $("#refJournal").val(),
-                        $("#refPages").val(),
-                        $("#refLink").val(), "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-
-                    $("#dynamic-table").css("display", "block")
-                    $("#refinfo").modal("hide")
-                    $("#refTitle").val("")
-                    var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
-                    for (i = 0; i < tags.length; i++) { $('#refAuthor').tagEditor('removeTag', tags[i]); }
-                    $("#refDate").val("")
-                    $("#refJournal").val("")
-                    $("#refPages").val("")
-                    $("#refLink").val("")
-                }
-
+                $("#refDate").val("")
+                $("#volumeIssue").val(""),
+                $("#refJournal").val("")
+                $("#refPages").val("")
+                $("#doiTitle").val("")
+                $("#refLink").val("")
             }
-            else {
-                if ($("#doiTitle").val() == "") {
-                    alert("Details are empty");
-                }
-                else {
-                    table.row.add([
-                        $("#doiTitle").val(),
-                        $("#doiAuthor").val(),
-                        $("#doiDate").val(),
-                        $("#doiJournal").val(),
-                        $("#doiPages").val(),
-                        $("#doiLink").val(), "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-                    $("#dynamic-table").css("display", "block")
-                    $("#refinfo").modal("hide")
-                    $("#doiDetails").css("display", "none");
-                    $("#doiTitle").val("");
-                }
-            }
-
 
         })
         //table end
@@ -1161,12 +1296,6 @@ var createModelItem = Vue.extend({
         // }
 
         $(".finish").click(()=> {
-            let loading = this.$loading({
-                lock: true,
-                text: "Uploading...",
-                spinner: "el-icon-loading",
-                background: "rgba(0, 0, 0, 0.7)"
-            });
             modelItemObj.status=this.status;
             modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
@@ -1197,8 +1326,10 @@ var createModelItem = Vue.extend({
                     ref.author = ref_prop.eq(1).text().split(",");
                     ref.date = ref_prop.eq(2).text();
                     ref.journal = ref_prop.eq(3).text();
-                    ref.pages = ref_prop.eq(4).text();
-                    ref.links = ref_prop.eq(5).text();
+                    ref.volume = ref_prop.eq(4).text();
+                    ref.pages = ref_prop.eq(5).text();
+                    ref.links = ref_prop.eq(6).text();
+                    ref.doi = ref_prop.eq(7).text();
                     modelItemObj.references.push(ref);
                 }
             }
@@ -1222,7 +1353,8 @@ var createModelItem = Vue.extend({
                     async: true,
                     data: formData,
                     success: (result)=> {
-                        loading.close();
+                        window.userSpaceVue.fullscreenLoading=false;
+                        // loading.close();
                         if (result.code == 0) {
 
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
@@ -1269,6 +1401,7 @@ var createModelItem = Vue.extend({
                     type: 'text/plain',
                 });
                 formData.append("info",file);
+                window.userSpaceVue.fullscreenLoading=true;
                 $.ajax({
                     url: "/modelItem/update",
                     type: "POST",
@@ -1278,7 +1411,9 @@ var createModelItem = Vue.extend({
                     data: formData,
 
                     success: (result)=> {
-                        loading.close();
+                        // setTimeout(()=>{loading.close();},1000)
+                        // loading.close()
+                        window.userSpaceVue.fullscreenLoading=false;
                         if (result.code === 0) {
                             if(result.data.method==="update") {
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {

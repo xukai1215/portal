@@ -56,7 +56,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-container" style="height: 2000px">
         <head-side-bar :user-infoin-parent="userInfo" :curIndexParent="curIndex"></head-side-bar>
         <template id="createModelItem" th:fragment="createModelItem">
@@ -264,6 +263,16 @@
                                                                                                     aria-sort="descending"
                                                                                                     aria-label="Pages: activate to sort column ascending"
                                                                                                     width="100px">
+                                                                                                    Volume(Issue)
+                                                                                                </th>
+                                                                                                <th class="hidden-phone sorting"
+                                                                                                    role="columnheader"
+                                                                                                    tabindex="0"
+                                                                                                    aria-controls="dynamic-table"
+                                                                                                    rowspan="1" colspan="1"
+                                                                                                    aria-sort="descending"
+                                                                                                    aria-label="Pages: activate to sort column ascending"
+                                                                                                    width="100px">
                                                                                                     Pages
                                                                                                 </th>
                                                                                                 <th class="hidden-phone sorting"
@@ -275,6 +284,16 @@
                                                                                                     aria-label="Links: activate to sort column ascending"
                                                                                                     width="100px">
                                                                                                     Links
+                                                                                                </th>
+                                                                                                <th class="hidden-phone sorting"
+                                                                                                    role="columnheader"
+                                                                                                    tabindex="0"
+                                                                                                    aria-controls="dynamic-table"
+                                                                                                    rowspan="1" colspan="1"
+                                                                                                    aria-sort="descending"
+                                                                                                    aria-label="Links: activate to sort column ascending"
+                                                                                                    width="100px">
+                                                                                                    Doi
                                                                                                 </th>
                                                                                                 <th class="hidden-phone sorting"
                                                                                                     role="columnheader"
@@ -299,6 +318,7 @@
                                                                                                 class="btn btn-success btn-lg btn-block"
                                                                                                 data-toggle="modal"
                                                                                                 data-target="#refinfo"
+                                                                                                @click="addArticleClick"
                                                                                                 type="button">Add Reference
                                                                                         </button>
                                                                                     </div>
@@ -462,169 +482,313 @@
                         </div>
                     </div>
                 </div>
-                <!-- 模态框（Modal） -->
-                <div class="modal fade" id="refinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header" style="background: deepskyblue">
-                                <h4 class="modal-title" id="myModalLabel" style="color:aliceblue">
-                                    Reference Info
-                                </h4>
-                            </div>
-                            <div class="modal-body" style="font-size: 20px;overflow: hidden">
-                                <section class="panel">
-                                    <header class="panel-heading custom-tab ">
-                                        <ul class="nav nav-tabs">
-                                            <li class="active">
-                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter
-                                                    Reference</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="#automatically" data-toggle="tab"
-                                                   style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter
-                                                    Reference by DOI</a>
-                                            </li>
-                                        </ul>
-                                    </header>
-                                    <div class="panel-body">
-                                        <div class="tab-content">
-                                            <div class="tab-pane active" id="manually">
-                                                <div class="form-group">
-                                                    <label for="nameInput"
-                                                           class="col-sm-2 control-label">Title</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                               id="refTitle"/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="nameInput"
-                                                           class="col-sm-2 control-label">Author</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                               id="refAuthor"/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="nameInput"
-                                                           class="col-sm-2 control-label">Date</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                               id="refDate"/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="nameInput"
-                                                           class="col-sm-2 control-label">Journal</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                               id="refJournal"/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="nameInput"
-                                                           class="col-sm-2 control-label">Pages</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                               id="refPages"/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="nameInput"
-                                                           class="col-sm-2 control-label">Link</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                               id="refLink"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="tab-pane" id="automatically">
-                                                <div class="form-group"
-                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
-                                                    <lable class="control-label col-md-2">
-                                                        DOI :
-                                                    </lable>
-                                                    <div class="input-group col-md-10">
-                                                        <input id="doi_searchBox" type="text"
-                                                               class="form-control">
-                                                        <span class="input-group-btn">
-                                            <button id="doiSearch"
-                                                    class="btn btn-default"
-                                                    type="button">Search</button>
-                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div id="doiDetails" style="display:none">
-                                                    <div class="form-group">
-                                                        <lable class="control-label col-md-2">Title</lable>
-                                                        <div class="col-md-10">
-                                            <textarea id="doiTitle" class="form-control" style="width:100%;"
-                                                      readonly></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="nameInput"
-                                                               class="col-sm-2 control-label">Author</label>
-                                                        <div class="col-sm-10">
-                                            <textarea id="doiAuthor" class="form-control" style="width:100%;"
-                                                      readonly></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="nameInput"
-                                                               class="col-sm-2 control-label">Date</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control"
-                                                                   id="doiDate" readonly/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="nameInput"
-                                                               class="col-sm-2 control-label">Journal</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control"
-                                                                   id="doiJournal" readonly/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="nameInput"
-                                                               class="col-sm-2 control-label">Pages</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control"
-                                                                   id="doiPages" readonly/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="nameInput"
-                                                               class="col-sm-2 control-label">Link</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control"
-                                                                   id="doiLink" readonly/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+
+                <el-dialog title="Reference info" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+                    <div class="wzhScrollbar" style="max-height: 500px" >
+                        <div class="tab-content" v-loading="doiLoading">
+                            <div class="tab-pane active articleInfo" id="manually" >
+                                <div class="form-group">
+                                    <label for="doiTitle" class="col-sm-2 control-label">
+                                        Get by doi :
+                                    </label>
+                                    <el-tag size="mini" primary>Input the doi and click search, information may be filled automaticly. </el-tag>
+                                    <div class="input-group col-md-12" style="padding: 0 15px">
+                                        <input id="doiTitle" type="text"
+                                               class="form-control" v-model="doi">
+                                        <span class="input-group-btn" style="width: 19%">
+                                                    <button id="doiSearch"
+                                                            class="btn btn-info"
+                                                            type="button" @click="searchDoi()" style="height: 34px;width: 100%;margin: 0;">Search</button>
+                                                </span>
                                     </div>
-                                </section>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="refTitle"
+                                           class="col-sm-4 control-label">Title</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control"
+                                               id="refTitle"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="refAuthor"
+                                           class="col-sm-4 control-label">Author</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control"
+                                               id="refAuthor"/>
+                                        <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="refDate"
+                                           class="col-sm-4 control-label">Date</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control"
+                                               id="refDate"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="refJournal"
+                                           class="col-sm-4 control-label">Journal</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control"
+                                               id="refJournal"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="volumeIssue"
+                                           class="col-sm-4 control-label">Volume(issue)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control"
+                                               id="volumeIssue"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="refPages"
+                                           class="col-sm-4 control-label">Page Range</label>
+                                    <div class="col-sm-12" style="display: flex;justify-content: space-between">
+                                        <input type="text" class="form-control"
+                                               id="refPages"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="refLink"
+                                           class="col-sm-4 control-label">Link</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control"
+                                               id="refLink"/>
+                                    </div>
+                                </div>
+                                <!--                                        <div class="form-group flexRow" style="padding-top: 3px;padding-left: 16px">-->
+                                <!--                                            <p style="font-weight: 600;margin-right: 10px">Status</p>-->
+                                <!--                                            <el-checkbox-group v-model="checkedIdentity" @change="changeChecked">-->
+                                <!--                                                <el-checkbox v-for="Identity in Identities" :label="Identity" :key="Identity">{{Identity}}</el-checkbox>-->
+                                <!--                                            </el-checkbox-group>-->
+
+                                <!--                                        </div>-->
                             </div>
-                            <div class="modal-footer">
-                                <a href="#">
-                                    <button id="modal_save" type="button" class="btn btn-success" style="font-size:15px">
-                                        Save
-                                    </button>
-                                    <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"
-                                            style="font-size:15px">
-                                        Cancel
-                                    </button>
-                                </a>
-                            </div>
+
+
                         </div>
-                        <!-- /.modal-content -->
+
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                    <span slot="footer" class="dialog-footer">
+                                        <el-button type="primary" @click="updateArticleConfirmClick" id="modal_save">Upload</el-button>
+                                        <el-button @click="cancelSearch()">cancel</el-button>
+
+                                </span>
+                </el-dialog>
+                <el-dialog title="Is this article you want to upload?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
+                    <h4>{{articleUploading.title}}</h4>
+                    <p v-if="articleUploading.authors.length>0"><span>Authors:</span><span>&nbsp&nbsp{{articleUploading.authors[0]}},</span>
+                        <span v-if="articleUploading.authors[1]">{{articleUploading.authors[1]}}, </span>
+                        <span v-if="articleUploading.authors[2]">{{articleUploading.authors[2]}},</span>
+                        <span v-if="articleUploading.authors.length>3"> et al.</span> </p>
+                    <p v-if="articleUploading.journal!=''"><span>Journal:</span> &nbsp&nbsp{{articleUploading.journal}}</p>
+                    <p v-if="articleUploading.date!=''"><span>Date:</span> &nbsp&nbsp{{articleUploading.date}}</p>
+                    <p v-if="articleUploading.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{articleUploading.pageRange}}</p>
+                    <p v-if="articleUploading.link!=''"><span>Link:</span> &nbsp&nbsp{{articleUploading.link}}</p>
+                    <p v-if="articleUploading.doi!=''"><span>DOI:</span> &nbsp&nbsp{{articleUploading.doi}}</p>
+                    <!--                            <div class="flex">-->
+
+                    <!--                            </div>-->
+                    <span slot="footer" class="dialog-footer">
+<!--                                <div class="flex flexRowSpaceBetween" >-->
+                        <!--                                    <div class="flexColCenter">-->
+                        <!--                                        <p style="font-weight: 600;margin-right: 10px">Yes,</p>-->
+                        <!--                                        <el-button type="success" @click="articleDoiUploadConfirm('author')" plain>I am the author</el-button>-->
+                        <!--                                        <el-button type="primary" @click="articleDoiUploadConfirm('learner')" plain>I am a learner</el-button>-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="innerBorderCol" style="height: 40px"></div>-->
+                                    <el-button type="success" @click="articleDoiUploadConfirm()" plain>Yes, this is it</el-button>
+                                    <el-button @click="showUploadArticleDialog = false">Cancel</el-button>
+                        <!--                                </div>-->
+                            </span>
+                </el-dialog>
+                <el-dialog title="Tip"
+                           :visible.sync = "showUploadedArticleDialog" width="30%" custom-class="min400w">
+                    <!--                            <div class="flexCol" style="font-size:16px;word-break: normal ">-->
+                    <!--                                <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been-->
+                    <!--                                    <span style="color: #2b95f7"> uploaded</span> yet, do you want to be one of the contrbutors?</p>-->
+                    <!--                            </div>-->
+                    <div class="flexCol" style="font-size:16px;word-break: normal ">
+                        <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been
+                            <span style="color: #2b95f7"> uploaded</span> yet.</p>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                                <el-button @click="showUploadedArticleDialog = false">Confirm</el-button>
+                            </span>
+                    <!--                            <span slot="footer" class="dialog-footer">-->
+                    <!--                                <el-button type="success" @click="addContributorConfirm()"-->
+                    <!--                                               plain>Yes, I do</el-button>-->
+                    <!--                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>-->
+                    <!--                            </span>-->
+                </el-dialog>
+                <!-- 模态框（Modal） -->
+<!--                <div class="modal fade" id="refinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
+<!--                     aria-hidden="true">-->
+<!--                    <div class="modal-dialog">-->
+<!--                        <div class="modal-content">-->
+<!--                            <div class="modal-header" style="background: deepskyblue">-->
+<!--                                <h4 class="modal-title" id="myModalLabel" style="color:aliceblue">-->
+<!--                                    Reference Info-->
+<!--                                </h4>-->
+<!--                            </div>-->
+<!--                            <div class="modal-body" style="font-size: 20px;overflow: hidden">-->
+<!--                                <section class="panel">-->
+<!--                                    <header class="panel-heading custom-tab ">-->
+<!--                                        <ul class="nav nav-tabs">-->
+<!--                                            <li class="active">-->
+<!--                                                <a href="#manually" data-toggle="tab" style="font-size:14px;"><strong><em>Manually</em></strong>&nbsp;&nbsp;enter-->
+<!--                                                    Reference</a>-->
+<!--                                            </li>-->
+<!--                                            <li class="">-->
+<!--                                                <a href="#automatically" data-toggle="tab"-->
+<!--                                                   style="font-size:14px;"><strong><em>Automatically</em></strong>&nbsp;&nbsp;enter-->
+<!--                                                    Reference by DOI</a>-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </header>-->
+<!--                                    <div class="panel-body">-->
+<!--                                        <div class="tab-content">-->
+<!--                                            <div class="tab-pane active" id="manually">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="nameInput"-->
+<!--                                                           class="col-sm-2 control-label">Title</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="refTitle"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="nameInput"-->
+<!--                                                           class="col-sm-2 control-label">Author</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="refAuthor"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="nameInput"-->
+<!--                                                           class="col-sm-2 control-label">Date</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="refDate"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="nameInput"-->
+<!--                                                           class="col-sm-2 control-label">Journal</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="refJournal"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="nameInput"-->
+<!--                                                           class="col-sm-2 control-label">Pages</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="refPages"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label for="nameInput"-->
+<!--                                                           class="col-sm-2 control-label">Link</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="text" class="form-control"-->
+<!--                                                               id="refLink"/>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="tab-pane" id="automatically">-->
+<!--                                                <div class="form-group"-->
+<!--                                                     style="border-bottom:1px solid #CCC;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">-->
+<!--                                                    <lable class="control-label col-md-2">-->
+<!--                                                        DOI :-->
+<!--                                                    </lable>-->
+<!--                                                    <div class="input-group col-md-10">-->
+<!--                                                        <input id="doi_searchBox" type="text"-->
+<!--                                                               class="form-control">-->
+<!--                                                        <span class="input-group-btn">-->
+<!--                                            <button id="doiSearch"-->
+<!--                                                    class="btn btn-default"-->
+<!--                                                    type="button">Search</button>-->
+<!--                                        </span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div id="doiDetails" style="display:none">-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <lable class="control-label col-md-2">Title</lable>-->
+<!--                                                        <div class="col-md-10">-->
+<!--                                            <textarea id="doiTitle" class="form-control" style="width:100%;"-->
+<!--                                                      readonly></textarea>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label for="nameInput"-->
+<!--                                                               class="col-sm-2 control-label">Author</label>-->
+<!--                                                        <div class="col-sm-10">-->
+<!--                                            <textarea id="doiAuthor" class="form-control" style="width:100%;"-->
+<!--                                                      readonly></textarea>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label for="nameInput"-->
+<!--                                                               class="col-sm-2 control-label">Date</label>-->
+<!--                                                        <div class="col-sm-10">-->
+<!--                                                            <input type="text" class="form-control"-->
+<!--                                                                   id="doiDate" readonly/>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label for="nameInput"-->
+<!--                                                               class="col-sm-2 control-label">Journal</label>-->
+<!--                                                        <div class="col-sm-10">-->
+<!--                                                            <input type="text" class="form-control"-->
+<!--                                                                   id="doiJournal" readonly/>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label for="nameInput"-->
+<!--                                                               class="col-sm-2 control-label">Pages</label>-->
+<!--                                                        <div class="col-sm-10">-->
+<!--                                                            <input type="text" class="form-control"-->
+<!--                                                                   id="doiPages" readonly/>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label for="nameInput"-->
+<!--                                                               class="col-sm-2 control-label">Link</label>-->
+<!--                                                        <div class="col-sm-10">-->
+<!--                                                            <input type="text" class="form-control"-->
+<!--                                                                   id="doiLink" readonly/>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </section>-->
+<!--                            </div>-->
+<!--                            <div class="modal-footer">-->
+<!--                                <a href="#">-->
+<!--                                    <button id="modal_save" type="button" class="btn btn-success" style="font-size:15px">-->
+<!--                                        Save-->
+<!--                                    </button>-->
+<!--                                    <button id="modal_cancel" type="button" class="btn btn-default" data-dismiss="modal"-->
+<!--                                            style="font-size:15px">-->
+<!--                                        Cancel-->
+<!--                                    </button>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; /.modal-content &ndash;&gt;-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; /.modal-dialog &ndash;&gt;-->
+<!--                </div>-->
             </div>
         </template>
     </div>

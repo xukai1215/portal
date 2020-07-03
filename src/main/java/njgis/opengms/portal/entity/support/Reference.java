@@ -14,6 +14,8 @@ public class Reference {
     List<String> author;
     String date;
     String journal;
+    String volume="";
     String pages;
     String links;
+    String doi="";
 }

@@ -375,7 +375,7 @@ var userModels = Vue.extend(
             },
 
 
-            searchItems() {
+            searchItems(page) {
                 this.resourceLoad = true;
                 this.pageSize = 10;
                 this.isInSearch = 1;
@@ -399,12 +399,13 @@ var userModels = Vue.extend(
                 if (this.deploys_show) {
                     this.searchComputerModelsForDeploy();
                 } else {
+                    let targetPage = page==undefined?this.page:page
                     $.ajax({
                         type: "Get",
                         url: url,
                         data: {
                             searchText: this.searchText,
-                            page: this.page - 1,
+                            page: targetPage - 1,
                             pagesize: this.pageSize,
                             sortType: this.sortType,
                             asc: this.sortAsc
@@ -427,8 +428,11 @@ var userModels = Vue.extend(
                                 this.searchCount = Number.parseInt(data["count"]);
                                 this.$set(this,"searchResult",data[name]);
                                 console.log(this.searchResult)
-                                if (this.page == 1) {
+                                if (targetPage == 1) {
                                     this.pageInit();
+                                }
+                                if(page!=undefined){
+                                    this.curPage = page
                                 }
                                 this.await = false
                             }

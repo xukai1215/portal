@@ -163,73 +163,11 @@ var userTheme = Vue.extend(
                     this.getPageList();
                     this.page = pageNo;
 
-                    switch (this.pageControlIndex) {
-                        // this.computerModelsDeploy = [];
-                        // this.resourceLoad = true;
-                        // this.curPage = pageNo;
-                        // this.getPageList();
-                        // this.page = pageNo;
-                        // this.getDataItems();
-                        case 2:
+                    if (this.isInSearch == 0)
+                        this.getTheme();
+                    else
+                        this.searchItems();
 
-                            if (this.isInSearch == 0)
-                                this.getModels();
-                            else this.searchModels();
-                            break;
-                        //
-                        case 3:
-
-                            if (this.isInSearch == 0)
-                                this.getDataItems();
-                            else this.searchDataItem();
-                            break;
-
-                        case 4:
-
-                            if (this.isInSearch == 0)
-                                this.getConcepts();
-                            else this.searchConcepts();
-                            break;
-                        case 5:
-
-                            if (this.isInSearch == 0)
-                                this.getSpatials();
-                            else this.searchSpatials()
-                            break;
-                        case 6:
-
-                            if (this.isInSearch == 0)
-                                this.getTemplates();
-                            else this.searchTemplates();
-                            break;
-                        case 7:
-
-                            if (this.isInSearch == 0)
-                                this.getUnits();
-                            else this.searchUnits();
-                            break;
-
-                        case 7:
-                            if (this.isInSearch == 0)
-                                this.getTheme();
-                            else {}
-                            break;
-
-                        case 9:
-
-                            if (this.isInSearch == 0){
-                                if(this.taskStatus!=10)
-                                    this.showTasksByStatus(this.taskStatus)
-                                else
-                                    this.getModels();
-                            }
-
-                            else this.searchModels();
-                            break;
-
-
-
-                    }
                     // if(this.researchIndex==1||this.researchIndex==2||this.researchIndex==3){
                     //     this.resourceLoad = true;
                     //     this.searchResult = [];
@@ -327,7 +265,7 @@ var userTheme = Vue.extend(
                 })
             },
 
-            searchItems() {
+            searchItems(page) {
                 this.resourceLoad = true;
                 this.pageSize = 10;
                 this.isInSearch = 1;
@@ -339,12 +277,13 @@ var userTheme = Vue.extend(
                 if (this.deploys_show) {
                     this.searchComputerModelsForDeploy();
                 } else {
+                    let targetPage = page==undefined?this.page:page
                     $.ajax({
                         type: "Get",
                         url: url,
                         data: {
                             searchText: this.searchText,
-                            page: this.page - 1,
+                            page: targetPage - 1,
                             pagesize: this.pageSize,
                             sortType: this.sortType,
                             asc: this.sortAsc
@@ -367,7 +306,7 @@ var userTheme = Vue.extend(
                                 this.searchCount = Number.parseInt(data["count"]);
                                 this.$set(this,"searchResult",data[name]);
                                 console.log(this.searchResult);
-                                if (this.page == 1) {
+                                if (targetPage == 1) {
                                     this.pageInit();
                                 }
                                 this.await = false

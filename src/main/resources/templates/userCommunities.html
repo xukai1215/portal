@@ -87,9 +87,9 @@
                                 <div class="flexRow flexColCenter" style="margin-top: 12px;margin-left: 10px;">
 
                                     <div class="searchContainer flexRow flexColCenter">
-                                        <input class="noBorderInput" placeholder="Search for ..." v-model="searchText" @keyup.enter="searchCommunity">
+                                        <input class="noBorderInput" placeholder="Search for ..." v-model="searchText" @keyup.enter="searchCommunity(1)">
                                     </div>
-                                    <div class="flexCenter cursorPointer" style="padding: 8px" @click="searchCommunity">
+                                    <div class="flexCenter cursorPointer" style="padding: 8px" @click="searchCommunity(1)">
                                         <i class="fa fa-search" style="font-size: 18px;" ></i>
                                     </div>
                                 </div>

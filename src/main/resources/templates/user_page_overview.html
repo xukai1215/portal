@@ -1546,7 +1546,7 @@
                                                 <div :class="dataItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{dataItem.viewCount}}
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;">&nbsp&nbsp{{dataItem.viewCount}}</a>
                                             </div>
                                         </div>
                                         <div style="display: flex;">
@@ -1575,7 +1575,7 @@
 
                                         </div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1627,7 +1627,7 @@
                                                 <div :class="conceptualModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{conceptualModel.viewCount}}
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;">&nbsp&nbsp{{conceptualModel.viewCount}}</a>
                                             </div>
                                         </div>
                                         <div style="display: flex;">
@@ -1739,7 +1739,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1791,7 +1791,7 @@
                                                 <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{computableModel.viewCount}}
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;">&nbsp&nbsp{{computableModel.viewCount}}</a>
                                             </div>
                                         </div>
                                         <div style="display: flex;">
@@ -1956,7 +1956,7 @@
                                                 <div :class="spatial.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{spatial.viewCount}}
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;">&nbsp&nbsp{{spatial.viewCount}}</a>
                                             </div>
                                         </div>
                                         <div style="display: flex;">
@@ -1985,7 +1985,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{spatial.createTime.substring(0,10)+' '+spatial.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{spatial.createTime.substring(0,10)+' '+spatial.createTime.substring(11,19)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2066,7 +2066,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{template.createTime.substring(0,10)+' '+template.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{template.createTime.substring(0,10)+' '+template.createTime.substring(11,19)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2118,7 +2118,7 @@
                                                 <div :class="unit.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
-                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;"></a>&nbsp&nbsp{{unit.viewCount}}
+                                                <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true" style="margin-left: 20px;">&nbsp&nbsp{{unit.viewCount}}</a>
                                             </div>
                                         </div>
                                         <div style="display: flex;">
@@ -2285,7 +2285,7 @@
                                 </div>
                             </div>
                         </div>
-                        <el-dialog :title="addorEdit + ' Article'" :visible.sync = "editArticleDialog" width=""33% custom-class="min400w" >
+                        <el-dialog :title="addorEdit + ' Article'" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
                             <div class="wzhScrollbar" style="max-height: 500px" >
                                 <div class="tab-content" v-loading="doiLoading">
                                     <div class="tab-pane active articleInfo" id="manually" >
