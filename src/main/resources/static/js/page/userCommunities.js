@@ -439,7 +439,7 @@ var userCommunities = Vue.extend(
 
             },
 
-            searchCommunity() {
+            searchCommunity(page) {
                 this.resourceLoad = true;
                 this.pageSize = 10;
                 this.isInSearch = 1;
@@ -459,13 +459,13 @@ var userCommunities = Vue.extend(
                 }
                 let url=urls[a];
                 let name=names[a];
-
+                let targetPage = page==undefined?this.page:page
                 $.ajax({
                     type: "Get",
                     url: url,
                     data: {
                         searchText: this.searchText,
-                        page: this.page - 1,
+                        page: targetPage - 1,
                         pagesize: this.pageSize,
                         sortType: this.sortType,
                         asc: this.sortAsc
@@ -487,8 +487,8 @@ var userCommunities = Vue.extend(
                             this.totalNum = data.count;
                             this.searchCount = Number.parseInt(data["count"]);
                             this.$set(this, "searchResult", data[name]);
-                            ;
-                            if (this.page == 1) {
+
+                            if (targetPage == 1) {
                                 this.pageInit();
                             }
                             this.await = false

@@ -97,11 +97,11 @@
                                                 <div class="form-group flexRowContainer flexColCenter">
 
                                                     <div class="col-md-8 col-md-offset-4">
-                                                        <div class="input-group" @keydown.enter="searchTasks()">
+                                                        <div class="input-group" @keydown.enter="searchTasks(1)">
                                                             <input type="text" class="form-control" name="searchText"
                                                                    placeholder="please enter name" v-model="searchText" style="margin-top: 3px">
                                                             <div class="input-group-btn">
-                                                                <button class="btn btn-primary" @click="searchTasks()">Search
+                                                                <button class="btn btn-primary" @click="searchTasks(1)">Search
                                                                 </button>
                                                             </div>
                                                         </div>

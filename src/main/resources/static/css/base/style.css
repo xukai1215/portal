@@ -140,7 +140,38 @@ h3 {
   font-weight: 400;
 }
 
+.wzhScrollbar{
+  overflow-y: overlay;
+  overflow-y: auto;
+}
 
+.wzhScrollbar::-webkit-scrollbar{
+  width: 6px;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb{
+  width: 6px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 3.5px;
+  background-color: #cccccc;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb:focus{
+  background-color: #a8a8a8;
+}
+
+.wzhScrollbar::-webkit-scrollbar-track{
+  width: 6px;
+
+  /*background-color: #a8a8a8;*/
+}
+
+.wzhScrollbar::-webkit-scrollbar-track:hover{
+  width: 6px;
+  background-color: #ededed;
+  transition: .4s;
+}
 
 .footer {
   padding: 10px 10px 10px;

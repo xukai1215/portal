@@ -177,7 +177,7 @@ public class ArticleService {
 
     }
 
-    public String searchByElsecierDOI(String doi) throws IOException {
+    public String searchByElsevierDOI(String doi) throws IOException {
         String str = "https://api.elsevier.com/content/article/doi/"+doi+"?apiKey=e59f63ca86ba019181c8d3a53f495532";
         URL url = new URL(str);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -210,7 +210,7 @@ public class ArticleService {
 
         String doi = eles[eles.length-2]+"/"+eles[eles.length-1];
 
-        String xml =  searchByElsecierDOI(doi);
+        String xml =  searchByElsevierDOI(doi);
 
         JSONObject result = new JSONObject();
 

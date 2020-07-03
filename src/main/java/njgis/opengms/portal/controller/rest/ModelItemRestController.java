@@ -18,6 +18,7 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.IOUtils;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
@@ -335,6 +336,18 @@ public class ModelItemRestController {
 
         return ResultUtils.success(result);
     }
-    
+
+    @RequestMapping(value="/searchByDOI",method=RequestMethod.POST)
+    public JsonResult searchReferenceByDOI(@RequestParam(value="doi") String DOI, HttpServletRequest httpServletRequest) throws IOException, DocumentException {
+        HttpSession session=httpServletRequest.getSession();
+
+        if(session.getAttribute("oid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userOid=session.getAttribute("oid").toString();
+        return ResultUtils.success(modelItemService.getArticleByDOI(DOI,userOid));
+    }
+
+
 
 }

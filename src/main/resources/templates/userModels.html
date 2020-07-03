@@ -89,9 +89,9 @@
                                 <div class="flexRow flexColCenter" style="margin-top: 12px;margin-left: 10px;">
 
                                     <div class="searchContainer flexRow flexColCenter">
-                                        <input class="noBorderInput" placeholder="Search for ..." v-model="searchText" @keyup.enter="searchItems">
+                                        <input class="noBorderInput" placeholder="Search for ..." v-model="searchText" @keyup.enter="searchItems(1)">
                                     </div>
-                                    <i class="fa fa-search" style="font-size: 18px;" @click="searchItems"></i>
+                                    <i class="fa fa-search" style="font-size: 18px;" @click="searchItems(1)"></i>
                                 </div>
                             </div>
                             <!--                        <h5>You can manager your model and data here</h5>-->

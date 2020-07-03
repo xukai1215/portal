@@ -130,6 +130,8 @@ var userTask = Vue.extend(
                         }]
                     }]
                 }],
+
+                await:false,
             }
         },
 
@@ -457,16 +459,18 @@ var userTask = Vue.extend(
             },
 
 
-            searchTasks() {
+            searchTasks(page) {
                 let url = "/task/searchTasksByUserId";
                 let name = "tasks";
+                this.await = true
                 this.isInSearch = 1;
+                let targetPage = page==undefined?this.page:page
                 $.ajax({
                     type: "Get",
                     url: url,
                     data: {
                         searchText: this.searchText,
-                        page: this.page - 1,
+                        page: targetPage - 1,
                         pagesize: this.pageSize,
                         sortType: this.sortType,
                         asc: this.sortAsc
@@ -488,10 +492,10 @@ var userTask = Vue.extend(
                             this.totalNum = data.count;
                             this.searchCount = Number.parseInt(data["count"]);
                             this.searchResult = data[name];
-                            if (this.page == 1) {
+                            if (targetPage == 1) {
                                 this.pageInit();
                             }
-
+                            this.await = false
                         }
 
                     }

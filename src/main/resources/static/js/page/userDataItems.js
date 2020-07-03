@@ -236,15 +236,16 @@ var userDataItems = Vue.extend(
                 }
             },
 
-            searchItems(){
+            searchItems(page){
                 this.pageSize = 10;
                 this.isInSearch = 1;
                 // this.searchResult = []
                 this.await = true
                 var that = this;
+                let targetPage = page==undefined?this.page:page
                 var da = {
                     userOid: this.userId,
-                    page: this.page - 1,
+                    page: targetPage - 1,
                     pageSize: this.pageSize,
                     asc:-1,
                     searchText: this.searchText
@@ -259,7 +260,7 @@ var userDataItems = Vue.extend(
                                     that.resourceLoad = false;
                                     that.totalNum = res.data.data.totalElements;
                                     that.searchResult = res.data.data.content;
-                                    if (this.page == 1) {
+                                    if (targetPage == 1) {
                                         this.pageInit();
                                     }
                                     this.await = false

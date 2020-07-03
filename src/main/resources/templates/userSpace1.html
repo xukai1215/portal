@@ -80,10 +80,13 @@
             background: #f5f5dc;
         }
 
-        .el-icon-loading{
-            font-size: 12px;
-        }
+        /*.el-icon-loading{*/
+        /*    font-size: 12px;*/
+        /*}*/
 
+        /*.el-loading-spinner .el-icon-loading{*/
+        /*    font-size: 40px;*/
+        /*}*/
     </style>
     <!--<script src="/static/js/page/user_space.js"></script>-->
 </head>
@@ -97,6 +100,7 @@
             </div>
         </div>
     </div>
+    <div v-loading.fullscreen.lock="fullscreenLoading"></div>
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
