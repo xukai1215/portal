@@ -18,8 +18,10 @@ public class ResultDataDTO {
     String state;
     String event;
     String url;
+    String[] urls;
     String tag;
     String suffix;
+    Boolean multiple = false;
     Boolean visual;
     List<ParamInfo> children;
 }

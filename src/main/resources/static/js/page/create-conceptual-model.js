@@ -1119,7 +1119,7 @@ var createConceptualModel = Vue.extend({
 
 
 
-        var mid = window.sessionStorage.getItem("editConceptualModel_id");
+        // var mid = window.sessionStorage.getItem("editConceptualModel_id");
         // if (mid === undefined || mid == null) {
         //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html";
         // } else {

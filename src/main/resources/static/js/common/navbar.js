@@ -652,7 +652,7 @@ $('#phoneModel').click((e)=>{
 
     else{
         fullSubMenuFoldUp(target);
-        $('#phoneData').animate({marginTop:0},80,'linear',{ queue: false });
+        $('#phoneData').animate({marginTop:0},75,'linear',{ queue: false });
 
     }
 
@@ -676,7 +676,7 @@ $('#phoneData').click((e)=>{
 
     else{
         fullSubMenuFoldUp(target);
-        $('#phoneCommunity').animate({marginTop:0},160,'linear',{ queue: false });
+        $('#phoneCommunity').animate({marginTop:0},155,'linear',{ queue: false });
 
     }
 
@@ -700,7 +700,7 @@ $('#phoneCommunity').click((e)=>{
 
     else{
         fullSubMenuFoldUp(target);
-        $('#phoneHelp').animate({marginTop:0},240,'linear',{ queue: false });
+        $('#phoneHelp').animate({marginTop:0},230,'linear',{ queue: false });
 
     }
 
@@ -724,7 +724,7 @@ $('#phoneHelp').click((e)=>{
 
     else{
         fullSubMenuFoldUp(target);
-        $('#aboutUs').animate({marginTop:0},120);
+        $('#aboutUs').animate({marginTop:0},115);
     }
     if(e.stopPropagation){
         e.stopPropagation();
