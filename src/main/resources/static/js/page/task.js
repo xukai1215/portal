@@ -171,6 +171,16 @@ var vue = new Vue({
         uploadInPath: "",
         folderTree: [],
 
+        multiFileDialog:false,
+        outputMultiFile:[
+            {
+                name:'',
+                url:''
+            }
+        ],
+        downloadUrl:'',
+        shareIndex:false,
+
         //uploadForm
         uploadName: "",
         selectLoading: false,
@@ -181,6 +191,7 @@ var vue = new Vue({
 
         visualVisible:false,
         visualSrc:"",
+        clipBoard :'',
     },
     computed: {},
     watch: {
@@ -1168,6 +1179,25 @@ var vue = new Vue({
 
         },
 
+        shareOutput(url){
+            this.shareIndex=true;
+            this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+        },
+
+        copyLink(){
+            console.log(this.clipBoard);
+            let vthis = this;
+            this.clipBoard.on('success', function () {
+                vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
+                this.clipBoard.destroy()
+            });
+            this.clipBoard.on('error', function () {
+                vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
+                this.clipBoard.destroy()
+            });
+            this.shareIndex=false
+        },
+
         async loadExampleData(id) {
             console.log(id)
             const loading = this.$loading({
@@ -1201,6 +1231,8 @@ var vue = new Vue({
                     this.$set(event, "tag", el.tag);
                     this.$set(event, "suffix", el.suffix);
                     this.$set(event, "url", el.url);
+                    this.$set(event, "urls", el.urls);
+                    this.$set(event, "multiple", el.multiple);
                     if (el.children != undefined) {
                         if (el.children.length == 1) {
                             event.children[0].value = el.children[0].value;
@@ -2338,6 +2370,19 @@ var vue = new Vue({
             this.dataChosenIndex = index;
         },
 
+        checkMultiContent(output){
+            this.multiFileDialog = true;
+            this.outputMultiFile = [];
+            for(let i = 0;output.urls&&i<output.urls.length;i++){
+                let obj={
+                    name:output.tag+''+output.suffix,
+                    url:output.urls[i],
+                    visual:output.visual
+                }
+                this.outputMultiFile.push(obj)
+            }
+        },
+
         userDownload() {
             //todo 依据数组downloadDataSet批量下载
 
@@ -2383,6 +2428,9 @@ var vue = new Vue({
     async mounted() {
 
         var tha = this
+
+        this.clipBoard = new ClipboardJS(".copyLinkBtn");
+
         axios.get("/dataItem/createTree")
             .then(res => {
                 tha.tObj = res.data;

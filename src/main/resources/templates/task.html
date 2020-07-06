@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
     <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <!--<link rel="stylesheet" href="/static/css/other/computable-test.css">-->
@@ -525,13 +526,21 @@
                                                         </span>
                                                     </el-col>
                                                     <el-col :span="6" :offset="1">
-                                                        <el-input class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
+                                                        <el-input v-if="!modelOutEvent.multiple" class="model-input" :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
                                                                   :disabled="true">
                                                         </el-input>
+                                                        <el-tag v-else @click="checkMultiContent(modelOutEvent)"
+                                                                style="margin-top: 7px;width: 100%">
+                                                            <div class="flexCenter cursorPointer">
+                                                                <i class="ms-Icon ms-Icon--StackIndicator" style="font-size: 14px;margin-right: 5px"></i>
+                                                                Multiple File
+                                                            </div>
+
+                                                        </el-tag>
                                                     </el-col>
                                                     <el-col :span="6" v-show="modelOutEvent.url!=null">
                                                         <div class="_btn-group">
-                                                            <el-button plain round type="warning"
+                                                            <el-button v-if="!modelOutEvent.multiple" plain round type="warning"
                                                                        @click="download(modelOutEvent)">
                                                                 <i class="fa fa-download"></i>
                                                             </el-button>
@@ -1116,6 +1125,61 @@
                             </div>
                         </el-dialog>
 
+                        <!-- 多文件展示-->
+                        <el-dialog :visible.sync="multiFileDialog" class="h600Dialog">
+                            <el-table
+                                    :data="outputMultiFile" style="width: 100%">
+                                <el-table-column
+                                        type="index"
+                                        label="No."
+                                        width="50">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="file"
+                                        width="215">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="url"
+                                        label="url"
+                                        width="225">
+                                </el-table-column>
+                                <el-table-column
+                                        prop=""
+                                        label="operation">
+                                    <template slot-scope="scope">
+                                        <el-button plain circle type="success"
+                                                   @click="shareOutput(scope.row.url)">
+                                            <i class="fa fa-share-square-o"></i>
+                                        </el-button>
+                                        <el-button plain circle type="warning"
+                                                   @click="download(scope.row)">
+                                            <i class="fa fa-download"></i>
+                                        </el-button>
+                                        <el-button plain circle type="primary"
+                                                   v-if="scope.row.visual"
+                                                   @click="visualize(scope.row)">
+                                            <i class="fa fa-eye"></i>
+                                        </el-button>
+                                    </template>
+
+                                </el-table-column>
+                            </el-table>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button slot="trigger" @click="multiFileDialog=false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
+                        <!-- task文件分享-->
+                        <el-dialog title="Share My Output Data" :visible.sync="shareIndex" width="40%">
+                            <h4>url: </h4>
+                            <el-input :value="downloadUrl" type="textarea">
+                            </el-input>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button slot="trigger" type="primary" @click="copyLink" :data-clipboard-text="downloadUrl"
+                                           class="copyLinkBtn">Copy Link</el-button>
+                                <el-button slot="trigger" type="warning" @click="shareIndex=false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
                         <!-- 数据可视化窗口-->
                         <el-dialog
                                 title="Visualization"
@@ -1319,7 +1383,7 @@
 <!--<script src="/static/js/common/knockout-3.4.2.js"></script>-->
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
-
+<script src="/static/js/common/clipboard.min.js"></script>
 <!--<script src="/static/js/common/jquery.gritter.min.js"></script>-->
 <!--<script src="/static/js/common/lodash.js"></script>-->
 <script src="/static/js/common/bootstrap.js"></script>

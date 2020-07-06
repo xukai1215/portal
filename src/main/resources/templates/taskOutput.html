@@ -11,8 +11,10 @@
     <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
     <!--<link rel="stylesheet" href="/static/css/other/computable-test.css">-->
     <!--<link rel="stylesheet" href="/static/css/other/jquery.gritter.css">-->
     <!--<link rel="stylesheet" href="/static/css/page/logical_model.css">-->
@@ -173,28 +175,42 @@
                                                     </span>
                                                     </el-col>
                                                     <el-col  v-if="info.taskInfo.status==2" :span="6" :offset="1" v-for="output in info.taskInfo.outputs">
-                                                        <el-input id="dataNameInput" disabled v-if="output.event==modelOutEvent.eventName" class="model-input"
+                                                        <el-input id="dataNameInput" disabled v-if="output.event==modelOutEvent.eventName&&!output.multiple" class="model-input"
                                                                   :value="output.tag==undefined?'':(output.tag+'.'+output.suffix)" readonly>
                                                         </el-input>
+                                                        <el-tag v-if="output.event==modelOutEvent.eventName&&output.multiple" @click="checkMultiContent(output)"
+                                                                style="margin-top: 7px;width: 100%">
+                                                            <div class="flexCenter cursorPointer">
+                                                                <i class="ms-Icon ms-Icon--StackIndicator" style="font-size: 14px;margin-right: 5px"></i>
+                                                                Multiple File
+                                                            </div>
+
+                                                        </el-tag>
                                                     </el-col>
                                                     <el-col  v-if="info.taskInfo.status==2" :span="5">
                                                         <div class="_btn-group" v-for="output in info.taskInfo.outputs">
-                                                            <el-button v-if="output.event==modelOutEvent.eventName" plain round type="success"
+                                                            <el-button v-if="output.event==modelOutEvent.eventName&&!output.multiple" plain round type="success"
                                                                        @click="share(output.url)" >
                                                                 <i class="fa fa-share-square-o"></i>
                                                             </el-button>
-                                                            <el-button v-if="output.event==modelOutEvent.eventName" plain round type="warning"
+                                                            <el-button v-if="output.event==modelOutEvent.eventName&&!output.multiple" plain round type="warning"
                                                                        @click="download(output)" >
                                                                 <i class="fa fa-download"></i>
                                                             </el-button>
                                                             <el-button plain round type="primary"
-                                                                       v-if="output.event==modelOutEvent.eventName&&output.visual"
+                                                                       v-if="output.event==modelOutEvent.eventName&&!output.multiple&&output.visual"
                                                                        @click="visualize(output)">
                                                                 <i class="fa fa-eye"></i>
                                                             </el-button>
+<!--                                                            <el-button plain round type="success"-->
+<!--                                                                       v-if="output.event==modelOutEvent.eventName&&!output.multiple&&output.visual"-->
+<!--                                                                       @click="visualize(output)">-->
+<!--                                                                <i class="fa fa-eye"></i>-->
+<!--                                                            </el-button>-->
                                                         </div>
                                                     </el-col>
                                                 </el-row>
+
                                                 <el-row>
                                                     <p class="event-desc" :title="modelOutEvent.eventDesc">
                                                         {{modelOutEvent.eventDesc}}</p>
@@ -218,7 +234,50 @@
 <!--                                <el-button slot="trigger" type="warning" @click="renameIndex=false">Cancel</el-button>-->
 <!--                            </span>-->
 <!--                        </el-dialog>-->
+                        <!-- 多文件展示-->
+                        <el-dialog :visible.sync="multiFileDialog" class="h600Dialog">
+                            <el-table
+                                    :data="outputMultiFile" style="width: 100%">
+                                <el-table-column
+                                       type="index"
+                                        label="No."
+                                        width="50">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="file"
+                                        width="215">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="url"
+                                        label="url"
+                                        width="225">
+                                </el-table-column>
+                                <el-table-column
+                                        prop=""
+                                        label="operation">
+                                    <template slot-scope="scope">
+                                        <el-button plain circle type="success"
+                                                   @click="share(scope.row.url)">
+                                            <i class="fa fa-share-square-o"></i>
+                                        </el-button>
+                                        <el-button plain circle type="warning"
+                                                   @click="download(scope.row)">
+                                            <i class="fa fa-download"></i>
+                                        </el-button>
+                                        <el-button plain circle type="primary"
+                                                   v-if="scope.row.visual"
+                                                   @click="visualize(scope.row)">
+                                            <i class="fa fa-eye"></i>
+                                        </el-button>
+                                    </template>
 
+                                </el-table-column>
+                            </el-table>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button slot="trigger" @click="multiFileDialog=false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
                         <!-- 数据可视化窗口-->
                         <el-dialog
                                 title="Visualization"

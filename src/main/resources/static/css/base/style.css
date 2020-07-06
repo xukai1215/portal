@@ -503,6 +503,10 @@ h3 {
   backface-visibility: hidden;
 }
 
+.cursorPointer{
+  cursor: pointer;
+}
+
 .gallery-item div {
   -webkit-transition: all .1s ease-in;
   transition: all .1s ease-in;
@@ -770,6 +774,10 @@ h3 {
 .nutButtonBlueFill:hover{
   background-color: #34acf7;
   border: 2px #34acf7 solid;
+}
+
+.h600Dialog .el-dialog{
+  height: 600px;
 }
 
 /*** è‡ªé€‚åº” ***/

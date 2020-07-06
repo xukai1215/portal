@@ -132,6 +132,11 @@ var userTask = Vue.extend(
                 }],
 
                 await:false,
+                shareIndex:false,
+                multiFileDialog : false,
+                outputMultiFile : [],
+                downloadUrl:'',
+                clipBoard:'',
             }
         },
 
@@ -526,6 +531,25 @@ var userTask = Vue.extend(
                     });
             },
 
+            shareOutput(url){
+                this.shareIndex=true;
+                this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+            },
+
+            copyLink(){
+                console.log(this.clipBoard);
+                let vthis = this;
+                this.clipBoard.on('success', function () {
+                    vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
+                    this.clipBoard.destroy()
+                });
+                this.clipBoard.on('error', function () {
+                    vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
+                    this.clipBoard.destroy()
+                });
+                this.shareIndex=false
+            },
+
             addOutputToMyDataConfirm(index) {
                 let data = this.$refs.folderTree2.getCurrentNode();
                 let node = this.$refs.folderTree2.getNode(data);
@@ -772,6 +796,19 @@ var userTask = Vue.extend(
                 //     $('.dataItemShare').eq(this.taskSharingActive-1).animate({marginLeft:-1500},220)
                 //     $('.dataItemShare').eq(this.taskSharingActive).animate({marginLeft:0},220)
                 // }
+            },
+
+            checkMultiContent(output){
+                this.multiFileDialog = true;
+                this.outputMultiFile = [];
+                for(let i = 0;output.urls&&i<output.urls.length;i++){
+                    let obj={
+                        name:output.tag+''+output.suffix,
+                        url:output.urls[i],
+                        visual:output.visual
+                    }
+                    this.outputMultiFile.push(obj)
+                }
             },
 
             handleSelectionChange(val) {
@@ -1317,7 +1354,7 @@ var userTask = Vue.extend(
         },
 
         mounted() {
-
+            this.clipBoard = new ClipboardJS(".copyLinkBtn");
             $(() => {
 
                 let height = document.documentElement.clientHeight;

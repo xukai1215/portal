@@ -2228,12 +2228,12 @@
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
                             <div class="list-item" v-if="articles.total>0" v-for="(article,key) in articles.result">
-                                <div class="itemCardCol" style="width: 98%;height: auto;max-height: 260px;margin-top: 8px;border: none;">
+                                <div class="itemCardCol" v-if="article!=null" style="width: 98%;height: auto;max-height: 260px;margin-top: 8px;border: none;">
                                     <div class="cardUpper colArrange" style="background-color: #fafafa">
                                         <div class="cardHeadContainer" style="max-height: 110px;">
                                             <div class="subTitle" style="height: auto;max-height: 105px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-                                                    <h4 class="fourLine">{{article.title}}</h4>
+<!--                                                    <h4 class="fourLine">{{article.title}}</h4>-->
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">

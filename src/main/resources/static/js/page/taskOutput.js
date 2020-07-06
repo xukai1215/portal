@@ -76,6 +76,13 @@ var vue = new Vue({
 
         taskDescription:'',
 
+        multiFileDialog:false,
+        outputMultiFile:[
+            {
+                name:'',
+                url:''
+            }
+        ],
         //数据可视化
         visualVisible:false,
         visualSrc:'',
@@ -170,6 +177,20 @@ var vue = new Vue({
             btns.css("color", "#636363");
             btns.eq(i - 1).css("color", "#428bca");
         },
+
+        checkMultiContent(output){
+            this.multiFileDialog = true;
+            this.outputMultiFile = [];
+            for(let i = 0;output.urls&&i<output.urls.length;i++){
+                let obj={
+                    name:output.tag+''+output.suffix,
+                    url:output.urls[i],
+                    visual:output.visual
+                }
+                this.outputMultiFile.push(obj)
+            }
+        },
+
         init() {},
         inEventList(state) {
             return state.event.filter(value => {
@@ -437,12 +458,13 @@ var vue = new Vue({
 
         copyLink(){
             console.log(this.clipBoard);
+            let vthis = this;
             this.clipBoard.on('success', function () {
-                alert('Copy link successly')
+                vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
                 this.clipBoard.destroy()
             });
             this.clipBoard.on('error', function () {
-                alert("复制失败")
+                vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
                 this.clipBoard.destroy()
             });
             this.shareIndex=false

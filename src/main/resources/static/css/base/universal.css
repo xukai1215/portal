@@ -328,4 +328,10 @@ dt{
     transition: .4s;
 }
 
+.textLineLimit{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 

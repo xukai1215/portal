@@ -708,6 +708,7 @@ public class TaskService {
         for (int i = 0; i < task.getInputs().size(); i++) {
             ResultDataDTO resultDataDTO = new ResultDataDTO();
             resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
+            resultDataDTO.setUrl(task.getInputs().get(i).getUrl());
             resultDataDTO.setState(task.getInputs().get(i).getStatename());
             resultDataDTO.setEvent(task.getInputs().get(i).getEvent());
             resultDataDTO.setTag(task.getInputs().get(i).getTag());
@@ -718,10 +719,13 @@ public class TaskService {
         for (int i = 0; i < task.getOutputs().size(); i++) {
             ResultDataDTO resultDataDTO = new ResultDataDTO();
             resultDataDTO.setUrl(task.getOutputs().get(i).getUrl());
+            if(task.getOutputs().get(i).getUrl().contains("["))
+                resultDataDTO.setUrls(task.getOutputs().get(i).getUrls());
             resultDataDTO.setState(task.getOutputs().get(i).getStatename());
             resultDataDTO.setEvent(task.getOutputs().get(i).getEvent());
             resultDataDTO.setTag(task.getOutputs().get(i).getTag());
             resultDataDTO.setSuffix(task.getOutputs().get(i).getSuffix());
+            resultDataDTO.setMultiple(task.getOutputs().get(i).getMultiple());
             resultDataDTO.setChildren(task.getOutputs().get(i).getChildren());
             resultDataDTOList.add(resultDataDTO);
         }
@@ -1238,6 +1242,11 @@ public class TaskService {
             }
             if (!hasValue) {
                 task.setStatus(-1);
+            }
+            for (int i = 0; i < outputs.size(); i++) {
+                if (outputs.getJSONObject(i).getString("url").contains("[")) {//说明是单event多输出的情况
+                    outputs.getJSONObject(i).put("multiple",true);
+                }
             }
 
             task.setOutputs(result.getJSONObject("data").getJSONArray("outputs").toJavaList(TaskData.class));

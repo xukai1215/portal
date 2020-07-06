@@ -179,14 +179,14 @@
                                                     {{input.event}}
                                                 </span>
                                                     <div class="flex">
-                                                    <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
-                                                            style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
-                                                            @click="downloadSingle(input.url)">Download File
-                                                    </button>
-                                                    <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
-                                                            style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                            @click="addOutputToMyData(input,index)">Add to My Data
-                                                    </button>
+                                                        <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                                style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                                @click="downloadSingle(input.url)">Download File
+                                                        </button>
+                                                        <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                                style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                @click="addOutputToMyData(input,index)">Add to My Data
+                                                        </button>
                                                     </div>
                                                 </li>
                                             </ul>
@@ -199,13 +199,17 @@
                                                 <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.outputs">
                                                     <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
                                                     <div class="flex">
-                                                        <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                        <button v-if="!output.multiple" class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                                 style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
                                                                 @click="downloadSingle(output.url)">Download File
                                                         </button>
-                                                        <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                        <button v-if="!output.multiple" class="pull-right clearfix btn btn-info btn-round downloadAFile"
                                                                 style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
                                                                 @click="addOutputToMyData(output,index)">Add to My Data
+                                                        </button>
+                                                        <button v-if="output.multiple" class="pull-right clearfix btn btn-secondary btn-round downloadAFile"
+                                                                style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                @click="checkMultiContent(output)">Multiple File
                                                         </button>
                                                     </div>
 
@@ -512,6 +516,62 @@
                     <el-button circle icon="el-icon-check" v-if="taskSharingActive>=3" class="el-button--success"
                                style="margin-top: 12px;position: absolute;right:4%;top:55px;"
                                @click="taskSharingFinish"></el-button>
+                </el-dialog>
+
+                <!-- 多文件展示-->
+                <el-dialog :visible.sync="multiFileDialog" class="h600Dialog">
+                    <el-table
+                            :data="outputMultiFile" style="width: 100%">
+                        <el-table-column
+                                type="index"
+                                label="No."
+                                width="50">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="file"
+                                width="215">
+                        </el-table-column>
+                        <el-table-column
+                                prop="url"
+                                label="url"
+                                width="225">
+                        </el-table-column>
+                        <el-table-column
+                                prop=""
+                                label="operation">
+                            <template slot-scope="scope">
+                                <el-button plain circle type="success"
+                                           @click="shareOutput(scope.row.url)">
+                                    <i class="fa fa-share-square-o"></i>
+                                </el-button>
+                                <el-button plain circle type="warning"
+                                           @click="downloadSingle(scope.row.url)">
+                                    <i class="fa fa-download"></i>
+                                </el-button>
+<!--                                <el-button plain circle type="primary"-->
+<!--                                           v-if="scope.row.visual"-->
+<!--                                           @click="visualize(scope.row)">-->
+<!--                                    <i class="fa fa-eye"></i>-->
+<!--                                </el-button>-->
+                            </template>
+
+                        </el-table-column>
+                    </el-table>
+                    <span slot="footer" class="dialog-footer">
+                                <el-button slot="trigger" @click="multiFileDialog=false">Cancel</el-button>
+                            </span>
+                </el-dialog>
+                <!-- task文件分享-->
+                <el-dialog title="Share My Output Data" :visible.sync="shareIndex" width="40%">
+                    <h4>url: </h4>
+                    <el-input :value="downloadUrl" type="textarea">
+                    </el-input>
+                    <span slot="footer" class="dialog-footer">
+                                <el-button slot="trigger" type="primary" @click="copyLink" :data-clipboard-text="downloadUrl"
+                                           class="copyLinkBtn">Copy Link</el-button>
+                                <el-button slot="trigger" type="warning" @click="shareIndex=false">Cancel</el-button>
+                            </span>
                 </el-dialog>
             </div>
         </template>

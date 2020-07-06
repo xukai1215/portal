@@ -450,7 +450,7 @@ var userModels = Vue.extend(
                     'logicalmodel':   '/user/userSpace#/model/manageLogicalModel/'+oid,
                     'computablemodel':'/user/userSpace#/model/manageComputableModel/'+oid,
                 }
-                this.setSession('editOid', oid)
+                this.setSession('editId', oid)
                 window.location.href=urls[a]
             },
 
