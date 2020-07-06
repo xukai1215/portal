@@ -1,8 +1,15 @@
 package njgis.opengms.portal.utils;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.entity.ContentType;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
 
 /**
  * Created by wang ming on 2019/5/14.
@@ -43,6 +50,28 @@ public class MyFileUtils {
             e.printStackTrace();
         }
     }
+
+    public static MultipartFile getMultipartFile(FileSystemResource resource) throws IOException {
+        File file = resource.getFile();
+        FileInputStream fileInputStream = null;
+        MultipartFile multipartFile = null;
+        // 需要导入commons-fileupload的包
+        FileItem fileItem = new DiskFileItem("copyfile.txt", Files.probeContentType(file.toPath()),false,file.getName(),(int)file.length(),file.getParentFile());
+        byte[] buffer = new byte[4096];
+        int n;
+        try (InputStream inputStream = new FileInputStream(file); OutputStream os = fileItem.getOutputStream()){
+            while ( (n = inputStream.read(buffer,0,4096)) != -1){
+                os.write(buffer,0,n);
+            }
+            //也可以用IOUtils.copy(inputStream,os);
+            multipartFile = new CommonsMultipartFile(fileItem);
+            System.out.println(multipartFile.getName());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return multipartFile;
+    }
+
 
     public static void writeTxt(String txtPath,String content){
         FileOutputStream fileOutputStream = null;

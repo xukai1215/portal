@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Title</title>
 
-    <link rel="stylesheet" href="/static/css/other/page.css">
-    <link rel="stylesheet" href="/static/css/graphEditor/treeView-Bootstrap.css">
-    <link rel="stylesheet" href="/static/css/graphEditor/conceptBuild.css">
-    <link rel="stylesheet" type="text/css" href="/static/js/graphEditor/styles/grapheditor.css">
+  <link rel="stylesheet" href="/static/css/other/page.css">
+  <link rel="stylesheet" href="/static/css/graphEditor/treeView-Bootstrap.css">
+  <link rel="stylesheet" href="/static/css/graphEditor/conceptBuild.css">
+  <link rel="stylesheet" type="text/css" href="/static/js/graphEditor/styles/grapheditor.css">
 
-    <script type="text/javascript">
-        // Parses URL parameters. Supported parameters are:
-        // - lang=xy: Specifies the language of the user interface.
-        // - touch=1: Enables a touch-style user interface.
-        // - storage=local: Enables HTML5 local storage.
-        // - chrome=0: Chromeless mode.
-        var urlParams = (function (url) {
-            var result = new Object();
-            var idx = url.lastIndexOf('?');
-            console.log(idx);
+  <script type="text/javascript">
+    // Parses URL parameters. Supported parameters are:
+    // - lang=xy: Specifies the language of the user interface.
+    // - touch=1: Enables a touch-style user interface.
+    // - storage=local: Enables HTML5 local storage.
+    // - chrome=0: Chromeless mode.
+    var urlParams = (function (url) {
+      var result = new Object();
+      var idx = url.lastIndexOf('?');
+      console.log(idx);
 
-            if (idx > 0) {
-                var params = url.substring(idx + 1).split('&');
+      if (idx > 0) {
+        var params = url.substring(idx + 1).split('&');
 
-                for (var i = 0; i < params.length; i++) {
-                    idx = params[i].indexOf('=');
+        for (var i = 0; i < params.length; i++) {
+          idx = params[i].indexOf('=');
 
-                    if (idx > 0) {
-                        result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
-                    }
-                }
-            }
+          if (idx > 0) {
+            result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+          }
+        }
+      }
 
-            return result;
-        })(window.location.href);
+      return result;
+    })(window.location.href);
 
-        // Default resources are included in grapheditor resources
-        mxLoadResources = false;
-        mxBasePath = "/static/js/mxGraph/";
-        STYLE_PATH = "/static/js/graphEditor/styles";
-        RESOURCES_PATH = "/static/js/graphEditor/resources";
-        IMAGE_PATH = "/static/js/graphEditor/images";
-        STENCIL_PATH = "/static/js/graphEditor/stencils";
-        EXPORT_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
-        SAVE_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    // Default resources are included in grapheditor resources
+    mxLoadResources = false;
+    mxBasePath = "/static/js/mxGraph/";
+    STYLE_PATH = "/static/js/graphEditor/styles";
+    RESOURCES_PATH = "/static/js/graphEditor/resources";
+    IMAGE_PATH = "/static/js/graphEditor/images";
+    STENCIL_PATH = "/static/js/graphEditor/stencils";
+    EXPORT_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
+    SAVE_URL = "https://geomodeling.njnu.edu.cn/GeoModelingNew/MyTestServlet";
 
-        editModel = true;
-    </script>
+    editModel = true;
+  </script>
 
-    <script type="text/javascript">var language = "en";</script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Init.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/deflate/pako.min.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/deflate/base64.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/jscolor/jscolor.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/sanitizer/sanitizer.min.js"></script>
-    <script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/EditorUi.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Editor.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Sidebar.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Graph.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Shapes.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Actions.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Menus.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Format.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Toolbar.js"></script>
-    <script type="text/javascript" src="/static/js/graphEditor/js/Dialogs.js"></script>
-    <!--<script type="text/javascript" src="/static/js/graphEditor/js/conceptualEditorPlugin.js"></script>-->
+  <script type="text/javascript">var language = "en";</script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Init.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/deflate/pako.min.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/deflate/base64.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/jscolor/jscolor.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/sanitizer/sanitizer.min.js"></script>
+  <script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/EditorUi.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Editor.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Sidebar.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Graph.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Shapes.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Actions.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Menus.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Format.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Toolbar.js"></script>
+  <script type="text/javascript" src="/static/js/graphEditor/js/Dialogs.js"></script>
+  <!--<script type="text/javascript" src="/static/js/graphEditor/js/conceptualEditorPlugin.js"></script>-->
 
-    <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/static/js/common/bootstrap.js"></script>
-    <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
-    <script type="text/javascript" src="/static/js/common/pageEn.js"></script>
-    <script type="text/javascript" src="/static/js/common/resetTree.js"></script>
+  <script src="/static/js/common/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/common/bootstrap.js"></script>
+  <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
+  <script type="text/javascript" src="/static/js/common/pageEn.js"></script>
+  <script type="text/javascript" src="/static/js/common/resetTree.js"></script>
 </head>
 <body>
 
@@ -82,142 +82,151 @@
 <!-- END WIDGETS -->
 
 <div class="row">
-    <div width="100%" :style="{height:IframeHeight}" style="border:none">
-        <script type="text/javascript">
-            // Extends EditorUi to update I/O action states based on availability of backend
-            var ui, graph;
-            (function () {
+  <div width="100%" :style="{height:IframeHeight}" style="border:none">
+    <script type="text/javascript">
+      // Extends EditorUi to update I/O action states based on availability of backend
+      var ui, graph;
+      (function () {
 
-                var uid = window.sessionStorage.getItem("editId");
+        var uid = window.sessionStorage.getItem("editId");
 
-                var editorUiInit = EditorUi.prototype.init;
+        var editorUiInit = EditorUi.prototype.init;
 
-                EditorUi.prototype.init = function () {
-                    editorUiInit.apply(this, arguments);
+        EditorUi.prototype.init = function () {
+          editorUiInit.apply(this, arguments);
 
-                    // Updates action states which require a backend
-                    if (!Editor.useLocalStorage) {
-                        mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function (req) {
-                            var enabled = req.getStatus() != 404;
-                            this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
-                            this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
-                            this.actions.get('save').setEnabled(enabled);
-                            this.actions.get('saveAs').setEnabled(enabled);
-                            this.actions.get('export').setEnabled(enabled);
-                        }));
-                    }
-                };
+          // Updates action states which require a backend
+          if (!Editor.useLocalStorage) {
+            mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function (req) {
+              var enabled = req.getStatus() != 404;
+              this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
+              this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
+              this.actions.get('save').setEnabled(enabled);
+              this.actions.get('saveAs').setEnabled(enabled);
+              this.actions.get('export').setEnabled(enabled);
+            }));
+          }
+        };
 
-                // Adds required resources (disables loading of fallback properties, this can only
-                // be used if we know that all keys are defined in the language specific file)
-                mxResources.loadDefaultBundle = false;
-                var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
-                    mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+        // Adds required resources (disables loading of fallback properties, this can only
+        // be used if we know that all keys are defined in the language specific file)
+        mxResources.loadDefaultBundle = false;
+        var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
+            mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
 
-                // Fixes possible asynchronous requests
-                mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-                    // Adds bundle text to resources
-                    mxResources.parse(xhr[0].getText());
+        // Fixes possible asynchronous requests
+        mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
+          // Adds bundle text to resources
+          mxResources.parse(xhr[0].getText());
 
-                    // Configures the default graph theme
-                    var themes = new Object();
-                    themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+          // Configures the default graph theme
+          var themes = new Object();
+          themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
 
-                    // Main
-                    var mainUI = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.getElementById("container"));
-                    ui = mainUI;
-                    graph = ui.editor.graph;
-                    if (uid != null && uid != "" && uid != "0") {
-                        $.ajax({
-                            url: "/conceptualModel/getInfo/" + uid,
-                            type: "get",
-                            data: { "mid": uid },
-                            success: function (result) {
-                                var data = result.data;
-                                console.log(data)
-                                var xml_doc = mxUtils.parseXml(data.cxml);
-                                xml_doc.documentElement.setAttribute("page", 0);
-                                mainUI.editor.setGraphXml(xml_doc.documentElement);
-                                window.onbeforeunload = null;
-                                window.sessionStorage.setItem("editConceptualModel_id", "");
-                            }
-                        })
-                    }
-                }, function () {
-                    document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-                });
-            })();
-        </script>
+          // Main
+          var mainUI = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.getElementById("container"));
+          ui = mainUI;
+          graph = ui.editor.graph;
+          if (uid != null && uid != "" && uid != "0") {
+            // 从父页面取到xml
+            // var xml_doc = mxUtils.parseXml(parent.XML); ;
+            // console.log(xml_doc)
+            // xml_doc.documentElement.setAttribute("page", 0);
+            // mainUI.editor.setGraphXml(xml_doc.documentElement);
+            // window.onbeforeunload = null;
+            // window.sessionStorage.setItem("editConceptualModel_id", "");
+            // $(".geSprite-zoomout").trigger("click")
 
-        <div id="container" class="geEditor" style="left: 0px; top:0px; "></div>
+            $.ajax({
+              url: "/conceptualModel/getInfo/" + uid,
+              type: "get",
+              data: {"mid": uid},
+              success: function (result) {
+                var data = result.data;
+                console.log(data)
+                var xml_doc = mxUtils.parseXml(data.cxml);
+                xml_doc.documentElement.setAttribute("page", 0);
+                mainUI.editor.setGraphXml(xml_doc.documentElement);
+                window.onbeforeunload = null;
+                window.sessionStorage.setItem("editConceptualModel_id", "");
+              }
+            })
+          }
+        }, function () {
+          document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
+        });
+      })();
+    </script>
 
-    </div>
+    <div id="container" class="geEditor" style="left: 0px; top:0px; "></div>
+
+  </div>
 </div>
 
 </body>
 <script>
-    function getCxml() {
+  function getCxml() {
 
-        return ui.editor.getGraphXml().outerHTML;
-    }
+    return ui.editor.getGraphXml().outerHTML;
+  }
 
-    /**
-     * 张硕
-     * 2019.11.14
-     * 由于一下函数中涉及到自定义的全局变量 scale，graph 所以不能普适，暂时注释掉
-     * 由于要存图片，还是得需要svg，所以恢复原策略
-     */
-    function getXml(){
-        var xmlDoc = mxUtils.createXmlDocument();
-        var root = xmlDoc.createElement('output');
-        xmlDoc.appendChild(root);
+  /**
+   * 张硕
+   * 2019.11.14
+   * 由于一下函数中涉及到自定义的全局变量 scale，graph 所以不能普适，暂时注释掉
+   * 由于要存图片，还是得需要svg，所以恢复原策略
+   */
+  function getXml() {
+    var xmlDoc = mxUtils.createXmlDocument();
+    var root = xmlDoc.createElement('output');
+    xmlDoc.appendChild(root);
 
-        var xmlCanvas = new mxXmlCanvas2D(root);
-        var scale=graph.getView().scale;
-        var stackLayout = new mxStackLayout(graph, true);
-        var border=stackLayout.border;
-        var bounds = graph.getGraphBounds();
-        xmlCanvas.translate(
-            Math.floor((border / scale - bounds.x) / scale),
-            Math.floor((border / scale - bounds.y) / scale),
-        );
-        xmlCanvas.scale(1);
-
-
-        var imgExport = new mxImageExport();
-        imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
+    var xmlCanvas = new mxXmlCanvas2D(root);
+    var scale = graph.getView().scale;
+    var stackLayout = new mxStackLayout(graph, true);
+    var border = stackLayout.border;
+    var bounds = graph.getGraphBounds();
+    xmlCanvas.translate(
+        Math.floor((border / scale - bounds.x) / scale),
+        Math.floor((border / scale - bounds.y) / scale),
+    );
+    xmlCanvas.scale(1);
 
 
-        var w = Math.ceil(bounds.width * scale / scale + 2 * border);
-        var h = Math.ceil(bounds.height * scale / scale + 2 * border);
+    var imgExport = new mxImageExport();
+    imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
 
-        var xml = mxUtils.getXml(root);
-        // xml = encodeURIComponent(xml);
-        console.log(xml)
 
-        let result={};
-        result.xml=xml;
-        result.w=w;
-        result.h=h;
+    var w = Math.ceil(bounds.width * scale / scale + 2 * border);
+    var h = Math.ceil(bounds.height * scale / scale + 2 * border);
 
-        return result;
-    }
+    var xml = mxUtils.getXml(root);
+    // xml = encodeURIComponent(xml);
+    console.log(xml)
 
-    function getSvg() {
-        new PrintDialog(ui, 'save').container;
-        return $("svg").eq(7).html();
-    }
+    let result = {};
+    result.xml = xml;
+    result.w = w;
+    result.h = h;
 
-    function getW() {
-        var bounds = graph.getGraphBounds();
-        var w =  Math.ceil(bounds.width * scale / scale + 2 * border);
-        return w;
-    }
+    return result;
+  }
 
-    function getH() {
-        var bounds = graph.getGraphBounds();
-        var h = Math.ceil(bounds.height * scale / scale + 2 * border);
-        return h;
-    }
+  function getSvg() {
+    new PrintDialog(ui, 'save').container;
+    return $("svg").eq(7).html();
+  }
+
+  function getW() {
+    var bounds = graph.getGraphBounds();
+    var w = Math.ceil(bounds.width * scale / scale + 2 * border);
+    return w;
+  }
+
+  function getH() {
+    var bounds = graph.getGraphBounds();
+    var h = Math.ceil(bounds.height * scale / scale + 2 * border);
+    return h;
+  }
 </script>
 </html>

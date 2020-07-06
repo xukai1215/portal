@@ -1,0 +1,146 @@
+.el-card__body {
+    padding: 15px 10px;
+}
+
+
+.categoryList{
+    margin-right:20px;
+}
+
+.screen_view{
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.mobile_view{
+    display:none;
+}
+
+.el-icon-unlock{
+    padding-top:3px;
+}
+
+
+@media only screen and (max-width: 1400px){
+    .mainContent {
+        width: 91.66667%;
+        margin-left: 4.16667%;
+    }
+}
+
+@media only screen and (max-width: 950px){
+
+    .mainContent {
+        margin-top: 20px;
+    }
+
+    .minScreen_maxWidth {
+        width: 100%;
+
+    }
+
+    .minScreen_curClass{
+        display: block;
+    }
+
+    .categoryList{
+        margin-right:0;
+    }
+
+    .detail_option{
+        margin-top: 0;
+    }
+}
+
+@media only screen and (max-width: 480px){
+    .screen_view{
+        display:none;
+    }
+
+    .mobile_view{
+        display: inline-block;
+        margin-left: 20px;
+    }
+}
+
+.detail_title a{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    position: relative;
+    padding-right: 25px;
+    font-size:20px;
+    color:#333;
+    margin:0px;
+}
+.detail_title a:hover{
+    color:#0886E9;
+}
+.detail_bottom h4{
+    font-size:14px;
+}
+hr{
+    margin-bottom:0px;
+}
+
+.content-body .list-item{
+    border:solid #d8d8d8 1px;
+    border-width: 1px 1px;
+    padding:15px 20px;
+    padding-bottom:13px;
+}
+.content-body .list-item:not(:first-child){
+    margin-top:-1px;
+}
+
+.detail_overview{
+    min-height:90px;
+    margin:10px 0px 15px 8px;
+
+}
+
+.detail_bottom{
+    margin-top:13px;
+    padding-left: 1%;
+    padding-right:2.5%;
+}
+.detail_option a:first-child{
+    margin-left:0px;
+}
+
+.img{
+    float:left;
+}
+.info{
+    margin-top:10px;
+    margin-left: 105px;
+    display: block;
+    padding-top:5px;
+}
+
+.info p{
+    color:#777;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.detail_option{
+    float:right;
+}
+.detail_option a{
+    color:#404040;
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+
+.hot::after {
+    content: "";
+    background: url(../../img/hot.png) no-repeat;
+    position: absolute;
+    background-size: 30px;
+    width: 30px;
+    height: 13px;
+    top: 3px;
+    right: 0px;
+}

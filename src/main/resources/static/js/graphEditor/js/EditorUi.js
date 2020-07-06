@@ -982,7 +982,7 @@ EditorUi.prototype.formatWidth = 240;
  * 2019.11.14
  * 由于菜单栏和工具栏与右侧format面板联系密切，所以只能暂时更改高度，使其隐藏
  */
-EditorUi.prototype.toolbarHeight = 0;
+EditorUi.prototype.toolbarHeight = 40;
 
 /**
  * Specifies the height of the footer. Default is 28.
@@ -3126,8 +3126,11 @@ EditorUi.prototype.createUi = function()
      * 2019.11.12
      * 根据全局变量editModel来判断需要显示的ui组件
      */
-    // 创建菜单，分为四步：1、创建div class=geMenubarContainer；2、在menubarContainer中添加div class=geMenubar；
-    //                   3、在menubar中添加statebar（暂时不明作用）；4、往container中添加menubarContainer
+    // 创建菜单，分为四步：
+	  // 1、创建div class=geMenubarContainer；
+	  // 2、在menubarContainer中添加div class=geMenubar；
+	  // 3、在menubar中添加statebar（暂时不明作用）；
+	  // 4、往container中添加menubarContainer
 	// 2：Creates menubar
     if (typeof editModel === 'undefined' || editModel === true){
         this.menubar = (this.editor.chromeless) ? null : this.menus.createMenubar(this.createDiv('geMenubar'));

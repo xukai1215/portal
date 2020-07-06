@@ -1,5 +1,6 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelIngtegratedDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelSimpleDTO;
 import njgis.opengms.portal.entity.ComputableModel;
@@ -26,6 +27,7 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     List<ComputableModel> findAllByMd5(String md5);
 
+    List<ComputableModel> findAllByNameContainsIgnoreCase(String key);
 
     Page<ComputableModel> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
@@ -64,6 +66,8 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
     List<ComputableModel> findByContentType(String contentType);
 
     List<Item> findAllByAuthorshipIsNotNull();
+
+    List<ComputableModelIngtegratedDTO> findAllByRelateModelItemNotNull();
 
     ComputableModel findFirstByAuthorAndMd5(String author, String md5);
 
