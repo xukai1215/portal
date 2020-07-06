@@ -18,8 +18,9 @@ var createComputableModel = Vue.extend({
                     name: "",
                     ins: "",
                     email: "",
-                }
-
+                },
+                md5:"",
+                deploy:false
             },
 
             bindModelItemDialogVisible:false,
@@ -339,9 +340,25 @@ var createComputableModel = Vue.extend({
                     }
                 }
             })
+        },
+
+        getServiceByMd5(){
+
+            $.ajax({
+                url:"/task/getServiceByMd5/" + this.computableModel.md5,
+                success:function (res) {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data == null){
+                        console.log("Don't find a Service by this MD5!")
+                    }
+
+                    console.log(data)
+                }
+
+            })
         }
-
-
     },
     mounted() {
         let that = this;

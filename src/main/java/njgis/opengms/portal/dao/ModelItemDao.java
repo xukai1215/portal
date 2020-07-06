@@ -66,6 +66,6 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     List<ModelItem> findAllByClassificationsIn(String cla);
 
-
+    List<ModelItem> findAllByClassificationsContains(String oid);
 
 }

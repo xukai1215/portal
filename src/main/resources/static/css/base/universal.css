@@ -154,7 +154,7 @@ dt{
     flex-direction: column;
     margin:0 !important;
     position:absolute;
-    top:45%;
+    top:50%;
     left:50%;
     transform:translate(-50%,-50%);
     /*height:600px;*/
