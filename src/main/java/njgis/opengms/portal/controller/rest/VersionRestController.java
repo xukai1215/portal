@@ -871,16 +871,16 @@ public class VersionRestController {
         JSONArray reject = new JSONArray();
         JSONArray edit = new JSONArray();
         //下面是匹配当前的项目的创建者与当前登陆者
-        HttpSession session = request.getSession();
-        String uid = session.getAttribute("uid").toString();
+//        HttpSession session = request.getSession();
+//        String uid = session.getAttribute("uid").toString();
 
-        List<ModelItemVersion> modelItemVersions = modelItemVersionDao.findAll();
-        List<ModelItemVersion> modelItemVersions1 = new ArrayList<>();
-        for (int i=0;i<modelItemVersions.size();i++){
-            if (uid.equals(modelItemVersions.get(i).getCreator())){
-                modelItemVersions1.add(modelItemVersions.get(i));
-            }
-        }
+        List<ModelItemVersion> modelItemVersions1 = modelItemVersionDao.findAll();
+//        List<ModelItemVersion> modelItemVersions1 = new ArrayList<>();
+//        for (int i=0;i<modelItemVersions.size();i++){
+//            if (uid.equals(modelItemVersions.get(i).getCreator())){
+//                modelItemVersions1.add(modelItemVersions.get(i));
+//            }
+//        }
 
 
         for (ModelItemVersion modelItemVersion : modelItemVersions1) {
@@ -913,15 +913,15 @@ public class VersionRestController {
 
 
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (modelItemVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = "";
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (modelItemVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "modelItem");
 
             int status = modelItemVersion.getVerStatus();
@@ -937,13 +937,13 @@ public class VersionRestController {
             }
         }
 
-        List<ConceptualModelVersion> conceptualModelVersionList = conceptualModelVersionDao.findAll();
-        List<ConceptualModelVersion> conceptualModelVersions = new ArrayList<>();
-        for (int i=0;i<conceptualModelVersionList.size();i++){
-            if (uid.equals(conceptualModelVersionList.get(i).getCreator())){
-                conceptualModelVersions.add(conceptualModelVersionList.get(i));
-            }
-        }
+        List<ConceptualModelVersion> conceptualModelVersions = conceptualModelVersionDao.findAll();
+//        List<ConceptualModelVersion> conceptualModelVersions = new ArrayList<>();
+//        for (int i=0;i<conceptualModelVersionList.size();i++){
+//            if (uid.equals(conceptualModelVersionList.get(i).getCreator())){
+//                conceptualModelVersions.add(conceptualModelVersionList.get(i));
+//            }
+//        }
         for (ConceptualModelVersion conceptualModelVersion : conceptualModelVersions) {
 
             JSONObject jsonObject = new JSONObject();
@@ -972,15 +972,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","model");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (conceptualModelVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (conceptualModelVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "conceptualModel");
 
             int status = conceptualModelVersion.getVerStatus();
@@ -999,13 +999,13 @@ public class VersionRestController {
             }
         }
 
-        List<LogicalModelVersion> logicalModelVersionList = logicalModelVersionDao.findAll();
-        List<LogicalModelVersion> logicalModelVersions = new ArrayList<>();
-        for (int i=0;i<logicalModelVersionList.size();i++){
-            if (uid.equals(logicalModelVersionList.get(i).getCreator())){
-                logicalModelVersions.add(logicalModelVersionList.get(i));
-            }
-        }
+        List<LogicalModelVersion> logicalModelVersions = logicalModelVersionDao.findAll();
+//        List<LogicalModelVersion> logicalModelVersions = new ArrayList<>();
+//        for (int i=0;i<logicalModelVersionList.size();i++){
+//            if (uid.equals(logicalModelVersionList.get(i).getCreator())){
+//                logicalModelVersions.add(logicalModelVersionList.get(i));
+//            }
+//        }
         for (LogicalModelVersion logicalModelVersion : logicalModelVersions) {
 
             JSONObject jsonObject = new JSONObject();
@@ -1034,15 +1034,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","model");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (logicalModelVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (logicalModelVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "logicalModel");
 
             int status = logicalModelVersion.getVerStatus();
@@ -1061,13 +1061,13 @@ public class VersionRestController {
             }
         }
 
-        List<ComputableModelVersion> computableModelVersionList = computableModelVersionDao.findAll();
-        List<ComputableModelVersion> computableModelVersions = new ArrayList<>();
-        for (int i=0;i<computableModelVersionList.size();i++){
-            if (uid.equals(computableModelVersionList.get(i).getCreator())){
-                computableModelVersions.add(computableModelVersionList.get(i));
-            }
-        }
+        List<ComputableModelVersion> computableModelVersions = computableModelVersionDao.findAll();
+//        List<ComputableModelVersion> computableModelVersions = new ArrayList<>();
+//        for (int i=0;i<computableModelVersionList.size();i++){
+//            if (uid.equals(computableModelVersionList.get(i).getCreator())){
+//                computableModelVersions.add(computableModelVersionList.get(i));
+//            }
+//        }
 
         for (ComputableModelVersion computableModelVersion : computableModelVersions) {
 
@@ -1097,15 +1097,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","model");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (computableModelVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (computableModelVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "computableModel");
 
             int status = computableModelVersion.getVerStatus();
@@ -1124,13 +1124,13 @@ public class VersionRestController {
             }
         }
 //写到这了
-        List<ConceptVersion> conceptVersionList = conceptVersionDao.findAll();
-        List<ConceptVersion> conceptVersions = new ArrayList<>();
-        for (int i=0;i<conceptVersionList.size();i++){
-            if (uid.equals(conceptVersionList.get(i).getCreator())){
-                conceptVersions.add(conceptVersionList.get(i));
-            }
-        }
+        List<ConceptVersion> conceptVersions = conceptVersionDao.findAll();
+//        List<ConceptVersion> conceptVersions = new ArrayList<>();
+//        for (int i=0;i<conceptVersionList.size();i++){
+//            if (uid.equals(conceptVersionList.get(i).getCreator())){
+//                conceptVersions.add(conceptVersionList.get(i));
+//            }
+//        }
 
         for (ConceptVersion conceptVersion : conceptVersions) {
 
@@ -1160,15 +1160,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (conceptVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (conceptVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "concept");
 
             int status = conceptVersion.getVerStatus();
@@ -1187,13 +1187,13 @@ public class VersionRestController {
             }
         }
 
-        List<TemplateVersion> templateVersionList = templateVersionDao.findAll();
-        List<TemplateVersion> templateVersions = new ArrayList<>();
-        for (int i=0;i<templateVersionList.size();i++){
-            if (uid.equals(templateVersionList.get(i).getCreator())){
-                templateVersions.add(templateVersionList.get(i));
-            }
-        }
+        List<TemplateVersion> templateVersions = templateVersionDao.findAll();
+//        List<TemplateVersion> templateVersions = new ArrayList<>();
+//        for (int i=0;i<templateVersionList.size();i++){
+//            if (uid.equals(templateVersionList.get(i).getCreator())){
+//                templateVersions.add(templateVersionList.get(i));
+//            }
+//        }
 
         for (TemplateVersion templateVersion : templateVersions) {
 
@@ -1223,15 +1223,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (templateVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (templateVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "template");
 
             int status = templateVersion.getVerStatus();
@@ -1250,13 +1250,13 @@ public class VersionRestController {
             }
         }
 
-        List<SpatialReferenceVersion> spatialReferenceVersionList = spatialReferenceVersionDao.findAll();
-        List<SpatialReferenceVersion> spatialReferenceVersions = new ArrayList<>();
-        for (int i=0;i<spatialReferenceVersionList.size();i++){
-            if (uid.equals(spatialReferenceVersionList.get(i).getCreator())){
-                spatialReferenceVersions.add(spatialReferenceVersionList.get(i));
-            }
-        }
+        List<SpatialReferenceVersion> spatialReferenceVersions = spatialReferenceVersionDao.findAll();
+//        List<SpatialReferenceVersion> spatialReferenceVersions = new ArrayList<>();
+//        for (int i=0;i<spatialReferenceVersionList.size();i++){
+//            if (uid.equals(spatialReferenceVersionList.get(i).getCreator())){
+//                spatialReferenceVersions.add(spatialReferenceVersionList.get(i));
+//            }
+//        }
 
         for (SpatialReferenceVersion spatialReferenceVersion : spatialReferenceVersions) {
 
@@ -1286,15 +1286,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (spatialReferenceVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (spatialReferenceVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "spatialReference");
 
             int status = spatialReferenceVersion.getVerStatus();
@@ -1313,13 +1313,13 @@ public class VersionRestController {
             }
         }
 
-        List<UnitVersion> unitVersionList = unitVersionDao.findAll();
-        List<UnitVersion> unitVersions = new ArrayList<>();
-        for (int i=0;i<unitVersionList.size();i++){
-            if (uid.equals(unitVersionList.get(i).getCreator())){
-                unitVersions.add(unitVersionList.get(i));
-            }
-        }
+        List<UnitVersion> unitVersions = unitVersionDao.findAll();
+//        List<UnitVersion> unitVersions = new ArrayList<>();
+//        for (int i=0;i<unitVersionList.size();i++){
+//            if (uid.equals(unitVersionList.get(i).getCreator())){
+//                unitVersions.add(unitVersionList.get(i));
+//            }
+//        }
 
         for (UnitVersion unitVersion : unitVersions) {
 
@@ -1349,15 +1349,15 @@ public class VersionRestController {
 
 //            jsonObject.put("type","community");
             //前台展示需要用户的name，所以通过uid获取用户的name
-            String name = new String();
-            List<User> users = userDao.findAll();
-            for (int i=0;i<users.size();i++){
-                if (unitVersion.getModifier().equals(users.get(i).getUserName())){
-                    name = users.get(i).getName();
-                    break;
-                }
-            }
-            jsonObject.put("modifierName", name);
+//            String name = new String();
+//            List<User> users = userDao.findAll();
+//            for (int i=0;i<users.size();i++){
+//                if (unitVersion.getModifier().equals(users.get(i).getUserName())){
+//                    name = users.get(i).getName();
+//                    break;
+//                }
+//            }
+//            jsonObject.put("modifierName", name);
             jsonObject.put("type", "unit");
 
             int status = unitVersion.getVerStatus();
