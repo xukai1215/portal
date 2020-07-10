@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Model Item Application | OpenGMS</title>
+    <meta name="keywords" content="opengms, geographic model, geo-analysis model"/>
+    <meta name="description" content="OpenGMS supports sharing your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/base/tree.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/common/fabric/fabric.min.css">
+    <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhFlexContainer.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhStyle.css" />
+    <style>
+
+        .el-radio-button--small .el-radio-button__inner{
+            font-size: 14px;
+        }
+
+        .detail_option{
+            margin-top: -7px;
+        }
+
+        .minScreen_hide {
+            display: inline-block;
+        }
+
+        @media only screen and (max-width: 700px){
+
+            .detail_option{
+                margin-top: 0;
+            }
+
+            .minScreen_hide {
+                display: none;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin-bottom: 40px;">
+        <div class="mainContent">
+
+            <div class="el-row" style="border-bottom: 0px solid #d8d8d8">
+                <div>
+                    <h2 class="main-title">Model Item Application</h2>
+                    <h4 class="sub-title">The practical application of model items.</h4>
+                </div>
+                <a class="cursorPointer hoverLineBtn" style="font-size: 17px;margin-top:10px;" href="/modelItem/repository">Model item repository
+                    <i style="font-size: 13px;margin-left: 5px" class="ms-Icon ms-Icon--ChevronRight"></i>
+                </a>
+            </div>
+            <section class="wzhSection darkSide">
+                <div class="wzhSectionContainer" style="background-color: #9387e0">
+                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/model/modelExcution.png);background-position-y: -18px"></div>
+                    <div class="leftPart flexCol flexJustBetween flexAlignStart">
+                        <div class="imgContainerW100" style="background-image:url(../../static/img/model/modelExcution.png);height: 225px"></div>
+                        <div class="textContainer">
+                            <div class="noMargin sectionTitle" >
+                                <p>
+                                    Excution
+                                </p>
+                            </div>
+
+                            <div class="sectionDescribe"  style="margin-top: 10px">
+                                <p>We have provided plenty of models deployed,</p>
+                                <p>you can choose the one you need to excute.</p>
+                            </div>
+
+                        </div>
+                        <button class="wzhBtn nutBtn plainBtn hoverPurple" @click="loadDeployedModelClick()">
+                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section class="wzhSection">
+                <div class="wzhSectionContainer" style="background-color: #80bfff">
+                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/model/modelExcution.png);background-position-y: -18px"></div>
+                    <div class="leftPart flexCol flexJustBetween flexAlignStart">
+                        <div class="textContainer">
+                            <div class="noMargin sectionTitle" >
+                                <p>
+                                    Integration
+                                </p>
+                            </div>
+
+                            <div class="sectionDescribe"  style="margin-top: 10px">
+                                <p>We have provided plenty of models deployed,</p>
+                                <p>you can choose the one you need to excute.</p>
+                            </div>
+
+                        </div>
+                        <button class="wzhBtn nutBtn plainBtn hoverJblue">
+                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section class="wzhSection darkSide">
+                <div class="wzhSectionContainer" style="background-color: #ecb6b6">
+                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/model/modelExcution.png);background-position-y: -18px"></div>
+                    <div class="leftPart flexCol flexJustBetween flexAlignStart">
+                        <div class="textContainer">
+                            <div class="noMargin sectionTitle" >
+                                <p>
+                                    Uncertainty
+                                </p>
+                            </div>
+
+                            <div class="sectionDescribe"  style="margin-top: 10px">
+                                <p>We have provided plenty of models deployed,</p>
+                                <p>you can choose the one you need to excute.</p>
+                            </div>
+
+                        </div>
+                        <button class="wzhBtn nutBtn plainBtn hoverOrange">
+                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+           <el-dialog title="Deployed models" :visible.sync="loadDeployedModelDialog">
+               <div v-loading="loading">
+                   <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
+                       <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
+                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">
+                       </div>
+                       <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>
+                   </div>
+                   <el-table style="padding-left:10px "
+                             :data="deployedModel">
+                       <el-table-column
+                               label="Name"
+                               prop="name"
+                       >
+                       </el-table-column>
+                       <el-table-column
+                               label="Option"
+                               width="180"
+                       >
+                           <template slot-scope="scope">
+                               <el-button size="mini" round type="success" @click="invokeModel(scope.row.oid)">Invoke</el-button>
+                           </template>
+                       </el-table-column>
+                   </el-table>
+                   <el-pagination style="text-align: center;margin-top:20px"
+                                  @current-change="handlePageChange"
+                                  :current-page="pageOption.currentPage"
+                                  layout="total, prev, pager, next, jumper"
+                                  :page-size="6"
+                                  :total="pageOption.total">
+                   </el-pagination>
+
+               </div>
+               <div slot="footer" class="dialog-footer">
+                   <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+                   <el-button @click="dialogTableVisible = false;">Cancel</el-button>
+                   <el-button type="primary" @click="confirm()">OK</el-button>
+               </div>
+          </el-dialog>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/page/modelApplication.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+</html>

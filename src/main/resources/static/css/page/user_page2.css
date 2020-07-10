@@ -293,7 +293,7 @@ button:focus{
     background-color: #f3f3f3;
 }
 
-.rigntPersonInfo{
+.rightPersonInfo{
     display: flex;
     flex-direction: column;
     width: 39.5%;
@@ -372,8 +372,7 @@ button:focus{
 
 #modelItems{
     margin-top: 0;
-    width: 49.5%;
-    max-width: 588px;
+    width: calc(50% - 3px);
     min-width: 325px;
 }
 
@@ -398,7 +397,7 @@ button:focus{
 }
 
 #affiliation{
-    margin-top: 10px;
+    margin-top: 0;
     margin-bottom: 10px;
     /*min-height: 450px;*/
 }
@@ -894,7 +893,7 @@ input::placeholder{
 }
 
 .addEditButton:hover .hoverLine{
-    width: 101%;
+    width: 90%;
     border-color:rgb(16, 173, 255) ;
 }
 
@@ -1093,6 +1092,13 @@ input::placeholder{
     width: 100%;
     margin-left: 15px;
 
+}
+
+.modelInfo p{
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow-y: hidden;
 }
 
 .hotVisit{
@@ -1793,6 +1799,12 @@ input[type="radio"]:checked + span {
 
 }
 
+.colTitle{
+    margin: 10px 30px 0;
+    color:#828282;
+    font-size: 14px
+}
+
 #modelStats{
     width: 290px;
 }
@@ -1870,7 +1882,7 @@ input[type="radio"]:checked + span {
 }
 
 @media only screen and (max-width: 841px){
-    .leftPersonInfo,.rigntPersonInfo{
+    .leftPersonInfo,.rightPersonInfo{
         width: 100%;
     }
 }

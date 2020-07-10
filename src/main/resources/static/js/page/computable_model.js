@@ -40,7 +40,9 @@ new Vue({
 
             graphVisible: 'none',
             loadjson: '',
-            mDiagram: null
+            mDiagram: null,
+            editComputableModelDialog:false,
+            modelOid:'',
         }
     },
     methods: {
@@ -203,7 +205,8 @@ new Vue({
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
 
-                        window.location.href = "/user/userSpace#/model/manageComputableModel/"+oid;
+                        this.modelOid=oid
+                        this.editComputableModelDialog=true
                         // $.ajax({
                         //     type: "GET",
                         //     url: "/computableModel/getUserOidByOid",

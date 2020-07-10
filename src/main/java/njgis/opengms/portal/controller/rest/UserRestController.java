@@ -485,6 +485,7 @@ public class UserRestController {
         String description = userIntroDTO.getDescription();
         List<String> researchInterests = userIntroDTO.getResearchInterests();
         List<String> subjectAreas = userIntroDTO.getSubjectAreas();
+        List<String> externalLinks = userIntroDTO.getExternalLinks();
         HttpSession httpSession = httpServletRequest.getSession();
 
 
@@ -495,11 +496,13 @@ public class UserRestController {
         String result1 = userService.updateDescription(description, userName);
         String result2 = userService.updateResearchInterest(researchInterests, userName);
         String result3 = userService.updateSubjectAreas(subjectAreas, userName);
+        String result4 = userService.updateExlinks(externalLinks, userName);
 
         JSONObject result = new JSONObject();
         result.put("des", result1);
         result.put("res", result2);
         result.put("sub", result3);
+        result.put("exl", result4);
         return ResultUtils.success(result);
     }
 
@@ -530,6 +533,19 @@ public class UserRestController {
         }
         String userName = httpSession.getAttribute("uid").toString();
         String result = userService.updateResearchInterest(researchInterests, userName);
+
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/updateExLinks", method = RequestMethod.POST)
+    JsonResult updateExLinks(@RequestBody List<String> exLinks, HttpServletRequest httpServletRequest) {
+        HttpSession httpSession = httpServletRequest.getSession();
+
+        if (httpSession.getAttribute("uid") == null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        String userName = httpSession.getAttribute("uid").toString();
+        String result = userService.updateExlinks(exLinks, userName);
 
         return ResultUtils.success(result);
     }

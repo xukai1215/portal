@@ -882,7 +882,7 @@ var createLogicalModel = Vue.extend({
                                     showClose: false,
                                 }).then(() => {
                                     $("#editModal", parent.document).remove();
-                                    window.location.href = "/logicalModel/" + res.data.oid;
+                                    window.location.href = "/logicalModel/" + res.data.id;
                                 }).catch(() => {
                                     window.location.href = "/user/userSpace#/models/logicalmodel";
                                 });

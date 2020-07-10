@@ -385,6 +385,21 @@ public class ComputableModelRestController {
         return ResultUtils.success(computableModelService.getRelatedDataByPage(computableModelFindDTO,oid));
     }
 
+    @RequestMapping(value="/loadDeployedModel",method=RequestMethod.GET)
+    public JsonResult loadDeployedModel(@RequestParam(value="asc") int asc,
+                                        @RequestParam(value = "page") int page,
+                                        @RequestParam(value = "size") int size
+    ) {
+        return ResultUtils.success(computableModelService.loadDeployedModel(asc,page,size));
+    }
 
+    @RequestMapping(value="/searchDeployedModel",method=RequestMethod.GET)
+    public JsonResult searchDeployedModel(@RequestParam(value="asc") int asc,
+                                        @RequestParam(value = "page") int page,
+                                        @RequestParam(value = "size") int size,
+                                        @RequestParam(value = "searchText") String searchText
+    ) {
+        return ResultUtils.success(computableModelService.searchDeployedModel(asc,page,size,searchText));
+    }
 
 }

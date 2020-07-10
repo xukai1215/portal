@@ -399,7 +399,8 @@ var createModelItem = Vue.extend({
                     type: "POST",
                     url: "/modelItem/searchByDOI",
                     data: {
-                        doi: this.doi
+                        doi: this.doi,
+                        modelOid:this.$route.params.editId
                     },
                     cache: false,
                     async: true,

@@ -73,5 +73,9 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     Page<ComputableModel> findAllByDeploy(boolean deploy, Pageable pageable);
 
+    Page<ComputableModel> findAllByDeployAndStatusIn(boolean deploy,List<String> status, Pageable pageable);
+
+    Page<ComputableModel> findAllByDeployAndStatusInAndNameLikeIgnoreCase(boolean deploy,List<String> status,String name, Pageable pageable);
+
     Page<ComputableModel> findByNameContainsIgnoreCaseAndDeploy(String name, boolean deploy, Pageable pageable);
 }

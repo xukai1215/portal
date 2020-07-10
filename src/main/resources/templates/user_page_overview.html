@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="/static/css/base/list.css">
     <link rel="stylesheet" href="/static/css/page/user_page.css">
     <link rel="stylesheet" href="/static/css/page/user_page2.css">
+<!--    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">-->
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
     <link rel="stylesheet" href="/static/css/base/index2.css">
     <link rel="stylesheet" href="/static/css/base/backTop.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
@@ -273,91 +276,163 @@
                             <button id="viewMoreIntroduction" class="viewMoreButton" @click="menu_Click(4)" style="">View More</button>
                         </div>
                     </div>
-                    <div id="selfIntroduction">
-                        <div class="contentColContainer" style="margin-top: 0;">
-                            <div class="subTitle" style="">
-                                <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
-
-                            </div>
-                            <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none">
-                                <div  class="contentContainer" style="flex-direction: column;padding: 10px 0;min-height: 80px">
-                                    <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" ><p style="font-size: 16px">Description</p>
-                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">
-                                            Add
-                                            <div class="hoverLine"></div>
-                                        </button>
-                                    </div>
-                                    <div id="descriptionInputContainer" class="contentContainer" style="justify-content: space-between; align-items: center;padding: 0 45px 0 30px">
-                                        <input id="descriptionInput" >
-                                        <button id="descriptionConfirm" class="confirmButton" @click="descriptionConfirm()">√</button>
-                                    </div>
-                                    <div id="descriptionShow" v-if="userPersonalInfo.description" class="contentContainer" style="justify-content: space-between;padding: 0 30px;">
-                                        <h4 id="descriptionDetail">{{userPersonalInfo.description}}</h4>
-                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">
-                                            Edit
-                                            <div class="hoverLine"></div></button>
-                                    </div>
+                    <div id="selfIntroduction" class="flexJustBetween">
+                        <div class="leftPersonInfo">
+                            <div class="contentColContainer" style="margin-top: 0;">
+                                <div class="subTitle" style="">
+                                    <div><h4 style="margin-top: 10px;margin-left: 10px">Introduction</h4></div>
+                                    <button th:if="${userInfo.oid==userInfo.loginId}"
+                                            v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests" class="addEditButton"
+                                            @click="editIntro7RIS()">
+                                        Edit
+                                        <div class="hoverLine"></div>
+                                    </button>
                                 </div>
-                                <!--                       <div class="splitBlock" style="background-color:#e5e5e5;width: 100% ">-->
-                                <!--                           <div>-->
-                                <!--                               <h4 style="font-style:italic;font-weight: 500;color: #999999;">Research Interests & Skills</h4>-->
-                                <!--                           </div>-->
-                                <!--                       </div>-->
-                                <div class="innerBorder"></div>
-                                <div class="contentContainer" style="min-height: 50px;justify-content: space-between;padding-top: 10px;min-height: 80px">
-                                    <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
-                                        <p style="font-size: 16px">Research Interests & Skills</p>
-                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="!userPersonalInfo.researchInterests||userPersonalInfo.researchInterests==''" style="margin-bottom: 10px" @click="addResearchInterestClick()"
-                                                data-toggle="modal" data-target="researchInterestInfo"  >Add
-                                            <div class="hoverLine"></div>
-                                        </button>
-                                    </div>
-                                    <div id="researchInterestInputContainer">
-                                        <input id="researchInterestInput" type="text"/>
-                                    </div>
-                                    <button id="researchInterestConfirm" class="confirmButton" @click="researchInterestConfirm()">√</button>
-                                    <div class="contentContainer" style="justify-content: space-between; padding: 0 30px">
-                                        <div id="researchInterestDetail" class="contentColContainer researchInterestDetail" >
-                                            <h4 v-for="researchInterest in userPersonalInfo.researchInterests" style="margin: 0 0 5px">{{researchInterest}}</h4>
+                                <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none">
+                                    <div  class="contentContainer" style="flex-direction: column;padding: 10px 0;min-height: 60px">
+                                        <div style="color:#828282;justify-content: space-between;align-items: stretch; padding: 0 30px;" class="contentContainer" >
+<!--                                            <p style="font-size: 16px">Description</p>-->
+<!--                                            <button th:if="${userInfo.oid==userInfo.loginId}" id="addDescriptionButton" class="addEditButton" v-if="userPersonalInfo.description==[]" @click="addDescriptionClick()" style="margin-bottom: 10px">-->
+<!--                                                Add-->
+<!--                                                <div class="hoverLine"></div>-->
+<!--                                            </button>-->
                                         </div>
-                                        <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests!=''" class="addEditButton" @click="editResearchInterestClick()">
-                                            Edit
-                                            <div class="hoverLine"></div></button>
+<!--                                        <div id="descriptionInputContainer" class="contentContainer" style="justify-content: space-between; align-items: center;padding: 0 45px 0 30px">-->
+<!--                                            <input id="descriptionInput" >-->
+<!--                                            <button id="descriptionConfirm" class="confirmButton" @click="descriptionConfirm()">√</button>-->
+<!--                                        </div>-->
+                                        <div id="descriptionShow" v-if="userPersonalInfo.description" class="contentContainer" style="justify-content: space-between;padding: 0 30px;">
+                                            <h4 id="descriptionDetail">{{userPersonalInfo.description}}</h4>
+<!--                                            <button th:if="${userInfo.oid==userInfo.loginId}" id="editDescriptionButton"  class="addEditButton" @click="editDescriptionClick()">-->
+<!--                                                Edit-->
+<!--                                                <div class="hoverLine"></div></button>-->
+                                        </div>
                                     </div>
+                                    <div class="innerBorder"></div>
+                                    <div class="contentContainer" style="min-height: 50px;justify-content: space-between;padding-top: 10px;height: 80px">
+                                        <div style="color:#828282;justify-content: space-between;align-items: center; padding: 0 30px;" class="contentContainer" >
+                                            <p style="font-size: 15px">Research Interests & Skills</p>
+<!--                                            <button th:if="${userInfo.oid==userInfo.loginId}" id="addResearchInterestButton" class="addEditButton" v-if="!userPersonalInfo.researchInterests||userPersonalInfo.researchInterests==''" style="margin-bottom: 10px" @click="addResearchInterestClick()"-->
+<!--                                                    data-toggle="modal" data-target="researchInterestInfo"  >Add-->
+<!--                                                <div class="hoverLine"></div>-->
+<!--                                            </button>-->
+                                        </div>
+<!--                                        <div id="researchInterestInputContainer">-->
+<!--                                            <input id="researchInterestInput" type="text"/>-->
+<!--                                        </div>-->
+                                        <button id="researchInterestConfirm" class="confirmButton" @click="researchInterestConfirm()">√</button>
+                                        <div class="contentContainer " style="justify-content: space-between; padding: 0 30px">
+                                            <div id="researchInterestDetail" class="flexRow researchInterestDetail" >
+                                                <div class="nutTag darkBlue" v-if="index<3" v-for="(researchInterest,index) in userPersonalInfo.researchInterests"
+                                                     style="margin: 0 5px 5px;font-size: 16px" :style="index==0?'margin-left:0':''">
+                                                    {{researchInterest}}
+                                                </div>
+                                                <a class="cursorPointer" style="color: #10adff;margin: 2px 0 0 8px;font-size: 18px;" v-if="userPersonalInfo.researchInterests.length>3" @click="menu_Click(4)">...</a>
+                                            </div>
+<!--                                            <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests!=''" class="addEditButton" @click="editResearchInterestClick()">-->
+<!--                                                Edit-->
+<!--                                                <div class="hoverLine"></div></button>-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="contentColContainer" style="margin-top: 0;">
+                                <div class="subTitle" style="">
+                                    <div><h4 style="margin-top: 10px;margin-left: 10px">External link</h4></div>
+                                    <button th:if="${userInfo.oid==userInfo.loginId}" id=""
+                                            v-if="userPersonalInfo.externalLinks.length>0" class="addEditButton"
+                                            @click="editExLink">
+                                        Edit
+                                        <div class="hoverLine"></div>
+                                    </button>
+                                </div>
+                                <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none;padding: 0 30px">
+                                    <div  class="contentContainer" style="flex-direction: column;padding: 10px 0;height: 87px">
+                                        <div th:if="${userInfo.oid==userInfo.loginId}" v-if="userPersonalInfo.externalLinks.length==0" style="width: 100%">
+                                            <el-button round type="primary" style="margin-left: calc(50% - 96px);margin-top: 10px" @click="editExLink">
+                                                <p>Add My External links</p>
+                                            </el-button>
+                                        </div>
+                                        <a class="cursorPointer" v-for="(link,index) in userPersonalInfo.externalLinks"
+                                           v-if="index<2" @click="window.open(link)" style="" >{{link}}</a>
+                                        <a class="cursorPointer" style="color: #10adff" v-if="userPersonalInfo.externalLinks.length>2" @click="menu_Click(4)">View more...</a>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="rightPersonInfo">
+                            <div id="affiliation" class="contentColContainer">
+                                <div class="subTitle" style="">
+                                    <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
+                                </div>
+                                <div class="contentContainer colArrange" >
+                                    <div id="affiliationInfoContainer" class="contentContainer affiliationInfoContainer" style=" ">
+                                        <div v-if="userPersonalInfo.affiliation" class="contentColContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                            <h3 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation!=null" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
+                                            <p style="color: rgb(130,130,130);">Department :</p>
+                                            <h4 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation.department">
+                                                {{userPersonalInfo.affiliation.department}}</h4>
+                                        </div>
+                                        <!--                                    <div class="institutionIcon">-->
+                                        <!--                                        <img style="width: 60px;height: 60px" src="/static/img/icon/institutionIcon.png">-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                    <div class="innerBorder"></div>
+                                    <!--                                    <div class="itemCardCol wzhFilter_Lab"-->
+                                    <!--                                         style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >-->
+                                    <div class="contentColContainer affiliationInfoContainer" style="width: 80%;height: 135px;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
+                                        <h4 style="color: #828282;margin-left: -3px">Laboratory</h4>
+                                        <h4 style="line-height: 1.4" v-if="userPersonalInfo.lab&&userPersonalInfo.lab!=null">{{userPersonalInfo.lab.name}}</h4>
+                                    </div>
+                                    <!--                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>-->
+
+                                    <!--                                    </div>-->
+
                                 </div>
                             </div>
 
                         </div>
-                        <div id="affiliation" class="contentColContainer">
-                            <div class="subTitle" style="">
-                                <div><h4 style="margin-top: 10px;margin-left: 10px">Affiliation</h4></div>
+                        <el-dialog title="Introduction" :visible.sync="Intro7RISdialog" width="33%">
+                            <div class="form-group">
+                                <label>Description:</label>
+                                <input id="descriptionInputDialog" class="form-control" v-model="description" size="small">
                             </div>
-                            <div class="contentContainer colArrange" >
-                                <div id="affiliationInfoContainer" class="contentContainer affiliationInfoContainer" style=" ">
-                                    <div v-if="userPersonalInfo.affiliation" class="contentColContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                        <h3 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation!=null" style="font-weight: 600;margin-bottom: 15px;color: #474747">{{userPersonalInfo.affiliation.name}}</h3>
-                                        <p style="color: rgb(130,130,130);">Department :</p> <h4 v-if="userPersonalInfo.affiliation&&userPersonalInfo.affiliation.department">{{userPersonalInfo.affiliation.department}}</h4>
-<!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">Position :</p> <h4>{{userPersonalInfo.affiliation.position}}</h4>-->
-<!--                                        <p style="color: rgb(130,130,130);" v-if="userPersonalInfo.affiliation">location :</p> <h4>{{userPersonalInfo.affiliation.location}}</h4>-->
-                                        <!--                                <h4 th:text="${userInfo.}">nj</h4>-->
-                                    </div>
-<!--                                    <div class="institutionIcon">-->
-<!--                                        <img style="width: 60px;height: 60px" src="/static/img/icon/institutionIcon.png">-->
-<!--                                    </div>-->
+                            <div class="form-group">
+                                <label>Research Interests & Skills:</label>
+                                <input id="researchInterestInput">
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="uploadIntro7RISConfirm">Confirm</el-button>
+                                <el-button @click="Intro7RISdialog = false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
+                        <el-dialog title="External link" :visible.sync="externalLinkDialog" width="30%">
+                            <div class="form-group" v-for="(link,index) in exLinks" :key="index">
+                                <label>Link:</label>
+                                <div class="input-group col-md-12" style="padding: 0 15px">
+                                    <input class="form-control" v-model="exLinks[index]" size="small">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info" type="button" @click="deleteExlink(index)"
+                                                            style="height: 34px;">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </span>
                                 </div>
-                                <div class="innerBorder"></div>
-<!--                                    <div class="itemCardCol wzhFilter_Lab"-->
-<!--                                         style="justify-content: flex-start;margin-top: 20px;margin-left: 12px;border: none;cursor: pointer" @click="labClick()" >-->
-                                <div class="contentColContainer affiliationInfoContainer" style="width: 80%;align-items: flex-start;background-color: #fbfbfb;box-shadow: 0 0 0">
-                                    <h4 style="color: #828282;margin-left: -3px">Laboratory</h4>
-                                    <h4 style="" v-if="userPersonalInfo.lab&&userPersonalInfo.lab!=null">{{userPersonalInfo.lab.name}}</h4>
-                                </div>
-<!--                                        <h4 style="color: #f1f1f1;margin-left: 0px" v-if="userPersonalInfo.lab">Lab Leader:<span> {{userLab.labInfo.leaderName}}</span></h4>-->
-
-<!--                                    </div>-->
+                            </div>
+                            <div style="padding: 0 15px">
+                                <el-button size="small" round type="primary" plain style="width:100% ;"
+                                           @click="addExlinkInput">ADD
+                                </el-button>
 
                             </div>
-                        </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="uploadExLinkConfirm">Confirm</el-button>
+                                <el-button @click="externalLinkDialog = false">Cancel</el-button>
+                            </span>
+                        </el-dialog>
 <!--                        <div id="eduAndAwd" class="contentContainer backInherit" style="justify-content: center">-->
 <!--                            <div role="eduExperience" class="contentColContainer" style="width: 49.5%">-->
 <!--                                <div class="subTitle" style="">-->
@@ -411,7 +486,7 @@
                             <button id="viewMoreResources" class="viewMoreButton" @click="menu_Click(2)" style="">View More</button>
                         </div>
                     </div>
-                    <div class="contentContainer backInherit" style="margin-top: 5px">
+                    <div class="contentContainer backInherit" style="">
                         <div id="modelItems" class="contentColContainer" >
                             <div class="subTitle" style="">
                                 <div><h4 style="margin-top: 10px;margin-left: 10px">Models</h4></div>
@@ -508,7 +583,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="communities" class="contentColContainer backInherit noMargin noBorder7Shadow" style="width: 49.5%;max-width: 588px;min-width: 325px;">
+                        <div id="communities" class="contentColContainer backInherit noMargin noBorder7Shadow" style="width: calc(50% - 3px);min-width: 325px;">
                             <div id="dataItemContainer" class="contentColContainer">
                                 <div class="subTitle" style="">
                                     <div><h4 style="margin-top: 10px;margin-left: 10px">Data</h4></div>
@@ -599,17 +674,18 @@
 
 
                     <div class="splitBlock">
-                        <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">RESEARCH</h4>
+                        <div><h4 style="font-style:italic;font-weight: 500;color: #999999; margin-left:10px">RESEARCH ITEMS</h4>
+                        </div>
+                        <div>
+                            <button id="viewMoreResearch" class="viewMoreButton" @click="menu_Click(3)" style="" >View More</button>
                         </div>
                     </div>
 
                     <div id="researchIntroduction" class="contentColContainer" style="margin-top: 0px">
-                        <div class="subTitle" style="">
-                            <div><h4 style="margin-top: 10px;margin-left: 10px">Research</h4></div>
-                            <div>
-                                <button id="viewMoreResearch" class="viewMoreButton" @click="menu_Click(3)" style="" >View More</button>
-                            </div>
-                        </div>
+<!--                        <div class="subTitle" style="">-->
+<!--                            <div><h4 style="margin-top: 10px;margin-left: 10px">Research</h4></div>-->
+
+<!--                        </div>-->
                         <div class="contentContainer" style="width: 100%;margin-top: 0px; align-items: flex-start">
                             <div class="contentColContainer" style="width: 100%;">
                                 <div class="subTitle" style="border:1px solid #c2c2c2 ;border-radius: 4px 4px 0 0 ">
@@ -790,23 +866,31 @@
                         <div v-if="userPersonalInfo.description||userPersonalInfo.subjectAreas||userPersonalInfo.researchInterests"
                              class="contentColContainer leftJusitifyCol noMargin"
                              style="width: 100%;padding-bottom: 10px">
-                            <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Description</p>
-                            <div v-if="userPersonalInfo.description"
+                            <p class="colTitle" style="margin: 10px 30px 0;">Description</p>
+                            <div
                                  style="flex-direction: column;padding: 0px 28px 15px">
-                                <h4>{{userPersonalInfo.description}}</h4>
+                                <h4 v-if="userPersonalInfo.description">{{userPersonalInfo.description}}</h4>
 
                             </div>
 <!--                            <h4 v-if="userPersonalInfo.description==null||userPersonalInfo.description==''">He/She may have a lot to say about him/herself, but he/she has no time yet.</h4>-->
                             <div class="innerBorder"></div>
-                            <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Subject Areas</p>
+                            <p class="colTitle" style="margin: 10px 30px 0;">Subject Areas</p>
                             <div style="flex-direction: column;padding: 0px 28px 15px">
                                 <h4 v-for="subjectArea in userPersonalInfo.subjectAreas">{{subjectArea}}</h4>
                             </div>
                             <div class="innerBorder"></div>
-                            <p style="margin: 10px 30px 0;color:#828282;font-size: 15px ">Research Interests</p>
-                            <div style="flex-direction: column;padding-left: 28px">
-                                <h4 v-for="researchInterest in userPersonalInfo.researchInterests">
-                                    {{researchInterest}}</h4>
+                            <p class="colTitle" style="margin: 10px 30px 0;">Research Interests</p>
+                            <div class="flexRow researchInterestDetail flexWrap" style="width: 100%;padding-left: 28px;margin: 5px 0">
+                                <div class="nutTag darkBlue"  v-for="(researchInterest,index) in userPersonalInfo.researchInterests"
+                                     style="margin: 0 10px 5px 0;font-size: 16px">
+                                    {{researchInterest}}
+                                </div>
+                            </div>
+                            <div class="innerBorder"></div>
+                            <p class="colTitle" style="margin: 10px 30px 0;">External link</p>
+                            <div class="flexCol researchInterestDetail" style="width: 100%;padding-left: 28px;margin-top: 4px">
+                                <a class="cursorPointer" v-for="(link,index) in userPersonalInfo.externalLinks"
+                                   @click="window.open(link)" style="" >{{link}}</a>
                             </div>
                         </div>
                         <div v-else style="flex-direction: column;padding: 0px 3px 20px;width: 50%">
@@ -908,7 +992,7 @@
                                     </h3>
                                 </div>
                                 <div class="modal-body" style="font-size: 20px;overflow: hidden">
-                                    <section class="panel">
+                                    <section class="panel" style="overflow-y: scroll;max-height: 500px;">
                                         <div class="tab-content">
                                             <div class="tab-pane active" >
                                                 <div class="form-group flexCol">
@@ -937,6 +1021,25 @@
                                                                id="userIntroRIS"/>
                                                         <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
                                                     </div>
+                                                </div>
+
+                                                <div class="form-group" v-for="(link,index) in exLinks" :key="index">
+                                                    <label>Link:</label>
+                                                    <div class="input-group col-md-12" style="padding: 0 15px">
+                                                        <input class="form-control" v-model="exLinks[index]"
+                                                               size="small">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-info" type="button" @click="deleteExlink(index)" style="height: 34px;">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div style="padding: 0 15px;margin-top:15px">
+                                                    <el-button size="small" round type="primary" plain style="width:100% ;"
+                                                               @click="addExlinkInput">Add Link
+                                                    </el-button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -1097,7 +1200,7 @@
                         <!-- /.modal-dialog -->
                     </div>
                 </div>
-                <div class="rigntPersonInfo">
+                <div class="rightPersonInfo">
                     <!--                    <div class="contentColContainer">-->
                     <div class="contentColContainer" style="flex: 1;width: 99%">
                         <div class="subTitle">
@@ -1473,7 +1576,7 @@
 <!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="modelItem.image==''" src="/static/img/model/model.png" style="width:120px;height: 120px;">
-                                                    <img v-if="modelItem.image!=''" :src="modelItem.image" onerror=src="/static/img/model/model.png"
+                                                    <img v-if="modelItem.image!=''" :src="'/static/'+modelItem.image" onerror=src="/static/img/model/model.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1554,9 +1657,9 @@
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
 <!--                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
-                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="dataItem.image" onerror=src="../static/img/model/myData.png"
+                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static/'+dataItem.image" onerror=src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
-                                                    <img v-else :src="dataItem.image" src="../static/img/model/myData.png"
+                                                    <img v-else src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
                                                 </a>
                                             </div>
@@ -1636,7 +1739,7 @@
 <!--                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
+                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static/'+conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
@@ -1719,7 +1822,7 @@
 <!--                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="logicalModel.image" onerror=src="../static/img/model/logical.png"
+                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static/'+logicalModel.image" onerror=src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
@@ -1800,7 +1903,7 @@
 <!--                                                    <avatar v-if="computableModel.image==''||computableModel.image==null" :username="computableModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="computableModel.image" onerror=src="../static/img/model/calcModel.png"
+                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="'/static/'+computableModel.image" onerror=src="../static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
@@ -2233,7 +2336,7 @@
                                         <div class="cardHeadContainer" style="max-height: 110px;">
                                             <div class="subTitle" style="height: auto;max-height: 105px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-<!--                                                    <h4 class="fourLine">{{article.title}}</h4>-->
+                                                    <h4 class="fourLine">{{article.title}}</h4>
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
