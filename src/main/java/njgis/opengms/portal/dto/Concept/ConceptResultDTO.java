@@ -23,8 +23,7 @@ public class ConceptResultDTO {
     String name;
     String image;
     String description;
-    String description_ZH;
-    String description_EN;
+
     String author;
     String status;
 

@@ -25,11 +25,11 @@ public interface ConceptDao extends MongoRepository<Concept,String> {
 
     Concept findFirstByOid(String oid);
 
-    Page<Concept> findByParentId(String parentId, Pageable pageable);
+//    Page<Concept> findByParentId(String parentId, Pageable pageable);
 
     Page<ConceptResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<ConceptResultDTO> findByParentIdIn(List<String> parentIds,Pageable pageable);
+//    Page<ConceptResultDTO> findByParentIdIn(List<String> parentIds,Pageable pageable);
 
     Page<ConceptResultDTO> findByClassificationsIn(List<String> parentIds,Pageable pageable);
 
@@ -38,6 +38,8 @@ public interface ConceptDao extends MongoRepository<Concept,String> {
     Page<ConceptResultDTO> findByAuthorAndStatusIn(String author,List<String> status, Pageable pageable);
 
     List<Item> findByAuthor(String author);
+
+    Concept findFirstByNameIgnoreCase(String name);
 
     Page<ConceptResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 

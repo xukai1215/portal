@@ -233,7 +233,7 @@
                                     <div class="info">
                                         <p :style="{'-webkit-line-clamp':(modelItem.keywords.length>0?2:4)}">{{modelItem.description}}</p>
                                         <div class="tags" v-if="modelItem.keywords.length>0">
-                                            <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
+                                            <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword}}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -289,7 +289,7 @@
                     <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
                                    @current-change="handlePageChange"
                                    :current-page="pageOption.currentPage"
-                                   layout="total, prev, pager, next"
+                                   layout="total, prev, pager, next, jumper"
                                    :total="pageOption.total">
                     </el-pagination>
                 </div>

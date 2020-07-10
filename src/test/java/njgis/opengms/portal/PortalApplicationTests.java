@@ -9,6 +9,7 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.service.CommonService;
+import njgis.opengms.portal.service.ConceptService;
 import njgis.opengms.portal.service.StatisticsService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ChartUtils;
@@ -88,6 +89,9 @@ public class PortalApplicationTests {
     AuthorshipDao authorshipDao;
 
     @Autowired
+    ConceptService conceptService;
+
+    @Autowired
     StatisticsService statisticsService;
 
     @Autowired
@@ -101,6 +105,29 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void hideCSDMS(){
+        int count = 0;
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(int i=0;i<modelItemList.size();i++){
+            ModelItem modelItem = modelItemList.get(i);
+            if(modelItem.getDetail().contains("model_col1")){
+                modelItem.setStatus("Private");
+                modelItemDao.save(modelItem);
+                ModelItemRelate relate = modelItem.getRelate();
+                if(relate!=null) {
+                    List<String> computableModelList = relate.getComputableModels();
+                    for(String oid:computableModelList){
+                        ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
+                        computableModel.setStatus("Private");
+                        computableModelDao.save(computableModel);
+                    }
+                }
+                System.out.println(++count);
+            }
+        }
+    }
 
     @Test
     public void readLanguage(){
@@ -156,46 +183,6 @@ public class PortalApplicationTests {
         }
     }
 
-
-    @Test
-    public void createUTC() {
-        List<SpatialReferenceClassification> classifications = spatialReferenceClassificationDao.findAll();
-        List<String> children = new ArrayList<>();
-        for (int i = 16; i < classifications.size(); i++) {
-            children.add(classifications.get(i).getOid());
-            System.out.println(i + ":" + classifications.get(i).getNameEn());
-        }
-
-        Classification classification = spatialReferenceClassificationDao.findFirstByNameEn("Local");
-        classification.setChildrenId(children);
-        spatialReferenceClassificationDao.save((SpatialReferenceClassification) classification);
-
-//        JSONArray array = new JSONArray();
-//        int num = 400;
-//        for(int i=-12;i<15;i++) {
-//            String oid = UUID.randomUUID().toString();
-//            SpatialReferenceClassification spatialReferenceClassification = new SpatialReferenceClassification();
-//            spatialReferenceClassification.setOid(oid);
-//            spatialReferenceClassification.setChildrenId(new ArrayList<>());
-//            if(i==0){
-//                spatialReferenceClassification.setNameEn("UTC±0");
-//            }else {
-//                spatialReferenceClassification.setNameEn("UTC" + (i < 0 ? i : ("+" + i)));
-//            }
-//            spatialReferenceClassification.setNameCn("");
-//            spatialReferenceClassification.setParentId("6883d3fb-8485-4771-9a3e-3276c759364e");
-//
-//            spatialReferenceClassificationDao.insert(spatialReferenceClassification);
-//
-//            JSONObject object = new JSONObject();
-//            object.put("id",++num);
-//            object.put("oid",oid);
-//            object.put("label",spatialReferenceClassification.getNameEn());
-//
-//            array.add(object);
-//        }
-//        System.out.println(array.toString());
-    }
 
     @Test
     public void addCls() {
@@ -352,11 +339,11 @@ public class PortalApplicationTests {
     @Test
     public void random() {
 
-//        List<Item> computableModelList = computableModelDao.findAllByAuthor("yue@lreis.ac.cn");
-//        for(int i=0;i<100;i++){
-//            String oid = computableModelList.get(i).getOid();
-//            randomData(oid);
-//        }
+        List<Item> computableModelList = computableModelDao.findAllByAuthor("yue@lreis.ac.cn");
+        for(int i=0;i<100;i++){
+            String oid = computableModelList.get(i).getOid();
+            randomComputableModel(oid);
+        }
 
         randomComputableModel("a15b710e-6bb3-4471-b593-ef1ac5d6748b");
 
@@ -651,17 +638,40 @@ public class PortalApplicationTests {
     @Test
     public void changeAuthor() {
         int count = 0;
-        List<ModelItem> modelItemList = modelItemDao.findAll();
+        List<ModelItem> modelItemList = modelItemDao.findModelItemsByAuthor("njgis");
         for (int i = 0; i < modelItemList.size(); i++) {
             ModelItem modelItem = modelItemList.get(i);
-            List<AuthorInfo> authorInfoList = modelItem.getAuthorship();
-            if (authorInfoList != null && authorInfoList.size() > 0) {
-                if (authorInfoList.get(0).getName().equals("《资源环境数学模型手册》")) {
-                    modelItem.setAuthor("yue@lreis.ac.cn");
-                    modelItemDao.save(modelItem);
-                    System.out.println(++count);
-                }
+            if(Utils.isContainChinese(modelItem.getName())){
+                modelItem.setAuthor("yue@lreis.ac.cn");
+                AuthorInfo authorInfo = new AuthorInfo();
+                authorInfo.setName("《资源环境数学模型手册》");
+                authorInfo.setIns("岳天祥编著");
+                authorInfo.setEmail("yue@lreis.ac.cn");
+                authorInfo.setHomepage("http://sourcedb.igsnrr.cas.cn/zw/zjrck/200906/t20090626_1842564.html");
+                List<AuthorInfo> authorInfoList = new ArrayList<>();
+                authorInfoList.add(authorInfo);
+                modelItem.setAuthorship(authorInfoList);
+                modelItemDao.save(modelItem);
+                System.out.println(++count);
             }
+//            List<AuthorInfo> authorInfoList = modelItem.getAuthorship();
+//            if (authorInfoList != null && authorInfoList.size() > 0) {
+//                if (authorInfoList.get(0).getName().equals("SAGA")) {
+//                    modelItem.setAuthor("SongJ");
+//                    modelItemDao.save(modelItem);
+//                    System.out.println(++count);
+//
+//                    ModelItemRelate relate = modelItem.getRelate();
+//                    if(relate!=null){
+//                        List<String> computableModelList = relate.getComputableModels();
+//                        for(int j=0;j<computableModelList.size();j++){
+//                            ComputableModel computableModel = computableModelDao.findFirstByOid(computableModelList.get(j));
+//                            computableModel.setAuthor("SongJ");
+//                            computableModelDao.save(computableModel);
+//                        }
+//                    }
+//                }
+//            }
         }
 
 //        count = 0;
@@ -707,6 +717,7 @@ public class PortalApplicationTests {
         }
     }
 
+    //条目计数
     @Test
     public void userItemCount() {
         List<User> userList = userDao.findAll();
@@ -1928,37 +1939,25 @@ public class PortalApplicationTests {
     @Test
     public void updateConcept() {
 
-        List<Unit> list = unitDao.findAll();
-        List<String> list1 = new ArrayList<>();
-        for (Unit concept : list) {
-            if (concept.getParentId() != null) {
-                list1.add(concept.getParentId());
-                concept.setClassifications(list1);
-                unitDao.save(concept);
-                list1.clear();
-                Utils.count();
-            }
-        }
-    }
-
-    @Test
-    public void updateDetail() {
         List<Concept> list = conceptDao.findAll();
-        String detail = "";
+
         for (Concept concept : list) {
-            if (concept.getDetail() == null) {
-                if (!concept.getDescription_EN().equals("")) {
-                    detail += concept.getName_EN() + ": " + concept.getDescription_EN() + "\n";
+            if (concept.getRelated() != null) {
+                List<String> relates = concept.getRelated();
+                List<String> relatesOid = new ArrayList<>();
+                for(int i = 0;i<relates.size();i++){
+                    Concept concept1 = conceptDao.findFirstByNameIgnoreCase(relates.get(i));
+                    if(concept1!=null) {
+                        relatesOid.add(concept1.getOid());
+                    }
                 }
-                if (!concept.getDescription_ZH().equals("")) {
-                    detail += concept.getName_ZH() + ": " + concept.getDescription_ZH() + "\n";
-                }
-                concept.setDetail(detail);
+
+//                Collections.sort(concept.getLocalizationList());
+                conceptService.updateDescription(concept);
+                concept.setRelated(relatesOid);
                 conceptDao.save(concept);
-                detail = "";
                 Utils.count();
             }
-
         }
     }
 
