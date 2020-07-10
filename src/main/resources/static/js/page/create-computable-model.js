@@ -54,7 +54,6 @@ var createComputableModel = Vue.extend({
             userName: "",
             loginFlag: false,
 
-            path:"ws://localhost:8080/websocket",
             socket:"",
 
             computableModel_oid:"",
@@ -150,39 +149,7 @@ var createComputableModel = Vue.extend({
         clearSession(){
             window.sessionStorage.clear();
         },
-        getUserData(UsersInfo, prop) {
 
-            for (i = prop.length; i > 0; i--) {
-                prop.pop();
-            }
-            var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
-                //
-                if(index%4==0){
-                    let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
-                        continue;
-                    }
-                }
-
-                var Info = UsersInfo.eq(index)[0];
-                if (index % 4 == 3) {
-                    if (result) {
-                        result += "'" + Info.name + "':'" + Info.value + "'}"
-                        prop.push(eval('(' + result + ')'));
-                    }
-                    result = "{";
-                }
-                else {
-                    result += "'" + Info.name + "':'" + Info.value + "',";
-                }
-
-            }
-        },
         addFile(){
             if(this.computableModel.contentType == "Package"){
                 $("#file").click();
@@ -236,7 +203,7 @@ var createComputableModel = Vue.extend({
 
             if ('WebSocket' in window) {
                 // this.socket = new WebSocket("ws://localhost:8080/websocket");
-                this.socket = new WebSocket(this.path);
+                this.socket = new WebSocket(websocketAddress);
                 // 监听socket连接
                 this.socket.onopen = this.open;
                 // 监听socket错误信息
@@ -567,40 +534,8 @@ var createComputableModel = Vue.extend({
 
             $("#subRteTitle").text("/Create Computable Model")
 
-            tinymce.remove('textarea#computableModelText')
-            tinymce.init({
-                selector: "textarea#computableModelText",
-                height: 400,
-                theme: 'silver',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
+            initTinymce('textarea#computableModelText')
 
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
         }
         else {
             $("#subRteTitle").text("/Modify Computable Model")
@@ -624,43 +559,10 @@ var createComputableModel = Vue.extend({
                     $(".providers").children(".panel").remove();
 
                     //detail
-                    //tinymce.remove("textarea#computableModelText");
                     $("#computableModelText").html(basicInfo.detail);
 
-                    tinymce.remove('textarea#computableModelText')
-                    tinymce.init({
-                        selector: "textarea#computableModelText",
-                        height: 300,
-                        theme: 'silver',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
+                    initTinymce('textarea#computableModelText')
 
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
 
                     let authorship = basicInfo.authorship;
                     if(authorship!=null) {
@@ -830,7 +732,7 @@ var createComputableModel = Vue.extend({
             this.computableModel.detail = detail.trim();
 
             this.computableModel.authorship=[];
-            this.getUserData($("#providersPanel .user-contents .form-control"), this.computableModel.authorship);
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), this.computableModel.authorship);
 
             // //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
 

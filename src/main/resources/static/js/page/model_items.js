@@ -33,7 +33,7 @@ new Vue({
                 oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
                 children: [ {
                     id: 65,
-                    label: 'Solar-terrestrial Physics',
+                    label: 'Sun-Earth System',
                     oid: '1fd56a5d-1532-4ea6-ad0a-226e78a12861'
                 }, {
                     id: 66,

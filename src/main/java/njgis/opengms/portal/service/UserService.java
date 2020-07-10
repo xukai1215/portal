@@ -235,7 +235,7 @@ public class UserService {
 //            if(!user.getSubscribe()){
 //                continue;
 //            }
-        String[] contributeUser={"yue@lreis.ac.cn","xinyue.ye@njit.edu","yuanwpcn@126.com"};
+        String[] contributeUser={"yue@lreis.ac.cn","xinyue.ye@njit.edu","yuanwpcn@126.com","guofei@njnu.edu.cn"};
         boolean isOwnModel = true;
         for(int i=0;i<contributeUser.length;i++){
             if(userEmail.equals(contributeUser[i])){
@@ -528,9 +528,10 @@ public class UserService {
                     String[] types = new String[size];
                     int[][] data = new int[1][size];
                     for (int i = 0; i < types.length; i++) {
-                        String itemName = computableModelList.get(computableModelList.size()-1-i).getName();
+                        ComputableModel computableModel = computableModelList.get(computableModelList.size()-1-i);
+                        String itemName = computableModel.getName();
                         types[i] = itemName.length() > 16 ? (itemName.substring(0, 14) + "...") : itemName;
-                        data[0][i] = computableModelList.get(i).getInvokeCount();
+                        data[0][i] = computableModel.getInvokeCount();
                     }
                     chartOption.setTypes(types);
                     chartOption.setData(data);
@@ -673,7 +674,7 @@ public class UserService {
                     "        <h3 style=\"margin:0 auto;padding: 2em 2.2em 0.3em 2.2em;font-style: italic;font-weight: 400;text-align: left;width:600px\">OpenGMS is a platform that<br/>\n" +
                     "            <span style=\"margin-right:10px;\">•</span>supports open web-distributed integrated modelling and simulation;<br/>\n" +
                     "            <span style=\"margin-right:10px;\">•</span>supports sharing of 3500+ model resources and 20000+ data resources;<br/>\n" +
-                    "            <span style=\"margin-right:10px;\">•</span>is recommended by well-known organizations and communities (e.g., CoMSES Net, CSDMS, OMF).</h3>\n" +
+                    "            <span style=\"margin-right:10px;\">•</span>is recommended by well-known organizations and communities (e.g., CoMSES Net, CSDMS, OMF, OpenMI).</h3>\n" +
                     "        <hr style=\"width:600px;margin:15px auto\"/>\n" +
                     "        <h4 style=\"margin-bottom:10px;font-weight: 400;\">Copyright © 2013-2020 OpenGMS. All Rights Reserved.</h4>" +
                     "        <h4 style=\"margin:0;padding-bottom:3em;font-weight: 400\">You can <a style=\"color:#0097e2;\" href=\"https://geomodeling.njnu.edu.cn/user/changeSubscribedModelList?id=" + user.getId() + "\">custom subscribed model list</a>, or <a style=\"color:#0097e2;\" href=\"https://geomodeling.njnu.edu.cn/user/unsubscribe?id=" + user.getId() + "\" target=\"_blank\">unsubscribe</a> this report. </h4>\n" +
@@ -912,33 +913,43 @@ public class UserService {
             StringList.add(str);
 
             List<Item> itemList = new ArrayList<>();
+            ItemTypeEnum itemType = null;
             switch (type) {
                 case "model item":
                     itemList = modelItemDao.findAllByAuthor(author);
+                    itemType = ItemTypeEnum.ModelItem;
                     break;
                 case "conceptual model":
                     itemList = conceptualModelDao.findAllByAuthor(author);
+                    itemType = ItemTypeEnum.ConceptualModel;
                     break;
                 case "logical model":
                     itemList = logicalModelDao.findByAuthor(author);
+                    itemType = ItemTypeEnum.LogicalModel;
                     break;
                 case "computable model":
                     itemList = computableModelDao.findAllByAuthor(author);
+                    itemType = ItemTypeEnum.ComputableModel;
                     break;
                 case "data item":
                     itemList = dataItemDao.findAllByAuthor(author);
+                    itemType = ItemTypeEnum.DataItem;
                     break;
                 case "concept":
                     itemList = conceptDao.findByAuthor(author);
+                    itemType = ItemTypeEnum.Concept;
                     break;
                 case "spatial reference":
                     itemList = spatialReferenceDao.findByAuthor(author);
+                    itemType = ItemTypeEnum.SpatialReference;
                     break;
                 case "data template":
                     itemList = templateDao.findByAuthor(author);
+                    itemType = ItemTypeEnum.Template;
                     break;
                 case "unit & metric":
                     itemList = unitDao.findByAuthor(author);
+                    itemType = ItemTypeEnum.Unit;
                     break;
 
 
@@ -946,7 +957,7 @@ public class UserService {
             for (Item item : itemList) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("name", item.getName());
-                List<ViewRecord> viewRecordList = viewRecordDao.findAllByItemOidAndDateGreaterThanEqual(item.getOid(),startTime);
+                List<ViewRecord> viewRecordList = viewRecordDao.findAllByItemOidAndItemTypeAndDateGreaterThanEqual(item.getOid(),itemType,startTime);
                 jsonObject.put("view count", viewRecordList.size());
                 jsonObject.put("type", type);
                 jsonObject.put("oid", item.getOid());

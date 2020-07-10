@@ -630,7 +630,7 @@ public class VersionService {
         if(related!=null) {
             for (String relatedId : related) {
                 Concept relatedConcept = conceptDao.findByOid(relatedId);
-                String name = relatedConcept.getName_EN();
+                String name = relatedConcept.getName();
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", relatedId);
                 jsonObject.put("name", name);

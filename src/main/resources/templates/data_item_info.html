@@ -64,7 +64,10 @@
                         <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
                     </el-tooltip>
                     <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>&nbsp&nbsp&nbsp&nbsp
-                    <a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <a th:if="${datainfo.data.status=='Public'&&datainfo.data.lock!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                    <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
+                        <li th:if="${datainfo.data.status=='Public'&&history!=true&&datainfo.data.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
+                    </el-tooltip>
                 </div>
 
                 <div class="detail_overview">
@@ -796,7 +799,7 @@
 
             <el-card shadow="never" class="box-card" style="width:59%;">
                 <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
-                    <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+                    <el-button slot="append" icon="el-icon-search" @keyup.enter.native="search()" @click="search()"></el-button>
                 </el-input>
                 <el-table
                         :data="pageOption.searchResult"

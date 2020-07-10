@@ -24,10 +24,7 @@ import njgis.opengms.portal.dto.Unit.UnitUpdateDTO;
 import njgis.opengms.portal.dto.UserResultDTO;
 import njgis.opengms.portal.dto.theme.ThemeResultDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Application;
-import njgis.opengms.portal.entity.support.ClassInfo;
-import njgis.opengms.portal.entity.support.DataClassInfo;
-import njgis.opengms.portal.entity.support.Maintainer;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -188,39 +185,39 @@ public class RepositoryService {
         }
         System.out.println(classResult);
 
-        if(concept.getXml()!=null)
-        {
-            org.dom4j.Document d = null;
-            JSONArray localizationArray = new JSONArray();
-            try {
-                d = DocumentHelper.parseText(concept.getXml());
-                org.dom4j.Element root = d.getRootElement();
-                org.dom4j.Element Localizations = root.element("Localizations");
-                List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
-                for (org.dom4j.Element Localization : LocalizationList) {
-                    String language = Localization.attributeValue("Local");
-                    String name = Localization.attributeValue("Name");
-                    String desc = Localization.attributeValue("Description");
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("language", language);
-                    jsonObject.put("name", name);
-                    jsonObject.put("desc", desc);
-                    localizationArray.add(jsonObject);
-                }
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
-
-            localizationArray.sort(new Comparator<Object>() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    JSONObject a = (JSONObject) o1;
-                    JSONObject b = (JSONObject) o2;
-                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
-                }
-            });
-            modelAndView.addObject("localizations",localizationArray);
-        }
+//        if(concept.getXml()!=null)
+//        {
+//            org.dom4j.Document d = null;
+//            JSONArray localizationArray = new JSONArray();
+//            try {
+//                d = DocumentHelper.parseText(concept.getXml());
+//                org.dom4j.Element root = d.getRootElement();
+//                org.dom4j.Element Localizations = root.element("Localizations");
+//                List<org.dom4j.Element> LocalizationList = Localizations.elements("Localization");
+//                for (org.dom4j.Element Localization : LocalizationList) {
+//                    String language = Localization.attributeValue("Local");
+//                    String name = Localization.attributeValue("Name");
+//                    String desc = Localization.attributeValue("Description");
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("language", language);
+//                    jsonObject.put("name", name);
+//                    jsonObject.put("desc", desc);
+//                    localizationArray.add(jsonObject);
+//                }
+//            } catch (DocumentException e) {
+//                e.printStackTrace();
+//            }
+//
+//            localizationArray.sort(new Comparator<Object>() {
+//                @Override
+//                public int compare(Object o1, Object o2) {
+//                    JSONObject a = (JSONObject) o1;
+//                    JSONObject b = (JSONObject) o2;
+//                    return a.getString("language").compareToIgnoreCase(b.getString("language"));
+//                }
+//            });
+//            modelAndView.addObject("localizations",localizationArray);
+//        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -229,7 +226,7 @@ public class RepositoryService {
         if (related != null) {
             for (String relatedId : related) {
                 Concept relatedConcept = conceptDao.findByOid(relatedId);
-                String name = relatedConcept.getName_EN();
+                String name = relatedConcept.getName();
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", relatedId);
                 jsonObject.put("name", name);
@@ -247,10 +244,22 @@ public class RepositoryService {
         JSONObject modifierJson = null;
         if (lastModifier != null) {
             modifierJson = userService.getItemUserInfo(lastModifier);
+        }
 
+        //description
+        String description = "";
+        List<Localization> localizationList = concept.getLocalizationList();
+        for(int i=0;i<localizationList.size();i++){
+            Localization localization = localizationList.get(i);
+            String localDesc = localization.getDescription();
+            if(localDesc!=null&&!localDesc.equals("")){
+                description=localDesc;
+                break;
+            }
         }
 
         modelAndView.addObject("info", concept);
+//        modelAndView.addObject("description", description);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+concept.getImage());
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());

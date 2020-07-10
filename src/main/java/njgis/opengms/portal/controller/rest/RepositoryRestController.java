@@ -498,7 +498,7 @@ public class RepositoryRestController {
 
     @RequestMapping(value="/template/{id}",method = RequestMethod.GET)
     public ModelAndView getTemplatePage(@PathVariable("id") String id,HttpServletRequest req){
-        return repositoryService.getTemplatePage(id,req);
+        return repositoryService.getTemplatePage(id.toLowerCase(),req);
     }
 
     @RequestMapping (value="/getTemplateInfo/{id}",method = RequestMethod.GET)

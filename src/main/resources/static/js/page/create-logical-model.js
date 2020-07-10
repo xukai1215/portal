@@ -54,7 +54,6 @@ var createLogicalModel = Vue.extend({
             userName: "",
             loginFlag: false,
 
-            path:"ws://localhost:8080/websocket",
             socket:"",
 
             logicalModel_oid:"",
@@ -133,39 +132,7 @@ var createLogicalModel = Vue.extend({
         clearSession(){
             window.sessionStorage.clear();
         },
-        getUserData(UsersInfo, prop) {
 
-            for (i = prop.length; i > 0; i--) {
-                prop.pop();
-            }
-            var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
-                //
-                if(index%4==0){
-                    let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
-                        continue;
-                    }
-                }
-
-                var Info = UsersInfo.eq(index)[0];
-                if (index % 4 == 3) {
-                    if (result) {
-                        result += "'" + Info.name + "':'" + Info.value + "'}"
-                        prop.push(eval('(' + result + ')'));
-                    }
-                    result = "{";
-                }
-                else {
-                    result += "'" + Info.name + "':'" + Info.value + "',";
-                }
-
-            }
-        },
         addFile(){
             $("#imgFiles").click();
         },
@@ -213,7 +180,7 @@ var createLogicalModel = Vue.extend({
 
             if ('WebSocket' in window) {
                 // this.socket = new WebSocket("ws://localhost:8080/websocket");
-                this.socket = new WebSocket(this.path);
+                this.socket = new WebSocket(websocketAddress);
                 // 监听socket连接
                 this.socket.onopen = this.open;
                 // 监听socket错误信息
@@ -488,40 +455,8 @@ var createLogicalModel = Vue.extend({
 
             $("#logicalModelText").html("");
 
-            tinymce.remove('textarea#logicalModelText')
-            tinymce.init({
-                selector: "textarea#logicalModelText",
-                height: 400,
-                theme: 'silver',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
+            initTinymce('textarea#logicalModelText')
 
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
         }
         else{
 
@@ -560,42 +495,11 @@ var createLogicalModel = Vue.extend({
                     $(".providers").children(".panel").remove();
 
                     //detail
-                    //tinymce.remove("textarea#logicalModelText");
+
                     $("#logicalModelText").html(basicInfo.detail);
-                    tinymce.remove('textarea#logicalModelText')
-                    tinymce.init({
-                        selector: "textarea#logicalModelText",
-                        height: 300,
-                        theme: 'silver',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
 
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
+                    initTinymce('textarea#logicalModelText')
 
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
 
                     let authorship = basicInfo.authorship;
                     if(authorship!=null) {
@@ -734,7 +638,7 @@ var createLogicalModel = Vue.extend({
             this.logicalModel.detail = detail.trim();
 
             this.logicalModel.authorship=[];
-            this.getUserData($("#providersPanel .user-contents .form-control"), this.logicalModel.authorship);
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), this.logicalModel.authorship);
 
             /**
              * 张硕

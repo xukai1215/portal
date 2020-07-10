@@ -137,39 +137,7 @@ var createDataItem = Vue.extend({
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
-        getUserData(UsersInfo, prop) {
 
-            for (i = prop.length; i > 0; i--) {
-                prop.pop();
-            }
-            var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
-                //
-                if(index%4==0){
-                    let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
-                        continue;
-                    }
-                }
-
-                var Info = UsersInfo.eq(index)[0];
-                if (index % 4 == 3) {
-                    if (result) {
-                        result += "'" + Info.name + "':'" + Info.value + "'}"
-                        prop.push(eval('(' + result + ')'));
-                    }
-                    result = "{";
-                }
-                else {
-                    result += "'" + Info.name + "':'" + Info.value + "',";
-                }
-
-            }
-        },
 
         getDataItems() {
             this.pageSize = 10;
