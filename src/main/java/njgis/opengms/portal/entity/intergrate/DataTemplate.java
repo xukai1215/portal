@@ -21,4 +21,7 @@ public class DataTemplate {
 
     //标记这个数据是否已经准备好,设置默认值
     private boolean isPrepared = false;
+
+    private String tag;
+    private String suffix;
 }

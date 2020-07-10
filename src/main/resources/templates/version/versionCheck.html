@@ -221,6 +221,7 @@
                         if(event.currentTarget===accepts[i]){
                             let tableItem=this.tableData[i];
                             let data={
+                                modifier:tableItem.modifier,
                                 type:tableItem.type,
                                 oid:tableItem.oid,
                                 originOid:tableItem.originOid
@@ -246,6 +247,7 @@
                         if(event.currentTarget===rejects[i]){
                             let tableItem=this.tableData[i];
                             let data={
+                                modifier:tableItem.modifier,
                                 type:tableItem.type,
                                 oid:tableItem.oid,
                                 originOid:tableItem.originOid

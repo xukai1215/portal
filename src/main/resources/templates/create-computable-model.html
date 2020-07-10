@@ -156,6 +156,7 @@
 
                                                                 <el-radio-group v-model="computableModel.contentType">
                                                                     <el-radio label="Package">Model Service Package</el-radio>
+                                                                    <el-radio label="md5">MD5</el-radio>
                                                                     <el-radio label="Code">Source Code</el-radio>
                                                                     <el-radio label="Library">Library</el-radio>
                                                                     <el-radio label="Service">Service URL</el-radio>
@@ -204,6 +205,18 @@
                                                                 <div class="col-sm-8 col-md-offset-2">
                                                                     <textarea id="URL_text" class="form-control"
                                                                               v-model="computableModel.url"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="MD5" class="clearfix"
+                                                             style="margin-top:50px" v-if="computableModel.contentType=='md5'">
+                                                            <div class="form-group">
+                                                                <label for="MD5_text"
+                                                                       class="control-label col-md-4 col-md-offset-2">Please
+                                                                    enter computable model's MD5:</label>
+                                                                <div class="col-sm-8 col-md-offset-2">
+                                                                    <input id="MD5_text" class="form-control"
+                                                                              v-model="computableModel.md5" @onblur="getServiceByMd5" @keyup.enter="getServiceByMd5"/>
                                                                 </div>
                                                             </div>
                                                         </div>

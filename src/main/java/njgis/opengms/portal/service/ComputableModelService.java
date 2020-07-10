@@ -9,6 +9,7 @@ import com.mongodb.client.model.Filters;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelIngtegratedDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
@@ -112,12 +113,13 @@ public class ComputableModelService {
 
         Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
-        Pageable pageable = PageRequest.of(page, 10, sort);
+        Pageable pageable = PageRequest.of(page, 8, sort);
 
         Page<ComputableModel> comModelList = computableModelDao.findByContentType("Package",pageable);
 
         for(int i = 0; i<comModelList.getContent().size(); i++){
             String mdl = comModelList.getContent().get(i).getMdl();
+            if(mdl == null) continue;
             comModelList.getContent().get(i).setMdlJson(convertMdl(mdl));
         }
 
@@ -160,6 +162,96 @@ public class ComputableModelService {
             searchTermsComputableModel.get(i).setMdlJson(convertMdl(mdl));
         }
         return searchTermsComputableModel;
+    }
+
+    public List<String> oids = new ArrayList<>();
+    public List<ComputableModel> computableModelList(String oid) {
+        List<ComputableModel> list = new ArrayList<>();
+        Classification cla =classificationService.getByOid(oid);
+        oids.clear();
+        GetOids(cla);
+        for (int k = 0; k < oids.size(); k++) {
+            oid = oids.get(k);
+            List<ModelItem> modelItemList = modelItemDao.findAllByClassificationsContains(oid);
+            for (int i = 0; i < modelItemList.size(); i++) {
+                ModelItem item = modelItemList.get(i);
+                if (item.getRelate().getComputableModels().size()>0){
+                    for (int j = 0; j < item.getRelate().getComputableModels().size(); j++) {
+                        ComputableModel computableModel = computableModelDao.findFirstByOid(item.getRelate().getComputableModels().get(j));
+
+                        if (computableModel != null){
+                            String mdl = computableModel.getMdl();
+                            if(mdl == null) continue;
+                            computableModel.setMdlJson(convertMdl(mdl));
+
+                            list.add(computableModel);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public void GetOids(Classification cla){
+        if (cla.getChildrenId().size() > 0){
+            for (int i = 0; i < cla.getChildrenId().size(); i++) {
+                String ooid = cla.getChildrenId().get(i);
+                Classification cla2 = classificationService.getByOid(ooid);
+                GetOids(cla2);
+            }
+        }
+        else{
+            oids.add(cla.getOid());
+        }
+    }
+
+
+    public List<ComputableModel> searchModelsByKey(String key) {
+        List<ComputableModel> list = computableModelDao.findAllByNameContainsIgnoreCase(key);
+        for (int i = 0; i < list.size(); i++) {
+            ComputableModel computableModel = list.get(i);
+
+            String mdl = computableModel.getMdl();
+            if(mdl == null) {
+                list.remove(i);
+                continue;
+            }
+            computableModel.setMdlJson(convertMdl(mdl));
+        }
+        return  list;
+    }
+
+    public JSONObject listPage(ModelItemFindDTO modelItemFindDTO, List<String> classes) {
+        JSONObject obj = new JSONObject();
+        //TODO Sort是可以设置排序字段的
+        int page = modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String searchText = modelItemFindDTO.getSearchText();
+        //List<String> classifications=modelItemFindDTO.getClassifications();
+        //默认以viewCount排序
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<ComputableModel> computableModelPage;
+
+        if (searchText.equals("") && classes.get(0).equals("all")) {
+            computableModelPage = computableModelDao.findAll(pageable);
+        } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCase(searchText, pageable);
+        } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+            computableModelPage = computableModelDao.findByClassificationsIn(classes, pageable);
+        } else {
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
+
+        }
+
+
+        obj.put("list", computableModelPage.getContent());
+        obj.put("total", computableModelPage.getTotalElements());
+        obj.put("pages", computableModelPage.getTotalPages());
+
+        return obj;
     }
     /**/
 
@@ -1057,6 +1149,7 @@ public class ComputableModelService {
             computableModelPage = computableModelDao.findByClassificationsIn(classes, pageable);
         } else {
             computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
+
         }
 
 
@@ -1363,4 +1456,7 @@ public class ComputableModelService {
 
         return jsonObject;
     }
+
+
+
 }

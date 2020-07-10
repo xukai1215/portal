@@ -990,7 +990,8 @@ EditorUi.prototype.sidebarFooterHeight = 34;
  * Specifies the position of the horizontal split bar. Default is 240 or 118 for
  * screen widths <= 640px.
  */
-EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 240;
+//更改sidebar的宽度
+EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 245;
 
 /**
  * Specifies if animations are allowed in <executeLayout>. Default is true.

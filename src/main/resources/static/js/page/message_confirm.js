@@ -320,7 +320,7 @@ var notice = Vue.extend({
                     for (let i=0;i<json.data.uncheck.length;i++){
                         if (json.data.uncheck[i].type == "modelItem" || json.data.uncheck[i].type == "conceptualModel"||json.data.uncheck[i].type == "logicalModel"||json.data.uncheck[i].type == "computableModel"){
                             this.model_tableData1.push(json.data.uncheck[i]);
-                            this.sum_tableData.push(json.data.uncheck[i]);
+                            // this.sum_tableData.push(json.data.uncheck[i]);
                             // this.message_num++;
                         }else if (json.data.uncheck[i].type == "concept" || json.data.uncheck[i].type == "spatialReference"||json.data.uncheck[i].type == "unit"||json.data.uncheck[i].type == "template"){
                             this.community_tableData1.push(json.data.uncheck[i]);
@@ -501,7 +501,7 @@ var notice = Vue.extend({
                                     if  (sum_tableData[i].modifyTimeDay==sum_tableData[i-1].modifyTimeDay) {
                                         // this.sumDateTableData[k].date = sum_tableData[i].modifyTime;
                                         this.sumDateTableData[k].tableData.push(sum_tableData[i]);
-                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content) ){
+                                        if ((this.sumDateTableData[k].tableData[0].oid || this.sumDateTableData[k].tableData[0].content) == null){
                                             this.sumDateTableData[k].tableData.shift();
                                         }
                                     }else{

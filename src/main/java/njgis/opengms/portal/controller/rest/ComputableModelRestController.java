@@ -277,8 +277,37 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping(value = "/getComputableModelsBySearchTerms",method = RequestMethod.GET)
-    List<ComputableModel> getComputableModelsBySearchTerms(String searchTerms){
-        return computableModelService.getComputableModelsBySearchTerms(searchTerms);
+    JsonResult getComputableModelsBySearchTerms(String searchTerms){
+        List<ComputableModel> result = computableModelService.getComputableModelsBySearchTerms(searchTerms);
+        return ResultUtils.success(result);
+    }
+
+    @RequestMapping (value="/computableModelList",method = RequestMethod.GET)
+    JsonResult computableModelList(@RequestParam("oid") String oid){
+
+        List<ComputableModel> list = computableModelService.computableModelList(oid);
+
+        return ResultUtils.success(list);
+    }
+
+    @RequestMapping(value = "/searchModelsByKey")
+    JsonResult searchModelsByKey(@RequestParam("key")String key){
+        List<ComputableModel> list = computableModelService.searchModelsByKey(key);
+
+        return ResultUtils.success(list);
+    }
+
+    @RequestMapping(value = "/test")
+    ModelAndView test(){
+        ModelAndView mv = new ModelAndView("integratedModelList");
+        return mv;
+    }
+
+    //分页展示 还没完成
+    @RequestMapping(value = "/computableModelListPage",method = RequestMethod.POST)
+    JsonResult computableModelListPage(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
+        return ResultUtils.success(computableModelService.listPage(modelItemFindDTO,classes));
+
     }
     /**/
 
