@@ -3,6 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
@@ -311,7 +312,6 @@ public class DataItemService {
         dataItem.setAuthor(oid);
         dataItem.setDate(date);
         dataItem.setName(name);
-//        dataItem.setSize(size);
         dataItem.setType(type);
         dataItem.setAuthority(authority);
         dataItem.setToken(token);
@@ -571,12 +571,12 @@ public class DataItemService {
     }
 
 
-    public JSONObject findByCateg(String categorysId, Integer page, boolean asc, Integer pageSize,String loadUser) {
+    public JSONObject findByCateg(String categorysId, Integer page, boolean asc, Integer pageSize,String loadUser,String dataType) {
 
 
         List<String> category = new ArrayList<>();
         //从category拿到dataItemid
-        category = findByCa(categorysId);
+        category = findByCa(categorysId,dataType);
 
 
         List<Map<String, Object>> resultList = new ArrayList<>();
@@ -588,9 +588,9 @@ public class DataItemService {
 
         Map<String, Object> everyData;
 
-        Integer start = (page - 1) * 10;
-        Integer end = -1;
-        Integer p;
+        int start = (page - 1) * 10;
+        int end = -1;
+        int p;
         if (category.size() < 10) {
             end = category.size();
         } else {
@@ -685,13 +685,28 @@ public class DataItemService {
     }
 
 
-    public List<String> findByCa(String categorysId) {
+    public List<String> findByCa(String categorysId,String dataType) {
+        if (dataType.equals("hubs")){
+            dataType = "Url";
+        }else if (dataType.equals("repository")){
+            dataType = "File";
+        }else if (dataType.equals("network")){
+            dataType = "DistributedNode";
+        }
 
         Categorys resultList = new Categorys();
-
         resultList = getCategoryById(categorysId);
-
-        return resultList.getDataItem();
+        List<String> resultListType = new LinkedList<>();
+        //判断dataType获取不同的type对应得dataItems
+        List<String> dataItemIds = resultList.getDataItem();
+        for (int i=0;i<dataItemIds.size();i++){
+            DataItem dataItem = dataItemDao.findFirstById(dataItemIds.get(i));
+            if (dataItem!=null&&dataItem.getDataType()!=null&&dataItem.getDataType().equals(dataType)){
+                resultListType.add(dataItem.getId());
+            }
+        }
+        return resultListType;
+//        return resultList.getDataItem();
     }
 
 
@@ -854,7 +869,6 @@ public class DataItemService {
 
 
     public Categorys getCategoryById(String id) {
-
 
         return categoryDao.findById(id).orElseGet(() -> {
             System.out.println("有人乱查数据库！！该ID不存在对象");

@@ -85,7 +85,7 @@ public class DataManagerRestController {
                 HttpMethod.GET, entity, byte[].class, map);
 
         return response;
-    };
+    }
 
     /**
      * 批量下载数据资源文件
@@ -117,7 +117,7 @@ public class DataManagerRestController {
                 HttpMethod.GET, entity, byte[].class, map);
 
         return response;
-    };
+    }
 
 
 

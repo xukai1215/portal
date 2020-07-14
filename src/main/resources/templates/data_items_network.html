@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Data Item Hubs | OpenGMS</title>
+    <title>Data Item NetWork | OpenGMS</title>
 
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
 
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
-
-
 
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
@@ -46,9 +44,9 @@
         <div class="mainContent">
             <div class="el-row">
                 <div class="data-top">
-                <h2 class="main-title">Data Item Hubs</h2>
-                <h4 class="sub-title">The hubs of data (one-stop hub with public shared data resources)
-                </h4>
+                    <h2 class="main-title">Data Item NetWork</h2>
+                    <h4 class="sub-title">The network of data (one-stop hub with public shared data resources)
+                    </h4>
                     <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
@@ -64,10 +62,10 @@
                         <!--动态生成category,遍历数据库拿到数据，组装成category,显示在前端-->
 
                         <!--<el-collapse-item v-for="(item,index) in categoryTree" :title=item.key :name=index :key="index">-->
-                            <!--<hr>-->
-                            <!--<el-button v-for="it in item.value" type="text" @click="chooseCate(it,$event)">{{it.category}}</el-button>-->
+                        <!--<hr>-->
+                        <!--<el-button v-for="it in item.value" type="text" @click="chooseCate(it,$event)">{{it.category}}</el-button>-->
 
-                           <!---->
+                        <!---->
 
                         <!--</el-collapse-item>-->
 
@@ -178,8 +176,8 @@
                         </el-collapse-item>
 
                         <!--<el-collapse-item title="Data Resouces Hubs" name="7">-->
-                            <!--<hr>-->
-                            <!--<el-button class="hubs" type="text" @click="hubs()">Hubs</el-button>-->
+                        <!--<hr>-->
+                        <!--<el-button class="hubs" type="text" @click="hubs()">Hubs</el-button>-->
 
                         <!--</el-collapse-item>-->
 
@@ -204,13 +202,13 @@
                     </div>
 
                     <!--<div class="input-group">-->
-                        <!--<input type="text" placeholder="Search data here..." data-role="tagsinput" class="form-control"  id="searchBox" @keyup.enter.native="search()"   >-->
+                    <!--<input type="text" placeholder="Search data here..." data-role="tagsinput" class="form-control"  id="searchBox" @keyup.enter.native="search()"   >-->
 
-                        <!--<span class="input-group-btn">-->
-						<!--<button class="btn btn-primary" @click="search()" type="button">-->
-                            <!--<i class="glyphicon glyphicon-search"></i>&nbsp;Search-->
-						<!--</button>-->
-					<!--</span>-->
+                    <!--<span class="input-group-btn">-->
+                    <!--<button class="btn btn-primary" @click="search()" type="button">-->
+                    <!--<i class="glyphicon glyphicon-search"></i>&nbsp;Search-->
+                    <!--</button>-->
+                    <!--</span>-->
                     <!--</div>-->
 
                 </div>
@@ -234,71 +232,71 @@
                 <!--v-loading-->
 
                 <div class="maincontnt"  v-loading="loading">
-                        <div class="modelPanel" >
+                    <div class="modelPanel" >
 
-                            <div  class="content-body">
-                                <div class="list-item" v-for="(item,index) in list" :key="index">
-                                    <div class="detail_title">
-                                        <el-tooltip popper-class="fontsize-15" effect="light" :content="item.status" placement="left">
-                                            <i v-if="item.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
-                                            <i v-if="item.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
-                                        </el-tooltip>
-                                        <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
-                                        <a :class="item.viewCount>100?'hot':''" :href="goto(item.id)" target="_blank" >{{item.name}}&nbsp&nbsp</a>
-        <!---->
+                        <div  class="content-body">
+                            <div class="list-item" v-for="(item,index) in list" :key="index">
+                                <div class="detail_title">
+                                    <el-tooltip popper-class="fontsize-15" effect="light" :content="item.status" placement="left">
+                                        <i v-if="item.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                        <i v-if="item.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                    </el-tooltip>
+                                    <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
+                                    <a :class="item.viewCount>100?'hot':''" :href="goto(item.id)" target="_blank" >{{item.name}}&nbsp&nbsp</a>
+                                    <!---->
 
-                                    </div>
-                                    <div class="detail_overview">
-                                        <a class="img" :href="'/dataItem/'+ item.id" target="_blank">
-                                            <avatar  :username="item.name" :size="90"
-                                                    :rounded="false"></avatar>
+                                </div>
+                                <div class="detail_overview">
+                                    <a class="img" :href="'/dataItem/'+ item.id" target="_blank">
+                                        <avatar  :username="item.name" :size="90"
+                                                 :rounded="false"></avatar>
 
 
-                                        </a>
+                                    </a>
 
-                                        <div class="info">
-                                            <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
-                                            <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="display: inline-block">
-                                                <span class="badge badge-info" >{{tagitem}}</span>
+                                    <div class="info">
+                                        <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
+                                        <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="display: inline-block">
+                                            <span class="badge badge-info" >{{tagitem}}</span>
 
-                                            </div>
                                         </div>
-                                    </div>
-                                    <hr>
-
-                                    <div class="detail_bottom">
-                                        <div style="display:inline-block;float: left;">
-                                            <a :href="'/user/'+users[index].oid">
-                                            <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
-                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
-                                            </a>
-                                            <a :href="'/user/'+users[index].oid" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
-
-
-                                            <h4 class="screen_view">contributed at {{formatDate(item.createTime).substring(0,10)}}</h4>
-                                            <h4 class="mobile_view">{{formatDate(item.createTime).substring(0,10)}}</h4>
-                                        </div>
-                                        <div class="detail_option">
-
-
-                                            <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
-                                            <!--<a class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
-                                        </div>
-                                        <br>
                                     </div>
                                 </div>
-                            </div>
+                                <hr>
 
+                                <div class="detail_bottom">
+                                    <div style="display:inline-block;float: left;">
+                                        <a :href="'/user/'+users[index].oid">
+                                            <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
+                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                        </a>
+                                        <a :href="'/user/'+users[index].oid" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
+
+
+                                        <h4 class="screen_view">contributed at {{formatDate(item.createTime).substring(0,10)}}</h4>
+                                        <h4 class="mobile_view">{{formatDate(item.createTime).substring(0,10)}}</h4>
+                                    </div>
+                                    <div class="detail_option">
+
+
+                                        <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
+                                        <!--<a class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
                         </div>
 
-                        <el-pagination style="text-align: center;margin-top:20px"
-                                       @current-change="handleCurrentChange"
+                    </div>
 
-                                       :page-size="findDto.pageSize"
-                                       :current-page="findDto.page"
-                                       layout="total,prev, pager, next, jumper"
-                                       :total="datacount">
-                        </el-pagination>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handleCurrentChange"
+
+                                   :page-size="findDto.pageSize"
+                                   :current-page="findDto.page"
+                                   layout="total,prev, pager, next, jumper"
+                                   :total="datacount">
+                    </el-pagination>
                 </div>
 
                 <div class="manyhub" >
@@ -307,8 +305,8 @@
                             <!--<img src="/static/img/hubs.jpg" style="width:70%;margin-left:15%">-->
                             <div class="el-row" >
                                 <a   :href="item.url" target="_blank"  >
-                                      <avatar  :username="item.title"  :size="100"
-                                               class="center-block" ></avatar>
+                                    <avatar  :username="item.title"  :size="100"
+                                             class="center-block" ></avatar>
 
 
                                 </a>
@@ -328,7 +326,7 @@
         </div>
     </div>
     <!--<el-card th:object="${dataitems}">-->
-        <!--<p th:text="${dataitems}"></p>-->
+    <!--<p th:text="${dataitems}"></p>-->
     <!--</el-card>-->
 
     <div th:replace="fragments/footer :: footer"></div>

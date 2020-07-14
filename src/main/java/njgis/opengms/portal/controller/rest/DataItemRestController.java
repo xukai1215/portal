@@ -11,9 +11,7 @@ import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
-import njgis.opengms.portal.entity.Categorys;
-import njgis.opengms.portal.entity.DataItem;
-import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataItemService;
@@ -22,8 +20,15 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
@@ -35,6 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.*;
 
@@ -73,6 +79,9 @@ public class DataItemRestController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Value ("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
@@ -88,14 +97,36 @@ public class DataItemRestController {
      * @author lan
      * @return modelAndView
      */
-    @RequestMapping("/repository")
-    public ModelAndView getModelItems(){
-
+    @RequestMapping("/hubs")
+    public ModelAndView getHubs(){
         System.out.println("data-items-page");
-
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("data_items");
+        modelAndView.addObject("dataType","hubs");
+        return modelAndView;
+    }
 
+    @RequestMapping("/repository")
+    public ModelAndView getRepository(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("data_items_repository");
+        modelAndView.addObject("dataType","repository");
+        return modelAndView;
+    }
+
+    @RequestMapping("/network")
+    public ModelAndView getNetwork(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("data_items_network");
+        modelAndView.addObject("dataType","network");
+        return modelAndView;
+    }
+
+    @RequestMapping("/application")
+    public ModelAndView getApplication(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("data_application");
+        modelAndView.addObject("dataType","application");
         return modelAndView;
     }
 
@@ -159,17 +190,18 @@ public class DataItemRestController {
      * @param page
      * @return
      */
-    @RequestMapping(value = "/items/{categorysId}&{page}",method = RequestMethod.GET)
+    @RequestMapping(value = "/items/{categorysId}&{page}&{dataType}",method = RequestMethod.GET)
     JsonResult listByClassification(
             @PathVariable  String categorysId,
             @PathVariable Integer page,
+              @PathVariable String dataType,
 
               HttpServletRequest request){
         HttpSession session = request.getSession();
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
-            loadUser =  session.getAttribute("oid").toString() ;
-        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10,loadUser));
+            loadUser =  session.getAttribute("oid").toString();
+        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10,loadUser,dataType));
 
     }
 
@@ -179,7 +211,7 @@ public class DataItemRestController {
      * @param hubnbm
      * @return
      */
-    @RequestMapping(value = "/hubs",method = RequestMethod.GET)
+    @RequestMapping(value = "/addmorehubs",method = RequestMethod.GET)
     JsonResult getHubs(@RequestParam(value = "hubnbm")Integer hubnbm){
         return ResultUtils.success(dataItemService.getHubs(hubnbm));
     }
@@ -286,9 +318,9 @@ public class DataItemRestController {
             }
         }
         List<String> classifications=new ArrayList<>();
-        if (dataItem.getDataType()!=null&&dataItem.getDataType().equals("DistributedNode")){
-            classifications = dataItem.getClassifications();
-        }else {
+//        if (dataItem.getDataType()!=null&&dataItem.getDataType().equals("DistributedNode")){
+//            classifications = dataItem.getClassifications();
+//        }else {
             //category
 //            List<String> classifications = new ArrayList<>();
             List<String> categories = dataItem.getClassifications();
@@ -302,14 +334,20 @@ public class DataItemRestController {
                     classifications.add(name);
                 }
             }
-        }
+//        }
 
 
         ArrayList<String> fileName = new ArrayList<>();
-        if (dataItem.getDataType()!=null&&dataItem.getDataType().equals("DistributedNode")){
+        if (dataItem.getDataType().equals("DistributedNode")){
             fileName.add(dataItem.getName());
         }
         view.setViewName("data_item_info");
+        if (dataItem.getRelatedProcessings()!=null){
+            view.addObject("relatedProcessing",dataItem.getRelatedProcessings());
+        }
+        if (dataItem.getRelatedVisualizations()!=null){
+            view.addObject("relatedVisualization",dataItem.getRelatedVisualizations());
+        }
         view.addObject("datainfo",ResultUtils.success(dataItem));
         view.addObject("user",userJson);
         view.addObject("classifications",classifications);
@@ -317,6 +355,7 @@ public class DataItemRestController {
         view.addObject("authorship",authorshipString);
         view.addObject("userDataList", dataItem.getUserDataList());
         view.addObject("fileName",fileName);//后期应该是放该name下的所有数据
+
 
         return view;
     }
@@ -657,22 +696,10 @@ public class DataItemRestController {
                 HttpMethod.GET, entity, byte[].class, map);
 
         return response;
-    };
+    }
 
 
     //dataResource end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //test api
@@ -709,16 +736,23 @@ public class DataItemRestController {
 
     //  分布式节点接口   先对接收到的数据进行处理，处理接口
     @RequestMapping(value = "/getDistributedData", method = RequestMethod.POST)
-    JsonResult getDistributedData(@RequestParam("id")String id,
-                                  @RequestParam("oid")String oid,
-                                  @RequestParam("name")String name,
-                                  @RequestParam("date")String date,
-//                                  @RequestParam("size")String size,
-                                  @RequestParam("type")String type,
-                                  @RequestParam("authority")Boolean authority,
-                                  @RequestParam("token")String token,
-                                  @RequestParam("meta") String  meta1) throws IOException {
+    JsonResult getDistributedData(@RequestParam("id") String id,
+                                  @RequestParam("oid") String oid,
+                                  @RequestParam("name") String name,
+                                  @RequestParam("date") String date,
+                                  @RequestParam("type") String type,
+                                  @RequestParam("authority") Boolean authority,
+                                  @RequestParam("token") String token,
+                                  @RequestParam("meta") String meta1) throws IOException {
         JsonResult jsonResult = new JsonResult();
+        //检查该id是否已经存在于数据库中
+        if (dataItemDao.findFirstByDistributedNodeDataId(id) != null){
+            DataItem dataItem = dataItemDao.findFirstByDistributedNodeDataId(id);
+            jsonResult.setCode(-2);
+            jsonResult.setMsg("/dataItem/" + dataItem.getId());
+            return jsonResult;
+        }
+
         JSONObject meta = JSONObject.parseObject(meta1);
         //检查作者信息
         if (userDao.findFirstByOid(oid)==null){
@@ -728,6 +762,17 @@ public class DataItemRestController {
         }
         DataItem dataItem = dataItemService.insertDistributeData(id,oid,name,date,type,authority,token,meta);
         jsonResult.setData("/dataItem/"+dataItem.getId());
+        //将data item的id加到对应的类别下，用于data items页面的显示
+        JSONArray tags = new JSONArray();
+        tags = meta.getJSONArray("tags");
+        List<String> list = new ArrayList<>();
+        for (int i=0;i<tags.size();i++){
+            list.add(tags.getString(i));
+        }
+        CategoryAddDTO categoryAddDTO = new CategoryAddDTO();
+        categoryAddDTO.setId(dataItem.getId());
+        categoryAddDTO.setCate(list);
+        dataItemService.addCateId(categoryAddDTO);
         return jsonResult;
     }
 
@@ -739,6 +784,7 @@ public class DataItemRestController {
 
         jsonObject.put("msg","req");
         DataItem dataItem = dataItemDao.findFirstById(dataOid);
+        //判断是否登录
         if(session.getAttribute("oid")==null){
             jsonResult.setCode(-1);
             jsonResult.setMsg("User not logged in");
@@ -746,15 +792,24 @@ public class DataItemRestController {
         }else{
             jsonObject.put("reqUsrOid",session.getAttribute("oid").toString());
         }
+        if (dataItem.getDataUrl()!=null){
+            jsonResult.setData(dataItem.getDataUrl());
+            jsonResult.setCode(1);
+            return jsonResult;
+        }
+
         jsonObject.put("name", dataItem.getName());
         jsonObject.put("token",dataItem.getToken());
         jsonObject.put("id",dataItem.getDistributedNodeDataId());
+        jsonObject.put("wsId",dataItem.getId());
 
         jsonResult.setCode(0);
         jsonResult.setMsg("Success");
         jsonResult.setData(jsonObject);
         return jsonResult;
     }
+
+    //第一次请求后将该数据下载url存储下来
     @RequestMapping(value = "/saveUrl",method = RequestMethod.POST)
     JsonResult saveUrl(@RequestParam(value = "dataOid") String  dataOid,
                        @RequestParam(value = "dataUrl") String  dataUrl,
@@ -767,5 +822,240 @@ public class DataItemRestController {
         return jsonResult;
     }
 
+    //分布式节点processing绑定dataitem组
+    @RequestMapping(value = "/bindDataItem", method = RequestMethod.POST)
+    public JsonResult bingDataItem(
+            @RequestParam(value = "type") String type,
+            @RequestParam (value = "dataIds") String dataIds1,
+                                   @RequestParam(value = "proId") String proId,
+                                   @RequestParam(value = "proName") String proName,
+                                   @RequestParam(value = "proDescription") String proDescription,
+                                   @RequestParam(value = "token") String token,
+                                   @RequestParam(value = "xml") String xml
+    ){
+        JsonResult jsonResult = new JsonResult();
+        ArrayList<String> url = new ArrayList<>();
+        String[] dataIds = dataIds1.split(",");
+        int existCount1 = 0;
+        int existCount2 = 0;
+        for (int i=0;i<dataIds.length;i++){
+            if (dataItemDao.findFirstByDistributedNodeDataId(dataIds[i]) == null){
+                jsonResult.setCode(-2);
+                jsonResult.setMsg(dataIds[i] + " no public");
+                return jsonResult;
+            }
+            DataItem dataItem = dataItemDao.findFirstByDistributedNodeDataId(dataIds[i]);
+            url.add("/dataItem/" + dataItem.getId());
+            //首先判断该条目是否已有该处理方法，如果已有则不再绑定
+            if (type.equals("Processing")) {
+                Boolean exist = false;
+                if (dataItem.getRelatedProcessings() != null) {
+                    List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+                    for (int j = 0; j < relatedProcessings.size(); j++) {
+                        if (relatedProcessings.get(j).getProId().equals(proId)) {
+                            exist = true;
+                            existCount1++;
+                            break;
+                        }
+                    }
+                }
+                if (exist == true) {
+                    continue;
+                }
+                RelatedProcessing relatedProcessing = new RelatedProcessing();
+                relatedProcessing.setProId(proId);
+                relatedProcessing.setProName(proName);
+                relatedProcessing.setProDescription(proDescription);
+                relatedProcessing.setToken(token);
+                relatedProcessing.setXml(xml);
+                List<RelatedProcessing> relatedProcessings = new LinkedList<>();//记录List的初始化
+                relatedProcessings.add(relatedProcessing);
+                if (dataItem.getRelatedProcessings() == null) {
+                    dataItem.setRelatedProcessings(relatedProcessings);
+                } else {
+                    dataItem.getRelatedProcessings().add(relatedProcessing);
+                }
+                dataItemDao.save(dataItem);
+            }else if (type.equals("Visualization")){
+                Boolean exist = false;
+                if (dataItem.getRelatedVisualizations() != null) {
+                    List<RelatedVisualization> relatedVisualizations = dataItem.getRelatedVisualizations();
+                    for (int j = 0; j < relatedVisualizations.size(); j++) {
+                        if (relatedVisualizations.get(j).getProId().equals(proId)) {
+                            exist = true;
+                            existCount1++;
+                            break;
+                        }
+                    }
+                }
+                if (exist == true) {
+                    continue;
+                }
+                RelatedVisualization relatedVisualization = new RelatedVisualization();
+                relatedVisualization.setProId(proId);
+                relatedVisualization.setProName(proName);
+                relatedVisualization.setProDescription(proDescription);
+                relatedVisualization.setToken(token);
+                relatedVisualization.setXml(xml);
+                List<RelatedVisualization> relatedVisualizations = new LinkedList<>();//记录List的初始化
+                relatedVisualizations.add(relatedVisualization);
+                if (dataItem.getRelatedVisualizations() == null) {
+                    dataItem.setRelatedVisualizations(relatedVisualizations);
+                } else {
+                    dataItem.getRelatedVisualizations().add(relatedVisualization);
+                }
+                dataItemDao.save(dataItem);
+            }
+        }
+        if (existCount1 == dataIds.length||existCount2 == dataIds.length){
+            jsonResult.setMsg("All data has been bound to this processing method and cannot be bound repeatedly");
+            jsonResult.setCode(-1);
+            return jsonResult;
+        }else {
+            jsonResult.setData(url);
+            return jsonResult;
+        }
+    }
+
+    @RequestMapping(value = "/getParemeter", method = RequestMethod.POST)
+    public JSONObject getParemeter(@RequestParam(value = "type")String type,
+                                   @RequestParam(value = "dataItemId")String dataItemId,
+                                   @RequestParam(value = "processingId") String processingId,HttpServletRequest request) throws DocumentException {
+        JSONObject jsonObject = new JSONObject();
+        HttpSession session = request.getSession();
+        if (session.getAttribute("oid") == null){
+            jsonObject.put("code", -1);
+            return jsonObject;
+        }
+        String xml = "";
+        DataItem dataItem = dataItemDao.findFirstById(dataItemId);
+        if (type.equals("process")) {
+            List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+            for (int i=0;i<relatedProcessings.size();i++){
+                if (relatedProcessings.get(i).getProId().equals(processingId)){
+                    jsonObject.put("xml",relatedProcessings.get(i).getXml());
+                    xml = relatedProcessings.get(i).getXml().toString();
+                    break;
+                }
+            }
+        }else {
+            List<RelatedVisualization> relatedVisualizations = dataItem.getRelatedVisualizations();
+            for (int i=0;i<relatedVisualizations.size();i++){
+                if (relatedVisualizations.get(i).getProId().equals(processingId)){
+                    jsonObject.put("xml",relatedVisualizations.get(i).getXml());
+                    xml = relatedVisualizations.get(i).getXml().toString();
+                    break;
+                }
+            }
+        }
+
+
+        //解析xml  利用Iterator获取xml的各种子节点
+        Document document = DocumentHelper.parseText(xml);
+        Element employees = document.getRootElement();
+        int count = 0;
+        ArrayList<String> parameters = new ArrayList<>();
+        for (Iterator i = employees.elementIterator(); i.hasNext(); ) {
+            Element employee = (Element) i.next();
+            count++;
+            if (count != 3){
+                continue;
+            }
+            for (Iterator j = employee.elementIterator(); j.hasNext(); ) {
+                Element node = (Element) j.next();
+                parameters.add(node.attribute(0).getValue());
+            }
+        }
+        jsonObject.put("parameters", parameters);
+        jsonObject.put("code", 0);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "/getProcessingObj", method = RequestMethod.POST)
+    public  JSONObject getProcessingObj(@RequestParam(value = "type") String type,
+                                        @RequestParam(value = "dataItemId") String dataItemId,
+                                        @RequestParam(value = "processingId") String processingId,
+                                        HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String userId = session.getAttribute("oid").toString();
+        JSONObject jsonObject = new JSONObject();
+        DataItem dataItem = dataItemDao.findFirstById(dataItemId);
+        String dataItemName = dataItem.getName();
+        String token = "";
+        if (type.equals("process")) {
+            List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+            for (int i = 0; i < relatedProcessings.size(); i++) {
+                if (relatedProcessings.get(i).getProId().equals(processingId)) {
+                    token = relatedProcessings.get(i).getToken();
+                    break;
+                }
+            }
+        }else {
+            List<RelatedVisualization> relatedVisualizations = dataItem.getRelatedVisualizations();
+            for (int i=0;i<relatedVisualizations.size();i++){
+                if (relatedVisualizations.get(i).getProId().equals(processingId)){
+                    token = relatedVisualizations.get(i).getToken();
+                    break;
+                }
+            }
+        }
+        jsonObject.put("dataItemName", dataItemName);
+        jsonObject.put("token", token);
+        jsonObject.put("userId", userId);
+        jsonObject.put("dataId", dataItem.getDistributedNodeDataId());
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "delProcessing",method = RequestMethod.DELETE)
+    public JsonResult delProcessing(@RequestParam(value = "pcsId") String pcsId,
+                                    @RequestParam(value = "type") String type){
+        JsonResult jsonResult = new JsonResult();
+        Boolean exist = true;
+        if (type.equals("process")) {
+            org.springframework.data.mongodb.core.query.Criteria criteria = org.springframework.data.mongodb.core.query.Criteria.where("RelatedProcessing").elemMatch(Criteria.where("proId").is(pcsId));
+            Query query = new Query(criteria);
+            List<DataItem> dataItems = mongoTemplate.find(query, DataItem.class);
+            if (dataItems.size() == 0){
+                exist = false;
+            }
+            for (int i = 0; i < dataItems.size(); i++) {
+                DataItem dataItem = dataItems.get(i);
+                List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+                for (int j = 0; j < relatedProcessings.size(); j++) {
+                    if (relatedProcessings.get(j).getProId().equals(pcsId)) {
+                        relatedProcessings.remove(j);
+                        break;
+                    }
+                }
+                dataItemDao.save(dataItem);
+            }
+        }else if (type.equals("visual")){
+            Criteria criteria = Criteria.where("relatedVisualizations").elemMatch(Criteria.where("proId").is(pcsId));
+            Query query = new Query(criteria);
+            List<DataItem> dataItems = mongoTemplate.find(query, DataItem.class);
+            if (dataItems.size() == 0){
+                exist = false;
+            }
+            for (int i=0;i<dataItems.size();i++){
+                DataItem dataItem = dataItems.get(i);
+                List<RelatedVisualization>relatedVisualizations = dataItem.getRelatedVisualizations();
+                for (int j=0;j<relatedVisualizations.size();j++){
+                    if (relatedVisualizations.get(j).getProId().equals(pcsId)){
+                        relatedVisualizations.remove(j);
+                        break;
+                    }
+                }
+                dataItemDao.save(dataItem);
+            }
+        }
+        if (exist == false){
+            jsonResult.setMsg("This processing method does not exist");
+            jsonResult.setCode(-1);
+        }else {
+            jsonResult.setMsg("delete success");
+            jsonResult.setCode(0);
+        }
+        return jsonResult;
+    }
 
 }

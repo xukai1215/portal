@@ -4553,7 +4553,7 @@ var vue = new Vue({
             if (this.downloadDataSet.length > 0) {
 
                 const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                let url = "http://111.229.14.128:8082/dataResource/getResources?" + keys;
+                let url = "http://221.226.60.2:8082/dataResource/getResources?" + keys;
                 window.open(url)
                 // let link = document.createElement('a');
                 // link.style.display = 'none';
