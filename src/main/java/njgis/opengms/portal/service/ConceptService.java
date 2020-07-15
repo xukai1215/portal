@@ -5,6 +5,8 @@ import njgis.opengms.portal.dao.ConceptDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.Concept.ConceptFindDTO;
 import njgis.opengms.portal.dto.Concept.ConceptResultDTO;
+import njgis.opengms.portal.entity.Concept;
+import njgis.opengms.portal.entity.support.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,6 +32,32 @@ public class ConceptService {
 
     @Value(value = "Public,Discoverable")
     private List<String> itemStatusVisible;
+
+    public void updateDescription(Concept concept){
+        Collections.sort(concept.getLocalizationList());
+        String description = "";
+        for(Localization localization:concept.getLocalizationList()){
+            String local = localization.getLocal();
+            if(local.contains("EN_")||local.contains("ZH_")){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    description = localization.getDescription();
+                    break;
+                }
+            }
+        }
+        if(description.equals("")){
+            for(Localization localization:concept.getLocalizationList()){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    description = localization.getDescription();
+                    break;
+                }
+            }
+        }
+        concept.setDescription(description);
+
+    }
 
     public JSONObject getConceptsByUserId(String oid, ConceptFindDTO conceptFindDTO, String loadUser) {
 

@@ -24,7 +24,7 @@ var vue = new Vue({
 
 //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
-            websocket = new WebSocket("ws://localhost:8080/websocket");
+            websocket = new WebSocket(websocketAddress);
             console.log("websocket 已连接");
         }
         else {

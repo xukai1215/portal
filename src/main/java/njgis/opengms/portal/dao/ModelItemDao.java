@@ -28,6 +28,8 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     ModelItem findFirstByName(String name);
 
+    List<ModelItem> findModelItemsByAuthor(String author);
+
     //Page<ModelItem> findByNameLike(String name, Pageable pageable);
 
     List<ModelItem> findByNameLike(@Param("name") String name);

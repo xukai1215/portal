@@ -683,7 +683,7 @@ var userTask = Vue.extend(
                 // this.dataItemAddDTO.meta.boundingRectangle=[];
 
                 let authorship = [];
-                this.getUserData($("#providersPanel .user-contents .form-control"), authorship);
+                userspace.getUserData($("#providersPanel .user-contents .form-control"), authorship);
                 this.taskDataForm.authorship = authorship;
                 console.log(this.taskDataForm)
                 this.taskDataForm.dataType = "File";
