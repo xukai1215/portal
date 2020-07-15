@@ -1221,10 +1221,10 @@
                                                                 :key = "index"
                                                                 style="margin-bottom: 5px"
                                                         >
-                                                        <div>
+                                                        <div v-if="comment.itemInfo">
                                                             <div style="font-size: 20px">{{comment.content}}</div>
                                                             <div style="float:right;display: inline-flex;padding: 5px;">
-                                                                <div v-if="comment.itemInfo.type=='modelItem'">
+                                                                <div v-if="comment.itemInfo.type&&comment.itemInfo.type=='modelItem'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/model.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1232,7 +1232,7 @@
                                                                     </div>
                                                                     <a :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='conceptualModel'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='conceptualModel'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/conceptual.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1240,7 +1240,7 @@
                                                                     </div>
                                                                     <a :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='logicalModel'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='logicalModel'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/logical.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1248,7 +1248,7 @@
                                                                     </div>
                                                                     <a :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='computableModel'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='computableModel'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/calcModel.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1256,7 +1256,7 @@
                                                                     </div>
                                                                     <a :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='concept'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='concept'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/semantics.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1264,7 +1264,7 @@
                                                                     </div>
                                                                     <a :href="'/repository/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='spatialReference'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='spatialReference'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/spatialreference.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1272,7 +1272,7 @@
                                                                     </div>
                                                                     <a :href="'/repository/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='unit'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='unit'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/unit.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1280,7 +1280,7 @@
                                                                     </div>
                                                                     <a :href="'/repository/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: block;margin-right: 20px;width: 100%">&nbsp{{comment.itemInfo.name}}</a>
                                                                 </div>
-                                                                <div v-else-if="comment.itemInfo.type=='template'">
+                                                                <div v-else-if="comment.itemInfo.type&&comment.itemInfo.type=='template'">
                                                                     <div style="margin-right:5px;">
                                                                         <a class="img" :href="'/'+comment.itemInfo.type+'/'+comment.itemInfo.oid+'#comments'" target="_blank" style="display: flex;">
                                                                             <img  src="../../static/img/model/template.png" style=" height: 20px;margin-bottom: 2px;">
@@ -1324,7 +1324,7 @@
                                                                 style = "margin-bottom: 5px"
                                                                 :style="{ backgroundColor: comment.color }"
                                                         >
-                                                        <div>
+                                                        <div v-if="comment.itemInfo">
                                                                 <div class="com-author-name" style="font-weight: bold ">
                                                                     <span>
                                                                         <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
