@@ -305,6 +305,8 @@ new Vue({
                     ''
                     ],
 
+                resourceSortElement:'viewCount',
+                resourceSortEleText:'viewcount',
             }
         },
 
@@ -500,7 +502,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.conceptHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         spatialClick(){
@@ -509,7 +511,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.spatialHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         templateClick(){
@@ -518,7 +520,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.templateHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         unitClick(){
@@ -527,7 +529,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.unitHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         // statsCardClick(index){
@@ -1803,42 +1805,27 @@ new Vue({
         searchResourceClick(index){
             this.pageOption.currentPage=1;
             this.resourceIndex=index;
-            this.isInSearch=1;
-            switch (index) {
-                case 1:
-                    this.searchText=$('#searchModel').val();
-                    break;
-                case 2:
-                    this.searchText=$('#searchData').val();
-                    break;
-                case 3:
-                    this.searchText=$('#searchConceptualModel').val();
-                    break;
-                case 4:
-                    this.searchText=$('#searchLogicalModel').val();
-                    break;
-                case 5:
-                    this.searchText=$('#searchComputableModel').val();
-                    break;
-                case 6:
-                    this.searchText=$('#searchConcept').val();
-                    break;
-                case 7:
-                    this.searchText=$('#searchSpatial').val();
-                    break;
-                case 8:
-                    this.searchText=$('#searchTemplate').val();
-                    break;
-                case 9:
-                    this.searchText=$('#searchUnit').val();
-                    break;
-            }
             this.searchResource();
 
         },
 
+        changeSort(){
+            this.pageOption.sortAsc=this.pageOption.sortAsc?false:true
+            this.pageOption.currentPage=1;
+            this.searchResource()
+
+        },
+
+        selectSortEle(command){
+            this.resourceSortElement = command
+            this.resourceSortEleText = command.toLowerCase()
+            this.pageOption.currentPage=1;
+            this.searchResource()
+        },
+
         searchResource(){
             $('html,body').animate({scrollTop:'0px'},200);
+            this.isInSearch=1;
             var urls={
                 1:'/modelItem/searchByNameByOid',
                 2:'/dataItem/searchByNameByOid',
@@ -1858,7 +1845,7 @@ new Vue({
                     page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.pageOption.sortAsc,
-                    sortElement:"viewCount",
+                    sortElement:this.resourceSortElement,
                     searchText:this.searchText,
                     oid:hrefs[hrefs.length-1]
                 },
@@ -2543,7 +2530,7 @@ new Vue({
         },
 
         exLinksAddToBack(){
-            // let  obj=[];
+            let  obj=[];
             for (let i = 0; i < this.exLinks.length ; i++) {
                 if(this.exLinks[i]!='')
                     obj.push(this.exLinks[i])

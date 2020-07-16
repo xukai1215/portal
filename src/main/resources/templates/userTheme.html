@@ -93,8 +93,8 @@
                                  class="contentCard_w100 flexCol flexColCenter">
                                 <div class="content_h32 flexRow noPadding">
                                     <div class="content_w68 flexJustStart">
-                                        <div>
-                                            <a :href="'/repository/theme/'+theme.oid"
+                                        <div class="flexColCenter w100">
+                                            <a class="w100" :href="'/repository/theme/'+theme.oid"
                                                @click="setSession('themeInfo_id',theme.model_oid)">
                                                 <h4 class="itemTitle">{{theme.themename}}</h4></a>
                                         </div>

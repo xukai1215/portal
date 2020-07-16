@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" href="/static/css/base/list.css">
@@ -1538,13 +1539,24 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Model Item</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchModel" class="searchInput" @keydown.enter="searchResourceClick(1)"/>
+
+                                            <input id="searchModel" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(1)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(1)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                    <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1561,7 +1573,8 @@
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
                                                 <a :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
+                                                    <h4 class="maxW80 ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
+
                                                 </a>
                                                 <div :class="modelItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
@@ -1593,11 +1606,11 @@
 
                                     </div>
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
-                                        <div class="tags" v-if="modelItem.keywords.length>0">
+                                        <div class="tags">
                                             <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
                                         </div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.createTime.substring(0,10)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{modelItem.createTime.substring(0,10)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1628,13 +1641,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Data Item</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchData" class="searchInput" @keydown.enter="searchResourceClick(2)"/>
+                                            <input id="searchData" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(2)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(2)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1642,7 +1665,7 @@
                                 <div class="itemCardCol" style="display: flex;width: 98%;height: auto;max-height: 225px;margin-top: 7px;border: none">
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
-                                            <div>
+                                            <div style="display: flex">
                                                 <a :href="'/dataItem/'+ dataItem.oid" target="_blank">
                                                     <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4>
                                                 </a>
@@ -1678,7 +1701,7 @@
 
                                         </div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{dataItem.createTime.substring(0,10)+' '+dataItem.createTime.substring(11,19)}}</a>
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{dataItem.createTime.substring(0,10)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1709,13 +1732,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Conceptual Model</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchConceptualModel" class="searchInput" @keydown.enter="searchResourceClick(3)"/>
+                                            <input id="searchConceptualModel" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(3)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(3)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1761,7 +1794,7 @@
 
                                         </div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)+' '+conceptualModel.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{conceptualModel.createTime.substring(0,10)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1792,13 +1825,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Logical Model</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchLogicalModel" class="searchInput" @keydown.enter="searchResourceClick(4)"/>
+                                            <input id="searchLogicalModel" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(4)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(4)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1842,7 +1885,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{logicalModel.createTime.substring(0,10)+' '+logicalModel.createTime.substring(11,19)}}</a>
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{logicalModel.createTime.substring(0,10)</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1873,13 +1916,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Computable Model</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchComputableModel" class="searchInput" @keydown.enter="searchResourceClick(5)"/>
+                                            <input id="searchComputableModel" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(5)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(5)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -1923,7 +1976,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{computableModel.createTime.substring(0,10)+' '+computableModel.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{computableModel.createTime.substring(0,10)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1954,13 +2007,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Concept & Semantic</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchConcept" class="searchInput" @keydown.enter="searchResourceClick(6)"/>
+                                            <input id="searchConcept" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(6)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(6)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -2007,7 +2070,7 @@
                                         <!--                                        </div>-->
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a v-if="concept.createTime" class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{concept.createTime.substring(0,10)+' '+concept.createTime.substring(11,19)}}
+                                            <a v-if="concept.createTime" class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{concept.createTime.substring(0,10)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2038,13 +2101,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Spatial Reference</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchSpatial" class="searchInput" @keydown.enter="searchResourceClick(7)"/>
+                                            <input id="searchSpatial" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(7)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(7)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -2088,7 +2161,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{spatial.createTime.substring(0,10)+' '+spatial.createTime.substring(11,19)}}</a>
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{spatial.createTime.substring(0,10)</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2119,13 +2192,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Data Template</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchTemplate" class="searchInput" @keydown.enter="searchResourceClick(8)"/>
+                                            <input id="searchTemplate" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(8)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(8)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -2169,7 +2252,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{template.createTime.substring(0,10)+' '+template.createTime.substring(11,19)}}</a>
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{template.createTime.substring(0,10)</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2200,13 +2283,23 @@
                                     <h4 style="margin-top: 10px;color: #999999;">Unit & Metric</h4>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer  searchInputContainer">
-                                            <input id="searchUnit" class="searchInput" @keydown.enter="searchResourceClick(9)"/>
+                                            <input id="searchUnit" class="searchInput" v-model="searchText" @keydown.enter="searchResourceClick(9)"/>
                                             <button class="confirmButton noMargin" @click="searchResourceClick(9)" >
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                                <el-dropdown split-button type="primary" plain size="small" trigger="click" @command="selectSortEle" @click="changeSort()">
+                                   <i v-if="pageOption.sortAsc" class="fa fa-sort-amount-asc"></i>
+                                    <i v-else class="fa fa-sort-amount-desc"></i>
+                                    <p style="float:right">{{resourceSortEleText}}</p>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="viewCount">View Count</el-dropdown-item>
+                                        <el-dropdown-item command="name">Name</el-dropdown-item>
+                                        <el-dropdown-item command="createTime">Create Time</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
                         <div class="contentColContainer modelTable" style="margin-top: 0">
@@ -2250,7 +2343,7 @@
                                     <div class="cardDowner" style="display: flex; background-color: rgba(232,232,232,0.5);min-height: 40px;max-height: 54px" >
                                         <div></div>
                                         <div style="padding-right: 10px">
-                                            <a class="fa fa-calendar" aria-hidden="true"></a>&nbsp&nbsp{{unit.createTime.substring(0,10)+' '+unit.createTime.substring(11,19)}}
+                                            <a class="fa fa-calendar" aria-hidden="true">&nbsp&nbsp{{unit.createTime.substring(0,10)}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2336,7 +2429,7 @@
                                         <div class="cardHeadContainer" style="max-height: 110px;">
                                             <div class="subTitle" style="height: auto;max-height: 105px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-                                                    <h4 class="fourLine">{{article.title}}</h4>
+                                                    <h4 class="twoLine">{{article.title}}</h4>
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
@@ -2538,7 +2631,7 @@
                         <div  class="contentColContainer" style="margin-bottom: 0">
                             <div class="subTitle" >
                                 <div class="colCenter" style="display: flex;justify-content: flex-start;width: 60%">
-                                    <div><h4 style="margin-top: 10px;">Projects</h4></div>
+                                    <div><h4  style="margin-top: 10px;">Projects</h4></div>
                                     <div class="colCenter searchContainer" style="display: flex;justify-content: flex-start;flex: 1;">
                                         <div class="contentContainer   searchInputContainer">
                                             <input id="searchProject" class="searchInput" @keydown.enter="searchResearchClick(2)"/>
@@ -2564,7 +2657,7 @@
                                             <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
 
-                                                    <h4>{{project.projectName}}</h4>
+                                                    <h4 class="twoLine">{{project.projectName}}</h4>
 
                                                     <div :class="project.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
@@ -2736,7 +2829,7 @@
                                             <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
 
-                                                    <h4>{{conference.title}}</h4>
+                                                    <h4 class="twoLine">{{conference.title}}</h4>
 
                                                     <div :class="conference.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
@@ -2881,6 +2974,7 @@
 <script src="../static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="../static/js/common/navbar.js"></script>
+<script src="/static/element-ui/index.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script type="text/javascript" src="/static/js/common/moment-with-locales.min.js"></script>
 <script type="text/javascript" src="/static/js/common/moment-timezone-with-data-2012-2022.min.js"></script>

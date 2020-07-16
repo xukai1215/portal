@@ -930,6 +930,25 @@ input::placeholder{
     background-image: linear-gradient(to right, rgb(253, 249, 244) 0%, rgb(216, 244, 249) 100%);
 }
 
+.w100{
+    width: 100%;
+}
+
+.maxW80{
+    max-width: 80%;
+}
+
+.subTitle.resourceTitle a{
+    max-width: 600px;
+}
+
+.ellipText{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
 .tags{
     margin-left: 5px;
     max-width: 750px;
@@ -971,6 +990,14 @@ input::placeholder{
     color: #999999;
     transform: rotate(45deg);
     z-index: 5;
+}
+
+.twoLine{
+    word-break: break-all;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .fourLine{
@@ -1091,10 +1118,11 @@ input::placeholder{
     align-items: center;
     width: 100%;
     margin-left: 15px;
-
+    padding-right: 15px;
 }
 
 .modelInfo p{
+    word-break: break-word;
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
@@ -1884,5 +1912,9 @@ input[type="radio"]:checked + span {
 @media only screen and (max-width: 841px){
     .leftPersonInfo,.rightPersonInfo{
         width: 100%;
+    }
+
+    .subTitle.resourceTitle a{
+        max-width: 400px;
     }
 }
