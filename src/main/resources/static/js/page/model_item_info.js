@@ -85,6 +85,44 @@ var info=new Vue({
             selectedModels: [],
             selectedModelsOid: [],
 
+            options: [{
+                // label: 'Basic',
+                options: [{
+                    value: '0',
+                    label: 'Connected with'
+                }, {
+                    value: '7',
+                    label: 'Similar to'
+                }, {
+                    value: '8',
+                    label: 'Coexist in'
+                }]
+            }, {
+                // label: 'Child',
+                options: [{
+                    value: '1',
+                    label: 'Evolved from'
+                }, {
+                    value: '2',
+                    label: 'Belongs to'
+                }, {
+                    value: '3',
+                    label: 'Integrated into'
+                }]
+            }, {
+                // label: 'Parent',
+                options: [{
+                    value: '4',
+                    label: 'Inspires'
+                }, {
+                    value: '5',
+                    label: 'Contains'
+                }, {
+                    value: '6',
+                    label: 'Employs/Depends on'
+                }]
+            }],
+
 
         }
     },
@@ -97,6 +135,17 @@ var info=new Vue({
                 }
                 else {
                     this.authorshipFormVisible = true;
+                }
+            })
+        },
+        feedBack(){
+            $.get("/user/load",{},(result)=>{
+                let json = JSON.parse(result);
+                if (json.oid == "") {
+                    this.confirmLogin();
+                }
+                else {
+                    window.location.href = "/user/userSpace#/feedback"
                 }
             })
         },
@@ -795,11 +844,18 @@ var info=new Vue({
             let oid = arr[arr.length - 1].split("#")[0];
 
             let relateArr = [];
-            this.tableData.forEach(function (item, index) {
-                relateArr.push(item.oid);
-            })
-            if (relateArr.length == 0) {
-                relateArr.push(null);
+            let url = '';
+            if(this.relateType!="modelItem") {
+                url = "/modelItem/setRelation";
+                this.tableData.forEach(function (item, index) {
+                    relateArr.push(item.oid);
+                })
+                if (relateArr.length == 0) {
+                    relateArr.push(null);
+                }
+            }else{
+                url = "/modelItem/setModelRelation";
+
             }
 
             var data = {
@@ -814,12 +870,24 @@ var info=new Vue({
                 data: data,
                 async: true,
                 success: (json) => {
-                    alert("Success!");
-                    this.dialogTableVisible = false;
-                    window.location.reload();
+                    this.$alert('Success!', 'Tip', {
+                        type:'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            this.dialogTableVisible = false;
+                            window.location.reload();
+                        }
+                    });
+
                 },
                 error: (json) => {
-                    alert("Error!")
+                    this.$alert('Submitted failed!', 'Error', {
+                        type:'error',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                        }
+                    });
                 }
             })
         },

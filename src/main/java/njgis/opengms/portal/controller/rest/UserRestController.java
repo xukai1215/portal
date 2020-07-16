@@ -62,6 +62,24 @@ public class UserRestController {
         userService.sendEmailToUser(uid,email);
     }
 
+    @RequestMapping(value = "/getModelCounts", method = RequestMethod.GET)
+    public JsonResult getModelCounts(HttpServletRequest request){
+        JSONObject result = new JSONObject();
+        String userName = Utils.checkLoginStatus(request.getSession());
+        if(userName!=null){
+            User user = userService.getByUid(userName);
+            result.put("modelItem",user.getModelItems());
+            result.put("conceptualModel",user.getConceptualModels());
+            result.put("logicalModel",user.getLogicalModels());
+            result.put("computableModel",user.getComputableModels());
+            return ResultUtils.success(result);
+        }
+        else{
+            return ResultUtils.error(-1,"no login");
+        }
+
+    }
+
     @RequestMapping(value = "/changeSubscribedModelList", method = RequestMethod.GET)
     public ModelAndView changeSubscribedModelList(@RequestParam("id") String id, HttpServletRequest request){
 

@@ -13,7 +13,7 @@ public class Unit extends Item {
 
     String image;
 
-    String alias;
+//    String alias;
     String type;
     String parentId;
     String xml;

@@ -483,16 +483,16 @@
                     </div>
                 </div>
 
-                <el-dialog title="Reference info" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
-                    <div class="wzhScrollbar" style="max-height: 500px" >
+                <el-dialog title="Reference Info" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+                    <div class="wzhScrollbar" style="max-height: 500px;padding-right:10px" >
                         <div class="tab-content" v-loading="doiLoading">
                             <div class="tab-pane active articleInfo" id="manually" >
                                 <div class="form-group">
                                     <label for="doiTitle" class="col-sm-2 control-label">
                                         Get by doi :
                                     </label>
-                                    <el-tag size="mini" primary>Input the doi and click search, information may be filled automaticly. </el-tag>
-                                    <div class="input-group col-md-12" style="padding: 0 15px">
+                                    <el-tag size="middle" primary>Enter the doi and click search, information may be filled automaticly. </el-tag>
+                                    <div class="input-group col-md-12">
                                         <input id="doiTitle" type="text"
                                                class="form-control" v-model="doi">
                                         <span class="input-group-btn" style="width: 19%">
@@ -505,16 +505,16 @@
 
                                 <div class="form-group">
                                     <label for="refTitle"
-                                           class="col-sm-4 control-label">Title</label>
-                                    <div class="col-sm-12">
+                                           class="col-sm-12 control-label">Title</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="refTitle"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refAuthor"
-                                           class="col-sm-4 control-label">Author</label>
-                                    <div class="col-sm-12">
+                                           class="col-sm-12 control-label">Author</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="refAuthor"/>
                                         <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
@@ -523,40 +523,40 @@
 
                                 <div class="form-group">
                                     <label for="refDate"
-                                           class="col-sm-4 control-label">Date</label>
-                                    <div class="col-sm-12">
+                                           class="col-sm-12 control-label">Date</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="refDate"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refJournal"
-                                           class="col-sm-4 control-label">Journal</label>
-                                    <div class="col-sm-12">
+                                           class="col-sm-12 control-label">Journal</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="refJournal"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="volumeIssue"
-                                           class="col-sm-4 control-label">Volume(issue)</label>
-                                    <div class="col-sm-12">
+                                           class="col-sm-12 control-label">Volume(issue)</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="volumeIssue"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refPages"
-                                           class="col-sm-4 control-label">Page Range</label>
-                                    <div class="col-sm-12" style="display: flex;justify-content: space-between">
+                                           class="col-sm-12 control-label">Page Range</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="refPages"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refLink"
-                                           class="col-sm-4 control-label">Link</label>
-                                    <div class="col-sm-12">
+                                           class="col-sm-12 control-label">Link</label>
+                                    <div>
                                         <input type="text" class="form-control"
                                                id="refLink"/>
                                     </div>

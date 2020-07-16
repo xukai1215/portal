@@ -69,15 +69,15 @@
                     <div slot="header" class="clearfix text-center">
                         <span style="font-size: 20px;color:#444">Model Classifications</span>
                     </div>
+
                     <el-tree
                             id="tree1"
                             ref="tree1"
                             :data="treeData"
                             :highlight-current="true"
-                            :expand-on-click-node="false"
                             node-key="id"
-                            :default-expanded-keys="[64,66]"
-                            :current-node-key="2"
+                            :default-expanded-keys="[1,64]"
+                            :current-node-key="1"
                             @current-change="handleCurrentChange"
                             :props="defaultProps">
                     </el-tree>

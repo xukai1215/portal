@@ -17,7 +17,7 @@ public class Concept extends Item {
 
     List<String> related;
 
-    String alias;
+//    String alias;
     String urn;
     String xml;
 //    String description_ZH;

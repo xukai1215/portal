@@ -10,10 +10,8 @@ import com.mongodb.client.MongoCursor;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.*;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Article;
-import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.Localization;
-import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.*;
+import njgis.opengms.portal.enums.RelationTypeEnum;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -117,6 +115,19 @@ public class ModelItemService {
         }catch (MyException e){
             modelAndView.setViewName("error/404");
             return modelAndView;
+        }
+
+        if(modelInfo.getStatus().equals("Private")) {
+            String userName = Utils.checkLoginStatus(request.getSession());
+            if (userName==null){
+                modelAndView.setViewName("error/404");
+                return modelAndView;
+            }else{
+                if(!userName.equals(modelInfo.getAuthor())){
+                    modelAndView.setViewName("error/404");
+                    return modelAndView;
+                }
+            }
         }
 
         modelInfo=(ModelItem)itemService.recordViewCount(modelInfo);
@@ -606,16 +617,18 @@ public class ModelItemService {
                 }
                 break;
             case "modelItem":
-                list=relation.getModelItems();
+                List<ModelRelation> modelRelationList = modelItem.getModelRelationList();
+//                list=relation.getModelItems();
                 if(list!=null) {
-                    for (String id : list) {
-                        ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
+                    for (ModelRelation modelRelation : modelRelationList) {
+                        ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelation.getOid());
                         if(modelItem1.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
                         item.put("oid", modelItem1.getOid());
                         item.put("name", modelItem1.getName());
+                        item.put("type", modelRelation.getRelation());
                         item.put("author", userService.getByUid(modelItem1.getAuthor()).getName());
                         item.put("author_uid", modelItem1.getAuthor());
                         result.add(item);
@@ -747,6 +760,53 @@ public class ModelItemService {
         return result;
     }
 
+
+    public String setModelRelation(String oid,List<ModelRelation> modelRelationListNew){
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+        List<ModelRelation> modelRelationListOld = modelItem.getModelRelationList();
+
+        List<ModelRelation> relationIntersection = new ArrayList<>();
+
+        for(int i = 0;i<modelRelationListNew.size();i++){
+            for(int j=0;j<modelRelationListOld.size();j++){
+                if(modelRelationListNew.get(i).getOid().equals(modelRelationListOld.get(j).getOid())){
+                    relationIntersection.add(modelRelationListNew.get(i));
+                    break;
+                }
+            }
+        }
+
+        for(int i=0;i<modelRelationListNew.size();i++){
+            ModelRelation modelRelation = modelRelationListNew.get(i);
+            boolean exist = false;
+            for(int j=0;j<relationIntersection.size();j++){
+                if(modelRelation.getOid().equals(relationIntersection.get(j).getOid())){
+                    exist = true;
+                    break;
+                }
+            }
+            if(!exist){
+
+                ModelRelation  modelRelation1 = new ModelRelation();
+                modelRelation1.setOid(oid);
+                modelRelation1.setRelation(RelationTypeEnum.getOpposite(modelRelation.getRelation().getNumber()));
+                ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelation.getOid());
+                modelItem1.getModelRelationList().add(modelRelation1);
+            }
+        }
+
+        return "";
+//        List<ModelRelation> relationDelete = new ArrayList<>();
+//        List<ModelRelation> relationAdd = new ArrayList<>();
+//
+//        for(int i=0;i<modelRelationList1.size();i++){
+//            relationDelete.add(modelRelationList1.get(i));
+//        }
+//        for(int i=0;i<modelRelationList.size();i++){
+//            relationAdd.add(modelRelationList.get(i));
+//        }
+    }
+
     public String setRelation(String oid,String type,List<String> relations){
 
         ModelItem modelItem=modelItemDao.findFirstByOid(oid);
@@ -776,7 +836,7 @@ public class ModelItemService {
                         }
                     }
                 }
-
+                //找到对应条目，删除关联
                 for(int i=0;i<relationDelete.size();i++){
                     String id=relationDelete.get(i);
                     if(!id.equals("")) {
@@ -787,7 +847,7 @@ public class ModelItemService {
                         }
                     }
                 }
-
+                //找到对应条目，添加关联
                 for(int i=0;i<relationAdd.size();i++){
                     String id=relationAdd.get(i);
                     if(!id.equals("")) {

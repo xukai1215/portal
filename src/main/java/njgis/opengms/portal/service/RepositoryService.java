@@ -404,7 +404,7 @@ public class RepositoryService {
 //    }
 
     public JSONObject searchConcept(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<ConceptResultDTO> concepts = conceptDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
@@ -425,7 +425,7 @@ public class RepositoryService {
     }
 
     public JSONObject getConceptList(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<ConceptResultDTO> concepts;
@@ -1086,7 +1086,7 @@ public class RepositoryService {
     }
 
     public JSONObject searchTemplate(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
@@ -1107,7 +1107,7 @@ public class RepositoryService {
     }
 
     public JSONObject getTemplateList(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<TemplateResultDTO> templates;

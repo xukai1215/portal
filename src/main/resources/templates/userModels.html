@@ -50,6 +50,7 @@
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
         <template id="userModels" th:fragment="userModels">
+
             <div class="innerShadowCol">
                 <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
                      style="margin-left: 240px;padding-bottom: 100px"
@@ -151,18 +152,18 @@
 
                 </div>
             </div>
+
         </template>
 
-
-            <!--        </div>-->
-
-
-        </div>
     </div>
+
+
 </div>
 <!--子组件-->
 <template id="modelItemShow" th:fragment="modelItemShow">
+
     <div class="" style="width: 100%;">
+
         <div v-for="(modelItem,index) in searchResultRaw" :key="index"
              class="contentCard_w100 flexCol flexColCenter">
             <div class="content_h32 flexRow noPadding">
@@ -180,7 +181,7 @@
                         <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-20 pull-right"></i>
                         <i v-if="modelItem.status=='Private'" class="el-icon-lock private fontsize-20 pull-right"></i>
                     </el-tooltip>
-                    <div v-if="getType()=='computablemodel'" class="lineButton flexJustStart flexColCenter" @click="statistics(modelItem.oid)">
+                    <div v-if="getType()=='computablemodel'||getType()=='modelitem'" class="lineButton flexJustStart flexColCenter" @click="statistics(modelItem.oid,modelItem.name)">
                         <i class="el-icon-data-analysis" style="margin-right: 5px;font-size: 20px"></i>
                         <!--<div class="lineButton flexCol">-->
                             <!--<p style="margin-block-end: 0">Statistics</p>-->
@@ -227,6 +228,19 @@
                 </div>
             </div>
         </div>
+        <el-dialog
+                :title="chartDialogTitle"
+                :visible.sync="chartDialogVisible"
+                @opened="modelStats"
+                :modal="true"
+                :modal-append-to-body="false"
+                :append-to-body="true"
+                :destroy-on-close="true"
+
+                width="50%"
+                style="z-index: 3000;">
+            <div id="chart" style="height: 200px"></div>
+        </el-dialog>
     </div>
 
 </template>

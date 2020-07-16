@@ -11,6 +11,7 @@ import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.ModelRelation;
 import njgis.opengms.portal.service.ComputableModelService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.StatisticsService;
@@ -217,6 +218,16 @@ public class ModelItemRestController {
                            @RequestParam(value = "relations[]") List<String> relations){
 
         String result=modelItemService.setRelation(oid,type,relations);
+
+        return ResultUtils.success(result);
+
+    }
+
+    @RequestMapping(value="/setModelRelation",method = RequestMethod.POST)
+    JsonResult setModelRelation(@RequestParam(value="oid") String oid,
+                           @RequestParam(value = "relations[]") List<ModelRelation> relations){
+
+        String result=modelItemService.setModelRelation(oid,relations);
 
         return ResultUtils.success(result);
 

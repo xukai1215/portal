@@ -58,16 +58,22 @@
         <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title" th:object="${datainfo}">
-                    <el-tooltip popper-class="fontsize-15" th:content="${datainfo.data.status}" effect="light" placement="left">
-                        <i th:if="${datainfo.data.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
-                        <i th:if="${datainfo.data.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
-                        <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
-                    </el-tooltip>
-                    <h2 style="display: inline-block" th:text="${datainfo.data.name}">name&p&nbspnbs</h2>&nbsp&nbsp&nbsp&nbsp
-                    <a th:if="${datainfo.data.status=='Public'&&datainfo.data.lock!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
-                    <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
-                        <li th:if="${datainfo.data.status=='Public'&&history!=true&&datainfo.data.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
-                    </el-tooltip>
+                    <h2 style="display: inline-block" th:text="${datainfo.data.name}"></h2>
+                    <div class="pull-right">
+
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <a th:if="${datainfo.data.status=='Public'&&datainfo.data.lock!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="top">
+                            <li th:if="${datainfo.data.status=='Public'&&history!=true&&datainfo.data.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15" th:content="${datainfo.data.status}" effect="light" placement="top">
+                            <i th:if="${datainfo.data.status=='Public'}" class="el-icon-unlock public fontsize-2em"></i>
+                            <i th:if="${datainfo.data.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em"></i>
+                            <i th:if="${datainfo.data.status=='Private'}" class="el-icon-lock private fontsize-2em"></i>
+                        </el-tooltip>
+
+                    </div>
                 </div>
 
                 <div class="detail_overview">
@@ -103,8 +109,11 @@
             <div id="Owner0" class="detail_block minScreen">
 
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">
@@ -145,7 +154,7 @@
                         </span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
                         <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
-                             style="">6
+                             style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
                                     <dt th:if="${author.ins!=''&&author.ins!=null}">Affiliation：</dt>
@@ -159,6 +168,9 @@
                                 </dl>
                             </div>
                         </div>
+                    </div>
+                    <div th:if="${#lists.size(datainfo.data.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack" style="text-decoration: underline">Feed back</a></el-tag>
                     </div>
                 </div>
             </div>
@@ -205,7 +217,7 @@
                     <div class="head_text">
                         <h4>Data Resource</h4>
                     </div>
-                </div>&nbsp;&nbsp;
+                </div>
                 <el-card>
                 <div class="el-card dataitemisol is-never-shadow"
                      th:each="data,key:${userDataList}"
@@ -236,7 +248,7 @@
                     </a>
                 </div>
                 </el-card>
-            </div>&nbsp;&nbsp;
+            </div>
 
             <!--Distributed Node Data-->
             <div th:if="${#arrays.length(fileName)}" id="distributedNodeData" class="detail_block">
@@ -244,7 +256,7 @@
                     <div class="head_text">
                         <h4>Distributed Node Data</h4>
                     </div>
-                </div>&nbsp;&nbsp;
+                </div>
                 <div>
                     <el-card>
                         <div class="el-card dataitemisol is-never-shadow"
@@ -277,12 +289,12 @@
                         </div>
                     </el-card>
 
-                </div>&nbsp;&nbsp;
+                </div>
                 <div>
                     <p style="display: inline-block">You can apply to download this data:</p>
                     <button class="value"  style="display: inline-block">DownLoad</button>
                 </div>
-            </div>&nbsp;&nbsp;
+            </div>
 
             <!--description-->
             <div th:if="${datainfo.data.detail!=''&&datainfo.data.detail!=null}" id="description" class="detail_block">
@@ -678,9 +690,13 @@
             <div id="Owner" class="detail_block">
 
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
+
                 </div>
                 <div class="block_content">
                     <div class="el-row" style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
@@ -734,6 +750,11 @@
                             </div>
                         </div>
                     </div>
+
+                    <div th:if="${#lists.size(datainfo.data.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack" style="text-decoration: underline">Feed back</a></el-tag>
+                    </div>
+
                 </div>
             </div>
 
@@ -798,8 +819,8 @@
             </el-card>
 
             <el-card shadow="never" class="box-card" style="width:59%;">
-                <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
-                    <el-button slot="append" icon="el-icon-search" @keyup.enter.native="search()" @click="search()"></el-button>
+                <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true" @keyup.enter.native="search()">
+                    <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
                 </el-input>
                 <el-table
                         :data="pageOption.searchResult"
@@ -845,13 +866,11 @@
                 </el-pagination>
             </el-card>
             <div slot="footer" class="dialog-footer">
-                <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer"
-                                                                             @click="jump">here</a> to create a new one.</span>
+
                 <el-button @click="dialogTableVisible = false;">Cancel</el-button>
                 <el-button type="primary" @click="confirm()">OK</el-button>
             </div>
         </el-dialog>
-
 
     </div>
 

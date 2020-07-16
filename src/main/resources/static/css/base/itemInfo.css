@@ -12,12 +12,16 @@ dd{
     margin-bottom:3px;
 }
 
+.fa-pencil{
+    margin: 4px 10px 0 0;
+}
+
 .el-icon-unlock{
-    padding: 4px 20px 0 0;
+    margin: 4px 16px 0 0;
 }
 
 .el-icon-lock{
-    padding: 4px 20px 0 0;
+    margin: 4px 16px 0 0;
 }
 
 .left-panel {

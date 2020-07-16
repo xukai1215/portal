@@ -14,7 +14,7 @@ new Vue({
             classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
             classifications2: [],
 
-            currentClass: "Hydrosphere",
+            currentClass: "Earth System Subject",
 
             pageOption: {
                 paginationShow:false,
@@ -484,7 +484,9 @@ new Vue({
             window.scrollTo(0, 0);
             this.getModels();
         },
-        handleCurrentChange(data, checked, indeterminate) {
+
+        handleCurrentChange(data) {
+
             this.switchInit();
             this.setUrl("/modelItem/repository?category="+data.oid);
             // this.pageOption.searchResult=[];

@@ -107,6 +107,35 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
     @Test
+    public void addConceptViewCount(){
+        List<ViewRecord> viewRecordList = viewRecordDao.findAllByItemType(ItemTypeEnum.Concept);
+        List<String> oids = new ArrayList<>();
+        List<Integer> viewCounts = new ArrayList<>();
+        for(ViewRecord viewRecord:viewRecordList){
+            boolean exist = false;
+            for(int i = 0;i<oids.size();i++) {
+                if (viewRecord.getItemOid().equals(oids.get(i))){
+                    exist = true;
+                    viewCounts.set(i,viewCounts.get(i)+1);
+                    break;
+                }
+            }
+            if(!exist){
+                oids.add(viewRecord.getItemOid());
+                viewCounts.add(1);
+            }
+        }
+
+        for(int i = 0;i<oids.size();i++){
+            Concept concept = conceptDao.findByOid(oids.get(i));
+            if(concept!=null) {
+                concept.setViewCount(viewCounts.get(i));
+                conceptDao.save(concept);
+            }
+        }
+    }
+
+    @Test
     public void hideCSDMS(){
         int count = 0;
         List<ModelItem> modelItemList = modelItemDao.findAll();
@@ -337,15 +366,42 @@ public class PortalApplicationTests {
     }
 
     @Test
+    public void removeYueTX(){
+        List<Item> modelItemList = modelItemDao.findAllByAuthor("yue@lreis.ac.cn");
+        for(int i=0;i<modelItemList.size();i++){
+            String oid = modelItemList.get(i).getOid();
+            ItemTypeEnum itemType = ItemTypeEnum.ModelItem;
+            //删除之前随机的记录
+            removeViewRecord(itemType, oid);
+            if(i%100==0){
+                System.out.println("ModelItem: "+i);
+            }
+        }
+
+        List<Item> computableModelList = computableModelDao.findAllByAuthor("yue@lreis.ac.cn");
+        for(int i=0;i<computableModelList.size();i++){
+            String oid = computableModelList.get(i).getOid();
+            ItemTypeEnum itemType = ItemTypeEnum.ComputableModel;
+            //删除之前随机的记录
+            removeViewRecord(itemType, oid);
+            if(i%100==0){
+                System.out.println("ComputableModel: "+i);
+            }
+        }
+
+
+    }
+
+    @Test
     public void random() {
 
         List<Item> computableModelList = computableModelDao.findAllByAuthor("yue@lreis.ac.cn");
         for(int i=0;i<100;i++){
             String oid = computableModelList.get(i).getOid();
-            randomComputableModel(oid);
+            userService.randomComputableModel(oid);
         }
 
-        randomComputableModel("a15b710e-6bb3-4471-b593-ef1ac5d6748b");
+//        randomComputableModel("40408986-3fa6-4c00-a19a-b1c5f8f62ef8");
 
     }
 
@@ -360,7 +416,6 @@ public class PortalApplicationTests {
 
         ComputableModel computableModel = computableModelDao.findFirstByOid(itemOid);
 
-        Date createTime = computableModel.getCreateTime();
         int view = computableModel.getViewCount();
         int invoke = computableModel.getInvokeCount();
 
@@ -410,8 +465,16 @@ public class PortalApplicationTests {
         Random random = new Random();
         random.nextInt(100);
 
+        Date createTime = computableModel.getCreateTime();
 
-        for (int i = 90; i > 0; i--) {
+
+        long ts = createTime.getTime();
+        long ts1 = new Date().getTime();
+
+        int days = (int)((ts1 - ts) / (1000 * 60 * 60 * 24));
+        if(days>90) days = 90;
+
+        for (int i = days; i > 0; i--) {
             Calendar c = Calendar.getInstance();//动态时间
             c.setTime(new Date());
             c.add(Calendar.DATE, -i);
@@ -1937,7 +2000,7 @@ public class PortalApplicationTests {
     }
 
     @Test
-    public void updateConcept() {
+    public void updateConcept() {//79fa01ca-97ac-4c3a-b64a-2bc37a1953e7
 
         List<Concept> list = conceptDao.findAll();
 

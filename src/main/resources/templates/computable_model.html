@@ -48,21 +48,25 @@
                     <a th:if="${history!=true}"
                        th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
                        class="el-icon-arrow-left" style="font-size: 20px"></a>
-                    <!--<el-tooltip popper-class="fontsize-15" effect="light" placement="left">-->
-                    <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
-                    <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
-                    <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
-                    <!--</el-tooltip>-->
+
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
+                    <div class="pull-right">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <a href="javascript:void(0);" th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" class='fa fa-pencil fa-2x' aria-hidden='true'
+                               @click="edit"></a>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="top">
+                            <li th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
+                        </el-tooltip>
 
-                    <a href="javascript:void(0);" th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" class='fa fa-pencil fa-2x' aria-hidden='true'
-                       @click="edit"></a>
-                    <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
-                        <li th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
-                    </el-tooltip>
-
-                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                        <el-tooltip popper-class="fontsize-15" th:content="${modelInfo.status}" effect="light" placement="top">
+                            <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em"></i>
+                            <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em"></i>
+                            <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em"></i>
+                        </el-tooltip>
+                        <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                    </div>
                 </div>
                 <div class="detail_overview">
 
@@ -114,9 +118,12 @@
 
             <div id="Contributor0" class="detail_block minScreen">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4 th:if="${history!=true}">Contributor</h4>
                         <h4 th:if="${history==true}">Modifier</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">
@@ -474,9 +481,12 @@
         <div class="right-panel el-col" style="border-left: #d2d2d2 solid 1px;margin-left:-1px">
             <div id="Contributor" class="detail_block">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4 th:if="${history!=true}">Contributor</h4>
                         <h4 th:if="${history==true}">Modifier</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">

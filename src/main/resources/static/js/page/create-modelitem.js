@@ -567,21 +567,21 @@ var createModelItem = Vue.extend({
 
         init:function () {
 
-            if ('WebSocket' in window) {
-                // this.socket = new WebSocket("ws://localhost:8080/websocket");
-                this.socket = new WebSocket(websocketAddress);
-                // 监听socket连接
-                this.socket.onopen = this.open;
-                // 监听socket错误信息
-                this.socket.onerror = this.error;
-                // 监听socket消息
-                this.socket.onmessage = this.getMessage
-
-            }
-            else {
-                alert('当前浏览器 Not support websocket');
-                console.log("websocket 无法连接");
-            }
+            // if ('WebSocket' in window) {
+            //     // this.socket = new WebSocket("ws://localhost:8080/websocket");
+            //     this.socket = new WebSocket(websocketAddress);
+            //     // 监听socket连接
+            //     this.socket.onopen = this.open;
+            //     // 监听socket错误信息
+            //     this.socket.onerror = this.error;
+            //     // 监听socket消息
+            //     this.socket.onmessage = this.getMessage
+            //
+            // }
+            // else {
+            //     alert('当前浏览器 Not support websocket');
+            //     console.log("websocket 无法连接");
+            // }
         },
         open: function () {
             console.log("socket连接成功")
@@ -1342,9 +1342,9 @@ var createModelItem = Vue.extend({
                                 that.modelitem_oid = currentUrl.substring(index + 1,currentUrl.length);
                                 console.log(that.modelitem_oid);
 
-                                that.getMessageNum(that.modelitem_oid);
-                                let params = that.message_num_socket;
-                                that.send(params);
+                                // that.getMessageNum(that.modelitem_oid);
+                                // let params = that.message_num_socket;
+                                // that.send(params);
                                 this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
                                     type:"success",
                                     confirmButtonText: 'OK',

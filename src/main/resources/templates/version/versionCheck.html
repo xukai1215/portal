@@ -15,6 +15,7 @@
         <el-tab-pane label="未审核的版本">
             <el-table
                     :data="tableData"
+                    :default-sort = "{prop: 'modifyTime', order: 'descending'}"
                     style="width: 100%">
                 <el-table-column
                         fixed
@@ -46,7 +47,7 @@
                                 class="viewBtn"
                                 size="middle"
                                 type="primary"
-                                @click="view($event)">View
+                                @click="view(scope.row)">View
                         </el-button>
                     </template>
                 </el-table-column>
@@ -55,8 +56,8 @@
                         label="Operations"
                         width="300">
                     <template slot-scope="scope">
-                        <el-button class="accept" type="success" size="middle" @click="accept($event)">Accept</el-button>
-                        <el-button class="reject" type="danger" size="middle" @click="reject($event)">Reject</el-button>
+                        <el-button class="accept" type="success" size="middle" @click="accept(scope.row)">Accept</el-button>
+                        <el-button class="reject" type="danger" size="middle" @click="reject(scope.row)">Reject</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,6 +65,7 @@
         <el-tab-pane label="接受的版本">
             <el-table
                     :data="tableData2"
+                    :default-sort = "{prop: 'modifyTime', order: 'descending'}"
                     style="width: 100%">
                 <el-table-column
                         fixed
@@ -95,7 +97,7 @@
                                 class="viewAcceptBtn"
                                 size="middle"
                                 type="primary"
-                                @click="viewAccept($event)">View
+                                @click="viewAccept(scope.row)">View
                         </el-button>
                     </template>
                 </el-table-column>
@@ -105,6 +107,7 @@
         <el-tab-pane label="拒绝的版本">
             <el-table
                     :data="tableData3"
+                    :default-sort = "{prop: 'modifyTime', order: 'descending'}"
                     style="width: 100%">
                 <el-table-column
                         fixed
@@ -136,7 +139,7 @@
                                 class="viewRejectBtn"
                                 size="middle"
                                 type="primary"
-                                @click="viewReject($event)">View
+                                @click="viewReject(scope.row)">View
                         </el-button>
                     </template>
                 </el-table-column>
@@ -182,88 +185,64 @@
                 },
 
                 view(event){
-                    let refLink=$(".viewBtn");
-                    for(i=0;i<refLink.length;i++){
-                        if(event.currentTarget===refLink[i]){
-                            if(this.tableData[i].type=="modelItem"){
-                                window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].originOid);
-                            }
-                            else{
-                                window.open("/version/"+this.tableData[i].type+"/"+this.tableData[i].oid);
-                            }
 
-                        }
+                    if(event.type=="modelItem"){
+                        window.open("/version/"+event.type+"/"+event.originOid);
                     }
-                    //console.log(event.currentTarget);
+                    else{
+                        window.open("/version/"+event.type+"/"+event.oid);
+                    }
+
                 },
                 viewAccept(event){
-                    let refLink=$(".viewAcceptBtn");
-                    for(i=0;i<refLink.length;i++){
-                        if(event.currentTarget===refLink[i]){
-                            window.open("/version/history/"+this.tableData2[i].type+"/"+this.tableData2[i].oid);
-                        }
-                    }
-                    //console.log(event.currentTarget);
+
+                    window.open("/version/history/"+event.type+"/"+event.oid);
+
                 },
                 viewReject(event){
-                    let refLink=$(".viewRejectBtn");
-                    for(i=0;i<refLink.length;i++){
-                        if(event.currentTarget===refLink[i]){
-                            window.open("/version/history/"+this.tableData3[i].type+"/"+this.tableData3[i].oid);
-                        }
-                    }
-                    //console.log(event.currentTarget);
+
+                    window.open("/version/history/"+event.type+"/"+event.oid);
+
                 },
                 accept(event){
-                    let accepts=$(".accept");
-
-                    for(i=0;i<accepts.length;i++){
-                        if(event.currentTarget===accepts[i]){
-                            let tableItem=this.tableData[i];
-                            let data={
-                                modifier:tableItem.modifier,
-                                type:tableItem.type,
-                                oid:tableItem.oid,
-                                originOid:tableItem.originOid
-                            };
-                            $.ajax({
-                                type:"POST",
-                                url:"/version/accept",
-                                contentType: "application/json",
-                                data: JSON.stringify(data),
-                                async: true,
-                                success:(json)=>{
-                                    window.location.reload();
-                                }
-                            })
+                    let data={
+                        modifier:event.modifier,
+                        type:event.type,
+                        oid:event.oid,
+                        originOid:event.originOid
+                    };
+                    $.ajax({
+                        type:"POST",
+                        url:"/version/accept",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
+                            window.location.reload();
                         }
-                    }
+                    })
+
 
                 },
                 reject(event){
-                    let rejects=$(".reject");
 
-                    for(i=0;i<rejects.length;i++){
-                        if(event.currentTarget===rejects[i]){
-                            let tableItem=this.tableData[i];
-                            let data={
-                                modifier:tableItem.modifier,
-                                type:tableItem.type,
-                                oid:tableItem.oid,
-                                originOid:tableItem.originOid
-                            }
-                            $.ajax({
-                                type:"POST",
-                                url:"/version/reject",
-                                contentType: "application/json",
-                                data:JSON.stringify(data),
-                                async: true,
-                                success:(json)=>{
-                                    window.location.reload();
-                                }
-                            })
-                        }
-                    }
+                     let data={
+                         modifier:event.modifier,
+                         type:event.type,
+                         oid:event.oid,
+                         originOid:event.originOid
+                     }
+                     $.ajax({
+                         type:"POST",
+                         url:"/version/reject",
+                         contentType: "application/json",
+                         data:JSON.stringify(data),
+                         async: true,
+                         success:(json)=>{
+                             window.location.reload();
+                         }
+                     })
+
                 }
 
             }

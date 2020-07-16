@@ -23,6 +23,7 @@ public class Item implements Serializable {
     String id;
     String oid;
     String name;
+    List<String> alias;
     //String image;
     String description;
     String detail;
@@ -38,7 +39,7 @@ public class Item implements Serializable {
     String status;
 
     //authorship
-    List<AuthorInfo> authorship;
+    List<AuthorInfo> authorship = new ArrayList<>();
 
     //version
     String lastModifier;
