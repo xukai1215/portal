@@ -38,4 +38,8 @@ public class SpatialRestController {
         return ResultUtils.success(spatialService.searchByTitleByOid(spatialFindDTO,oid,loadUser));
     }
 
+    @RequestMapping(value="/getWKT",method= RequestMethod.GET)
+    JsonResult searchByTitle(@RequestParam(value = "oid")String oid){
+        return ResultUtils.success(spatialService.getWKT(oid));
+    }
 }

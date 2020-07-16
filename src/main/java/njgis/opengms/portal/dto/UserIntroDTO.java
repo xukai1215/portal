@@ -9,4 +9,5 @@ public class UserIntroDTO {
     String description;
     List<String> researchInterests;
     List<String> subjectAreas;
+    List<String> externalLinks;
 }

@@ -1429,5 +1429,34 @@ public class ComputableModelService {
     }
 
 
+    public JSONObject loadDeployedModel(int asc,int page,int size){
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<ComputableModel> computableModelPage = computableModelDao.findAllByDeployAndStatusIn(true,itemStatusVisible,pageable);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("total",computableModelPage.getTotalElements());
+        jsonObject.put("content",computableModelPage.getContent());
+
+        return jsonObject;
+    }
+
+    public JSONObject searchDeployedModel(int asc,int page,int size,String searchText){
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<ComputableModel> computableModelPage = computableModelDao.findAllByDeployAndStatusInAndNameLikeIgnoreCase(true,itemStatusVisible,searchText,pageable);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("total",computableModelPage.getTotalElements());
+        jsonObject.put("content",computableModelPage.getContent());
+
+        return jsonObject;
+    }
+
+
 
 }

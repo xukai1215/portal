@@ -61,6 +61,8 @@ public class User {
 
     List<FileMeta> fileContainer;
 
+    List<String> externalLinks = new ArrayList<>();//存放用户的外部网站个人页面
+
     int modelItems;
     int dataItems;
     int conceptualModels;

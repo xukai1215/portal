@@ -66,3 +66,7 @@
 .flexColReverse{
     flex-direction: column-reverse;
 }
+
+.flexWrap{
+    flex-wrap: wrap;
+}

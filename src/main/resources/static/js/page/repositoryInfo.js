@@ -265,6 +265,7 @@ new Vue({
             { value: 'zu-ZA', label: 'Zulu (South Africa)' },
         ],
 
+        coordianate:{wkname:''},
     },
     methods: {
         submitLocalization(){
@@ -546,6 +547,259 @@ new Vue({
             })
         },
 
+        getQuateMarkContent(str){
+            if(str.indexOf('"')!=-1){
+                let regex = /"([^"]*)"/g;
+                let currentResult=regex.exec(str);
+                return currentResult
+            }
+            else return ['"'+str+'"',str]
+        },
+
+        getSqBracketContent(str){
+            if(str.indexOf("[")!=-1){
+                let regex=/\[([^\]]*)]/g
+                let currentResult=regex.exec(str);
+                return currentResult
+            }
+            else return str
+        },
+
+        bracketMatch(str,num){//匹配第num个左括号的右括号，返回下标
+            const leftArr=[]
+            let top=0,i;
+            for(i=0;i<str.length;i++){
+                if(str[i]==='('||str[i]==='['||str[i]==='{'){
+                    leftArr.push(i)
+                    top++
+                }
+                if(str[i]===')'||str[i]==']'||str[i]==='}'){
+                    leftArr.pop()
+                    if(top==num)
+                        break
+                    top--
+                }
+
+            }
+            return i
+        },
+
+        initCompd(wkt){
+            let index=wkt.indexOf('COMPD_CS')
+            let regex = /"([^"]*)"/g;
+            let currentResult=regex.exec(wkt);
+            this.coordianate.name=currentResult[1]
+        },
+
+        initProj(wkt){
+            let index=wkt.indexOf('PROJCS')
+            let str=wkt.substring(index,wkt.length)
+            let regex = /"([^"]*)"/g;
+            let currentResult=regex.exec(str);
+            if (this.coordianate.compd==0) {
+                this.coordianate.name=currentResult[1]
+            }
+            let obj={}
+            obj.name=currentResult[1]
+            let eleStart=wkt.indexOf('PARAMETER')
+            let eleEnd=wkt.indexOf('VERT_CS')==-1?wkt.length:wkt.indexOf('VERT_CS')
+            obj.parameters=this.initEle("PARAMETER",wkt.substring(eleStart,eleEnd))
+            obj.unit=this.initEle("UNIT",wkt.substring(eleStart,eleEnd))[0]
+            obj.axis=this.initEle("AXIS",wkt.substring(eleStart,eleEnd))
+            obj.authority=this.initEle("AUTHORITY",wkt.substring(eleStart,eleEnd))[0]
+            return obj
+        },
+
+        initGeog(wktStr){
+            let obj={}
+
+            let dIndex=wktStr.indexOf('DATUM')
+            let pIndex=wktStr.indexOf('PRIMEM')
+            let datumEnd=this.bracketMatch(wktStr.substring(dIndex),1)
+            let end=this.bracketMatch(wktStr.substring(pIndex),1)
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            let eleStart = datumEnd>end?datumEnd:end
+            let eleEnd=wktStr.length
+            obj.unit=this.initEle("UNIT",wktStr.substring(eleStart,eleEnd))[0]
+            obj.axis=this.initEle("AXIS",wktStr.substring(eleStart,eleEnd))
+            obj.authority=this.initEle("AUTHORITY",wktStr.substring(eleStart,eleEnd))[0]
+            return obj
+        },
+
+        initDatum(wktStr){
+            let obj={}
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            obj.authority=this.initEle("AUTHORITY",wktStr)[0]
+
+
+            return obj
+        },
+
+        initPrime(wktStr){
+            let obj={}
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            obj.num=wktStr.split(',')[1]
+            obj.authority=this.initEle("AUTHORITY",wktStr)[0]
+            return obj
+        },
+
+        initProjection(wktStr){
+            let obj={}
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            obj.authority=this.initEle("AUTHORITY",wktStr)[0]
+            return obj
+        },
+
+        initVert(wktStr){
+            let obj={}
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            obj.unit=this.initEle("UNIT",wktStr)[0]
+            obj.axis=this.initEle("AXIS",wktStr)
+            obj.authority=this.initEle("AUTHORITY",wktStr)[0]
+            return obj
+        },
+
+        initVDatum(wktStr){
+            let obj={}
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            obj.year=wktStr.split(',')[1]
+            obj.authority=this.initEle("AUTHORITY",wktStr.substring(eleStart,eleEnd))[0]
+
+            return obj
+        },
+
+        initSpheoid(wktStr){
+            let obj={}
+            obj.name=this.getQuateMarkContent(wktStr)[1]
+            obj.authority=this.initEle("AUTHORITY",wktStr)[0]
+            let eles=wktStr.split(',')
+            obj.semimajorAxis=eles[1]
+            if(parseInt(eles[2])<6000000){
+                obj.inversFlat=eles[2]
+            }else{
+                obj.inversFlat=eles[3]
+                obj.semiminorAxis=eles[2]
+            }
+            return obj
+        },
+
+        initEle(eleName,wktStr){
+            let i=0,content,kvs,result=[]
+            while (i<wktStr.length){
+                let index=wktStr.indexOf(eleName,i)
+                if(index!=-1){
+                    content =this.getSqBracketContent(wktStr.substring(index))[1]
+                    kvs=content.split(',')
+                    let key=kvs[0]
+                    let obj={
+                        'key':this.getQuateMarkContent(kvs[0])[1],
+                        'value':this.getQuateMarkContent(kvs[1])[1]
+                    }
+                    result.push(obj)
+                    i=index+eleName.length
+                }else{
+                    break
+                }
+
+            }
+            return result
+
+        },
+
+
+        wktTransfer(wkt){
+            let obj={};
+            // let subStrIndex=this.findFirstCoupe(wkt)
+            if(wkt.indexOf('COMPD_CS')!=-1){
+                this.coordianate.compd=1
+                this.initCompd(wkt)
+
+            }
+            else{
+                this.coordianate.compd=0
+                // this.initGeog(wkt)
+            }
+            if(wkt.indexOf('PROJCS')!=-1){
+                this.coordianate.projcs=this.initProj(wkt)
+            }
+
+            if(wkt.indexOf('GEOGCS')!=-1){
+                let start = wkt.indexOf('GEOGCS')+6
+                let end = this.bracketMatch(wkt.substring(start),1)
+                this.coordianate.geogcs=this.initGeog(wkt.substring(start+1,end+start))
+            }
+
+            if(wkt.indexOf('DATUM')!=-1) {
+                let start = wkt.indexOf('DATUM') + 5
+                let end = this.bracketMatch(wkt.substring(start), 1)
+                this.coordianate.datum = this.initDatum(wkt.substring(start + 1, end+start))
+            }
+
+            if(wkt.indexOf('SPHEROID')!=-1) {
+                let start = wkt.indexOf('SPHEROID') + 8
+                let end = this.bracketMatch(wkt.substring(start), 1)
+                this.coordianate.spheroid = this.initSpheoid(wkt.substring(start + 1, end+start))
+            }
+
+            if(wkt.indexOf('PRIMEM')!=-1) {
+                let start = wkt.indexOf('PRIMEM') + 6
+                let end = this.bracketMatch(wkt.substring(start), 1)
+                this.coordianate.prime = this.initPrime(wkt.substring(start + 1, end+start))
+            }
+
+            if(wkt.indexOf('PROJECTION')!=-1) {
+                let start = wkt.indexOf('PROJECTION') + 10
+                let end = this.bracketMatch(wkt.substring(start), 1)
+                this.coordianate.projection = this.initProjection(wkt.substring(start + 1, end+start))
+            }
+
+            if(wkt.indexOf('VERT_CS')!=-1) {
+                let start = wkt.indexOf('VERT_CS') + 7
+                let end = this.bracketMatch(wkt.substring(start), 1)
+                this.coordianate.vertcs = this.initGeog(wkt.substring(start + 1, end+start))
+            }
+
+            if(wkt.indexOf('VERT_DATUM')!=-1) {
+                let start = wkt.indexOf('VERT_DATUM') + 10
+                let end = this.bracketMatch(wkt.substring(start), 1)
+                this.coordianate.vDatum = this.initGeog(wkt.substring(start + 1, end+start))
+            }
+            console.log(this.coordianate)
+        },
+
+        findFirstCoupe(str){
+            let firstL=str.indexOf('[')
+            let firstR
+            if(firstL!=-1)
+                firstR=str.indexOf(']')
+            return {firstL:firstL,firstR:fristR}
+        },
+
+        loadCSDetails(){
+            let href = window.location.href;
+            let hrefs = href.split('/');
+            let oid = hrefs[hrefs.length - 1].split("#")[0];
+
+            axios.get('/spatial/getWKT',{
+                params:{
+                    oid:oid,
+                }
+                }
+
+            ).then(res=>{
+                if(res.data.code==0){
+                    let data = res.data.data;
+                    if(data.wktname!=null||data.wktname!=''){
+                        this.coordianate.wkname=data.wktname;
+                    }
+                    if(data.wkt!=null||data.wkt!=''){
+                        this.wktTransfer(data.wkt);
+                    }
+
+            }
+            })
+        },
+
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
@@ -573,7 +827,11 @@ new Vue({
             }
 
         });
+
+        this.loadCSDetails()
     }
+
+
 
 });
 

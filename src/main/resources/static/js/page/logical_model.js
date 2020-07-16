@@ -16,6 +16,8 @@ new Vue({
             replyToUserId:"",
             commentTextAreaPlaceHolder:"Write your comment...",
             replyTo:"",
+            modelOid:'',
+            editLogicalModelDialog :false,
         }
     },
     methods: {
@@ -176,7 +178,9 @@ new Vue({
                         let href=window.location.href;
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
-                        window.location.href = "/user/userSpace#/model/manageLogicalModel/"+oid;
+                        this.modelOid=oid
+                        // window.location.href = "/user/userSpace#/model/manageLogicalModel/"+oid;
+                        this.editLogicalModelDialog=true
                         window.sessionStorage.setItem("editId",oid)
                         // $.ajax({
                         //     type: "GET",

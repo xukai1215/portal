@@ -14,6 +14,7 @@ import njgis.opengms.portal.entity.support.Article;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.Localization;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.Reference;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -1413,7 +1414,19 @@ public class ModelItemService {
         }
     }
 
-    public JSONObject getArticleByDOI(String Doi,String contributor) throws IOException, DocumentException {
+    public boolean findReferExisted(String modelOid,String doi){
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(modelOid);
+        List<Reference> references = modelItem.getReferences();
+        for(Reference reference:references){
+            if(reference.getDoi().equals(doi))
+                return true;
+        }
+
+        return false;
+    }
+
+    public JSONObject getArticleByDOI(String Doi,String modelOid,String contributor) throws IOException, DocumentException {
         String[] eles= Doi.split("/");
 
         String doi = eles[eles.length-2]+"/"+eles[eles.length-1];
@@ -1462,10 +1475,13 @@ public class ModelItemService {
             article.setAuthors(authors);
             article.setLink(link);
             article.setDoi(doi);
-
-            result.put("find",1);
-            result.put("article",article);
-
+            if(findReferExisted(modelOid,doi)) {//同一模型条目下有重复上传
+                result.put("find",2);
+                result.put("article",article);
+            }else{
+                result.put("find",1);
+                result.put("article",article);
+            }
             doc = null;
             System.gc();
 //            user中加入这个字段
