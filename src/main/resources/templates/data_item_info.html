@@ -251,7 +251,7 @@
             </div>
 
             <!--Distributed Node Data-->
-            <div th:if="${#arrays.length(fileName)}" id="distributedNodeData" class="detail_block">
+            <div  v-loading="loading" th:if="${#arrays.length(fileName)}" id="distributedNodeData" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Distributed Node Data</h4>
@@ -623,6 +623,97 @@
 
             </div>
 
+            <!--relatedProcessing-->
+            <div th:if="${relatedProcessing!=null && #lists.size(relatedProcessing)!=0}" id="related_processing" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Processing</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeNameProcessing" type="border-card" stretch="true">
+                    <el-tab-pane name="Related Processing">
+                        <div slot="label">Related Processing
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(relatedProcessing)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedProcessing)}!=0">
+                            <div class="list_panel" th:each="pro:${relatedProcessing}">
+                                <el-card>
+                                    <a class="img">
+                                        <img src="/static/img/data/Related%20Processing.jpg">
+                                    </a>
+                                    <div class="info" style="margin-top:0px;">
+                                        <a th:text="${pro.proName}">Ground Water Flow System</a>
+                                        <p style="margin-top: 0px" th:text="${pro.proDescription}">ANN-CA uses the artificial
+                                            neural network method to extract
+                                            land use change rules in the study area, and then applies the rules to
+                                            subsequent
+                                            simulations and predictions.</p>
+                                    </div>
+                                    <el-button type="success" round  th:id="${pro.proId}" class="processingInvoke" style="margin-top: 10px;float: right;margin-bottom: 8px" @click="invokeProcessing($event);dialogVisible = true">Invoke</el-button>
+                                </el-card>
+                            </div>
+
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(relatedProcessing)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related model item. You can bind model items.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;">
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+            <!--relatedVisualization-->
+            <div th:if="${relatedVisualization!=null && #lists.size(relatedVisualization)!=0}" id="related_visualization" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Visualization</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeNameVisual" type="border-card" stretch="true">
+                    <el-tab-pane name="Related Visualization">
+                        <div slot="label">Related Visualization
+                            <span class="el-badge__content el-badge__content--undefined"
+                                  th:text="${#lists.size(relatedVisualization)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedVisualization)}!=0">
+                            <div class="list_panel" th:each="pro:${relatedVisualization}">
+                                <el-card>
+                                    <a class="img">
+                                        <img src="/static/img/data/Related%20Processing.jpg">
+                                    </a>
+                                    <div class="info" style="margin-top:0px;">
+                                        <a th:text="${pro.proName}">Ground Water Flow System</a>
+                                        <p style="margin-top: 0px" th:text="${pro.proDescription}">ANN-CA uses the artificial
+                                            neural network method to extract
+                                            land use change rules in the study area, and then applies the rules to
+                                            subsequent
+                                            simulations and predictions.</p>
+                                    </div>
+                                    <el-button type="success" round  th:id="${pro.proId}" class="processingInvokeVisual" style="margin-top: 10px;float: right;margin-bottom: 8px" @click="invokeProcessingVisual($event);dialogVisible = true">Invoke</el-button>
+                                </el-card>
+                            </div>
+
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(relatedVisualization)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related model item. You can bind model items.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;">
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+
             <!--how to cite-->
             <div id="cite" class="detail_block">
                 <div class="block_head">
@@ -870,6 +961,31 @@
                 <el-button @click="dialogTableVisible = false;">Cancel</el-button>
                 <el-button type="primary" @click="confirm()">OK</el-button>
             </div>
+        </el-dialog>
+        <el-dialog
+                v-loading="loading2"
+                title="Invoke"
+                :visible.sync="dialogVisible"
+                width="80%"
+                :before-close="handleClose">
+            <el-card>
+                <div class="xmlDisplay" style="display: inline-block;width: 60%;">
+                    <p v-if="processingType =='process'" style="font-weight: 600">XML description of processing:</p><br>
+                    <p v-if="processingType == 'visual'" style="font-weight: 600">XML description of visualization:</p><br>
+                    <pre v-if="xml" lang="xml">{{xml}}</pre>
+                </div>
+                <div class="parameterInput" style="display: inline-block;float: right;width: 35%">
+                    <p style="font-weight: 600">Parameters to be filled in:</p><br>
+                    <div class="parameter" v-for = "(para,i) in parameters">
+                        <p>{{para}}</p>
+                        <input type="text" autocomplete="off" placeholder="Please enter the content" :id ="para" class="el-input__inner">
+                    </div>
+                </div>
+            </el-card>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="invokeProcessingNow();dialogVisible = false">Invoke Now</el-button>
+            </span>
         </el-dialog>
 
     </div>

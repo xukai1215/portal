@@ -990,7 +990,7 @@ var userDataSpace = Vue.extend(
                 if (this.downloadDataSet.length > 0) {
 
                     const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://111.229.14.128:8899/data?uid=" + keys;
+                    let url = "http://221.226.60.2:8082/data?uid=" + keys;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';
@@ -1080,7 +1080,7 @@ var userDataSpace = Vue.extend(
                 let id=this.rightTargetItem.url.split('=')[1]
                 //下载接口
                 if(id!=undefined) {
-                    window.open( 'http://111.229.14.128:8899/data?uid='+id);
+                    window.open( 'http://221.226.60.2:8082/data?uid='+id);
                 }
                 else{
                     this.$message.error("No data can be downloaded.");
@@ -1440,7 +1440,8 @@ var userDataSpace = Vue.extend(
                         if(res.code==0){
                             let data=res.data;
                             if(this.uploadFiles.length==1){
-                                data.suffix=this.uploadFiles[0].name.split(".")[1];
+                                let index=this.uploadFiles[0].name.lastIndexOf(".")
+                                data.suffix=this.uploadFiles[0].name.substring(index+1,this.uploadFiles[0].name.length);
                             }
                             else{
                                 data.suffix="zip";
@@ -1515,7 +1516,20 @@ var userDataSpace = Vue.extend(
             uploadClick(index){
                 this.uploadInPath=index;
                 this.uploadSource=[];
-                this.selectedPath=[];
+                let allFder={
+                    key:'0',
+                    label:'All Folder'
+                }
+                this.selectedPath=[allFder];
+                for(let i=0;i<this.pathShown.length;i++){
+                    let obj={
+                        key:this.pathShown[i].id,
+                        label:this.pathShown[i].label,
+                        data:this.pathShown[i]
+                    }
+                    this.selectedPath.push(obj)
+                }
+
                 this.uploadFileList=[];
                 this.uploadLoading=false;
                 setTimeout(()=>{
@@ -1534,7 +1548,6 @@ var userDataSpace = Vue.extend(
 
             selectFolder(){
                 this.selectFolderVisible=true;
-                this.selectedPath=[];
 
                 axios.get("/user/getFolder",{})
                     .then(res=> {
@@ -1556,6 +1569,7 @@ var userDataSpace = Vue.extend(
             },
 
             confirmFolder(){
+                this.selectedPath=[];
                 let data=this.$refs.folderTree.getCurrentNode();
                 let node=this.$refs.folderTree.getNode(data);
 
@@ -2093,7 +2107,39 @@ var userDataSpace = Vue.extend(
 
             },
 
+            getUserData(UsersInfo, prop) {
 
+                for (i = prop.length; i > 0; i--) {
+                    prop.pop();
+                }
+                var result = "{";
+                for (index=0 ; index < UsersInfo.length; index++) {
+                    //
+                    if(index%4==0){
+                        let value1 = UsersInfo.eq(index)[0].value.trim();
+                        let value2 = UsersInfo.eq(index+1)[0].value.trim();
+                        let value3 = UsersInfo.eq(index+2)[0].value.trim();
+                        let value4 = UsersInfo.eq(index+3)[0].value.trim();
+                        if(value1==''&&value2==''&&value3==''&&value4==''){
+                            index+=4;
+                            continue;
+                        }
+                    }
+
+                    var Info = UsersInfo.eq(index)[0];
+                    if (index % 4 == 3) {
+                        if (result) {
+                            result += "'" + Info.name + "':'" + Info.value + "'}"
+                            prop.push(eval('(' + result + ')'));
+                        }
+                        result = "{";
+                    }
+                    else {
+                        result += "'" + Info.name + "':'" + Info.value + "',";
+                    }
+
+                }
+            },
 
             async dropPackageContent(item,index){
 
@@ -2479,7 +2525,7 @@ var userDataSpace = Vue.extend(
                     e.stopPropagation();
                     if(vue_this.rightMenuShow==true)//vue组件命名为userDataSpace
                         vue_this.rightMenuShow=false
-                    if(e.currentTarget.className.indexOf('renameContainer')==-1&&vue.renameIndex!=''){
+                    if(e.currentTarget.className.indexOf('renameContainer')==-1&&userDataSpace.renameIndex!=''){
                         console.log(e.currentTarget.className)
                         vue_this.renameIndex=''
                     }

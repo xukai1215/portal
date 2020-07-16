@@ -1868,6 +1868,7 @@ public class UserService {
         userInfo.put("researchInterests", user.getResearchInterests());
         userInfo.put("lab", user.getLab());
         userInfo.put("affiliation", user.getAffiliation());
+        userInfo.put("externalLinks", user.getExternalLinks());
         userInfo.put("eduExperiences", user.getEducationExperiences());
         userInfo.put("awdHonors", user.getAwardsHonors());
         userInfo.put("runTask", user.getRunTask());
@@ -1915,6 +1916,22 @@ public class UserService {
             User user = userDao.findFirstByUserName(userName);
             if (user != null) {
                 user.setResearchInterests(researchInterests);
+//                System.out.println(user.getResearchInterests());
+                userDao.save(user);
+                return "success";
+            } else
+                return "no user";
+
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    public String updateExlinks(List<String> exLinks, String userName) {
+        try {
+            User user = userDao.findFirstByUserName(userName);
+            if (user != null) {
+                user.setExternalLinks(exLinks);
 //                System.out.println(user.getResearchInterests());
                 userDao.save(user);
                 return "success";

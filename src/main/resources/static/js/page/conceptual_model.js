@@ -20,7 +20,9 @@ new Vue({
             form:{
                 name:"",
             },
-            graphVisible:"none"
+            graphVisible:"none",
+            editConceptualModelDialog:false,
+            modelOid:'',
         }
     },
     methods: {
@@ -181,7 +183,7 @@ new Vue({
                         let href=window.location.href;
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
-                        window.location.href = "/user/userSpace#/model/manageConceptualModel/"+oid;
+                        this.editDialogOpen()
                         window.sessionStorage.setItem("editId",oid)
                         // $.ajax({
                         //     type: "GET",
@@ -208,6 +210,14 @@ new Vue({
                     }
                 }
             })
+        },
+
+        editDialogOpen(){
+            let href = window.location.href;
+            let hrefs = href.split('/');
+            let oid = hrefs[hrefs.length - 1].split("#")[0];
+            this.modelOid = oid;
+            this.editConceptualModelDialog = true
         },
 
         setSession(name, value) {

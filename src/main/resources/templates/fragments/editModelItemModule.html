@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="editModelItemModule" th:fragment="editModelItemModule">
+    <div>
+        <div class="page-content-wrap container-fluid">
+                    <!-- START WIDGETS -->
+                    <div class="row">
+
+                    </div>
+
+                    <!-- END WIDGETS -->
+                    <div class="row">
+                        <div class="container-fluid" id="mainInfo">
+                            <div class="row">
+                                <div class="col-md-12 nopadding">
+                                    <div class="panel panel-success" style="border: none">
+                                        <div class="panel-body wzhScrollbar" style="height: 66vh">
+                                            <div id="step">
+                                                <div class="step-app">
+                                                    <ul class="step-steps text-center">
+                                                        <li>
+                                                            <a href="#step1">Basic Info</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#step2">Content</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#step3">Authorship</a>
+                                                        </li>
+
+                                                    </ul>
+                                                    <div class="step-content">
+                                                        <div class="step-tab-panel" id="step1">
+                                                            <div class="tree" style="margin-top:10px">
+                                                                <el-card>
+                                                                    <div slot="header" class="clearfix text-center">
+                                                                        <span style="font-size: 20px;color:#444">Model Classifications</span>
+                                                                    </div>
+                                                                    <el-tree style="height: 260px;overflow: auto"
+                                                                             class="wzhScrollbar"
+                                                                             id="tree2"
+                                                                             ref="tree2"
+                                                                             :data="treeData"
+                                                                             show-checkbox
+                                                                             node-key="id"
+                                                                             :default-expanded-keys="[1,64]"
+
+                                                                             @check-change="handleCheckChange"
+                                                                             :props="defaultProps">
+                                                                    </el-tree>
+                                                                </el-card>
+                                                            </div>
+                                                            <div class="" style="margin-top:10px;">
+                                                                <div id="RepositoryParentsPanel">
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="parentNode"
+                                                                                   class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
+                                                                            <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode"
+                                                                                      v-model="clsStr"
+                                                                                      readonly></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="nameInput"
+                                                                                   class="col-sm-2 control-label"><span class="xing">* </span>Status</label>
+                                                                            <div class="col-sm-10">
+                                                                                <el-radio-group v-model="status" size="medium">
+                                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
+                                                                                        <el-radio-button label="Public"></el-radio-button>
+                                                                                    </el-tooltip>
+                                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                        <el-radio-button label="Discoverable"></el-radio-button>
+                                                                                    </el-tooltip>
+                                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                        <el-radio-button label="Private"></el-radio-button>
+                                                                                    </el-tooltip>
+
+                                                                                </el-radio-group>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="nameInput"
+                                                                                   class="col-sm-2 control-label"><span class="xing">* </span>Name</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text"
+                                                                                       class="form-control"
+                                                                                       id="nameInput"/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="descInput"
+                                                                                   class="col-sm-2 control-label"><span class="xing">* </span>Overview</label>
+                                                                            <div class="col-sm-10">
+                                                                            <textarea rows="4" class="form-control"
+                                                                                      id="descInput"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="tagInput"
+                                                                                   class="col-sm-2 control-label">Keywords</label>
+                                                                            <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="tagInput"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="nameInput"
+                                                                                   class="col-sm-2 control-label">Image</label>
+                                                                            <div class="col-sm-10">
+                                                                                <img id="imgShow" src=""/>
+                                                                                <div id="imgChange">
+                                                                                    <i class="fa fa-plus fa-5x"></i>
+                                                                                </div>
+                                                                                <input id="imgFile" type="file"
+                                                                                       style="display: none"
+                                                                                       accept="image/*"/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label for="parentNode"
+                                                                                   class="col-sm-2 control-label">References</label>
+                                                                            <div class="col-sm-10">
+                                                                                <table class="display table table-bordered table-striped dataTable"
+                                                                                       id="dynamic-table"
+                                                                                       aria-describedby="dynamic-table_info">
+                                                                                    <thead>
+                                                                                    <tr role="row">
+                                                                                        <th class="sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-label="Title: activate to sort column ascending"
+                                                                                            width="190px">
+                                                                                            Title
+                                                                                        </th>
+                                                                                        <th class="sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-label="Author: activate to sort column ascending"
+                                                                                            width="190px">
+                                                                                            Author
+                                                                                        </th>
+                                                                                        <th class="sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-label="Date: activate to sort column ascending"
+                                                                                            width="100px">
+                                                                                            Date
+                                                                                        </th>
+                                                                                        <th class="hidden-phone sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-label="Journal: activate to sort column ascending"
+                                                                                            width="110">
+                                                                                            Journal
+                                                                                        </th>
+                                                                                        <th class="hidden-phone sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-sort="descending"
+                                                                                            aria-label="Pages: activate to sort column ascending"
+                                                                                            width="110px">
+                                                                                            Volume(Issue)
+                                                                                        </th>
+                                                                                        <th class="hidden-phone sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-sort="descending"
+                                                                                            aria-label="Pages: activate to sort column ascending"
+                                                                                            width="100px">
+                                                                                            Pages
+                                                                                        </th>
+                                                                                        <th class="hidden-phone sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-sort="descending"
+                                                                                            aria-label="Links: activate to sort column ascending"
+                                                                                            width="100px">
+                                                                                            Links
+                                                                                        </th>
+                                                                                        <th class="hidden-phone sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-sort="descending"
+                                                                                            aria-label="Links: activate to sort column ascending"
+                                                                                            width="100px">
+                                                                                            Doi
+                                                                                        </th>
+                                                                                        <th class="hidden-phone sorting"
+                                                                                            role="columnheader"
+                                                                                            tabindex="0"
+                                                                                            aria-controls="dynamic-table"
+                                                                                            rowspan="1" colspan="1"
+                                                                                            aria-sort="descending"
+                                                                                            aria-label="CSS grade: activate to sort column ascending"
+                                                                                            width="85px">
+                                                                                            Operation
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                    </thead>
+
+                                                                                    <tbody role="alert"
+                                                                                           aria-live="polite"
+                                                                                           aria-relevant="all">
+
+                                                                                    </tbody>
+                                                                                </table>
+                                                                                <button id="addref"
+                                                                                        class="btn btn-success btn-lg btn-block"
+                                                                                        data-toggle="modal"
+                                                                                        data-target="#refinfo"
+                                                                                        @click="addArticleClick"
+                                                                                        type="button">Add Reference
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--<div class="form-horizontal">-->
+                                                                    <!--<div class="form-group">-->
+                                                                    <!--<label for="parentNode"-->
+                                                                    <!--class="col-sm-2 control-label">Show On-->
+                                                                    <!--Index</label>-->
+                                                                    <!--<div class="col-sm-10">-->
+                                                                    <!--<div class="radioPanel">-->
+                                                                    <!--<input id="item1" type="radio"-->
+                                                                    <!--name="item" value=1>-->
+                                                                    <!--<label for="item1">-->
+                                                                    <!--<span>Yes</span>-->
+                                                                    <!--</label>-->
+                                                                    <!--</div>-->
+                                                                    <!--<div class="radioPanel">-->
+                                                                    <!--<input id="item2" type="radio"-->
+                                                                    <!--name="item" value=0 checked>-->
+                                                                    <!--<label for="item2">-->
+                                                                    <!--<span>No</span>-->
+                                                                    <!--</label>-->
+                                                                    <!--</div>-->
+                                                                    <!--</div>-->
+                                                                    <!--</div>-->
+                                                                    <!--</div>-->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="step-tab-panel" id="step3">
+                                                            <div class="panel panel-success" style="border:none">
+
+                                                                <div class="panel-body">
+                                                                    <div class="">
+
+                                                                        <div class="panel-group " id="accordion2">
+                                                                            <div id="providersPanel" class="panel"
+                                                                                 style="border-color:#424f63">
+                                                                                <div class="panel-heading"
+                                                                                     style="background-color: #424f63">
+                                                                                    <h4 class="panel-title"
+                                                                                        style="color:white">
+                                                                                        <a class="accordion-toggle"
+                                                                                           data-parent="#accordion2">
+                                                                                            Authorship
+                                                                                        </a>
+                                                                                    </h4>
+                                                                                </div>
+                                                                                <div id="provider_body"
+                                                                                     class="panel-collapse collapse in"
+                                                                                     style="height: auto;">
+                                                                                    <div class="panel-body providers"
+                                                                                         style="border-top: #424f63; padding:0px">
+                                                                                        <div class='panel panel-primary'>
+                                                                                            <div class='panel-heading info-head newAuthorHeader'>
+                                                                                                <h4 class='panel-title'>
+                                                                                                    <a class='accordion-toggle collapsed'
+                                                                                                       style="color:white"
+                                                                                                       data-toggle='collapse'
+                                                                                                       data-target='#user1'
+                                                                                                       href="javascript:;">
+                                                                                                        NEW
+                                                                                                    </a>
+                                                                                                </h4>
+                                                                                                <a href="javascript:;"
+                                                                                                   class="fa fa-times author_close"
+                                                                                                   style="float:right;margin-top:8px;color:white"></a>
+                                                                                            </div>
+                                                                                            <div id='user1'
+                                                                                                 class='panel-collapse collapse in'>
+                                                                                                <div class='panel-body user-contents'>
+                                                                                                    <div class='user-attr'>
+                                                                                                        <div>
+                                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                                   style='font-weight: bold;'>
+                                                                                                                Name:
+                                                                                                            </lable>
+                                                                                                            <div class='input-group col-sm-10'>
+                                                                                                                <input type='text'
+                                                                                                                       name="name"
+                                                                                                                       class='form-control'>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div style="margin-top:10px">
+                                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                                   style='font-weight: bold;'>
+                                                                                                                Affiliation:
+                                                                                                            </lable>
+                                                                                                            <div class='input-group col-sm-10'>
+                                                                                                                <input type='text'
+                                                                                                                       name="ins"
+                                                                                                                       class='form-control'>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div style="margin-top:10px">
+                                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                                   style='font-weight: bold;'>
+                                                                                                                Email:
+                                                                                                            </lable>
+                                                                                                            <div class='input-group col-sm-10'>
+                                                                                                                <input type='text'
+                                                                                                                       name="email"
+                                                                                                                       class='form-control'>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div style="margin-top:10px">
+                                                                                                            <lable class='control-label col-sm-2 text-center'
+                                                                                                                   style='font-weight: bold;'>
+                                                                                                                Homepage:
+                                                                                                            </lable>
+                                                                                                            <div class='input-group col-sm-10'>
+                                                                                                                <input type='text'
+                                                                                                                       name="homepage"
+                                                                                                                       class='form-control'>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button type="button"
+                                                                                            class="btn btn-success btn-lg btn-block user-add"
+                                                                                            style="border-radius: 3px;border-top-left-radius: 0px;border-top-right-radius: 0px">
+                                                                                        Add
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="step-tab-panel" id="step2">
+                                                            <textarea id="modelItemText"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="step-footer text-right">
+                                                        <button class="btn btn-warning prev" data-direction="prev">
+                                                            Previous
+                                                        </button>
+                                                        <button class="btn btn-primary next" data-direction="next">
+                                                            Next
+                                                        </button>
+                                                        <button class="btn btn-success finish"
+                                                                data-direction="finish">
+                                                            Finish
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.panel -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+
+        <el-dialog title="Reference info" :visible.sync = "editArticleDialog" append-to-body width="33%" custom-class="min400w" >
+            <div class="wzhScrollbar" style="max-height: 500px" >
+                <div class="tab-content" v-loading="doiLoading">
+                    <div class="tab-pane active articleInfo" id="manually" >
+                        <div class="form-group">
+                            <label for="doiTitle" class="col-sm-2 control-label">
+                                Get by doi :
+                            </label>
+                            <el-tag size="mini" primary>Input the doi and click search, information may be filled automaticly. </el-tag>
+                            <div class="input-group col-md-12" style="padding: 0 15px">
+                                <input id="doiTitle" type="text"
+                                       class="form-control" v-model="doi">
+                                <span class="input-group-btn" style="width: 19%">
+                                                    <button id="doiSearch"
+                                                            class="btn btn-info"
+                                                            type="button" @click="searchDoi()" style="height: 34px;width: 100%;margin: 0;">Search</button>
+                                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="refTitle"
+                                   class="col-sm-4 control-label">Title</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control"
+                                       id="refTitle"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="refAuthor"
+                                   class="col-sm-4 control-label">Author</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control"
+                                       id="refAuthor"/>
+                                <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="refDate"
+                                   class="col-sm-4 control-label">Date</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control"
+                                       id="refDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="refJournal"
+                                   class="col-sm-4 control-label">Journal</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control"
+                                       id="refJournal"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="volumeIssue"
+                                   class="col-sm-4 control-label">Volume(issue)</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control"
+                                       id="volumeIssue"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="refPages"
+                                   class="col-sm-4 control-label">Page Range</label>
+                            <div class="col-sm-12" style="display: flex;justify-content: space-between">
+                                <input type="text" class="form-control"
+                                       id="refPages"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="refLink"
+                                   class="col-sm-4 control-label">Link</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control"
+                                       id="refLink"/>
+                            </div>
+                        </div>
+                        <!--                                        <div class="form-group flexRow" style="padding-top: 3px;padding-left: 16px">-->
+                        <!--                                            <p style="font-weight: 600;margin-right: 10px">Status</p>-->
+                        <!--                                            <el-checkbox-group v-model="checkedIdentity" @change="changeChecked">-->
+                        <!--                                                <el-checkbox v-for="Identity in Identities" :label="Identity" :key="Identity">{{Identity}}</el-checkbox>-->
+                        <!--                                            </el-checkbox-group>-->
+
+                        <!--                                        </div>-->
+                    </div>
+
+
+                </div>
+
+            </div>
+            <span slot="footer" class="dialog-footer">
+                                        <el-button type="primary" @click="updateArticleConfirmClick" id="modal_save">Upload</el-button>
+                                        <el-button @click="cancelSearch()">cancel</el-button>
+
+                                </span>
+        </el-dialog>
+        <el-dialog title="Is this article you want to upload?" append-to-body :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
+            <h4>{{articleUploading.title}}</h4>
+            <p v-if="articleUploading.authors.length>0"><span>Authors:</span><span>&nbsp&nbsp{{articleUploading.authors[0]}},</span>
+                <span v-if="articleUploading.authors[1]">{{articleUploading.authors[1]}}, </span>
+                <span v-if="articleUploading.authors[2]">{{articleUploading.authors[2]}},</span>
+                <span v-if="articleUploading.authors.length>3"> et al.</span> </p>
+            <p v-if="articleUploading.journal!=''"><span>Journal:</span> &nbsp&nbsp{{articleUploading.journal}}</p>
+            <p v-if="articleUploading.date!=''"><span>Date:</span> &nbsp&nbsp{{articleUploading.date}}</p>
+            <p v-if="articleUploading.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{articleUploading.pageRange}}</p>
+            <p v-if="articleUploading.link!=''"><span>Link:</span> &nbsp&nbsp{{articleUploading.link}}</p>
+            <p v-if="articleUploading.doi!=''"><span>DOI:</span> &nbsp&nbsp{{articleUploading.doi}}</p>
+            <!--                            <div class="flex">-->
+
+            <!--                            </div>-->
+            <span slot="footer" class="dialog-footer">
+<!--                                <div class="flex flexRowSpaceBetween" >-->
+                <!--                                    <div class="flexColCenter">-->
+                <!--                                        <p style="font-weight: 600;margin-right: 10px">Yes,</p>-->
+                <!--                                        <el-button type="success" @click="articleDoiUploadConfirm('author')" plain>I am the author</el-button>-->
+                <!--                                        <el-button type="primary" @click="articleDoiUploadConfirm('learner')" plain>I am a learner</el-button>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="innerBorderCol" style="height: 40px"></div>-->
+                                    <el-button type="success" @click="articleDoiUploadConfirm()" plain>Yes, this is it</el-button>
+                                    <el-button @click="showUploadArticleDialog = false">Cancel</el-button>
+                <!--                                </div>-->
+                            </span>
+        </el-dialog>
+        <el-dialog title="Tip" append-to-body
+                   :visible.sync = "showUploadedArticleDialog" width="30%" custom-class="min400w">
+            <!--                            <div class="flexCol" style="font-size:16px;word-break: normal ">-->
+            <!--                                <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been-->
+            <!--                                    <span style="color: #2b95f7"> uploaded</span> yet, do you want to be one of the contrbutors?</p>-->
+            <!--                            </div>-->
+            <div class="flexCol" style="font-size:16px;word-break: normal ">
+                <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been
+                    <span style="color: #2b95f7"> uploaded</span> yet.</p>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                                <el-button @click="showUploadedArticleDialog = false">Confirm</el-button>
+                            </span>
+            <!--                            <span slot="footer" class="dialog-footer">-->
+            <!--                                <el-button type="success" @click="addContributorConfirm()"-->
+            <!--                                               plain>Yes, I do</el-button>-->
+            <!--                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>-->
+            <!--                            </span>-->
+        </el-dialog>
+    </div>
+</template>
+</body>
+</html>

@@ -937,7 +937,7 @@ public class PortalApplicationTests {
 
 
             content += "\t\t<url>\n";
-            content += "\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/repository</loc>\n";
+            content += "\t\t\t<loc>https://geomodeling.njnu.edu.cn/dataItem/hubs</loc>\n";
             content += "\t\t\t<lastmod>" + sdf.format(new Date()) + "</lastmod>\n";
             content += "\t\t\t<changefreq>weekly</changefreq>\n";
             content += "\t\t\t<priority>0.9</priority>\n";

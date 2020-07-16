@@ -5,6 +5,7 @@ import njgis.opengms.portal.dao.SpatialReferenceDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.Spatial.SpatialFindDTO;
 import njgis.opengms.portal.dto.Spatial.SpatialResultDTO;
+import njgis.opengms.portal.entity.SpatialReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -81,5 +82,18 @@ public class SpatialService {
 
         return result;
 
+    }
+
+    public JSONObject getWKT(String oid) {
+        SpatialReference spatialReference = spatialReferenceDao.findByOid(oid);
+
+        String wkt = spatialReference.getWkt();
+        String wktname = spatialReference.getWkname();
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("wktname",wktname);
+        jsonObject.put("wkt",wkt);
+
+        return jsonObject;
     }
 }

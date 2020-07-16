@@ -114,7 +114,7 @@
 }
 
 .sub>ul{
-    width: 235px;
+    width: 100%;
     height: 0;
     background-color: rgba(5, 5, 5, 0.81) !important;
     margin-top: 2.5px !important;
@@ -485,7 +485,7 @@
 } */
 
 /*自适应*/
-@media only screen and (max-width: 970px){
+@media only screen and (max-width: 975px){
     .login{
         display: none;
     }

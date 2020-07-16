@@ -392,7 +392,9 @@ var createDataItem = Vue.extend({
                             label:ele.category,
                             id:ele.id
                         }
-                        children.push(child)
+                        if (child.label!="...All") {
+                            children.push(child);
+                        }
                     }
 
                     var a = {
@@ -403,11 +405,32 @@ var createDataItem = Vue.extend({
                         tha.categoryTree.push(a);
                         tha.treeData = tha.categoryTree
                     }
-
-
                 }
-
-
+                //排序treeData
+                let subTreeData = new Array(6);
+                for (let i=0;i<tha.treeData.length;i++){
+                    switch (tha.treeData[i].label) {
+                        case "Earth System":
+                            subTreeData[0] = tha.treeData[i];
+                            break;
+                        case "Physical Geography":
+                            subTreeData[1] = tha.treeData[i];
+                            break;
+                        case "Human Geography":
+                            subTreeData[2] = tha.treeData[i];
+                            break;
+                        case "Geographic Information":
+                            subTreeData[3] = tha.treeData[i];
+                            break;
+                        case "Natural Resources":
+                            subTreeData[4] = tha.treeData[i];
+                            break;
+                        case "Region and Area":
+                            subTreeData[5] = tha.treeData[i];
+                            break;
+                    }
+                }
+                tha.treeData = subTreeData;
             })
         var that = this;
 

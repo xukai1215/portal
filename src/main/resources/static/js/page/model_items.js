@@ -33,7 +33,7 @@ new Vue({
                 oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
                 children: [ {
                     id: 65,
-                    label: 'Sun-Earth System',
+                    label: 'Solar-terrestrial Physics',
                     oid: '1fd56a5d-1532-4ea6-ad0a-226e78a12861'
                 }, {
                     id: 66,
@@ -316,7 +316,9 @@ new Vue({
             defaultProps: {
                 children: 'children',
                 label: 'label'
-            }
+            },
+            "driver" : null,
+            "stepsConfig" : null
         }
     },
     methods: {
@@ -615,6 +617,54 @@ new Vue({
 
             if(r!=null)return  unescape(r[2]); return null;
 
+        },
+        //显示功能引导框
+        showDriver(){
+            if(!this.driver){
+                this.driver = new Driver({
+                    "className": "scope-class",
+                    "allowClose": false,
+                    "opacity" : 0.1,
+                    "prevBtnText": "previous",
+                    "nextBtnText": "next"
+                });
+                this.stepsConfig = [
+                    {
+                        "element": ".searcherInputPanel",
+                        "popover": {
+                            "title": "Search",
+                            "description": "Here you can search for models by keyword or model name.",
+                            "position": "bottom-right",
+                        }
+                    },
+                    {
+                        "element" : ".categoryList",
+                        "popover" : {
+                            "title" : "Model classifications",
+                            "description" : "Here you can view the models by category.",
+                            "position" : "right",
+                            "prevBtnText": "previous",
+                            "nextBtnText": "next"
+                        }
+                    },
+                    {
+                        "element" : "#contributeBtn",
+                        "popover" : {
+                            "title" : "Contribute",
+                            "description" : "Here you can share your model.",
+                            "position" : "bottom",
+                            "prevBtnText": "previous",
+                            "nextBtnText": "next"
+                        }
+                    }
+                ];
+            }
+
+            if(document.body.clientWidth < 1000){
+                this.stepsConfig[1].popover.position = "top";
+            }
+            this.driver.defineSteps(this.stepsConfig);
+            this.driver.start();
         }
     },
     mounted() {
@@ -822,6 +872,8 @@ new Vue({
             if (lines.length > 1) {
                 lines.eq(lines.length - 1).remove();
             }
-        })
+        });
+
+        this.showDriver();
     }
 })

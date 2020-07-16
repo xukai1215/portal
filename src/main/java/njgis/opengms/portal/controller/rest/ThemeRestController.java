@@ -27,10 +27,7 @@ import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Auther mingyuan
@@ -137,6 +134,14 @@ public class ThemeRestController {
         themeAddDTO.setMaintainer(maintainers);
 
         String uid = session.getAttribute("uid").toString();
+        //新增数据类别
+//        Categorys categorys = new Categorys();
+//        categorys.setId("5f080d29caaf7552b4a7b366");
+//        categorys.setCategory("Solid Earth Geophysics");
+//        categorys.setParentCategory("5cc051437a419164e821231c");
+//        categoryDao.insert(categorys);
+
+
 
         System.out.println("add theme");
 

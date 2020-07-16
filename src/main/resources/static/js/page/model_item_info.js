@@ -123,6 +123,8 @@ var info=new Vue({
                 }]
             }],
 
+            modelOid:'',
+            editModelItemDialog:false,
 
         }
     },
@@ -365,7 +367,8 @@ var info=new Vue({
                         let href = window.location.href;
                         let hrefs = href.split('/');
                         let oid = hrefs[hrefs.length - 1].split("#")[0];
-                        window.location.href = "/user/userSpace#/model/manageModelItem/"+oid;
+                        // window.location.href = "/user/userSpace#/model/manageModelItem/"+oid;
+                        this.editDialogOpen()
                         // $.ajax({
                         //     type: "GET",
                         //     url: "/modelItem/getUserOidByOid",
@@ -392,6 +395,15 @@ var info=new Vue({
                 }
             })
         },
+
+        editDialogOpen(){
+            let href = window.location.href;
+            let hrefs = href.split('/');
+            let oid = hrefs[hrefs.length - 1].split("#")[0];
+            this.modelOid = oid;
+            this.editModelItemDialog = true
+        },
+
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },

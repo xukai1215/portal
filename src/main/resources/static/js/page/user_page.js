@@ -4,8 +4,7 @@ new Vue({
     components: {
         'avatar': VueAvatar.Avatar
     },
-    data:
-        function () {
+    data() {
             return {
                 // showIndex控制model种类页面跳转
                 showIndex: 1,
@@ -66,6 +65,7 @@ new Vue({
                         name:'',
                         position:'',
                     },
+                    externalLinks:[],
 
                     phone:'',
                     email:'',
@@ -297,7 +297,16 @@ new Vue({
 
                 doiLoading:false,
 
+                Intro7RISdialog:false,
 
+                externalLinkDialog:false,
+
+                exLinks:[
+                    ''
+                    ],
+
+                resourceSortElement:'viewCount',
+                resourceSortEleText:'viewcount',
             }
         },
 
@@ -375,7 +384,72 @@ new Vue({
             }
         },
 
+        editIntro7RIS(){
+            this.Intro7RISdialog = true
+            this.description = this.userPersonalInfo.description
+            if ($("#researchInterestInput").nextAll().length == 0) {//如果不存在tageditor,则创建一个
+                Vue.nextTick(() => {
+                    $("#researchInterestInput").tagEditor({
+                        forceLowercase: false
+                    })
+                    $('#researchInterestInput').tagEditor('destroy');
+                    $('#researchInterestInput').tagEditor({
+                        initialTags: this.userPersonalInfo.researchInterests,
+                        forceLowercase: false,
+                    });
 
+                })
+            } else {
+                Vue.nextTick(() => {
+                    $('#researchInterestInput').tagEditor('destroy');
+                    $('#researchInterestInput').tagEditor({
+                        initialTags: this.userPersonalInfo.researchInterests,
+                        forceLowercase: false,
+                    });
+                })
+            }
+
+            $('#researchInterestInput').tagEditor('destroy');
+            $('#researchInterestInput').tagEditor({
+                initialTags:  [''],
+                forceLowercase: false,
+            });
+        },
+
+        uploadIntro7RISConfirm(){
+            this.Intro7RISdialog=false
+            this.descriptionAddToBack();
+            var tags = $('#researchInterestInput').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#researchInterestInput').tagEditor('removeTag', tags[i]); }
+            this.researchInterests=tags;
+            this.researchInterestAddToBack();
+        },
+
+        editExLink(){
+            this.externalLinkDialog = true
+            this.exLinks=[''];
+            if(this.userPersonalInfo.externalLinks.length!=0){
+                this.exLinks = JSON.parse(JSON.stringify(this.userPersonalInfo.externalLinks))
+                // for(link in this.userPersonalInfo.externalLinks){
+                //     this.exLinks.push({value:link})
+                // }
+
+            }
+        },
+
+        deleteExlink(index){
+            this.exLinks.splice(index,1)
+        },
+
+        addExlinkInput(){
+            // let obj={value:''}
+            this.exLinks.push('')
+        },
+
+        uploadExLinkConfirm(){
+            this.externalLinkDialog = false
+            this.exLinksAddToBack();
+        },
 
         modelItemClick() {
             this.bodyIndex=2;
@@ -428,7 +502,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.conceptHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         spatialClick(){
@@ -437,7 +511,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.spatialHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         templateClick(){
@@ -446,7 +520,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.templateHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         unitClick(){
@@ -455,7 +529,7 @@ new Vue({
             this.resourceIndex=this.showIndex;
             this.isInSearch=0;
             this.unitHandleCurrentChange(1);
-            $('html,body').animate({scrollTop: '230px'}, 220);
+            $('html,body').animate({scrollTop: '0px'}, 220);
         },
 
         // statsCardClick(index){
@@ -582,6 +656,11 @@ new Vue({
                 initialTags: this.userPersonalInfo.subjectAreas,
                 forceLowercase: false,
             });
+            this.exLinks=[''];
+            if(this.userPersonalInfo.externalLinks.length!=0){
+                this.exLinks = JSON.parse(JSON.stringify(this.userPersonalInfo.externalLinks))
+
+            }
         },
 
         savePersonalIntroClick(){
@@ -1726,42 +1805,27 @@ new Vue({
         searchResourceClick(index){
             this.pageOption.currentPage=1;
             this.resourceIndex=index;
-            this.isInSearch=1;
-            switch (index) {
-                case 1:
-                    this.searchText=$('#searchModel').val();
-                    break;
-                case 2:
-                    this.searchText=$('#searchData').val();
-                    break;
-                case 3:
-                    this.searchText=$('#searchConceptualModel').val();
-                    break;
-                case 4:
-                    this.searchText=$('#searchLogicalModel').val();
-                    break;
-                case 5:
-                    this.searchText=$('#searchComputableModel').val();
-                    break;
-                case 6:
-                    this.searchText=$('#searchConcept').val();
-                    break;
-                case 7:
-                    this.searchText=$('#searchSpatial').val();
-                    break;
-                case 8:
-                    this.searchText=$('#searchTemplate').val();
-                    break;
-                case 9:
-                    this.searchText=$('#searchUnit').val();
-                    break;
-            }
             this.searchResource();
 
         },
 
+        changeSort(){
+            this.pageOption.sortAsc=this.pageOption.sortAsc?false:true
+            this.pageOption.currentPage=1;
+            this.searchResource()
+
+        },
+
+        selectSortEle(command){
+            this.resourceSortElement = command
+            this.resourceSortEleText = command.toLowerCase()
+            this.pageOption.currentPage=1;
+            this.searchResource()
+        },
+
         searchResource(){
             $('html,body').animate({scrollTop:'0px'},200);
+            this.isInSearch=1;
             var urls={
                 1:'/modelItem/searchByNameByOid',
                 2:'/dataItem/searchByNameByOid',
@@ -1781,7 +1845,7 @@ new Vue({
                     page:this.pageOption.currentPage-1,
                     pageSize:this.pageOption.pageSize,
                     asc:this.pageOption.sortAsc,
-                    sortElement:"viewCount",
+                    sortElement:this.resourceSortElement,
                     searchText:this.searchText,
                     oid:hrefs[hrefs.length-1]
                 },
@@ -2465,6 +2529,30 @@ new Vue({
 
         },
 
+        exLinksAddToBack(){
+            let  obj=[];
+            for (let i = 0; i < this.exLinks.length ; i++) {
+                if(this.exLinks[i]!='')
+                    obj.push(this.exLinks[i])
+            }
+            $.ajax({
+                // data:JSON.stringify(obj),
+                data:JSON.stringify(obj),
+                url:"/user/updateExLinks",
+                type:'POST',
+                async:true,
+                contentType: "application/json",
+                success:(json)=>{
+                    if(json.code==0){
+                        this.getUserInfo();
+                        // alert("Add Success");
+                    }
+                }
+
+            })
+
+        },
+
         affiliationAddtoBack(){
             var  obj={
                 name:this.affiliation.name,
@@ -2489,10 +2577,16 @@ new Vue({
         },
 
         userInfoAddToBack(){
-            var  obj={
+            let arr = []
+            for (let i = 0; i < this.exLinks.length ; i++) {
+                if(this.exLinks[i]!='')
+                    arr.push(this.exLinks[i])
+            }
+            var obj={
                 description:this.description,
                 researchInterests:this.researchInterests,
                 subjectAreas:this.subjectAreas,
+                externalLinks:arr,
             };
             $.ajax({
                 data:JSON.stringify(obj),

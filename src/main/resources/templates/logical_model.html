@@ -13,8 +13,13 @@
     <link rel="stylesheet" th:href="@{/static/css/base/style.css}">
     <link rel="stylesheet" th:href="@{/static/css/base/universal.css}">
     <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/iCheck/skins/flat/green.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
     <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
     <link rel="stylesheet" type="text/css" href="/static/js/graphEditor/styles/grapheditor.css">
+    <link rel="stylesheet" href="/static/css/common/userModule.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <style>
@@ -34,11 +39,11 @@
             2019.11.14
             控制 format 面板的样式
          */
-        * {
-            -webkit-box-sizing: unset;
-            -moz-box-sizing: unset;
-            box-sizing: unset;
-        }
+        .geSidebarContainer.geFormatContainer * {
+             -webkit-box-sizing: unset;
+             -moz-box-sizing: unset;
+             box-sizing: unset;
+         }
 
     </style>
 </head>
@@ -433,11 +438,13 @@
                  th:content="${modelInfo.cXml}"></div>
         </div>
     </div>
-
+    <el-dialog title="Edit Logical Model" class="responseDialog" :visible.sync="editLogicalModelDialog" width="65%">
+        <edit-Logical-model-module :model-edit-oid="modelOid"></edit-Logical-model-module>
+    </el-dialog>
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
-
+<template th:replace="fragments/editLogicalModelModule :: editLogicalModelModule"></template>
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
@@ -550,6 +557,11 @@
     })();
 </script>
 
+<script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
+<script src="/static/js/common/md5.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
@@ -560,5 +572,6 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
+<script src="/static/js/module/editLogicalModelModule.js"></script>
 
 </html>

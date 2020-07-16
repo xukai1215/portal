@@ -72,6 +72,17 @@ public class ModelItemRestController {
 
     }
 
+    @RequestMapping(value="/application",method = RequestMethod.GET)
+    public ModelAndView getApplication() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("modelApplication");
+
+
+        return modelAndView;
+
+    }
+
 
     @RequestMapping(value="/add",method = RequestMethod.POST)
     public JsonResult addModelItem(HttpServletRequest request) throws IOException {
@@ -349,16 +360,15 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value="/searchByDOI",method=RequestMethod.POST)
-    public JsonResult searchReferenceByDOI(@RequestParam(value="doi") String DOI, HttpServletRequest httpServletRequest) throws IOException, DocumentException {
+    public JsonResult searchReferenceByDOI(@RequestParam(value="doi") String DOI,@RequestParam(value="modelOid") String modelOid, HttpServletRequest httpServletRequest) throws IOException, DocumentException {
         HttpSession session=httpServletRequest.getSession();
 
         if(session.getAttribute("oid")==null){
             return ResultUtils.error(-1,"no login");
         }
         String userOid=session.getAttribute("oid").toString();
-        return ResultUtils.success(modelItemService.getArticleByDOI(DOI,userOid));
+        return ResultUtils.success(modelItemService.getArticleByDOI(DOI,modelOid,userOid));
     }
-
 
 
 }
