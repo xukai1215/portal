@@ -3,9 +3,12 @@ package njgis.opengms.portal.dao;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Item;
+import njgis.opengms.portal.entity.RelatedProcessing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
     Page<DataItem> findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn(String contentType,String name,List<String> cls,Pageable pageable);
 
     DataItem findFirstById(String id);
+
+    DataItem findFirstByDistributedNodeDataId(String distributedNodeDataId);
 
     Page<DataItem> findByAuthorAndNameContains(Pageable pageable, String author, String name);
 
@@ -58,7 +63,4 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     List<DataItem> findByKeywordsLike(String author);
     List<DataItem> findByClassificationsLike(String author);
-
-
-
 }

@@ -32,7 +32,7 @@ var createModelItem = Vue.extend({
             oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
             children: [ {
                 id: 65,
-                label: 'Solar-terrestrial Physics',
+                label: 'Sun-Earth System',
                 oid: '1fd56a5d-1532-4ea6-ad0a-226e78a12861'
             }, {
                 id: 66,
@@ -320,7 +320,6 @@ var createModelItem = Vue.extend({
         clsStr: '',
         status: 'Public',
 
-        path:"ws://localhost:8080/websocket",
         socket:"",
 
         message_num_socket:0,
@@ -550,39 +549,7 @@ var createModelItem = Vue.extend({
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
-        getUserData(UsersInfo, prop) {
 
-            for (i = prop.length; i > 0; i--) {
-                prop.pop();
-            }
-            var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
-                //
-                if(index%4==0){
-                    let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
-                        continue;
-                    }
-                }
-
-                var Info = UsersInfo.eq(index)[0];
-                if (index % 4 == 3) {
-                    if (result) {
-                        result += "'" + Info.name + "':'" + Info.value + "'}"
-                        prop.push(eval('(' + result + ')'));
-                    }
-                    result = "{";
-                }
-                else {
-                    result += "'" + Info.name + "':'" + Info.value + "',";
-                }
-
-            }
-        },
 
         sendcurIndexToParent(){
             this.$emit('com-sendcurindex',this.curIndex)
@@ -603,7 +570,7 @@ var createModelItem = Vue.extend({
 
             if ('WebSocket' in window) {
                 // this.socket = new WebSocket("ws://localhost:8080/websocket");
-                this.socket = new WebSocket(this.path);
+                this.socket = new WebSocket(websocketAddress);
                 // 监听socket连接
                 this.socket.onopen = this.open;
                 // 监听socket错误信息
@@ -839,40 +806,7 @@ var createModelItem = Vue.extend({
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item")
 
-            tinymce.remove('textarea#modelItemText')
-            tinymce.init({
-                selector: "textarea#modelItemText",
-                height: 350,
-                theme: 'silver',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
-
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
+            initTinymce('textarea#modelItemText')
         }
         else {
             // $("#title").text("Modify Model Item")
@@ -1037,40 +971,7 @@ var createModelItem = Vue.extend({
                     //detail
                     //tinymce.remove("textarea#modelItemText");
                     $("#modelItemText").html(basicInfo.detail);
-                    tinymce.remove('textarea#modelItemText')
-                    tinymce.init({
-                        selector: "textarea#modelItemText",
-                        height: 300,
-                        theme: 'silver',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
-
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
+                    initTinymce('textarea#modelItemText')
                 }
             })
             // window.sessionStorage.setItem("editModelItem_id", "");
@@ -1304,7 +1205,7 @@ var createModelItem = Vue.extend({
             modelItemObj.description = $("#descInput").val();
             modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
             modelItemObj.authorship=[];
-            this.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
             if(modelItemObj.name.trim()==""){
                 alert("please enter name");
@@ -1354,7 +1255,7 @@ var createModelItem = Vue.extend({
                     async: true,
                     data: formData,
                     success: (result)=> {
-                        window.userSpaceVue.fullscreenLoading=false;
+                        userspace.fullscreenLoading=false;
                         // loading.close();
                         if (result.code == 0) {
 
@@ -1402,7 +1303,7 @@ var createModelItem = Vue.extend({
                     type: 'text/plain',
                 });
                 formData.append("info",file);
-                window.userSpaceVue.fullscreenLoading=true;
+                userspace.fullscreenLoading=true;
                 $.ajax({
                     url: "/modelItem/update",
                     type: "POST",
@@ -1414,7 +1315,7 @@ var createModelItem = Vue.extend({
                     success: (result)=> {
                         // setTimeout(()=>{loading.close();},1000)
                         // loading.close()
-                        window.userSpaceVue.fullscreenLoading=false;
+                        userspace.fullscreenLoading=false;
                         if (result.code === 0) {
                             if(result.data.method==="update") {
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {

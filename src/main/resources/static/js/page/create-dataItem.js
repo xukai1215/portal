@@ -137,39 +137,7 @@ var createDataItem = Vue.extend({
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
-        getUserData(UsersInfo, prop) {
 
-            for (i = prop.length; i > 0; i--) {
-                prop.pop();
-            }
-            var result = "{";
-            for (index=0 ; index < UsersInfo.length; index++) {
-                //
-                if(index%4==0){
-                    let value1 = UsersInfo.eq(index)[0].value.trim();
-                    let value2 = UsersInfo.eq(index+1)[0].value.trim();
-                    let value3 = UsersInfo.eq(index+2)[0].value.trim();
-                    let value4 = UsersInfo.eq(index+3)[0].value.trim();
-                    if(value1==''&&value2==''&&value3==''&&value4==''){
-                        index+=4;
-                        continue;
-                    }
-                }
-
-                var Info = UsersInfo.eq(index)[0];
-                if (index % 4 == 3) {
-                    if (result) {
-                        result += "'" + Info.name + "':'" + Info.value + "'}"
-                        prop.push(eval('(' + result + ')'));
-                    }
-                    result = "{";
-                }
-                else {
-                    result += "'" + Info.name + "':'" + Info.value + "',";
-                }
-
-            }
-        },
 
         getDataItems() {
             this.pageSize = 10;
@@ -424,7 +392,9 @@ var createDataItem = Vue.extend({
                             label:ele.category,
                             id:ele.id
                         }
-                        children.push(child)
+                        if (child.label!="...All") {
+                            children.push(child);
+                        }
                     }
 
                     var a = {
@@ -435,11 +405,32 @@ var createDataItem = Vue.extend({
                         tha.categoryTree.push(a);
                         tha.treeData = tha.categoryTree
                     }
-
-
                 }
-
-
+                //排序treeData
+                let subTreeData = new Array(6);
+                for (let i=0;i<tha.treeData.length;i++){
+                    switch (tha.treeData[i].label) {
+                        case "Earth System":
+                            subTreeData[0] = tha.treeData[i];
+                            break;
+                        case "Physical Geography":
+                            subTreeData[1] = tha.treeData[i];
+                            break;
+                        case "Human Geography":
+                            subTreeData[2] = tha.treeData[i];
+                            break;
+                        case "Geographic Information":
+                            subTreeData[3] = tha.treeData[i];
+                            break;
+                        case "Natural Resources":
+                            subTreeData[4] = tha.treeData[i];
+                            break;
+                        case "Region and Area":
+                            subTreeData[5] = tha.treeData[i];
+                            break;
+                    }
+                }
+                tha.treeData = subTreeData;
             })
         var that = this;
 

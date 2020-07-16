@@ -9,6 +9,7 @@ var  data_item_info= new Vue({
         return{
             activeIndex:'2-2',
             activeName: 'Conceptual Model',
+
             databrowser:[],
             dataid:'',
             searchcontent:'',
@@ -97,12 +98,31 @@ var  data_item_info= new Vue({
                     }]
                 }]
             }],
-
+            activeNameProcessing: 'Related Processing',
+            activeNameVisual: 'Related Visualization',
+            input:'',
+            dialogVisible: false,
+            processingId:"",
+            xml:"",
+            parameters:[],
+            loading: false,
+            loading2:false,
+            processingType:"",
+            dataItemId:"",
+            objProcess:{
+                msg:"",
+                dataId:"",
+                pcsId:"",
+                params:[],
+                name:"",
+                token:"",
+                reqUsrOid:"",
+            },
+            objDistributed:{},
         }
 
     } ,
     methods: {
-
         confirmLogin(){
             this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                 dangerouslyUseHTMLString: true,
@@ -118,7 +138,6 @@ var  data_item_info= new Vue({
 
             });
         },
-
         submitComment(){
             if(this.useroid==""||this.useroid==null||this.useroid==undefined){
                 this.$message({
@@ -243,7 +262,6 @@ var  data_item_info= new Vue({
             this.replyToUserId="";
             this.commentParentId=null;
         },
-
         forkData(){
             if(dataSelection.length!=0){
                 axios.get("/user/getFolder",{})
@@ -265,7 +283,6 @@ var  data_item_info= new Vue({
                 alert("Please select data first!")
             }
         },
-
         addFolder(){
             let data=this.$refs.folderTree.getCurrentNode();
             let node=this.$refs.folderTree.getNode(data);
@@ -313,7 +330,6 @@ var  data_item_info= new Vue({
                 });
             });
         },
-
         confirmFolder(){
             let data=this.$refs.folderTree.getCurrentNode();
             let node=this.$refs.folderTree.getNode(data);
@@ -347,7 +363,6 @@ var  data_item_info= new Vue({
                 }
             });
         },
-
         append(data) {
 
             this.$prompt(null, 'Enter Folder Name', {
@@ -369,15 +384,12 @@ var  data_item_info= new Vue({
             });
 
         },
-
         remove(node, data) {
             const parent = node.parent;
             const children = parent.data.children || parent.data;
             const index = children.findIndex(d => d.id === data.id);
             children.splice(index, 1);
         },
-
-
         getUrlParam(url,name) {
 
             var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
@@ -387,7 +399,6 @@ var  data_item_info= new Vue({
             if(r!=null)return  unescape(r[2]); return null;
 
         },
-
         //Relation 相关
         getRelation(){
             //从地址栏拿到oid
@@ -421,7 +432,6 @@ var  data_item_info= new Vue({
 
             this.search();
         },
-
         handleDelete(index,row){
             console.log(index,row);
             let table=new Array();
@@ -432,7 +442,6 @@ var  data_item_info= new Vue({
             this.tableData=table;
 
         },
-
         handleEdit(index,row){
             console.log(row);
             let flag=false;
@@ -447,7 +456,6 @@ var  data_item_info= new Vue({
                 this.tableData.push(row);
             }
         },
-
         confirm(){
             //从地址栏拿到oid
             let arr=window.location.href.split("/");
@@ -481,7 +489,6 @@ var  data_item_info= new Vue({
                 }
             })
         },
-
         handleClose(done) {
             this.$confirm('Are you sure to close？')
                 .then(_ => {
@@ -489,7 +496,6 @@ var  data_item_info= new Vue({
                 })
                 .catch(_ => {});
         },
-
         addRelation(order){
 
             $.ajax({
@@ -518,7 +524,6 @@ var  data_item_info= new Vue({
                 }
             })
         },
-
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
@@ -589,8 +594,6 @@ var  data_item_info= new Vue({
             })
         },
         //end relation
-
-
         handleDownload(index,row){
             // console.log(index,row);
         },
@@ -600,17 +603,13 @@ var  data_item_info= new Vue({
          getImg(item){
             return "/static/img/filebrowser/"+item.suffix+".svg"
          },
-
         generateId(key){
             return key;
         },
         getid(event){
             console.log(eval)
             this.dataid=eval;
-
-
         },
-
         share(){
 
 
@@ -664,7 +663,6 @@ var  data_item_info= new Vue({
             }
 
         },
-
         showsearchresult(data){
 
             //动态创建DOM节点
@@ -981,7 +979,6 @@ var  data_item_info= new Vue({
                 .catch(_ => {});
         },
         //add related models
-
         addRelatedModel(){
 
             if(this.useroid==''){
@@ -1007,10 +1004,6 @@ var  data_item_info= new Vue({
 
 
         },
-
-
-
-
         searchRelatedModels(){
 
 
@@ -1153,7 +1146,6 @@ var  data_item_info= new Vue({
             }
 
         },
-
         showRelatedModels(){
             this.dataNums=5
             this.searchAddRelatedModels=[]
@@ -1183,7 +1175,6 @@ var  data_item_info= new Vue({
             }
 
         },
-
         RelatedModels(more){
             let curentId=document.location.href.split("/");
             let that=this
@@ -1265,15 +1256,303 @@ var  data_item_info= new Vue({
                 }
             })
         },
-        // open() {
-        //     this.$message('Application has been sent');
-        // },
+        downLoadDistributedNodeData(){
+            this.loading = true;
 
+            // $(".connect").attr('style','display: inline-block;color: mediumblue;font-size: larger;font-weight: 600;');
 
+            // let obj;
+            let data = {
+                dataOid: this.dataItemId,
+            };
+            // console.log('sd');
+            // var time = new Date();
+            $.ajax({
+                url:"/dataItem/getDistributedObj",
+                type:"GET",
+                data:data,
+                async:false,
+                success:(json)=>{
+                    if (json.code == "0") {
+                        this.objDistributed = json.data;
+                        this.linkWebsocket("distributed");
+                    }else if(json.code==-1){
+                        alert("Please login first!");
+                        window.location.href="/user/login";
+                    }else if (json.code = "1"){
+                        this.loading = false;
+                        // $(".connect").hide();
+                        let dataUrl = json.data;
+                        window.location.href=dataUrl;
+                    }
+                }
+            })
+            // if (obj!=null) {
+            //     ws.send(JSON.stringify(obj));
+            // }
+        },
+        invokeProcessing($event){
+            this.processingType = "process";
+            this.loading2 = false;
+            let processingInvokes = $(".processingInvoke");
+            for(i=0;i<processingInvokes.length;i++){
+                if(event.currentTarget===processingInvokes[i]){
+                    this.processingId = processingInvokes[i].id;
+                }
+            }
+            // var url = window.location.href;
+            // var index = url.lastIndexOf("\/");
+            // let dataItemId = url.substring(index+1,url.length);
+            // this.dataItemId = dataItemId;
+            let formData = new FormData();
+            formData.append("dataItemId", this.dataItemId);
+            formData.append("processingId",this.processingId);
+            formData.append("type",this.processingType);
+            $.ajax({
+                url:"/dataItem/getParemeter",
+                type:"POST",
+                data:formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (json) => {
+                    if (json.code == 0) {
+                        this.xml = json.xml;
+                        this.parameters = json.parameters
+                    }else if(json.code==-1) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }
+                }
+
+            })
+        },
+        invokeProcessingVisual($event){
+            this.processingType = "visual";
+            this.loading2 = false;
+            let processingInvokes = $(".processingInvokeVisual");
+            for(i=0;i<processingInvokes.length;i++){
+                if(event.currentTarget===processingInvokes[i]){
+                    this.processingId = processingInvokes[i].id;
+                }
+            }
+            // var url = window.location.href;
+            // var index = url.lastIndexOf("\/");
+            // let dataItemId = url.substring(index+1,url.length);
+            let formData = new FormData();
+            formData.append("dataItemId", this.dataItemId);
+            formData.append("processingId",this.processingId);
+            formData.append("type",this.processingType);
+            $.ajax({
+                url:"/dataItem/getParemeter",
+                type:"POST",
+                data:formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (json) => {
+                    if (json.code == 0) {
+                        this.xml = json.xml;
+                        this.parameters = json.parameters
+                    }else if(json.code==-1) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    }
+                }
+            })
+        },
+        invokeProcessingNow(){
+            this.loading2 = true;
+            // let obj = {
+            //     msg:"",
+            //     dataId:"",
+            //     pcsId:"",
+            //     params:[],
+            //     name:"",
+            //     token:"",
+            //     reqUsrOid:"",
+            // };
+            this.objProcess.msg = 'reqPcs';//固定值，区分消息类型
+            // var url = window.location.href;
+            // var index = url.lastIndexOf("\/");
+            // let dataItemId = url.substring(index+1,url.length);
+            let formData = new FormData();
+            formData.append("dataItemId", this.dataItemId);
+            formData.append("processingId",this.processingId);
+            formData.append("type",this.processingType);
+            // obj.dataId = dataItemId;
+            this.objProcess.pcsId = this.processingId;
+            let params= [];
+            for (let i = 0;i<this.parameters.length;i++){
+                params.push($('#'+this.parameters[i]).val());
+            }
+            params=params.join(",");
+            this.objProcess.params = params;
+            $.ajax({
+                url:"/dataItem/getProcessingObj",
+                type:"POST",
+                data:formData,
+                cache:false,
+                processData: false,
+                contentType: false,
+                success:(json)=>{
+                    this.objProcess.name = json.dataItemName;
+                    this.objProcess.token = json.token;
+                    this.objProcess.reqUsrOid = json.userId;
+                    this.objProcess.dataId = json.dataId;
+                    this.objProcess.wsId = this.dataItemId + "pcs";
+                    // this.objProcess.wsId = this.dataItemId;
+
+                    //成功后向111进行请求
+                    // if(window.WebSocket) {
+                    //     var ws = new WebSocket('ws://111.229.14.128:1708');
+                    //     ws.onopen = function (e) {
+                    //         let obj = {
+                    //             msg: 'regist',
+                    //             token: dataItemId + "pcs",
+                    //         }
+                    //         ws.send(JSON.stringify(obj));
+                    //     }
+                    //     ws.onclose = function (e) {
+                    //         console.log("服务器关闭");
+                    //     }
+                    //     ws.onerror = function () {
+                    //         console.log("连接出错");
+                    //     }
+                    //
+                    //     ws.onmessage = function (e) {
+                    //         //没有对应数据
+                    //         if (e.data === 'no data in service node!') {
+                    //             this.loading2 = false;
+                    //             alert('no data in service node!')
+                    //         } else
+                    //         //没有权限
+                    //         if (e.data === 'no authority') {
+                    //             this.loading2 = false;
+                    //             alert('no authority')
+                    //         } else
+                    //         //服务结点离线
+                    //         if (e.data == 'node offline') {
+                    //             this.loading2 = false;
+                    //             alert('service node offline')
+                    //         } else
+                    //         //注册门户到中转服务器成功
+                    //         if (e.data === 'success') {
+                    //             // alert("连接成功")
+                    //         } else {
+                    //             //心跳检测
+                    //             if (e.data === 'beat') {
+                    //                 ws.send('online')
+                    //
+                    //             } else {
+                    //             }
+                    //             let r = JSON.parse(e.data)
+                    //             if (r.msg == 'insitudata') {
+                    //                 // alert(e.data)
+                    //                 this.loading2 = false;
+                    //                 window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+                    //                 return
+                    //             }
+                    //         }
+                    //         if (obj!=null&&e.data!="node offline") {
+                    //             ws.send(JSON.stringify(obj));
+                    //         }
+                    //     }
+                    // }
+                    this.linkWebsocket("process");
+                }
+            })
+        },
+        linkWebsocket(type){
+            let objSend;
+            if (type=="process"){
+                objSend = this.objProcess;
+            } else if (type == "distributed") {
+                objSend = this.objDistributed;
+            }
+            let that = this;
+            if(window.WebSocket) {
+                var ws = new WebSocket('ws://111.229.14.128:1708');
+                ws.onopen = function (e) {
+                    let obj = {
+                        msg: 'regist',
+                        token: that.dataItemId,
+                    }
+                    ws.send(JSON.stringify(obj));
+                }
+                ws.onclose = function (e) {
+                    console.log("服务器关闭");
+                }
+                ws.onerror = function () {
+                    console.log("连接出错");
+                }
+
+                ws.onmessage = function (e) {
+                    //没有对应数据
+                    if (e.data === 'no data in service node!') {
+                        if (type=="process"){
+                            that.loading2 = false;
+                        }else {
+                            that.loading = false;
+                        }
+                        // loading = false;
+                        alert('no data in service node!')
+                    } else
+                    //没有权限
+                    if (e.data === 'no authority') {
+                        if (type=="process"){
+                            that.loading2 = false;
+                        }else {
+                            that.loading = false;
+                        }
+                        alert('no authority')
+                    } else
+                    //服务结点离线
+                    if (e.data == 'node offline') {
+                        if (type=="process"){
+                            that.loading2 = false;
+                        }else {
+                            that.loading = false;
+                        }
+                        alert('service node offline')
+                    } else
+                    //注册门户到中转服务器成功
+                    if (e.data === 'success') {
+                        // alert("连接成功")
+                    } else {
+                        //心跳检测
+                        if (e.data === 'beat') {
+                            ws.send('online')
+
+                        } else {
+                        }
+                        let r = JSON.parse(e.data)
+                        if (r.msg == 'insitudata') {
+                            // alert(e.data)
+                            if (type=="process"){
+                                that.loading2 = false;
+                            }else {
+                                that.loading = false;
+                            }
+                            window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+                            return
+                        }
+                    }
+                    if (objSend!=null&&e.data!="node offline") {
+                        ws.send(JSON.stringify(objSend));
+                    }
+                }
+            }
+        },
     },
 
     mounted(){
-
+        let that = this;
+        //获取当前数据条目的id
+        var url = window.location.href;
+        var index = url.lastIndexOf("\/");
+        let dataItemId = url.substring(index+1,url.length);
+        that.dataItemId = dataItemId;
         axios.get("/user/load")
             .then((res) => {
                 if (res.status == 200) {
@@ -1304,9 +1583,9 @@ var  data_item_info= new Vue({
         var url=currenturl.split("/")
         this.currentDataId=url[url.length-1]
         var dataitemid=currenturl.split("/");
-        var alldata=new Array();
 
-        var that=this;
+
+        var alldata=new Array();
 
         let qrcodes = document.getElementsByClassName("qrcode");
         for(i=0;i<qrcodes.length;i++) {
@@ -1337,7 +1616,153 @@ var  data_item_info= new Vue({
             $(".fullPaper").remove();
         })
 
-
+        //配置websocket
+        // if(window.WebSocket){
+        //     var ws = new WebSocket('ws://111.229.14.128:1708');
+        //
+        //     ws.onopen = function(e){
+        //         // let sube = e;
+        //
+        //         let obj={
+        //             msg:'regist',
+        //             token:dataItemId,
+        //
+        //         }
+        //         ws.send(JSON.stringify(obj));
+        //     }
+        //     ws.onclose = function(e){
+        //         console.log("服务器关闭");
+        //     }
+        //     ws.onerror = function(){
+        //         console.log("连接出错");
+        //     }
+        //
+        //     ws.onmessage = function(e){
+        //
+        //         var local_url = window.location.href;
+        //         var index = local_url.lastIndexOf("\/");
+        //         dataOid = local_url.substring(index + 1,local_url.length);
+        //         if(e.data==='no data in service node!'){
+        //             // $(".connect").hide();
+        //             that.loading = false;
+        //             alert('no data in service node!')
+        //         }else
+        //         if(e.data==='no authority'){
+        //             that.loading = false;
+        //             // $(".connect").hide();
+        //             alert('no authority')
+        //         }else
+        //         //服务结点离线
+        //         if(e.data=='node offline'){
+        //             that.loading = false;
+        //             // $(".connect").hide();
+        //             alert('service node offline')
+        //         }else
+        //         //注册门户到中转服务器成功
+        //         if(e.data==='success'){
+        //             // alert("连接成功")
+        //         }else{
+        //             //心跳检测
+        //             if(e.data==='beat'){
+        //                 ws.send('online')
+        //
+        //             }else{}
+        //             let r=JSON.parse(e.data);
+        //             if(r.msg=='insitudata'){
+        //                 that.loading = false;
+        //
+        //                 let dataUrl = "http://111.229.14.128:8899/data?uid="+ r.id;
+        //                 let data = {
+        //                     dataOid:dataOid,
+        //                     dataUrl: dataUrl,
+        //                 };
+        //
+        //                 $.ajax({
+        //                     url:"/dataItem/saveUrl",
+        //                     data:data,
+        //                     type:"POST",
+        //                     async:false,
+        //                     success:(json)=>{
+        //                         if (json.code == "0") {
+        //                             console.log("success");
+        //                         }
+        //                     }
+        //
+        //                 })
+        //                 window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+        //
+        //                 // alert(e.data);
+        //                 return
+        //             }
+        //         }
+        //         let sube = e;
+        //         document.querySelector(".value").onclick = function(e){
+        //             that.loading = true;
+        //             // $(".connect").attr('style','display: inline-block;color: mediumblue;font-size: larger;font-weight: 600;');
+        //             if(sube.data==='no data in service node!'){
+        //                 that.loading = false;
+        //                 // $(".connect").hide();
+        //                 alert('no data in service node!')
+        //             }else
+        //             if(sube.data==='no authority'){
+        //                 that.loading = false;
+        //                 // $(".connect").hide();
+        //                 alert('no authority')
+        //             }else
+        //             //服务结点离线
+        //             if(sube.data=='node offline'){
+        //                 that.loading = false;
+        //                 // $(".connect").hide();
+        //                 alert('service node offline')
+        //             }else
+        //             //注册门户到中转服务器成功
+        //             if(sube.data==='success'){
+        //                 // alert("连接成功")
+        //             }else{
+        //                 //心跳检测
+        //                 if(sube.data==='beat'){
+        //                     ws.send('online')
+        //
+        //                 }else{}
+        //                 let r=JSON.parse(sube.data);
+        //                 if(r.msg=='insitudata'){
+        //                     that.loading = false;
+        //                     // $(".connect").hide();
+        //                     window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+        //                     return
+        //                 }
+        //             }
+        //             let obj;
+        //             let data = {
+        //                 dataOid: dataOid,
+        //             };
+        //             console.log('sd');
+        //             var time = new Date();
+        //             $.ajax({
+        //                 url:"/dataItem/getDistributedObj",
+        //                 type:"GET",
+        //                 data:data,
+        //                 async:false,
+        //                 success:(json)=>{
+        //                     if (json.code == "0") {
+        //                         obj = json.data;
+        //                     }else if(json.code==-1){
+        //                         alert("Please login first!");
+        //                         window.location.href="/user/login";
+        //                     }else if (json.code = "1"){
+        //                         that.loading = false;
+        //                         // $(".connect").hide();
+        //                         let dataUrl = json.data;
+        //                         window.location.href=dataUrl;
+        //                     }
+        //                 }
+        //             })
+        //             if (obj!=null) {
+        //                 ws.send(JSON.stringify(obj));
+        //             }
+        //         }
+        //     }
+        // }
     },
 
 });
@@ -1482,13 +1907,6 @@ $(function () {
 
     var value=0;
 
-    // $(".ab").click(
-    //     function () {
-    //         value += 180;
-    //         $('.fa-arrow-circle-up').rotate({animateTo: value})
-    //     }
-    // );
-
     $(".ab").click(
         function () {
             if(this.className.indexOf('transform180')==-1)
@@ -1503,154 +1921,4 @@ $(function () {
 });
 
 
-var mess = document.getElementById("mess");
-if(window.WebSocket){
-    var ws = new WebSocket('ws://111.229.14.128:1708');
-
-ws.onopen = function(e){
-    // let sube = e;
-
-        let obj={
-            msg:'regist',
-            token:'portal',
-
-        }
-        ws.send(JSON.stringify(obj));
-    }
-    ws.onclose = function(e){
-        console.log("服务器关闭");
-    }
-    ws.onerror = function(){
-        console.log("连接出错");
-    }
-
-    ws.onmessage = function(e){
-
-        var local_url = window.location.href;
-        var index = local_url.lastIndexOf("\/");
-        dataOid = local_url.substring(index + 1,local_url.length);
-        if(e.data==='no data in service node!'){
-            alert('no data in service node!')
-        }else
-        if(e.data==='no authority'){
-            alert('no authority')
-        }else
-        //服务结点离线
-        if(e.data=='node offline'){
-            alert('service node offline')
-        }else
-        //注册门户到中转服务器成功
-        if(e.data==='success'){
-            // alert("连接成功")
-        }else{
-            //心跳检测
-            if(e.data==='beat'){
-                ws.send('online')
-
-            }else{}
-            let r=JSON.parse(e.data);
-            if(r.msg=='insitudata'){
-                let dataUrl = "http://111.229.14.128:8899/data?uid="+ r.id;
-                let data = {
-                    dataOid:dataOid,
-                    dataUrl: dataUrl,
-                };
-
-                $.ajax({
-                    url:"/dataItem/saveUrl",
-                    data:data,
-                    type:"POST",
-                    async:false,
-                    success:(json)=>{
-                        if (json.code == "0") {
-                            console.log("success");
-                        }
-                    }
-
-                })
-
-
-                window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-
-                // alert(e.data);
-                return
-            }
-        }
-        //得到数据下载id,门户用这个id去数据容器下载就可以
-
-        // var local_url = window.location.href;
-        // var index = local_url.lastIndexOf("\/");
-        // dataOid = local_url.substring(index + 1,local_url.length);
-        // let obj;
-        // let data = {
-        //     dataOid: dataOid,
-        // };
-        //
-        let sube = e;
-        document.querySelector(".value").onclick = function(e){
-            if(sube.data==='no data in service node!'){
-                alert('no data in service node!')
-            }else
-            if(sube.data==='no authority'){
-                alert('no authority')
-            }else
-            //服务结点离线
-            if(sube.data=='node offline'){
-                alert('service node offline')
-            }else
-            //注册门户到中转服务器成功
-            if(sube.data==='success'){
-                // alert("连接成功")
-            }else{
-                //心跳检测
-                if(sube.data==='beat'){
-                    ws.send('online')
-
-                }else{}
-                let r=JSON.parse(sube.data);
-                if(r.msg=='insitudata'){
-                    window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-                    // alert(e.data);
-                    return
-                }
-            }
-            //得到数据下载id,门户用这个id去数据容器下载就可以
-
-            // var local_url = window.location.href;
-            // var index = local_url.lastIndexOf("\/");
-            // dataOid = local_url.substring(index + 1,local_url.length);
-            let obj;
-            let data = {
-                dataOid: dataOid,
-            };
-
-
-
-            console.log('sd')
-            var time = new Date();
-            $.ajax({
-                url:"/dataItem/getDistributedObj",
-                type:"GET",
-                data:data,
-                async:false,
-                success:(json)=>{
-                    if (json.code == "0") {
-                        obj = json.data;
-                    }else if(json.code==-1){
-                        alert("'Please login first!");
-                        window.location.href="/user/login";
-                    }
-                }
-            })
-            // obj={
-            //     msg:'req',
-            //     name:'name',
-            //     token:'Ka3TsrKQGvgEikobDs8+PBcFg621lTGddu7oL0M/rZk=',//数据上传者token
-            //     reqUsrOid:'oid',
-            //     id:'bd9d66b4-117c-4752-a114-1aae34153b11'//查找数据的id
-            // };
-            ws.send(JSON.stringify(obj));
-        }
-    }
-}
 //todo 文件管理器已经阉割 CUT

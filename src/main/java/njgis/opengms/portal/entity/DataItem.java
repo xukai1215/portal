@@ -55,4 +55,6 @@ public class DataItem extends Item{
     String date;
     String dataUrl;
 
+    List<RelatedProcessing> relatedProcessings;
+    List<RelatedVisualization> relatedVisualizations;
 }

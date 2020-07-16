@@ -9,6 +9,7 @@ import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.service.VersionService;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -87,12 +88,19 @@ public class VersionRestController {
     ThemeVersionDao themeVersionDao;
 
     @RequestMapping(value = "/review", method = RequestMethod.GET)
-    public ModelAndView getRegister() {
+    public ModelAndView getRegister(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = Utils.checkLoginStatus(session);
+
         System.out.println("versionCheck");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("version/versionCheck");
-        modelAndView.addObject("name", "OpenGMS");
-
+        if(userName.equals("yuesongshan")||userName.equals("njgis")){
+            modelAndView.setViewName("version/versionCheck");
+        }
+        else {
+            modelAndView.setViewName("error/404");
+            modelAndView.addObject("name", "OpenGMS");
+        }
         return modelAndView;
     }
 

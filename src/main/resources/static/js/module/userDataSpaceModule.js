@@ -964,7 +964,7 @@ Vue.component("user-data",
           if (this.downloadDataSet.length > 0) {
 
                     const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://111.229.14.128:8082/data?uid=" + keys;
+                    let url = "http://221.226.60.2:8082/data?uid=" + keys;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';
@@ -1054,7 +1054,7 @@ Vue.component("user-data",
                 let id=this.rightTargetItem.url.split('=')[1]
                 //下载接口
                 if(id!=undefined) {
-                    window.open( 'http://111.229.14.128:8082/data?uid='+id);
+                    window.open( 'http://221.226.60.2:8082/data?uid='+id);
                 }
                 else{
                     this.$message.error("No data can be downloaded.");
@@ -1876,7 +1876,7 @@ Vue.component("user-data",
 
           let authorship = [];
 
-          this.getUserData($("#providersPanelAll .user-contents .form-control"), authorship);
+                userspace.getUserData($("#providersPanelAll .user-contents .form-control"), authorship);
 
           this.taskDataForm.authorship = authorship;
           console.log(this.taskDataForm)
@@ -2059,39 +2059,7 @@ Vue.component("user-data",
 
         },
 
-        getUserData(UsersInfo, prop) {
 
-          for (i = prop.length; i > 0; i--) {
-            prop.pop();
-          }
-          var result = "{";
-          for (index = 0; index < UsersInfo.length; index++) {
-            //
-            if (index % 4 == 0) {
-              let value1 = UsersInfo.eq(index)[0].value.trim();
-              let value2 = UsersInfo.eq(index + 1)[0].value.trim();
-              let value3 = UsersInfo.eq(index + 2)[0].value.trim();
-              let value4 = UsersInfo.eq(index + 3)[0].value.trim();
-              if (value1 == '' && value2 == '' && value3 == '' && value4 == '') {
-                index += 4;
-                continue;
-              }
-            }
-
-            var Info = UsersInfo.eq(index)[0];
-            if (index % 4 == 3) {
-              if (result) {
-                result += "'" + Info.name + "':'" + Info.value + "'}"
-                prop.push(eval('(' + result + ')'));
-              }
-              result = "{";
-            }
-            else {
-              result += "'" + Info.name + "':'" + Info.value + "',";
-            }
-
-          }
-        },
 
         async dropPackageContent(item, index) {
 

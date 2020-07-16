@@ -41,7 +41,7 @@
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
                 <el-card class="box-card categoryList">
                     <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Classifications</span>
+                        <span style="font-size: 20px;color:#444">Repository Collections</span>
                     </div>
                     <el-tree
                             id="tree1"
@@ -99,16 +99,17 @@
                                     <i v-if="concept.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
                                     <i v-if="concept.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
                                 </el-tooltip>
-                                <a :class="concept.viewCount>500?'hot':''" :href="'/repository/concept/'+ concept.oid" target="_blank">{{concept.description_EN==''?concept.alias:concept.name}}&nbsp&nbsp</a>
+                                <a :class="concept.viewCount>500?'hot':''" :href="'/repository/concept/'+ concept.oid" target="_blank">{{concept.name==''?concept.alias:concept.name}}&nbsp&nbsp</a>
                             </div>
                             <div class="detail_overview">
                                 <a class="img" :href="'/repository/concept/'+ concept.oid" target="_blank">
-                                    <avatar :username="concept.description_EN==''?concept.alias:concept.name" :size="90" :rounded="false"></avatar>
+                                    <avatar :username="concept.name" :size="90" :rounded="false"></avatar>
+                                    <!--<avatar :username="concept.name==''?concept.alias:concept.name" :size="90" :rounded="false"></avatar>-->
                                     <!--<img v-if="modelItem.image!=''" :src="modelItem.image" style="width:90px;height: 90px;">-->
                                 </a>
 
                                 <div class="info">
-                                    <p>{{concept.description_EN==''?concept.description_ZH:concept.description_EN}}</p>
+                                    <p>{{concept.description}}</p>
                                     <!--<div class="tags" v-if="modelItem.keywords.length>0">-->
                                     <!--<span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>-->
                                     <!--</div>-->

@@ -12,6 +12,7 @@ import njgis.opengms.portal.dto.modelItem.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.Article;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.Localization;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
 import njgis.opengms.portal.entity.support.Reference;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -219,10 +220,19 @@ public class ModelItemService {
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("name", concept.getName());
                 jsonObj.put("oid", concept.getOid());
-                jsonObj.put("alias", concept.getAlias());
-                jsonObj.put("description", concept.getDescription());
-                jsonObj.put("description_ZH", concept.getDescription_ZH());
-                jsonObj.put("description_EN", concept.getDescription_EN());
+//                jsonObj.put("alias", concept.getAlias());
+                String desc = "";
+                List<Localization> localizationList = concept.getLocalizationList();
+                for(int j=0;j<localizationList.size();j++){
+                    String description = localizationList.get(j).getDescription();
+                    if(description!=null&&!description.equals("")){
+                        desc = description;
+                        break;
+                    }
+                }
+                jsonObj.put("description", desc);
+//                jsonObj.put("description_ZH", concept.getDescription_ZH());
+//                jsonObj.put("description_EN", concept.getDescription_EN());
                 conceptArray.add(jsonObj);
             }
         }
@@ -743,18 +753,21 @@ public class ModelItemService {
         ModelItem modelItem=modelItemDao.findFirstByOid(oid);
         ModelItemRelate relate=modelItem.getRelate();
 
+        List<String> relationDelete=new ArrayList<>();//要被删除的关系
+        List<String> relationAdd=new ArrayList<>();//要添加的关系
+
         switch (type){
             case "dataItem":
 
-                List<String> relationDelete=new ArrayList<>();
                 for(int i=0;i<modelItem.getRelatedData().size();i++){
                     relationDelete.add(modelItem.getRelatedData().get(i));
                 }
-                List<String> relationAdd=new ArrayList<>();
+
                 for(int i=0;i<relations.size();i++){
                     relationAdd.add(relations.get(i));
                 }
 
+                //筛选出要删除和要添加的条目
                 for(int i=0;i<relationDelete.size();i++){
                     for(int j=0;j<relationAdd.size();j++){
                         if(relationDelete.get(i).equals(relationAdd.get(j))){
@@ -795,6 +808,52 @@ public class ModelItemService {
                 modelItem.setRelatedData(relations);
                 break;
             case "modelItem":
+
+                for(int i=0;i<modelItem.getRelatedData().size();i++){
+                    relationDelete.add(modelItem.getRelate().getModelItems().get(i));
+                }
+
+                for(int i=0;i<relations.size();i++){
+                    relationAdd.add(relations.get(i));
+                }
+
+                for(int i=0;i<relationDelete.size();i++){
+                    for(int j=0;j<relationAdd.size();j++){
+                        if(relationDelete.get(i).equals(relationAdd.get(j))){
+                            relationDelete.set(i,"");
+                            relationAdd.set(j,"");
+                            break;
+                        }
+                    }
+                }
+
+                for(int i=0;i<relationDelete.size();i++){
+                    String id=relationDelete.get(i);
+                    if(!id.equals("")) {
+                        ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
+                        if(modelItem1.getRelate().getModelItems()!=null) {
+                            modelItem1.getRelate().getModelItems().remove(oid);
+                            modelItemDao.save(modelItem1);
+                        }
+                    }
+                }
+
+                for(int i=0;i<relationAdd.size();i++){
+                    String id=relationAdd.get(i);
+                    if(!id.equals("")) {
+                        ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
+                        if(modelItem1.getRelate().getModelItems()!=null) {
+                            modelItem1.getRelate().getModelItems().add(oid);
+                        }
+                        else{
+                            List<String> relatedModels=new ArrayList<>();
+                            relatedModels.add(oid);
+                            modelItem1.getRelate().setModelItems(relatedModels);
+                        }
+                        modelItemDao.save(modelItem1);
+                    }
+                }
+
                 relate.setModelItems(relations);
                 break;
             case "conceptualModel":

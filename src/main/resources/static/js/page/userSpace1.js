@@ -174,7 +174,7 @@ var router = new VueRouter({
 
         ]
     });
-window.userSpaceVue = new Vue(
+var userspace = new Vue(
     {
         el: "#app",
         data(){
@@ -205,7 +205,7 @@ window.userSpaceVue = new Vue(
                 },
 
                 //websocket
-                websktPath:"ws://localhost:8080/websocket",
+
                 userspaceSocket:"",
 
             }
@@ -214,16 +214,50 @@ window.userSpaceVue = new Vue(
         router:router,
         watch:{
             $route(to,from){
-                window.userSpaceVue.fullscreenLoading=false;
+                userspace.fullscreenLoading=false;
             }
         },
         methods:{
+
+            getUserData(UsersInfo, prop) {
+
+                for (i = prop.length; i > 0; i--) {
+                    prop.pop();
+                }
+                var result = "{";
+                for (index=0 ; index < UsersInfo.length; index++) {
+                    //
+                    if(index%4==0){
+                        let value1 = UsersInfo.eq(index)[0].value.trim();
+                        let value2 = UsersInfo.eq(index+1)[0].value.trim();
+                        let value3 = UsersInfo.eq(index+2)[0].value.trim();
+                        let value4 = UsersInfo.eq(index+3)[0].value.trim();
+                        if(value1==''&&value2==''&&value3==''&&value4==''){
+                            index+=4;
+                            continue;
+                        }
+                    }
+
+                    var Info = UsersInfo.eq(index)[0];
+                    if (index % 4 == 3) {
+                        if (result) {
+                            result += "'" + Info.name.replace(/\'/g,"\\\'") + "':'" + Info.value.replace(/\'/g,"\\\'") + "'}"
+                            prop.push(eval('(' + result + ')'));
+                        }
+                        result = "{";
+                    }
+                    else {
+                        result += "'" + Info.name.replace(/\'/g,"\\\'") + "':'" + Info.value.replace(/\'/g,"\\\'") + "',";
+                    }
+
+                }
+            },
             // websocket
             initWebSkt:function () {
 
                 if ('WebSocket' in window) {
                     // this.userspaceSocket = new WebSocket("ws://localhost:8080/websocket");
-                    this.userspaceSocket = new WebSocket(this.websktPath)
+                    this.userspaceSocket = new WebSocket(websocketAddress)
                     // 监听socket连接
                     this.userspaceSocket.onopen = this.open
                     // 监听socket错误信息
@@ -403,18 +437,44 @@ window.userSpaceVue = new Vue(
 
 
                 //this.getModels();
-
-                // window.loading = this.$loading({
-                //     lock: true,
-                //     text: "Uploading...",
-                //     spinner: "el-icon-loading",
-                //     target:document.getElementById('pageContent'),
-                //     background: "rgba(0, 0, 0, 0.7)"
-                // });
-                // window.loading.close();
             });
         },
 
     }
 );
+
+function initTinymce(idStr){
+    tinymce.remove(idStr)
+    tinymce.init({
+        selector: idStr,
+        height: 350,
+        plugins: [
+            "advcode advlist autolink codesample image imagetools ",
+            " lists link media noneditable powerpaste preview",
+            " searchreplace table visualblocks wordcount"
+        ],
+        toolbar:
+            "undo redo | fontselect | fontsizeselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image",
+        file_picker_types: 'image',
+        file_picker_callback: function (cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function () {
+                var file = input.files[0];
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    var img = reader.result.toString();
+                    cb(img, {title: file.name});
+                }
+            };
+            input.click();
+        },
+        images_dataimg_filter: function (img) {
+            return img.hasAttribute('internal-blob');
+        }
+    });
+}
 

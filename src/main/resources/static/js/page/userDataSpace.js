@@ -990,7 +990,7 @@ var userDataSpace = Vue.extend(
                 if (this.downloadDataSet.length > 0) {
 
                     const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://111.229.14.128:8899/data?uid=" + keys;
+                    let url = "http://221.226.60.2:8082/data?uid=" + keys;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';
@@ -1924,7 +1924,7 @@ var userDataSpace = Vue.extend(
 
                 let authorship = [];
 
-                this.getUserData($("#providersPanelAll .user-contents .form-control"), authorship);
+                userspace.getUserData($("#providersPanelAll .user-contents .form-control"), authorship);
 
                 this.taskDataForm.authorship = authorship;
                 console.log(this.taskDataForm)

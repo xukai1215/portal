@@ -86,8 +86,7 @@
                         <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
                         <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
                     </el-tooltip>
-                    <a th:if="${modelInfo.status=='Public'&&modelInfo.lock==false}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
-<!--                    <a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit()"></a>-->
+                    <a th:if="${modelInfo.status=='Public'&&modelInfo.lock!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                     <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
                         <li th:if="${modelInfo.status=='Public'&&modelInfo.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
                     </el-tooltip>
@@ -379,7 +378,7 @@
             <div id="related_data" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Related Item</h4>
+                        <h4>Related Models & Data</h4>
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName1" type="border-card" stretch="true">
@@ -967,7 +966,7 @@
 
         <el-card shadow="never" class="box-card" style="width:59%;">
             <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
-                <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+                <el-button slot="append" icon="el-icon-search" @keyup.enter.native="search()" @click="search()"></el-button>
             </el-input>
             <el-table
                     :data="pageOption.searchResult"
