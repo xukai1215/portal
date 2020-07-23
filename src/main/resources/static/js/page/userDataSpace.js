@@ -521,7 +521,7 @@ var userDataSpace = Vue.extend(
                 if( this.newFolderName===''){
                     this.$alert('Please input the folder name.', 'Tip', {
                         type:'warning',
-                        confirmButtonText: 'comfirm',
+                        confirmButtonText: 'OK',
                     })
                     this.addFolderIndex=true;
                 }

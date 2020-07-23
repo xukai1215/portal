@@ -2791,7 +2791,7 @@ new Vue({
                         }else if(data.find==0){
                             this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
                                 type:"warning",
-                                    confirmButtonText: 'Confirm',
+                                    confirmButtonText: 'OK',
                                     callback: ()=>{
                                         return
                                     }
@@ -2839,7 +2839,7 @@ new Vue({
                         $("#doi_searchBox").removeClass("spinner")
                         this.$alert('Failed to connect, please try again!', 'Tip', {
                             type:"warning",
-                                confirmButtonText: 'Confirm',
+                                confirmButtonText: 'OK',
                                 callback: ()=>{
                                     return
                                 }

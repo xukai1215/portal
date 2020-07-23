@@ -21,15 +21,21 @@ public interface TemplateDao extends MongoRepository<Template,String> {
 
     Page<TemplateResultDTO> findAllBy(Pageable pageable);
 
+    Page<TemplateResultDTO> findAllByAndStatusIn(List<String> status,Pageable pageable);
+
     Template findByOid(String oid);
 
     Page<Template> findByParentId(String parentId, Pageable pageable);
 
     Page<TemplateResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
+    Page<TemplateResultDTO> findByNameContainsIgnoreCaseAndStatusIn(String name, List<String> status,Pageable pageable);
+
     Page<TemplateResultDTO> findByParentIdIn(List<String> parentIds, Pageable pageable);
 
     Page<TemplateResultDTO> findByClassificationsIn(List<String> parentIds, Pageable pageable);
+
+    Page<TemplateResultDTO> findByClassificationsInAndStatusIn(List<String> parentIds, List<String> status,Pageable pageable);
 
     Page<TemplateResultDTO> findByAuthor(String author,Pageable pageable);
 

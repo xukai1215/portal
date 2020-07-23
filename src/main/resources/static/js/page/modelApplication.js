@@ -62,7 +62,7 @@ var vue = new Vue({
                             },100)
                         }else{
                             this.$alert('Please try again','Warning', {
-                                confirmButtonText: '确定',
+                                confirmButtonText: 'OK',
                                 callback: action => {
                                     this.loading = false;
                                 }
@@ -97,7 +97,7 @@ var vue = new Vue({
 
                         }else{
                             this.$alert('Please try again','Warning', {
-                                confirmButtonText: '确定',
+                                confirmButtonText: 'OK',
                                 callback: action => {
                                     this.loading = false;
                                 }

@@ -1009,7 +1009,7 @@ public class ModelItemService {
             } else if(searchText.equals("")&&!classes.get(0).equals("all")){
                 modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
             }else{
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText,classes, pageable);
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusIn(searchText,classes,itemStatusVisible, pageable);
             }
         }else{
             if (searchText.equals("")&&classes.get(0).equals("all")) {
@@ -1415,14 +1415,14 @@ public class ModelItemService {
     }
 
     public boolean findReferExisted(String modelOid,String doi){
-
-        ModelItem modelItem = modelItemDao.findFirstByOid(modelOid);
-        List<Reference> references = modelItem.getReferences();
-        for(Reference reference:references){
-            if(reference.getDoi().equals(doi))
-                return true;
+        if(!modelOid.equals("")&&modelOid!=null){
+            ModelItem modelItem = modelItemDao.findFirstByOid(modelOid);
+            List<Reference> references = modelItem.getReferences();
+            for(Reference reference:references){
+                if(reference.getDoi().equals(doi))
+                    return true;
+            }
         }
-
         return false;
     }
 

@@ -21,15 +21,19 @@ public interface SpatialReferenceDao extends MongoRepository<SpatialReference,St
 
     Page<SpatialResultDTO> findAllBy(Pageable pageable);
 
+    Page<SpatialResultDTO> findAllByAndStatusIn(List<String> status,Pageable pageable);
+
     SpatialReference findByOid(String oid);
 
     Page<SpatialReference> findByParentId(String parentId, Pageable pageable);
 
-    Page<SpatialResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
+    Page<SpatialResultDTO> findByNameContainsIgnoreCaseAndStatusIn(String name, List<String> status,Pageable pageable);
 
     Page<SpatialResultDTO> findByParentIdIn(List<String> parentIds, Pageable pageable);
 
     Page<SpatialResultDTO> findByClassificationsIn(List<String> parentIds, Pageable pageable);
+
+    Page<SpatialResultDTO> findByClassificationsInAndStatusIn(List<String> parentIds,List<String> status, Pageable pageable);
 
     Page<SpatialResultDTO> findByAuthor(String author, Pageable pageable);
 

@@ -68,7 +68,7 @@
 .sideContainer {
     width: 240px;
     height: 100%;
-    padding-bottom: 180px;
+    padding-bottom: 150px;
     /*background-image: linear-gradient(-225deg, #FFFEFF 0%, #D7FFFE 100%);*/
 }
 
@@ -118,14 +118,6 @@
 .flexJustBetween{
     display: flex;
     justify-content: space-between;
-}
-
-.threeLine{
-    word-break: break-all;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
 }
 
 .sideUl {

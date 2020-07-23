@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
 <!--    <link rel="stylesheet" href="/static/css/base/style.css">-->
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+<!--    <link rel="stylesheet" href="/static/css/page/user_page2.css">-->
     <link rel="stylesheet" href="/static/css/page/user_space.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/iCheck/skins/flat/green.css"/>
@@ -39,6 +40,9 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhStyle.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhFlexContainer.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/module/editImage.css"/>
 
     <script src="/static/js/common/md5.js"></script>
     <script src="/static/js/common/jquery-3.3.1.js"></script>
@@ -73,6 +77,7 @@
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-router.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/js/common/vue-cropper.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <script src="/static/element-ui/umd/locale/en.js"></script>
     <style>
@@ -102,7 +107,7 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
-        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" @com-senduserinfo="updateUserInfo" :itemindex-raw="itemIndex"></router-view>
+        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" @com-senduserinfo="updateUserInfo" ></router-view>
 
     </div>
 
@@ -182,6 +187,9 @@
 <!--feedback组件-->
 <template th:replace="feedBack :: feedback"></template>
 <script src="/static/js/page/feedBack.js"></script>
+<!--draftBox组件-->
+<template th:replace="userDraftBox :: userDraftBox"></template>
+<script src="/static/js/page/userDraftbox.js"></script>
 <!--notice组件-->
 <template th:replace="message_confirm :: notice"></template>
 <script src="/static/js/page/message_confirm.js"></script>

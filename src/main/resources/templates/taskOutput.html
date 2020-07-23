@@ -88,7 +88,7 @@
 
                                 </div>
                                 <div v-cloak class="btn-list">
-                                    <el-button v-if="info.userInfo.userName==info.taskInfo.creater" plain type="primary" @click="addTaskDescription()" :disabled="!info.modelInfo.hasTest"
+                                    <el-button  plain type="primary" @click="addTaskDescription()" :disabled="!info.modelInfo.hasTest"
                                                style="min-width: 120px" >
                                         <span v-if="info.taskInfo.description==''">Add</span><span v-else>Edit</span> Description
                                     </el-button>

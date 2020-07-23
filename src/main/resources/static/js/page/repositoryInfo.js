@@ -266,6 +266,15 @@ new Vue({
         ],
 
         coordianate:{wkname:''},
+
+        transformVisible:false,
+        inputCoordinate:'',
+        inputX:'',
+        inputY:'',
+        outputCoordinate:'',
+        outputX:'',
+        outputY:'',
+
     },
     methods: {
         submitLocalization(){
@@ -778,26 +787,89 @@ new Vue({
         loadCSDetails(){
             let href = window.location.href;
             let hrefs = href.split('/');
+            let item = hrefs[hrefs.length - 2].split("#")[0];
             let oid = hrefs[hrefs.length - 1].split("#")[0];
-
-            axios.get('/spatial/getWKT',{
-                params:{
-                    oid:oid,
-                }
-                }
-
-            ).then(res=>{
-                if(res.data.code==0){
-                    let data = res.data.data;
-                    if(data.wktname!=null||data.wktname!=''){
-                        this.coordianate.wkname=data.wktname;
-                    }
-                    if(data.wkt!=null||data.wkt!=''){
-                        this.wktTransfer(data.wkt);
+            if(item=='spatialReference'){
+                axios.get('/spatial/getWKT',{
+                        params:{
+                            oid:oid,
+                        }
                     }
 
+                ).then(res=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        if(data.wktname!=null||data.wktname!=''){
+                            this.coordianate.wkname=data.wktname;
+                        }
+                        if(data.wkt!=null||data.wkt!=''){
+                            this.wktTransfer(data.wkt);
+                        }
+
+                    }
+                })
             }
-            })
+
+        },
+
+        isNum(val){
+            var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+            var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+            if(regPos.test(val) || regNeg.test(val)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        transformXY(){
+            if(this.inputCoordinate==''){
+                this.$alert('Please input the input coordinate system')
+                return
+            }
+            if(this.inputX==''||this.inputY==''||!this.isNum(this.inputX)||!this.isNum(this.inputY)){
+                this.$alert('Please input the right value')
+                return
+            }
+            if(this.outputCoordinate==''){
+                this.$alert('Please input the output coordinate system')
+                return
+            }
+            let inX = parseFloat(this.inputX)
+            let inY = parseFloat(this.inputY)
+
+            let inCoorNum=this.inputCoordinate.substring(this.inputCoordinate.indexOf('.')+1)
+            let outCoorNum=this.outputCoordinate.substring(this.outputCoordinate.indexOf('.')+1)
+
+            let obj={
+                inCoordinate:inCoorNum,
+                inX:inX,
+                inY:inY,
+                outCoordinate:outCoorNum,
+            }
+            var vthis=this
+            $.ajax({
+                url: 'http://epsg.io/trans',
+                dataType: "jsonp",
+                data: {
+                    x:inX,
+                    y:inY,
+                    s_srs:inCoorNum,
+                    t_srs:outCoorNum
+                },
+                success: (data) => {
+                    if(data!=null){
+                        this.outputX=data.x
+                        this.outputY=data.y
+
+                    }else{
+                        this.$alert('Connection timed out, please try again')
+                    }
+                }
+            });
+            // axios.post('/spatial/transformByEPSG',obj
+            //
+            // )
         },
 
         setSession(name, value) {

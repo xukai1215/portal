@@ -66,11 +66,18 @@
                          :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
                          id="pageContent">
                         <section role="description" class="flexJustBetween flexColCenter contentSection"
-                                 style="max-width: 1050px;margin: 15px 10px;">
+                                 style="max-width: 100%;margin: 15px 10px;">
                             <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                                 <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
                                 <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/model">Model </a>
                                     <span id="subRteTitle"></span></h3>
+                            </div>
+                            <div v-if="savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
+                                <i class="ms-Icon ms-Icon--ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>
+                                <p style="margin: 0">Saving draft...</p>
+                            </div>
+                            <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
+                               <button class="btn btn-noShadow btn-round" @click="loadDraftClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
                             </div>
                         </section>
 
@@ -102,7 +109,7 @@
 
                                                             </ul>
                                                             <div class="step-content">
-                                                                <div class="step-tab-panel" id="step1">
+                                                                <div class="step-tab-panel" :class="step==1?'active':''" id="step1">
                                                                     <div class="col-sm-4 tree" style="margin-top:10px">
                                                                         <el-card>
                                                                             <div slot="header" class="clearfix text-center">
@@ -163,7 +170,7 @@
                                                                                     <label for="nameInput"
                                                                                            class="col-sm-2 control-label"><span class="xing">* </span>Name</label>
                                                                                     <div class="col-sm-10">
-                                                                                        <input type="text"
+                                                                                        <input type="text" @input="onInputName()" v-model="itemName"
                                                                                                class="form-control"
                                                                                                id="nameInput"/>
                                                                                     </div>
@@ -195,16 +202,16 @@
 
                                                                             <div class="form-horizontal">
                                                                                 <div class="form-group">
-                                                                                    <label for="nameInput"
+                                                                                    <label
                                                                                            class="col-sm-2 control-label">Image</label>
                                                                                     <div class="col-sm-10">
                                                                                         <img id="imgShow" src=""/>
-                                                                                        <div id="imgChange">
+                                                                                        <div class="cursorPointer loadImg" @click="imgUpload()">
                                                                                             <i class="fa fa-plus fa-5x"></i>
                                                                                         </div>
-                                                                                        <input id="imgFile" type="file"
-                                                                                               style="display: none"
-                                                                                               accept="image/*"/>
+<!--                                                                                        <input id="imgFile" type="file"-->
+<!--                                                                                               style="display: none"-->
+<!--                                                                                               accept="image/*"/>-->
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -459,6 +466,9 @@
                                                                 </div>
                                                             </div>
                                                             <div class="step-footer text-right">
+                                                                <button class="btn btn-danger prev" @click="cancelEdit()">
+                                                                    Cancel
+                                                                </button>
                                                                 <button class="btn btn-warning prev" data-direction="prev">
                                                                     Previous
                                                                 </button>
@@ -575,12 +585,12 @@
 
                     </div>
                     <span slot="footer" class="dialog-footer">
-                                        <el-button type="primary" @click="updateArticleConfirmClick" id="modal_save">Upload</el-button>
+                                        <el-button type="primary" @click="updateArticleConfirmClick" id="modal_save">Add</el-button>
                                         <el-button @click="cancelSearch()">cancel</el-button>
 
                                 </span>
                 </el-dialog>
-                <el-dialog title="Is this article you want to upload?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
+                <el-dialog title="Is this article you want to add?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
                     <h4>{{articleUploading.title}}</h4>
                     <p v-if="articleUploading.authors.length>0"><span>Authors:</span><span>&nbsp&nbsp{{articleUploading.authors[0]}},</span>
                         <span v-if="articleUploading.authors[1]">{{articleUploading.authors[1]}}, </span>
@@ -626,6 +636,101 @@
                     <!--                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>-->
                     <!--                            </span>-->
                 </el-dialog>
+                <el-dialog title="Load Draft" :visible.sync="draftListDialog">
+                    <div v-loading="draftLoading">
+<!--                        <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">-->
+<!--                            <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">-->
+<!--                                <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">-->
+<!--                            </div>-->
+<!--                            <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>-->
+<!--                        </div>-->
+                        <el-table style="padding-left:10px "
+                                  :data="draftList">
+                            <el-table-column
+                                    label="Type"
+                                    prop="editType"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    label="Item name"
+                            >
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>
+                                    <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Last modify time"
+                            >
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row.lastModifyTime.substring(0,10)+' '+ scope.row.lastModifyTime.substring(11,16)}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Option"
+                                    width="180"
+                            >
+                                <template slot-scope="scope">
+                                    <el-button size="mini" round type="success" @click="insertDraft(scope.row)">Load</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination style="text-align: center;margin-top:20px"
+                                       @current-change="handlePageChange"
+                                       :current-page="pageOption.currentPage"
+                                       layout="total, prev, pager, next, jumper"
+                                       :page-size="6"
+                                       :total="pageOption.total">
+                        </el-pagination>
+
+                    </div>
+                </el-dialog>
+                <el-dialog title="Edit Image" :visible.sync="imgClipDialog" >
+                    <span slot="footer">
+                        <div style="height: 300px">
+                        <div class="flexJustAround flexAlignCenter editImageContainer" style="">
+                            <div class="containerWithDashed">
+                                <div id="imgChange" >
+                                    <i class="fa fa-upload fa-3x"></i>
+                                </div>
+                            </div>
+                            <input id="imgFile" type="file"
+                                   style="display: none"
+                                   accept="image/*"/>
+                            <div class="innerBorderCol"></div>
+                            <div class="imgOverview" style="width: 40%">
+                                <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
+                                <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
+                                    <div class="circlePhotoFrame flexCenter">
+                                        <canvas></canvas>
+                                    </div>
+                                    <!--                                    <div class="circlePhotoFrameShade">-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
+                                    <!--                                         src="../static/img/icon/default.png">-->
+                                    <div class="dragBar" style="margin-top:15px ">
+                                        <div class="dragBlock" ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">
+                            <el-button id="saveUserImgButton" type="success">Save</el-button>
+                            <el-button id="closeSaveUserImg" style="margin-left: 15px" @click="imgClipDialog=false">Cancel</el-button>
+                        </div>
+                    </div>
+                    </span>
+
+
+                </el-dialog>
+<!--                <el-dialog title="Image Clip" visible.sync="imageClipDialog">-->
+<!--                    <vueCropper-->
+<!--                            ref="cropper"-->
+<!--                            :img="option.img"-->
+<!--                            :outputSize="option.size"-->
+<!--                            :outputType="option.outputType"-->
+<!--                    ></vueCropper>-->
+<!--                </el-dialog>-->
                 <!-- 模态框（Modal） -->
 <!--                <div class="modal fade" id="refinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
 <!--                     aria-hidden="true">-->

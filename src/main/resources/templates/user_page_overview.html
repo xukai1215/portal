@@ -720,7 +720,7 @@
                                                     <div>
                                                         <p><span>Authors:</span> &nbsp&nbsp{{articles.result[0].authors[0]}}, {{articles.result[0].authors[1]}} </p>
                                                         <p><span>Journal:</span> &nbsp&nbsp{{articles.result[0].journal}}</p>
-                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>
+                                                        <p><span>Date:</span> &nbsp&nbsp{{articles.result[0].date}}</p>fa fa-calendar
                                                         <p v-if="article.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{article.pageRange}}</p>
                                                     </div>
                                                 </div>
@@ -2482,6 +2482,7 @@
                             </div>
                         </div>
                         <el-dialog :title="addorEdit + ' Article'" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+
                             <div class="wzhScrollbar" style="max-height: 500px" >
                                 <div class="tab-content" v-loading="doiLoading">
                                     <div class="tab-pane active articleInfo" id="manually" >

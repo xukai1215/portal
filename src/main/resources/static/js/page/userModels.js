@@ -116,7 +116,7 @@ var userModels = Vue.extend(
             }
         },
 
-        props:['itemindexRaw'],
+        props:[],
 
         components: {
         },
@@ -500,13 +500,14 @@ var userModels = Vue.extend(
             },
 
             getIcon(){
+                let a=this.$route.params.modelitemKind
                 var srcs={
-                    1:'/static/img/model/model.png',
-                    2:'/static/img/model/conceptual.png',
-                    3:'/static/img/model/logical.png',
-                    4:'/static/img/model/calcModel.png',
+                    'modelitem':      '/static/img/model/model.png',
+                    'conceptualmodel':'/static/img/model/conceptual.png',
+                    'logicalmodel':   '/static/img/model/logical.png',
+                    'computablemodel':'/static/img/model/calcModel.png',
                 }
-                return srcs[this.itemIndex]
+                return srcs[a]
 
             },
 

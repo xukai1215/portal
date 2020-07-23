@@ -234,9 +234,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
-                                <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
-                                    calculation tasks</h4>
+                                <div style="margin-top: 50px">
+                                    <h4 class="col-sm-12 text-center" v-if="resourceLoad"><i class="ms-Icon ms-Icon--ProgressRingDots rotate_cw_1" style="margin-right: 10px"></i>Loading ...</h4>
+                                    <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
+                                        calculation tasks</h4>
+                                </div>
                             </div>
                             <div class="flexRowCenter">
                                 <nav v-if="searchResult.length!=0&&resourceLoad==false" aria-label="Page navigation example">

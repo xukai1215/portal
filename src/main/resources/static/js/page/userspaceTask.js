@@ -415,6 +415,7 @@ var userTask = Vue.extend(
 
             showTasksByStatus(status) {
                 let name = 'tasks'
+                this.resourceLoad = true
                 this.taskStatus = status
                 this.isInSearch = 0;
                 if (this.taskStatus === 'successful')
@@ -469,6 +470,7 @@ var userTask = Vue.extend(
                 let name = "tasks";
                 this.await = true
                 this.isInSearch = 1;
+                this.resourceLoad = true
                 let targetPage = page==undefined?this.page:page
                 $.ajax({
                     type: "Get",
@@ -540,11 +542,11 @@ var userTask = Vue.extend(
                 console.log(this.clipBoard);
                 let vthis = this;
                 this.clipBoard.on('success', function () {
-                    vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
+                    vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'OK',})
                     this.clipBoard.destroy()
                 });
                 this.clipBoard.on('error', function () {
-                    vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
+                    vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'OK',})
                     this.clipBoard.destroy()
                 });
                 this.shareIndex=false

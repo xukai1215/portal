@@ -39,8 +39,8 @@ var communityItem = Vue.extend({
             let urls={
                 'concept&semantic':'repository/concept',
                 'spatialReference':'repository/spatialReference',
-                'dataTemplate':'repository/template',
-                'unit&metric':'repository/unit'
+                'dataTemplate':    'repository/template',
+                'unit&metric':     'repository/unit'
             }
             window.location.href='/'+urls[a]+'/'+oid
         },
@@ -177,6 +177,18 @@ var userCommunities = Vue.extend(
                 window.location.href=urls[index]
                 this.getCommunity();
 
+
+            },
+
+            getIcon(){
+                let a=this.$route.params.communityKind
+                var srcs={
+                    'concept&semantic':'/static/img/model/semantics.png',
+                    'spatialReference':'/static/img/model/spatialreference.png',
+                    'dataTemplate':    '/static/img/model/template.png',
+                    'unit&metric':     '/static/img/model/unit.png',
+                }
+                return srcs[a]
 
             },
 

@@ -2160,7 +2160,7 @@ body {
 .innerBorder{
     align-self: center;
     width: 95.5%;
-    border-bottom: 1px solid #d1d1d1;
+    border-bottom: 1px solid #d9d9d9;
 }
 
 overviewContainer {
@@ -2250,6 +2250,10 @@ overviewContainer {
 
 }
 
+.customUpload .el-upload.el-upload--text{
+    display: none;
+}
+
 .containerWithDottedLine {
     display: flex;
     flex-direction: column;
@@ -2308,6 +2312,26 @@ overviewContainer {
     display: flex;
     justify-content: center;
 
+}
+
+.headProgressContainer{
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    background: rgba(242, 242, 242, 0.60);
+}
+
+.headProgress{
+    position: absolute;
+    top: 50%;
+    margin-left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
 }
 
 .squareButton {
@@ -2987,6 +3011,17 @@ ul.flexLi {
     float: left;
 }
 
+.loadImg{
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 150px;
+    vertical-align: middle;
+    color: #ccc;
+    float: left;
+}
+
 .noScroll{
     overflow-y: hidden;
     overflow-x: hidden;
@@ -3138,7 +3173,46 @@ input[type=file] {
     z-index: -1;
 }
 
+.draftCard{
+    position: relative;
+    cursor: pointer;
+    min-height: 100px;
+    border-bottom: 3px solid #a4ddff;
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) !important;
+    transition: .3s;
+}
 
+.draftCard:hover{
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1) !important;
+}
+
+.draftCard:hover .dropMask{
+    height: 100%;
+}
+
+.dropMask{
+    position: absolute;
+    width: 100%;
+    height: 0;
+    left: 0;
+    top: 0;
+    background-color: #0e7fc9db;
+    color: whitesmoke;
+    transition: .4s;
+    overflow: hidden;
+}
+
+.dropMask i{
+    font-size: 18px;
+}
+
+.dropMask .innerBorderCol{
+    background-color: rgba(204, 204, 204, 0.50);
+}
+
+.draftDetailText{
+    margin-bottom: 10px;
+}
 
 @media only screen and (min-width: 1000px) {
     .mainContent {
@@ -3203,6 +3277,10 @@ input[type=file] {
 
     .fa{
         margin-right: 0 !important;
+    }
+
+    .draftCard .draftCardText{
+        /*flex-direction: column;*/
     }
 }
 

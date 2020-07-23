@@ -141,7 +141,18 @@
                         <li class="flexCol mainCenter" :class="curIndex == 10?'focus':''">
                             <div class="liContent flexCol mainCenter" :class="curIndex == 10?'showLeftBorder':''" @click="changeRter(10)">
                                 <div class="flexRow flexColCenter">
-                                    <i class="el-icon-chat-dot-square" style="font-size: 18px;color: #d48634;margin: 4px;" ></i><p>Message</p>
+                                    <i class="el-icon-chat-dot-square" style="font-size: 18px;color: #d48634;margin: 4px;" ></i>
+                                    <p>Message</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 11?'focus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 11?'showLeftBorder':''"
+                                 @click="changeRter(11)">
+                                <div class="flexRow flexColCenter">
+                                    <i class="ms-Icon ms-Icon--EditNote"
+                                       style="font-size: 18px;color: #d48634;margin: 4px;"></i>
+                                    <p>Draft Box</p>
                                 </div>
                             </div>
                         </li>
@@ -208,17 +219,23 @@
                                 <p>My Account</p>
                             </div>
                         </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 10?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 10?'showBottomBorder':''" @click="changeRter(10)">
+                                <p>Notice</p>
+                            </div>
+                        </li>
+                        <li class="flexCol mainCenter" :class="curIndex == 11?'topFocus':''">
+                            <div class="liContent flexCol mainCenter" :class="curIndex == 11?'showBottomBorder':''" @click="changeRter(11)">
+                                <p>Drafts</p>
+                            </div>
+                        </li>
                         <li class="flexCol mainCenter" :class="curIndex == 9?'topFocus':''">
                             <div class="liContent flexCol mainCenter" :class="curIndex == 9?'showBottomBorder':''"
                                  @click="changeRter(9)">
                                 <p>Feedback</p>
                             </div>
                         </li>
-                        <li class="flexCol mainCenter" :class="curIndex == 10?'topFocus':''">
-                            <div class="liContent flexCol mainCenter" :class="curIndex == 10?'showBottomBorder':''" @click="changeRter(10)">
-                                <p>Notice</p>
-                            </div>
-                        </li>
+
                     </ul>
                 </div>
             </div>

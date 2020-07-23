@@ -1716,7 +1716,8 @@ public class UserService {
 
         String[] a = {"0"};
         if (paths.size() == 0 || paths.get(0).equals("0")) {
-            fileMetaList.add(new FileMeta(true, false, id, father, name, "", "", null, new ArrayList<>()));
+            Date date = new Date();
+            fileMetaList.add(new FileMeta(true, false, id, father, name, "", "", null, new ArrayList<>(),date));
         } else {
             // pop
             String path = paths.remove(paths.size() - 1);
@@ -1772,7 +1773,8 @@ public class UserService {
     private List<FileMeta> aFile(List<String> paths, List<FileMeta> fileMetaList, String name, String suffix, String id, String father, String url, String templateId) {
 
         if (paths.size() == 0 || paths.get(0).equals("0")) {
-            fileMetaList.add(new FileMeta(false, true, id, father, name, suffix, url, templateId, new ArrayList<>()));
+            Date date = new Date();
+            fileMetaList.add(new FileMeta(false, true, id, father, name, suffix, url, templateId, new ArrayList<>(),date));
         } else {
             // pop
             String path = paths.remove(paths.size() - 1);
@@ -1849,8 +1851,8 @@ public class UserService {
         List<FileMeta> fileMetaList = user.getFileContainer();
 
         if (fileMetaList == null || fileMetaList.size() == 0) {
-
-            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>());
+            Date date = new Date();
+            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>(),date);
             fileMetaList = new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -1907,8 +1909,8 @@ public class UserService {
         List<FileMeta> fileMetaList = user.getFileContainer();
 
         if (fileMetaList == null || fileMetaList.size() == 0) {
-
-            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>());
+            Date date = new Date();
+            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>(),date);
             fileMetaList = new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -2080,7 +2082,8 @@ public class UserService {
                             }
                         }
                         if (!exist) {
-                            FileMeta fileMeta = new FileMeta(false, false, id, father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), "", null);
+                            Date date = new Date();
+                            FileMeta fileMeta = new FileMeta(false, false, id, father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), "", null,date);
                             fileMetaList.add(fileMeta);
                         }
                         break;

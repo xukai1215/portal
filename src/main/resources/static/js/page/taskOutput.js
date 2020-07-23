@@ -460,11 +460,11 @@ var vue = new Vue({
             console.log(this.clipBoard);
             let vthis = this;
             this.clipBoard.on('success', function () {
-                vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
+                vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'OK',})
                 this.clipBoard.destroy()
             });
             this.clipBoard.on('error', function () {
-                vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
+                vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'OK',})
                 this.clipBoard.destroy()
             });
             this.shareIndex=false

@@ -154,6 +154,10 @@ var router = new VueRouter({
                 component:createTheme,
             },
             {
+                path:'/draftBox',
+                component:userDraftBox,
+            },
+            {
                 path:'/account',
                 component:userAccount,
             },

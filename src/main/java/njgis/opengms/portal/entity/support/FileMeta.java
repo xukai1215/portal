@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -23,4 +24,6 @@ public class FileMeta {
     String templateId;//数据模板id
 
     List<FileMeta> content;//文件夹需要设置该参数
+
+    Date createTime;
 }
