@@ -687,7 +687,7 @@
                 </el-dialog>
                 <el-dialog title="Edit Image" :visible.sync="imgClipDialog" >
                     <span slot="footer">
-                        <div style="height: 300px">
+                        <div id="editImageDialog">
                         <div class="flexJustAround flexAlignCenter editImageContainer" style="">
                             <div class="containerWithDashed">
                                 <div id="imgChange" >
@@ -697,12 +697,12 @@
                             <input id="imgFile" type="file"
                                    style="display: none"
                                    accept="image/*"/>
-                            <div class="innerBorderCol"></div>
+<!--                            <div class="innerBorderCol"></div>-->
                             <div class="imgOverview" style="width: 40%">
                                 <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
                                 <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
                                     <div class="circlePhotoFrame flexCenter">
-                                        <canvas></canvas>
+                                        <canvas ref="clipCanvas"></canvas>
                                     </div>
                                     <!--                                    <div class="circlePhotoFrameShade">-->
                                     <!--                                    </div>-->

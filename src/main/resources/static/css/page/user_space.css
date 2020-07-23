@@ -3214,6 +3214,10 @@ input[type=file] {
     margin-bottom: 10px;
 }
 
+#editImageDialog{
+    height: 351px;
+}
+
 @media only screen and (min-width: 1000px) {
     .mainContent {
         max-width: 1150px;
@@ -3254,6 +3258,14 @@ input[type=file] {
 
     .contentCard{
         width: 45%;
+    }
+
+    #editImageDialog{
+        height: auto;
+    }
+
+    .editImageContainer{
+        flex-direction: column;
     }
 }
 

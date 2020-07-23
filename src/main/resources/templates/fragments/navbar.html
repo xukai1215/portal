@@ -84,7 +84,7 @@
                     <li id="userLoged" style="float: right">
                         <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
                             <img class="userIcon round_icon" th:src="${( userNavBar.image == null ||#strings.isEmpty(userNavBar.image)) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
-                            <div class="el-badge item">
+                            <div class="el-badge item" style="flex: 0.5;">
                                 <div id="userName" class="textLineLimit" th:text="${userNavBar.name}" style="display: inline-block;max-width: 100px">Hello!!!!!!!!!</div>
                                 <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
                                 right: 0px !important;
@@ -175,7 +175,8 @@
                     <!--</el-badge>-->
                     <div class="el-badge item">
                         <a id="userNoticeDir1" href="/user/userSpace#/notice">Notice</a>
-                        <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed" th:text="${userNavBar.messageNum}" style="top: 30%;right: 30% !important;padding-right: 6px;padding-left: 6px;"></sup>
+                        <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed" th:text="${userNavBar.messageNum}"
+                             style="top: 30%;right: 30% !important;padding-right: 4px;padding-left: 4px;"></sup>
                     </div>
                 </li>
                 <li><a href="/user/out">Log Out</a></li>

@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
     <!--<link rel="stylesheet" href="/static/css/other/computable-test.css">-->
     <!--<link rel="stylesheet" href="/static/css/other/jquery.gritter.css">-->
     <!--<link rel="stylesheet" href="/static/css/page/logical_model.css">-->
@@ -245,7 +246,7 @@
                       width="315">
                 <template slot-scope="scope">
                   <div @click="showDescription(scope.row)" style="max-height: 50px;overflow-y: auto">
-                    {{scope.row.description}}
+                      {{scope.row.description}}
                   </div>
                 </template>
               </el-table-column>
@@ -315,10 +316,10 @@
               </el-table-column>
               <el-table-column
                       label="Description"
+                      prop="description"
                       width="245">
                 <template slot-scope="scope">
-                  <div :value="scope.row.description" @click.native="showDescription(scope.row)"
-                       style="overflow-y: auto"></div>
+                  <a class="twoLine cursorPointer" @click="showDescription(scope.row)">{{scope.row.description}}</a>
                 </template>
               </el-table-column>
               <el-table-column
@@ -355,6 +356,9 @@
         <el-dialog title="description" :visible.sync="showDescriptionVisible" width="40%" append-to-body
                    style="top:50px;">
           <el-card style="min-height: 120px">{{taskDescription}}</el-card>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="showDescriptionVisible = false">OK</el-button>
+            </div>
         </el-dialog>
 
       </el-dialog>

@@ -393,6 +393,11 @@ var createModelItem = Vue.extend({
         imgClipDialog:false,
     }
     },
+
+    computed(){
+
+    },
+
     methods: {
         // handleSelect(index,indexPath){
         //     this.setSession("index",index);
@@ -800,7 +805,6 @@ var createModelItem = Vue.extend({
         },
 
 
-
         //reference
         searchDoi(){
             if(this.doi == ''){
@@ -972,6 +976,7 @@ var createModelItem = Vue.extend({
 
         imgUpload(){
             this.imgClipDialog = true
+            let canvas = this.$refs.clipCanvas
         },
 
         changeOpen(n) {
@@ -1125,6 +1130,13 @@ var createModelItem = Vue.extend({
         let that = this;
         var vthis = this;
         that.init();
+
+        (()=>{
+            window.onresize = () => {
+                this.editImageContainerWidth = this.$refs.editImageContainer.offsetWidth;
+            };
+
+        })()
 
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
         this.sendcurIndexToParent();
@@ -2045,7 +2057,6 @@ var createModelItem = Vue.extend({
                         endY=positionY
 
                         // canvas.style.backgroundPositionY = positionY
-                        canvas.style.backgroundImage = img
                         canvas.style.backgroundImage = img
                         // var back= context.createPattern(oImg,"no-repeat")
                         // context.fillStyle=back;

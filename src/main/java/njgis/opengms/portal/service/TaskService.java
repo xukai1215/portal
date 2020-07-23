@@ -177,7 +177,7 @@ public class TaskService {
 
         user = userDao.findFirstByUserName(userName);
 
-        userJson.put("name", user.getName());
+        userJson.put("userName", user.getUserName());
         userJson.put("userOid", user.getOid());
 
         JSONObject result = new JSONObject();
