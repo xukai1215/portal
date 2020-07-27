@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
     <link rel="stylesheet" href="/static/css/page/user_page.css">
     <link rel="stylesheet" href="/static/css/page/user_page2.css">
 <!--    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">-->
@@ -324,7 +325,7 @@
                                         <button id="researchInterestConfirm" class="confirmButton" @click="researchInterestConfirm()">√</button>
                                         <div class="contentContainer " style="justify-content: space-between; padding: 0 30px">
                                             <div id="researchInterestDetail" class="flexRow researchInterestDetail" >
-                                                <div class="nutTag darkBlue" v-if="index<3" v-for="(researchInterest,index) in userPersonalInfo.researchInterests"
+                                                <div class="nutTag darkBluePlain" v-if="index<3" v-for="(researchInterest,index) in userPersonalInfo.researchInterests"
                                                      style="margin: 0 5px 5px;font-size: 16px" :style="index==0?'margin-left:0':''">
                                                     {{researchInterest}}
                                                 </div>
@@ -882,7 +883,7 @@
                             <div class="innerBorder"></div>
                             <p class="colTitle" style="margin: 10px 30px 0;">Research Interests</p>
                             <div class="flexRow researchInterestDetail flexWrap" style="width: 100%;padding-left: 28px;margin: 5px 0">
-                                <div class="nutTag darkBlue"  v-for="(researchInterest,index) in userPersonalInfo.researchInterests"
+                                <div class="nutTag darkBluePlain"  v-for="(researchInterest,index) in userPersonalInfo.researchInterests"
                                      style="margin: 0 10px 5px 0;font-size: 16px">
                                     {{researchInterest}}
                                 </div>
@@ -1666,7 +1667,7 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/dataItem/'+ dataItem.oid" target="_blank">
+                                                <a :href="'/dataItem/'+ dataItem.id" target="_blank">
                                                     <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4>
                                                 </a>
                                                 <div :class="dataItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>

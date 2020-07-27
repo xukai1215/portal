@@ -968,7 +968,6 @@ var createTheme = Vue.extend({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");

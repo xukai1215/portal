@@ -88,7 +88,6 @@ var vue = new Vue({
             },
             crossDomain:true,
             success: (data) => {
-                data=JSON.parse(data);
                 if (data.oid == "") {
                     alert("Please login");
                     window.location.href = "/user/login";

@@ -1427,9 +1427,44 @@ public class UserService {
         return result;
     }
 
+    public JSONObject loadUser(String oid){
+
+        JSONObject userInfo = new JSONObject();
+        JSONObject countInfo = new JSONObject();
+
+        if (oid == null) {
+            userInfo.put("oid", "");
+            return userInfo;
+        }
+
+        User user = userDao.findFirstByOid(oid);
+
+        userInfo.put("oid", user.getOid());
+        userInfo.put("uid", user.getUserName());
+        userInfo.put("name", user.getName());
+        userInfo.put("image", getImage(user.getOid()));
+
+        countInfo.put("modelItems",user.getModelItems());
+        countInfo.put("dataItems",user.getDataItems());
+        countInfo.put("conceptualModels",user.getConceptualModels());
+        countInfo.put("logicalModels",user.getLogicalModels());
+        countInfo.put("computableModels",user.getComputableModels());
+        countInfo.put("concepts",user.getConcepts());
+        countInfo.put("spatials",user.getSpatials());
+        countInfo.put("templates",user.getTemplates());
+        countInfo.put("units",user.getUnits());
+        countInfo.put("themes",user.getThemes());
+
+        userInfo.put("countInfo",countInfo);
+
+        return userInfo;
+    }
+
     public JSONObject getUser(String userName) {
         User user = userDao.findFirstByUserName(userName);
         JSONObject userInfo = new JSONObject();
+        JSONObject countInfo = new JSONObject();
+
         userInfo.put("organizations", user.getOrganizations());
         userInfo.put("subjectAreas", user.getSubjectAreas());
         userInfo.put("name", user.getName());
@@ -1451,6 +1486,7 @@ public class UserService {
         userInfo.put("runTask", user.getRunTask());
         userInfo.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
         userInfo.put("subscribe", user.getSubscribe());
+
         return userInfo;
     }
 

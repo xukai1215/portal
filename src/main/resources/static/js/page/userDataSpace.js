@@ -161,9 +161,23 @@ var userDataSpace = Vue.extend(
                 uploadFiles: [],
                 uploadLoading: false,
 
+                progressFlag:false,
+                uploadProgress:0,
+
+                fileContainerWidth:1200,
             }
         },
-
+        computed:{
+            fileCard(){
+                if(this.fileContainerWidth<460){
+                    return 8
+                }else if(this.fileContainerWidth<757){
+                    return 6
+                }else {
+                    return 4
+                }
+            }
+        },
         methods:{
             //公共功能
 
@@ -453,7 +467,7 @@ var userDataSpace = Vue.extend(
                         } else {
                             this.myFileShown = json.data.data;
                             if(this.myFileShown.length>0)
-                            this.fatherIndex = this.myFileShown[0].father
+                                this.fatherIndex = this.myFileShown[0].father
                             this.refreshChild(this.myFile);
                             console.log(this.myFileShown)
                         }
@@ -470,15 +484,15 @@ var userDataSpace = Vue.extend(
                         this.myFile = this.myFileShown
                         return
                     }
-                    for (let i = 0; i < file.length; i++) {
-                        if (file[i].id === this.fatherIndex) {
-                            file[i].children = this.myFileShown
-                            console.log(this.myFile)
-                            return;
-                        } else {
-                            this.refreshChild(file[i].children)
-                        }
+                for (let i = 0; i < file.length; i++) {
+                    if (file[i].id === this.fatherIndex) {
+                        file[i].children = this.myFileShown
+                        console.log(this.myFile)
+                        return;
+                    } else {
+                        this.refreshChild(file[i].children)
                     }
+                }
             },
 
             showFilePackage(){
@@ -521,7 +535,7 @@ var userDataSpace = Vue.extend(
                 if( this.newFolderName===''){
                     this.$alert('Please input the folder name.', 'Tip', {
                         type:'warning',
-                        confirmButtonText: 'OK',
+                        confirmButtonText: 'comfirm',
                     })
                     this.addFolderIndex=true;
                 }
@@ -577,10 +591,10 @@ var userDataSpace = Vue.extend(
                 if(pageIndex=='myData'){
                     data=this.$refs.folderTree.getCurrentNode();
                     if(data==undefined)
-                    this.$alert('Please select a file directory.', 'Tip', {
-                        type:'warning',
-                        confirmButtonText: 'comfirm',
-                    })
+                        this.$alert('Please select a file directory.', 'Tip', {
+                            type:'warning',
+                            confirmButtonText: 'comfirm',
+                        })
                     node=this.$refs.folderTree.getNode(data);
                 }
                 else{
@@ -1028,7 +1042,7 @@ var userDataSpace = Vue.extend(
 
             addDataClass($event, item) {
                 // this.rightMenuShow = false
-                
+
                 if (this.downloadDataSet.indexOf(item) < 0) {
                     $event.currentTarget.className = "el-card dataitemisol dataitemhover"
                 }
@@ -1063,10 +1077,19 @@ var userDataSpace = Vue.extend(
                 var dom = document.getElementsByClassName("browsermenu");
 
                 console.log(e)
-                dom[0].style.top = e.pageY - 120 + "px"
-                // 125 > window.innerHeight
-                //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
-                dom[0].style.left = e.pageX - 320 + "px";
+                let width = document.documentElement.clientWidth;
+                if(width>888){
+                    dom[0].style.top = e.pageY- 240 + "px"
+                    // 125 > window.innerHeight
+                    //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
+                    dom[0].style.left = e.pageX - 310 + "px";
+                }else if(width>599){
+                    dom[0].style.top = e.pageY- 300 + "px"
+                    dom[0].style.left = e.pageX - 65 + "px";
+                }else{
+                    dom[0].style.top = e.pageY- 300 + "px"
+                    dom[0].style.left = e.pageX - 20 + "px";
+                }
 
                 this.rightMenuShow = true
 
@@ -1362,13 +1385,24 @@ var userDataSpace = Vue.extend(
                 this.upload_data_dataManager(uploadSource);
             },
 
-            uploadRemove(file, fileList) {
-
-                this.uploadFiles = fileList;
+            beforeAvatarUpload(event, file, fileList){
+                let loadProgress = Math.floor(event.percent) //这就是当前上传的进度
+                //可以进行其他逻辑
             },
+
+            uploadRemove(file, fileList) {
+                this.uploadFiles = fileList;
+                let index=this.uploadFiles[0].name.lastIndexOf(".")
+                if(this.uploadName=='')
+                    this.uploadName=this.uploadFiles[0].name.substring(0,index);
+            },
+
             uploadChange(file, fileList) {
                 console.log(fileList)
                 this.uploadFiles = fileList;
+                let index=this.uploadFiles[0].name.lastIndexOf(".")
+                if(this.uploadName=='')
+                    this.uploadName=this.uploadFiles[0].name.substring(0,index);
             },
 
             uploadClose() {
@@ -1396,8 +1430,7 @@ var userDataSpace = Vue.extend(
 
                 let formData = new FormData();
 
-                this.uploadLoading=true;
-
+                // this.uploadLoading=true;
                 let configContent = "<UDXZip><Name>";
                 for(let index in this.uploadFiles){
                     configContent+="<add value='"+this.uploadFiles[index].name+"' />";
@@ -1427,58 +1460,68 @@ var userDataSpace = Vue.extend(
                 // $.get("/dataManager/dataContainerIpAndPort", (result) => {
                 //     let ipAndPort = result.data;
 
-                    $.ajax({
-                        url: '/dispatchRequest/uploadMutiFiles',
-                        type: 'post',
-                        data: formData,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        async: true,
-                        timeout:20000
-                    }).done((res)=> {
-                        if(res.code==0){
-                            let data=res.data;
-                            if(this.uploadFiles.length==1){
-                                let index=this.uploadFiles[0].name.lastIndexOf(".")
-                                data.suffix=this.uploadFiles[0].name.substring(index+1,this.uploadFiles[0].name.length);
-                            }
-                            else{
-                                data.suffix="zip";
-                            }
-                            data.label=data.file_name;
-                            data.file_name+="."+data.suffix;
-                            data.upload=true;
-                            data.templateId=this.selectValue;
-                            this.addDataToPortalBack(data,this.selectValue);
-
-
-                            //reset
-                            this.uploadName="";
-                            this.selectValue="";
-                            this.selectedPath=[];
-                            this.uploadFiles=[];
-                            this.uploadLoading=false;
-                            this.uploadDialogVisible=false;
-                            this.remoteMethod("");
-                            this.$refs.upload.clearFiles();
-
-
-                        }else{
-                            this.$message.error('Upload failed!');
+                let progress
+                this.progressFlag=true
+                axios({
+                    url: '/dispatchRequest/uploadMutiFiles',
+                    method: 'post',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: true,
+                    timeout:20000,
+                    onUploadProgress: (progressEvent) => {
+                        this.uploadProgress = 0
+                        this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
+                    }
+                }).then((res)=> {
+                    if(res.data.code==0){
+                        let data=res.data.data;
+                        if(this.uploadFiles.length==1){
+                            let index=this.uploadFiles[0].name.lastIndexOf(".")
+                            data.suffix=this.uploadFiles[0].name.substring(index+1,this.uploadFiles[0].name.length);
                         }
+                        else{
+                            data.suffix="zip";
+                        }
+                        data.label=data.file_name;
+                        data.file_name+="."+data.suffix;
+                        data.upload=true;
+                        data.templateId=this.selectValue;
+                        this.addDataToPortalBack(data,this.selectValue);
 
 
-                        console.log(res);
-                    }).fail((res)=> {
-
+                        //reset
+                        this.uploadName="";
+                        this.selectValue="";
+                        // this.selectedPath=[];
+                        this.uploadFiles=[];
+                        if(this.uploadProgress==100){
+                            this.progressFlag=false
+                        }
                         this.uploadLoading=false;
-                        this.uploadDialogVisible=false;
+                        // this.uploadDialogVisible=false;
+                        this.remoteMethod("");
+                        this.$refs.upload.clearFiles();
+
+
+                    }else{
                         this.$message.error('Upload failed!');
-                    });
+                    }
+
+
+                    console.log(res);
+                }).catch((res)=> {
+
+                    this.uploadLoading=false;
+                    this.$message.error('Upload failed!');
+                });
                 // });
 
             },
+
+            progressA(event, file) {},
 
             remoteMethod(searchText) {//查找template
 
@@ -1516,6 +1559,9 @@ var userDataSpace = Vue.extend(
             uploadClick(index){
                 this.uploadInPath=index;
                 this.uploadSource=[];
+                this.uploadName=''
+                this.selectValue='none'
+                this.progressFlag=false
                 let allFder={
                     key:'0',
                     label:'All Folder'
@@ -1770,12 +1816,12 @@ var userDataSpace = Vue.extend(
                             message: 'Upload successfully!',
                             type: 'success'
                         });
-                        this.selectedPath=[];
+                        // this.selectedPath=[];
                         this.uploadName="";
                         this.selectValue="";
                         this.uploadFiles=[];
                         this.uploadLoading=false;
-                        this.uploadDialogVisible=false;
+                        // this.uploadDialogVisible=false;
                     }
                 });
 
@@ -1896,7 +1942,7 @@ var userDataSpace = Vue.extend(
 
                 this.taskSharingActive = 4;
                 var selectResult=[]
-               selectResult=this.multipleSelectionMyData.concat(this.multipleSelection);
+                selectResult=this.multipleSelectionMyData.concat(this.multipleSelection);
 
                 console.log(selectResult)
                 for (let select of selectResult) {
@@ -2361,12 +2407,14 @@ var userDataSpace = Vue.extend(
                 let height = document.documentElement.clientHeight;
                 this.ScreenMinHeight = (height) + "px";
                 this.ScreenMaxHeight = (height) + "px";
-
+                this.fileContainerWidth = document.getElementById('filePlate').offsetWidth
                 window.onresize = () => {
                     console.log('come on ..');
                     height = document.documentElement.clientHeight;
                     this.ScreenMinHeight = (height) + "px";
                     this.ScreenMaxHeight = (height) + "px";
+
+                    this.fileContainerWidth = document.getElementById('filePlate').offsetWidth
                 };
 
 
@@ -2381,7 +2429,6 @@ var userDataSpace = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         console.log(data);
 
@@ -2444,7 +2491,7 @@ var userDataSpace = Vue.extend(
 
                 //this.getModels();
             });
-            
+
 
             $(function () {
 
@@ -2520,7 +2567,7 @@ var userDataSpace = Vue.extend(
                 //     console.log(e.currentTarget)
                 // })
 
-                $('.fileTemplate').on('click',':not(.wzhMicroInput)',function (e) {
+                $('#filePlate').on('click',':not(.wzhMicroInput)',function (e) {
 
                     e.stopPropagation();
                     if(vue_this.rightMenuShow==true)//vue组件命名为userDataSpace

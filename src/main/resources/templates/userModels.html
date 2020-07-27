@@ -117,33 +117,39 @@
                             <!--                        <model-item :searchResultRaw="searchResult"></model-item>-->
                             <h4 style="margin:80px auto;color: #666666" v-if="searchResult.length==0&&!await ">No Result Found ...</h4>
                             <!--                        页码-->
-                            <nav v-if="searchResult.length>0&&!await"  aria-label="Page navigation example">
-                                <ul class="pagination pagination-circle pg-blue wzhPageControl">
-                                    <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
-                                            class="page-link"
-                                            style="border-radius: 10%;background-color: inherit">First</a></li>
-                                    <li class="page-item " :class="curPage!=1?'':'disabled'"
-                                        @click="changePage(curPage-1)">
-                                        <a class="page-link" aria-label="Previous">
-                                            <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">
-                                        <a class="page-link btn-round"
-                                           @click="changePage(page)">{{page}}</a></li>
-                                    <li class="page-item" :class="curPage!=totalPage?'':'disable'"
-                                        @click="changePage(curPage+1)">
-                                        <a class="page-link" aria-label="Next">
-                                            <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item" :class="curPage!=totalPage?'':'disabled'"
-                                        @click="changePage(totalPage)">
-                                        <a class="page-link">Last</a></li>
+                            <nav v-if="searchResult.length>0&&!await" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
+                                <div class="flexCenter totalContainer">
+                                    <p class="noMargin">Total Num: </p>
+                                    <h5 style="margin: 0 0 1px 0">{{totalNum}}</h5>
+                                </div>
+                                <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
+                                        <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
+                                                class="page-link"
+                                                style="border-radius: 10%;background-color: inherit">First</a></li>
+                                        <li class="page-item " :class="curPage!=1?'':'disabled'"
+                                            @click="changePage(curPage-1)">
+                                            <a class="page-link" aria-label="Previous">
+                                                <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">
+                                            <a class="page-link btn-round"
+                                               @click="changePage(page)">{{page}}</a></li>
+                                        <li class="page-item" :class="curPage!=totalPage?'':'disable'"
+                                            @click="changePage(curPage+1)">
+                                            <a class="page-link" aria-label="Next">
+                                                <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item" :class="curPage!=totalPage?'':'disabled'"
+                                            @click="changePage(totalPage)">
+                                            <a class="page-link">Last</a></li>
 
-                                </ul>
+                                    </ul>
+
+
                             </nav>
                         </section>
                     </div>

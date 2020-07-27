@@ -241,8 +241,12 @@
                                 </div>
                             </div>
                             <div class="flexRowCenter">
-                                <nav v-if="searchResult.length!=0&&resourceLoad==false" aria-label="Page navigation example">
-                                    <ul class="pagination pagination-circle pg-blue wzhPageControl">
+                                <nav v-if="searchResult.length!=0&&resourceLoad==false" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
+                                    <div class="flexCenter totalContainer">
+                                        <p class="noMargin">Total Num: </p>
+                                        <h5 style="margin: 0 0 1px 0">{{totalNum}}</h5>
+                                    </div>
+                                    <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
                                         <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
                                                 class="page-link"
                                                 style="border-radius: 10%;background-color: inherit">First</a></li>
@@ -268,7 +272,10 @@
                                             <a class="page-link">Last</a></li>
 
                                     </ul>
+
+
                                 </nav>
+
                             </div>
                         </div>
                     </div>

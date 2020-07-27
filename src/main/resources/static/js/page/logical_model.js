@@ -158,7 +158,6 @@ new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                             dangerouslyUseHTMLString: true,

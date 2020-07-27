@@ -475,7 +475,6 @@ new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid === "") {
                         this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                             dangerouslyUseHTMLString: true,
@@ -879,7 +878,7 @@ new Vue({
     mounted() {
         this.setSession("history", window.location.href);
         $.get("/user/load", {}, (result) => {
-            let res=JSON.parse(result);
+            let res=result;
 
                 if (res.oid != '') {
                     this.useroid = res.oid;

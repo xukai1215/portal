@@ -176,11 +176,6 @@ a{
     background-color: #ffffff;
 }
 
-.darkBlue{
-    border-color: #0056b3;
-    color: #0056b3;
-    background-color: #eaf0f5;
-}
 
 .responseDialog{
 
@@ -280,6 +275,39 @@ a{
     align-self: center;
     width: 95.5%;
     border-bottom: 1px solid #d9d9d9;
+}
+
+.purplePlain{
+    border-color: #a864cc;
+    color: #a864cc;
+}
+
+.purpleFull{
+    border-color: #a864cc;
+    background-color: #a864cc;
+    color: #f2f2f2;
+}
+
+.darkBluePlain{
+    border-color: #0056b3;
+    color: #0056b3;
+}
+
+.darkBlueFull{
+    border-color: #0056b3;
+    background-color: #0056b3;
+    color: #f2f2f2;
+}
+
+.bluePlain{
+    border-color: #05a6ff;
+    color: #04a2ff;
+}
+
+.blueFull{
+    border-color: #05a6ff;
+    background-color: #05a6ff;
+    color: #f2f2f2;
 }
 
 @media only screen and (min-width:1150px) {

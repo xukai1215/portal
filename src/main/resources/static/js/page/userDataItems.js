@@ -47,6 +47,8 @@ var userDataItems = Vue.extend(
 
                 isInSearch:0,
 
+                countInfo:{},
+
             }
         },
 
@@ -319,7 +321,6 @@ var userDataItems = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         console.log(data);
 
@@ -327,6 +328,7 @@ var userDataItems = Vue.extend(
                             alert("Please login");
                             window.location.href = "/user/login";
                         } else {
+                            this.countInfo = data.countInfo
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)

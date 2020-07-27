@@ -600,6 +600,7 @@ var createModelItem = Vue.extend({
             this.cls=typeof(content.classification)=="undefined"?[]: content.classification
             this.status=content.status
             let ids=[];
+            this.clsStr=[]
             for(let i=0;i<this.cls.length;i++){
                 for(let j=0;j<2;j++){
                     for(let k=0;k<this.treeData[j].children.length;k++){
@@ -748,7 +749,7 @@ var createModelItem = Vue.extend({
             $("#modelItemText").val(content.detail);
             initTinymce('textarea#modelItemText')
 
-
+            this.draftListDialog=false;
         },
 
         cancelEdit(){
@@ -1165,8 +1166,6 @@ var createModelItem = Vue.extend({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
-
                     console.log(data);
 
                     if (data.oid == "") {
@@ -1220,7 +1219,6 @@ var createModelItem = Vue.extend({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
@@ -1701,6 +1699,13 @@ var createModelItem = Vue.extend({
 
             let formData=new FormData();
 
+            const loading = userspace.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
                     type: 'text/plain',
@@ -1761,12 +1766,7 @@ var createModelItem = Vue.extend({
                     type: 'text/plain',
                 });
                 formData.append("info",file);
-                const loading = userspace.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
+
                 $.ajax({
                     url: "/modelItem/update",
                     type: "POST",

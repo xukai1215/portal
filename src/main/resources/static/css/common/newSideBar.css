@@ -324,6 +324,30 @@
     color: #fbfcfd;
 }
 
+.sub{
+    height: 0;
+    position: absolute;
+    top: 62px;
+    transition: .5s;
+}
+
+.sub>ul{
+    width: 100%;
+    height: 0;
+    background-color: rgba(5, 5, 5, 0.81) !important;
+    margin-top: 2.5px !important;
+    box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.sub li {
+    /* display: none; */
+    width: 200px;
+    height: 45px;
+    transition: .5s;
+}
 
 @media only screen and (max-width: 888px) {
     .backImg {
@@ -345,7 +369,7 @@
 
 }
 
-@media only screen and (min-width: 888px) {
+@media only screen and (min-width: 889px) {
     .topContainer {
         display: none;
     }
