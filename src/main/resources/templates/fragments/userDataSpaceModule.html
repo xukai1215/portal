@@ -85,14 +85,10 @@
                                   @click="deleteAll()">
                             <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
                           </button>
-                          <button class="dwload btn btn-success btn-round" v-if="downloadDataSet.length==1"
-                                  @click="selectData()">
-                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Select Data</span>
-                          </button>
-                          <!--//todo share-->
-                          <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
-                          <!--<i class="glyphicon glyphicon-share">&nbsp;share</i>-->
-                          <!--</button>-->
+<!--                          <button class="dwload btn btn-success btn-round" v-if="downloadDataSet.length==1"-->
+<!--                                  @click="selectData()">-->
+<!--                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Select Data</span>-->
+<!--                          </button>-->
 
 
                         </el-col>
@@ -156,7 +152,7 @@
                           <div v-if="myFileShown.length!=0" :title="showtitle(item)"
                                class="el-card dataitemisol" shadow="never"
                                :id="generateId(key)"
-                               :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
+                               :class="{isSelected(downloadDataSet,item)?clickdataitem:''}"
                                v-for="(item,key) in myFileShown"
                                :key="key"
 
@@ -171,7 +167,7 @@
                                      @click="singleClick($event,item)"
                                      v-if="item.package==false">
                                   <i style="font-size: 16px;color:#1b7cde"
-                                     :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}"
+                                     :style="{display:(isSelected(downloadDataSet,item))?'block':'none'}"
                                      class="fa fa-check"></i>
                                 </div>
                               </el-col>

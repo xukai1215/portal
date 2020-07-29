@@ -22,6 +22,8 @@ var userDataSpace = Vue.extend(
                     }
                 ],
 
+                uploadedFile:[],
+
                 fatherIndex:'',
 
                 pathShown:[],
@@ -908,6 +910,14 @@ var userDataSpace = Vue.extend(
 
             },
 
+            isSelected(list,item){
+                for(let i=0;i < list.length;i++){
+                    if(list[i].id===item.id)
+                        return true
+                }
+                return false
+            },
+
             //选中文件
             getid(target, eval){
                 this.dataid = eval.id;
@@ -916,9 +926,9 @@ var userDataSpace = Vue.extend(
                 // target.className = "el-card dataitemisol clickdataitem"
 
                 //再次点击取消选择
-                if (this.downloadDataSet.indexOf(eval) > -1) {
+                if (this.isSelected(this.downloadDataSet,eval)) {
                     for (var i = 0; i < this.downloadDataSet.length; i++) {
-                        if (this.downloadDataSet[i] === eval) {
+                        if (this.downloadDataSet[i].id === eval.id) {
                             //删除
                             this.downloadDataSet.splice(i, 1)
                             this.downloadDataSetName.splice(i, 1)
@@ -1043,7 +1053,7 @@ var userDataSpace = Vue.extend(
             addDataClass($event, item) {
                 // this.rightMenuShow = false
 
-                if (this.downloadDataSet.indexOf(item) < 0) {
+                if (!this.isSelected(this.downloadDataSet,item)) {
                     $event.currentTarget.className = "el-card dataitemisol dataitemhover"
                 }
 
@@ -1055,7 +1065,7 @@ var userDataSpace = Vue.extend(
             removeClass($event, item) {
 
 
-                if (this.downloadDataSet.indexOf(item) > -1) {
+                if (this.isSelected(this.downloadDataSet,item)) {
                     $event.currentTarget.className = "el-card dataitemisol clickdataitem"
                 } else {
                     $event.currentTarget.className = "el-card dataitemisol"
@@ -1353,6 +1363,7 @@ var userDataSpace = Vue.extend(
             keywordsSearch() {
                 if (this.searchContent === "") {
                     this.getFilePackage()
+                    this.searchContentShown=this.searchContent
                 } else {
                     axios.get('/user/keywordsSearch',{
                         params:{
@@ -1913,8 +1924,18 @@ var userDataSpace = Vue.extend(
                 return row.statename === value;
             },
 
+            getAllFiles(){
+                this.uploadedFile=[]
+                for(let i=0;i<this.myFile.length;i++){
+                    if(!this.myFile[i].package){
+                        this.uploadedFile.push(this.myFile[i])
+                    }
+                }
+            },
+
             allFileShareAsDataItem() {
-                this.initTaskDataForm()
+                // this.initTaskDataForm()
+                this.getAllFiles()
                 this.allFileTaskSharingVisible = true;
                 this.multipleSelection=[];
                 this.multipleSelectionMyData=[];

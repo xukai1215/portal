@@ -2078,6 +2078,15 @@ public class UserService {
                     jsonObject.put("suffix", fileMeta.getSuffix());
                     jsonObject.put("url", fileMeta.getUrl());
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
+                    for (String id : visualTemplateIds) {
+                        if (id.equals(fileMeta.getTemplateId())) {
+                            jsonObject.put("visual", true);
+                            break;
+                        }
+                    }
+                    if (!jsonObject.containsKey("visual")) {
+                        jsonObject.put("visual", false);
+                    }
 
                     resultList.add(jsonObject);
                 } else {

@@ -120,9 +120,11 @@
                                                     </el-col>
                                                     <el-col :span="6" style="float: right">
                                                         <el-input id="searchinput"
+                                                                  clearable
                                                                   placeholder="file name..."
                                                                   v-model="searchContent"
                                                                   @keyup.enter.native="keywordsSearch()"
+                                                                  @clear="keywordsSearch()"
                                                         >
                                                             <el-button slot="append" icon="el-icon-search"
                                                                        @click="keywordsSearch()"></el-button>
@@ -201,7 +203,7 @@
                                                                 <div :title="showtitle(item)"
                                                                      class="el-card dataitemisol" shadow="never"
                                                                      :id="generateId(key)"
-                                                                     :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
+                                                                     :class="(isSelected(downloadDataSet,item))?'clickdataitem':''"
                                                                      :key="key"
 
                                                                      @mouseover="addDataClass($event,item)"
@@ -210,12 +212,12 @@
                                                                     <el-row style="height: 80%"
                                                                             @dblclick.native="getPackageContent($event,item,key)">
                                                                         <el-col :span="5">&nbsp
-                                                                            <div class="squareButtonMini flexCenter"
+                                                                            <div class="squareButtonMini selectSection flexCenter"
                                                                                  style="margin: 4px;float: inherit;cursor: pointer"
                                                                                  @click="singleClick($event,item)"
                                                                                  v-if="item.package==false">
                                                                                 <i style="font-size: 16px;color:#1b7cde"
-                                                                                   :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}"
+                                                                                   :style="{display:(isSelected(downloadDataSet,item))?'block':'none'}"
                                                                                    class="fa fa-check"></i>
                                                                             </div>
                                                                         </el-col>
@@ -660,7 +662,7 @@
                     </div>
                 </el-dialog>
 
-                <el-dialog id="allFileShareDialog" top="40px" width="80%" title="Sharing as Data Item"
+                <el-dialog id="allFileShareDialog" top="40px" width="80%" title="Share as Data Item"
                            :visible.sync="allFileTaskSharingVisible" center="true" :before-close="handleCloseandInit"
                            @close="closeAndClear">
 
@@ -686,7 +688,7 @@
                                 <el-card shadow="never" style="width: 99%;margin-left: 1%">
                                     <el-table
                                             ref="multipleTableMyData"
-                                            :data="databrowser"
+                                            :data="uploadedFile"
                                             tooltip-effect="dark"
                                             stripe
                                             style="width: 100%"
@@ -697,7 +699,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Name"
-                                                prop="fileName"
+                                                prop="label"
 
                                         >
                                         </el-table-column>
@@ -708,7 +710,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Upload Time"
-                                                prop="createDate"
+                                                prop="createTime"
                                         >
                                         </el-table-column>
                                     </el-table>

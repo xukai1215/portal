@@ -1983,10 +1983,11 @@ body {
 
 }
 
-.dataitemisol:hover {
-    /*cursor: pointer;*/
-    border: 2px solid rgba(49, 143, 194, 0.92);
-}
+/*.dataitemisol:hover {*/
+/*    !*cursor: pointer;*!*/
+/*    border: 2px solid rgba(49, 143, 194, 0.92);*/
+/*    background-color: #ecf5ff;*/
+/*}*/
 
 .dataitemhover {
     /*border: 2px solid #72d600eb;*/
@@ -3175,7 +3176,7 @@ input[type=file] {
 .draftCard{
     position: relative;
     cursor: pointer;
-    min-height: 100px;
+    height: 100px;
     border-bottom: 3px solid #a4ddff;
     box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) !important;
     transition: .3s;
